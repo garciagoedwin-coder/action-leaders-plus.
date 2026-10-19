@@ -61,16 +61,21 @@ section{padding:72px 0}
 .f label{font-size:14px;font-weight:600;color:var(--mut)}
 .f input,.f select{height:52px;border-radius:14px;border:1px solid var(--line);background:#0a0b10;color:#fff;font:inherit;font-size:16px;padding:0 14px}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
-.bk-h{display:flex;gap:14px;align-items:center}.bk-av{width:58px;height:58px;border-radius:50%;flex:none;background:#2AC1F1 center/cover;display:grid;place-items:center;font-weight:800;color:#10222b;box-shadow:0 0 0 3px rgba(42,193,241,.35)}
-.bk-days{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
-.bk-days button{flex:none;min-width:68px;padding:10px 8px;border-radius:16px;border:1px solid var(--line);background:#0a0b10;color:#fff;font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
-.bk-days button small{font-size:11px;color:var(--mut);text-transform:capitalize}.bk-days button b{font-size:20px}.bk-days button i{font-style:normal;font-size:11px;color:var(--acc)}
-.bk-days button[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#0a141e}.bk-days button[aria-pressed=true] small,.bk-days button[aria-pressed=true] i{color:#0a141e}
-.bk-days button:disabled{opacity:.35}
-.bk-times{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-.bk-times button{height:48px;border-radius:14px;border:1px solid var(--line);background:#0a0b10;color:#fff;font:inherit;font-weight:700;cursor:pointer}
-.bk-times button[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#0a141e}
-.bk-sel{padding:12px 14px;border-radius:14px;background:rgba(42,193,241,.12);border:1px solid rgba(42,193,241,.35);font-weight:700;margin-bottom:14px}
+.bk-h{display:flex;gap:12px;align-items:center}.bk-av{width:48px;height:48px;border-radius:50%;flex:none;background:var(--acc) center/cover;display:grid;place-items:center;font-weight:800;font-size:15px;color:#10222b;border:2px solid var(--acc)}
+.bk-lab{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin:20px 0 10px}
+.bk-days{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;margin:0 -2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}.bk-days::-webkit-scrollbar{display:none}
+.bk-days button{flex:none;width:62px;padding:12px 0 10px;border-radius:18px;border:1px solid var(--line);background:transparent;color:#fff;font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:background .15s,border-color .15s}
+.bk-days button small{font-size:11px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}.bk-days button b{font-size:22px;font-weight:800;line-height:1}
+.bk-days button i{width:5px;height:5px;border-radius:50%;background:var(--acc)}
+.bk-days button[aria-pressed=true]{background:#fff;border-color:#fff;color:#0d0c12}.bk-days button[aria-pressed=true] small{color:rgba(13,12,18,.6)}.bk-days button[aria-pressed=true] i{background:#0d0c12}
+.bk-times{display:flex;flex-wrap:wrap;gap:8px}
+.bk-times button{height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--line);background:transparent;color:#fff;font:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s}
+.bk-times button:hover,.bk-days button:hover{border-color:rgba(255,255,255,.3)}
+.bk-times button[aria-pressed=true]{background:#fff;border-color:#fff;color:#0d0c12}
+.bk-sel{display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--line);font-weight:700;margin-bottom:16px;font-size:15px}
+.bk-sel:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc);flex:none}
+#bookBox .chips button{background:transparent;font-size:15px}
+#bookBox .chips button[aria-pressed=true]{background:#fff;border-color:#fff;color:#0d0c12}
 .chips button{height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:#0a0b10;color:#fff;font:inherit;font-weight:600;cursor:pointer}
 .chips button[aria-pressed=true]{background:var(--acc);color:#0a141e;border-color:var(--acc)}
 .row2{display:grid;grid-template-columns:118px minmax(0,1fr);gap:10px}.f input,.f select{width:100%;min-width:0}
@@ -167,18 +172,18 @@ section.alt{background:linear-gradient(180deg,rgba(42,193,241,.06),rgba(139,107,
     <p class="small" id="noLink" style="display:none;color:var(--mut);text-align:center;margin:0">Pide a la persona que te compartió esta página su enlace personal. 🙌</p>
   </div>
   <div class="form-card" id="bookBox" style="margin-top:18px;display:none">
-    <div class="bk-h"><div class="bk-av" id="bkAv"></div><div><div class="kick" style="margin:0">Agenda conmigo</div><h3 class="h" style="font-size:24px;margin:2px 0 0">📅 Reserva tu reunión</h3></div></div>
-    <p class="sec-p" style="font-size:15px;margin:12px 0 16px">Soy <b id="bkNm">Mayckol</b> y puedes agendar una reunión virtual conmigo. Elige el día y la hora que mejor te queden 👇</p>
-    <div class="bk-days" id="bkDays"></div>
-    <div class="bk-times" id="bkTimes"></div>
-    <p class="small" style="color:var(--mut);margin:8px 0 0" id="bkTz"></p>
+    <div class="bk-h"><div class="bk-av" id="bkAv"></div><div><div class="kick" style="margin:0">Agenda conmigo</div><h3 class="h" style="font-size:24px;margin:4px 0 0">Reserva tu reunión</h3></div></div>
+    <p class="sec-p" style="font-size:15px;margin:14px 0 0">Soy <b id="bkNm">Mayckol</b> y puedes agendar una reunión virtual conmigo. Elige el día y la hora que mejor te queden 👇</p>
+    <div class="bk-lab" id="bkL1">Elige el día</div><div class="bk-days" id="bkDays"></div>
+    <div class="bk-lab" id="bkL2">Elige la hora</div><div class="bk-times" id="bkTimes"></div>
+    <p class="small" style="color:var(--mut);margin:12px 0 0;font-size:13px" id="bkTz"></p>
     <form id="bkF" style="display:none;margin-top:16px">
       <div class="bk-sel" id="bkSel"></div>
       <div class="f"><label for="bn">Tu nombre</label><input id="bn" placeholder="Nombre y apellido" autocomplete="name"></div>
       <div class="f"><label for="bt">Tu WhatsApp</label><div class="row2"><select id="bc"><option value="504">🇭🇳 +504</option><option value="502">🇬🇹 +502</option><option value="503">🇸🇻 +503</option><option value="505">🇳🇮 +505</option><option value="506">🇨🇷 +506</option><option value="507">🇵🇦 +507</option><option value="52">🇲🇽 +52</option><option value="1">🇺🇸 +1</option><option value="34">🇪🇸 +34</option><option value="44">🇬🇧 +44</option></select><input id="bt" type="tel" placeholder="Número" autocomplete="tel"></div></div>
       <div class="f"><label>¿Cómo prefieres la reunión?</label><div class="chips" id="bTipo"><button type="button" aria-pressed="true" data-t="zoom">💻 Zoom</button><button type="button" aria-pressed="false" data-t="whatsapp">📱 Videollamada WhatsApp</button></div></div>
       <div class="f"><label>¿Qué te interesa más?</label><div class="chips" id="bInt"><button type="button" aria-pressed="false">✈️ Viajar</button><button type="button" aria-pressed="false">💰 Ingresos</button><button type="button" aria-pressed="true">⭐ Ambos</button></div></div>
-      <button class="btn wa" id="bBtn" type="submit" style="width:100%;margin-top:4px;height:58px">Agendar mi reunión</button>
+      <button class="btn pri" id="bBtn" type="submit" style="width:100%;margin-top:6px">Confirmar reunión</button>
     </form>
     <div class="ok" id="bkOk"></div>
   </div>
@@ -224,23 +229,23 @@ if(P){const nm=P.nombre||"Tu invitador",first=nm.split(" ")[0];$("sNm").textCont
       let selD=days[0],selT=null,tipo="zoom";const fT=t=>new Date(t).toLocaleTimeString("es",{hour:"numeric",minute:"2-digit",hour12:true}),fD=t=>new Date(t).toLocaleDateString("es",{weekday:"long",day:"numeric",month:"long"});
       try{const tz=Intl.DateTimeFormat().resolvedOptions().timeZone;$("bkTz").textContent="🌎 Horarios en tu hora local"+(tz?" ("+tz.split("/").pop().replace(/_/g," ")+")":"")}catch(e){}
       const drawT=()=>{$("bkTimes").innerHTML=selD.L.map(t=>`<button type="button" data-t="${t}" aria-pressed="${t===selT}">${fT(t)}</button>`).join("")};
-      const drawD=()=>{$("bkDays").innerHTML=days.slice(0,10).map(g=>{const d=new Date(g.t);return `<button type="button" data-k="${g.k}" aria-pressed="${g===selD}"><small>${d.toLocaleDateString("es",{weekday:"short"}).replace(".","")}</small><b>${d.getDate()}</b><i>${g.L.length} ${g.L.length===1?"libre":"libres"}</i></button>`}).join("");drawT()};drawD();
+      const drawD=()=>{$("bkDays").innerHTML=days.slice(0,10).map(g=>{const d=new Date(g.t);return `<button type="button" data-k="${g.k}" aria-pressed="${g===selD}"><small>${d.toLocaleDateString("es",{weekday:"short"}).replace(".","")}</small><b>${d.getDate()}</b><i title="${g.L.length} ${g.L.length===1?"espacio":"espacios"}"></i></button>`}).join("");drawT()};drawD();
       $("bkDays").onclick=e=>{const b=e.target.closest("[data-k]");if(!b)return;selD=days.find(x=>x.k===b.dataset.k);selT=null;$("bkF").style.display="none";drawD()};
-      $("bkTimes").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;selT=+b.dataset.t;drawT();$("bkSel").textContent="📅 "+fD(selT)+" · "+fT(selT);$("bkF").style.display="block";setTimeout(()=>$("bkF").scrollIntoView({behavior:"smooth",block:"start"}),50)};
+      $("bkTimes").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;selT=+b.dataset.t;drawT();$("bkSel").textContent=fD(selT)+" · "+fT(selT);$("bkF").style.display="block";setTimeout(()=>$("bkF").scrollIntoView({behavior:"smooth",block:"start"}),50)};
       const bt=document.querySelectorAll("#bTipo button");bt.forEach(b=>b.onclick=()=>{tipo=b.dataset.t;bt.forEach(x=>x.setAttribute("aria-pressed",x===b))});
       const bi=document.querySelectorAll("#bInt button");bi.forEach(b=>b.onclick=()=>bi.forEach(x=>x.setAttribute("aria-pressed",x===b)));
       $("bkF").onsubmit=async e=>{e.preventDefault();const b=$("bBtn"),n=$("bn").value.trim(),t=$("bt").value.replace(/\D/g,"");if(!selT)return;
         if(n.length<2||t.length<6){alert("Escribe tu nombre y tu número de WhatsApp.");return}
         b.disabled=true;b.textContent="Agendando…";const it=[...bi].find(x=>x.getAttribute("aria-pressed")==="true");
-        try{await setDoc(doc(db,"reservas",code+"_"+selT),{p:code,s:selT,t:Date.now()})}catch(x){b.disabled=false;b.textContent="Agendar mi reunión";alert("Ese horario se acaba de ocupar. Por favor elige otro.");selD.L=selD.L.filter(y=>y!==selT);selT=null;$("bkF").style.display="none";drawD();return}
+        try{await setDoc(doc(db,"reservas",code+"_"+selT),{p:code,s:selT,t:Date.now()})}catch(x){b.disabled=false;b.textContent="Confirmar reunión";alert("Ese horario se acaba de ocupar. Por favor elige otro.");selD.L=selD.L.filter(y=>y!==selT);selT=null;$("bkF").style.display="none";drawD();return}
         try{await addDoc(collection(db,"users",P.uid,"prospectos"),{nombre:n.slice(0,79),cc:$("bc").value,tel:t.slice(0,20),interes:it?it.textContent.replace(/[^A-Za-zÁÉÍÓÚáéíóúñ ]/g,"").trim():"",s:selT,tipo,t:Date.now()})}
-        catch(x){b.disabled=false;b.textContent="Agendar mi reunión";alert("No se pudo agendar. Intenta de nuevo o escríbeme por WhatsApp.");return}
+        catch(x){b.disabled=false;b.textContent="Confirmar reunión";alert("No se pudo agendar. Intenta de nuevo o escríbeme por WhatsApp.");return}
         const u=new Date(selT).toISOString().replace(/[-:T]/g,"").slice(0,12),z=tipo==="zoom"&&P.zoom?P.zoom:"",zm=z.match(/zoom\.us\/j\/(\d{9,12})\/?$/);
         const cal="cal.html?t="+u+"&m=60&n="+encodeURIComponent(nm.split(" ").slice(0,2).join(" "))+(z?"&z="+(zm?zm[1]:encodeURIComponent(z.replace(/^https?:\/\//,""))):"");
         const wm="Hola "+first+", acabo de agendar una reunión con usted para el "+fD(selT)+" a las "+fT(selT)+". Mi nombre es "+n+".";
-        $("bkDays").style.display=$("bkTimes").style.display=$("bkTz").style.display=$("bkF").style.display="none";
-        $("bkOk").innerHTML=`<div style="font-size:44px">🎉</div><h3 class="h" style="font-size:26px;margin:8px 0">¡Listo, ${n.split(" ")[0].replace(/</g,"")}!</h3><p class="sec-p" style="margin:0 auto 6px">Tu reunión con ${first} quedó agendada para el<br><b style="color:#fff">${fD(selT)} · ${fT(selT)}</b><br>${tipo==="zoom"?"💻 Por Zoom":"📱 Por videollamada de WhatsApp"}</p>
-          <a class="btn pri" href="${cal}" target="_blank" rel="noopener" style="width:100%;margin-top:14px">📲 Agregar a mi calendario</a>${P.wa?`<a class="btn wa" href="https://wa.me/${P.wa}?text=${encodeURIComponent(wm)}" target="_blank" rel="noopener" style="width:100%;margin-top:10px">💬 Avisar a ${first} por WhatsApp</a>`:""}`;
+        $("bkDays").style.display=$("bkTimes").style.display=$("bkTz").style.display=$("bkF").style.display=$("bkL1").style.display=$("bkL2").style.display="none";
+        $("bkOk").innerHTML=`<div style="width:64px;height:64px;border-radius:50%;margin:0 auto;display:grid;place-items:center;background:rgba(42,193,241,.12);border:1px solid rgba(42,193,241,.4);font-size:28px;color:var(--acc)">✓</div><h3 class="h" style="font-size:26px;margin:14px 0 8px">¡Listo, ${n.split(" ")[0].replace(/</g,"")}!</h3><p class="sec-p" style="margin:0 auto 6px">Tu reunión con ${first} quedó agendada para el<br><b style="color:#fff">${fD(selT)} · ${fT(selT)}</b><br>${tipo==="zoom"?"💻 Por Zoom":"📱 Por videollamada de WhatsApp"}</p>
+          <a class="btn pri" href="${cal}" target="_blank" rel="noopener" style="width:100%;margin-top:18px">Agregar a mi calendario</a>${P.wa?`<a class="btn gh" href="https://wa.me/${P.wa}?text=${encodeURIComponent(wm)}" target="_blank" rel="noopener" style="width:100%;margin-top:10px">Avisar a ${first} por WhatsApp</a>`:""}`;
         $("bkOk").style.display="block"}}}
   $("lead").onsubmit=async e=>{e.preventDefault();const b=$("lBtn");const n=$("ln").value.trim(),t=$("lt").value.replace(/\D/g,"");
     if(n.length<2||t.length<6){alert("Escribe tu nombre y tu número de WhatsApp.");return}
