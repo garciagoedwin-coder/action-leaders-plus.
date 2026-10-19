@@ -1162,7 +1162,7 @@ function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetr
    <p class="small muted">Ordenado por racha de días con la rutina completa, luego días activos de la semana y avance de hoy.</p>`;
   if(constL===null){b.innerHTML=segs+`<p class="muted small">Cargando…</p>`;bindRank();loadConst(true);return}
   if(!constL.length){b.innerHTML=segs+emptyCard("Aún nadie suma racha","Completa tu rutina hoy y toma el primer lugar.");bindRank();loadConst();return}
-  const L=constL,pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.uid===store.uid,true)}<span class="nm">${esc(p.nombre)}</span><div class="block"><b>${p.rk}</b><span class="small num">🔥 ${p.racha} ${p.racha===1?"día":"días"}</span></div></div>`:"<div></div>";
+  const L=constL,pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.uid===store.uid,true)}<span class="nm">${esc(p.nombre)}</span><div class="block"><b>${p.rk}</b><span class="small num">🔥 ${p.racha} ${p.racha===1?"día":"días"}</span><span class="small num" style="opacity:.85">Hoy ${p.hoy}% · ${p.dias7}/7</span></div></div>`:"<div></div>";
   const mine=L.find(x=>x.uid===store.uid);
   b.innerHTML=segs+(mine?`<div class="card row between"><span>Tu lugar en consistencia</span><b class="num" style="font-size:20px">#${mine.rk}</b></div>`:`<div class="card small">Completa tu rutina para aparecer en este ranking 💪</div>`)+`<div class="card"><div class="podium">${pod(L[1],1)+pod(L[0],0)+pod(L[2],2)}</div></div>
    <div class="card" style="gap:0">${L.slice(3).map(x=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)${x.uid===store.uid?";background:var(--brand-soft,rgba(42,193,241,.08))":""}"><b class="num" style="width:26px;text-align:center">${x.rk}</b>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">📅 ${x.dias7}/7 días · Hoy ${x.hoy}%</div></div><span class="chip ${x.racha?"c-gold":"c-brand"}" style="flex:none">🔥 ${x.racha}</span></div>`).join("")||`<p class="small muted" style="padding:8px 0">¡Súmate al ranking completando tu rutina!</p>`}</div>`;
@@ -2080,7 +2080,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019123257";var busy=false,pend=null;
+(function(){var V="20261019124240";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
