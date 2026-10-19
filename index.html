@@ -1126,7 +1126,7 @@ function renderWel(){const el=$("#wel");
       err.hidden=true;const bt=$("#regOk");bt.disabled=true;bt.textContent="Enviando…";
       try{d.fecha=new Date().toISOString();await store.db.doc("users/"+store.uid).set({registro:d,nombre:d.nombre,email:(fbUser&&fbUser.email)||"",creado:window.FB.serverTimestamp()},{merge:true});
         regDoc=Object.assign({},regDoc||{},{registro:d});if(!profile.nombrePila){profile.nombrePila=d.nombre.split(" ")[0];$("#hello").textContent="Hola, "+profile.nombrePila}
-        toast("¡Registro enviado!");welMark("registro")}catch(e){bt.disabled=false;bt.textContent="Enviar mi registro";err.textContent="No se pudo enviar. Revisa tu conexión e intenta de nuevo.";err.hidden=false}}}
+        toast("¡Registro enviado!");welMark("registro");autoFoto()}catch(e){bt.disabled=false;bt.textContent="Enviar mi registro";err.textContent="No se pudo enviar. Revisa tu conexión e intenta de nuevo.";err.hidden=false}}}
 
   $("#welHead").innerHTML=head;$("#welVH").innerHTML=vh;$("#welVB").innerHTML=vbtn;$("#welRest").innerHTML=rest;
   $("#welVidOk").onclick=()=>welMark("video");
@@ -1193,7 +1193,13 @@ let fotosRepo=[],fotosFs=[];
 async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
-  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel()}catch(e){}}
+  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto()}catch(e){}}
+let autoFotoHecho=false;
+async function autoFoto(){try{if(autoFotoHecho||!fbUser||!store.db)return;const R=regDoc&&regDoc.registro;if(!R||!R.nombre||!(T.ranking||[]).length)return;autoFotoHecho=true;
+  const m=(T.ranking||[]).concat(T.liderazgo||[]).find(x=>sameN(x.nombre,R.nombre));
+  if(m&&!profile.miNombre){profile.miNombre=m.nombre;store.set("perfil",profile);try{renderMe()}catch(e){}}
+  if(!fbUser.photoURL)return;const d=await store.db.doc("fotos/"+store.uid).get();if(d.exists)return;
+  await store.db.doc("fotos/"+store.uid).set({nombre:m?m.nombre:R.nombre,img:fbUser.photoURL.replace(/=s\d+-c$/,"=s240-c"),t:Date.now(),google:true})}catch(e){}}
 function subscribeTeam(db){
   const docs=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));
   if(!store.db)return;
