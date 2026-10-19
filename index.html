@@ -1044,7 +1044,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
     if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)});const c=$("#miosCopy");if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(miEnlace());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
   if(miosErr){b.innerHTML=emptyCard("No se pudo cargar tu equipo","Revisa tu conexión e intenta de nuevo. Si sigue igual, avisa al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
   if(!mios.length){b.innerHTML=`<div class="card empty"><h3>Aún no tienes socios en la app</h3><p class="small muted">Cuando firmes a alguien, mándale tu mensaje de bienvenida desde el CRM o comparte tu enlace. Al registrarse aparecerá aquí.</p></div>`+inv;bind();return}
-  const lin=mios.some(x=>x.nivel>1);if(!lin)miosVista="dir";const V=miosVista==="dir"?mios.filter(x=>x.nivel===1):mios.slice().sort((a,b)=>a.nivel-b.nivel||byAct(a,b));
+  const lin=true;const V=miosVista==="dir"?mios.filter(x=>x.nivel===1):mios.slice().sort((a,b)=>a.nivel-b.nivel||byAct(a,b));
   const seg=lin?`<div class="seg" id="miosSeg"><button aria-selected="${miosVista==="dir"}" data-mv="dir">Directos (${mios.filter(x=>x.nivel===1).length})</button><button aria-selected="${miosVista==="todo"}" data-mv="todo">Toda mi línea (${mios.length})</button></div>`:"";
   const A=V.map(x=>actDe(x)),n=V.length,hoy=A.filter(a=>a.hoy>0).length,sem=A.filter(a=>a.d7>0).length,bien=A.filter(a=>a.bien).length,pres=A.reduce((t,a)=>t+(a.sem.presentaciones||0),0);
   const st=(v,t,c)=>`<div class="card" style="gap:2px"><b class="num" style="font-size:28px${c?";color:"+c:""}">${v}</b><span class="small muted">${t}</span></div>`;
@@ -2053,7 +2053,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019120941";var busy=false,pend=null;
+(function(){var V="20261019121452";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
