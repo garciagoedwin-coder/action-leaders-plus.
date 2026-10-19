@@ -1198,14 +1198,14 @@ function renderEquipo(){const b=$("#eqBody");
       if(rankMetric==="nuevos"){if(p.rk===1)t.push('<span class="chip c-gold">✈️ Viaje de incentivo</span>');if(p.v>=500)t.push('<span class="chip c-good">Membresía gratuita</span>');else if(p.v>=200)t.push('<span class="chip c-warn">Action Leader</span>')}
       else if(p.rk===1)t.push('<span class="chip c-gold">📚 Pack de 3 libros</span>');
       return t.length?`<div class="row wrap" style="gap:4px;margin-top:4px;justify-content:center">${t.join("")}</div>`:""};
-    const unit=rankMetric==="nuevos"?["socio nuevo","socios nuevos"]:["presentación","presentaciones"];
+    const unit=rankMetric==="nuevos"?["socio nuevo","socios nuevos"]:["registro","registros"];
     const u=v=>v===1?unit[0]:unit[1];
     const per=T.config&&T.config.rankingSemanaLabel;
     const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="${rankMetric==="presentaciones"}" data-k="presentaciones">Registros inCruises</button><button aria-selected="${rankMetric==="nuevos"}" data-k="nuevos">Activaciones</button><button aria-selected="false" data-k="rutina">🔥 Rutina</button></div>
      <div class="seg" role="tablist" id="rankSeg" hidden><button aria-selected="true" data-k="mes">Este mes</button></div>
-     <p class="small muted">${rankMetric==="nuevos"?"Ordenado por volumen (Starter 50 · Classic 200 · Premium 500).":"Solo cuentan las presentaciones cuyo prospecto quedó registrado gratis en inCruises."}</p>`;
+     <p class="small muted">${rankMetric==="nuevos"?"Ordenado por volumen (Starter 50 · Classic 200 · Premium 500).":"Solo cuentan los prospectos registrados gratis en inCruises."}</p>`;
     if(!d.length){b.innerHTML=segs+emptyCard(rankMetric==="nuevos"?"Aún no hay socios nuevos en este periodo":"Aún no hay registros en este periodo","El primero en sumar toma el primer lugar.");bindRank();return}
-    const pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.me,true)}<span class="nm">${esc(p.nombre)}</span>${tags(p)}<div class="block"><b>${p.rk}</b><span class="small num">${rankMetric==="nuevos"?"Vol. "+fmt(p.v):fmt(p.v)+" "+u(p.v)}</span></div></div>`:"<div></div>";
+    const pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.me,true)}<span class="nm">${esc(p.nombre)}</span>${tags(p)}${rankMetric==="nuevos"?`<div class="block"><b>${p.rk}</b><span class="small num">Vol. ${fmt(p.v)}</span></div>`:`<div class="block"><b>${fmt(p.v)}</b><span class="small num">${u(p.v)}</span><span class="small num" style="font-weight:800;opacity:.9">#${p.rk}${p.rk===1?" Top":""}</span></div>`}</div>`:"<div></div>";
     const max=Math.max(...d.map(x=>x.v),1);
     const premios=sem?"":(rankMetric==="nuevos"?`<div class="card small"><b>Premios del mes</b><div class="row wrap" style="gap:6px;margin-top:6px"><span class="chip c-gold">✈️ 1.er lugar: Viaje de incentivo</span><span class="chip c-good">500+: Membresía gratuita</span><span class="chip c-warn">200+: Sistema de Líderes</span></div></div>`:`<div class="card small"><b>Premio del mes</b><div class="row wrap" style="gap:6px;margin-top:6px"><span class="chip c-gold">📚 1.er lugar al cierre del mes: Pack de 3 libros</span></div></div>`);
     b.innerHTML=segs+premios+(rankMetric==="nuevos"?`<div class="card row between"><span>Volumen del equipo ${sem?"esta semana":"este mes"}</span><b class="num" style="font-size:20px">${fmt(volTot)}</b></div>`:"")+`<div class="card"><div class="podium">${pod(d[1],1)+pod(d[0],0)+pod(d[2],2)}</div></div>
@@ -2085,7 +2085,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019124648";var busy=false,pend=null;
+(function(){var V="20261019124921";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
