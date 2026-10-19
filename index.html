@@ -696,7 +696,7 @@ function renderAviso(){const c=$("#avisoCard");if(!c)return;c.hidden=true;return
 const ACC_DEF=[{t:"Flyer de bienvenida",i:"🖼️",u:""},{t:"Regístrate en YESSMovement",i:"✍️",u:""},{t:"Audios en Spotify",i:"🎧",u:""},{t:"Caja de herramientas",i:"🧰",u:"https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"}];
 function renderAccesos(){const c=$("#accesos");if(!c)return;const L=((T.config&&Array.isArray(T.config.accesos)&&T.config.accesos.length)?T.config.accesos:ACC_DEF).filter(a=>safeUrl(a.u));
   if(!L.length){c.hidden=true;return}c.hidden=false;
-  c.innerHTML=`<h3>Accesos directos</h3><div class="acc"><a href="#" id="accBien"><span class="ic">🎉</span>Bienvenida socio nuevo</a>${L.map(a=>`<a href="${esc(a.u)}" target="_blank" rel="noopener"><span class="ic">${esc(a.i||"🔗")}</span>${esc(a.t)}</a>`).join("")}</div>`;$("#accBien").onclick=e=>{e.preventDefault();abrirBienvenida()}}
+  c.innerHTML=`<h3>Accesos directos</h3><div class="acc"><a href="#" id="accBien"><span class="ic">🎉</span>Bienvenida socio nuevo</a><a href="#" id="accPag"><span class="ic">🌐</span>Mi página prospectos</a>${L.map(a=>`<a href="${esc(a.u)}" target="_blank" rel="noopener"><span class="ic">${esc(a.i||"🔗")}</span>${esc(a.t)}</a>`).join("")}</div>`;$("#accBien").onclick=e=>{e.preventDefault();abrirBienvenida()};$("#accPag").onclick=e=>{e.preventDefault();abrirMiPagina()}}
 function renderMe(){const me=myRow();$("#topPv").textContent=me?fmt(me.registros):"—";$("#topPvBox").toggleAttribute("data-empty",!me);renderWho();if(eqTab==="ranking")renderEquipo()}
 
 // ---------- retos ----------
@@ -1091,6 +1091,30 @@ function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,
       if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text:msg});return}catch(x){if(x&&x.name==="AbortError")return}}
       location.href="https://wa.me/"+tel+"?text="+encodeURIComponent(msg)};
     if(n)upd()})}
+
+// ---------- página para prospectos ----------
+const miPCode=()=>{const n=miInv().split("-").slice(0,-1).join("-")||"socio";return n+"-"+String(store.uid||"").slice(4,8).toLowerCase()};
+const miPagina=()=>"https://actionleadersplus.com/conoce.html?de="+miPCode();
+async function publicarPerfil(){try{if(!store.db||!store.uid||!(regDoc&&regDoc.registro))return false;const w=profile.waPublico||{};
+  let foto=miFotoUrl()||"";if(foto&&/^https?:/.test(foto)){const d=await urlADataUrl(foto,240);if(d)foto=d}
+  await store.db.doc("perfiles/"+miPCode()).set({uid:store.uid,nombre:regDoc.registro.nombre||miNombreCorto(),foto:foto.length<400000?foto:"",wa:w.num?waNum(w.num,w.cc):"",t:Date.now()});return true}catch(e){return false}}
+async function importarProspectos(){try{if(!store.db||!store.uid)return;const q=await store.db.collection("users/"+store.uid+"/prospectos").get();if(!q.docs.length)return;let n=0;
+  for(const d of q.docs){const x=d.data();const nc={name:String(x.nombre||"Prospecto").slice(0,80),cc:String(x.cc||"504"),phone:String(x.tel||"").replace(/\D/g,"").slice(0,15),stage:"Nuevo",note:"🌐 Desde tu página · Le interesa: "+(x.interes||"—"),next:TODAY,updated:Date.now()};
+    const id=await store.saveContact(nc);if(id){nc.id=id;contacts.push(nc);n++;try{await store.db.doc("users/"+store.uid+"/prospectos/"+d.id).delete()}catch(e){}}}
+  if(n){try{renderCRM()}catch(e){}toast("🎉 "+n+(n===1?" prospecto nuevo":" prospectos nuevos")+" desde tu página. Revisa tu CRM.")}}catch(e){}}
+function abrirMiPagina(){if(!(regDoc&&regDoc.registro)){toast("Completa tu registro primero");return}const w=profile.waPublico||{cc:LS.get("lastCC")||"504",num:""};
+  openSheet(`<h2>🌐 Mi página para prospectos</h2><p class="small muted">Compártela en tus estados, redes o por WhatsApp. Sale con tu foto y tu nombre, y quien deje sus datos llega directo a tu CRM.</p>
+   <div class="grid2"><div class="field"><label for="mpCC">País</label><select class="inp" id="mpCC">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===w.cc?"selected":""}>${pn} (+${k})</option>`).join("")}</select></div>
+   <div class="field"><label for="mpTel">Tu WhatsApp</label><input class="inp" id="mpTel" type="tel" value="${esc(w.num||"")}" placeholder="Para que te escriban"></div></div>
+   <div class="card" style="word-break:break-all;font-weight:600" id="mpUrl">${esc(miPagina())}</div>
+   <button class="btn" id="mpShare" style="width:100%">📤 Guardar y compartir mi página</button>
+   <div class="row" style="gap:8px"><button class="btn ghost grow" id="mpCopy">Copiar enlace</button><a class="btn ghost grow" href="${esc(miPagina())}" target="_blank" rel="noopener">Ver mi página</a></div>
+   <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
+    const save=async()=>{profile.waPublico={cc:$("#mpCC").value,num:$("#mpTel").value.trim()};store.set("perfil",profile);const ok=await publicarPerfil();if(!ok)toast("No se pudo guardar tu página. Revisa tu conexión.");return ok};
+    $("#mpCopy").onclick=async()=>{await save();try{await navigator.clipboard.writeText(miPagina());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};
+    $("#mpShare").onclick=async()=>{if(!$("#mpTel").value.trim()){toast("Pon tu WhatsApp para que te escriban");$("#mpTel").focus();return}const ok=await save();if(!ok)return;
+      const txt="✈️ Te invito a conocer algo que me está cambiando la vida. Mira este video corto 👇\n"+miPagina();
+      if(navigator.share){try{await navigator.share({text:txt});return}catch(x){if(x&&x.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(txt)}})}
 function evHTML(e){const fin=finalizada(e);return `<div class="ev ${fin?"ev-past":""}"><span class="hr">${esc(h12(e.hora))||"—"}${e.horaFin?`<br><span class="small muted" style="font-family:var(--f-body);font-weight:600">a ${esc(h12(e.horaFin))}</span>`:""}</span><div class="body">
   <div class="row between" style="align-items:flex-start"><b>${esc(e.titulo)}</b><span class="row" style="gap:4px;flex:none">${fin?'<span class="chip c-brand" style="color:var(--muted)">Finalizada</span>':modoChip(e)}</span></div>
   <div class="meta">${e.responsable?`<span>${USER}Presenta: <b style="font-weight:600;color:var(--ink)">${esc(e.responsable)}</b></span>`:pendiente(e)&&!fin?`<span class="chip c-warn">Presentador por asignar</span>`:""}${e.edifica?`<span>Edifica: <b style="font-weight:600;color:var(--ink)">${esc(e.edifica)}</b></span>`:""}</div>
@@ -1506,6 +1530,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
    <div class="pf-list">
     <button class="pf-it" id="pfFoto"><span class="ic">📷</span>Cambiar mi foto</button>
     <button class="pf-it" id="pfNombre"><span class="ic">✏️</span>Mi nombre y mi lugar en el ranking</button>
+    <button class="pf-it" id="pfPag"><span class="ic">🌐</span>Mi página para prospectos</button>
     <button class="pf-it" id="pfInv"><span class="ic">🔗</span>Mi enlace de invitación</button>
     <button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
@@ -1514,7 +1539,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
     $("#pfNombre").onclick=abrirNombre;
-    $("#pfWel").onclick=verBienvenidaOtraVez;
+    $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;
     $("#pfInv").onclick=()=>{if(!(regDoc&&regDoc.registro)){toast("Completa tu registro primero");return}const u=miEnlace();openSheet(`<h2>🔗 Tu enlace de invitación</h2><p class="small muted">Compártelo solo con tus socios nuevos. Al registrarse, aparecerás como su patrocinador.</p>
       <div class="card" style="word-break:break-all;font-weight:600">${esc(u)}</div><button class="btn" id="invCp" style="width:100%">Copiar enlace</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#invCp").onclick=async()=>{try{await navigator.clipboard.writeText(u);toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})};
     $("#pfInst").onclick=()=>openSheet(`<h2>Instala la app</h2>
@@ -1572,7 +1597,7 @@ async function loadMine(){
   try{if(store.db){const b=await store.get("bienvenida");if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}}catch(e){}
   if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
   welState=Object.assign({},profile.welPasos||{});renderWel();
-  contacts=await store.contacts();
+  contacts=await store.contacts();setTimeout(importarProspectos,1500);
   renderAll()}
 
 let invSponsor=null;
@@ -1601,7 +1626,7 @@ async function startApp(u){
   if(u&&!isAdmin){const r=regDoc&&regDoc.registro;if(r?!regValido(r)&&!(await invOK()):!(await invOK())){bloquearSinInvitacion();return}}
   if(u&&isAdmin&&!(regDoc&&regDoc.registro))await invOK();
   await loadMine();
-  if(regDoc&&regDoc.registro){welState.registro=true;publicarInv()}
+  if(regDoc&&regDoc.registro){welState.registro=true;publicarInv();if(profile.waPublico)setTimeout(publicarPerfil,4000)}
   renderWel();renderAviso();renderAccesos();
   renderMeBtn();setTimeout(renderHist,800);
   try{renderEquipo();renderCal();renderNext();renderAca()}catch(e){}
@@ -1613,7 +1638,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019005950";var busy=false,pend=null;
+(function(){var V="20261019011257";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
