@@ -1006,8 +1006,12 @@ const tsMs=v=>v&&v.toDate?v.toDate().getTime():v?new Date(v).getTime()||0:0;
 const actDe=x=>{const a=x.actividad||{};const fresh=a.t&&Date.now()-a.t<8*864e5;return{hist:a.fecha===TODAY&&!!a.historia,hoy:a.fecha===TODAY?(a.hoy||0):0,racha:fresh?(a.racha||0):0,d7:fresh?(a.dias7||0):0,sem:fresh?(a.semana||{}):{},crm:a.crm||0,bien:!!a.bienvenida,cursos:(a.cursos||[]).length,t:a.t||0}};
 const actScore=x=>{const a=actDe(x);return a.hoy+a.d7*40+(a.sem.contactos||0)*3+(a.sem.presentaciones||0)*15+a.racha*20+(a.hist?20:0)+(a.bien?10:0)+a.cursos*10+Math.min(a.crm,20)};
 const byAct=(a,b)=>actScore(b)-actScore(a)||tsMs(b.ultimoAcceso)-tsMs(a.ultimoAcceso);
+let constSync=false;async function syncConst(){if(constSync||!isAdmin||!socios)return;constSync=true;let n=0;
+  for(const x of socios){if(!x.registro||!x.registro.nombre||esSoloAdmin(x))continue;const a=x.actividad||{},sm=a.semana||{};
+    try{await store.db.doc("constancia/"+x.uid).set({nombre:x.registro.nombre,racha:+a.racha||0,dias7:+a.dias7||0,hoy:+a.hoy||0,fecha:a.fecha||"",acc:Object.values(sm).reduce((p,q)=>p+(+q||0),0),t:a.t||0});n++}catch(e){break}}
+  if(n)loadConst(true)}
 async function loadSocios(){try{const q=await store.db.collection("users").get();socios=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.registro||x.email)
-  .sort((a,b)=>String((b.registro&&b.registro.fecha)||"").localeCompare(String((a.registro&&a.registro.fecha)||"")))}catch(e){socios=[];toast("No se pudo cargar la lista de socios")}renderEquipo()}
+  .sort((a,b)=>String((b.registro&&b.registro.fecha)||"").localeCompare(String((a.registro&&a.registro.fecha)||"")))}catch(e){socios=[];toast("No se pudo cargar la lista de socios")}renderEquipo();syncConst()}
 function sociosCSV(){const rows=[["Nombre","Correo","WhatsApp","Patrocinador","Plan","Registro","Último acceso","Hoy %","Racha","Días activos (7)","Contactos 7 días","Presentaciones 7 días","Contactos en CRM","Bienvenida"]].concat((socios||[]).map(x=>{const r=x.registro||{};const ua=x.ultimoAcceso&&x.ultimoAcceso.toDate?x.ultimoAcceso.toDate().toISOString():(x.ultimoAcceso||"");
   const a=actDe(x);return [r.nombre||x.nombre||"",x.email||"",r.whatsapp?"+"+r.whatsapp:"",r.patrocinador||"",r.plan||"",r.fecha||"",ua,a.hoy,a.racha,a.d7,a.sem.contactos||0,a.sem.presentaciones||0,a.crm,a.bien?"Sí":"No"]}));
   const csv="\ufeff"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
@@ -1147,8 +1151,8 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
   $("#socCsv").onclick=sociosCSV;const sv=$("#socVinc");if(sv)sv.onclick=abrirVincular;const sl=$("#socLin");if(sl)sl.onclick=async()=>{sl.disabled=true;sl.textContent="Reconstruyendo…";await reconstruirLineas(false);sl.disabled=false;sl.textContent="Reconstruir líneas"};$("#socReload").onclick=()=>{socios=null;renderEquipo()}}
 let constL=null,constT=0;
 async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now()-constT<120000)return;try{const q=await store.db.collection("constancia").get();constT=Date.now();
-  const ay=dkey(new Date(Date.now()-864e5));constL=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.nombre&&x.t&&Date.now()-x.t<8*864e5).map(x=>Object.assign(x,{racha:x.fecha>=ay?(+x.racha||0):0,hoy:x.fecha===TODAY?(+x.hoy||0):0,dias7:+x.dias7||0}))
-  .filter(x=>x.racha>0||x.dias7>0||x.hoy>0).sort((a,b)=>b.racha-a.racha||b.dias7-a.dias7||b.hoy-a.hoy||(b.acc||0)-(a.acc||0)||String(a.nombre).localeCompare(b.nombre,"es"));constL.forEach((x,i)=>x.rk=i+1)}catch(e){constL=constL||[]}
+  const ay=dkey(new Date(Date.now()-864e5));constL=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.nombre).map(x=>Object.assign(x,{racha:x.fecha>=ay?(+x.racha||0):0,hoy:x.fecha===TODAY?(+x.hoy||0):0,dias7:+x.dias7||0}))
+  .map(x=>Object.assign(x,{dias7:x.t&&Date.now()-x.t<8*864e5?x.dias7:0})).sort((a,b)=>b.racha-a.racha||b.dias7-a.dias7||b.hoy-a.hoy||(b.acc||0)-(a.acc||0)||String(a.nombre).localeCompare(b.nombre,"es"));constL.forEach((x,i)=>x.rk=i+1)}catch(e){constL=constL||[]}
   renderTopRut();if(eqTab==="ranking"&&rankMetric==="rutina")renderEquipo()}
 function renderTopRut(){const c=$("#topRut");if(!c)return;if(!constL||!constL.length){c.hidden=true;return}c.hidden=false;const md=["🥇","🥈","🥉"];
   c.innerHTML=`<div class="row between"><h3 style="margin:0">🔥 Top Consistencia</h3><button class="btn sm ghost" id="topRutVer">Ver ranking</button></div><p class="small muted" style="margin:2px 0 6px">Los socios que más cumplen su rutina diaria.</p>
@@ -2066,7 +2070,7 @@ async function startApp(u){
   await loadMine();
   if(regDoc&&regDoc.registro){welState.registro=true;publicarInv();if(profile.waPublico)setTimeout(publicarPerfil,4000)}
   renderWel();renderAviso();renderAccesos();
-  renderMeBtn();setTimeout(renderHist,800);setTimeout(()=>loadConst(true),1800);
+  renderMeBtn();setTimeout(renderHist,800);setTimeout(()=>loadConst(true),1800);if(isAdmin)setTimeout(()=>{if(!socios)loadSocios();else syncConst()},2500);
   try{renderEquipo();renderCal();renderNext();renderAca()}catch(e){}
 }
 function bootFB(){if(window.FB&&window.FB.__ready!==undefined)return;}
@@ -2076,7 +2080,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019123108";var busy=false,pend=null;
+(function(){var V="20261019123257";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
