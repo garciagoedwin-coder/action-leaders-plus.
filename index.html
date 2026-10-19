@@ -1674,8 +1674,10 @@ function citaIcs(c){const a=citaIni(c),b=new Date(a.getTime()+(c.dur||60)*6e4),t
   const t=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Action Leaders PLUS//ES","BEGIN:VEVENT","UID:"+(c.id||Date.now())+"@actionleadersplus.com","DTSTAMP:"+fmtG(new Date()),"DTSTART:"+fmtG(a),"DTEND:"+fmtG(b),"SUMMARY:"+ti.replace(/[,;]/g," "),
    "LOCATION:"+(c.tipo==="zoom"?(c.enlace||"Zoom"):c.tipo==="persona"?(c.lugar||""):CITA_T[c.tipo][1]).replace(/[,;]/g," "),"DESCRIPTION:"+(c.nota||"").replace(/\n/g," ").replace(/[,;]/g," "),"BEGIN:VALARM","TRIGGER:-PT30M","ACTION:DISPLAY","DESCRIPTION:Recordatorio","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
   const ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
-  if(ios){location.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(t);return}
-  window.open(citaGcal(c,ti),"_blank","noopener")}
+  openSheet(`<h2>➕ Agregar al calendario</h2><p class="small muted" style="margin:0">${esc(ti)} · ${esc(citaCuando(c))}</p>
+   ${ios?`<a class="btn" style="width:100%;justify-content:center" href="cal.html#${encodeURIComponent(t)}" target="_blank" rel="noopener">🍎 Calendario del iPhone</a>`:""}
+   <a class="btn ${ios?"ghost":""}" style="width:100%;justify-content:center" href="${esc(citaGcal(c,ti))}" target="_blank" rel="noopener">📅 Google Calendar</a>
+   <button class="btn ghost" data-close style="width:100%">Cerrar</button>`)}
 function citaMsg(c,rec){const first=String(c.nombre||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"",d=parseK(c.fecha),L=[];
   const dia=DAYS_L[d.getDay()][0].toUpperCase()+DAYS_L[d.getDay()].slice(1)+" "+d.getDate()+" de "+MONTHS[d.getMonth()];
   const como=c.tipo==="zoom"?`💻 Por Zoom: ${c.enlace||"(le envío el enlace)"}`:c.tipo==="whatsapp"?"📱 Por videollamada de WhatsApp, yo le llamo a este número.":`📍 En persona: ${c.lugar||"(le confirmo el lugar)"}`;
@@ -2193,7 +2195,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019133716";var busy=false,pend=null;
+(function(){var V="20261019133953";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

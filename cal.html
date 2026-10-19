@@ -1,0 +1,6 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Agregar al calendario</title>
+<style>body{margin:0;font-family:-apple-system,system-ui,sans-serif;background:#0d0c12;color:#fff;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;text-align:center}
+a{display:block;margin:22px auto 0;max-width:320px;padding:16px;border-radius:999px;background:#2AC1F1;color:#0a141e;font-weight:800;text-decoration:none;font-size:17px}p{opacity:.75;line-height:1.5}</style></head>
+<body><div><div style="font-size:48px">📅</div><h2 id="t">Agregar al calendario</h2><p>Toca el botón y luego <b>"Agregar"</b> o <b>"Añadir al calendario"</b>.</p><a id="go" href="#">Agregar a mi calendario</a><p style="font-size:13px;margin-top:22px">Cuando termines, puedes volver a la app.</p></div>
+<script>try{var ics=decodeURIComponent(location.hash.slice(1));var m=ics.match(/SUMMARY:(.*)/);if(m)document.getElementById("t").textContent=m[1];
+var u="data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);document.getElementById("go").href=u}catch(e){}</script></body></html>
