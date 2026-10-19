@@ -842,12 +842,63 @@ function renderCal(){$("#calTitle").textContent=MONTHS[calM.getMonth()][0].toUpp
     if(i>=35&&d.getMonth()!==calM.getMonth())break;
     h+=`<button data-d="${k}" class="${d.getMonth()!==calM.getMonth()?"out":""} ${k===TODAY?"today":""}" aria-pressed="${k===selDay}" aria-label="${longDate(k)}${n?", "+n+" actividades":""}">${d.getDate()}<span class="dots">${"<i></i>".repeat(Math.min(n,3))}</span></button>`}
   $("#cal").innerHTML=h;const np=T.eventos.filter(e=>e.fecha>=TODAY&&pendiente(e)&&!finalizada(e)).length;$("#agPendBtn").textContent="Por asignar"+(np?" ("+np+")":"");renderEvList()}
+
+// ---------- compartir actividades y flyers ----------
+const ZOOM_DEF={"Presentación":"https://us06web.zoom.us/j/7717273747"};
+const evLink=e=>safeUrl(e.enlace)||ZOOM_DEF[e.tipo]||"";
+const esFlyer=e=>e.tipo==="Presentación";
+const EMO={"Presentación":"🚢","Píldora":"💊","Capacitación":"🎓","Llamada":"📞","Reunión de líderes":"🛡️","Evento":"🎉"};
+function evMsg(e){const L=[];L.push((EMO[e.tipo]||"📌")+" *"+e.titulo+"*");L.push("📅 "+longDate(e.fecha).replace(/^./,c=>c.toUpperCase()));
+  const z=zoneTimes(e);L.push("🕗 "+(z?z.replace(/ · /g," | "):h12(e.hora)+" Honduras"));
+  if(e.responsable)L.push("🎤 Presenta: "+e.responsable+(e.edifica?" · Edifica: "+e.edifica:""));
+  if(e.lugar)L.push("📍 "+e.lugar);const k=evLink(e);if(k)L.push("","👉 Únete por Zoom: "+k);
+  if(e.tipo==="Presentación")L.push("","Descubre cómo construir libertad financiera mientras vives experiencias que transforman tu vida. ✈️");
+  return L.join("\n")}
+const imgLoad=(src,cors)=>new Promise(ok=>{const i=new Image();if(cors)i.crossOrigin="anonymous";i.onload=()=>ok(i);i.onerror=()=>ok(null);i.src=src});
+const RANGO_CORTO={"Senior Marketing Director":"Senior M Director","Regional Director":"Regional Director","National Director":"National Director","Marketing Director":"Marketing Director","Team Leader":"Team Leader","Calificado al sistema":"Sistema de Liderazgo"};
+async function flyerCanvas(e){const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
+  try{await document.fonts.load("italic 500 30px Figtree");await document.fonts.load("600 30px Figtree")}catch(x){}
+  const bg=await imgLoad("media/flyers/presentacion.jpg");if(!bg)return null;g.drawImage(bg,0,0,W,H);
+  const esc_=await imgLoad("media/flyers/escudo.png");
+  const fit=(t,font,size,maxW)=>{let z=size;g.font=font.replace("{s}",z);while(g.measureText(t).width>maxW&&z>14){z--;g.font=font.replace("{s}",z)}};
+  const slot=async(nombre,cy,ty)=>{const r=83;g.save();g.beginPath();g.arc(152,cy,r,0,Math.PI*2);g.closePath();g.clip();
+    let src=nombre?fotoDe(nombre):"";if(!src&&nombre&&fbUser&&fbUser.photoURL&&sameN(nombre,miNombreFull()))src=fbUser.photoURL;
+    const im=src?await imgLoad(src,!/^data:/.test(src)):null;
+    if(im){const s=Math.max(2*r/im.width,2*r/im.height);g.fillStyle="#e9e9ec";g.fillRect(152-r,cy-r,2*r,2*r);g.drawImage(im,152-im.width*s/2,cy-im.height*s/2,im.width*s,im.height*s)}
+    else{g.fillStyle="#0b1a36";g.fillRect(152-r,cy-r,2*r,2*r);if(esc_)g.drawImage(esc_,152-50,cy-53,100,106)}
+    g.restore();g.textAlign="center";g.textBaseline="alphabetic";
+    const nm=nombre||"Action Leaders",rg=nombre?(RANGO_CORTO[rangoDe(nombre)]||rangoDe(nombre)||""):"Equipo de líderes";
+    g.fillStyle="#ffffff";fit(nm,"italic 500 {s}px Figtree, Arial, sans-serif",31,255);g.fillText(nm,400,ty);
+    if(rg){g.fillStyle="#E7B54B";fit(rg,"italic 500 {s}px Figtree, Arial, sans-serif",23,255);g.fillText(rg,400,ty+28)}};
+  await slot(e.responsable,755,750);await slot(e.edifica,957,950);
+  const d=parseK(e.fecha);g.fillStyle="#ffffff";g.textAlign="center";
+  fit((d.getDate()+" DE "+MONTHS[d.getMonth()]).toUpperCase(),"italic 500 {s}px Figtree, Arial, sans-serif",21,160);g.fillText((d.getDate()+" DE "+MONTHS[d.getMonth()]).toUpperCase(),255,1179);
+  const hh=h12(e.hora).replace(" am"," AM").replace(" pm"," PM")+" HN";fit(hh,"italic 500 {s}px Figtree, Arial, sans-serif",24,140);g.fillText(hh,571,1179);
+  return cv}
+async function abrirCompartir(e){const msg=evMsg(e),fl=esFlyer(e);let file=null;
+  openSheet(`<h2>Compartir actividad</h2>${fl?`<div id="flyBox" style="aspect-ratio:4/5;border-radius:14px;background:#0b1a36;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Creando flyer…</span></div>`:""}
+    <pre class="small" style="white-space:pre-wrap;background:var(--bg);border-radius:12px;padding:10px;margin:0;font-family:inherit">${esc(msg)}</pre>
+    <button class="btn" id="shGo" style="width:100%">📤 Compartir${fl?" flyer y mensaje":" mensaje"}</button>
+    <div class="row" style="gap:8px"><button class="btn ghost grow" id="shCopy">Copiar mensaje</button>${fl?`<button class="btn ghost grow" id="shDl">Descargar flyer</button>`:""}</div>
+    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
+    $("#shCopy").onclick=async()=>{try{await navigator.clipboard.writeText(msg);toast("Mensaje copiado")}catch(x){toast("No se pudo copiar")}};
+    $("#shGo").onclick=async()=>{const data={text:msg};if(file&&navigator.canShare&&navigator.canShare({files:[file]}))data.files=[file];
+      if(navigator.share){try{await navigator.share(data);return}catch(x){if(x&&x.name==="AbortError")return}}
+      location.href="https://wa.me/?text="+encodeURIComponent(msg)};
+    const dl=$("#shDl");if(dl)dl.onclick=()=>{if(!file){toast("El flyer aún se está creando");return}if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file]}).catch(()=>{});return}
+      const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000)};
+  });
+  if(fl){const cv=await flyerCanvas(e);const box=$("#flyBox");if(!cv){if(box)box.innerHTML='<span class="small" style="color:#fff">No se pudo crear el flyer</span>';return}
+    try{const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));file=new File([b],"Flyer-"+e.fecha+"-"+(e.responsable||"presentacion").replace(/\s+/g,"-")+".jpg",{type:"image/jpeg"});
+      if(box){box.innerHTML="";box.style.aspectRatio="auto";box.style.display="block";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:auto;display:block";box.appendChild(im)}}
+    catch(x){if(box)box.innerHTML='<span class="small" style="color:#fff">No se pudo crear el flyer</span>'}}}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-share]");if(!b)return;const ev=T.eventos.find(x=>x.id===b.dataset.share);if(ev)abrirCompartir(ev)});
 function evHTML(e){const fin=finalizada(e);return `<div class="ev" style="${fin?"opacity:.6":""}"><span class="hr">${esc(h12(e.hora))||"—"}${e.horaFin?`<br><span class="small muted" style="font-family:var(--f-body);font-weight:600">a ${esc(h12(e.horaFin))}</span>`:""}</span><div class="body">
   <div class="row between" style="align-items:flex-start"><b>${esc(e.titulo)}</b><span class="row" style="gap:4px;flex:none">${fin?'<span class="chip c-brand" style="color:var(--muted)">Finalizada</span>':modoChip(e)}</span></div>
   <div class="meta">${e.responsable?`<span>${USER}Presenta: <b style="font-weight:600;color:var(--ink)">${esc(e.responsable)}</b></span>`:pendiente(e)&&!fin?`<span class="chip c-warn">Presentador por asignar</span>`:""}${e.edifica?`<span>Edifica: <b style="font-weight:600;color:var(--ink)">${esc(e.edifica)}</b></span>`:""}</div>
   <div class="meta">${zoneTimes(e)?`<span>${esc(zoneTimes(e))}</span>`:""}${e.lugar?`<span>${PIN}${esc(e.lugar)}</span>`:""}</div>
   ${e.notas?`<span class="small muted">${esc(e.notas)}</span>`:""}
-  ${safeUrl(e.enlace)?`<a class="btn sm ghost" style="align-self:flex-start" href="${esc(safeUrl(e.enlace))}" target="_blank" rel="noopener">Abrir enlace</a>`:""}
+  <div class="row" style="gap:8px;flex-wrap:wrap">${!fin&&e.id?`<button class="btn sm" data-share="${esc(e.id)}" type="button">📤 Compartir${esFlyer(e)?" con flyer":""}</button>`:""}${evLink(e)&&!fin?`<a class="btn sm ghost" href="${esc(evLink(e))}" target="_blank" rel="noopener">Entrar al Zoom</a>`:""}</div>
   ${false&&isAdmin&&e.id?`<button class="btn sm ${pendiente(e)&&!fin?"gold":"ghost"}" style="align-self:flex-start" data-ev="${esc(e.id)}">${pendiente(e)&&!fin?"Asignar":"Editar"}</button>`:""}</div></div>`}
 function groupDays(keys){return keys.map(k=>{const ev=evOf(k);if(!ev.length)return"";return `<div class="day-h"><h3 style="text-transform:capitalize">${longDate(k)}</h3>${k===TODAY?'<span class="chip c-gold">Hoy</span>':""}</div><div class="list">${ev.map(evHTML).join("")}</div>`}).join("")}
 function weekKeys(off){const s=new Date(now);s.setDate(now.getDate()-((now.getDay()+6)%7)+7*(off||0));return Array.from({length:7},(_,i)=>{const d=new Date(s);d.setDate(s.getDate()+i);return dkey(d)})}
@@ -1343,7 +1394,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018222400";var busy=false,pend=null;
+(function(){var V="20261018223334";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
