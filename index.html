@@ -196,6 +196,19 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .stp button.cur{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
 .stp button.no.cur{background:var(--bad);border-color:var(--bad);color:#fff}
 .contact .note{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.ch{display:flex;gap:12px;align-items:center;width:100%;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ch .av{flex:none}
+.ch .mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.ch .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch .chev{flex:none;color:var(--muted);transition:transform .2s;font-size:14px}
+.contact.open .ch .chev{transform:rotate(90deg)}
+.pbar{display:flex;gap:3px;max-width:150px}
+.pbar i{flex:1;height:5px;border-radius:3px;background:var(--line)}
+.pbar i.on{background:var(--pc)}
+.fdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:6px;vertical-align:middle}
+.cbody{display:none;width:100%;gap:12px;padding:4px 0 2px 58px;flex-wrap:wrap;align-items:flex-start}
+.contact.open .cbody{display:flex}
+.cbody .info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
 /* calendario */
 .cal-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .cal-head button{width:36px;height:36px;border-radius:10px;border:0;background:var(--surface-2);font-size:18px;font-weight:700}
@@ -1201,7 +1214,8 @@ function stepsHTML(c){const i=FLOW.indexOf(c.stage);
   const b=(s,cls,lbl)=>`<button class="${cls}" data-st="${esc(s)}" data-cid="${esc(c.id)}" aria-pressed="${c.stage===s}">${lbl||s}</button>`;
   return `<div class="stp">${FLOW.map((s,k)=>b(s,c.stage===s?"cur":(i>k?"done":""),(i>k?"✓ ":"")+s)).join("")}${b("Cliente",c.stage==="Cliente"?"cur":"")}${b("No interesado","no "+(c.stage==="No interesado"?"cur":""),"✕ No")}</div>`}
 const STAGE_C={"Nuevo":"c-brand","Contactado":"c-brand","Presentación":"c-gold","Seguimiento":"c-warn","Socio":"c-good","Cliente":"c-good","No interesado":"c-bad"};
-let contacts=[],stageF="Todos";
+let contacts=[],stageF="Todos",openC=null;
+const STAGE_COL={"Nuevo":"#2AC1F1","Contactado":"#2AC1F1","Presentación":"#d4a017","Seguimiento":"#e8862a","Socio":"#22a35a","Cliente":"#22a35a","No interesado":"#d64545"};
 const PAISES=[["Honduras","504"],["Estados Unidos","1"],["España","34"],["Reino Unido","44"],["Guatemala","502"],["El Salvador","503"],["Nicaragua","505"],["Costa Rica","506"],["Panamá","507"],["México","52"],["Colombia","57"],["Venezuela","58"],["Perú","51"],["Ecuador","593"],["Chile","56"],["Argentina","54"],["República Dominicana","1"],["Canadá","1"],["Italia","39"],["Francia","33"],["Alemania","49"]];
 const waNum=(t,cc)=>{const raw=String(t||"").trim();let d=raw.replace(/\D/g,"");if(!d)return"";if(raw.startsWith("+")||raw.startsWith("00"))return d.replace(/^00/,"");cc=cc||"504";if(d.startsWith(cc)&&d.length>cc.length+6)return d;return cc+d.replace(/^0+/,"")};
 function msgPara(c,first){const nt=c.note||"";if((c.stage||"Nuevo")==="Nuevo"&&nt.includes("Desde tu página")){const yo=miNombreCorto().split(" ")[0]||"yo";
@@ -1218,16 +1232,23 @@ function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerC
     <p class="small muted">Agrega a las personas con las que quieres compartir el negocio o el producto. Registra la etapa, una nota y la fecha del próximo seguimiento.</p>
     <button class="btn gold sm" id="addFirst">Agregar mi primer contacto</button></div>`;$("#addFirst").onclick=()=>editContact();return}
   if(!list.length){$("#contactList").innerHTML=`<p class="muted small">No hay contactos en esta vista.</p>`;return}
-  $("#contactList").innerHTML=list.map(c=>{const late=c.next&&c.next<TODAY,today=c.next===TODAY;
-    return `<div class="contact"><div class="av">${esc(initials(c.name))}</div><div class="info">
-    <div class="row between"><b>${esc(c.name)}</b><span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage)}</span></div>
+  $("#contactList").innerHTML=list.map(c=>{const late=c.next&&c.next<TODAY,today=c.next===TODAY,op=openC===c.id;
+    const k=c.stage==="Cliente"?5:c.stage==="No interesado"?0:FLOW.indexOf(c.stage)+1,pc=STAGE_COL[c.stage]||"var(--brand)";
+    return `<div class="contact ${op?"open":""}" style="--pc:${pc}"><div class="ch" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}">
+    <div class="av" style="box-shadow:0 0 0 2px ${pc}">${c.stage==="Socio"||c.stage==="Cliente"?"✓":esc(initials(c.name))}</div>
+    <div class="mid"><span class="nm">${esc(c.name)}${late?'<span class="fdot" style="background:var(--bad)" title="Seguimiento atrasado"></span>':today?'<span class="fdot" style="background:var(--warn)" title="Seguimiento hoy"></span>':""}</span>
+    <div class="pbar" aria-label="Avance: ${esc(c.stage)}">${[0,1,2,3,4].map(i=>`<i class="${i<k?"on":""}"></i>`).join("")}</div></div>
+    <span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage==="No interesado"?"No":c.stage)}</span><span class="chev">›</span></div>
+    <div class="cbody"><div class="info">
     ${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}${c.note?`<span class="note">${esc(c.note)}</span>`:""}
     ${c.next?`<span class="small" style="color:var(--${late?"bad":today?"warn":"muted"});font-weight:600">${late?"Seguimiento atrasado: "+niceDate(c.next):today?"Seguimiento hoy":"Próximo seguimiento: "+niceDate(c.next)}</span>`:""}
-    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}<button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div>`}).join("")}
+    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}<button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
 $("#stageBar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;stageF=b.dataset.s;renderCRM()});
 $("#crmSearch").addEventListener("input",renderCRM);
 $("#bienBtn").onclick=()=>abrirBienvenida();$("#addContact").onclick=()=>editContact();
+$("#contactList").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-tog]")){e.preventDefault();e.target.click()}});
 $("#contactList").addEventListener("click",async e=>{const st=e.target.closest("[data-st]");
+  const tg=e.target.closest("[data-tog]");if(tg){openC=openC===tg.dataset.tog?null:tg.dataset.tog;renderCRM();return}
   if(st){const c=contacts.find(x=>x.id===st.dataset.cid);if(!c||c.stage===st.dataset.st)return;const prev=c.stage;c.stage=st.dataset.st;c.updated=Date.now();renderCRM();
     const id=await store.saveContact(Object.assign({},c));if(!id){c.stage=prev;renderCRM();return}if(c.stage==="Socio"){abrirBienvenida(c);return}toast(c.name.split(" ")[0]+": "+c.stage);return}
   const bw=e.target.closest("[data-bien]");if(bw){abrirBienvenida(contacts.find(c=>c.id===bw.dataset.bien));return}
@@ -1669,7 +1690,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019022451";var busy=false,pend=null;
+(function(){var V="20261019092619";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
