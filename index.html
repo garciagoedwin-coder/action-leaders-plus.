@@ -794,7 +794,8 @@ let socios=null,sociosQ="",sociosOrd="act";
 const haceTxt=ms=>{if(!ms)return"";const m=Math.round((Date.now()-ms)/60000);if(m<2)return"ahora";if(m<60)return"hace "+m+" min";const h=Math.round(m/60);if(h<24)return"hace "+h+" h";const d=Math.round(h/24);return d===1?"ayer":"hace "+d+" días"};
 const tsMs=v=>v&&v.toDate?v.toDate().getTime():v?new Date(v).getTime()||0:0;
 const actDe=x=>{const a=x.actividad||{};const fresh=a.t&&Date.now()-a.t<8*864e5;return{hist:a.fecha===TODAY&&!!a.historia,hoy:a.fecha===TODAY?(a.hoy||0):0,racha:fresh?(a.racha||0):0,d7:fresh?(a.dias7||0):0,sem:fresh?(a.semana||{}):{},crm:a.crm||0,bien:!!a.bienvenida,cursos:(a.cursos||[]).length,t:a.t||0}};
-const actScore=x=>{const a=actDe(x);return a.hoy+a.d7*40+(a.sem.contactos||0)*3+(a.sem.presentaciones||0)*15+a.racha*20};
+const actScore=x=>{const a=actDe(x);return a.hoy+a.d7*40+(a.sem.contactos||0)*3+(a.sem.presentaciones||0)*15+a.racha*20+(a.hist?20:0)+(a.bien?10:0)+a.cursos*10+Math.min(a.crm,20)};
+const byAct=(a,b)=>actScore(b)-actScore(a)||tsMs(b.ultimoAcceso)-tsMs(a.ultimoAcceso);
 async function loadSocios(){try{const q=await store.db.collection("users").get();socios=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.registro||x.email)
   .sort((a,b)=>String((b.registro&&b.registro.fecha)||"").localeCompare(String((a.registro&&a.registro.fecha)||"")))}catch(e){socios=[];toast("No se pudo cargar la lista de socios")}renderEquipo()}
 function sociosCSV(){const rows=[["Nombre","Correo","WhatsApp","Patrocinador","Plan","Registro","Último acceso","Hoy %","Racha","Días activos (7)","Contactos 7 días","Presentaciones 7 días","Contactos en CRM","Bienvenida"]].concat((socios||[]).map(x=>{const r=x.registro||{};const ua=x.ultimoAcceso&&x.ultimoAcceso.toDate?x.ultimoAcceso.toDate().toISOString():(x.ultimoAcceso||"");
@@ -803,7 +804,7 @@ function sociosCSV(){const rows=[["Nombre","Correo","WhatsApp","Patrocinador","P
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="socios-action-leaders-"+TODAY+".csv";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
 let mios=null,miosErr=false;
 async function loadMios(){miosErr=false;try{const q=await store.db.collection("users").where("registro.patrocinadorUid",store.uid).get();
-  mios=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.registro).sort((a,b)=>actScore(b)-actScore(a))}catch(e){mios=[];miosErr=true}renderEquipo()}
+  mios=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.registro).sort(byAct)}catch(e){mios=[];miosErr=true}renderEquipo()}
 function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia sesión","Entra con tu cuenta para ver a tus socios.");return}
   if(mios===null){b.innerHTML=`<p class="muted small">Cargando tus socios…</p>`;loadMios();return}
   const inv=`<div class="card"><h3 style="margin:0">🔗 Tu enlace de invitación</h3><p class="small muted" style="margin:0">Los socios que se registren con tu enlace aparecen aquí con su avance.</p>
@@ -850,7 +851,7 @@ function abrirVincular(){const regs=(socios||[]).filter(x=>x.registro&&x.registr
       if(f&&!n){fail();va.disabled=false;return}toast(n+" vinculados ✓");abrirVincular();renderEquipo()}})}
 function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.innerHTML=`<p class="muted small">Cargando socios…</p>`;loadSocios();return}
   const q=nrmN(sociosQ);let L=socios.filter(x=>{const r=x.registro||{};return !q||nrmN([r.nombre,x.email,r.patrocinador,r.plan].join(" ")).includes(q)});
-  if(sociosOrd==="act")L=L.slice().sort((a,b)=>actScore(b)-actScore(a));
+  if(sociosOrd==="act")L=L.slice().sort(byAct);
   else if(sociosOrd==="inact")L=L.filter(x=>x.registro).sort((a,b)=>actScore(a)-actScore(b)||tsMs(a.ultimoAcceso)-tsMs(b.ultimoAcceso));
   const reg=socios.filter(x=>x.registro).length,sin=socios.length-reg,hoy=socios.filter(x=>actDe(x).hoy>0).length,sem=socios.filter(x=>actDe(x).d7>0).length;
   const st=(n,t,c)=>`<div class="card" style="gap:2px"><b class="num" style="font-size:28px${c?";color:"+c:""}">${n}</b><span class="small muted">${t}</span></div>`;
@@ -1775,7 +1776,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019093954";var busy=false,pend=null;
+(function(){var V="20261019095603";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
