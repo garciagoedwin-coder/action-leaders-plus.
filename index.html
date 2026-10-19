@@ -773,7 +773,7 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
        ${a.hist?`<span class="chip c-good">📸 Historia hoy</span>`:""}<span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"Bienvenida ✓":"Bienvenida pendiente"}</span>
        ${a.cursos?`<span class="chip c-good">🎓 ${a.cursos} curso${a.cursos>1?"s":""}</span>`:""}</div>`:"";
      return `<div class="row" style="padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(nm)}</b>
-      <div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.patrocinador?"Patrocinador: "+esc(r.patrocinador):"<span style='color:var(--warn)'>No completó el registro</span>"}</div>
+      <div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.patrocinador?"Patrocinador: "+esc(r.patrocinador)+(r.patrocinadorUid?" ✓":""):"<span style='color:var(--warn)'>No completó el registro</span>"}</div>
       <div class="small muted">${esc(x.email||"")}${ua?" · Último acceso "+haceTxt(ua):""}</div>${chips}</div>${wa?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(wa)}" target="_blank" rel="noopener">WhatsApp</a>`:""}</div>`}).join(""):`<p class="small muted" style="padding:10px 0">No hay socios con ese filtro.</p>`}</div>
    <button class="btn sm ghost" id="socReload" style="align-self:flex-start">Actualizar lista</button>`;
   b.querySelectorAll("#socOrd button").forEach(x=>x.onclick=()=>{sociosOrd=x.dataset.o;renderSocios(b)});
@@ -1025,7 +1025,7 @@ const BIEN_MSG=(n,f,pat)=>`🎉 *¡Felicidades, ${n}! ${f?"Bienvenida":"Bienveni
 Es un gusto tenerle en el equipo. 💪
 
 👉 Su primer paso: entre a nuestra app
-https://actionleadersplus.com/?unirme=socio2026
+${miEnlace()}
 
 Entre con Google, complete su registro y vea su video de bienvenida.
 
@@ -1432,18 +1432,18 @@ function renderWel(){const el=$("#wel");
      `<p class="small muted">Déjanos tus datos para darte acceso.</p>
      <form id="regF" style="display:flex;flex-direction:column;gap:10px;text-align:left" novalidate>
       <div class="field"><label for="rg_nombre">Nombre completo</label><input class="inp" id="rg_nombre" autocomplete="name" value="${esc(R0.nombre||(fbUser&&fbUser.displayName)||"")}"></div>
-      <div class="field"><label for="rg_patro">Nombre de tu patrocinador</label><input class="inp" id="rg_patro"></div>
+      <div class="field"><label for="rg_patro">Nombre de tu patrocinador</label><input class="inp" id="rg_patro" value="${esc((invSponsor&&invSponsor.nombre)||"")}"></div>
       <div class="field"><label for="rg_plan">Plan de inicio</label><select class="inp" id="rg_plan"><option value="">Elige tu plan</option><option>Classic</option><option>Premium</option></select></div>
       <p class="small" id="regErr" style="color:var(--bad)" hidden></p>
       <button class="btn pill dark" id="regOk" type="submit">Enviar mi registro</button></form></div>`);
     const F=$("#regF");if(F)F.onsubmit=async ev=>{ev.preventDefault();const g=k=>$("#rg_"+k).value.trim(),err=$("#regErr");
-      const d={nombre:g("nombre"),patrocinador:g("patro"),plan:g("plan")};
+      const d={nombre:g("nombre"),patrocinador:g("patro"),plan:g("plan")};if(invSponsor){d.patrocinadorUid=invSponsor.uid;d.invitadoPor=invSponsor.nombre};
       const lab={nombre:"Nombre completo",patrocinador:"Patrocinador",plan:"Plan"};
       for(const k in lab)if(!d[k]){err.textContent="Completa: "+lab[k];err.hidden=false;return}
       err.hidden=true;const bt=$("#regOk");bt.disabled=true;bt.textContent="Enviando…";
       try{d.fecha=new Date().toISOString();await store.db.doc("users/"+store.uid).set({registro:d,nombre:d.nombre,email:(fbUser&&fbUser.email)||"",creado:window.FB.serverTimestamp()},{merge:true});
         regDoc=Object.assign({},regDoc||{},{registro:d});if(!profile.nombrePila){profile.nombrePila=d.nombre.split(" ")[0];$("#hello").textContent="Hola, "+profile.nombrePila}
-        toast("¡Registro enviado!");welMark("registro");autoFoto()}catch(e){bt.disabled=false;bt.textContent="Enviar mi registro";err.textContent="No se pudo enviar. Revisa tu conexión e intenta de nuevo.";err.hidden=false}}}
+        toast("¡Registro enviado!");publicarInv();welMark("registro");autoFoto()}catch(e){bt.disabled=false;bt.textContent="Enviar mi registro";err.textContent="No se pudo enviar. Revisa tu conexión e intenta de nuevo.";err.hidden=false}}}
 
   $("#welHead").innerHTML=head;$("#welVH").innerHTML=vh;$("#welVB").innerHTML=vbtn;$("#welRest").innerHTML=rest;
   $("#welVidOk").onclick=()=>welMark("video");
@@ -1506,6 +1506,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
    <div class="pf-list">
     <button class="pf-it" id="pfFoto"><span class="ic">📷</span>Cambiar mi foto</button>
     <button class="pf-it" id="pfNombre"><span class="ic">✏️</span>Mi nombre y mi lugar en el ranking</button>
+    <button class="pf-it" id="pfInv"><span class="ic">🔗</span>Mi enlace de invitación</button>
     <button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
     ${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
@@ -1514,6 +1515,8 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
     $("#pfNombre").onclick=abrirNombre;
     $("#pfWel").onclick=verBienvenidaOtraVez;
+    $("#pfInv").onclick=()=>{if(!(regDoc&&regDoc.registro)){toast("Completa tu registro primero");return}const u=miEnlace();openSheet(`<h2>🔗 Tu enlace de invitación</h2><p class="small muted">Compártelo solo con tus socios nuevos. Al registrarse, aparecerás como su patrocinador.</p>
+      <div class="card" style="word-break:break-all;font-weight:600">${esc(u)}</div><button class="btn" id="invCp" style="width:100%">Copiar enlace</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#invCp").onclick=async()=>{try{await navigator.clipboard.writeText(u);toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})};
     $("#pfInst").onclick=()=>openSheet(`<h2>Instala la app</h2>
       <p><b>iPhone (Safari):</b> toca <b>Compartir</b> (cuadro con flecha) → <b>Agregar a pantalla de inicio</b> → <b>Agregar</b>.</p>
       <p><b>Android (Chrome):</b> toca los <b>tres puntos</b> → <b>Instalar app</b> o <b>Agregar a la pantalla principal</b>.</p>
@@ -1550,9 +1553,9 @@ async function autoFoto(){try{if(autoFotoHecho||!fbUser||!store.db)return;const 
   const m=(T.ranking||[]).concat(T.lideres||[]).find(x=>sameN(x.nombre,R.nombre));
   if(m&&!profile.miNombre){profile.miNombre=m.nombre;store.set("perfil",profile);try{renderMe()}catch(e){}}
   if(!fbUser.photoURL)return;const d=await store.db.doc("fotos/"+store.uid).get();const cur=d.exists?d.data():null;
-  if(cur&&!(cur.google&&/^https?:/.test(cur.img||"")))return;
+  if(cur&&cur.img&&!(cur.google&&/^https?:/.test(cur.img||"")))return;
   const url=fbUser.photoURL.replace(/=s\d+-c$/,"=s400-c"),data=await urlADataUrl(url);
-  await store.db.doc("fotos/"+store.uid).set({nombre:m?m.nombre:R.nombre,alias:R.nombre,img:data||url,t:Date.now(),google:true})}catch(e){}}
+  await store.db.doc("fotos/"+store.uid).set({nombre:m?m.nombre:R.nombre,alias:R.nombre,img:data||url,t:Date.now(),google:true},{merge:true})}catch(e){}}
 function subscribeTeam(db){
   const docs=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));
   if(!store.db)return;
@@ -1572,7 +1575,13 @@ async function loadMine(){
   contacts=await store.contacts();
   renderAll()}
 
-async function invOK(){try{const c=(localStorage.getItem("alp:inv")||"").trim().toLowerCase();if(!c)return false;const h=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(c));return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("")==="f19dd27ad9265108f10992e57f0df2c8cc886c185969b89cadb69177e14e9986"}catch(e){return false}}
+let invSponsor=null;
+async function invOK(){try{const c=(localStorage.getItem("alp:inv")||"").trim().toLowerCase();if(!c)return false;const h=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(c));
+  if([...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("")==="f19dd27ad9265108f10992e57f0df2c8cc886c185969b89cadb69177e14e9986")return true;
+  const q=await window.FB.db.collection("fotos").get();const m=q.docs.map(d=>Object.assign({id:d.id},d.data())).find(x=>(x.inv||"")===c);if(m){invSponsor={uid:m.id,nombre:m.invNombre||m.nombre||""};return true}return false}catch(e){return false}}
+const miInv=()=>{const n=(miRegistro().nombre||miNombreCorto()||"socio").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").split("-").slice(0,2).join("-");return (n||"socio")+"-"+String(store.uid||"").slice(0,4).toLowerCase()};
+const miEnlace=()=>"https://actionleadersplus.com/?unirme="+miInv();
+async function publicarInv(){try{if(!store.db||!store.uid||!(regDoc&&regDoc.registro))return;await store.db.doc("fotos/"+store.uid).set({inv:miInv(),invNombre:regDoc.registro.nombre},{merge:true})}catch(e){}}
 function bloquearSinInvitacion(){const d=document.createElement("div");d.style.cssText="position:fixed;inset:0;z-index:99999;background:#0d0c12;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;gap:14px;font-family:inherit";
   d.innerHTML=`<img src="media/escudo.png" style="width:80px"><h2 style="margin:6px 0 0;font-size:24px">Acceso exclusivo para socios</h2><p style="max-width:340px;opacity:.8;margin:0;line-height:1.5">Para entrar a Action Leaders PLUS necesitas el enlace de invitación que te comparte tu patrocinador al asociarte.</p><button id="bqOut" style="margin-top:10px;background:#fff;color:#111;border:0;border-radius:999px;padding:12px 22px;font:inherit;font-weight:700">Salir</button>`;
   document.body.appendChild(d);d.querySelector("#bqOut").onclick=async()=>{try{await window.FB.logout()}catch(e){}location.reload()}}
@@ -1588,9 +1597,10 @@ async function startApp(u){
   $("#addEvent").hidden=true;$("#eqSocios").hidden=!isAdmin;
   $("#crmNote").textContent="Tus contactos se guardan en tu cuenta y solo tú puedes verlos.";
   subscribeTeam(db);
-  await loadMine();
   if(u&&!(regDoc&&regDoc.registro)&&!isAdmin&&!(await invOK())){bloquearSinInvitacion();return}
-  if(regDoc&&regDoc.registro){welState.registro=true}
+  if(u&&isAdmin&&!(regDoc&&regDoc.registro))await invOK();
+  await loadMine();
+  if(regDoc&&regDoc.registro){welState.registro=true;publicarInv()}
   renderWel();renderAviso();renderAccesos();
   renderMeBtn();setTimeout(renderHist,800);
   try{renderEquipo();renderCal();renderNext();renderAca()}catch(e){}
@@ -1602,7 +1612,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019005219";var busy=false,pend=null;
+(function(){var V="20261019005711";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
