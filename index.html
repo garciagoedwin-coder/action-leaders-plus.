@@ -1343,11 +1343,19 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018222241";var busy=false;
+(function(){var V="20261018222400";var busy=false,pend=null;
+ function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
+ function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
+  return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
+ function bar(t){if(document.getElementById("updBar"))return;var d=document.createElement("div");d.id="updBar";
+  d.style.cssText="position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:9000;max-width:520px;margin:0 auto;background:#17161B;color:#fff;border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.35);font-size:14px";
+  d.innerHTML='<span style="flex:1">✨ Hay una versión nueva de la app</span><button style="background:#2AC1F1;color:#10222b;border:0;border-radius:999px;padding:8px 14px;font-weight:800">Actualizar</button>';
+  d.querySelector("button").onclick=function(){go(t)};document.body.appendChild(d)}
  function chk(){if(busy)return;busy=true;fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){t=(t||"").trim();
-  if(t&&t!==V){var k="alp:upd:"+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}
-   return fetch("./",{cache:"reload"}).catch(function(){}).then(function(){location.reload()})}}).catch(function(){}).then(function(){busy=false})}
- setTimeout(chk,3000);document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});setInterval(chk,5*60*1000);
+  if(t&&t!==V){var k="alp:upd:"+t,tried=false;try{tried=!!sessionStorage.getItem(k)}catch(e){}
+   if(!tried&&idle()){try{sessionStorage.setItem(k,"1")}catch(e){}return fetch("./",{cache:"reload"}).catch(function(){}).then(function(){go(t)})}
+   bar(t)}}).catch(function(){}).then(function(){busy=false})}
+ setTimeout(chk,2500);document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});window.addEventListener("focus",chk);setInterval(chk,2*60*1000);
 })();
 </script>
 </body>
