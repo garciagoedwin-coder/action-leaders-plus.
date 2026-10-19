@@ -114,7 +114,7 @@ nav.tabs button[aria-selected="true"]{color:var(--brand)}
 nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 /* rutina */
 .task{display:flex;align-items:center;gap:12px}
-.wel{position:fixed;inset:0;z-index:60;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:24px 16px 40px}
+.wel{position:fixed;inset:0;z-index:60;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(24px + env(safe-area-inset-top,0px)) 16px calc(40px + env(safe-area-inset-bottom,0px))}
 [hidden]{display:none!important}
 .wel-c{max-width:480px;margin:0 auto;background:var(--surface);border-radius:22px;box-shadow:var(--shadow);padding:28px 20px;text-align:center;display:flex;flex-direction:column;gap:14px}
 .wel-k{font-weight:800;letter-spacing:.32em;font-size:12px;color:var(--ink)}
@@ -1231,7 +1231,7 @@ function miNombreFull(){return profile.miNombre||miRegistro().nombre||(fbUser&&f
 function miFotoUrl(){return fotoDe(miNombreFull())||(fbUser&&fbUser.photoURL)||""}
 function renderMeBtn(){const b=$("#meBtn");if(!b)return;b.hidden=!fbUser;if(!fbUser)return;const f=miFotoUrl();
   b.style.backgroundImage=f?`url('${f}')`:"";b.textContent=f?"":initials(miNombreFull()||"Yo")}
-function verBienvenidaOtraVez(){closeSheet();try{localStorage.removeItem("alp:welDone")}catch(e){}profile.bienvenida=false;profile.welPasos={};delete profile.registro;store.set("perfil",profile);welState={};welOpenedAt=0;try{localStorage.removeItem("alp:welpos")}catch(e){}renderWel()}
+function verBienvenidaOtraVez(){closeSheet();try{localStorage.removeItem("alp:welDone")}catch(e){}welState=Object.assign({},profile.welPasos||{},welState,{video:true});if(regDoc&&regDoc.registro)welState.registro=true;profile.welPasos=Object.assign({},welState);profile.bienvenida=false;store.set("perfil",profile);welOpenedAt=0;renderWel()}
 function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
   openSheet(`<div class="pf-head"><div class="pf-av" style="${f?`background-image:url('${f}')`:""}">${f?"":esc(initials(nm||"Yo"))}</div>
     <div style="min-width:0"><h2 style="margin:0">${esc(nm||"Mi perfil")}</h2><p class="small muted" style="margin:2px 0 0;overflow:hidden;text-overflow:ellipsis">${esc((fbUser&&fbUser.email)||"")}</p>
