@@ -415,9 +415,9 @@ nav.tabs button{z-index:0;isolation:isolate}
 @keyframes lBob{50%{transform:translateY(4px)}}
 .lm{position:relative;padding:0 20px 40px;max-width:1080px;margin:0 auto}
 .lm section{padding:56px 0 8px}
-.lm .lm-brand{display:flex;justify-content:center;padding:64px 0 0;position:relative}
-.lm .lm-brand:before{content:"";position:absolute;left:50%;top:60%;width:340px;height:340px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(42,193,241,.35),transparent 65%);filter:blur(10px);pointer-events:none}
-.lm .lm-brand img{position:relative;width:min(62vw,240px);height:auto;border-radius:22%;box-shadow:0 30px 70px -20px rgba(42,193,241,.55),0 0 0 1px rgba(255,255,255,.08)}
+.lm .lm-brand{display:flex;justify-content:center;align-items:center;gap:.3em;padding:72px 0 0;font-size:clamp(28px,8vw,84px);white-space:nowrap;padding-bottom:12px}
+.lm .lm-brand .lw{font-family:"Libre Baskerville",Georgia,serif;font-style:italic;font-weight:700;color:#fff;letter-spacing:-.02em;line-height:1}
+.lm .lm-brand .lp{font-family:Figtree,Arial,sans-serif;font-weight:800;font-size:.4em;letter-spacing:.22em;padding:.32em .5em .32em .72em;border-radius:999px;color:#fff;border:2px solid #2AC1F1;background:rgba(42,193,241,.14);box-shadow:0 0 18px rgba(42,193,241,.55),inset 0 0 12px rgba(42,193,241,.25);transform:translateY(.08em)}
 .lm .k{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#2AC1F1;margin:0}
 .lm h2{font-size:clamp(30px,7vw,52px);line-height:1.02;letter-spacing:-.03em;font-weight:900;margin:10px 0 0;color:#fff}
 .lm h2 em{font-style:normal;background:linear-gradient(90deg,#2AC1F1,#8b6bff);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -506,8 +506,8 @@ nav.tabs button{z-index:0;isolation:isolate}
 </div>
 </div>
 <div class="lm" id="lMore">
- <div class="lm-brand rv"><img src="icon-512.png?v=3" alt="Action Leaders PLUS" width="220" height="220"></div>
- <section class="rv" style="padding-top:28px">
+ <div class="lm-brand rv" role="img" aria-label="Action Leaders PLUS"><span class="lw">Action Leaders</span><span class="lp">PLUS</span></div>
+ <section class="rv" style="padding-top:36px">
   <p class="k">Action Leaders PLUS</p>
   <h2>La herramienta <em>Pro</em> para networkers que quieren crecer en serio.</h2>
   <p class="lm-lead">Todo lo que necesitas para construir y gestionar tu negocio en un solo lugar: tu rutina, tus prospectos, tu equipo, tu formación y un mentor a tu lado.</p>
@@ -1990,7 +1990,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019105212";var busy=false,pend=null;
+(function(){var V="20261019105523";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
