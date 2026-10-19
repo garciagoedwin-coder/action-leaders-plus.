@@ -196,6 +196,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .stp button.cur{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
 .stp button.no.cur{background:var(--bad);border-color:var(--bad);color:#fff}
 .contact .note{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.plan-sel{font:inherit;font-weight:600;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:2px 6px}
 .mstat{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
 .mstat div{background:var(--surface-2);border-radius:12px;padding:10px 4px;display:flex;flex-direction:column;gap:2px}
 .mstat b{font-size:20px}.mstat span{font-size:11px;color:var(--muted);font-weight:600}
@@ -444,7 +445,7 @@ nav.tabs button{z-index:0;isolation:isolate}
  window.addEventListener("fb-ready",function(e){e.detail?bye():show()});
  setTimeout(function(){if(!done)bye()},14000);
  var b=document.getElementById("lLogin"),er=document.getElementById("lErr");
- var inv=false;try{var q=new URLSearchParams(location.search).get("unirme");if(q){localStorage.setItem("alp:inv",q.trim().toLowerCase());history.replaceState(null,"",location.pathname)}inv=!!localStorage.getItem("alp:inv")}catch(e){}
+ var inv=false;try{var q=new URLSearchParams(location.search).get("unirme");var qb=new URLSearchParams(location.search).get("b");if(qb)localStorage.setItem("alp:invb",qb.replace(/[^a-z0-9]/gi,"").slice(0,20));if(q){localStorage.setItem("alp:inv",q.trim().toLowerCase());history.replaceState(null,"",location.pathname)}inv=!!localStorage.getItem("alp:inv")}catch(e){}
  if(!inv){b.style.display="none";var nt=L.querySelector(".l-note");if(nt)nt.innerHTML="🔒 Acceso exclusivo para socios. Pide tu enlace de invitación a tu patrocinador.";
   var lk=document.createElement("button");lk.textContent="¿Ya eres socio? Iniciar sesión";lk.style.cssText="margin-top:22px;background:none;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:999px;padding:12px 22px;font:inherit;font-size:15px;font-weight:600;cursor:pointer;align-self:flex-start";
   b.parentNode.insertBefore(lk,b);lk.onclick=function(){b.onclick()};if(window.matchMedia("(max-width:899px)").matches)lk.style.alignSelf="stretch"}
@@ -870,11 +871,14 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
        ${a.hist?`<span class="chip c-good">📸 Historia hoy</span>`:""}<span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"Bienvenida ✓":"Bienvenida pendiente"}</span>
        ${a.cursos?`<span class="chip c-good">🎓 ${a.cursos} curso${a.cursos>1?"s":""}</span>`:""}</div>`:"";
      return `<div class="row" style="padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(nm)}</b>
-      <div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.patrocinador?"Patrocinador: "+esc(r.patrocinador)+(r.patrocinadorUid?" ✓":""):"<span style='color:var(--warn)'>No completó el registro</span>"}</div>
+      <div class="small muted">${x.registro?`<select class="plan-sel" data-plan="${esc(x.uid)}" aria-label="Paquete de ${esc(nm)}"><option ${r.plan==="Classic"?"selected":""}>Classic</option><option ${r.plan==="Premium"?"selected":""}>Premium</option>${r.plan&&!/^(Classic|Premium)$/.test(r.plan)?`<option selected>${esc(r.plan)}</option>`:""}</select> · `:""}${r.patrocinador?"Patrocinador: "+esc(r.patrocinador)+(r.patrocinadorUid?" ✓":""):"<span style='color:var(--warn)'>No completó el registro</span>"}</div>
       <div class="small muted">${esc(x.email||"")}${ua?" · Último acceso "+haceTxt(ua):""}</div>${chips}</div>${wa?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(wa)}" target="_blank" rel="noopener">WhatsApp</a>`:""}</div>`}).join(""):`<p class="small muted" style="padding:10px 0">No hay socios con ese filtro.</p>`}</div>
    <button class="btn sm ghost" id="socReload" style="align-self:flex-start">Actualizar lista</button>`;
   b.querySelectorAll("#socOrd button").forEach(x=>x.onclick=()=>{sociosOrd=x.dataset.o;renderSocios(b)});
   const si=$("#socQ");si.oninput=()=>{sociosQ=si.value;const pos=si.selectionStart;renderSocios(b);const n=$("#socQ");n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}};
+  b.querySelectorAll("[data-plan]").forEach(sel=>sel.onchange=async()=>{const x=(socios||[]).find(y=>y.uid===sel.dataset.plan);if(!x)return;const prev=x.registro.plan,nv=sel.value;
+    if(!confirm("¿Cambiar a "+(x.registro.nombre||"este socio")+" a "+nv+"?")){sel.value=prev;return}
+    try{await store.db.doc("users/"+x.uid).set({registro:{plan:nv,planPor:"admin",planCambio:new Date().toISOString()}},{merge:true});x.registro.plan=nv;toast((x.registro.nombre||"Socio").split(" ")[0]+" ahora es "+nv+" ✓")}catch(e){sel.value=prev;toast("No se pudo cambiar el paquete")}});
   $("#socCsv").onclick=sociosCSV;const sv=$("#socVinc");if(sv)sv.onclick=abrirVincular;$("#socReload").onclick=()=>{socios=null;renderEquipo()}}
 function renderEquipo(){const b=$("#eqBody");
   if(eqTab==="socios"){renderSocios(b);return}
@@ -1118,12 +1122,12 @@ async function compartirHist(){if(!histFile){toast("La historia aún se está cr
   const a=document.createElement("a");a.href=URL.createObjectURL(histFile);a.download=histFile.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);marcar();toast("Historia descargada. Súbela a tus estados 📲")}
 
 // ---------- bienvenida a socio nuevo ----------
-const BIEN_MSG=(n,f,pat)=>`🎉 *¡Felicidades, ${n}! ${f?"Bienvenida":"Bienvenido"} a Action Leaders*
+const BIEN_MSG=(n,f,pat,lk)=>`🎉 *¡Felicidades, ${n}! ${f?"Bienvenida":"Bienvenido"} a Action Leaders*
 
 Es un gusto tenerle en el equipo. 💪
 
 👉 Su primer paso: entre a nuestra app
-${miEnlace()}
+${lk||miEnlace()}
 
 Entre con Google, complete su registro y vea su video de bienvenida.
 
@@ -1159,7 +1163,8 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais){const W=1080,H=1350,cv=docu
   g.textAlign="left";g.fillStyle=T.hl;g.font="700 24px "+BF;g.fillText(l1,bx+102,by+28);g.fillStyle="#fff";g.font="700 "+ps+"px "+BF;g.fillText(pat,bx+102,by+72);g.textAlign="center";
   return cv}
 function fotoReduce400(file){return new Promise((ok,ko)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const S=480,c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);c.getContext("2d").drawImage(im,(im.width-m)/2,Math.max(0,(im.height-m)/2.6),m,m,0,0,S,S);URL.revokeObjectURL(u);ok(c.toDataURL("image/jpeg",.88))};im.onerror=()=>{URL.revokeObjectURL(u);ko(new Error("img"))};im.src=u})}
-function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,plan="classic",foto="",pais=c.ccN||(c.cc?(PAISES.find(x=>x[1]===c.cc)||[""])[0]:"")||"Honduras";let tel=c.phone?waNum(c.phone,c.cc):"";const pat=miNombreCorto()||"Tu patrocinador",sinTel=!c.phone;
+function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,plan="classic",foto="",pais=c.ccN||(c.cc?(PAISES.find(x=>x[1]===c.cc)||[""])[0]:"")||"Honduras";let tel=c.phone?waNum(c.phone,c.cc):"";const pat=miNombreCorto()||"Tu patrocinador",sinTel=!c.phone;const invId=Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4),lk=miEnlace()+"&b="+invId;let invT;
+  const guardarInv=()=>{clearTimeout(invT);invT=setTimeout(()=>{if(!n||!store.db||!store.uid)return;const ccv=$("#bnCC")?$("#bnCC").value:(c.cc||"");store.db.doc("invitaciones/"+invId).set({by:store.uid,byNombre:miRegistro().nombre||pat,nombre:n,plan:plan==="premium"?"Premium":"Classic",pais:pais||"",cc:String(ccv||""),wa:tel||"",f,t:Date.now()}).catch(()=>{})},300)};
   openSheet(`<h2>🎉 Bienvenida a socio nuevo</h2>
    <div class="field"><label for="bnN">Nombre del socio nuevo</label><input class="inp" id="bnN" value="${esc(n)}" placeholder="Nombre y apellido"></div>
    ${sinTel?`<div class="grid2"><div class="field"><label for="bnCC">País</label><select class="inp" id="bnCC">${PAISES.map(([pn,k],i)=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")&&i===PAISES.findIndex(x=>x[1]===(LS.get("lastCC")||"504"))?"selected":""}>${pn} (+${k})</option>`).join("")}</select></div>
@@ -1176,16 +1181,16 @@ function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,
     let tk=0;const upd=async()=>{n=$("#bnN").value.trim().replace(/\s+/g," ");const my=++tk;const box=$("#bnBox");if(!n){box.innerHTML='<span class="small" style="color:#fff">Escribe el nombre…</span>';file=null;return}
       const cv=await bienCanvas(n,f,pat,plan,foto,pais);if(my!==tk)return;const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));file=new File([b],"Bienvenida-"+n.replace(/\s+/g,"-")+".jpg",{type:"image/jpeg"});
       box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im);
-      const wa=$("#bnWa");if(wa)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat))};
+      const wa=$("#bnWa");if(wa)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat,lk));guardarInv()};
     let deb;$("#bnN").oninput=()=>{clearTimeout(deb);deb=setTimeout(upd,450)};
-    const tI=$("#bnTel");if(tI){const syncTel=()=>{const v=tI.value;if(/^\s*(\+|00)/.test(v)){const sp=splitPhone(v);if(sp.cc){$("#bnCC").value=sp.cc;tI.value=sp.num}}tel=tI.value.trim()?waNum(tI.value,$("#bnCC").value):"";const wa=$("#bnWa");wa.style.display=tel?"":"none";if(n)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat))};tI.oninput=syncTel;tI.onchange=syncTel;$("#bnCC").onchange=()=>{LS.set("lastCC",$("#bnCC").value);syncTel()}}
+    const tI=$("#bnTel");if(tI){const syncTel=()=>{const v=tI.value;if(/^\s*(\+|00)/.test(v)){const sp=splitPhone(v);if(sp.cc){$("#bnCC").value=sp.cc;tI.value=sp.num}}tel=tI.value.trim()?waNum(tI.value,$("#bnCC").value):"";const wa=$("#bnWa");wa.style.display=tel?"":"none";if(n)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat,lk));guardarInv()};tI.oninput=syncTel;tI.onchange=syncTel;$("#bnCC").onchange=()=>{LS.set("lastCC",$("#bnCC").value);syncTel()}}
     $("#bnG").onclick=e=>{const b=e.target.closest("[data-g]");if(!b)return;f=b.dataset.g==="f";$("#bnG").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));upd()};
     $("#bnPais").onchange=()=>{pais=$("#bnPais").value;upd()};
     $("#bnP").onclick=e=>{const b=e.target.closest("[data-p]");if(!b)return;plan=b.dataset.p;$("#bnP").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));upd()};
     $("#bnFoto").onchange=async e=>{const fl=e.target.files&&e.target.files[0];if(!fl)return;try{foto=await fotoReduce400(fl);toast("Foto lista")}catch(x){toast("No se pudo usar esa foto")}upd()};
-    $("#bnCopy").onclick=async()=>{if(!n)return toast("Escribe el nombre");try{await navigator.clipboard.writeText(BIEN_MSG(n,f,pat));toast("Mensaje copiado")}catch(x){toast("No se pudo copiar")}};
+    $("#bnCopy").onclick=async()=>{if(!n)return toast("Escribe el nombre");try{await navigator.clipboard.writeText(BIEN_MSG(n,f,pat,lk));toast("Mensaje copiado")}catch(x){toast("No se pudo copiar")}};
     $("#bnDl").onclick=()=>{if(!file)return toast("Escribe el nombre");const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000)};
-    $("#bnGo").onclick=async()=>{if(!n||!file)return toast("Escribe el nombre del socio");const msg=BIEN_MSG(n,f,pat);
+    $("#bnGo").onclick=async()=>{if(!n||!file)return toast("Escribe el nombre del socio");const msg=BIEN_MSG(n,f,pat,lk);
       if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text:msg});return}catch(x){if(x&&x.name==="AbortError")return}}
       location.href="https://wa.me/"+tel+"?text="+encodeURIComponent(msg)};
     if(n)upd()})}
@@ -1591,21 +1596,22 @@ function renderWel(){const el=$("#wel");
   else{const R0=(regDoc&&regDoc.registro)||{};
     $("#welReg").innerHTML=`<div class="wel-step"><div class="wel-h">${badge("registro")}<h3>Regístrate en el equipo</h3></div>`+(welState.registro?
      `<p class="small muted">Registro listo${R0.nombre?": "+esc(R0.nombre):""}. ¡Gracias!</p></div>`:
-     `<p class="small muted">Déjanos tus datos para darte acceso.</p>
+     `<p class="small muted">${invSponsor?"Confirma tu nombre y listo.":"Déjanos tus datos para darte acceso."}</p>
      <form id="regF" style="display:flex;flex-direction:column;gap:10px;text-align:left" novalidate>
-      <div class="field"><label for="rg_nombre">Nombre completo</label><input class="inp" id="rg_nombre" autocomplete="name" value="${esc(R0.nombre||(fbUser&&fbUser.displayName)||"")}"></div>
-      <div class="field"><label for="rg_patro">Nombre de tu patrocinador</label><input class="inp" id="rg_patro" value="${esc((invSponsor&&invSponsor.nombre)||"")}"></div>
-      <div class="field"><label for="rg_plan">Plan de inicio</label><select class="inp" id="rg_plan"><option value="">Elige tu plan</option><option>Classic</option><option>Premium</option></select></div>
+      <div class="field"><label for="rg_nombre">Nombre completo</label><input class="inp" id="rg_nombre" autocomplete="name" value="${esc(R0.nombre||(invData&&invData.nombre)||(fbUser&&fbUser.displayName)||"")}"></div>
+      ${invSponsor?`<div class="card" style="text-align:left;gap:4px;padding:12px 14px"><span class="small muted">Tu patrocinador</span><b style="font-weight:600">${esc(invSponsor.nombre||"Tu patrocinador")} ✓</b>${invData&&invData.plan?`<span class="small muted" style="margin-top:4px">Tu paquete</span><b style="font-weight:600">${esc(invData.plan)} ✓</b>`:""}</div>`:`<div class="field"><label for="rg_patro">Nombre de tu patrocinador</label><input class="inp" id="rg_patro" value=""></div>`}
+      ${invData&&invData.plan?"":`<div class="field"><label for="rg_plan">Plan de inicio</label><select class="inp" id="rg_plan"><option value="">Elige tu plan</option><option>Classic</option><option>Premium</option></select></div>`}
       <p class="small" id="regErr" style="color:var(--bad)" hidden></p>
-      <button class="btn pill dark" id="regOk" type="submit">Enviar mi registro</button></form></div>`);
+      <button class="btn pill dark" id="regOk" type="submit">${invSponsor?"Entrar al equipo":"Enviar mi registro"}</button></form></div>`);
     const F=$("#regF");if(F)F.onsubmit=async ev=>{ev.preventDefault();const g=k=>$("#rg_"+k).value.trim(),err=$("#regErr");
-      const d={nombre:g("nombre"),patrocinador:g("patro"),plan:g("plan")};if(invSponsor){d.patrocinadorUid=invSponsor.uid;d.invitadoPor=invSponsor.nombre}try{d.inv=(localStorage.getItem("alp:inv")||"").slice(0,60)}catch(x){};
+      const g2=k=>{const e=$("#rg_"+k);return e?e.value.trim():""};const d={nombre:g("nombre"),patrocinador:invSponsor?invSponsor.nombre:g2("patro"),plan:invData&&invData.plan?invData.plan:g2("plan")};if(invSponsor){d.patrocinadorUid=invSponsor.uid;d.invitadoPor=invSponsor.nombre}
+      if(invData){d.invId=invData.id;d.planPor="patrocinador";if(invData.pais)d.pais=invData.pais;if(invData.wa)d.whatsapp=String(invData.wa).replace(/\D/g,"").slice(0,15)}try{d.inv=(localStorage.getItem("alp:inv")||"").slice(0,60)}catch(x){};
       const lab={nombre:"Nombre completo",patrocinador:"Patrocinador",plan:"Plan"};
       for(const k in lab)if(!d[k]){err.textContent="Completa: "+lab[k];err.hidden=false;return}
       err.hidden=true;const bt=$("#regOk");bt.disabled=true;bt.textContent="Enviando…";
       try{d.fecha=new Date().toISOString();await store.db.doc("users/"+store.uid).set({registro:d,nombre:d.nombre,email:(fbUser&&fbUser.email)||"",creado:window.FB.serverTimestamp()},{merge:true});
         regDoc=Object.assign({},regDoc||{},{registro:d});if(!profile.nombrePila){profile.nombrePila=d.nombre.split(" ")[0];$("#hello").textContent="Hola, "+profile.nombrePila}
-        toast("¡Registro enviado!");publicarInv();welMark("registro");autoFoto()}catch(e){bt.disabled=false;bt.textContent="Enviar mi registro";err.textContent="No se pudo enviar. Revisa tu conexión e intenta de nuevo.";err.hidden=false}}}
+        toast("¡Registro enviado!");publicarInv();if(invData)store.db.doc("invitaciones/"+invData.id).set({usadoPor:store.uid,usado:Date.now()},{merge:true}).catch(()=>{});welMark("registro");autoFoto()}catch(e){bt.disabled=false;bt.textContent="Enviar mi registro";err.textContent="No se pudo enviar. Revisa tu conexión e intenta de nuevo.";err.hidden=false}}}
 
   $("#welHead").innerHTML=head;$("#welVH").innerHTML=vh;$("#welVB").innerHTML=vbtn;$("#welRest").innerHTML=rest;
   $("#welVidOk").onclick=()=>welMark("video");
@@ -1739,7 +1745,9 @@ async function loadMine(){
   contacts=await store.contacts();setTimeout(importarProspectos,1500);
   renderAll()}
 
-let invSponsor=null;
+let invSponsor=null,invData=null;
+async function cargarInvitacion(){try{const b=localStorage.getItem("alp:invb");if(!b||!store.db)return;const d=await store.db.doc("invitaciones/"+b).get();if(!d.exists)return;invData=Object.assign({id:b},d.data());
+  if(!invSponsor&&invData.by)invSponsor={uid:invData.by,nombre:invData.byNombre||""}}catch(e){}}
 async function invOK(){try{const c=(localStorage.getItem("alp:inv")||"").trim().toLowerCase();if(!c)return false;const h=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(c));
   if([...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("")==="f19dd27ad9265108f10992e57f0df2c8cc886c185969b89cadb69177e14e9986")return true;
   const q=await window.FB.db.collection("fotos").get();const m=q.docs.map(d=>Object.assign({id:d.id},d.data())).find(x=>(x.inv||"")===c);if(m){invSponsor={uid:m.id,nombre:m.invNombre||m.nombre||""};return true}return false}catch(e){return false}}
@@ -1765,6 +1773,7 @@ async function startApp(u){
   const regValido=r=>!!(r&&(r.inv||r.patrocinadorUid||String(r.fecha||"")<"2026-10-19T06:45"));
   if(u&&!isAdmin){const r=regDoc&&regDoc.registro;if(r?!regValido(r)&&!(await invOK()):!(await invOK())){bloquearSinInvitacion();return}}
   if(u&&isAdmin&&!(regDoc&&regDoc.registro))await invOK();
+  if(u&&!(regDoc&&regDoc.registro))await cargarInvitacion();
   await loadMine();
   if(regDoc&&regDoc.registro){welState.registro=true;publicarInv();if(profile.waPublico)setTimeout(publicarPerfil,4000)}
   renderWel();renderAviso();renderAccesos();
@@ -1778,7 +1787,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019095834";var busy=false,pend=null;
+(function(){var V="20261019100520";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
