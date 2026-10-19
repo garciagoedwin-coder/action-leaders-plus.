@@ -220,7 +220,8 @@ if(P){const nm=P.nombre||"Tu invitador",first=nm.split(" ")[0];$("sNm").textCont
   const r=safe(P.ref||"");if(r)$("ref").href=r;else $("ref").style.display="none";
   $("sNm3").textContent=first;
   // ---- agenda ----
-  const slotsAll=(Array.isArray(P.slots)?P.slots:[]).filter(x=>x>Date.now()+3*36e5);
+  const defSlots=()=>{const o=[],n=new Date();const hnd=new Date(n.getTime()-6*36e5);for(let i=1;i<=14;i++){const d=new Date(Date.UTC(hnd.getUTCFullYear(),hnd.getUTCMonth(),hnd.getUTCDate()+i));const wd=d.getUTCDay();if(wd<1||wd>5)continue;for(const h of [19,21])o.push(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate(),h+6,0))}return o};
+  const slotsAll=(Array.isArray(P.slots)&&P.slots.length&&P.st&&Date.now()-P.st<10*864e5?P.slots:defSlots()).filter(x=>x>Date.now()+3*36e5);
   if(slotsAll.length){let busy=new Set();try{const q=await getDocs(query(collection(db,"reservas"),where("p","==",code)));q.docs.forEach(d=>busy.add(+d.data().s))}catch(e){}
     const free=slotsAll.filter(x=>!busy.has(x)).sort((a,b)=>a-b);
     if(free.length){$("leadBox").style.display="none";$("bookBox").style.display="block";$("bkNm").textContent=nm;
