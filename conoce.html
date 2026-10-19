@@ -61,6 +61,16 @@ section{padding:72px 0}
 .f label{font-size:14px;font-weight:600;color:var(--mut)}
 .f input,.f select{height:52px;border-radius:14px;border:1px solid var(--line);background:#0a0b10;color:#fff;font:inherit;font-size:16px;padding:0 14px}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
+.bk-h{display:flex;gap:14px;align-items:center}.bk-av{width:58px;height:58px;border-radius:50%;flex:none;background:#2AC1F1 center/cover;display:grid;place-items:center;font-weight:800;color:#10222b;box-shadow:0 0 0 3px rgba(42,193,241,.35)}
+.bk-days{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.bk-days button{flex:none;min-width:68px;padding:10px 8px;border-radius:16px;border:1px solid var(--line);background:#0a0b10;color:#fff;font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.bk-days button small{font-size:11px;color:var(--mut);text-transform:capitalize}.bk-days button b{font-size:20px}.bk-days button i{font-style:normal;font-size:11px;color:var(--acc)}
+.bk-days button[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#0a141e}.bk-days button[aria-pressed=true] small,.bk-days button[aria-pressed=true] i{color:#0a141e}
+.bk-days button:disabled{opacity:.35}
+.bk-times{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.bk-times button{height:48px;border-radius:14px;border:1px solid var(--line);background:#0a0b10;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.bk-times button[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#0a141e}
+.bk-sel{padding:12px 14px;border-radius:14px;background:rgba(42,193,241,.12);border:1px solid rgba(42,193,241,.35);font-weight:700;margin-bottom:14px}
 .chips button{height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:#0a0b10;color:#fff;font:inherit;font-weight:600;cursor:pointer}
 .chips button[aria-pressed=true]{background:var(--acc);color:#0a141e;border-color:var(--acc)}
 .row2{display:grid;grid-template-columns:118px minmax(0,1fr);gap:10px}.f input,.f select{width:100%;min-width:0}
@@ -156,6 +166,22 @@ section.alt{background:linear-gradient(180deg,rgba(42,193,241,.06),rgba(139,107,
     <a class="btn pri" id="ref" style="width:100%;height:62px;font-size:18px" target="_blank" rel="noopener">🚀 Crear mi cuenta ahora</a>
     <p class="small" id="noLink" style="display:none;color:var(--mut);text-align:center;margin:0">Pide a la persona que te compartió esta página su enlace personal. 🙌</p>
   </div>
+  <div class="form-card" id="bookBox" style="margin-top:18px;display:none">
+    <div class="bk-h"><div class="bk-av" id="bkAv"></div><div><div class="kick" style="margin:0">Agenda conmigo</div><h3 class="h" style="font-size:24px;margin:2px 0 0">📅 Reserva tu reunión</h3></div></div>
+    <p class="sec-p" style="font-size:15px;margin:12px 0 16px">Soy <b id="bkNm">Mayckol</b> y puedes agendar una reunión virtual conmigo. Elige el día y la hora que mejor te queden 👇</p>
+    <div class="bk-days" id="bkDays"></div>
+    <div class="bk-times" id="bkTimes"></div>
+    <p class="small" style="color:var(--mut);margin:8px 0 0" id="bkTz"></p>
+    <form id="bkF" style="display:none;margin-top:16px">
+      <div class="bk-sel" id="bkSel"></div>
+      <div class="f"><label for="bn">Tu nombre</label><input id="bn" placeholder="Nombre y apellido" autocomplete="name"></div>
+      <div class="f"><label for="bt">Tu WhatsApp</label><div class="row2"><select id="bc"><option value="504">🇭🇳 +504</option><option value="502">🇬🇹 +502</option><option value="503">🇸🇻 +503</option><option value="505">🇳🇮 +505</option><option value="506">🇨🇷 +506</option><option value="507">🇵🇦 +507</option><option value="52">🇲🇽 +52</option><option value="1">🇺🇸 +1</option><option value="34">🇪🇸 +34</option><option value="44">🇬🇧 +44</option></select><input id="bt" type="tel" placeholder="Número" autocomplete="tel"></div></div>
+      <div class="f"><label>¿Cómo prefieres la reunión?</label><div class="chips" id="bTipo"><button type="button" aria-pressed="true" data-t="zoom">💻 Zoom</button><button type="button" aria-pressed="false" data-t="whatsapp">📱 Videollamada WhatsApp</button></div></div>
+      <div class="f"><label>¿Qué te interesa más?</label><div class="chips" id="bInt"><button type="button" aria-pressed="false">✈️ Viajar</button><button type="button" aria-pressed="false">💰 Ingresos</button><button type="button" aria-pressed="true">⭐ Ambos</button></div></div>
+      <button class="btn wa" id="bBtn" type="submit" style="width:100%;margin-top:4px;height:58px">Agendar mi reunión</button>
+    </form>
+    <div class="ok" id="bkOk"></div>
+  </div>
   <div class="form-card" id="leadBox" style="margin-top:18px">
     <h3 class="h" style="font-size:24px;margin:0 0 6px">¿Prefieres que te contacten?</h3>
     <p class="sec-p" style="font-size:15px;margin:0 0 18px">Déjanos tu número y <b id="sNm3">Jorge</b> te escribe.</p>
@@ -174,7 +200,7 @@ section.alt{background:linear-gradient(180deg,rgba(42,193,241,.06),rgba(139,107,
 <a class="float" id="wa" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-3.2-.7-2.7-1.1-4.4-3.8-4.5-4-.1-.2-1.1-1.4-1.1-2.7s.7-1.9.9-2.2c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2 1.3 2.3 1.4.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.8.9c.3.1.4.2.5.3.1.2.1.7-.1 1.3z"/></svg></a>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getFirestore,doc,getDoc,collection,addDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getFirestore,doc,getDoc,setDoc,getDocs,query,where,collection,addDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});
 const db=getFirestore(app);const $=id=>document.getElementById(id);
 const code=(new URLSearchParams(location.search).get("de")||"").trim().toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60);
@@ -188,6 +214,34 @@ if(P){const nm=P.nombre||"Tu invitador",first=nm.split(" ")[0];$("sNm").textCont
   if(P.wa){const h="https://wa.me/"+P.wa+"?text="+encodeURIComponent("Hola "+first+", acabo de ver su página de Action Leaders PLUS y me interesa conocer más de la oportunidad.");$("wa").href=$("wa2").href=h;document.querySelectorAll(".js-wa").forEach(a=>a.href=h)}else{$("wa").style.display="none";$("wa2").style.display="none";document.querySelectorAll(".mid-cta").forEach(a=>a.style.display="none")}
   const r=safe(P.ref||"");if(r)$("ref").href=r;else $("ref").style.display="none";
   $("sNm3").textContent=first;
+  // ---- agenda ----
+  const slotsAll=(Array.isArray(P.slots)?P.slots:[]).filter(x=>x>Date.now()+3*36e5);
+  if(slotsAll.length){let busy=new Set();try{const q=await getDocs(query(collection(db,"reservas"),where("p","==",code)));q.docs.forEach(d=>busy.add(+d.data().s))}catch(e){}
+    const free=slotsAll.filter(x=>!busy.has(x)).sort((a,b)=>a-b);
+    if(free.length){$("leadBox").style.display="none";$("bookBox").style.display="block";$("bkNm").textContent=nm;
+      const ba=$("bkAv");if(P.foto)ba.style.backgroundImage="url("+P.foto+")";else ba.textContent=nm.split(" ").map(w=>w[0]).slice(0,2).join("");
+      const dk=t=>{const d=new Date(t);return d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate()};const days=[];free.forEach(t=>{const k=dk(t);let g=days.find(x=>x.k===k);if(!g){g={k,t,L:[]};days.push(g)}g.L.push(t)});
+      let selD=days[0],selT=null,tipo="zoom";const fT=t=>new Date(t).toLocaleTimeString("es",{hour:"numeric",minute:"2-digit",hour12:true}),fD=t=>new Date(t).toLocaleDateString("es",{weekday:"long",day:"numeric",month:"long"});
+      try{const tz=Intl.DateTimeFormat().resolvedOptions().timeZone;$("bkTz").textContent="🌎 Horarios en tu hora local"+(tz?" ("+tz.split("/").pop().replace(/_/g," ")+")":"")}catch(e){}
+      const drawT=()=>{$("bkTimes").innerHTML=selD.L.map(t=>`<button type="button" data-t="${t}" aria-pressed="${t===selT}">${fT(t)}</button>`).join("")};
+      const drawD=()=>{$("bkDays").innerHTML=days.slice(0,10).map(g=>{const d=new Date(g.t);return `<button type="button" data-k="${g.k}" aria-pressed="${g===selD}"><small>${d.toLocaleDateString("es",{weekday:"short"}).replace(".","")}</small><b>${d.getDate()}</b><i>${g.L.length} ${g.L.length===1?"libre":"libres"}</i></button>`}).join("");drawT()};drawD();
+      $("bkDays").onclick=e=>{const b=e.target.closest("[data-k]");if(!b)return;selD=days.find(x=>x.k===b.dataset.k);selT=null;$("bkF").style.display="none";drawD()};
+      $("bkTimes").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;selT=+b.dataset.t;drawT();$("bkSel").textContent="📅 "+fD(selT)+" · "+fT(selT);$("bkF").style.display="block";setTimeout(()=>$("bkF").scrollIntoView({behavior:"smooth",block:"start"}),50)};
+      const bt=document.querySelectorAll("#bTipo button");bt.forEach(b=>b.onclick=()=>{tipo=b.dataset.t;bt.forEach(x=>x.setAttribute("aria-pressed",x===b))});
+      const bi=document.querySelectorAll("#bInt button");bi.forEach(b=>b.onclick=()=>bi.forEach(x=>x.setAttribute("aria-pressed",x===b)));
+      $("bkF").onsubmit=async e=>{e.preventDefault();const b=$("bBtn"),n=$("bn").value.trim(),t=$("bt").value.replace(/\D/g,"");if(!selT)return;
+        if(n.length<2||t.length<6){alert("Escribe tu nombre y tu número de WhatsApp.");return}
+        b.disabled=true;b.textContent="Agendando…";const it=[...bi].find(x=>x.getAttribute("aria-pressed")==="true");
+        try{await setDoc(doc(db,"reservas",code+"_"+selT),{p:code,s:selT,t:Date.now()})}catch(x){b.disabled=false;b.textContent="Agendar mi reunión";alert("Ese horario se acaba de ocupar. Por favor elige otro.");selD.L=selD.L.filter(y=>y!==selT);selT=null;$("bkF").style.display="none";drawD();return}
+        try{await addDoc(collection(db,"users",P.uid,"prospectos"),{nombre:n.slice(0,79),cc:$("bc").value,tel:t.slice(0,20),interes:it?it.textContent.replace(/[^A-Za-zÁÉÍÓÚáéíóúñ ]/g,"").trim():"",s:selT,tipo,t:Date.now()})}
+        catch(x){b.disabled=false;b.textContent="Agendar mi reunión";alert("No se pudo agendar. Intenta de nuevo o escríbeme por WhatsApp.");return}
+        const u=new Date(selT).toISOString().replace(/[-:T]/g,"").slice(0,12),z=tipo==="zoom"&&P.zoom?P.zoom:"",zm=z.match(/zoom\.us\/j\/(\d{9,12})\/?$/);
+        const cal="cal.html?t="+u+"&m=60&n="+encodeURIComponent(nm.split(" ").slice(0,2).join(" "))+(z?"&z="+(zm?zm[1]:encodeURIComponent(z.replace(/^https?:\/\//,""))):"");
+        const wm="Hola "+first+", acabo de agendar una reunión con usted para el "+fD(selT)+" a las "+fT(selT)+". Mi nombre es "+n+".";
+        $("bkDays").style.display=$("bkTimes").style.display=$("bkTz").style.display=$("bkF").style.display="none";
+        $("bkOk").innerHTML=`<div style="font-size:44px">🎉</div><h3 class="h" style="font-size:26px;margin:8px 0">¡Listo, ${n.split(" ")[0].replace(/</g,"")}!</h3><p class="sec-p" style="margin:0 auto 6px">Tu reunión con ${first} quedó agendada para el<br><b style="color:#fff">${fD(selT)} · ${fT(selT)}</b><br>${tipo==="zoom"?"💻 Por Zoom":"📱 Por videollamada de WhatsApp"}</p>
+          <a class="btn pri" href="${cal}" target="_blank" rel="noopener" style="width:100%;margin-top:14px">📲 Agregar a mi calendario</a>${P.wa?`<a class="btn wa" href="https://wa.me/${P.wa}?text=${encodeURIComponent(wm)}" target="_blank" rel="noopener" style="width:100%;margin-top:10px">💬 Avisar a ${first} por WhatsApp</a>`:""}`;
+        $("bkOk").style.display="block"}}}
   $("lead").onsubmit=async e=>{e.preventDefault();const b=$("lBtn");const n=$("ln").value.trim(),t=$("lt").value.replace(/\D/g,"");
     if(n.length<2||t.length<6){alert("Escribe tu nombre y tu número de WhatsApp.");return}
     b.disabled=true;b.textContent="Enviando…";const it=[...ch].find(x=>x.getAttribute("aria-pressed")==="true");
