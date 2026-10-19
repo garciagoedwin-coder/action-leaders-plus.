@@ -718,7 +718,8 @@ function posRank(p){p=String(p||"").toLowerCase();const i=POS_ORDER.findIndex(k=
 function renderLeadList(){const el=$("#leadList");if(!el)return;const q=leadQ.trim().toLowerCase();
   let L=T.lideres.filter(l=>(leadPos==="Todos"||(l.rango||"Sin posición")===leadPos)&&(!q||((l.nombre||"")+" "+(l.linea||"")).toLowerCase().includes(q)));
   const num=v=>Number(v)||0;
-  L.sort(leadSort==="posicion"?(a,b)=>posRank(a.rango)-posRank(b.rango)||num(b.volumen)-num(a.volumen)||String(a.nombre).localeCompare(b.nombre,"es"):(a,b)=>num(b[leadSort])-num(a[leadSort])||posRank(a.rango)-posRank(b.rango));
+  const byVol=(a,b)=>num(b.volumen)-num(a.volumen)||num(b.presentaciones)-num(a.presentaciones)||num(b.nuevos)-num(a.nuevos)||posRank(a.rango)-posRank(b.rango)||String(a.nombre).localeCompare(b.nombre,"es");
+  L.sort(leadSort==="posicion"?byVol:(a,b)=>num(b[leadSort])-num(a[leadSort])||byVol(a,b));
   if(!L.length){el.innerHTML=`<p class="small muted">Ningún líder coincide con la búsqueda.</p>`;return}
   el.innerHTML=L.map((l,i)=>{const meta=num(l.meta),vol=l.volumen==null||l.volumen===""?null:num(l.volumen),pct=meta&&vol!=null?Math.min(100,Math.round(vol/meta*100)):0;
     const qbi=l.qbi==null||l.qbi===""?null:Math.round(num(l.qbi));const vv=vol==null?0:vol,vc=vv>=500?"good":vv>=200?"warn":"bad";
@@ -788,10 +789,10 @@ function renderEquipo(){const b=$("#eqBody");
     const vcls=v=>v>=500?"good":v>=200?"warn":"bad";
     if(rankMetric==="nuevos")d.forEach(x=>x.v=x.vol||0);
     const volTot=d.reduce((t,x)=>t+(x.vol||0),0);
-    if(rankMetric==="nuevos"){d.sort((a,b)=>(b.vol||0)-(a.vol||0)||b.A-a.A||b.R-a.R||String(a.nombre).localeCompare(b.nombre,"es"));let r2=0,pv=null;d.forEach((x,i)=>{const k=(x.vol||0)+"|"+x.A+"|"+x.R;if(k!==pv){r2=i+1;pv=k}x.rk=r2})}
-    if(rankMetric!=="nuevos"){let rk=0,prev=null;d.forEach((x,i)=>{const key=x.v+"|"+(rankMetric==="nuevos"?x.R:x.A);if(key!==prev){rk=i+1;prev=key}x.rk=rk})}
+    if(rankMetric==="nuevos"){d.sort((a,b)=>(b.vol||0)-(a.vol||0)||b.A-a.A||b.R-a.R||b.P-a.P||String(a.nombre).localeCompare(b.nombre,"es"));d.forEach((x,i)=>x.rk=i+1)}
+    if(rankMetric!=="nuevos"){d.sort((a,b)=>b.R-a.R||(b.vol||0)-(a.vol||0)||b.A-a.A||b.P-a.P||String(a.nombre).localeCompare(b.nombre,"es"));d.forEach((x,i)=>x.rk=i+1)}
     const tags=p=>{if(sem)return"";const t=[];
-      if(rankMetric==="nuevos"){if(p.rk===1)t.push('<span class="chip c-gold">✈️ Viaje de incentivo</span>');if(p.v>=500)t.push('<span class="chip c-good">Membresía gratuita</span>');else if(p.v>=200)t.push('<span class="chip c-warn">Sistema de Líderes</span>')}
+      if(rankMetric==="nuevos"){if(p.rk===1)t.push('<span class="chip c-gold">✈️ Viaje de incentivo</span>');if(p.v>=500)t.push('<span class="chip c-good">Membresía gratuita</span>');else if(p.v>=200)t.push('<span class="chip c-warn">Action Leader</span>')}
       else if(p.rk===1)t.push('<span class="chip c-gold">📚 Pack de 3 libros</span>');
       return t.length?`<div class="row wrap" style="gap:4px;margin-top:4px;justify-content:center">${t.join("")}</div>`:""};
     const unit=rankMetric==="nuevos"?["socio nuevo","socios nuevos"]:["presentación","presentaciones"];
@@ -1436,7 +1437,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018233323";var busy=false,pend=null;
+(function(){var V="20261018234107";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
