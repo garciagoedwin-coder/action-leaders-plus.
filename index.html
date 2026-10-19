@@ -1000,8 +1000,7 @@ async function histCanvas(k){const W=1080,H=1920,cv=document.createElement("canv
   g.textAlign="left";g.font="700 40px "+BF;g.fillStyle="#fff";g.fillText(nm,235,y0+52);g.font="500 32px "+BF;g.fillStyle="#2AC1F1";g.fillText("Escríbeme \"INFO\"",235,y0+100);
   return cv}
 let histFile=null,histKey="";window.__histCanvas=histCanvas;
-async function renderHist(){const c=$("#histCard");if(!c)return;if(!fbUser){c.hidden=true;return}c.hidden=false;
-  const hecho=(profile.historias||{})[TODAY];
+async function renderHist(){const c=$("#histCard");if(!c)return;const hecho=(profile.historias||{})[TODAY];if(!fbUser||hecho){c.hidden=true;return}c.hidden=false;
   c.innerHTML=`<div class="row between"><div><h3 style="margin:0">📸 Tu historia de hoy</h3><p class="small muted" style="margin:2px 0 0">Publícala en tus estados de WhatsApp o Instagram.</p></div>${hecho?'<span class="chip c-good">Compartida ✓</span>':""}</div>
    <div id="histImg" style="border-radius:14px;overflow:hidden;background:#0b0b10;aspect-ratio:9/16;max-height:420px;margin:0 auto;width:100%;max-width:236px;display:flex;align-items:center;justify-content:center"><span class="small" style="color:#fff">Creando tu historia…</span></div>
    <button class="btn" id="histShare" style="width:100%">📤 Compartir en mis historias</button>`;
@@ -1009,7 +1008,7 @@ async function renderHist(){const c=$("#histCard");if(!c)return;if(!fbUser){c.hi
   if(histKey!==TODAY+miNombreCorto()+miFotoUrl()||!histFile){histKey=TODAY+miNombreCorto()+miFotoUrl();const cv=await histCanvas(TODAY);try{const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));histFile=new File([b],"historia-"+TODAY+".jpg",{type:"image/jpeg"})}catch(x){histFile=null}}
   const box=$("#histImg");if(box&&histFile){box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(histFile);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im)}}
 async function compartirHist(){if(!histFile){toast("La historia aún se está creando");return}
-  const marcar=()=>{profile.historias=Object.assign({},profile.historias||{},{[TODAY]:true});store.set("perfil",profile);pushResumen();renderHist()};
+  const marcar=()=>{profile.historias=Object.assign({},profile.historias||{},{[TODAY]:true});store.set("perfil",profile);pushResumen();toast("¡Historia de hoy completada! 🔥 Mañana tendrás una nueva.");const c=$("#histCard");if(c){c.style.transition="opacity .4s";c.style.opacity="0";setTimeout(()=>{c.hidden=true;c.style.opacity=""},450)}};
   if(navigator.canShare&&navigator.canShare({files:[histFile]})){try{await navigator.share({files:[histFile]});marcar();return}catch(x){if(x&&x.name==="AbortError")return}}
   const a=document.createElement("a");a.href=URL.createObjectURL(histFile);a.download=histFile.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);marcar();toast("Historia descargada. Súbela a tus estados 📲")}
 function evHTML(e){const fin=finalizada(e);return `<div class="ev" style="${fin?"opacity:.6":""}"><span class="hr">${esc(h12(e.hora))||"—"}${e.horaFin?`<br><span class="small muted" style="font-family:var(--f-body);font-weight:600">a ${esc(h12(e.horaFin))}</span>`:""}</span><div class="body">
@@ -1517,7 +1516,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018235528";var busy=false,pend=null;
+(function(){var V="20261018235748";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
