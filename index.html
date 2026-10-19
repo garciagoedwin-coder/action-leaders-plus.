@@ -304,6 +304,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 .pf-it span.ic{width:30px;text-align:center;font-size:18px}
 .pf-it.out{color:var(--bad)}
 .qf{background:var(--bg);border:1px dashed var(--line);border-radius:14px;padding:10px 12px;margin:4px 0 10px}.qf-row{display:flex;flex-wrap:wrap;gap:8px}
+.curso{gap:12px}.yt{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000}.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 </style>
 
 </head>
@@ -997,8 +998,17 @@ const ARRANQUE=[
 const TRAINING_BASE=["Fundamentos","Prospección","Cierre y seguimiento","Liderazgo y duplicación"];
 let acaTab="arranque";
 const ACA_PRONTO=true;
+const CURSOS=[{k:"presentacion-impresa",t:"Aprende a dar una Presentación Impresa",d:"Mira el video y descarga la hoja para presentar el plan con tus prospectos.",yt:"VOTHJxJ5eQg",pdf:"media/cursos/presentacion-impresa.pdf",pdfT:"Descargar la hoja de presentación"}];
 function renderAca(){const b=$("#acaBody");
-  if(ACA_PRONTO){$("#acaSeg").hidden=true;b.innerHTML=`<div class="card empty" style="text-align:center;padding:32px 20px"><div style="font-size:40px;line-height:1">🎓</div><h2 style="margin-top:10px">Muy pronto</h2><p class="small muted">Estamos preparando tu Academia: plan de arranque, training en video y retos del mes. Te avisaremos en el grupo cuando esté lista.</p></div>`;return}
+  if(ACA_PRONTO){$("#acaSeg").hidden=true;const cv=profile.cursos||{};
+    b.innerHTML=`<div><p class="eyebrow" style="margin:0">Cursos</p><p class="small muted" style="margin:2px 0 0">Aprende paso a paso y descarga tu material.</p></div>`+CURSOS.map((c,i)=>{const ok=!!cv[c.k];return `<div class="card curso">
+      <div class="row between" style="align-items:flex-start;gap:10px"><div><span class="chip ${ok?"c-good":"c-gold"}">Curso ${i+1}${ok?" · Visto ✓":""}</span><h2 style="margin:8px 0 0">${esc(c.t)}</h2><p class="small muted" style="margin:4px 0 0">${esc(c.d)}</p></div></div>
+      <div class="yt"><iframe src="https://www.youtube-nocookie.com/embed/${c.yt}?rel=0&modestbranding=1&playsinline=1" title="${esc(c.t)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
+      <a class="btn" href="${c.pdf}" download target="_blank" rel="noopener" style="width:100%;justify-content:center">📄 ${esc(c.pdfT)}</a>
+      <button class="btn ${ok?"ghost":"dark"}" data-curso="${c.k}" style="width:100%">${ok?"✓ Ya lo vi":"Marcar como visto"}</button></div>`}).join("")+
+     `<div class="card empty" style="text-align:center;padding:20px"><div style="font-size:28px;line-height:1">🎓</div><p class="small muted" style="margin:6px 0 0">Más cursos muy pronto.</p></div>`;
+    b.querySelectorAll("[data-curso]").forEach(x=>x.onclick=()=>{profile.cursos=Object.assign({},profile.cursos||{});profile.cursos[x.dataset.curso]=!profile.cursos[x.dataset.curso];store.set("perfil",profile);renderAca();if(profile.cursos[x.dataset.curso])toast("¡Curso completado!")});
+    return}
   if(acaTab==="arranque"){const done=ARRANQUE.filter(s=>profile.arranque[s.k]).length,p=Math.round(done/ARRANQUE.length*100);
     b.innerHTML=`<div class="card"><div class="row between"><div><h2>Plan de arranque</h2><p class="small muted">Tus primeros 30 días como socio</p></div><span class="num" style="font-size:22px">${done}/${ARRANQUE.length}</span></div>
     <div class="bar gold"><i style="width:${p}%"></i></div>
