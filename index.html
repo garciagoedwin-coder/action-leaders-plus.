@@ -994,7 +994,8 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
       </div></div>`}).join("")}</div>
    <p class="small muted" style="margin:0">Presentaciones, contactos y días activos son de los últimos 7 días.${bien<n?" "+(n-bien)+" aún no ha"+(n-bien>1?"n":"")+" completado la bienvenida.":""}</p>
    <button class="btn sm ghost" id="miosReload" style="align-self:flex-start">Actualizar lista</button>${inv}`;bind()}
-function abrirVincular(){const regs=(socios||[]).filter(x=>x.registro&&x.registro.nombre),pend=regs.filter(x=>!x.registro.patrocinadorUid);
+const SOLO_ADMIN=["garciagoedwin@gmail.com"];const esSoloAdmin=x=>SOLO_ADMIN.includes(String(x.email||"").toLowerCase());
+function abrirVincular(){const regs=(socios||[]).filter(x=>x.registro&&x.registro.nombre&&!esSoloAdmin(x)),pend=regs.filter(x=>!x.registro.patrocinadorUid);
   const sug=x=>{const t=x.registro.patrocinador;const m=regs.filter(y=>y.uid!==x.uid&&sameN(y.registro.nombre,t));return m.length===1?m[0].uid:""};
   const opts=regs.slice().sort((a,b)=>a.registro.nombre.localeCompare(b.registro.nombre,"es"));
   const nS=pend.filter(x=>sug(x)).length;
@@ -1016,9 +1017,9 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
   const q=nrmN(sociosQ);let L=socios.filter(x=>{const r=x.registro||{};return !q||nrmN([r.nombre,x.email,r.patrocinador,r.plan].join(" ")).includes(q)});
   if(sociosOrd==="act")L=L.slice().sort(byAct);
   else if(sociosOrd==="inact")L=L.filter(x=>x.registro).sort((a,b)=>actScore(a)-actScore(b)||tsMs(a.ultimoAcceso)-tsMs(b.ultimoAcceso));
-  const reg=socios.filter(x=>x.registro).length,sin=socios.length-reg,hoy=socios.filter(x=>actDe(x).hoy>0).length,sem=socios.filter(x=>actDe(x).d7>0).length;
+  const reg=socios.filter(x=>x.registro&&!esSoloAdmin(x)).length,sin=socios.length-reg,hoy=socios.filter(x=>actDe(x).hoy>0).length,sem=socios.filter(x=>actDe(x).d7>0).length;
   const st=(n,t,c)=>`<div class="card" style="gap:2px"><b class="num" style="font-size:28px${c?";color:"+c:""}">${n}</b><span class="small muted">${t}</span></div>`;
-  const sinP=socios.filter(x=>x.registro&&!x.registro.patrocinadorUid).length;
+  const sinP=socios.filter(x=>x.registro&&!x.registro.patrocinadorUid&&!esSoloAdmin(x)).length;
   b.innerHTML=`${sinP?`<div class="card" style="gap:8px"><div class="row between"><div><h3 style="margin:0">🔗 Vincular patrocinadores</h3><p class="small muted" style="margin:2px 0 0">${sinP} ${sinP===1?"socio se registró":"socios se registraron"} sin enlace. Vincúlalos para que su patrocinador los vea en "Mis socios".</p></div></div><button class="btn sm gold" id="socVinc" style="align-self:flex-start">Vincular ahora</button></div>`:""}<div class="grid2">${st(reg,"Socios registrados")}${st(sin,"Entraron sin registrarse")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}</div>
    <div class="seg" id="socOrd"><button aria-selected="${sociosOrd==="act"}" data-o="act">Más activos</button><button aria-selected="${sociosOrd==="rec"}" data-o="rec">Recientes</button><button aria-selected="${sociosOrd==="inact"}" data-o="inact">Sin actividad</button></div>
    <div class="row"><input class="inp grow" id="socQ" placeholder="Buscar por nombre, patrocinador o plan" value="${esc(sociosQ)}"><button class="btn sm ghost" id="socCsv">Descargar</button></div>
@@ -1032,8 +1033,8 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
        <span class="chip c-brand">CRM ${a.crm}</span>
        ${a.hist?`<span class="chip c-good">📸 Historia hoy</span>`:""}<span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"Bienvenida ✓":"Bienvenida pendiente"}</span>
        ${a.cursos?`<span class="chip c-good">🎓 ${a.cursos} curso${a.cursos>1?"s":""}</span>`:""}</div>`:"";
-     return `<div class="row" style="padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(nm)}</b>
-      <div class="small muted">${x.registro?`<select class="plan-sel" data-plan="${esc(x.uid)}" aria-label="Paquete de ${esc(nm)}"><option ${r.plan==="Classic"?"selected":""}>Classic</option><option ${r.plan==="Premium"?"selected":""}>Premium</option>${r.plan&&!/^(Classic|Premium)$/.test(r.plan)?`<option selected>${esc(r.plan)}</option>`:""}</select> · `:""}${r.patrocinador?"Patrocinador: "+esc(r.patrocinador)+(r.patrocinadorUid?" ✓":""):"<span style='color:var(--warn)'>No completó el registro</span>"}</div>
+     return `<div class="row" style="padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(nm)}</b>${esSoloAdmin(x)?' <span class="chip c-gold">Admin</span>':""}
+      <div class="small muted">${x.registro&&!esSoloAdmin(x)?`<select class="plan-sel" data-plan="${esc(x.uid)}" aria-label="Paquete de ${esc(nm)}"><option ${r.plan==="Classic"?"selected":""}>Classic</option><option ${r.plan==="Premium"?"selected":""}>Premium</option>${r.plan&&!/^(Classic|Premium)$/.test(r.plan)?`<option selected>${esc(r.plan)}</option>`:""}</select> · `:""}${r.patrocinador?"Patrocinador: "+esc(r.patrocinador)+(r.patrocinadorUid?" ✓":""):"<span style='color:var(--warn)'>No completó el registro</span>"}</div>
       <div class="small muted">${esc(x.email||"")}${ua?" · Último acceso "+haceTxt(ua):""}</div>${chips}</div>${wa?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(wa)}" target="_blank" rel="noopener">WhatsApp</a>`:""}</div>`}).join(""):`<p class="small muted" style="padding:10px 0">No hay socios con ese filtro.</p>`}</div>
    <button class="btn sm ghost" id="socReload" style="align-self:flex-start">Actualizar lista</button>`;
   b.querySelectorAll("#socOrd button").forEach(x=>x.onclick=()=>{sociosOrd=x.dataset.o;renderSocios(b)});
@@ -1949,7 +1950,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019102844";var busy=false,pend=null;
+(function(){var V="20261019103500";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
