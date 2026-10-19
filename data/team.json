@@ -2228,6 +2228,14 @@
   },
   "titulos": {
    "Edwin Garcia Go": "National Director"
+  },
+  "especiales": {
+   "2026-10-25-0800-gran-evento-go-for-your-dreams": {
+    "img": "media/flyers/evento-2026-10-25.jpg",
+    "msg": "👋 *¡Hola!*\n\nConfirma tu participación en nuestro próximo evento presencial!\n\n🗓️ Domingo 25 de Octubre el 2026\n🕛 2:45 PM Registro\n📍 Hotel Copantl (Salón las Islas )\n\n📝 Regístrate aquí:\n\nhttps://forms.gle/Cyzq9PW9bpYR5tKN8\n\n✅ Te tomará menos de 1 minuto.\n\n¡Nos vemos en el evento!",
+    "enlace": "https://forms.gle/Cyzq9PW9bpYR5tKN8",
+    "boton": "Registrarme"
+   }
   }
  },
  "fotos": [
