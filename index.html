@@ -681,6 +681,7 @@ nav.tabs button{z-index:0;isolation:isolate}
         <div class="bar"><i id="dayBar" style="width:0%"></i></div>
         <div class="list" id="tasks"></div>
       </div>
+      <div class="card" id="topRut" hidden></div>
       <div class="card" id="nextEvents"></div>
       <div class="card">
         <div class="row between"><h3>Últimos 7 días</h3><button class="btn sm ghost" id="verMes">📅 Ver mi mes</button></div>
@@ -902,7 +903,9 @@ let resT;function pushResumen(){if(!store.db||!store.uid)return;clearTimeout(res
   const et={};(contacts||[]).forEach(c=>{et[c.stage||"Nuevo"]=(et[c.stage||"Nuevo"]||0)+1});
   const a={fecha:TODAY,hoy:Math.round(dayScore(day)*100),racha,dias7:dias,semana:sum,crm:(contacts||[]).length,etapas:Object.keys(et).map(k=>k+":"+et[k]),
     historia:!!(profile.historias||{})[TODAY],bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),t:Date.now()};
-  await store.db.doc("users/"+store.uid).set({actividad:a},{merge:true})}catch(e){}},3000)}
+  await store.db.doc("users/"+store.uid).set({actividad:a},{merge:true});
+  const nm=(miRegistro().nombre||"").trim(),em=String((fbUser&&fbUser.email)||"").toLowerCase();
+  if(nm&&!SOLO_ADMIN.includes(em))await store.db.doc("constancia/"+store.uid).set({nombre:nm,racha,dias7:dias,hoy:a.hoy,fecha:TODAY,acc:Object.values(sum).reduce((x,y)=>x+(+y||0),0),t:Date.now()})}catch(e){}},3000)}
 function renderWeek(){const out=[];let streak=0;
   for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));
     out.push(`<div><i class="${s>=1?"full":s>0?"part":""} ${i===0?"today":""}">${d.getDate()}</i>${DAYS[d.getDay()]}</div>`)}
@@ -1142,9 +1145,28 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
     try{await store.db.doc("users/"+x.uid).set({registro:{plan:nv,planPor:"admin",planCambio:new Date().toISOString()}},{merge:true});x.registro.plan=nv;toast((x.registro.nombre||"Socio").split(" ")[0]+" ahora es "+nv+" ✓")}catch(e){sel.value=prev;toast("No se pudo cambiar el paquete")}});
   b.querySelectorAll("[data-sedit]").forEach(bt=>bt.onclick=()=>editarSocio(bt.dataset.sedit));
   $("#socCsv").onclick=sociosCSV;const sv=$("#socVinc");if(sv)sv.onclick=abrirVincular;const sl=$("#socLin");if(sl)sl.onclick=async()=>{sl.disabled=true;sl.textContent="Reconstruyendo…";await reconstruirLineas(false);sl.disabled=false;sl.textContent="Reconstruir líneas"};$("#socReload").onclick=()=>{socios=null;renderEquipo()}}
+let constL=null,constT=0;
+async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now()-constT<120000)return;try{const q=await store.db.collection("constancia").get();constT=Date.now();
+  const ay=dkey(new Date(Date.now()-864e5));constL=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.nombre&&x.t&&Date.now()-x.t<8*864e5).map(x=>Object.assign(x,{racha:x.fecha>=ay?(+x.racha||0):0,hoy:x.fecha===TODAY?(+x.hoy||0):0,dias7:+x.dias7||0}))
+  .filter(x=>x.racha>0||x.dias7>0||x.hoy>0).sort((a,b)=>b.racha-a.racha||b.dias7-a.dias7||b.hoy-a.hoy||(b.acc||0)-(a.acc||0)||String(a.nombre).localeCompare(b.nombre,"es"));constL.forEach((x,i)=>x.rk=i+1)}catch(e){constL=constL||[]}
+  renderTopRut();if(eqTab==="ranking"&&rankMetric==="rutina")renderEquipo()}
+function renderTopRut(){const c=$("#topRut");if(!c)return;if(!constL||!constL.length){c.hidden=true;return}c.hidden=false;const md=["🥇","🥈","🥉"];
+  c.innerHTML=`<div class="row between"><h3 style="margin:0">🔥 Top constancia</h3><button class="btn sm ghost" id="topRutVer">Ver ranking</button></div><p class="small muted" style="margin:2px 0 6px">Los socios que más cumplen su rutina diaria.</p>
+   ${constL.slice(0,3).map((x,i)=>`<div class="row" style="gap:10px;padding:8px 0;${i<2?"border-bottom:1px solid var(--line)":""}"><span style="font-size:22px;width:28px;text-align:center">${md[i]}</span>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">📅 ${x.dias7}/7 días · Hoy ${x.hoy}%</div></div><span class="chip c-gold" style="flex:none">🔥 ${x.racha} ${x.racha===1?"día":"días"}</span></div>`).join("")}`;
+  $("#topRutVer").onclick=()=>{eqTab="ranking";rankMetric="rutina";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()}}
+function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="false" data-k="presentaciones">Presentaciones</button><button aria-selected="false" data-k="nuevos">Socios nuevos</button><button aria-selected="true" data-k="rutina">🔥 Rutina</button></div><div class="seg" id="rankSeg" hidden></div>
+   <p class="small muted">Ordenado por racha de días con la rutina completa, luego días activos de la semana y avance de hoy.</p>`;
+  if(constL===null){b.innerHTML=segs+`<p class="muted small">Cargando…</p>`;bindRank();loadConst(true);return}
+  if(!constL.length){b.innerHTML=segs+emptyCard("Aún nadie suma racha","Completa tu rutina hoy y toma el primer lugar.");bindRank();loadConst();return}
+  const L=constL,pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.uid===store.uid,true)}<span class="nm">${esc(p.nombre)}</span><div class="block"><b>${p.rk}</b><span class="small num">🔥 ${p.racha} ${p.racha===1?"día":"días"}</span></div></div>`:"<div></div>";
+  const mine=L.find(x=>x.uid===store.uid);
+  b.innerHTML=segs+(mine?`<div class="card row between"><span>Tu lugar en constancia</span><b class="num" style="font-size:20px">#${mine.rk}</b></div>`:`<div class="card small">Completa tu rutina para aparecer en este ranking 💪</div>`)+`<div class="card"><div class="podium">${pod(L[1],1)+pod(L[0],0)+pod(L[2],2)}</div></div>
+   <div class="card" style="gap:0">${L.slice(3).map(x=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)${x.uid===store.uid?";background:var(--brand-soft,rgba(42,193,241,.08))":""}"><b class="num" style="width:26px;text-align:center">${x.rk}</b>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">📅 ${x.dias7}/7 días · Hoy ${x.hoy}%</div></div><span class="chip ${x.racha?"c-gold":"c-brand"}" style="flex:none">🔥 ${x.racha}</span></div>`).join("")||`<p class="small muted" style="padding:8px 0">¡Súmate al ranking completando tu rutina!</p>`}</div>`;
+  bindRank();loadConst()}
 function renderEquipo(){const b=$("#eqBody");
   if(eqTab==="socios"){renderSocios(b);return}
   if(eqTab==="mios"){renderMios(b);return}
+  if(eqTab==="ranking"&&rankMetric==="rutina"){renderConst(b);return}
   if(eqTab==="ranking"){
     if(!T.ranking.length){b.innerHTML=emptyCard("El ranking aún no tiene datos","Aquí aparecerán las presentaciones registradas gratis en inCruises y los socios nuevos de cada miembro del equipo.");return}
     const sem=rankTab==="semana",kR=sem?"regSemana":"registros",kA=sem?"actSemana":"activaciones",kP=sem?"presSemana":"presentaciones";
@@ -1170,7 +1192,7 @@ function renderEquipo(){const b=$("#eqBody");
     const unit=rankMetric==="nuevos"?["socio nuevo","socios nuevos"]:["presentación","presentaciones"];
     const u=v=>v===1?unit[0]:unit[1];
     const per=T.config&&T.config.rankingSemanaLabel;
-    const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="${rankMetric==="presentaciones"}" data-k="presentaciones">Presentaciones</button><button aria-selected="${rankMetric==="nuevos"}" data-k="nuevos">Socios nuevos</button></div>
+    const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="${rankMetric==="presentaciones"}" data-k="presentaciones">Presentaciones</button><button aria-selected="${rankMetric==="nuevos"}" data-k="nuevos">Socios nuevos</button><button aria-selected="false" data-k="rutina">🔥 Rutina</button></div>
      <div class="seg" role="tablist" id="rankSeg" hidden><button aria-selected="true" data-k="mes">Este mes</button></div>
      <p class="small muted">${rankMetric==="nuevos"?"Ordenado por volumen (Starter 50 · Classic 200 · Premium 500).":"Solo cuentan las presentaciones cuyo prospecto quedó registrado gratis en inCruises."}</p>`;
     if(!d.length){b.innerHTML=segs+emptyCard(rankMetric==="nuevos"?"Aún no hay socios nuevos en este periodo":"Aún no hay registros en este periodo","El primero en sumar toma el primer lugar.");bindRank();return}
@@ -1974,6 +1996,7 @@ try{const t=localStorage.getItem("alp:tab");if(t&&document.getElementById("v-"+t
 let fotosRepo=[],fotosFs=[];
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-refresh]");if(!b||b.disabled)return;b.disabled=true;const t=b.textContent;b.textContent="Actualizando…";
   if(b.dataset.refresh==="eq"&&eqTab==="mios"){mios=null;renderEquipo()}
+  if(b.dataset.refresh==="eq")loadConst(true);
   try{await loadTeamJSON();const c=T.config||{},k=b.dataset.refresh==="cal"?c.calendarioActualizado:c.rankingActualizado;
     toast((b.dataset.refresh==="cal"?"Agenda al día":"Ranking al día")+(k?" · actualizado "+new Date(k).toLocaleString("es",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):""))}catch(x){toast("No se pudo actualizar. Revisa tu conexión.")}
   b.disabled=false;b.textContent=t});
@@ -2043,7 +2066,7 @@ async function startApp(u){
   await loadMine();
   if(regDoc&&regDoc.registro){welState.registro=true;publicarInv();if(profile.waPublico)setTimeout(publicarPerfil,4000)}
   renderWel();renderAviso();renderAccesos();
-  renderMeBtn();setTimeout(renderHist,800);
+  renderMeBtn();setTimeout(renderHist,800);setTimeout(()=>loadConst(true),1800);
   try{renderEquipo();renderCal();renderNext();renderAca()}catch(e){}
 }
 function bootFB(){if(window.FB&&window.FB.__ready!==undefined)return;}
@@ -2053,7 +2076,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019121452";var busy=false,pend=null;
+(function(){var V="20261019122431";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
