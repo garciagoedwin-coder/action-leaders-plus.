@@ -1015,17 +1015,17 @@ function rankDe(nombre){const num=v=>Number(v)||0,L=(T.ranking||[]).map(r=>({n:r
   const ac=L.filter(x=>x.A>0).sort((a,b)=>b.A-a.A||b.R-a.R||String(a.n).localeCompare(b.n,"es"));
   const ip=pr.findIndex(x=>x===me),ia=ac.findIndex(x=>x===me);
   return{R:me.R,A:me.A,pPos:ip>=0?ip+1:0,aPos:ia>=0?ia+1:0,pNext:ip>0?pr[ip-1].R-me.R+1:0,aNext:ia>0?ac[ia-1].A-me.A+1:0,pTop10:ip<0||ip>=10?Math.max(1,(pr[9]?pr[9].R:0)-me.R+1):0}}
-function msgMotiva(x){const r=x.registro||{},a=actDe(x),S=a.sem,first=(r.nombre||"").split(" ")[0]||"",rk=rankDe(r.nombre||""),yo=miNombreCorto().split(" ")[0]||"";
+function msgMotiva(x){const r=x.registro||{},a=actDe(x),S=a.sem,first=(r.nombre||"").split(" ")[0]||"",rk=rankDe(r.nombre||""),yo=miNombreCorto()||"";
   const mes=(T.config&&T.config.rankingMes)||"este mes";const L=[];
-  L.push(`🔥 ¡Hola ${first}! Aquí va tu resumen en Action Leaders:`);L.push("");
-  L.push(`📅 Días activos esta semana: ${a.d7}/7`);L.push(`🔥 Racha: ${a.racha} ${a.racha===1?"día":"días"}`);
-  if(rk){L.push(`🎯 Registros gratis (${mes}): ${rk.R}${rk.pPos?" · Lugar #"+rk.pPos:""}`);L.push(`🚀 Activaciones (${mes}): ${rk.A}${rk.aPos?" · Lugar #"+rk.aPos:""}`)}
-  else L.push(`🎯 Aún no apareces en el ranking de ${mes}`);
-  L.push(`👥 Contactos esta semana: ${S.contactos||0}`);if(!a.bien)L.push("🎬 Te falta terminar tu video de bienvenida");
-  L.push("");
-  L.push(a.racha>=3?`💪 Llevas ${a.racha} días seguidos. ¡No rompas la racha!`:a.d7>=3?"💪 Vas avanzando muy bien. Sigue empujando, que estás cerca.":a.d7>0?"💪 Ya diste los primeros pasos. Ahora toca constancia: una acción cada día.":"💪 Hoy es un gran día para arrancar. Con una sola acción de tu rutina ya cuenta.");
-  if(rk&&rk.pPos===1)L.push("🏆 ¡Vas #1 en registros! Defiende ese lugar.");else if(rk&&rk.pPos&&rk.pNext)L.push(`🎯 Con ${rk.pNext} ${rk.pNext===1?"registro":"registros"} más subes al lugar #${rk.pPos-1}.`);else if(!rk||!rk.pPos)L.push("🎯 Con 1 registro gratis ya entras al ranking.");
-  L.push("");L.push("Aquí estoy para apoyarte. ¡Hasta que funcione! 🚀");if(yo)L.push(yo);return L.join("\n")}
+  L.push(`*¡Hola ${first}!* 👋`,"",`Te comparto cómo vas en *Action Leaders* 📊`,"");
+  L.push(`📅 *Días activos esta semana:* ${a.d7} de 7`,`🔥 *Racha:* ${a.racha} ${a.racha===1?"día":"días"}`,`👥 *Contactos esta semana:* ${S.contactos||0}`,"");
+  if(rk){L.push(`🏆 *Ranking de ${mes}*`,`🎯 Registros gratis: *${rk.R}*${rk.pPos?` · Lugar *#${rk.pPos}*`:""}`,`🚀 Activaciones: *${rk.A}*${rk.aPos?` · Lugar *#${rk.aPos}*`:""}`,"")}
+  if(!a.bien)L.push(`🎬 Te falta terminar tu *video de bienvenida*. ¡Es el primer paso!`,"");
+  L.push(a.racha>=3?`Llevas *${a.racha} días seguidos* 💪 Eso es disciplina de líder. ¡No rompas la racha!`:a.d7>=3?`Vas avanzando muy bien 👏 Sigue empujando, que estás *más cerca de lo que crees*.`:a.d7>0?`Ya diste los primeros pasos 👏 Ahora lo que marca la diferencia es la *constancia*: una acción cada día.`:`Hoy es un gran día para arrancar 🔥 Con *una sola acción* de tu rutina ya cuenta.`,"");
+  if(rk&&rk.pPos===1)L.push(`🥇 *Tu reto:* vas *#1 en registros*. ¡Defiende ese lugar!`,"");
+  else if(rk&&rk.pPos&&rk.pNext)L.push(`🎯 *Tu reto:* con *${rk.pNext} ${rk.pNext===1?"registro":"registros"} más* subes al lugar *#${rk.pPos-1}*.`,"");
+  else L.push(`🎯 *Tu reto:* con *1 registro gratis* ya entras al ranking.`,"");
+  L.push(`Cuenta conmigo, aquí estoy para apoyarte.`,`*¡Hasta que funcione!* 🚀`);if(yo)L.push("",`— ${yo}`);return L.join("\n")}
 async function loadMios(){miosErr=false;try{const q=await store.db.collection("users").where("registro.patrocinadorUid",store.uid).get();
   mios=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.registro).sort(byAct)}catch(e){mios=[];miosErr=true}renderEquipo()}
 function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia sesión","Entra con tu cuenta para ver a tus socios.");return}
@@ -2034,7 +2034,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019112152";var busy=false,pend=null;
+(function(){var V="20261019112903";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
