@@ -4,6 +4,7 @@
 <title>Te invito a conocer · Action Leaders</title>
 <meta name="description" content="Viaja más, gasta menos y crea un ingreso extra con una comunidad que te acompaña.">
 <meta name="theme-color" content="#08080c">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="icon" href="/icon-192.png?v=3">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@1,700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
@@ -73,7 +74,7 @@ section{padding:72px 0}
 .yt:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 50%,rgba(0,0,0,.45))}
 .yt .play{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.95);color:#111;display:flex;align-items:center;justify-content:center;font-size:26px;padding-left:5px;box-shadow:0 0 0 10px rgba(42,193,241,.25),0 10px 30px rgba(0,0,0,.5)}
 .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.yt-cap{margin-top:12px}.yt-cap b{display:block;font-size:19px}.yt-cap span{color:var(--mut);font-size:15px}
+.yt-cap{margin-top:12px}.yt-alt{display:inline-block;margin-top:8px;font-size:13px;color:var(--mut)}.yt-cap b{display:block;font-size:19px}.yt-cap span{color:var(--mut);font-size:15px}
 .grid2v{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:28px}
 section.alt{background:linear-gradient(180deg,rgba(42,193,241,.06),rgba(139,107,255,.04));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .mid-cta{margin-top:34px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 22px}
@@ -168,7 +169,8 @@ const db=getFirestore(app);const $=id=>document.getElementById(id);
 const code=(new URLSearchParams(location.search).get("de")||"").trim().toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60);
 let P=null;
 try{if(code){const d=await getDoc(doc(db,"perfiles",code));if(d.exists())P=d.data()}}catch(e){}
-document.querySelectorAll(".yt[data-yt]").forEach(el=>el.addEventListener("click",()=>{if(el.querySelector("iframe"))return;el.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+el.dataset.yt+'?autoplay=1&rel=0&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>'}));
+document.querySelectorAll(".yt[data-yt]").forEach(el=>{const a=document.createElement("a");a.className="yt-alt";a.href="https://youtu.be/"+el.dataset.yt;a.target="_blank";a.rel="noopener";a.textContent="¿No se reproduce? Ábrelo en YouTube ↗";(el.parentNode.classList.contains("video")?el.parentNode:el).insertAdjacentElement("afterend",a)});
+document.querySelectorAll(".yt[data-yt]").forEach(el=>el.addEventListener("click",()=>{if(el.querySelector("iframe"))return;el.innerHTML='<iframe src="https://www.youtube.com/embed/'+el.dataset.yt+'?autoplay=1&rel=0&playsinline=1&origin='+encodeURIComponent(location.origin)+'" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen></iframe>'}));
 const safe=u=>{try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:""}catch(e){return ""}};
 if(P){const nm=P.nombre||"Tu invitador",first=nm.split(" ")[0];$("sNm").textContent=nm;$("sNm2").textContent=first;
   const av=$("sAv");if(P.foto){av.style.backgroundImage="url("+P.foto+")";av.textContent=""}else av.textContent=nm.split(" ").map(w=>w[0]).slice(0,2).join("");
