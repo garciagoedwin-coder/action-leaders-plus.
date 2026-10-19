@@ -1178,8 +1178,12 @@ const STAGE_C={"Nuevo":"c-brand","Contactado":"c-brand","Presentación":"c-gold"
 let contacts=[],stageF="Todos";
 const PAISES=[["Honduras","504"],["Estados Unidos","1"],["España","34"],["Reino Unido","44"],["Guatemala","502"],["El Salvador","503"],["Nicaragua","505"],["Costa Rica","506"],["Panamá","507"],["México","52"],["Colombia","57"],["Venezuela","58"],["Perú","51"],["Ecuador","593"],["Chile","56"],["Argentina","54"],["República Dominicana","1"],["Canadá","1"],["Italia","39"],["Francia","33"],["Alemania","49"]];
 const waNum=(t,cc)=>{const raw=String(t||"").trim();let d=raw.replace(/\D/g,"");if(!d)return"";if(raw.startsWith("+")||raw.startsWith("00"))return d.replace(/^00/,"");cc=cc||"504";if(d.startsWith(cc)&&d.length>cc.length+6)return d;return cc+d.replace(/^0+/,"")};
+function msgPara(c,first){const nt=c.note||"";if((c.stage||"Nuevo")==="Nuevo"&&nt.includes("Desde tu página")){const yo=miNombreCorto().split(" ")[0]||"yo";
+  const i=/Viajar/i.test(nt)?["que le interesa viajar ✈️","cómo estamos viajando más gastando menos"]:/Ingresos/i.test(nt)?["que le interesa generar un ingreso extra 💰","cómo lo estamos haciendo desde el celular"]:["que le interesa viajar y generar ingresos ✈️💰","cómo funciona"];
+  return `Hola ${first}, ¿cómo está? 😊 Soy ${yo}, de Action Leaders. Vi que dejó sus datos en mi página y ${i[0]}\n\n¿Le parece si hoy le muestro en 10 minutos ${i[1]}?`}
+  return (WA_MSG[c.stage]||WA_MSG.Nuevo).replace("{n}",first)}
 const WA_MSG={"Nuevo":"Hola {n}, ¿cómo está? Quería saludarle y contarle algo que estoy haciendo y creo que le puede interesar.","Contactado":"Hola {n}, ¿cómo está? ¿Tiene unos minutos esta semana para mostrarle lo que le comenté?","Presentación":"Hola {n}, ¡gracias por su tiempo en la presentación! ¿Qué fue lo que más le gustó?","Seguimiento":"Hola {n}, ¿cómo está? Le escribo para saber si pudo revisar la información y si tiene alguna pregunta.","Socio":"Hola {n}, ¿cómo va todo? Aquí estoy para apoyarle en lo que necesite.","Cliente":"Hola {n}, ¿cómo está? Quería saber cómo le ha ido.","No interesado":"Hola {n}, ¿cómo está? Solo quería saludarle."};
-const waLink=c=>{const n=waNum(c.phone,c.cc);if(!n)return"";const first=String(c.name||"").trim().split(/\s+/)[0]||"";return "https://wa.me/"+n+"?text="+encodeURIComponent((WA_MSG[c.stage]||WA_MSG.Nuevo).replace("{n}",first))};
+const waLink=c=>{const n=waNum(c.phone,c.cc);if(!n)return"";const first=String(c.name||"").trim().split(/\s+/)[0]||"";return "https://wa.me/"+n+"?text="+encodeURIComponent(msgPara(c,first))};
 function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerCase();
   const counts={Todos:contacts.length};STAGES.forEach(s=>counts[s]=contacts.filter(c=>c.stage===s).length);
   $("#stageBar").innerHTML=["Todos"].concat(STAGES).map(s=>`<button aria-pressed="${s===stageF}" data-s="${s}">${s}<span class="n">${counts[s]}</span></button>`).join("");
@@ -1639,7 +1643,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019015104";var busy=false,pend=null;
+(function(){var V="20261019015837";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
