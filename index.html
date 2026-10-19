@@ -295,6 +295,14 @@ nav.tabs button{z-index:0;isolation:isolate}
 .inp{border-radius:12px;padding:11px 13px;background:var(--surface)}
 .inp:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
 @media (prefers-reduced-motion:no-preference){section.view:not([hidden]){animation:fadeUp .25s ease both}@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+.me-btn{flex:none;width:42px;height:42px;border-radius:50%;border:2px solid rgba(42,193,241,.85);background:#2AC1F1 center/cover no-repeat;color:#10222b;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 0 0 3px rgba(42,193,241,.18)}
+.me-btn:active{transform:scale(.95)}
+.pf-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.pf-av{width:64px;height:64px;border-radius:50%;flex:none;background:#2AC1F1 center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;color:#10222b}
+.pf-list{display:flex;flex-direction:column;margin-top:10px;border-top:1px solid var(--line)}
+.pf-it{display:flex;align-items:center;gap:12px;padding:14px 4px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;font-size:15px;font-weight:600;width:100%}
+.pf-it span.ic{width:30px;text-align:center;font-size:18px}
+.pf-it.out{color:var(--bad)}
 </style>
 
 </head>
@@ -420,6 +428,7 @@ nav.tabs button{z-index:0;isolation:isolate}
   <header class="top">
     <div class="top-t"><b>Action Leaders <em>PLUS</em></b><span id="hello" role="button" tabindex="0" title="Cambiar tu nombre" style="cursor:pointer">Hola, líder</span></div>
     <div class="pv" id="topPvBox" data-empty><b class="num" id="topPv">—</b><small>Presentaciones</small></div>
+    <button class="me-btn" id="meBtn" aria-label="Mi perfil" title="Mi perfil"></button>
   </header>
 
   <main id="main">
@@ -1180,6 +1189,37 @@ $("#hello").onclick=()=>openSheet(`<h2>¿Cómo te llamamos?</h2><p class="small 
   const wa=$("#welAgain");if(wa)wa.onclick=()=>{closeSheet();try{localStorage.removeItem("alp:welDone")}catch(e){}profile.bienvenida=false;profile.welPasos={};delete profile.registro;store.set("perfil",profile);welState={};welOpenedAt=0;try{localStorage.removeItem("alp:welpos")}catch(e){}renderWel()};
   const ok=()=>{const rk=$("#rkI");if(rk)profile.miNombre=rk.value;const v=$("#nmI").value.trim().replace(/\s+/g," ");if(!v){store.set("perfil",profile);renderMe();closeSheet();return}profile.nombrePila=v;store.set("perfil",profile);$("#hello").textContent="Hola, "+v.split(" ")[0];closeSheet();renderMe();toast("Listo, "+v.split(" ")[0])};
   $("#nmOk").onclick=ok;$("#nmI").onkeydown=e=>{if(e.key==="Enter")ok()}});
+
+function miRegistro(){return (regDoc&&regDoc.registro)||{}}
+function miNombreFull(){return profile.miNombre||miRegistro().nombre||(fbUser&&fbUser.displayName)||""}
+function miFotoUrl(){return fotoDe(miNombreFull())||(fbUser&&fbUser.photoURL)||""}
+function renderMeBtn(){const b=$("#meBtn");if(!b)return;b.hidden=!fbUser;if(!fbUser)return;const f=miFotoUrl();
+  b.style.backgroundImage=f?`url('${f}')`:"";b.textContent=f?"":initials(miNombreFull()||"Yo")}
+function verBienvenidaOtraVez(){closeSheet();try{localStorage.removeItem("alp:welDone")}catch(e){}profile.bienvenida=false;profile.welPasos={};delete profile.registro;store.set("perfil",profile);welState={};welOpenedAt=0;try{localStorage.removeItem("alp:welpos")}catch(e){}renderWel()}
+function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
+  openSheet(`<div class="pf-head"><div class="pf-av" style="${f?`background-image:url('${f}')`:""}">${f?"":esc(initials(nm||"Yo"))}</div>
+    <div style="min-width:0"><h2 style="margin:0">${esc(nm||"Mi perfil")}</h2><p class="small muted" style="margin:2px 0 0;overflow:hidden;text-overflow:ellipsis">${esc((fbUser&&fbUser.email)||"")}</p>
+    <p class="small" style="margin:6px 0 0">${R.plan?`<span class="chip">${esc(R.plan)}</span> `:""}${R.patrocinador?`<span class="muted">Patrocinador: ${esc(R.patrocinador)}</span>`:""}</p></div></div>
+   <div class="pf-list">
+    <button class="pf-it" id="pfFoto"><span class="ic">📷</span>Cambiar mi foto</button>
+    <button class="pf-it" id="pfNombre"><span class="ic">✏️</span>Mi nombre y mi lugar en el ranking</button>
+    <button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
+    <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
+    ${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
+    <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
+   </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
+    $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
+    $("#pfNombre").onclick=()=>{closeSheet();setTimeout(()=>$("#hello").click(),50)};
+    $("#pfWel").onclick=verBienvenidaOtraVez;
+    $("#pfInst").onclick=()=>openSheet(`<h2>Instala la app</h2>
+      <p><b>iPhone (Safari):</b> toca <b>Compartir</b> (cuadro con flecha) → <b>Agregar a pantalla de inicio</b> → <b>Agregar</b>.</p>
+      <p><b>Android (Chrome):</b> toca los <b>tres puntos</b> → <b>Instalar app</b> o <b>Agregar a la pantalla principal</b>.</p>
+      <button class="btn" data-close style="width:100%">Listo</button>`);
+    const pv=$("#pfPrev");if(pv)pv.onclick=()=>{closeSheet();welPreview=true;welSigned=false;$("#welC").dataset.v="";renderWel()};
+    $("#pfOut").onclick=async()=>{const b=$("#pfOut");if(b.dataset.ok!=="1"){b.dataset.ok="1";b.innerHTML='<span class="ic">🚪</span>Toca otra vez para confirmar';return}closeSheet();try{await window.FB.logout()}catch(e){}};
+  })}
+$("#meBtn").onclick=abrirPerfil;
+setInterval(renderMeBtn,3000);
 function openSheet(html,bind){$("#sheetPanel").innerHTML=html;$("#sheet").hidden=false;bind&&bind();const f=$("#sheetPanel input");f&&f.focus()}
 function closeSheet(){$("#sheet").hidden=true}
 $("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet"||e.target.closest("[data-close]"))closeSheet()});
@@ -1234,6 +1274,7 @@ async function startApp(u){
   await loadMine();
   if(regDoc&&regDoc.registro){welState.registro=true}
   renderWel();renderAviso();renderAccesos();
+  renderMeBtn();
   try{renderEquipo();renderCal();renderNext();renderAca()}catch(e){}
 }
 function bootFB(){if(window.FB&&window.FB.__ready!==undefined)return;}
