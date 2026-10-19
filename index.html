@@ -655,11 +655,19 @@ $("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!
   else return;
   renderTasks();saveDay()});
 const weekCache={};
+let resT;function pushResumen(){if(!store.db||!store.uid)return;clearTimeout(resT);resT=setTimeout(async()=>{try{
+  const sum={contactos:0,seguimientos:0,presentaciones:0,videos:0};let dias=0,racha=0;
+  for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()-i);const w=weekCache[dkey(d)];if(w){Object.keys(sum).forEach(k=>sum[k]+=(+w[k]||0));if(dayScore(w)>0)dias++}}
+  for(let i=0;i<30;i++){const d=new Date(now);d.setDate(d.getDate()-i);const sc=dayScore(weekCache[dkey(d)]);if(i===0&&sc<1)continue;if(sc>=1)racha++;else break}
+  const et={};(contacts||[]).forEach(c=>{et[c.stage||"Nuevo"]=(et[c.stage||"Nuevo"]||0)+1});
+  const a={fecha:TODAY,hoy:Math.round(dayScore(day)*100),racha,dias7:dias,semana:sum,crm:(contacts||[]).length,etapas:Object.keys(et).map(k=>k+":"+et[k]),
+    bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),t:Date.now()};
+  await store.db.doc("users/"+store.uid).set({actividad:a},{merge:true})}catch(e){}},3000)}
 function renderWeek(){const out=[];let streak=0;
   for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)]);
     out.push(`<div><i class="${s>=1?"full":s>0?"part":""} ${i===0?"today":""}">${d.getDate()}</i>${DAYS[d.getDay()]}</div>`)}
   for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)]);if(i===0&&s<1)continue;if(s>=1)streak++;else break}
-  $("#week").innerHTML=out.join("");$("#streak").textContent="Racha "+streak+(streak===1?" día":" días")}
+  pushResumen();$("#week").innerHTML=out.join("");$("#streak").textContent="Racha "+streak+(streak===1?" día":" días")}
 
 // ---------- ¿quién eres? ----------
 function renderWho(){const c=$("#whoCard");c.hidden=true;return;
@@ -725,24 +733,41 @@ const signCard=what=>`<div class="card empty"><h3>Crea tu cuenta gratis en Claud
   <a class="btn" style="margin-top:6px" href="https://claude.ai/login" target="_blank" rel="noopener">Crear mi cuenta gratis</a><p class="small muted" style="margin-top:6px">¿Ya la tienes? Inicia sesión y vuelve a abrir el enlace de la app.</p></div>`;
 const SIGN_WHAT={"El ranking aún no tiene datos":"el ranking","Aún no hay líderes cargados":"los líderes calificados","La red aún no tiene datos":"la red","Los videos de training llegan pronto":"los videos de training"};
 function emptyCard(title,text){if(welSigned===false&&SIGN_WHAT[title])return signCard(SIGN_WHAT[title]);return `<div class="card empty"><h3>${title}</h3><p class="small muted">${text}</p></div>`}
-let socios=null,sociosQ="";
+let socios=null,sociosQ="",sociosOrd="act";
+const haceTxt=ms=>{if(!ms)return"";const m=Math.round((Date.now()-ms)/60000);if(m<2)return"ahora";if(m<60)return"hace "+m+" min";const h=Math.round(m/60);if(h<24)return"hace "+h+" h";const d=Math.round(h/24);return d===1?"ayer":"hace "+d+" días"};
+const tsMs=v=>v&&v.toDate?v.toDate().getTime():v?new Date(v).getTime()||0:0;
+const actDe=x=>{const a=x.actividad||{};const fresh=a.t&&Date.now()-a.t<8*864e5;return{hoy:a.fecha===TODAY?(a.hoy||0):0,racha:fresh?(a.racha||0):0,d7:fresh?(a.dias7||0):0,sem:fresh?(a.semana||{}):{},crm:a.crm||0,bien:!!a.bienvenida,cursos:(a.cursos||[]).length,t:a.t||0}};
+const actScore=x=>{const a=actDe(x);return a.hoy+a.d7*40+(a.sem.contactos||0)*3+(a.sem.presentaciones||0)*15+a.racha*20};
 async function loadSocios(){try{const q=await store.db.collection("users").get();socios=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.registro||x.email)
   .sort((a,b)=>String((b.registro&&b.registro.fecha)||"").localeCompare(String((a.registro&&a.registro.fecha)||"")))}catch(e){socios=[];toast("No se pudo cargar la lista de socios")}renderEquipo()}
-function sociosCSV(){const rows=[["Nombre","Correo","WhatsApp","Patrocinador","Plan","País","Ciudad","Registro","Último acceso"]].concat((socios||[]).map(x=>{const r=x.registro||{};const ua=x.ultimoAcceso&&x.ultimoAcceso.toDate?x.ultimoAcceso.toDate().toISOString():(x.ultimoAcceso||"");
-  return [r.nombre||x.nombre||"",x.email||"",r.whatsapp?"+"+r.whatsapp:"",r.patrocinador||"",r.plan||"",r.pais||"",r.ciudad||"",r.fecha||"",ua]}));
+function sociosCSV(){const rows=[["Nombre","Correo","WhatsApp","Patrocinador","Plan","Registro","Último acceso","Hoy %","Racha","Días activos (7)","Contactos 7 días","Presentaciones 7 días","Contactos en CRM","Bienvenida"]].concat((socios||[]).map(x=>{const r=x.registro||{};const ua=x.ultimoAcceso&&x.ultimoAcceso.toDate?x.ultimoAcceso.toDate().toISOString():(x.ultimoAcceso||"");
+  const a=actDe(x);return [r.nombre||x.nombre||"",x.email||"",r.whatsapp?"+"+r.whatsapp:"",r.patrocinador||"",r.plan||"",r.fecha||"",ua,a.hoy,a.racha,a.d7,a.sem.contactos||0,a.sem.presentaciones||0,a.crm,a.bien?"Sí":"No"]}));
   const csv="\ufeff"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="socios-action-leaders-"+TODAY+".csv";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
 function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.innerHTML=`<p class="muted small">Cargando socios…</p>`;loadSocios();return}
-  const q=nrmN(sociosQ),L=socios.filter(x=>{const r=x.registro||{};return !q||nrmN([r.nombre,x.email,r.patrocinador,r.pais,r.ciudad].join(" ")).includes(q)});
-  const reg=socios.filter(x=>x.registro).length,sin=socios.length-reg;
-  b.innerHTML=`<div class="grid2"><div class="card" style="gap:2px"><b class="num" style="font-size:28px">${reg}</b><span class="small muted">Socios registrados</span></div><div class="card" style="gap:2px"><b class="num" style="font-size:28px">${sin}</b><span class="small muted">Entraron sin registrarse</span></div></div>
-   <div class="row"><input class="inp grow" id="socQ" placeholder="Buscar por nombre, patrocinador o país" value="${esc(sociosQ)}"><button class="btn sm ghost" id="socCsv">Descargar</button></div>
-   <div class="card" style="gap:0">${L.length?L.map(x=>{const r=x.registro||{};const nm=r.nombre||x.nombre||x.email||"Sin nombre";const wa=r.whatsapp?`https://wa.me/${r.whatsapp}`:"";
-     return `<div class="row" style="padding:10px 0;border-bottom:1px solid var(--line);align-items:flex-start">${avHTML(nm,false,false)}<div class="grow"><b style="font-weight:600">${esc(nm)}</b>
-      <div class="small muted">${r.plan?esc(r.plan)+" · ":""}${esc([r.ciudad,r.pais].filter(Boolean).join(", "))}</div>
-      <div class="small muted">${r.patrocinador?"Patrocinador: "+esc(r.patrocinador):"<span style='color:var(--warn)'>No completó el registro</span>"}</div>
-      <div class="small muted">${esc(x.email||"")}${r.fecha?" · "+esc(niceDate(r.fecha.slice(0,10))):""}</div></div>${wa?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(wa)}" target="_blank" rel="noopener">WhatsApp</a>`:""}</div>`}).join(""):`<p class="small muted" style="padding:10px 0">No hay socios con ese filtro.</p>`}</div>
+  const q=nrmN(sociosQ);let L=socios.filter(x=>{const r=x.registro||{};return !q||nrmN([r.nombre,x.email,r.patrocinador,r.plan].join(" ")).includes(q)});
+  if(sociosOrd==="act")L=L.slice().sort((a,b)=>actScore(b)-actScore(a));
+  else if(sociosOrd==="inact")L=L.filter(x=>x.registro).sort((a,b)=>actScore(a)-actScore(b)||tsMs(a.ultimoAcceso)-tsMs(b.ultimoAcceso));
+  const reg=socios.filter(x=>x.registro).length,sin=socios.length-reg,hoy=socios.filter(x=>actDe(x).hoy>0).length,sem=socios.filter(x=>actDe(x).d7>0).length;
+  const st=(n,t,c)=>`<div class="card" style="gap:2px"><b class="num" style="font-size:28px${c?";color:"+c:""}">${n}</b><span class="small muted">${t}</span></div>`;
+  b.innerHTML=`<div class="grid2">${st(reg,"Socios registrados")}${st(sin,"Entraron sin registrarse")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}</div>
+   <div class="seg" id="socOrd"><button aria-selected="${sociosOrd==="act"}" data-o="act">Más activos</button><button aria-selected="${sociosOrd==="rec"}" data-o="rec">Recientes</button><button aria-selected="${sociosOrd==="inact"}" data-o="inact">Sin actividad</button></div>
+   <div class="row"><input class="inp grow" id="socQ" placeholder="Buscar por nombre, patrocinador o plan" value="${esc(sociosQ)}"><button class="btn sm ghost" id="socCsv">Descargar</button></div>
+   <div class="card" style="gap:0">${L.length?L.map(x=>{const r=x.registro||{},a=actDe(x),S=a.sem;const nm=r.nombre||x.nombre||x.email||"Sin nombre";const wa=r.whatsapp?`https://wa.me/${r.whatsapp}`:"";
+     const ua=tsMs(x.ultimoAcceso);
+     const chips=x.registro?`<div class="row wrap" style="gap:6px;margin-top:6px">
+       <span class="chip ${a.hoy>=100?"c-good":a.hoy>0?"c-gold":"c-brand"}">Hoy ${a.hoy}%</span>
+       ${a.racha?`<span class="chip c-gold">🔥 ${a.racha} ${a.racha===1?"día":"días"}</span>`:""}
+       <span class="chip c-brand">7 días: ${a.d7}/7</span>
+       ${(S.contactos||S.presentaciones)?`<span class="chip c-brand">${S.contactos||0} contactos · ${S.presentaciones||0} pres.</span>`:""}
+       <span class="chip c-brand">CRM ${a.crm}</span>
+       <span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"Bienvenida ✓":"Bienvenida pendiente"}</span>
+       ${a.cursos?`<span class="chip c-good">🎓 ${a.cursos} curso${a.cursos>1?"s":""}</span>`:""}</div>`:"";
+     return `<div class="row" style="padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(nm)}</b>
+      <div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.patrocinador?"Patrocinador: "+esc(r.patrocinador):"<span style='color:var(--warn)'>No completó el registro</span>"}</div>
+      <div class="small muted">${esc(x.email||"")}${ua?" · Último acceso "+haceTxt(ua):""}</div>${chips}</div>${wa?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(wa)}" target="_blank" rel="noopener">WhatsApp</a>`:""}</div>`}).join(""):`<p class="small muted" style="padding:10px 0">No hay socios con ese filtro.</p>`}</div>
    <button class="btn sm ghost" id="socReload" style="align-self:flex-start">Actualizar lista</button>`;
+  b.querySelectorAll("#socOrd button").forEach(x=>x.onclick=()=>{sociosOrd=x.dataset.o;renderSocios(b)});
   const si=$("#socQ");si.oninput=()=>{sociosQ=si.value;const pos=si.selectionStart;renderSocios(b);const n=$("#socQ");n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}};
   $("#socCsv").onclick=sociosCSV;$("#socReload").onclick=()=>{socios=null;renderEquipo()}}
 function renderEquipo(){const b=$("#eqBody");
@@ -970,7 +995,7 @@ const PAISES=[["Honduras","504"],["Estados Unidos","1"],["España","34"],["Reino
 const waNum=(t,cc)=>{const raw=String(t||"").trim();let d=raw.replace(/\D/g,"");if(!d)return"";if(raw.startsWith("+")||raw.startsWith("00"))return d.replace(/^00/,"");cc=cc||"504";if(d.startsWith(cc)&&d.length>cc.length+6)return d;return cc+d.replace(/^0+/,"")};
 const WA_MSG={"Nuevo":"Hola {n}, ¿cómo está? Quería saludarle y contarle algo que estoy haciendo y creo que le puede interesar.","Contactado":"Hola {n}, ¿cómo está? ¿Tiene unos minutos esta semana para mostrarle lo que le comenté?","Presentación":"Hola {n}, ¡gracias por su tiempo en la presentación! ¿Qué fue lo que más le gustó?","Seguimiento":"Hola {n}, ¿cómo está? Le escribo para saber si pudo revisar la información y si tiene alguna pregunta.","Socio":"Hola {n}, ¿cómo va todo? Aquí estoy para apoyarle en lo que necesite.","Cliente":"Hola {n}, ¿cómo está? Quería saber cómo le ha ido.","No interesado":"Hola {n}, ¿cómo está? Solo quería saludarle."};
 const waLink=c=>{const n=waNum(c.phone,c.cc);if(!n)return"";const first=String(c.name||"").trim().split(/\s+/)[0]||"";return "https://wa.me/"+n+"?text="+encodeURIComponent((WA_MSG[c.stage]||WA_MSG.Nuevo).replace("{n}",first))};
-function renderCRM(){const q=$("#crmSearch").value.trim().toLowerCase();
+function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerCase();
   const counts={Todos:contacts.length};STAGES.forEach(s=>counts[s]=contacts.filter(c=>c.stage===s).length);
   $("#stageBar").innerHTML=["Todos"].concat(STAGES).map(s=>`<button aria-pressed="${s===stageF}" data-s="${s}">${s}<span class="n">${counts[s]}</span></button>`).join("");
   const list=contacts.filter(c=>(stageF==="Todos"||c.stage===stageF)&&(!q||(c.name+" "+(c.note||"")).toLowerCase().includes(q))).sort((a,b)=>(a.next||"9999").localeCompare(b.next||"9999"));
@@ -1077,7 +1102,7 @@ function renderAca(){const b=$("#acaBody");
       <button class="btn ${ok?"ghost":"dark"}" data-curso="${c.k}" style="width:100%">${ok?"✓ Ya lo vi":"Marcar como visto"}</button></div>`}).join("")+
      `<div class="card empty" style="text-align:center;padding:20px"><div style="font-size:28px;line-height:1">🎓</div><p class="small muted" style="margin:6px 0 0">Más cursos muy pronto.</p></div>`;
     b.querySelectorAll("[data-pdf]").forEach(x=>{const u=x.dataset.pdf,n=x.dataset.pdfn;pdfFile(u,n);x.onclick=()=>bajarPdf(u,n)});
-    b.querySelectorAll("[data-curso]").forEach(x=>x.onclick=()=>{profile.cursos=Object.assign({},profile.cursos||{});profile.cursos[x.dataset.curso]=!profile.cursos[x.dataset.curso];store.set("perfil",profile);renderAca();if(profile.cursos[x.dataset.curso])toast("¡Curso completado!")});
+    b.querySelectorAll("[data-curso]").forEach(x=>x.onclick=()=>{profile.cursos=Object.assign({},profile.cursos||{});profile.cursos[x.dataset.curso]=!profile.cursos[x.dataset.curso];store.set("perfil",profile);pushResumen();renderAca();if(profile.cursos[x.dataset.curso])toast("¡Curso completado!")});
     return}
   if(acaTab==="arranque"){const done=ARRANQUE.filter(s=>profile.arranque[s.k]).length,p=Math.round(done/ARRANQUE.length*100);
     b.innerHTML=`<div class="card"><div class="row between"><div><h2>Plan de arranque</h2><p class="small muted">Tus primeros 30 días como socio</p></div><span class="num" style="font-size:22px">${done}/${ARRANQUE.length}</span></div>
@@ -1265,7 +1290,7 @@ function renderWel(){const el=$("#wel");
     const i=$("#welNmI");i.focus();const ok=()=>{const v=i.value.trim().replace(/\s+/g," ").slice(0,30);if(!v)return;profile.nombrePila=v;store.set("perfil",profile);$("#hello").textContent="Hola, "+v.split(" ")[0];renderWel()};
     $("#welNmOk").onclick=ok;i.onkeydown=e=>{if(e.key==="Enter")ok()}};
   C.querySelectorAll("[data-wel]").forEach(a=>a.onclick=()=>setTimeout(()=>welMark(a.dataset.wel),300));
-  $("#welGo").onclick=()=>{if(!welDone())return;profile.bienvenida=true;LS.set("welDone",1);store.set("perfil",profile);welSaveFlag({done:true,t:Date.now()});try{if(store.db)store.db.doc("users/"+store.uid).set({bienvenida:true},{merge:true})}catch(e){}renderWel();renderAviso();toast("¡Te damos la bienvenida al equipo!");if(welGate){const g=welGate;welGate=null;g()}};
+  $("#welGo").onclick=()=>{if(!welDone())return;profile.bienvenida=true;LS.set("welDone",1);store.set("perfil",profile);welSaveFlag({done:true,t:Date.now()});pushResumen();try{if(store.db)store.db.doc("users/"+store.uid).set({bienvenida:true},{merge:true})}catch(e){}renderWel();renderAviso();toast("¡Te damos la bienvenida al equipo!");if(welGate){const g=welGate;welGate=null;g()}};
   const rs=$("#welReset");if(rs)rs.onclick=()=>{welState={};profile.welPasos={};delete profile.registro;store.set("perfil",profile);try{localStorage.removeItem("alp:welpos")}catch(e){}$("#welC").dataset.v="";welVidFail=false;welOpenedAt=0;renderWel();window.scrollTo(0,0);$("#wel").scrollTop=0};
   const sk=$("#welSkip");if(sk)sk.onclick=()=>{$("#wel").hidden=true;document.body.style.overflow=""};
   clearTimeout(welTimer);if(!manualOk)welTimer=setTimeout(renderWel,Math.max(1000,120000-(Date.now()-welOpenedAt)+200))}
@@ -1411,7 +1436,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018232817";var busy=false,pend=null;
+(function(){var V="20261018233323";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
