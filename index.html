@@ -1034,8 +1034,8 @@ Ahí encontrará su rutina diaria, la agenda del equipo, cursos y todo lo necesa
 Cualquier duda, aquí estoy para apoyarle. ¡Hasta que funcione! 🚀
 
 ${pat}`;
-const BIEN_TH={classic:{img:"media/flyers/bienvenida-classic.jpg?v=2",acc:"#2AC1F1",hl:"#2AC1F1",glow:"rgba(42,193,241,.85)",txt:"#0a141e",lab:"SOCIO CLASSIC"},
-  premium:{img:"media/flyers/bienvenida-premium.jpg?v=2",acc:"#F0F0F2",hl:"#6EC8F5",glow:"rgba(80,170,240,.8)",txt:"#08080a",lab:"SOCIO PREMIUM"}};
+const BIEN_TH={classic:{img:"media/flyers/bienvenida-classic.jpg?v=3",acc:"#2AC1F1",hl:"#2AC1F1",glow:"rgba(42,193,241,.85)",txt:"#0a141e",lab:"SOCIO CLASSIC"},
+  premium:{img:"media/flyers/bienvenida-premium.jpg?v=3",acc:"#F0F0F2",hl:"#6EC8F5",glow:"rgba(80,170,240,.8)",txt:"#08080a",lab:"SOCIO PREMIUM"}};
 const PAIS_ISO={"Honduras":"HN","Estados Unidos":"US","España":"ES","Reino Unido":"GB","Guatemala":"GT","El Salvador":"SV","Nicaragua":"NI","Costa Rica":"CR","Panamá":"PA","México":"MX","Colombia":"CO","Venezuela":"VE","Perú":"PE","Ecuador":"EC","Chile":"CL","Argentina":"AR","República Dominicana":"DO","Canadá":"CA","Italia":"IT","Francia":"FR","Alemania":"DE"};
 const bandera=p=>{const c=PAIS_ISO[p];return c?String.fromCodePoint(...[...c].map(x=>127397+x.charCodeAt(0))):""};
 async function bienCanvas(n,f,pat,plan,fotoSrc,pais){const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");const T=BIEN_TH[plan]||BIEN_TH.classic;
@@ -1051,7 +1051,7 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais){const W=1080,H=1350,cv=docu
     g.restore();g.beginPath();g.arc(cx,cy,r+lw/2,0,Math.PI*2);g.lineWidth=lw;g.strokeStyle=T.acc;g.stroke()};
   await circle(fotoSrc,540,420,175,10,true,n);
   g.font="900 30px "+BF;const lw=g.measureText(T.lab).width+60;g.beginPath();g.roundRect(540-lw/2,575,lw,52,26);g.fillStyle=T.acc;g.fill();g.fillStyle=T.txt;g.textAlign="center";g.font="800 30px "+BF;g.fillText(T.lab,540,612);
-  g.fillStyle=T.hl;g.font="700 40px "+BF;g.fillText(f?"¡BIENVENIDA A LA FAMILIA!":"¡BIENVENIDO A LA FAMILIA!",540,705);
+  g.fillStyle=T.hl;g.font="700 40px "+BF;{const tt=f?"¡BIENVENIDA A LA FAMILIA!":"¡BIENVENIDO A LA FAMILIA!",w=g.measureText(tt).width;g.fillText(tt,540,705);const lg=(x1,x2)=>{const gr=g.createLinearGradient(x1,0,x2,0);gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(1,T.hl);return gr};g.fillStyle=lg(540-w/2-150,540-w/2-24);g.fillRect(540-w/2-150,690,126,3);const gr2=g.createLinearGradient(540+w/2+24,0,540+w/2+150,0);gr2.addColorStop(0,T.hl);gr2.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=gr2;g.fillRect(540+w/2+24,690,126,3);g.fillStyle=T.hl}
   g.fillStyle="#fff";fit(n,"800 {s}px "+HF,108,940);g.fillText(n,540,825);
   if(pais){g.font="700 38px "+BF;const fl=bandera(pais),tx=pais.toUpperCase();g.fillStyle="#fff";g.font="40px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";const fw=fl?g.measureText(fl).width+14:0;g.font="700 34px "+BF;const tw=g.measureText(tx).width;const x0=540-(fw+tw)/2;
     g.textAlign="left";if(fl){g.font="40px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";g.fillText(fl,x0,888)}g.font="700 34px "+BF;g.fillStyle="#d2d7e1";g.fillText(tx,x0+fw,886);g.textAlign="center"}
@@ -1600,7 +1600,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019003531";var busy=false,pend=null;
+(function(){var V="20261019003741";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
