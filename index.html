@@ -846,8 +846,13 @@ function renderCal(){$("#calTitle").textContent=MONTHS[calM.getMonth()][0].toUpp
 
 // ---------- compartir actividades y flyers ----------
 const ZOOM_DEF={"Presentación":"https://us06web.zoom.us/j/7717273747"};
-const evLink=e=>safeUrl(e.enlace)||ZOOM_DEF[e.tipo]||"";
-const esFlyer=e=>e.tipo==="Presentación";
+const ZOOM_TIT={"action leaders training":"https://us06web.zoom.us/launch/jc/89020324859"};
+const evLink=e=>safeUrl(e.enlace)||ZOOM_TIT[(e.titulo||"").toLowerCase().trim()]||ZOOM_DEF[e.tipo]||"";
+const FLYERS={
+  presentacion:{img:"media/flyers/presentacion.jpg",c:[[152,755,83],[152,957,83]],tx:400,ny:[750,950],tw:255,rc:"#E7B54B",d:[255,1179,160],h:[571,1179,140]},
+  training:{img:"media/flyers/training.jpg",c:[[164,804,80],[164,989,80]],tx:408,ny:[777,961],tw:245,rc:"#4A9BEA",d:[263,1209,155],h:[579,1209,140]}};
+const flyerCfg=e=>/action leaders? training/i.test(e.titulo||"")?FLYERS.training:e.tipo==="Presentación"?FLYERS.presentacion:null;
+const esFlyer=e=>!!flyerCfg(e);
 const EMO={"Presentación":"🚢","Píldora":"💊","Capacitación":"🎓","Llamada":"📞","Reunión de líderes":"🛡️","Evento":"🎉"};
 function evMsg(e){const F={"Honduras":"🇭🇳","Miami":"🇺🇸","España":"🇪🇸","Reino Unido":"🇬🇧"},L=[];
   L.push((EMO[e.tipo]||"📌")+" *"+e.titulo.toUpperCase()+"*","");
@@ -864,22 +869,22 @@ const RANGO_CORTO={"Senior Marketing Director":"Senior M Director","Regional Dir
 function tituloFlyer(n){const t=(T.config&&T.config.titulos)||{};for(const k in t)if(t[k]&&sameN(k,n))return t[k];const r=rangoDe(n);return RANGO_CORTO[r]||r||""}
 async function flyerCanvas(e){const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
   try{await document.fonts.load("italic 500 30px Figtree");await document.fonts.load("600 30px Figtree")}catch(x){}
-  const bg=await imgLoad("media/flyers/presentacion.jpg");if(!bg)return null;g.drawImage(bg,0,0,W,H);
+  const F=flyerCfg(e);if(!F)return null;const bg=await imgLoad(F.img);if(!bg)return null;g.drawImage(bg,0,0,W,H);
   const esc_=await imgLoad("media/flyers/escudo.png");
   const fit=(t,font,size,maxW)=>{let z=size;g.font=font.replace("{s}",z);while(g.measureText(t).width>maxW&&z>14){z--;g.font=font.replace("{s}",z)}};
-  const slot=async(nombre,cy,ty)=>{const r=83;g.save();g.beginPath();g.arc(152,cy,r,0,Math.PI*2);g.closePath();g.clip();
+  const slot=async(nombre,[cx,cy,r],ty)=>{g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.closePath();g.clip();
     let src=nombre?fotoDe(nombre):"";if(!src&&nombre&&fbUser&&fbUser.photoURL&&sameN(nombre,miNombreFull()))src=fbUser.photoURL;
     const im=src?await imgLoad(src,!/^data:/.test(src)):null;
-    if(im){const s=Math.max(2*r/im.width,2*r/im.height);g.fillStyle="#e9e9ec";g.fillRect(152-r,cy-r,2*r,2*r);g.drawImage(im,152-im.width*s/2,cy-im.height*s/2,im.width*s,im.height*s)}
-    else{g.fillStyle="#0b1a36";g.fillRect(152-r,cy-r,2*r,2*r);if(esc_)g.drawImage(esc_,152-50,cy-53,100,106)}
+    if(im){const s=Math.max(2*r/im.width,2*r/im.height);g.fillStyle="#e9e9ec";g.fillRect(cx-r,cy-r,2*r,2*r);g.drawImage(im,cx-im.width*s/2,cy-im.height*s/2,im.width*s,im.height*s)}
+    else{g.fillStyle="#0b1a36";g.fillRect(cx-r,cy-r,2*r,2*r);if(esc_)g.drawImage(esc_,cx-50,cy-53,100,106)}
     g.restore();g.textAlign="center";g.textBaseline="alphabetic";
     const nm=nombre||"Action Leaders",rg=nombre?tituloFlyer(nombre):"Equipo de líderes";
-    g.fillStyle="#ffffff";fit(nm,"italic 500 {s}px Figtree, Arial, sans-serif",31,255);g.fillText(nm,400,ty);
-    if(rg){g.fillStyle="#E7B54B";fit(rg,"italic 500 {s}px Figtree, Arial, sans-serif",23,255);g.fillText(rg,400,ty+28)}};
-  await slot(e.responsable,755,750);await slot(e.edifica,957,950);
+    g.fillStyle="#ffffff";fit(nm,"italic 500 {s}px Figtree, Arial, sans-serif",31,F.tw);g.fillText(nm,F.tx,ty);
+    if(rg){g.fillStyle=F.rc;fit(rg,"italic 500 {s}px Figtree, Arial, sans-serif",23,F.tw);g.fillText(rg,F.tx,ty+28)}};
+  await slot(e.responsable,F.c[0],F.ny[0]);await slot(e.edifica,F.c[1],F.ny[1]);
   const d=parseK(e.fecha);g.fillStyle="#ffffff";g.textAlign="center";
-  fit((d.getDate()+" DE "+MONTHS[d.getMonth()]).toUpperCase(),"italic 500 {s}px Figtree, Arial, sans-serif",21,160);g.fillText((d.getDate()+" DE "+MONTHS[d.getMonth()]).toUpperCase(),255,1179);
-  const hh=h12(e.hora).replace(" am"," AM").replace(" pm"," PM")+" HN";fit(hh,"italic 500 {s}px Figtree, Arial, sans-serif",24,140);g.fillText(hh,571,1179);
+  const ds=(d.getDate()+" DE "+MONTHS[d.getMonth()]).toUpperCase();fit(ds,"italic 500 {s}px Figtree, Arial, sans-serif",21,F.d[2]);g.fillText(ds,F.d[0],F.d[1]);
+  const hh=h12(e.hora).replace(" am"," AM").replace(" pm"," PM")+" HN";fit(hh,"italic 500 {s}px Figtree, Arial, sans-serif",24,F.h[2]);g.fillText(hh,F.h[0],F.h[1]);
   return cv}
 async function abrirCompartir(e){const msg=evMsg(e),fl=esFlyer(e);let file=null;
   openSheet(`<h2>Compartir actividad</h2>${fl?`<div id="flyBox" style="aspect-ratio:4/5;border-radius:14px;background:#0b1a36;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Creando flyer…</span></div>`:""}
@@ -1404,7 +1409,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018225419";var busy=false,pend=null;
+(function(){var V="20261018225957";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
