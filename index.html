@@ -785,7 +785,7 @@ function renderLeadList(){const el=$("#leadList");if(!el)return;const q=leadQ.tr
       <div style="${vc?`background:var(--${vc}-soft)`:""}"><b style="${vc?`color:var(--${vc})`:""}">${vol==null?"—":fmt(vol)}</b><span>${vol==null&&num(l.nuevos)>0?"Volumen: falta el paquete":"Volumen"+(meta?" / "+fmt(meta):"")}</span></div><div><b>${qbi==null?"—":qbi+"%"}</b><span>QBI</span></div></div>
      ${meta?`<div class="bar" style="height:5px;margin-top:8px"><i style="width:${Math.max(pct,vv?3:0)}%;background:var(--${vc})"></i></div>`:""}${l.volumenDetalle?`<div class="small muted" style="margin-top:4px">Socios nuevos: ${esc(l.volumenDetalle)}</div>`:""}</div>`}).join("")}
 function bindRank(){$("#rankSeg").onclick=e=>{const x=e.target.closest("button");if(!x)return;rankTab=x.dataset.k;renderEquipo()};$("#rankMetric").onclick=e=>{const x=e.target.closest("button");if(!x)return;rankMetric=x.dataset.k;renderEquipo()}}
-let welSigned=null,welGate=null,welPreview=false;const APP_URL="https://claude.ai/artifact/AaCA7EDcuCw3d8tJmkionG";
+let mineReady=false,welSigned=null,welGate=null,welPreview=false;const APP_URL="https://claude.ai/artifact/AaCA7EDcuCw3d8tJmkionG";
 const signCard=what=>`<div class="card empty"><h3>Crea tu cuenta gratis en Claude</h3><p class="small muted">Para ver ${what} del equipo necesitas una cuenta de Claude. Es gratis y toma 1 minuto con tu correo de Google.</p>
   <a class="btn" style="margin-top:6px" href="https://claude.ai/login" target="_blank" rel="noopener">Crear mi cuenta gratis</a><p class="small muted" style="margin-top:6px">¿Ya la tienes? Inicia sesión y vuelve a abrir el enlace de la app.</p></div>`;
 const SIGN_WHAT={"El ranking aún no tiene datos":"el ranking","Aún no hay líderes cargados":"los líderes calificados","La red aún no tiene datos":"la red","Los videos de training llegan pronto":"los videos de training"};
@@ -1560,7 +1560,8 @@ function renderWel(){const el=$("#wel");
     const gl=$("#gLogin");if(gl)gl.onclick=async()=>{gl.disabled=true;try{await window.FB.login()}catch(e){gl.disabled=false;const er=$("#gErr");er.textContent="No se pudo iniciar sesión ("+((e&&e.code)||"error")+"). Intenta de nuevo.";er.hidden=false}};
     const px=$("#welPrevX");if(px)px.onclick=()=>{welPreview=false;welSigned=true;C.dataset.v="";el.hidden=true;document.body.style.overflow="";renderWel()};return}
   if(welSigned===null)return;
-  if(profile.bienvenida){el.hidden=true;document.body.style.overflow="";return}
+  if(profile.bienvenida){el.hidden=true;document.body.style.overflow="";try{if(store.uid)localStorage.setItem("alp:welok",store.uid)}catch(x){}return}
+  if(!mineReady)return;
   el.hidden=false;document.body.style.overflow="hidden";if(!welOpenedAt)welOpenedAt=Date.now();
   const c=welCfg(),vid=ytId(c.video),steps=welSteps(),n=k=>steps.findIndex(x=>x.k===k)+1;
   const badge=k=>`<span class="wel-n ${welState[k]?"ok":""}">${welState[k]?CHECK:n(k)}</span>`;
@@ -1613,7 +1614,7 @@ function renderWel(){const el=$("#wel");
     $("#welNmOk").onclick=ok;i.onkeydown=e=>{if(e.key==="Enter")ok()}};
   C.querySelectorAll("[data-wel]").forEach(a=>a.onclick=()=>setTimeout(()=>welMark(a.dataset.wel),300));
   $("#welGo").onclick=()=>{if(!welDone())return;profile.bienvenida=true;LS.set("welDone",1);store.set("perfil",profile);welSaveFlag({done:true,t:Date.now()});pushResumen();try{if(store.db)store.db.doc("users/"+store.uid).set({bienvenida:true},{merge:true})}catch(e){}renderWel();renderAviso();toast("¡Te damos la bienvenida al equipo!");if(welGate){const g=welGate;welGate=null;g()}};
-  const rs=$("#welReset");if(rs)rs.onclick=()=>{welState={};profile.welPasos={};delete profile.registro;store.set("perfil",profile);try{localStorage.removeItem("alp:welpos")}catch(e){}$("#welC").dataset.v="";welVidFail=false;welOpenedAt=0;renderWel();window.scrollTo(0,0);$("#wel").scrollTop=0};
+  const rs=$("#welReset");if(rs)rs.onclick=()=>{welState={};profile.welPasos={};delete profile.registro;store.set("perfil",profile);try{localStorage.removeItem("alp:welpos");localStorage.removeItem("alp:welok")}catch(e){}$("#welC").dataset.v="";welVidFail=false;welOpenedAt=0;renderWel();window.scrollTo(0,0);$("#wel").scrollTop=0};
   const sk=$("#welSkip");if(sk)sk.onclick=()=>{$("#wel").hidden=true;document.body.style.overflow=""};
   clearTimeout(welTimer);if(!manualOk)welTimer=setTimeout(renderWel,Math.max(1000,120000-(Date.now()-welOpenedAt)+200))}
 function welVideo(){const box=$("#welVid");if(!box)return;
@@ -1726,7 +1727,7 @@ function subscribeTeam(db){
   db.collection("fotos").onSnapshot(s=>{fotosFs=docs(s);T.fotos=fotosRepo.concat(fotosFs);renderWho();renderEquipo();renderHist()},()=>{});
 }
 async function loadMine(){
-  const p=await store.get("perfil");if(p)profile=Object.assign({ref:"",training:{},arranque:{},miNombre:""},p);
+  const p=await store.get("perfil");if(p)profile=Object.assign({ref:"",training:{},arranque:{},miNombre:""},p);try{if(store.uid&&localStorage.getItem("alp:welok")===store.uid)profile.bienvenida=true}catch(x){}
   const r=await store.get("reto-"+MONTH);if(r)reto=r;
   const ks=Array.from({length:7},(_,i)=>{const d=new Date(now);d.setDate(d.getDate()-i);return dkey(d)});
   const vals=await Promise.all(ks.map(k=>store.get("rutina-"+k)));ks.forEach((k,i)=>{if(vals[i])weekCache[k]=vals[i]});
@@ -1734,7 +1735,7 @@ async function loadMine(){
   if(profile.nombrePila)$("#hello").textContent="Hola, "+profile.nombrePila.split(" ")[0];
   try{if(store.db){const b=await store.get("bienvenida");if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}}catch(e){}
   if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
-  welState=Object.assign({},profile.welPasos||{});renderWel();
+  welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();
   contacts=await store.contacts();setTimeout(importarProspectos,1500);
   renderAll()}
 
@@ -1752,6 +1753,7 @@ const ADMINS=["garciagoedwin@gmail.com","actionleadersoficial@gmail.com","edwing
 let fbUser=null,regDoc=null;
 async function startApp(u){
   fbUser=u||null;const db=window.FB.db;
+  try{if(u&&localStorage.getItem("alp:welok")===u.uid){profile.bienvenida=true;const w=$("#wel");w.hidden=true;document.body.style.overflow=""}}catch(x){}
   welSigned=!!u;isAdmin=!!(u&&u.emailVerified&&ADMINS.includes((u.email||"").toLowerCase()));
   if(u){store.db=db;store.uid=u.uid;const nm=u.displayName||"";if(nm){welName=nm.split(" ")[0];if(!profile.nombrePila)$("#hello").textContent="Hola, "+welName}
     try{const r=await db.doc("users/"+u.uid).get();regDoc=r.exists?r.data():null}catch(e){regDoc=null}
@@ -1776,7 +1778,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019095603";var busy=false,pend=null;
+(function(){var V="20261019095834";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
