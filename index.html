@@ -1115,7 +1115,31 @@ function abrirMiPagina(){if(!(regDoc&&regDoc.registro)){toast("Completa tu regis
     $("#mpCopy").onclick=async()=>{await save();try{await navigator.clipboard.writeText(miPagina());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};
     $("#mpShare").onclick=async()=>{if(!$("#mpTel").value.trim()){toast("Pon tu WhatsApp para que te escriban");$("#mpTel").focus();return}const ok=await save();if(!ok)return;
       const txt="✈️ Te invito a conocer algo que me está cambiando la vida. Mira este video corto 👇\n"+miPagina();
+      const b=$("#mpShare"),bt=b.textContent;b.disabled=true;b.textContent="Creando tu tarjeta…";let file=null;
+      try{const cv=await invCanvas();const bl=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));file=new File([bl],"te-invito.jpg",{type:"image/jpeg"})}catch(x){}
+      b.disabled=false;b.textContent=bt;
+      if(file&&navigator.canShare&&navigator.canShare({files:[file],text:txt})){try{await navigator.share({files:[file],text:txt});return}catch(x){if(x&&x.name==="AbortError")return}}
       if(navigator.share){try{await navigator.share({text:txt});return}catch(x){if(x&&x.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(txt)}})}
+async function invCanvas(){const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
+  try{await Promise.all(["800 90px 'Bricolage Grotesque'","500 40px Figtree","700 40px Figtree"].map(f=>document.fonts.load(f)))}catch(x){}
+  const HF="'Bricolage Grotesque', Figtree, Arial, sans-serif",BF="Figtree, Arial, sans-serif";
+  g.fillStyle="#08080c";g.fillRect(0,0,W,H);
+  const bg=await imgLoad("media/comunidad/c0"+(new Date().getDate()%10)+".webp");if(bg){const s=Math.max(W/bg.width,H/bg.height);g.drawImage(bg,(W-bg.width*s)/2,(H-bg.height*s)/2,bg.width*s,bg.height*s)}
+  const lg=g.createLinearGradient(0,0,0,H);lg.addColorStop(0,"rgba(6,6,12,.55)");lg.addColorStop(.4,"rgba(6,6,12,.78)");lg.addColorStop(1,"rgba(6,6,12,.97)");g.fillStyle=lg;g.fillRect(0,0,W,H);
+  const rg=g.createRadialGradient(540,430,0,540,430,520);rg.addColorStop(0,"rgba(42,193,241,.35)");rg.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=rg;g.fillRect(0,0,W,H);
+  const nm=miNombreCorto()||"Action Leaders",src=miFotoUrl(),cx=540,cy=420,r=210;
+  const im=src?await imgLoad(src,!/^data:/.test(src)):null;g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();
+  if(im){const s=Math.max(2*r/im.width,2*r/im.height);g.drawImage(im,cx-im.width*s/2,cy-im.height*s/2,im.width*s,im.height*s)}
+  else{g.fillStyle="#2AC1F1";g.fillRect(cx-r,cy-r,2*r,2*r);g.fillStyle="#10222b";g.font="800 150px "+HF;g.textAlign="center";g.fillText(initials(nm),cx,cy+52)}
+  g.restore();g.beginPath();g.arc(cx,cy,r+6,0,Math.PI*2);g.lineWidth=10;g.strokeStyle="#2AC1F1";g.stroke();
+  g.textAlign="center";g.font="700 38px "+BF;g.fillStyle="#2AC1F1";g.fillText("TE INVITA",540,720);
+  g.font="800 78px "+HF;g.fillStyle="#fff";g.fillText(nm,540,805);
+  g.font="800 62px "+HF;g.fillStyle="#fff";g.fillText("Viaja más, gasta menos",540,945);
+  g.fillStyle="#2AC1F1";g.fillText("y crea un ingreso extra",540,1020);
+  g.beginPath();g.roundRect(290,1090,500,96,48);g.fillStyle="#2AC1F1";g.fill();g.font="800 40px "+BF;g.fillStyle="#0a141e";g.fillText("▶  Mira el video",540,1152);
+  const lo=await imgLoad("media/logo-blanco.png");if(lo){const h=70,w=lo.width*h/lo.height;g.globalAlpha=.9;g.drawImage(lo,540-w/2,1235,w,h);g.globalAlpha=1}
+  return cv}
+window.__invCanvas=invCanvas;
 function evHTML(e){const fin=finalizada(e);return `<div class="ev ${fin?"ev-past":""}"><span class="hr">${esc(h12(e.hora))||"—"}${e.horaFin?`<br><span class="small muted" style="font-family:var(--f-body);font-weight:600">a ${esc(h12(e.horaFin))}</span>`:""}</span><div class="body">
   <div class="row between" style="align-items:flex-start"><b>${esc(e.titulo)}</b><span class="row" style="gap:4px;flex:none">${fin?'<span class="chip c-brand" style="color:var(--muted)">Finalizada</span>':modoChip(e)}</span></div>
   <div class="meta">${e.responsable?`<span>${USER}Presenta: <b style="font-weight:600;color:var(--ink)">${esc(e.responsable)}</b></span>`:pendiente(e)&&!fin?`<span class="chip c-warn">Presentador por asignar</span>`:""}${e.edifica?`<span>Edifica: <b style="font-weight:600;color:var(--ink)">${esc(e.edifica)}</b></span>`:""}</div>
@@ -1643,7 +1667,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019015935";var busy=false,pend=null;
+(function(){var V="20261019022049";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
