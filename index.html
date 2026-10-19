@@ -442,6 +442,7 @@ nav.tabs button{z-index:0;isolation:isolate}
       </div>
       <div class="card" id="avisoCard" hidden></div>
       <div class="card" id="accesos" hidden></div>
+      <div class="card" id="histCard" hidden></div>
       <div class="card" id="whoCard" hidden></div>
       <div class="card">
         <div class="row between"><h3>Progreso de hoy</h3><span class="num" style="font-size:20px" id="dayPct">0%</span></div>
@@ -661,7 +662,7 @@ let resT;function pushResumen(){if(!store.db||!store.uid)return;clearTimeout(res
   for(let i=0;i<30;i++){const d=new Date(now);d.setDate(d.getDate()-i);const sc=dayScore(weekCache[dkey(d)]);if(i===0&&sc<1)continue;if(sc>=1)racha++;else break}
   const et={};(contacts||[]).forEach(c=>{et[c.stage||"Nuevo"]=(et[c.stage||"Nuevo"]||0)+1});
   const a={fecha:TODAY,hoy:Math.round(dayScore(day)*100),racha,dias7:dias,semana:sum,crm:(contacts||[]).length,etapas:Object.keys(et).map(k=>k+":"+et[k]),
-    bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),t:Date.now()};
+    historia:!!(profile.historias||{})[TODAY],bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),t:Date.now()};
   await store.db.doc("users/"+store.uid).set({actividad:a},{merge:true})}catch(e){}},3000)}
 function renderWeek(){const out=[];let streak=0;
   for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)]);
@@ -737,7 +738,7 @@ function emptyCard(title,text){if(welSigned===false&&SIGN_WHAT[title])return sig
 let socios=null,sociosQ="",sociosOrd="act";
 const haceTxt=ms=>{if(!ms)return"";const m=Math.round((Date.now()-ms)/60000);if(m<2)return"ahora";if(m<60)return"hace "+m+" min";const h=Math.round(m/60);if(h<24)return"hace "+h+" h";const d=Math.round(h/24);return d===1?"ayer":"hace "+d+" días"};
 const tsMs=v=>v&&v.toDate?v.toDate().getTime():v?new Date(v).getTime()||0:0;
-const actDe=x=>{const a=x.actividad||{};const fresh=a.t&&Date.now()-a.t<8*864e5;return{hoy:a.fecha===TODAY?(a.hoy||0):0,racha:fresh?(a.racha||0):0,d7:fresh?(a.dias7||0):0,sem:fresh?(a.semana||{}):{},crm:a.crm||0,bien:!!a.bienvenida,cursos:(a.cursos||[]).length,t:a.t||0}};
+const actDe=x=>{const a=x.actividad||{};const fresh=a.t&&Date.now()-a.t<8*864e5;return{hist:a.fecha===TODAY&&!!a.historia,hoy:a.fecha===TODAY?(a.hoy||0):0,racha:fresh?(a.racha||0):0,d7:fresh?(a.dias7||0):0,sem:fresh?(a.semana||{}):{},crm:a.crm||0,bien:!!a.bienvenida,cursos:(a.cursos||[]).length,t:a.t||0}};
 const actScore=x=>{const a=actDe(x);return a.hoy+a.d7*40+(a.sem.contactos||0)*3+(a.sem.presentaciones||0)*15+a.racha*20};
 async function loadSocios(){try{const q=await store.db.collection("users").get();socios=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.registro||x.email)
   .sort((a,b)=>String((b.registro&&b.registro.fecha)||"").localeCompare(String((a.registro&&a.registro.fecha)||"")))}catch(e){socios=[];toast("No se pudo cargar la lista de socios")}renderEquipo()}
@@ -762,7 +763,7 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
        <span class="chip c-brand">7 días: ${a.d7}/7</span>
        ${(S.contactos||S.presentaciones)?`<span class="chip c-brand">${S.contactos||0} contactos · ${S.presentaciones||0} pres.</span>`:""}
        <span class="chip c-brand">CRM ${a.crm}</span>
-       <span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"Bienvenida ✓":"Bienvenida pendiente"}</span>
+       ${a.hist?`<span class="chip c-good">📸 Historia hoy</span>`:""}<span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"Bienvenida ✓":"Bienvenida pendiente"}</span>
        ${a.cursos?`<span class="chip c-good">🎓 ${a.cursos} curso${a.cursos>1?"s":""}</span>`:""}</div>`:"";
      return `<div class="row" style="padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(nm)}</b>
       <div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.patrocinador?"Patrocinador: "+esc(r.patrocinador):"<span style='color:var(--warn)'>No completó el registro</span>"}</div>
@@ -936,6 +937,81 @@ async function abrirCompartir(e){const sp=espDe(e),msg=sp&&sp.msg?sp.msg:evMsg(e
       if(box){box.innerHTML="";box.style.aspectRatio="auto";box.style.display="block";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:auto;display:block";box.appendChild(im)}}
     catch(x){if(box)box.innerHTML='<span class="small" style="color:#fff">No se pudo crear el flyer</span>'}}}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-share]");if(!b)return;const ev=T.eventos.find(x=>x.id===b.dataset.share);if(ev)abrirCompartir(ev)});
+
+// ---------- historia del día (vender sin vender) ----------
+const HIST={
+ pregunta:[["¿Y si tus próximas vacaciones se pagaran solas?","Hace un tiempo descubrí cómo viajar más gastando menos… y ahora ayudo a otros a hacerlo."],
+  ["¿Cuándo fue la última vez que viajaste sin preocuparte por el dinero?","Yo encontré la forma de hacerlo posible. Pregúntame cómo."],
+  ["¿Te imaginas viajar con tu familia una vez al año, sin endeudarte?","No es suerte, es una decisión que tomé. Te cuento si quieres."],
+  ["¿Tu trabajo te da tiempo para disfrutar la vida?","Yo estoy construyendo algo diferente, a mi ritmo y con un gran equipo."],
+  ["¿Y si aprender algo nuevo cambiara tu próximo año?","Este año decidí moverme. Los resultados ya se están viendo."],
+  ["¿Qué harías con un ingreso extra cada mes?","Hay formas reales de lograrlo desde tu celular. Yo ya empecé."],
+  ["¿Sabías que se puede viajar en crucero por mucho menos de lo que crees?","Me sorprendí cuando lo descubrí. Escríbeme y te explico."],
+  ["¿Cuántas veces has dicho “algún día voy a viajar”?","Ese “algún día” para mí ya empezó."],
+  ["¿Y si tu próximo viaje lo pagara tu propio negocio?","Estoy aprendiendo a hacerlo con personas que ya lo lograron."],
+  ["¿Te gustaría rodearte de personas que piensan en grande?","Encontré una comunidad que me impulsa todos los días."]],
+ frase:[["Viajar no es un gasto cuando sabes cómo hacerlo.","Yo tomé la decisión de aprender. ¿Te cuento cómo?"],
+  ["Los sueños no tienen fecha de vencimiento.","Hoy estoy trabajando en los míos. ¿Y tú?"],
+  ["El mejor momento para empezar fue ayer. El segundo mejor es hoy.","Yo ya empecé. Escríbeme si quieres saber cómo."],
+  ["No necesitas ser experto para empezar, solo decidir.","Así empecé yo, y no me arrepiento."],
+  ["Invertir en experiencias es invertir en tu vida.","Estoy aprendiendo a viajar más y mejor."],
+  ["Rodéate de personas que te hagan crecer.","Encontré un equipo que me empuja a ser mejor cada día."],
+  ["Un año de acción puede cambiar diez años de tu vida.","Este es mi año. ¿Quieres que sea el tuyo también?"],
+  ["Tu tiempo vale más que cualquier horario.","Estoy construyendo la libertad de decidir cómo usarlo."],
+  ["Hasta que funcione.","Esa es la diferencia entre soñar y lograr."],
+  ["Lo que hoy parece imposible, mañana será tu historia.","Yo estoy escribiendo la mía. Pregúntame."]],
+ encuesta:[["Si pudieras trabajar desde cualquier lugar, ¿a dónde te irías?",["Playas del Caribe","Europa","Un crucero por el mundo"]],
+  ["¿Qué te gustaría más este año?",["Viajar más","Un ingreso extra","Las dos cosas"]],
+  ["¿Con quién harías tu viaje soñado?",["Mi familia","Mi pareja","Mis amigos"]],
+  ["¿Qué destino está en tu lista?",["Cancún","Europa","Las Bahamas en crucero"]],
+  ["¿Qué te detiene para viajar más?",["El dinero","El tiempo","No sé por dónde empezar"]],
+  ["Si te pagaran por viajar, ¿aceptarías?",["¡Claro que sí!","Me da curiosidad","Cuéntame más"]],
+  ["¿Cómo prefieres vacacionar?",["Playa y descanso","Aventura","Crucero todo incluido"]],
+  ["¿Has viajado en crucero alguna vez?",["Sí, me encantó","No, pero quiero","No sabía que era accesible"]],
+  ["¿Qué harías con más tiempo libre?",["Viajar","Estar con mi familia","Emprender"]],
+  ["¿Te gustaría aprender a generar ingresos desde tu celular?",["Sí","Tal vez","Cuéntame más"]]]};
+const histDia=k=>{const n=Math.floor(parseK(k).getTime()/864e5),tipo=["pregunta","frase","encuesta"][n%3],L=HIST[tipo];return{tipo,item:L[Math.floor(n/3)%L.length],foto:"media/comunidad/c"+String((n*7)%20).padStart(2,"0")+".webp"}};
+function miNombreCorto(){const n=(miRegistro().nombre||miNombreFull()||profile.nombrePila||"").trim().split(/\s+/);return n.length>2?n[0]+" "+n[n.length>3?2:1]:n.join(" ")}
+async function histCanvas(k){const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");const h=histDia(k);
+  try{await Promise.all(["800 90px 'Bricolage Grotesque'","500 40px Figtree","700 40px Figtree"].map(f=>document.fonts.load(f)))}catch(x){}
+  const HF="'Bricolage Grotesque', Figtree, Arial, sans-serif",BF="Figtree, Arial, sans-serif";
+  const wrap=(t,font,maxw)=>{g.font=font;const out=[];t.split("\n").forEach(p=>{let l="";p.split(" ").forEach(w=>{const tt=(l+" "+w).trim();if(g.measureText(tt).width<=maxw)l=tt;else{out.push(l);l=w}});out.push(l)});return out};
+  const draw=(ls,font,x,y,lh,col,al)=>{g.font=font;g.fillStyle=col;g.textAlign=al||"left";ls.forEach(l=>{g.fillText(l,x,y);y+=lh});return y};
+  const glow=(x,y,r,c)=>{const rg=g.createRadialGradient(x,y,0,x,y,r);rg.addColorStop(0,c);rg.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=rg;g.fillRect(0,0,W,H)};
+  g.fillStyle="#08080c";g.fillRect(0,0,W,H);g.textBaseline="alphabetic";
+  if(h.tipo==="pregunta"){const im=await imgLoad(h.foto);if(im){const s=Math.max(W/im.width,H/im.height);g.drawImage(im,(W-im.width*s)/2,(H-im.height*s)/2,im.width*s,im.height*s)}
+    const lg=g.createLinearGradient(0,0,0,H);lg.addColorStop(0,"rgba(6,6,12,.25)");lg.addColorStop(.45,"rgba(6,6,12,.55)");lg.addColorStop(1,"rgba(6,6,12,.96)");g.fillStyle=lg;g.fillRect(0,0,W,H);
+    g.font="700 34px "+BF;g.fillStyle="#2AC1F1";g.textAlign="left";g.fillText("PREGÚNTATE ESTO",90,1010);
+    let y=draw(wrap(h.item[0],"800 92px "+HF,900),"800 92px "+HF,90,1110,104,"#fff");draw(wrap(h.item[1],"500 42px "+BF,900),"500 42px "+BF,90,y+30,56,"#dde2ea")}
+  else if(h.tipo==="frase"){glow(300,1600,800,"rgba(30,140,230,.55)");glow(950,150,550,"rgba(110,80,255,.35)");
+    g.font="800 260px "+HF;g.fillStyle="#2AC1F1";g.textAlign="left";g.fillText("“",80,560);
+    let y=draw(wrap(h.item[0],"800 100px "+HF,900),"800 100px "+HF,90,680,116,"#fff");g.fillStyle="#2AC1F1";g.fillRect(90,y+20,240,8);
+    draw(wrap(h.item[1],"500 46px "+BF,900),"500 46px "+BF,90,y+110,60,"#c8cdd7")}
+  else{glow(540,700,700,"rgba(30,140,230,.5)");g.font="700 36px "+BF;g.fillStyle="#2AC1F1";g.textAlign="center";g.fillText("RESPONDE",540,360);
+    let y=draw(wrap(h.item[0],"800 86px "+HF,920),"800 86px "+HF,540,470,100,"#fff","center")+40;
+    h.item[1].forEach((t,i)=>{const yy=y+i*170;g.beginPath();g.roundRect(110,yy,860,130,65);g.fillStyle="#161e2c";g.fill();g.lineWidth=4;g.strokeStyle="#2AC1F1";g.stroke();
+      g.beginPath();g.arc(180,yy+65,45,0,Math.PI*2);g.fillStyle="#2AC1F1";g.fill();g.font="800 48px "+HF;g.fillStyle="#0a141e";g.textAlign="center";g.fillText("ABC"[i],180,yy+82);
+      g.font="700 44px "+BF;g.fillStyle="#fff";g.textAlign="left";g.fillText(t,255,yy+80)})}
+  // firma del socio
+  const nm=miNombreCorto()||"Action Leaders",src=miFotoUrl(),y0=1660;
+  const im=src?await imgLoad(src,!/^data:/.test(src)):null;g.save();g.beginPath();g.arc(150,y0+60,60,0,Math.PI*2);g.clip();
+  if(im){const s=Math.max(120/im.width,120/im.height);g.drawImage(im,150-im.width*s/2,y0+60-im.height*s/2,im.width*s,im.height*s)}else{g.fillStyle="#2AC1F1";g.fillRect(90,y0,120,120);g.fillStyle="#10222b";g.font="800 46px "+HF;g.textAlign="center";g.fillText(initials(nm),150,y0+76)}
+  g.restore();g.beginPath();g.arc(150,y0+60,62,0,Math.PI*2);g.lineWidth=4;g.strokeStyle="#2AC1F1";g.stroke();
+  g.textAlign="left";g.font="700 40px "+BF;g.fillStyle="#fff";g.fillText(nm,235,y0+52);g.font="500 32px "+BF;g.fillStyle="#2AC1F1";g.fillText("Escríbeme \"INFO\"",235,y0+100);
+  return cv}
+let histFile=null,histKey="";window.__histCanvas=histCanvas;
+async function renderHist(){const c=$("#histCard");if(!c)return;if(!fbUser){c.hidden=true;return}c.hidden=false;
+  const hecho=(profile.historias||{})[TODAY];
+  c.innerHTML=`<div class="row between"><div><h3 style="margin:0">📸 Tu historia de hoy</h3><p class="small muted" style="margin:2px 0 0">Publícala en tus estados de WhatsApp o Instagram.</p></div>${hecho?'<span class="chip c-good">Compartida ✓</span>':""}</div>
+   <div id="histImg" style="border-radius:14px;overflow:hidden;background:#0b0b10;aspect-ratio:9/16;max-height:420px;margin:0 auto;width:100%;max-width:236px;display:flex;align-items:center;justify-content:center"><span class="small" style="color:#fff">Creando tu historia…</span></div>
+   <button class="btn" id="histShare" style="width:100%">📤 Compartir en mis historias</button>`;
+  $("#histShare").onclick=compartirHist;
+  if(histKey!==TODAY+miNombreCorto()+miFotoUrl()||!histFile){histKey=TODAY+miNombreCorto()+miFotoUrl();const cv=await histCanvas(TODAY);try{const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));histFile=new File([b],"historia-"+TODAY+".jpg",{type:"image/jpeg"})}catch(x){histFile=null}}
+  const box=$("#histImg");if(box&&histFile){box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(histFile);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im)}}
+async function compartirHist(){if(!histFile){toast("La historia aún se está creando");return}
+  const marcar=()=>{profile.historias=Object.assign({},profile.historias||{},{[TODAY]:true});store.set("perfil",profile);pushResumen();renderHist()};
+  if(navigator.canShare&&navigator.canShare({files:[histFile]})){try{await navigator.share({files:[histFile]});marcar();return}catch(x){if(x&&x.name==="AbortError")return}}
+  const a=document.createElement("a");a.href=URL.createObjectURL(histFile);a.download=histFile.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);marcar();toast("Historia descargada. Súbela a tus estados 📲")}
 function evHTML(e){const fin=finalizada(e);return `<div class="ev" style="${fin?"opacity:.6":""}"><span class="hr">${esc(h12(e.hora))||"—"}${e.horaFin?`<br><span class="small muted" style="font-family:var(--f-body);font-weight:600">a ${esc(h12(e.horaFin))}</span>`:""}</span><div class="body">
   <div class="row between" style="align-items:flex-start"><b>${esc(e.titulo)}</b><span class="row" style="gap:4px;flex:none">${fin?'<span class="chip c-brand" style="color:var(--muted)">Finalizada</span>':modoChip(e)}</span></div>
   <div class="meta">${e.responsable?`<span>${USER}Presenta: <b style="font-weight:600;color:var(--ink)">${esc(e.responsable)}</b></span>`:pendiente(e)&&!fin?`<span class="chip c-warn">Presentador por asignar</span>`:""}${e.edifica?`<span>Edifica: <b style="font-weight:600;color:var(--ink)">${esc(e.edifica)}</b></span>`:""}</div>
@@ -1386,7 +1462,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-refr
 async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
-  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto()}catch(e){}}
+  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
 let autoFotoHecho=false;
 function urlADataUrl(u,S){return new Promise(ok=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{S=S||240;const c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);
   c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);ok(c.toDataURL("image/jpeg",.85))}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=u})}
@@ -1401,7 +1477,7 @@ function subscribeTeam(db){
   const docs=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));
   if(!store.db)return;
   loadTeamJSON();setInterval(loadTeamJSON,10*60*1000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)loadTeamJSON()});
-  db.collection("fotos").onSnapshot(s=>{fotosFs=docs(s);T.fotos=fotosRepo.concat(fotosFs);renderWho();renderEquipo()},()=>{});
+  db.collection("fotos").onSnapshot(s=>{fotosFs=docs(s);T.fotos=fotosRepo.concat(fotosFs);renderWho();renderEquipo();renderHist()},()=>{});
 }
 async function loadMine(){
   const p=await store.get("perfil");if(p)profile=Object.assign({ref:"",training:{},arranque:{},miNombre:""},p);
@@ -1431,7 +1507,7 @@ async function startApp(u){
   await loadMine();
   if(regDoc&&regDoc.registro){welState.registro=true}
   renderWel();renderAviso();renderAccesos();
-  renderMeBtn();
+  renderMeBtn();setTimeout(renderHist,800);
   try{renderEquipo();renderCal();renderNext();renderAca()}catch(e){}
 }
 function bootFB(){if(window.FB&&window.FB.__ready!==undefined)return;}
@@ -1441,7 +1517,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018234959";var busy=false,pend=null;
+(function(){var V="20261018235528";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
