@@ -155,8 +155,9 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .podium{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:end;gap:8px}
 .pod{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:0}
 .pod .block{width:100%;border-radius:12px 12px 4px 4px;display:flex;flex-direction:column;align-items:center;padding-top:8px;background:var(--surface-2)}
-.pod.p1 .block{background:var(--gold);color:#062B3A;height:96px}
-.pod.p2 .block{height:74px} .pod.p3 .block{height:60px}
+.pod.p1 .block{background:var(--gold);color:#062B3A;min-height:96px}
+.pod.p2 .block{min-height:74px} .pod.p3 .block{min-height:60px}
+.pod .block{padding-bottom:8px}
 .pod .block b{font-family:var(--f-num);font-size:28px;line-height:1}
 .pod .av{width:52px;height:52px;font-size:16px}.pod.p1 .av{width:64px;height:64px}
 .pod .nm{font-weight:600;font-size:13px;width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -2082,7 +2083,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019124416";var busy=false,pend=null;
+(function(){var V="20261019124534";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
