@@ -855,13 +855,15 @@ const flyerCfg=e=>/action leaders? training/i.test(e.titulo||"")?FLYERS.training
 const esFlyer=e=>!!flyerCfg(e);
 const EMO={"Presentación":"🚢","Píldora":"💊","Capacitación":"🎓","Llamada":"📞","Reunión de líderes":"🛡️","Evento":"🎉"};
 function evMsg(e){const F={"Honduras":"🇭🇳","Miami":"🇺🇸","España":"🇪🇸","Reino Unido":"🇬🇧"},L=[];
-  L.push((EMO[e.tipo]||"📌")+" *"+e.titulo.toUpperCase()+"*","");
+  const tr=/action leaders? training/i.test(e.titulo||"");
+  L.push((EMO[e.tipo]||"📌")+" *"+e.titulo.toUpperCase()+"*");if(tr)L.push("🔒 *EXCLUSIVO PARA SOCIOS*");L.push("");
   L.push("📅 *"+longDate(e.fecha).replace(/^./,c=>c.toUpperCase())+"*","");
   const z=zoneTimes(e);if(z){L.push("🕗 *Horarios:*");z.split(" · ").forEach(p=>{const k=p.lastIndexOf(" "),n=p.slice(0,k),h=p.slice(k+1).replace(/(am|pm)$/," $1");L.push((F[n]||"•")+" "+n+": "+h)});L.push("")}
   else if(e.hora)L.push("🕗 "+h12(e.hora)+" (hora de Honduras)","");
   if(e.responsable)L.push("🎤 *Presenta:* "+e.responsable);if(e.edifica)L.push("⭐ *Edifica:* "+e.edifica);if(e.responsable||e.edifica)L.push("");
   if(e.lugar)L.push("📍 *Lugar:* "+e.lugar,"");
   const k=evLink(e);if(k)L.push("💻 *Únete por Zoom:*",k,"");
+  if(tr)L.push("✨ Aprende, lidera y lleva tu negocio a otro nivel junto a una comunidad de líderes.","","⚠️ _Este enlace es solo para socios del equipo. Por favor no lo compartas con prospectos._");
   if(e.tipo==="Presentación")L.push("✨ Descubre cómo construir libertad financiera mientras vives experiencias que transforman tu vida.");
   while(L.length&&L[L.length-1]==="")L.pop();return L.join("\n")}
 const imgLoad=(src,cors)=>new Promise(ok=>{const i=new Image();if(cors)i.crossOrigin="anonymous";i.onload=()=>ok(i);i.onerror=()=>ok(null);i.src=src});
@@ -1409,7 +1411,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018225957";var busy=false,pend=null;
+(function(){var V="20261018230348";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
