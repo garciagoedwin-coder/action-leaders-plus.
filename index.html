@@ -850,7 +850,7 @@ const LS={get(k){try{const v=localStorage.getItem("alp:"+k);return v?JSON.parse(
 const store={db:null,uid:null,
   mine(){return this.db.collection("users/"+this.uid+"/datos")},
   async get(k){if(this.db){try{const s=await this.mine().doc(k).get();return s.exists?s.data():null}catch(e){}}return LS.get(k)},
-  async set(k,v){if(this.db){try{await this.mine().doc(k).set(v);return}catch(e){toast("No se pudo guardar. Revisa tu conexión.")}}LS.set(k,v)},
+  async set(k,v){if(k==="perfil"&&this.db&&!mineReady)return;if(this.db){try{await this.mine().doc(k).set(v);return}catch(e){toast("No se pudo guardar. Revisa tu conexión.")}}LS.set(k,v)},
   crm(){return this.db.collection("users/"+this.uid+"/crm")},
   async contacts(){if(this.db){for(let i=0;i<3;i++){try{const q=await this.crm().get();return q.docs.map(d=>Object.assign({id:d.id},d.data()))}catch(e){await new Promise(r=>setTimeout(r,1500))}}toast("No se pudieron cargar tus contactos. Revisa tu conexión y vuelve a abrir la app.");return []}return LS.get("crm")||[]},
   async saveContact(c){const{id,...body}=c;if(this.db){try{if(id){await this.crm().doc(id).set(body);return id}const r=await this.crm().add(body);return r.id}catch(e){toast("No se pudo guardar el contacto.");return null}}
@@ -2016,7 +2016,7 @@ async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.n
 let autoFotoHecho=false;
 function urlADataUrl(u,S){return new Promise(ok=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{S=S||240;const c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);
   c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);ok(c.toDataURL("image/jpeg",.85))}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=u})}
-async function autoFoto(){try{if(autoFotoHecho||!fbUser||!store.db)return;const R=regDoc&&regDoc.registro;if(!R||!R.nombre||!(T.ranking||[]).length)return;autoFotoHecho=true;
+async function autoFoto(){try{if(autoFotoHecho||!fbUser||!store.db||!mineReady)return;const R=regDoc&&regDoc.registro;if(!R||!R.nombre||!(T.ranking||[]).length)return;autoFotoHecho=true;
   const m=(T.ranking||[]).concat(T.lideres||[]).find(x=>sameN(x.nombre,R.nombre));
   if(m&&!profile.miNombre){profile.miNombre=m.nombre;store.set("perfil",profile);try{renderMe()}catch(e){}}
   if(!fbUser.photoURL)return;const d=await store.db.doc("fotos/"+store.uid).get();const cur=d.exists?d.data():null;
@@ -2085,7 +2085,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019124921";var busy=false,pend=null;
+(function(){var V="20261019131840";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
