@@ -453,6 +453,16 @@ nav.tabs button{z-index:0;isolation:isolate}
 .lm .free p{margin:0;font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.9}
 .lm .free b{display:block;font-size:clamp(26px,6.5vw,40px);font-weight:900;line-height:1.05;margin-top:6px;letter-spacing:-.02em}
 .lm .free span{display:block;font-size:14px;margin-top:8px;opacity:.92}
+ .lm .tiers{display:grid;gap:12px;margin-top:16px}
+.lm .tier{position:relative;padding:20px 18px;border-radius:22px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)}
+.lm .tier.prem{background:linear-gradient(160deg,rgba(42,193,241,.14),rgba(255,255,255,.04));border-color:#2AC1F1;margin-top:8px}
+.lm .tier .tag{position:absolute;top:-11px;left:18px;background:#2AC1F1;color:#0a141e;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px}
+.lm .tier .tn{margin:0;font-size:20px;font-weight:900;letter-spacing:-.01em}
+.lm .tier .tt{margin:4px 0 0;font-size:13px;font-weight:700;color:#9fdcff}
+.lm .tier ul{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.lm .tier li{font-size:14.5px;line-height:1.4;color:rgba(255,255,255,.85);padding-left:22px;position:relative}
+.lm .tier li:before{content:"✓";position:absolute;left:0;color:#2AC1F1;font-weight:900}
+.lm .tier.prem li{padding-left:0}.lm .tier.prem li:before{content:none}
 .lm details{border-bottom:1px solid rgba(255,255,255,.1);padding:4px 0}
 .lm summary{cursor:pointer;list-style:none;padding:14px 28px 14px 0;font-size:16px;font-weight:700;position:relative}
 .lm summary::-webkit-details-marker{display:none}
@@ -560,7 +570,13 @@ nav.tabs button{z-index:0;isolation:isolate}
      <div class="price"><p>Mensual</p><b>$147<small>/mes</small></b></div>
      <div class="price best"><span class="tag">Ahorra $267</span><p>Anual</p><b>$1,497<small>/año</small></b></div>
     </div>
-    <div class="free"><p>Socios de Action Leaders</p><b>Incluido GRATIS</b><span>Si eres parte del equipo, todo esto ya es tuyo.</span></div>
+    <div class="free"><p>Beneficio exclusivo para socios</p><b>Incluido en tu membresía</b><span>Si eres socio de Action Leaders, ya es parte de tu inversión.</span></div>
+    <div class="tiers">
+     <div class="tier"><p class="tn">Socio Classic</p><p class="tt">Incluido en tu membresía Classic</p>
+      <ul><li>App: rutina, CRM, agenda, ranking e historia del día</li><li>Entrenamientos semanales en vivo</li><li>Academia y cursos</li><li>Comunidad y eventos</li></ul></div>
+     <div class="tier prem"><span class="tag">Más completo</span><p class="tn">Socio Premium</p><p class="tt">Todo lo de Classic, más:</p>
+      <ul><li>🌐 Tu página personal para prospectos</li><li>🎨 Tarjeta de invitación con tu foto</li><li>📥 Prospectos que llegan solos a tu CRM</li><li>🧭 Mentoría personal más cercana</li><li>⭐ Funciones y secciones nuevas, primero</li></ul></div>
+    </div>
    </div>
   </div>
  </section>
@@ -569,7 +585,8 @@ nav.tabs button{z-index:0;isolation:isolate}
   <h2>Lo que más nos preguntan.</h2>
   <div style="margin-top:16px">
    <details><summary>¿Quién puede entrar?</summary><p>Action Leaders PLUS es exclusivo para socios del equipo. Tu patrocinador te comparte tu enlace de acceso personal.</p></details>
-   <details><summary>¿Tiene algún costo para los socios?</summary><p>No. Para los socios de Action Leaders todo está incluido: la app, los entrenamientos, la mentoría y la comunidad.</p></details>
+   <details><summary>¿Tiene algún costo para los socios?</summary><p>No tiene un costo adicional. Action Leaders PLUS está incluido en tu membresía de socio. Los socios Premium reciben beneficios adicionales.</p></details>
+   <details><summary>¿Qué diferencia hay entre Classic y Premium?</summary><p>Ambos tienen la app, los entrenamientos, la academia y la comunidad. El socio Premium suma su página personal para prospectos, la tarjeta de invitación con su foto, prospectos directo a su CRM, mentoría más cercana y acceso primero a lo nuevo.</p></details>
    <details><summary>¿Necesito descargar algo?</summary><p>No. Funciona desde el navegador de tu celular y puedes agregarla a tu pantalla de inicio como una app.</p></details>
    <details><summary>¿Mis datos y mis contactos están seguros?</summary><p>Sí. Entras con tu cuenta de Google y tus contactos solo los ves tú.</p></details>
    <details><summary>¿Y si soy nuevo y no sé por dónde empezar?</summary><p>Para eso está tu mentor y tu rutina diaria. Desde el primer día sabes exactamente qué hacer.</p></details>
@@ -1950,7 +1967,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019103500";var busy=false,pend=null;
+(function(){var V="20261019104408";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
