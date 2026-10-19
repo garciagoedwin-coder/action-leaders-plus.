@@ -1980,13 +1980,13 @@ function subscribeTeam(db){
   db.collection("fotos").onSnapshot(s=>{fotosFs=docs(s);T.fotos=fotosRepo.concat(fotosFs);renderWho();renderEquipo();renderHist()},()=>{});
 }
 async function loadMine(){
-  const p=await store.get("perfil");if(p)profile=Object.assign({ref:"",training:{},arranque:{},miNombre:""},p);try{if(store.uid&&localStorage.getItem("alp:welok")===store.uid)profile.bienvenida=true}catch(x){}
-  const r=await store.get("reto-"+MONTH);if(r)reto=r;
   const ks=Array.from({length:7},(_,i)=>{const d=new Date(now);d.setDate(d.getDate()-i);return dkey(d)});
-  const vals=await Promise.all(ks.map(k=>store.get("rutina-"+k)));ks.forEach((k,i)=>{if(vals[i])weekCache[k]=vals[i]});
+  const [p,r,bw,...vals]=await Promise.all([store.get("perfil"),store.get("reto-"+MONTH),store.db?store.get("bienvenida").catch(()=>null):null].concat(ks.map(k=>store.get("rutina-"+k))));
+  if(p)profile=Object.assign({ref:"",training:{},arranque:{},miNombre:""},p);try{if(store.uid&&localStorage.getItem("alp:welok")===store.uid)profile.bienvenida=true}catch(x){}
+  if(r)reto=r;ks.forEach((k,i)=>{if(vals[i])weekCache[k]=vals[i]});
   day=Object.assign({},weekCache[TODAY]||{});if((profile.historias||{})[TODAY]&&!day.historia)day.historia=1;
   if(profile.nombrePila)$("#hello").textContent="Hola, "+profile.nombrePila.split(" ")[0];
-  try{if(store.db){const b=await store.get("bienvenida");if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}}catch(e){}
+  try{const b=bw;if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}catch(e){}
   if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
   welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();
   contacts=await store.contacts();setTimeout(importarProspectos,1500);
@@ -2012,7 +2012,8 @@ async function startApp(u){
   welSigned=!!u;isAdmin=!!(u&&u.emailVerified&&ADMINS.includes((u.email||"").toLowerCase()));
   if(u){store.db=db;store.uid=u.uid;const nm=u.displayName||"";if(nm){welName=nm.split(" ")[0];if(!profile.nombrePila)$("#hello").textContent="Hola, "+welName}
     try{const r=await db.doc("users/"+u.uid).get();regDoc=r.exists?r.data():null}catch(e){regDoc=null}
-    try{await db.doc("users/"+u.uid).set({email:u.email||"",ultimoAcceso:window.FB.serverTimestamp()},{merge:true})}catch(e){}}
+    if(regDoc&&regDoc.bienvenida){profile.bienvenida=true;try{localStorage.setItem("alp:welok",u.uid)}catch(x){}const w=$("#wel");if(w){w.hidden=true;document.body.style.overflow=""}}
+    db.doc("users/"+u.uid).set({email:u.email||"",ultimoAcceso:window.FB.serverTimestamp()},{merge:true}).catch(()=>{})}
   else{store.db=null;store.uid=null}
   $("#addEvent").hidden=true;$("#eqSocios").hidden=!isAdmin;
   $("#crmNote").textContent="Tus contactos se guardan en tu cuenta y solo tú puedes verlos.";
@@ -2034,7 +2035,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019114115";var busy=false,pend=null;
+(function(){var V="20261019114433";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
