@@ -221,6 +221,10 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 #ciTipo{display:grid;grid-template-columns:1fr 1fr}#ciTipo button{white-space:normal}
 .hor-ch{display:flex;flex-wrap:wrap;gap:6px}.hor-ch button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-weight:600;font-size:13px;color:var(--muted)}
 .hor-ch button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--brand-ink,#fff)}
+.wel-falta{display:flex;flex-direction:column;gap:3px;text-align:left;width:100%;padding:14px 16px;border-radius:16px;border:1px solid rgba(229,56,59,.35);background:rgba(229,56,59,.08);color:var(--ink);font:inherit;cursor:pointer;margin-bottom:10px;animation:rutShake .7s cubic-bezier(.36,.07,.19,.97) .4s both}
+.wel-falta b{color:#c62828;font-size:15px}.wel-falta span{font-size:14px}.wel-falta small{color:var(--muted);font-size:12.5px;margin-top:4px}
+.wel-flash{animation:welFlash 1.6s ease}
+@keyframes welFlash{0%,100%{box-shadow:none}20%,60%{box-shadow:0 0 0 4px rgba(229,56,59,.45);border-radius:16px}}
 .plan-sel{font:inherit;font-weight:600;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:2px 6px}
 .mstat{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
 .mstat div{background:var(--surface-2);border-radius:12px;padding:10px 4px;display:flex;flex-direction:column;gap:2px}
@@ -2023,7 +2027,9 @@ function renderWel(){const el=$("#wel");
    ${n("caja")?`<div class="wel-step"><div class="wel-h">${badge("caja")}<h3>Descarga tu caja de herramientas</h3></div>
     <p class="small muted">Ahí encontrarás el Plan de Inicio Rápido, la Hoja de trabajo de 7 días y el Workbook de presentación. Descárgala hoy y tenla a la mano.</p>
     <a class="btn pill outl" href="${esc(c.caja)}" target="_blank" rel="noopener" data-wel="caja">${welState.caja?"Caja de herramientas ✓":"Descargar caja de herramientas"}</a></div>`:""}
-   <div class="wel-step"><button class="btn pill gold" id="welGo" ${welDone()?"":"disabled"}>${welDone()?"Entrar a Action Leaders Plus":"Completa los pasos para entrar"}</button>
+   <div class="wel-step">${welDone()?"":(()=>{const NM={registro:"Completar tu registro",video:"Ver tu video y tocar «Ya vi mi video»",whatsapp:"Unirte al grupo de WhatsApp",caja:"Descargar tu caja de herramientas"},f=steps.filter(x=>!welState[x.k]);
+     return `<button type="button" class="wel-falta" id="welFalta"><b>⚠️ ${f.length===1?"Te falta 1 paso":"Te faltan "+f.length+" pasos"} para entrar a la app</b>${f.map(x=>`<span>• ${NM[x.k]||x.k}</span>`).join("")}<small>Toca aquí para ir ${f.length===1?"al paso":"al primero"} ↑</small></button>`})()}
+    <button class="btn pill gold" id="welGo" ${welDone()?"":"aria-disabled=\"true\" style=\"opacity:.55\""}>${welDone()?"Entrar a Action Leaders Plus":"Completa los pasos para entrar"}</button>
     ${isAdmin?`<button class="btn sm ghost" id="welSkip" style="align-self:center">Saltar (solo administrador)</button>`:""}</div>
    ${Object.keys(welState).length?`<button class="btn sm ghost" id="welReset" style="align-self:center">¿Eres otra persona? Empezar de nuevo</button>`:""}
    <div class="wel-sig"><b>Edwin García Go</b><p class="small muted">Director Nacional – Action Leaders</p><p class="small">+504 9430-5906</p></div>`;
@@ -2060,7 +2066,10 @@ function renderWel(){const el=$("#wel");
     const i=$("#welNmI");i.focus();const ok=()=>{const v=i.value.trim().replace(/\s+/g," ").slice(0,30);if(!v)return;profile.nombrePila=v;store.set("perfil",profile);$("#hello").textContent="Hola, "+v.split(" ")[0];renderWel()};
     $("#welNmOk").onclick=ok;i.onkeydown=e=>{if(e.key==="Enter")ok()}};
   C.querySelectorAll("[data-wel]").forEach(a=>a.onclick=()=>setTimeout(()=>welMark(a.dataset.wel),300));
-  $("#welGo").onclick=()=>{if(!welDone())return;profile.bienvenida=true;LS.set("welDone",1);store.set("perfil",profile);welSaveFlag({done:true,t:Date.now()});pushResumen();try{if(store.db)store.db.doc("users/"+store.uid).set({bienvenida:true},{merge:true})}catch(e){}renderWel();renderAviso();toast("¡Te damos la bienvenida al equipo!");if(welGate){const g=welGate;welGate=null;g()}};
+  const irFalta=()=>{const k=(welSteps().find(x=>!welState[x.k])||{}).k;const t=k==="registro"?$("#welReg"):k==="video"?$("#welVH"):document.querySelector('[data-wel="'+k+'"]');
+    const st=t&&(t.closest(".wel-step")||t);if(!st)return;st.scrollIntoView({behavior:"smooth",block:"center"});st.classList.remove("wel-flash");void st.offsetWidth;st.classList.add("wel-flash")};
+  const wf=$("#welFalta");if(wf)wf.onclick=irFalta;
+  $("#welGo").onclick=()=>{if(!welDone()){irFalta();return}profile.bienvenida=true;LS.set("welDone",1);store.set("perfil",profile);welSaveFlag({done:true,t:Date.now()});pushResumen();try{if(store.db)store.db.doc("users/"+store.uid).set({bienvenida:true},{merge:true})}catch(e){}renderWel();renderAviso();toast("¡Te damos la bienvenida al equipo!");if(welGate){const g=welGate;welGate=null;g()}};
   const rs=$("#welReset");if(rs)rs.onclick=()=>{welState={};profile.welPasos={};delete profile.registro;store.set("perfil",profile);try{localStorage.removeItem("alp:welpos");localStorage.removeItem("alp:welok")}catch(e){}$("#welC").dataset.v="";welVidFail=false;welOpenedAt=0;renderWel();window.scrollTo(0,0);$("#wel").scrollTop=0};
   const sk=$("#welSkip");if(sk)sk.onclick=()=>{$("#wel").hidden=true;document.body.style.overflow=""};
   clearTimeout(welTimer);if(!manualOk)welTimer=setTimeout(renderWel,Math.max(1000,120000-(Date.now()-welOpenedAt)+200))}
@@ -2230,7 +2239,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019140207";var busy=false,pend=null;
+(function(){var V="20261019140947";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
