@@ -499,7 +499,8 @@ nav.tabs button{z-index:0;isolation:isolate}
       <div class="seg" role="tablist" id="eqSeg">
         <button aria-selected="true" data-k="ranking">Ranking</button>
         <button aria-selected="false" data-k="liderazgo">Liderazgo</button>
-        <button aria-selected="false" data-k="socios" id="eqSocios" hidden>Socios</button>
+        <button aria-selected="false" data-k="mios" id="eqMios">Mis socios</button>
+        <button aria-selected="false" data-k="socios" id="eqSocios" hidden>Admin</button>
 
       </div>
       <div id="eqBody" style="display:flex;flex-direction:column;gap:16px"></div>
@@ -571,14 +572,14 @@ nav.tabs button{z-index:0;isolation:isolate}
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,onAuthStateChanged,signOut,setPersistence,browserLocalPersistence} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {initializeFirestore,persistentLocalCache,doc,collection,getDoc,setDoc,getDocs,addDoc,deleteDoc,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {initializeFirestore,persistentLocalCache,doc,collection,getDoc,setDoc,getDocs,addDoc,deleteDoc,onSnapshot,serverTimestamp,query,where} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});
 const auth=getAuth(app);
 let fdb;try{fdb=initializeFirestore(app,{localCache:persistentLocalCache(),ignoreUndefinedProperties:true})}catch(e){fdb=initializeFirestore(app,{ignoreUndefinedProperties:true})}
 const wrapS=q=>({docs:q.docs.map(d=>({id:d.id,data:()=>d.data()}))});
 const D=p=>({get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>setDoc(doc(fdb,p),b,o||{}),delete:()=>deleteDoc(doc(fdb,p)),
   onSnapshot:(cb,er)=>onSnapshot(doc(fdb,p),x=>cb({exists:x.exists(),data:()=>x.data()}),er||(()=>{}))});
-const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
+const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),where:(f,v)=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,"==",v))))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
   onSnapshot:(cb,er)=>onSnapshot(collection(fdb,p),q=>cb(wrapS(q)),er||(()=>{}))});
 const db={collection:C,doc:D};
 setPersistence(auth,browserLocalPersistence).catch(()=>{});
@@ -800,6 +801,35 @@ function sociosCSV(){const rows=[["Nombre","Correo","WhatsApp","Patrocinador","P
   const a=actDe(x);return [r.nombre||x.nombre||"",x.email||"",r.whatsapp?"+"+r.whatsapp:"",r.patrocinador||"",r.plan||"",r.fecha||"",ua,a.hoy,a.racha,a.d7,a.sem.contactos||0,a.sem.presentaciones||0,a.crm,a.bien?"Sí":"No"]}));
   const csv="\ufeff"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="socios-action-leaders-"+TODAY+".csv";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
+let mios=null,miosErr=false;
+async function loadMios(){miosErr=false;try{const q=await store.db.collection("users").where("registro.patrocinadorUid",store.uid).get();
+  mios=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.registro).sort((a,b)=>actScore(b)-actScore(a))}catch(e){mios=[];miosErr=true}renderEquipo()}
+function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia sesión","Entra con tu cuenta para ver a tus socios.");return}
+  if(mios===null){b.innerHTML=`<p class="muted small">Cargando tus socios…</p>`;loadMios();return}
+  const inv=`<div class="card"><h3 style="margin:0">🔗 Tu enlace de invitación</h3><p class="small muted" style="margin:0">Los socios que se registren con tu enlace aparecen aquí con su avance.</p>
+    <div class="ref"><code style="word-break:break-all">${esc(miEnlace())}</code><button class="btn sm gold" id="miosCopy">Copiar</button></div></div>`;
+  const bind=()=>{const c=$("#miosCopy");if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(miEnlace());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
+  if(miosErr){b.innerHTML=emptyCard("No se pudo cargar tu equipo","Revisa tu conexión e intenta de nuevo. Si sigue igual, avisa al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
+  if(!mios.length){b.innerHTML=`<div class="card empty"><h3>Aún no tienes socios en la app</h3><p class="small muted">Cuando firmes a alguien, mándale tu mensaje de bienvenida desde el CRM o comparte tu enlace. Al registrarse aparecerá aquí.</p></div>`+inv;bind();return}
+  const A=mios.map(x=>actDe(x)),n=mios.length,hoy=A.filter(a=>a.hoy>0).length,sem=A.filter(a=>a.d7>0).length,bien=A.filter(a=>a.bien).length,pres=A.reduce((t,a)=>t+(a.sem.presentaciones||0),0);
+  const st=(v,t,c)=>`<div class="card" style="gap:2px"><b class="num" style="font-size:28px${c?";color:"+c:""}">${v}</b><span class="small muted">${t}</span></div>`;
+  const cname=k=>{const c=CURSOS.find(x=>x.k===k);return c?c.t:k};
+  b.innerHTML=`<div class="grid2">${st(n,n===1?"Socio en tu equipo":"Socios en tu equipo")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}${st(pres,"Presentaciones esta semana")}</div>
+   <div class="card" style="gap:0">${mios.map(x=>{const r=x.registro||{},a=actDe(x),S=a.sem,nm=r.nombre||"Socio",ua=tsMs(x.ultimoAcceso),cs=((x.actividad||{}).cursos||[]);
+     return `<div style="padding:12px 0;border-bottom:1px solid var(--line)"><div class="row" style="align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0">
+      <b style="font-weight:600">${esc(nm)}</b><div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.fecha?"Desde "+niceDate(String(r.fecha).slice(0,10)):""}${ua?" · Entró "+haceTxt(ua):""}</div></div>
+      <span class="chip ${a.hoy>=100?"c-good":a.hoy>0?"c-gold":"c-brand"}">Hoy ${a.hoy}%</span></div>
+      <div class="row wrap" style="gap:6px;margin-top:8px">
+       <span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"🎬 Bienvenida ✓":"🎬 Bienvenida pendiente"}</span>
+       <span class="chip ${a.racha?"c-gold":"c-brand"}">🔥 Racha ${a.racha} ${a.racha===1?"día":"días"}</span>
+       <span class="chip c-brand">📅 ${a.d7}/7 días activos</span>
+       <span class="chip ${(S.presentaciones||0)?"c-good":"c-brand"}">🎯 ${S.presentaciones||0} ${(S.presentaciones||0)===1?"presentación":"presentaciones"}</span>
+       <span class="chip c-brand">👥 ${S.contactos||0} ${(S.contactos||0)===1?"contacto":"contactos"}</span>
+       ${a.hist?`<span class="chip c-good">📸 Historia hoy</span>`:""}
+       ${cs.length?cs.map(k=>`<span class="chip c-good">🎓 ${esc(cname(k))}</span>`).join(""):`<span class="chip c-brand">🎓 Sin cursos aún</span>`}
+      </div></div>`}).join("")}</div>
+   <p class="small muted" style="margin:0">Presentaciones, contactos y días activos son de los últimos 7 días.${bien<n?" "+(n-bien)+" aún no ha"+(n-bien>1?"n":"")+" completado la bienvenida.":""}</p>
+   <button class="btn sm ghost" id="miosReload" style="align-self:flex-start">Actualizar lista</button>${inv}`;bind()}
 function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.innerHTML=`<p class="muted small">Cargando socios…</p>`;loadSocios();return}
   const q=nrmN(sociosQ);let L=socios.filter(x=>{const r=x.registro||{};return !q||nrmN([r.nombre,x.email,r.patrocinador,r.plan].join(" ")).includes(q)});
   if(sociosOrd==="act")L=L.slice().sort((a,b)=>actScore(b)-actScore(a));
@@ -828,6 +858,7 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
   $("#socCsv").onclick=sociosCSV;$("#socReload").onclick=()=>{socios=null;renderEquipo()}}
 function renderEquipo(){const b=$("#eqBody");
   if(eqTab==="socios"){renderSocios(b);return}
+  if(eqTab==="mios"){renderMios(b);return}
   if(eqTab==="ranking"){
     if(!T.ranking.length){b.innerHTML=emptyCard("El ranking aún no tiene datos","Aquí aparecerán las presentaciones registradas gratis en inCruises y los socios nuevos de cada miembro del equipo.");return}
     const sem=rankTab==="semana",kR=sem?"regSemana":"registros",kA=sem?"actSemana":"activaciones",kP=sem?"presSemana":"presentaciones";
@@ -1650,6 +1681,7 @@ try{const t=localStorage.getItem("alp:tab");if(t&&document.getElementById("v-"+t
 
 let fotosRepo=[],fotosFs=[];
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-refresh]");if(!b||b.disabled)return;b.disabled=true;const t=b.textContent;b.textContent="Actualizando…";
+  if(b.dataset.refresh==="eq"&&eqTab==="mios"){mios=null;renderEquipo()}
   try{await loadTeamJSON();const c=T.config||{},k=b.dataset.refresh==="cal"?c.calendarioActualizado:c.rankingActualizado;
     toast((b.dataset.refresh==="cal"?"Agenda al día":"Ranking al día")+(k?" · actualizado "+new Date(k).toLocaleString("es",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):""))}catch(x){toast("No se pudo actualizar. Revisa tu conexión.")}
   b.disabled=false;b.textContent=t});
@@ -1724,7 +1756,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019092846";var busy=false,pend=null;
+(function(){var V="20261019093406";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
