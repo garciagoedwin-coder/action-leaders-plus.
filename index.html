@@ -297,6 +297,123 @@ nav.tabs button{z-index:0;isolation:isolate}
 
 </head>
 <body>
+<div id="land" class="land boot" aria-label="Bienvenida Action Leaders PLUS">
+<style>
+.land{position:fixed;inset:0;z-index:9999;background:#0d0c12;color:#fff;overflow:hidden;font-family:inherit;-webkit-font-smoothing:antialiased}
+.land *{box-sizing:border-box}
+.land .l-bg{position:absolute;inset:-40px;background:url(media/comunidad/fondo.webp) center/cover;filter:blur(36px) saturate(1.1) brightness(.32);transform:scale(1.1)}
+.land .l-orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;pointer-events:none}
+.land .o1{width:420px;height:420px;background:#6b4dff;left:-120px;top:-80px;animation:lOrb 14s ease-in-out infinite alternate}
+.land .o2{width:380px;height:380px;background:#22b8f0;right:-120px;bottom:10%;animation:lOrb 17s ease-in-out infinite alternate-reverse}
+@keyframes lOrb{to{transform:translate(80px,60px) scale(1.15)}}
+/* muro de fotos */
+.land .l-wall{position:absolute;display:flex;gap:14px;justify-content:center}
+.land .l-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;animation:lUp var(--d,60s) linear infinite;will-change:transform}
+.land .l-col.rev{animation-name:lDown}
+@keyframes lUp{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+@keyframes lDown{from{transform:translateY(-50%)}to{transform:translateY(0)}}
+.land .l-col img{width:100%;display:block;border-radius:18px;object-fit:cover;aspect-ratio:4/5;box-shadow:0 12px 40px rgba(0,0,0,.45);filter:saturate(1.08)}
+.land .l-col img.w{aspect-ratio:3/2}
+/* contenido */
+.land .l-main{position:absolute;z-index:3;display:flex;flex-direction:column}
+.land .l-logo{height:30px;width:auto;align-self:flex-start;filter:drop-shadow(0 2px 12px rgba(0,0,0,.5))}
+.land .l-kick{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#9fdcff}
+.land .l-kick:before{content:"";width:22px;height:2px;background:linear-gradient(90deg,#22b8f0,#8b6bff);border-radius:2px}
+.land h1.l-h{margin:10px 0 0;font-size:clamp(44px,11vw,92px);line-height:.95;font-weight:900;letter-spacing:-.035em;
+ background:linear-gradient(100deg,#fff 0%,#fff 38%,#7fd6ff 50%,#fff 62%,#fff 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:lShine 6s ease-in-out 1.6s infinite}
+@keyframes lShine{0%{background-position:100% 0}60%,100%{background-position:-50% 0}}
+.land .l-sub{margin:14px 0 0;font-size:clamp(15px,1.6vw,18px);line-height:1.45;color:rgba(255,255,255,.78);max-width:440px}
+.land .l-stats{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.land .l-stat{flex:1;min-width:92px;padding:12px 12px 10px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.land .l-stat b{display:block;font-size:26px;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.land .l-stat span{font-size:12px;color:rgba(255,255,255,.65)}
+.land .l-btn{position:relative;overflow:hidden;margin-top:24px;width:100%;max-width:440px;height:58px;border:0;border-radius:999px;background:#fff;color:#1d1c22;font:inherit;font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:12px;cursor:pointer;
+ box-shadow:0 0 0 0 rgba(34,184,240,.6),0 14px 40px rgba(34,184,240,.35);animation:lPulse 2.6s ease-out 2s infinite;transition:transform .15s}
+.land .l-btn:active{transform:scale(.97)}
+.land .l-btn:disabled{opacity:.7}
+.land .l-btn:after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(34,184,240,.35),transparent);transform:skewX(-20deg);animation:lSweep 3.2s ease-in-out 2.4s infinite}
+@keyframes lSweep{0%{left:-60%}55%,100%{left:130%}}
+@keyframes lPulse{0%{box-shadow:0 0 0 0 rgba(34,184,240,.55),0 14px 40px rgba(34,184,240,.35)}70%,100%{box-shadow:0 0 0 16px rgba(34,184,240,0),0 14px 40px rgba(34,184,240,.35)}}
+.land .l-err{color:#ff8a8a;font-size:13px;margin:10px 0 0}
+.land .l-note{margin:12px 0 0;font-size:12px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:6px}
+/* entrada escalonada */
+.land .l-in{opacity:0;transform:translateY(22px)}
+.land.show .l-in{animation:lIn .9s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i)*.12s + .2s)}
+@keyframes lIn{to{opacity:1;transform:none}}
+.land .l-wall{opacity:0;transition:opacity 1.4s ease}
+.land.show .l-wall{opacity:1}
+/* arranque */
+.land .l-boot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;transition:opacity .5s}
+.land .l-boot img{width:84px;animation:lBeat 1.4s ease-in-out infinite}
+@keyframes lBeat{50%{transform:scale(1.08);filter:drop-shadow(0 0 24px rgba(34,184,240,.7))}}
+.land:not(.boot) .l-boot{opacity:0;pointer-events:none}
+.land.bye{opacity:0;transition:opacity .5s;pointer-events:none}
+/* celular */
+@media (max-width:899px){
+ .land .l-wall{left:-18%;right:-18%;top:-6%;height:66%;transform:rotate(-7deg);
+  -webkit-mask-image:linear-gradient(#000 45%,transparent 96%);mask-image:linear-gradient(#000 45%,transparent 96%)}
+ .land .l-col{gap:10px}.land .l-wall{gap:10px}.land .l-col img{border-radius:14px}
+ .land .l-main{inset:0;padding:max(18px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));justify-content:flex-end;isolation:isolate}
+ .land .l-main:before{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--sh,60%);z-index:-1;background:linear-gradient(180deg,rgba(13,12,18,0),rgba(13,12,18,.88) 110px,#0d0c12 170px)}
+ .land .l-main:after{content:"";position:absolute;left:0;right:0;top:0;height:110px;z-index:-1;background:linear-gradient(rgba(13,12,18,.75),rgba(13,12,18,0))}
+ .land .l-logo{position:absolute;top:max(16px,env(safe-area-inset-top));left:20px;height:24px}
+ .land .l-stat b{font-size:22px}
+ .land .l-btn{max-width:none}
+}
+@media (max-width:899px) and (max-height:700px){.land h1.l-h{font-size:44px}.land .l-sub{font-size:14px;margin-top:8px}.land .l-stats{margin-top:14px}.land .l-btn{margin-top:16px}}
+/* computadora */
+@media (min-width:900px){
+ .land .l-wall{right:-2%;top:-10%;bottom:-10%;width:56%;transform:rotate(-6deg);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 22%);mask-image:linear-gradient(90deg,transparent 0,#000 22%)}
+ .land .l-main{left:0;top:0;bottom:0;width:min(46%,620px);padding:48px 56px 48px clamp(40px,6vw,96px);justify-content:center}
+ .land .l-logo{position:absolute;top:40px;left:clamp(40px,6vw,96px);height:34px}
+ .land .l-stats{max-width:440px}
+}
+@media (prefers-reduced-motion:reduce){.land *{animation:none!important}.land .l-in{opacity:1;transform:none}}
+</style>
+<div class="l-bg"></div><div class="l-orb o1"></div><div class="l-orb o2"></div>
+<div class="l-wall" id="lWall"></div>
+<div class="l-main">
+ <img class="l-logo l-in" style="--i:0" src="media/logo-blanco.png" alt="Action Leaders PLUS">
+ <div class="l-kick l-in" style="--i:1">Bienvenido a la comunidad</div>
+ <h1 class="l-h l-in" style="--i:2">Hasta que funcione.</h1>
+ <p class="l-sub l-in" style="--i:3">Un equipo que no se rinde. Entra a Action Leaders PLUS y empieza tu camino con nosotros.</p>
+ <div class="l-stats l-in" style="--i:4">
+  <div class="l-stat"><b data-n="700" data-s="+">0</b><span>Socios</span></div>
+  <div class="l-stat"><b data-n="46">0</b><span>Líderes</span></div>
+  <div class="l-stat"><b data-n="12">0</b><span>Directores</span></div>
+ </div>
+ <button class="l-btn l-in" style="--i:5" id="lLogin"><svg width="22" height="22" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Entrar con Google</button>
+ <p class="l-err" id="lErr" hidden></p>
+ <p class="l-note l-in" style="--i:6"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Tu avance y tus contactos quedan guardados en tu cuenta.</p>
+</div>
+<div class="l-boot"><img src="media/escudo.png" alt=""></div>
+<script>
+(function(){
+ var L=document.getElementById("land"),W=document.getElementById("lWall");
+ var cols=[[0,5,9,13,17,2],[4,1,8,12,16,19,10],[6,3,11,15,18,7,14]],wide={1:1,2:1,3:1};
+ var sp=[70,85,62];
+ cols.forEach(function(c,k){var d=document.createElement("div");d.className="l-col"+(k===1?" rev":"");d.style.setProperty("--d",sp[k]+"s");
+  var h="";c.concat(c).forEach(function(n,j){var f=("0"+n).slice(-2);h+='<img '+(wide[n]?'class="w" ':'')+'src="media/comunidad/c'+f+'.webp" alt="" '+(j<3?'':'loading="lazy" ')+'decoding="async">'});
+  d.innerHTML=h;W.appendChild(d)});
+ var M=L.querySelector(".l-main"),K=L.querySelector(".l-kick");
+ function fit(){M.style.setProperty("--sh",(M.clientHeight-K.offsetTop+150)+"px")}
+ fit();addEventListener("resize",fit);
+ function count(){[].forEach.call(L.querySelectorAll("[data-n]"),function(b){var n=+b.dataset.n,s=b.dataset.s||"",t0=null;
+  function f(t){if(!t0)t0=t;var p=Math.min(1,(t-t0)/1600),e=1-Math.pow(1-p,3);b.textContent=Math.round(n*e).toLocaleString("es")+(p===1?s:"");if(p<1)requestAnimationFrame(f)}
+  setTimeout(function(){requestAnimationFrame(f)},900)})}
+ var done=false;
+ function show(){if(done)return;done=true;L.classList.remove("boot");L.classList.add("show");count()}
+ function bye(){done=true;L.classList.add("bye");setTimeout(function(){L.remove()},550)}
+ window.addEventListener("fb-ready",function(e){e.detail?bye():show()});
+ setTimeout(function(){if(!done)bye()},14000);
+ var b=document.getElementById("lLogin"),er=document.getElementById("lErr");
+ b.onclick=function(){if(!window.FB)return;b.disabled=true;er.hidden=true;
+  window.FB.login().catch(function(e){b.disabled=false;er.textContent="No se pudo iniciar sesión ("+((e&&e.code)||"error")+"). Intenta de nuevo.";er.hidden=false})};
+})();
+</script>
+</div>
+
 <div class="app">
   <header class="top">
     <div class="top-t"><b>Action Leaders <em>PLUS</em></b><span id="hello" role="button" tabindex="0" title="Cambiar tu nombre" style="cursor:pointer">Hola, líder</span></div>
