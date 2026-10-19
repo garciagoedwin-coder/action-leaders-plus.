@@ -156,6 +156,17 @@ section.alt{background:linear-gradient(180deg,rgba(42,193,241,.06),rgba(139,107,
     <a class="btn pri" id="ref" style="width:100%;height:62px;font-size:18px" target="_blank" rel="noopener">🚀 Crear mi cuenta ahora</a>
     <p class="small" id="noLink" style="display:none;color:var(--mut);text-align:center;margin:0">Pide a la persona que te compartió esta página su enlace personal. 🙌</p>
   </div>
+  <div class="form-card" id="leadBox" style="margin-top:18px">
+    <h3 class="h" style="font-size:24px;margin:0 0 6px">¿Prefieres que te contacten?</h3>
+    <p class="sec-p" style="font-size:15px;margin:0 0 18px">Déjanos tu número y <b id="sNm3">Jorge</b> te escribe.</p>
+    <form id="lead">
+      <div class="f"><label for="ln">Tu nombre</label><input id="ln" placeholder="Nombre y apellido" autocomplete="name"></div>
+      <div class="f"><label for="lt">WhatsApp</label><div class="row2"><select id="lc"><option value="504">🇭🇳 +504</option><option value="502">🇬🇹 +502</option><option value="503">🇸🇻 +503</option><option value="505">🇳🇮 +505</option><option value="506">🇨🇷 +506</option><option value="507">🇵🇦 +507</option><option value="52">🇲🇽 +52</option><option value="1">🇺🇸 +1</option><option value="34">🇪🇸 +34</option><option value="44">🇬🇧 +44</option></select><input id="lt" type="tel" placeholder="Número" autocomplete="tel"></div></div>
+      <div class="f"><label>¿Qué te interesa más?</label><div class="chips" id="li"><button type="button" aria-pressed="false">✈️ Viajar</button><button type="button" aria-pressed="false">💰 Ingresos</button><button type="button" aria-pressed="true">⭐ Ambos</button></div></div>
+      <button class="btn gh" id="lBtn" type="submit" style="width:100%;margin-top:4px">Quiero que me contacten</button>
+    </form>
+    <div class="ok" id="ok"><div style="font-size:42px">🎉</div><h3 class="h" style="font-size:26px;margin:8px 0">¡Listo!</h3><p class="sec-p" style="margin:0 auto">Pronto te escribirán por WhatsApp.</p></div>
+  </div>
 </div></section>
 
 
@@ -163,18 +174,26 @@ section.alt{background:linear-gradient(180deg,rgba(42,193,241,.06),rgba(139,107,
 <a class="float" id="wa" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-3.2-.7-2.7-1.1-4.4-3.8-4.5-4-.1-.2-1.1-1.4-1.1-2.7s.7-1.9.9-2.2c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2 1.3 2.3 1.4.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.8.9c.3.1.4.2.5.3.1.2.1.7-.1 1.3z"/></svg></a>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getFirestore,doc,getDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getFirestore,doc,getDoc,collection,addDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});
 const db=getFirestore(app);const $=id=>document.getElementById(id);
 const code=(new URLSearchParams(location.search).get("de")||"").trim().toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60);
 let P=null;
 try{if(code){const d=await getDoc(doc(db,"perfiles",code));if(d.exists())P=d.data()}}catch(e){}
+const ch=document.querySelectorAll("#li button");ch.forEach(b=>b.onclick=()=>ch.forEach(x=>x.setAttribute("aria-pressed",x===b)));
 const safe=u=>{try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:""}catch(e){return ""}};
 if(P){const nm=P.nombre||"Tu invitador",first=nm.split(" ")[0];$("sNm").textContent=nm;$("sNm2").textContent=first;
   const av=$("sAv");if(P.foto){av.style.backgroundImage="url("+P.foto+")";av.textContent=""}else av.textContent=nm.split(" ").map(w=>w[0]).slice(0,2).join("");
   document.title=first+" te invita · Action Leaders";
   if(P.wa){const h="https://wa.me/"+P.wa+"?text="+encodeURIComponent("Hola "+first+", acabo de ver su página de Action Leaders PLUS y me interesa conocer más de la oportunidad.");$("wa").href=$("wa2").href=h;document.querySelectorAll(".js-wa").forEach(a=>a.href=h)}else{$("wa").style.display="none";$("wa2").style.display="none";document.querySelectorAll(".mid-cta").forEach(a=>a.style.display="none")}
-  const r=safe(P.ref||"");if(r)$("ref").href=r;else $("ref").style.display="none"}
-else{document.querySelector(".inv").style.display="none";$("wa").style.display="none";$("wa2").style.display="none";$("ref").style.display="none";document.querySelectorAll(".mid-cta").forEach(a=>a.style.display="none");$("sNm2").textContent="un líder del equipo";$("noLink").style.display="block"}
+  const r=safe(P.ref||"");if(r)$("ref").href=r;else $("ref").style.display="none";
+  $("sNm3").textContent=first;
+  $("lead").onsubmit=async e=>{e.preventDefault();const b=$("lBtn");const n=$("ln").value.trim(),t=$("lt").value.replace(/\D/g,"");
+    if(n.length<2||t.length<6){alert("Escribe tu nombre y tu número de WhatsApp.");return}
+    b.disabled=true;b.textContent="Enviando…";const it=[...ch].find(x=>x.getAttribute("aria-pressed")==="true");
+    try{await addDoc(collection(db,"users",P.uid,"prospectos"),{nombre:n.slice(0,79),cc:$("lc").value,tel:t.slice(0,20),interes:it?it.textContent.replace(/[^A-Za-zÁÉÍÓÚáéíóúñ ]/g,"").trim():"",t:Date.now()});
+      $("lead").style.display="none";$("ok").style.display="block"}
+    catch(x){b.disabled=false;b.textContent="Quiero que me contacten";alert("No se pudo enviar. Intenta de nuevo o escríbenos por WhatsApp.")}}}
+else{document.querySelector(".inv").style.display="none";$("wa").style.display="none";$("wa2").style.display="none";$("ref").style.display="none";document.querySelectorAll(".mid-cta").forEach(a=>a.style.display="none");$("sNm2").textContent="un líder del equipo";$("noLink").style.display="block";$("leadBox").style.display="none"}
 </script>
 </body></html>
