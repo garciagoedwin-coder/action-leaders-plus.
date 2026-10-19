@@ -613,7 +613,7 @@ const store={db:null,uid:null,
   async get(k){if(this.db){try{const s=await this.mine().doc(k).get();return s.exists?s.data():null}catch(e){}}return LS.get(k)},
   async set(k,v){if(this.db){try{await this.mine().doc(k).set(v);return}catch(e){toast("No se pudo guardar. Revisa tu conexión.")}}LS.set(k,v)},
   crm(){return this.db.collection("users/"+this.uid+"/crm")},
-  async contacts(){if(this.db){try{const q=await this.crm().get();return q.docs.map(d=>Object.assign({id:d.id},d.data()))}catch(e){}}return LS.get("crm")||[]},
+  async contacts(){if(this.db){for(let i=0;i<3;i++){try{const q=await this.crm().get();return q.docs.map(d=>Object.assign({id:d.id},d.data()))}catch(e){await new Promise(r=>setTimeout(r,1500))}}toast("No se pudieron cargar tus contactos. Revisa tu conexión y vuelve a abrir la app.");return []}return LS.get("crm")||[]},
   async saveContact(c){const{id,...body}=c;if(this.db){try{if(id){await this.crm().doc(id).set(body);return id}const r=await this.crm().add(body);return r.id}catch(e){toast("No se pudo guardar el contacto.");return null}}
     const all=LS.get("crm")||[];if(!id){c.id="c"+Date.now();all.push(c)}else{const i=all.findIndex(x=>x.id===id);all[i]=c}LS.set("crm",all);return c.id},
   async delContact(id){if(this.db){try{await this.crm().doc(id).delete()}catch(e){toast("No se pudo eliminar.")}return}
@@ -1411,7 +1411,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018232438";var busy=false,pend=null;
+(function(){var V="20261018232530";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
