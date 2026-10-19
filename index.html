@@ -927,16 +927,22 @@ $("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!
   else return;
   renderTasks();saveDay()});
 const weekCache={};
+const lunesK=()=>{const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7));return dkey(d)};
+function constStats(){const ini=k=>k<CONST_INI?CONST_INI:k,sc=k=>dayScore(k===TODAY?day:weekCache[k],k);
+  const per=a=>{let act=0,comp=0,best=0,run=0;for(let d=parseK(ini(a));dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=sc(k);if(v>0)act++;if(v>=1){comp++;run++;best=Math.max(best,run)}else if(k!==TODAY)run=0}return{act,comp,best}};
+  const lun=lunesK(),mes=TODAY.slice(0,7),W=per(lun),M=per(mes+"-01");let racha=0;
+  for(let d=parseK(TODAY);dkey(d)>=ini(lun);d.setDate(d.getDate()-1)){const k=dkey(d),v=sc(k);if(k===TODAY&&v<1)continue;if(v>=1)racha++;else break}
+  return{wk:lun,racha,semDias:W.act,semComp:W.comp,mes,mesDias:M.act,mesComp:M.comp,mesMejor:M.best}}
 let resT;function pushResumen(){if(!store.db||!store.uid)return;clearTimeout(resT);resT=setTimeout(async()=>{try{
   const sum={contactos:0,seguimientos:0,presentaciones:0,videos:0};let dias=0,racha=0;
   for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()-i);const w=weekCache[dkey(d)];if(w){Object.keys(sum).forEach(k=>sum[k]+=(+w[k]||0));if(dayScore(w,dkey(d))>0)dias++}}
   for(let i=0;i<30;i++){const d=new Date(now);d.setDate(d.getDate()-i);const sc=dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&sc<1)continue;if(sc>=1)racha++;else break}
   const et={};(contacts||[]).forEach(c=>{et[c.stage||"Nuevo"]=(et[c.stage||"Nuevo"]||0)+1});
   const a={fecha:TODAY,hoy:Math.round(dayScore(day)*100),racha,dias7:dias,semana:sum,crm:(contacts||[]).length,etapas:Object.keys(et).map(k=>k+":"+et[k]),
-    historia:!!(profile.historias||{})[TODAY],bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),t:Date.now()};
+    historia:!!(profile.historias||{})[TODAY],bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),cons:constStats(),t:Date.now()};
   await store.db.doc("users/"+store.uid).set({actividad:a},{merge:true});
   const nm=(miRegistro().nombre||"").trim(),em=String((fbUser&&fbUser.email)||"").toLowerCase();
-  if(nm&&!SOLO_ADMIN.includes(em))await store.db.doc("constancia/"+store.uid).set({nombre:nm,racha,dias7:dias,hoy:a.hoy,fecha:TODAY,acc:Object.values(sum).reduce((x,y)=>x+(+y||0),0),t:Date.now()})}catch(e){}},3000)}
+  if(nm&&!SOLO_ADMIN.includes(em))await store.db.doc("constancia/"+store.uid).set(Object.assign({nombre:nm,hoy:a.hoy,fecha:TODAY,acc:Object.values(sum).reduce((x,y)=>x+(+y||0),0),t:Date.now()},a.cons));if(constL)loadConst(true)}catch(e){}},3000)}
 function renderWeek(){const out=[];let streak=0;
   for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));
     out.push(`<div><i class="${s>=1?"full":s>0?"part":""} ${i===0?"today":""}">${d.getDate()}</i>${DAYS[d.getDay()]}</div>`)}
@@ -1039,7 +1045,7 @@ const actScore=x=>{const a=actDe(x);return a.hoy+a.d7*40+(a.sem.contactos||0)*3+
 const byAct=(a,b)=>actScore(b)-actScore(a)||tsMs(b.ultimoAcceso)-tsMs(a.ultimoAcceso);
 let constSync=false;async function syncConst(){if(constSync||!isAdmin||!socios)return;constSync=true;let n=0;
   for(const x of socios){if(!x.registro||!x.registro.nombre||esSoloAdmin(x))continue;const a=x.actividad||{},sm=a.semana||{};
-    try{await store.db.doc("constancia/"+x.uid).set({nombre:x.registro.nombre,racha:+a.racha||0,dias7:+a.dias7||0,hoy:+a.hoy||0,fecha:a.fecha||"",acc:Object.values(sm).reduce((p,q)=>p+(+q||0),0),t:a.t||0});n++}catch(e){break}}
+    try{await store.db.doc("constancia/"+x.uid).set(Object.assign({nombre:x.registro.nombre,hoy:+a.hoy||0,fecha:a.fecha||"",acc:Object.values(sm).reduce((p,q)=>p+(+q||0),0),t:a.t||0},a.cons||{}));n++}catch(e){break}}
   if(n)loadConst(true)}
 async function loadSocios(){try{const q=await store.db.collection("users").get();socios=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.registro||x.email)
   .sort((a,b)=>String((b.registro&&b.registro.fecha)||"").localeCompare(String((a.registro&&a.registro.fecha)||"")))}catch(e){socios=[];toast("No se pudo cargar la lista de socios")}renderEquipo();syncConst()}
@@ -1181,24 +1187,32 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
   b.querySelectorAll("[data-sedit]").forEach(bt=>bt.onclick=()=>editarSocio(bt.dataset.sedit));
   $("#socCsv").onclick=sociosCSV;const sv=$("#socVinc");if(sv)sv.onclick=abrirVincular;const sl=$("#socLin");if(sl)sl.onclick=async()=>{sl.disabled=true;sl.textContent="Reconstruyendo…";await reconstruirLineas(false);sl.disabled=false;sl.textContent="Reconstruir líneas"};$("#socReload").onclick=()=>{socios=null;renderEquipo()}}
 let constL=null,constT=0;
+let constVista="sem";
+const constSort=L=>{const sem=constVista==="sem";L.sort((a,b)=>sem?(b.racha-a.racha||b.semComp-a.semComp||b.semDias-a.semDias||b.hoy-a.hoy||(b.acc||0)-(a.acc||0)):(b.mesComp-a.mesComp||b.mesDias-a.mesDias||b.mesMejor-a.mesMejor||b.hoy-a.hoy)||String(a.nombre).localeCompare(b.nombre,"es"));L.forEach((x,i)=>x.rk=i+1);return L};
 async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now()-constT<120000)return;try{const q=await store.db.collection("constancia").get();constT=Date.now();
-  const ay=dkey(new Date(Date.now()-864e5));constL=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.nombre).map(x=>Object.assign(x,{racha:x.fecha>=ay?(+x.racha||0):0,hoy:x.fecha===TODAY?(+x.hoy||0):0,dias7:+x.dias7||0}))
-  .map(x=>Object.assign(x,{dias7:x.t&&Date.now()-x.t<8*864e5?x.dias7:0})).sort((a,b)=>b.racha-a.racha||b.dias7-a.dias7||b.hoy-a.hoy||(b.acc||0)-(a.acc||0)||String(a.nombre).localeCompare(b.nombre,"es"));constL.forEach((x,i)=>x.rk=i+1)}catch(e){constL=constL||[]}
+  const ay=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()-1)),lun=lunesK(),mes=TODAY.slice(0,7);
+  constL=constSort(q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.nombre).map(x=>{const hoy=x.fecha===TODAY?(+x.hoy||0):0,okW=x.wk===lun&&x.fecha>=lun,okM=x.mes===mes;
+    return Object.assign(x,{hoy,racha:okW&&x.fecha>=ay?(+x.racha||0):(hoy>=100?1:0),semDias:okW?(+x.semDias||0):(hoy>0?1:0),semComp:okW?(+x.semComp||0):(hoy>=100?1:0),mesDias:okM?(+x.mesDias||0):(hoy>0?1:0),mesComp:okM?(+x.mesComp||0):(hoy>=100?1:0),mesMejor:okM?(+x.mesMejor||0):(hoy>=100?1:0)})}))}catch(e){constL=constL||[]}
   renderTopRut();if(eqTab==="ranking"&&rankMetric==="rutina")renderEquipo()}
-function renderTopRut(){const c=$("#topRut");if(!c)return;if(!constL||!constL.length){c.hidden=true;return}c.hidden=false;const md=["🥇","🥈","🥉"];
+const diasSem=()=>{const l=lunesK(),i=l<CONST_INI?CONST_INI:l;return Math.round((parseK(TODAY)-parseK(i))/864e5)+1};
+const diasMes=()=>{const m=TODAY.slice(0,7)+"-01",i=m<CONST_INI?CONST_INI:m;return Math.round((parseK(TODAY)-parseK(i))/864e5)+1};
+const constSub=x=>constVista==="sem"?`📅 ${x.semDias}/${diasSem()} ${diasSem()===1?"día":"días"} esta semana · Hoy ${x.hoy}%`:`✅ ${x.mesComp} completos · 📅 ${x.mesDias}/${diasMes()} activos`;
+function renderTopRut(){const c=$("#topRut");if(!c)return;if(!constL||!constL.length){c.hidden=true;return}c.hidden=false;const md=["🥇","🥈","🥉"];if(constVista!=="sem"){constVista="sem";constSort(constL)}
   c.innerHTML=`<div class="row between"><h3 style="margin:0">🔥 Top Consistencia</h3><button class="btn sm ghost" id="topRutVer">Ver ranking</button></div><p class="small muted" style="margin:2px 0 6px">${constDia()===1?"🚀 ¡Hoy empezamos! Día 1: completa tu rutina y arranca tu racha.":constDia()<=7?"Día "+constDia()+" del ranking de consistencia.":"Los socios que más cumplen su rutina diaria."}</p>
-   ${constL.slice(0,3).map((x,i)=>`<div class="row" style="gap:10px;padding:8px 0;${i<2?"border-bottom:1px solid var(--line)":""}"><span style="font-size:22px;width:28px;text-align:center">${md[i]}</span>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">📅 ${x.dias7}/7 días · Hoy ${x.hoy}%</div></div><span class="chip c-gold" style="flex:none">🔥 ${x.racha} ${x.racha===1?"día":"días"}</span></div>`).join("")}`;
+   ${constL.slice(0,3).map((x,i)=>`<div class="row" style="gap:10px;padding:8px 0;${i<2?"border-bottom:1px solid var(--line)":""}"><span style="font-size:22px;width:28px;text-align:center">${md[i]}</span>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">📅 ${x.semDias}/${diasSem()} esta semana · Hoy ${x.hoy}%</div></div><span class="chip c-gold" style="flex:none">🔥 ${x.racha} ${x.racha===1?"día":"días"}</span></div>`).join("")}`;
   $("#topRutVer").onclick=()=>{eqTab="ranking";rankMetric="rutina";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()}}
 const CONST_INI="2026-10-19";const constDia=()=>Math.floor((parseK(TODAY)-parseK(CONST_INI))/864e5)+1;
 const constBanner=()=>{const d=constDia();if(d<1||d>7)return"";return `<div class="card" style="background:linear-gradient(135deg,#2AC1F1,#6b4dff);color:#fff;gap:4px"><b style="font-size:17px">🚀 ${d===1?"¡Hoy empezamos! Día 1":"Día "+d+" del ranking"}</b><span style="font-size:14px;opacity:.95">${d===1?"El ranking de consistencia arrancó hoy, todos parten de cero. Completa tu rutina hoy al 100% y mañana empiezas tu racha 🔥":"El ranking arrancó el lunes 19 de octubre. Cada día que completas tu rutina suma a tu racha 🔥"}</span></div>`};
 function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="false" data-k="presentaciones">Registros inCruises</button><button aria-selected="false" data-k="nuevos">Activaciones</button><button aria-selected="true" data-k="rutina">🔥 Rutina</button></div><div class="seg" id="rankSeg" hidden></div>
-   <p class="small muted">Ordenado por racha de días con la rutina completa, luego días activos de la semana y avance de hoy.</p>`;
+   <div class="seg" id="consV"><button aria-selected="${constVista==="sem"}" data-cv="sem">Esta semana</button><button aria-selected="${constVista==="mes"}" data-cv="mes">Este mes</button></div>
+   <p class="small muted">${constVista==="sem"?"La semana va de lunes a domingo y se reinicia cada lunes. Ordenado por racha (días seguidos con la rutina completa), luego días completos y activos de la semana.":"Ordenado por días con la rutina completa en el mes, luego días activos y mejor racha."}</p>`;
   if(constL===null){b.innerHTML=segs+`<p class="muted small">Cargando…</p>`;bindRank();loadConst(true);return}
   if(!constL.length){b.innerHTML=segs+emptyCard("Aún nadie suma racha","Completa tu rutina hoy y toma el primer lugar.");bindRank();loadConst();return}
-  const L=constL,pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.uid===store.uid,true)}<span class="nm">${esc(p.nombre)}</span><div class="block"><b>${p.rk}</b><span class="small num">🔥 ${p.racha} ${p.racha===1?"día":"días"}</span><span class="small num" style="opacity:.85">Hoy ${p.hoy}% · ${p.dias7}/7</span></div></div>`:"<div></div>";
+  const L=constL,pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.uid===store.uid,true)}<span class="nm">${esc(p.nombre)}</span><div class="block"><b>${p.rk}</b>${constVista==="sem"?`<span class="small num">🔥 ${p.racha} ${p.racha===1?"día":"días"}</span><span class="small num" style="opacity:.85">Hoy ${p.hoy}% · ${p.semDias}/${diasSem()}</span>`:`<span class="small num">✅ ${p.mesComp} ${p.mesComp===1?"día":"días"}</span><span class="small num" style="opacity:.85">${p.mesDias}/${diasMes()} activos</span>`}</div></div>`:"<div></div>";
   const mine=L.find(x=>x.uid===store.uid);
-  b.innerHTML=segs+constBanner()+(mine?`<div class="card row between"><span>Tu lugar en consistencia</span><b class="num" style="font-size:20px">#${mine.rk}</b></div>`:`<div class="card small">Completa tu rutina para aparecer en este ranking 💪</div>`)+`<div class="card"><div class="podium">${pod(L[1],1)+pod(L[0],0)+pod(L[2],2)}</div></div>
-   <div class="card" style="gap:0">${L.slice(3).map(x=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)${x.uid===store.uid?";background:var(--brand-soft,rgba(42,193,241,.08))":""}"><b class="num" style="width:26px;text-align:center">${x.rk}</b>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">📅 ${x.dias7}/7 días · Hoy ${x.hoy}%</div></div><span class="chip ${x.racha?"c-gold":"c-brand"}" style="flex:none">🔥 ${x.racha}</span></div>`).join("")||`<p class="small muted" style="padding:8px 0">¡Súmate al ranking completando tu rutina!</p>`}</div>`;
+  b.innerHTML=segs+constBanner()+(mine?`<div class="card row between"><span>Tu lugar ${constVista==="sem"?"esta semana":"este mes"}</span><b class="num" style="font-size:20px">#${mine.rk}</b></div>`:`<div class="card small">Completa tu rutina para aparecer en este ranking 💪</div>`)+`<div class="card"><div class="podium">${pod(L[1],1)+pod(L[0],0)+pod(L[2],2)}</div></div>
+   <div class="card" style="gap:0">${L.slice(3).map(x=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)${x.uid===store.uid?";background:var(--brand-soft,rgba(42,193,241,.08))":""}"><b class="num" style="width:26px;text-align:center">${x.rk}</b>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">${constSub(x)}</div></div><span class="chip ${(constVista==="sem"?x.racha:x.mesComp)?"c-gold":"c-brand"}" style="flex:none">${constVista==="sem"?"🔥 "+x.racha:"✅ "+x.mesComp}</span></div>`).join("")||`<p class="small muted" style="padding:8px 0">¡Súmate al ranking completando tu rutina!</p>`}</div>`;
+  b.querySelectorAll("[data-cv]").forEach(x=>x.onclick=()=>{constVista=x.dataset.cv;constSort(constL);renderEquipo()});
   bindRank();loadConst()}
 function renderEquipo(){const b=$("#eqBody");
   if(eqTab==="socios"){renderSocios(b);return}
@@ -2226,7 +2240,9 @@ function subscribeTeam(db){
   db.collection("fotos").onSnapshot(s=>{fotosFs=docs(s);T.fotos=fotosRepo.concat(fotosFs);renderWho();renderEquipo();renderHist()},()=>{});
 }
 async function loadMine(){
-  const ks=Array.from({length:7},(_,i)=>{const d=new Date(now);d.setDate(d.getDate()-i);return dkey(d)});
+  const lun0=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7)),m0=new Date(now.getFullYear(),now.getMonth(),1),st0=lun0<m0?lun0:m0;
+  const nk=Math.max(7,Math.round((new Date(now.getFullYear(),now.getMonth(),now.getDate())-st0)/864e5)+1);
+  const ks=Array.from({length:nk},(_,i)=>{const d=new Date(now);d.setDate(d.getDate()-i);return dkey(d)});
   const [p,r,bw,...vals]=await Promise.all([store.get("perfil"),store.get("reto-"+MONTH),store.db?store.get("bienvenida").catch(()=>null):null].concat(ks.map(k=>store.get("rutina-"+k))));
   if(p)profile=Object.assign({ref:"",training:{},arranque:{},miNombre:""},p);try{if(store.uid&&localStorage.getItem("alp:welok")===store.uid)profile.bienvenida=true}catch(x){}
   if(r)reto=r;ks.forEach((k,i)=>{if(vals[i])weekCache[k]=vals[i]});
@@ -2281,7 +2297,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019145654";var busy=false,pend=null;
+(function(){var V="20261019161442";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
