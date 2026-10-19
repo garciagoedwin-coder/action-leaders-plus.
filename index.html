@@ -477,7 +477,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 
     <!-- CRM -->
     <section class="view" id="v-crm" hidden>
-      <div class="row between"><div><p class="eyebrow">Tus contactos</p><h1>Mi CRM</h1></div><button class="btn gold" id="addContact">+ Contacto</button></div>
+      <div class="row between"><div><p class="eyebrow">Tus contactos</p><h1>Mi CRM</h1></div><div class="row" style="gap:8px"><button class="btn ghost" id="bienBtn" title="Bienvenida a socio nuevo">🎉</button><button class="btn gold" id="addContact">+ Contacto</button></div></div>
       <input class="inp" id="crmSearch" type="search" placeholder="Buscar por nombre o nota">
       <div class="stage-bar" id="stageBar"></div>
       <div class="card"><div class="list" id="contactList"></div></div>
@@ -690,7 +690,7 @@ function renderAviso(){const c=$("#avisoCard");if(!c)return;c.hidden=true;return
 const ACC_DEF=[{t:"Flyer de bienvenida",i:"🖼️",u:""},{t:"Regístrate en YESSMovement",i:"✍️",u:""},{t:"Audios en Spotify",i:"🎧",u:""},{t:"Caja de herramientas",i:"🧰",u:"https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"}];
 function renderAccesos(){const c=$("#accesos");if(!c)return;const L=((T.config&&Array.isArray(T.config.accesos)&&T.config.accesos.length)?T.config.accesos:ACC_DEF).filter(a=>safeUrl(a.u));
   if(!L.length){c.hidden=true;return}c.hidden=false;
-  c.innerHTML=`<h3>Accesos directos</h3><div class="acc">${L.map(a=>`<a href="${esc(a.u)}" target="_blank" rel="noopener"><span class="ic">${esc(a.i||"🔗")}</span>${esc(a.t)}</a>`).join("")}</div>`}
+  c.innerHTML=`<h3>Accesos directos</h3><div class="acc"><a href="#" id="accBien"><span class="ic">🎉</span>Bienvenida socio nuevo</a>${L.map(a=>`<a href="${esc(a.u)}" target="_blank" rel="noopener"><span class="ic">${esc(a.i||"🔗")}</span>${esc(a.t)}</a>`).join("")}</div>`;$("#accBien").onclick=e=>{e.preventDefault();abrirBienvenida()}}
 function renderMe(){const me=myRow();$("#topPv").textContent=me?fmt(me.registros):"—";$("#topPvBox").toggleAttribute("data-empty",!me);renderWho();if(eqTab==="ranking")renderEquipo()}
 
 // ---------- retos ----------
@@ -1012,6 +1012,64 @@ async function compartirHist(){if(!histFile){toast("La historia aún se está cr
   const marcar=()=>{profile.historias=Object.assign({},profile.historias||{},{[TODAY]:true});store.set("perfil",profile);pushResumen();toast("¡Historia de hoy completada! 🔥 Mañana tendrás una nueva.");const c=$("#histCard");if(c){c.style.transition="opacity .4s";c.style.opacity="0";setTimeout(()=>{c.hidden=true;c.style.opacity=""},450)}};
   if(navigator.canShare&&navigator.canShare({files:[histFile]})){try{await navigator.share({files:[histFile]});marcar();return}catch(x){if(x&&x.name==="AbortError")return}}
   const a=document.createElement("a");a.href=URL.createObjectURL(histFile);a.download=histFile.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);marcar();toast("Historia descargada. Súbela a tus estados 📲")}
+
+// ---------- bienvenida a socio nuevo ----------
+const BIEN_MSG=(n,f,pat)=>`🎉 *¡Felicidades, ${n}! ${f?"Bienvenida":"Bienvenido"} a Action Leaders*
+
+Hoy tomó una gran decisión y es un gusto tenerle en el equipo. Desde hoy no camina ${f?"sola":"solo"}: vamos a crecer juntos. 💪
+
+Su primer paso es entrar a nuestra app del equipo:
+👉 https://actionleadersplus.com
+
+1️⃣ Toque *Entrar con Google*
+2️⃣ Complete su registro (nombre, patrocinador y plan)
+3️⃣ Vea su video de bienvenida
+4️⃣ Únase al grupo de WhatsApp y descargue su caja de herramientas
+
+📲 Le recomiendo agregarla a la pantalla de inicio de su celular para tenerla siempre a mano.
+
+Ahí encontrará su rutina diaria, la agenda del equipo, cursos y todo lo necesario para empezar con el pie derecho.
+
+Cualquier duda, aquí estoy para apoyarle. ¡Hasta que funcione! 🚀
+
+${pat}`;
+async function bienCanvas(n,f,pat){const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
+  try{await Promise.all(["800 90px 'Bricolage Grotesque'","500 40px Figtree","700 40px Figtree"].map(x=>document.fonts.load(x)))}catch(x){}
+  const HF="'Bricolage Grotesque', Figtree, Arial, sans-serif",BF="Figtree, Arial, sans-serif";
+  const bg=await imgLoad("media/flyers/bienvenida.jpg");if(bg)g.drawImage(bg,0,0,W,H);
+  const fit=(t,font,size,maxW)=>{let z=size;g.font=font.replace("{s}",z);while(g.measureText(t).width>maxW&&z>20){z--;g.font=font.replace("{s}",z)}};
+  const cx=540,cy=430,r=180;let src=miFotoUrl();const im=src?await imgLoad(src,!/^data:/.test(src)):null;
+  g.save();g.shadowColor="rgba(42,193,241,.8)";g.shadowBlur=40;g.beginPath();g.arc(cx,cy,r+6,0,Math.PI*2);g.fillStyle="#2AC1F1";g.fill();g.restore();
+  g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();
+  if(im){const s=Math.max(2*r/im.width,2*r/im.height);g.fillStyle="#e9e9ec";g.fillRect(cx-r,cy-r,2*r,2*r);g.drawImage(im,cx-im.width*s/2,cy-im.height*s/2.6,im.width*s,im.height*s)}
+  else{g.fillStyle="#13233a";g.fillRect(cx-r,cy-r,2*r,2*r);g.fillStyle="#2AC1F1";g.font="800 120px "+HF;g.textAlign="center";g.fillText(initials(pat||"AL"),cx,cy+42)}
+  g.restore();g.beginPath();g.arc(cx,cy,r+5,0,Math.PI*2);g.lineWidth=10;g.strokeStyle="#2AC1F1";g.stroke();
+  g.textAlign="center";g.fillStyle="#2AC1F1";g.font="700 40px "+BF;g.fillText(f?"¡BIENVENIDA A LA FAMILIA!":"¡BIENVENIDO A LA FAMILIA!",540,720);
+  g.fillStyle="#fff";fit(n,"800 {s}px "+HF,112,940);g.fillText(n,540,850);
+  g.fillStyle="#d2d7e1";g.font="500 44px "+BF;g.fillText("Hoy empieza tu nueva historia.",540,935);
+  g.fillStyle="#fff";const t=(f?"Tu patrocinador: ":"Tu patrocinador: ")+pat;fit(t,"700 {s}px "+BF,38,690);g.fillText(t,540,1048);
+  return cv}
+function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null;const tel=c.phone?waNum(c.phone,c.cc):"",pat=miNombreCorto()||"Tu patrocinador";
+  openSheet(`<h2>🎉 Bienvenida a socio nuevo</h2>
+   <div class="field"><label for="bnN">Nombre del socio nuevo</label><input class="inp" id="bnN" value="${esc(n)}" placeholder="Nombre y apellido"></div>
+   <div class="seg" id="bnG"><button aria-selected="true" data-g="m" type="button">Bienvenido</button><button aria-selected="false" data-g="f" type="button">Bienvenida</button></div>
+   <div id="bnBox" style="aspect-ratio:4/5;border-radius:14px;background:#0b0b10;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Escribe el nombre…</span></div>
+   <button class="btn" id="bnGo" style="width:100%">📤 Enviar flyer y mensaje${tel?" por WhatsApp":""}</button>
+   <div class="row" style="gap:8px"><button class="btn ghost grow" id="bnCopy">Copiar mensaje</button><button class="btn ghost grow" id="bnDl">Descargar flyer</button></div>
+   ${tel?`<a class="btn ghost" id="bnWa" style="width:100%;justify-content:center" target="_blank" rel="noopener">Abrir chat de WhatsApp</a>`:""}
+   <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
+    let tk=0;const upd=async()=>{n=$("#bnN").value.trim().replace(/\s+/g," ");const my=++tk;const box=$("#bnBox");if(!n){box.innerHTML='<span class="small" style="color:#fff">Escribe el nombre…</span>';file=null;return}
+      const cv=await bienCanvas(n,f,pat);if(my!==tk)return;const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));file=new File([b],"Bienvenida-"+n.replace(/\s+/g,"-")+".jpg",{type:"image/jpeg"});
+      box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im);
+      const wa=$("#bnWa");if(wa)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat))};
+    let deb;$("#bnN").oninput=()=>{clearTimeout(deb);deb=setTimeout(upd,450)};
+    $("#bnG").onclick=e=>{const b=e.target.closest("[data-g]");if(!b)return;f=b.dataset.g==="f";$("#bnG").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));upd()};
+    $("#bnCopy").onclick=async()=>{if(!n)return toast("Escribe el nombre");try{await navigator.clipboard.writeText(BIEN_MSG(n,f,pat));toast("Mensaje copiado")}catch(x){toast("No se pudo copiar")}};
+    $("#bnDl").onclick=()=>{if(!file)return toast("Escribe el nombre");const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000)};
+    $("#bnGo").onclick=async()=>{if(!n||!file)return toast("Escribe el nombre del socio");const msg=BIEN_MSG(n,f,pat);
+      if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text:msg});return}catch(x){if(x&&x.name==="AbortError")return}}
+      location.href="https://wa.me/"+tel+"?text="+encodeURIComponent(msg)};
+    if(n)upd()})}
 function evHTML(e){const fin=finalizada(e);return `<div class="ev ${fin?"ev-past":""}"><span class="hr">${esc(h12(e.hora))||"—"}${e.horaFin?`<br><span class="small muted" style="font-family:var(--f-body);font-weight:600">a ${esc(h12(e.horaFin))}</span>`:""}</span><div class="body">
   <div class="row between" style="align-items:flex-start"><b>${esc(e.titulo)}</b><span class="row" style="gap:4px;flex:none">${fin?'<span class="chip c-brand" style="color:var(--muted)">Finalizada</span>':modoChip(e)}</span></div>
   <div class="meta">${e.responsable?`<span>${USER}Presenta: <b style="font-weight:600;color:var(--ink)">${esc(e.responsable)}</b></span>`:pendiente(e)&&!fin?`<span class="chip c-warn">Presentador por asignar</span>`:""}${e.edifica?`<span>Edifica: <b style="font-weight:600;color:var(--ink)">${esc(e.edifica)}</b></span>`:""}</div>
@@ -1089,13 +1147,14 @@ function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerC
     <div class="row between"><b>${esc(c.name)}</b><span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage)}</span></div>
     ${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}${c.note?`<span class="note">${esc(c.note)}</span>`:""}
     ${c.next?`<span class="small" style="color:var(--${late?"bad":today?"warn":"muted"});font-weight:600">${late?"Seguimiento atrasado: "+niceDate(c.next):today?"Seguimiento hoy":"Próximo seguimiento: "+niceDate(c.next)}</span>`:""}
-    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}<button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div>`}).join("")}
+    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}<button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div>`}).join("")}
 $("#stageBar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;stageF=b.dataset.s;renderCRM()});
 $("#crmSearch").addEventListener("input",renderCRM);
-$("#addContact").onclick=()=>editContact();
+$("#bienBtn").onclick=()=>abrirBienvenida();$("#addContact").onclick=()=>editContact();
 $("#contactList").addEventListener("click",async e=>{const st=e.target.closest("[data-st]");
   if(st){const c=contacts.find(x=>x.id===st.dataset.cid);if(!c||c.stage===st.dataset.st)return;const prev=c.stage;c.stage=st.dataset.st;c.updated=Date.now();renderCRM();
-    const id=await store.saveContact(Object.assign({},c));if(!id){c.stage=prev;renderCRM();return}toast(c.name.split(" ")[0]+": "+c.stage);return}
+    const id=await store.saveContact(Object.assign({},c));if(!id){c.stage=prev;renderCRM();return}if(c.stage==="Socio"){abrirBienvenida(c);return}toast(c.name.split(" ")[0]+": "+c.stage);return}
+  const bw=e.target.closest("[data-bien]");if(bw){abrirBienvenida(contacts.find(c=>c.id===bw.dataset.bien));return}
   const b=e.target.closest("[data-edit]");if(b)editContact(contacts.find(c=>c.id===b.dataset.edit))});
 
 // ---------- llenado rápido de contactos ----------
@@ -1517,7 +1576,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019000912";var busy=false,pend=null;
+(function(){var V="20261019001641";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
