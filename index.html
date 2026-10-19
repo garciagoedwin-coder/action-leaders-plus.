@@ -463,7 +463,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 
     <!-- EQUIPO -->
     <section class="view" id="v-equipo" hidden>
-      <div><p class="eyebrow">Volumen y resultados</p><h1>Mi equipo</h1></div>
+      <div class="row between"><div><p class="eyebrow">Volumen y resultados</p><h1>Mi equipo</h1></div><button class="btn sm ghost" data-refresh="eq" type="button">↻ Actualizar</button></div>
       <div class="seg" role="tablist" id="eqSeg">
         <button aria-selected="true" data-k="ranking">Ranking</button>
         <button aria-selected="false" data-k="liderazgo">Liderazgo</button>
@@ -486,7 +486,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 
     <!-- AGENDA -->
     <section class="view" id="v-agenda" hidden>
-      <div class="row between"><div><p class="eyebrow">Actividades del equipo</p><h1>Calendario</h1></div><a class="btn gold sm" id="addEvent" href="https://docs.google.com/spreadsheets/d/1-0ct30l0fcn8rtzgfOcrkLTGmgRHOa2xEmm2X0izvG4/edit" target="_blank" rel="noopener" hidden>Editar en Google Sheets</a></div>
+      <div class="row between"><div><p class="eyebrow">Actividades del equipo</p><h1>Calendario</h1></div><button class="btn sm ghost" data-refresh="cal" type="button">↻ Actualizar</button><a class="btn gold sm" id="addEvent" href="https://docs.google.com/spreadsheets/d/1-0ct30l0fcn8rtzgfOcrkLTGmgRHOa2xEmm2X0izvG4/edit" target="_blank" rel="noopener" hidden>Editar en Google Sheets</a></div>
       <div class="card">
         <div class="cal-head"><button id="calPrev" aria-label="Mes anterior">‹</button><h2 id="calTitle">Mes</h2><button id="calNext" aria-label="Mes siguiente">›</button></div>
         <div class="cal" id="cal"></div>
@@ -1285,6 +1285,10 @@ renderAll();
 try{const t=localStorage.getItem("alp:tab");if(t&&document.getElementById("v-"+t))go(t)}catch(e){}
 
 let fotosRepo=[],fotosFs=[];
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-refresh]");if(!b||b.disabled)return;b.disabled=true;const t=b.textContent;b.textContent="Actualizando…";
+  try{await loadTeamJSON();const c=T.config||{},k=b.dataset.refresh==="cal"?c.calendarioActualizado:c.rankingActualizado;
+    toast((b.dataset.refresh==="cal"?"Agenda al día":"Ranking al día")+(k?" · actualizado "+new Date(k).toLocaleString("es",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):""))}catch(x){toast("No se pudo actualizar. Revisa tu conexión.")}
+  b.disabled=false;b.textContent=t});
 async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
@@ -1339,7 +1343,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018222050";var busy=false;
+(function(){var V="20261018222241";var busy=false;
  function chk(){if(busy)return;busy=true;fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){t=(t||"").trim();
   if(t&&t!==V){var k="alp:upd:"+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}
    return fetch("./",{cache:"reload"}).catch(function(){}).then(function(){location.reload()})}}).catch(function(){}).then(function(){busy=false})}
