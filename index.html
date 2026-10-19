@@ -305,6 +305,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 .pf-it.out{color:var(--bad)}
 .qf{background:var(--bg);border:1px dashed var(--line);border-radius:14px;padding:10px 12px;margin:4px 0 10px}.qf-row{display:flex;flex-wrap:wrap;gap:8px}
 .curso{gap:12px}.yt{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000}.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+#cal button.past{opacity:.35}#cal button.past .dots i{background:var(--muted)}.ev.ev-past{opacity:.45;filter:grayscale(1)}.ev.ev-past .hr{color:var(--muted)}
 </style>
 
 </head>
@@ -868,7 +869,7 @@ function renderCal(){$("#calTitle").textContent=MONTHS[calM.getMonth()][0].toUpp
   let h=DAYS.map(d=>`<div class="dow">${d[0]}</div>`).join("");
   for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const k=dkey(d),n=evOf(k).length;
     if(i>=35&&d.getMonth()!==calM.getMonth())break;
-    h+=`<button data-d="${k}" class="${d.getMonth()!==calM.getMonth()?"out":""} ${k===TODAY?"today":""}" aria-pressed="${k===selDay}" aria-label="${longDate(k)}${n?", "+n+" actividades":""}">${d.getDate()}<span class="dots">${"<i></i>".repeat(Math.min(n,3))}</span></button>`}
+    h+=`<button data-d="${k}" class="${d.getMonth()!==calM.getMonth()?"out":""} ${k===TODAY?"today":""} ${k<TODAY?"past":""}" aria-pressed="${k===selDay}" aria-label="${longDate(k)}${n?", "+n+" actividades":""}">${d.getDate()}<span class="dots">${"<i></i>".repeat(Math.min(n,3))}</span></button>`}
   $("#cal").innerHTML=h;const np=T.eventos.filter(e=>e.fecha>=TODAY&&pendiente(e)&&!finalizada(e)).length;$("#agPendBtn").textContent="Por asignar"+(np?" ("+np+")":"");renderEvList()}
 
 // ---------- compartir actividades y flyers ----------
@@ -1011,7 +1012,7 @@ async function compartirHist(){if(!histFile){toast("La historia aún se está cr
   const marcar=()=>{profile.historias=Object.assign({},profile.historias||{},{[TODAY]:true});store.set("perfil",profile);pushResumen();toast("¡Historia de hoy completada! 🔥 Mañana tendrás una nueva.");const c=$("#histCard");if(c){c.style.transition="opacity .4s";c.style.opacity="0";setTimeout(()=>{c.hidden=true;c.style.opacity=""},450)}};
   if(navigator.canShare&&navigator.canShare({files:[histFile]})){try{await navigator.share({files:[histFile]});marcar();return}catch(x){if(x&&x.name==="AbortError")return}}
   const a=document.createElement("a");a.href=URL.createObjectURL(histFile);a.download=histFile.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);marcar();toast("Historia descargada. Súbela a tus estados 📲")}
-function evHTML(e){const fin=finalizada(e);return `<div class="ev" style="${fin?"opacity:.6":""}"><span class="hr">${esc(h12(e.hora))||"—"}${e.horaFin?`<br><span class="small muted" style="font-family:var(--f-body);font-weight:600">a ${esc(h12(e.horaFin))}</span>`:""}</span><div class="body">
+function evHTML(e){const fin=finalizada(e);return `<div class="ev ${fin?"ev-past":""}"><span class="hr">${esc(h12(e.hora))||"—"}${e.horaFin?`<br><span class="small muted" style="font-family:var(--f-body);font-weight:600">a ${esc(h12(e.horaFin))}</span>`:""}</span><div class="body">
   <div class="row between" style="align-items:flex-start"><b>${esc(e.titulo)}</b><span class="row" style="gap:4px;flex:none">${fin?'<span class="chip c-brand" style="color:var(--muted)">Finalizada</span>':modoChip(e)}</span></div>
   <div class="meta">${e.responsable?`<span>${USER}Presenta: <b style="font-weight:600;color:var(--ink)">${esc(e.responsable)}</b></span>`:pendiente(e)&&!fin?`<span class="chip c-warn">Presentador por asignar</span>`:""}${e.edifica?`<span>Edifica: <b style="font-weight:600;color:var(--ink)">${esc(e.edifica)}</b></span>`:""}</div>
   <div class="meta">${zoneTimes(e)?`<span>${esc(zoneTimes(e))}</span>`:""}${e.lugar?`<span>${PIN}${esc(e.lugar)}</span>`:""}</div>
@@ -1516,7 +1517,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018235748";var busy=false,pend=null;
+(function(){var V="20261019000912";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
@@ -1528,7 +1529,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
   if(t&&t!==V){var k="alp:upd:"+t,tried=false;try{tried=!!sessionStorage.getItem(k)}catch(e){}
    if(!tried&&idle()){try{sessionStorage.setItem(k,"1")}catch(e){}return fetch("./",{cache:"reload"}).catch(function(){}).then(function(){go(t)})}
    bar(t)}}).catch(function(){}).then(function(){busy=false})}
- setTimeout(chk,2500);document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});window.addEventListener("focus",chk);setInterval(chk,2*60*1000);
+ setTimeout(chk,2500);document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});window.addEventListener("focus",chk);setInterval(chk,2*60*1000);var D0=new Date().toDateString();setInterval(function(){if(new Date().toDateString()!==D0&&idle())go(V+"d"+Date.now())},60*1000);
 })();
 </script>
 </body>
