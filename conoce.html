@@ -74,7 +74,7 @@ section{padding:72px 0}
   <div class="inv"><div class="av" id="sAv">JT</div><div><small>Te invita</small><b id="sNm">Jorge Turcios</b></div></div>
   <h1 class="h">Viaja más, gasta menos y <em>crea un ingreso extra</em></h1>
   <p>Descubre cómo miles de personas están convirtiendo sus viajes en una oportunidad, con una comunidad que te acompaña paso a paso.</p>
-  <div class="cta"><a class="btn pri" href="#video">▶ Ver el video</a><a class="btn gh" href="#info">Quiero información</a></div>
+  <div class="cta"><a class="btn pri" href="#video">▶ Ver el video</a><a class="btn gh" href="#info">Quiero más información</a></div>
 </div></div>
 
 <section id="video"><div class="wrap">
@@ -113,16 +113,12 @@ section{padding:72px 0}
 
 <section id="info"><div class="wrap">
   <div class="kick">Da el siguiente paso</div>
-  <h2 class="h sec-h">Quiero más información</h2>
-  <p class="sec-p">Déjanos tus datos y <b id="sNm2">Jorge</b> te escribe por WhatsApp para resolver tus dudas.</p>
-  <div class="form-card">
-    <form id="lead">
-      <div class="f"><label>Tu nombre</label><input id="ln" required placeholder="Nombre y apellido" autocomplete="name"></div>
-      <div class="f"><label>WhatsApp</label><div class="row2"><select id="lc"><option value="504">🇭🇳 +504</option><option value="502">🇬🇹 +502</option><option value="503">🇸🇻 +503</option><option value="505">🇳🇮 +505</option><option value="506">🇨🇷 +506</option><option value="1">🇺🇸 +1</option><option value="34">🇪🇸 +34</option><option value="44">🇬🇧 +44</option><option value="52">🇲🇽 +52</option></select><input id="lt" required type="tel" placeholder="Número" autocomplete="tel"></div></div>
-      <div class="f"><label>¿Qué te interesa más?</label><div class="chips" id="li"><button type="button" aria-pressed="false">✈️ Viajar</button><button type="button" aria-pressed="false">💰 Ingresos</button><button type="button" aria-pressed="true">⭐ Ambos</button></div></div>
-      <button class="btn pri" style="width:100%;margin-top:6px">Enviar mis datos</button>
-    </form>
-    <div class="ok" id="ok"><div style="font-size:46px">🎉</div><h3 class="h" style="font-size:28px;margin:10px 0">¡Listo!</h3><p class="sec-p" style="margin:0 auto">Pronto te escribiremos. Si prefieres, escríbenos ahora:</p><a class="btn wa" id="wa2" style="margin-top:18px" target="_blank" rel="noopener">Escribir por WhatsApp</a></div>
+  <h2 class="h sec-h">¿Te interesa?</h2>
+  <p class="sec-p">Escríbele a <b id="sNm2">Jorge</b> por WhatsApp para resolver tus dudas, o conoce más directamente.</p>
+  <div class="form-card" style="display:flex;flex-direction:column;gap:12px">
+    <a class="btn wa" id="wa2" style="width:100%;height:62px;font-size:18px" target="_blank" rel="noopener">💬 Escribir por WhatsApp</a>
+    <a class="btn pri" id="ref" style="width:100%;height:62px;font-size:18px" target="_blank" rel="noopener">✈️ Ver la oportunidad</a>
+    <p class="small" id="noLink" style="display:none;color:var(--mut);text-align:center;margin:0">Pide a la persona que te compartió esta página su enlace personal. 🙌</p>
   </div>
 </div></section>
 
@@ -130,25 +126,18 @@ section{padding:72px 0}
 <a class="float" id="wa" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="30" height="30" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-3.2-.7-2.7-1.1-4.4-3.8-4.5-4-.1-.2-1.1-1.4-1.1-2.7s.7-1.9.9-2.2c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2 1.3 2.3 1.4.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.8.9c.3.1.4.2.5.3.1.2.1.7-.1 1.3z"/></svg></a>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getFirestore,doc,getDoc,collection,addDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getFirestore,doc,getDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});
 const db=getFirestore(app);const $=id=>document.getElementById(id);
 const code=(new URLSearchParams(location.search).get("de")||"").trim().toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60);
 let P=null;
 try{if(code){const d=await getDoc(doc(db,"perfiles",code));if(d.exists())P=d.data()}}catch(e){}
-const ch=document.querySelectorAll("#li button");ch.forEach(b=>b.onclick=()=>ch.forEach(x=>x.setAttribute("aria-pressed",x===b)));
+const safe=u=>{try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:""}catch(e){return ""}};
 if(P){const nm=P.nombre||"Tu invitador",first=nm.split(" ")[0];$("sNm").textContent=nm;$("sNm2").textContent=first;
   const av=$("sAv");if(P.foto){av.style.backgroundImage="url("+P.foto+")";av.textContent=""}else av.textContent=nm.split(" ").map(w=>w[0]).slice(0,2).join("");
   document.title=first+" te invita · Action Leaders";
-  if(P.wa){const h="https://wa.me/"+P.wa+"?text="+encodeURIComponent("Hola "+first+", vi tu página y quiero más información.");$("wa").href=$("wa2").href=h}else{$("wa").style.display="none";$("wa2").style.display="none"}
-  $("lead").onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector("button[type=submit],button:not([type])");const n=$("ln").value.trim(),t=$("lt").value.replace(/\D/g,"");
-    if(n.length<2||t.length<6){alert("Escribe tu nombre y tu número de WhatsApp.");return}
-    b.disabled=true;b.textContent="Enviando…";
-    const it=[...ch].find(x=>x.getAttribute("aria-pressed")==="true");
-    try{await addDoc(collection(db,"users",P.uid,"prospectos"),{nombre:n.slice(0,79),cc:$("lc").value,tel:t.slice(0,20),interes:it?it.textContent.replace(/[^A-Za-zÁÉÍÓÚáéíóúñ ]/g,"").trim():"",t:Date.now()});
-      e.target.style.display="none";$("ok").style.display="block"}
-    catch(x){b.disabled=false;b.textContent="Enviar mis datos";alert("No se pudo enviar. Intenta de nuevo o escríbenos por WhatsApp.")}}}
-else{document.querySelector(".inv").style.display="none";$("wa").style.display="none";$("sNm2").textContent="un líder del equipo";
-  $("lead").innerHTML='<p class="sec-p" style="text-align:center;margin:0 auto">Pide a la persona que te compartió esta página su enlace personal para contactarte. 🙌</p>'}
+  if(P.wa){const h="https://wa.me/"+P.wa+"?text="+encodeURIComponent("Hola "+first+", acabo de ver su página de Action Leaders PLUS y me interesa conocer más de la oportunidad.");$("wa").href=$("wa2").href=h}else{$("wa").style.display="none";$("wa2").style.display="none"}
+  const r=safe(P.ref||"");if(r)$("ref").href=r;else $("ref").style.display="none"}
+else{document.querySelector(".inv").style.display="none";$("wa").style.display="none";$("wa2").style.display="none";$("ref").style.display="none";$("sNm2").textContent="un líder del equipo";$("noLink").style.display="block"}
 </script>
 </body></html>
