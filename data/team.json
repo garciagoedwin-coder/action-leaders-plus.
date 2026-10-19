@@ -2177,16 +2177,6 @@
  "config": {
   "accesos": [
    {
-    "i": "🖼️",
-    "t": "Flyer de bienvenida",
-    "u": "https://canva.link/k5zdcjzo4r72h60"
-   },
-   {
-    "i": "✍️",
-    "t": "Regístrate en YESSMovement",
-    "u": "https://www.yessmovement.org/signup"
-   },
-   {
     "i": "🎧",
     "t": "Audios en Spotify",
     "u": "https://open.spotify.com/show/2rpLxUc9jiXVhB2ItVicbp"
