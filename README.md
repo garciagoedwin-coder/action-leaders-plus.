@@ -1,1 +1,1 @@
-# action-leaders-plus.
+# action-leaders-plus
