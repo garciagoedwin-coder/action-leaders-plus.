@@ -255,7 +255,7 @@ input[type=date].inp::-webkit-date-and-time-value{text-align:left}
 :root{--r:18px;--shadow:0 1px 2px rgba(20,26,51,.05),0 8px 24px -8px rgba(20,26,51,.12)}
 header.top{background:linear-gradient(135deg,#2B2A2D 0%,#3D3B3B 60%,#0E4E66 140%);padding-block:14px 16px;border-radius:0 0 22px 22px;box-shadow:0 8px 20px -10px rgba(0,0,0,.45)}
 body::before{background:#2B2A2D}
-.top-t span{display:inline-block;margin-top:3px;font-size:13px;opacity:.85;cursor:pointer}
+.top-t span{display:inline-block;margin-top:3px;font-size:13px;opacity:.85}
 .top .pv{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:7px 12px}
 .top .pv[data-empty]{display:none}
 main{padding-block:18px 28px}
@@ -427,7 +427,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 
 <div class="app">
   <header class="top">
-    <div class="top-t"><b>Action Leaders <em>PLUS</em></b><span id="hello" role="button" tabindex="0" title="Cambiar tu nombre" style="cursor:pointer">Hola, líder</span></div>
+    <div class="top-t"><b>Action Leaders <em>PLUS</em></b><span id="hello">Hola, líder</span></div>
     <div class="pv" id="topPvBox" data-empty><b class="num" id="topPv">—</b><small>Presentaciones</small></div>
     <button class="me-btn" id="meBtn" aria-label="Mi perfil" title="Mi perfil"></button>
   </header>
@@ -1216,18 +1216,15 @@ function welVideo(){const box=$("#welVid");if(!box)return;
 window.addEventListener("message",e=>{if(!/youtube(-nocookie)?\.com$/.test((()=>{try{return new URL(e.origin).hostname}catch(x){return""}})()))return;
   let d=e.data;try{if(typeof d==="string")d=JSON.parse(d)}catch(x){return}const i=d&&d.info;if(!i)return;
   if(i.playerState===0||(i.duration>0&&i.currentTime/i.duration>=.9))welMark("video")});
-$("#hello").onclick=()=>openSheet(`<h2>¿Cómo te llamamos?</h2><p class="small muted">Así te saludará la app.</p>
+function abrirNombre(){openSheet(`<h2>¿Cómo te llamamos?</h2><p class="small muted">Así te saludará la app.</p>
   <div class="field"><label for="nmI">Tu nombre</label><input class="inp" id="nmI" maxlength="30" value="${esc(profile.nombrePila||"")}" placeholder="Ej.: Edwin"></div>
   ${T.ranking.length?`<div class="field"><label for="rkI">Tu nombre en el ranking <span class="muted">(opcional)</span></label><select class="inp" id="rkI"><option value="">No aparezco todavía</option>${[...new Set(T.ranking.map(r=>r.nombre).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"es")).map(n=>`<option ${n===profile.miNombre?"selected":""}>${esc(n)}</option>`).join("")}</select><p class="small muted">Para ver tus presentaciones arriba y resaltarte en el ranking.</p></div>`:""}
-  <div class="row"><button class="btn grow" id="nmOk">Guardar</button><button class="btn ghost" data-close>Cancelar</button></div>
-  <button class="btn sm ghost" id="welAgain" style="margin-top:10px">Ver la bienvenida otra vez</button>
-  ${fbUser?`<p class="small muted" style="margin-top:10px">Conectado como ${esc(fbUser.email||"")}</p><button class="btn sm ghost" id="fbOut" style="margin-top:4px;color:var(--bad)">Cerrar sesión</button>`:""}
-  ${isAdmin?`<button class="btn sm ghost" id="welPrev" style="margin-top:6px">Vista previa: pantalla para quien no tiene cuenta</button>`:""}`,()=>{
+  <div class="row"><button class="btn grow" id="nmOk">Guardar</button><button class="btn ghost" data-close>Cancelar</button></div>`,()=>{
   const fo=$("#fbOut");if(fo)fo.onclick=async()=>{closeSheet();try{await window.FB.logout()}catch(e){}};
   const wp=$("#welPrev");if(wp)wp.onclick=()=>{closeSheet();welPreview=true;welSigned=false;$("#welC").dataset.v="";renderWel()};
   const wa=$("#welAgain");if(wa)wa.onclick=()=>{closeSheet();try{localStorage.removeItem("alp:welDone")}catch(e){}profile.bienvenida=false;profile.welPasos={};delete profile.registro;store.set("perfil",profile);welState={};welOpenedAt=0;try{localStorage.removeItem("alp:welpos")}catch(e){}renderWel()};
   const ok=()=>{const rk=$("#rkI");if(rk)profile.miNombre=rk.value;const v=$("#nmI").value.trim().replace(/\s+/g," ");if(!v){store.set("perfil",profile);renderMe();closeSheet();return}profile.nombrePila=v;store.set("perfil",profile);$("#hello").textContent="Hola, "+v.split(" ")[0];closeSheet();renderMe();toast("Listo, "+v.split(" ")[0])};
-  $("#nmOk").onclick=ok;$("#nmI").onkeydown=e=>{if(e.key==="Enter")ok()}});
+  $("#nmOk").onclick=ok;$("#nmI").onkeydown=e=>{if(e.key==="Enter")ok()}});}
 
 function miRegistro(){return (regDoc&&regDoc.registro)||{}}
 function miNombreFull(){return profile.miNombre||miRegistro().nombre||(fbUser&&fbUser.displayName)||""}
@@ -1248,7 +1245,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
-    $("#pfNombre").onclick=()=>{closeSheet();setTimeout(()=>$("#hello").click(),50)};
+    $("#pfNombre").onclick=abrirNombre;
     $("#pfWel").onclick=verBienvenidaOtraVez;
     $("#pfInst").onclick=()=>openSheet(`<h2>Instala la app</h2>
       <p><b>iPhone (Safari):</b> toca <b>Compartir</b> (cuadro con flecha) → <b>Agregar a pantalla de inicio</b> → <b>Agregar</b>.</p>
