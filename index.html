@@ -44,6 +44,8 @@ button{cursor:pointer}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .app{display:flex;flex-direction:column;height:100%;max-width:560px;margin:0 auto;background:var(--bg)}
+.app{padding-top:env(safe-area-inset-top,0px)}
+header.top{flex:none}
 header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:#3D3B3B;color:#fff;
   padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
   display:flex;align-items:center;gap:12px}
