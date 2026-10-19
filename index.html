@@ -422,6 +422,11 @@ nav.tabs button{z-index:0;isolation:isolate}
  window.addEventListener("fb-ready",function(e){e.detail?bye():show()});
  setTimeout(function(){if(!done)bye()},14000);
  var b=document.getElementById("lLogin"),er=document.getElementById("lErr");
+ var inv=false;try{var q=new URLSearchParams(location.search).get("unirme");if(q){localStorage.setItem("alp:inv",q.trim().toLowerCase());history.replaceState(null,"",location.pathname)}inv=!!localStorage.getItem("alp:inv")}catch(e){}
+ if(!inv){b.style.display="none";var nt=L.querySelector(".l-note");if(nt)nt.innerHTML="🔒 Acceso exclusivo para socios. Pide tu enlace de invitación a tu patrocinador.";
+  var lk=document.createElement("button");lk.textContent="¿Ya eres socio? Iniciar sesión";lk.style.cssText="margin-top:22px;background:none;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:999px;padding:12px 22px;font:inherit;font-size:15px;font-weight:600;cursor:pointer;align-self:flex-start";
+  b.parentNode.insertBefore(lk,b);lk.onclick=function(){b.onclick()};if(window.matchMedia("(max-width:899px)").matches)lk.style.alignSelf="stretch"}
+ else{b.lastChild.textContent="Activar mi acceso con Google"}
  b.onclick=function(){if(!window.FB)return;b.disabled=true;er.hidden=true;
   window.FB.login().catch(function(e){b.disabled=false;er.textContent="No se pudo iniciar sesión ("+((e&&e.code)||"error")+"). Intenta de nuevo.";er.hidden=false})};
 })();
@@ -1020,7 +1025,7 @@ const BIEN_MSG=(n,f,pat)=>`🎉 *¡Felicidades, ${n}! ${f?"Bienvenida":"Bienveni
 Es un gusto tenerle en el equipo. 💪
 
 👉 Su primer paso: entre a nuestra app
-https://actionleadersplus.com
+https://actionleadersplus.com/?unirme=socio2026
 
 Entre con Google, complete su registro y vea su video de bienvenida.
 
@@ -1567,6 +1572,10 @@ async function loadMine(){
   contacts=await store.contacts();
   renderAll()}
 
+async function invOK(){try{const c=(localStorage.getItem("alp:inv")||"").trim().toLowerCase();if(!c)return false;const h=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(c));return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("")==="f19dd27ad9265108f10992e57f0df2c8cc886c185969b89cadb69177e14e9986"}catch(e){return false}}
+function bloquearSinInvitacion(){const d=document.createElement("div");d.style.cssText="position:fixed;inset:0;z-index:99999;background:#0d0c12;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;gap:14px;font-family:inherit";
+  d.innerHTML=`<img src="media/escudo.png" style="width:80px"><h2 style="margin:6px 0 0;font-size:24px">Acceso exclusivo para socios</h2><p style="max-width:340px;opacity:.8;margin:0;line-height:1.5">Para entrar a Action Leaders PLUS necesitas el enlace de invitación que te comparte tu patrocinador al asociarte.</p><button id="bqOut" style="margin-top:10px;background:#fff;color:#111;border:0;border-radius:999px;padding:12px 22px;font:inherit;font-weight:700">Salir</button>`;
+  document.body.appendChild(d);d.querySelector("#bqOut").onclick=async()=>{try{await window.FB.logout()}catch(e){}location.reload()}}
 const ADMINS=["garciagoedwin@gmail.com","actionleadersoficial@gmail.com","edwing.go@gmail.com"];
 let fbUser=null,regDoc=null;
 async function startApp(u){
@@ -1580,6 +1589,7 @@ async function startApp(u){
   $("#crmNote").textContent="Tus contactos se guardan en tu cuenta y solo tú puedes verlos.";
   subscribeTeam(db);
   await loadMine();
+  if(u&&!(regDoc&&regDoc.registro)&&!isAdmin&&!(await invOK())){bloquearSinInvitacion();return}
   if(regDoc&&regDoc.registro){welState.registro=true}
   renderWel();renderAviso();renderAccesos();
   renderMeBtn();setTimeout(renderHist,800);
@@ -1592,7 +1602,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019004908";var busy=false,pend=null;
+(function(){var V="20261019005219";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
