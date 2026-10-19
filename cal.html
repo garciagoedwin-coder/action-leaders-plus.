@@ -1,6 +1,22 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Agregar al calendario</title>
-<style>body{margin:0;font-family:-apple-system,system-ui,sans-serif;background:#0d0c12;color:#fff;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;text-align:center}
-a{display:block;margin:22px auto 0;max-width:320px;padding:16px;border-radius:999px;background:#2AC1F1;color:#0a141e;font-weight:800;text-decoration:none;font-size:17px}p{opacity:.75;line-height:1.5}</style></head>
-<body><div><div style="font-size:48px">📅</div><h2 id="t">Agregar al calendario</h2><p>Toca el botón y luego <b>"Agregar"</b> o <b>"Añadir al calendario"</b>.</p><a id="go" href="#">Agregar a mi calendario</a><p style="font-size:13px;margin-top:22px">Cuando termines, puedes volver a la app.</p></div>
-<script>try{var ics=decodeURIComponent(location.hash.slice(1));var m=ics.match(/SUMMARY:(.*)/);if(m)document.getElementById("t").textContent=m[1];
-var u="data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);document.getElementById("go").href=u}catch(e){}</script></body></html>
+<meta name="robots" content="noindex"><link rel="icon" href="/icon-192.png?v=5">
+<style>body{margin:0;font-family:-apple-system,system-ui,Segoe UI,Roboto,sans-serif;background:#0d0c12;color:#fff;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;text-align:center}
+.w{max-width:360px;width:100%}h2{margin:10px 0 4px;font-size:22px}.d{font-size:17px;font-weight:700;color:#9fdcff;margin:0}.s{opacity:.7;line-height:1.5;font-size:14px}
+a.b{display:block;margin:14px auto 0;padding:16px;border-radius:999px;background:#2AC1F1;color:#0a141e;font-weight:800;text-decoration:none;font-size:16px}
+a.b.g{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}a.z{color:#9fdcff;word-break:break-all;font-size:14px}</style></head>
+<body><div class="w"><div style="font-size:46px">📅</div><h2 id="t">Agregar al calendario</h2><p class="d" id="when"></p><p class="s" id="z"></p>
+<a class="b" id="ios" href="#">🍎 Calendario del iPhone</a><a class="b g" id="gc" href="#" target="_blank" rel="noopener">📅 Google Calendar</a>
+<p class="s" style="margin-top:22px">Toca una opción y luego <b>Agregar</b> o <b>Guardar</b>.</p></div>
+<script>
+(function(){var p=new URLSearchParams(location.search),ics="",ti="Reunión",a,b,z="";
+function g(d){return d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"")}
+try{if(p.get("t")){var t=p.get("t");a=new Date(Date.UTC(+t.slice(0,4),+t.slice(4,6)-1,+t.slice(6,8),+t.slice(8,10),+t.slice(10,12)));b=new Date(a.getTime()+(+p.get("m")||60)*6e4);
+  ti=p.get("n")?"Reunión con "+p.get("n"):"Reunión";z=p.get("z")?(/^\d+$/.test(p.get("z"))?"https://zoom.us/j/"+p.get("z"):(/^https?:/.test(p.get("z"))?"":"https://")+p.get("z")):"";var loc=z||p.get("l")||"";
+  ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Action Leaders PLUS//ES","BEGIN:VEVENT","UID:"+t+Math.random().toString(36).slice(2)+"@actionleadersplus.com","DTSTAMP:"+g(new Date()),"DTSTART:"+g(a),"DTEND:"+g(b),"SUMMARY:"+ti.replace(/[,;]/g," "),"LOCATION:"+loc.replace(/[,;]/g," "),"DESCRIPTION:"+(z?"Zoom: "+z:"").replace(/[,;]/g," "),"BEGIN:VALARM","TRIGGER:-PT30M","ACTION:DISPLAY","DESCRIPTION:Recordatorio","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+  document.getElementById("gc").href="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(ti)+"&dates="+g(a)+"/"+g(b)+"&details="+encodeURIComponent(z?"Enlace de Zoom: "+z:"")+"&location="+encodeURIComponent(loc);
+  document.getElementById("when").textContent=a.toLocaleDateString("es",{weekday:"long",day:"numeric",month:"long"})+" · "+a.toLocaleTimeString("es",{hour:"numeric",minute:"2-digit",hour12:true});
+  if(z)document.getElementById("z").innerHTML='Enlace: <a class="z" href="'+z+'">'+z+'</a>'}
+ else{ics=decodeURIComponent(location.hash.slice(1));var m=ics.match(/SUMMARY:(.*)/);if(m)ti=m[1];var gc=ics.match(/X-GCAL:(.*)/);document.getElementById("gc").style.display="none"}
+ document.getElementById("t").textContent=ti;document.getElementById("ios").href="data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);
+ if(!/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){var i=document.getElementById("ios");i.textContent="📥 Descargar para mi calendario";i.className="b g";i.setAttribute("download","cita.ics");document.getElementById("gc").className="b"}}catch(e){}})();
+</script></body></html>

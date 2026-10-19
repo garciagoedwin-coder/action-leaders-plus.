@@ -1678,12 +1678,15 @@ function citaIcs(c){const a=citaIni(c),b=new Date(a.getTime()+(c.dur||60)*6e4),t
    ${ios?`<a class="btn" style="width:100%;justify-content:center" href="cal.html#${encodeURIComponent(t)}" target="_blank" rel="noopener">🍎 Calendario del iPhone</a>`:""}
    <a class="btn ${ios?"ghost":""}" style="width:100%;justify-content:center" href="${esc(citaGcal(c,ti))}" target="_blank" rel="noopener">📅 Google Calendar</a>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`)}
+function citaLink(c){const a=citaIni(c),u=a.toISOString().replace(/[-:T]/g,"").slice(0,12),yo=miNombreCorto()||"";let q="t="+u+"&m="+(c.dur||60);if(yo)q+="&n="+encodeURIComponent(yo).replace(/%20/g,"+");
+  if(c.tipo==="zoom"&&c.enlace){const zm=c.enlace.match(/zoom\.us\/j\/(\d{9,12})\/?$/);q+="&z="+(zm?zm[1]:encodeURIComponent(c.enlace.replace(/^https?:\/\//,"")).replace(/%2F/g,"/"))}else if(c.tipo==="persona"&&c.lugar)q+="&l="+encodeURIComponent(c.lugar).replace(/%20/g,"+");return "https://actionleadersplus.com/cal.html?"+q}
 function citaMsg(c,rec){const first=String(c.nombre||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"",d=parseK(c.fecha),L=[];
   const dia=DAYS_L[d.getDay()][0].toUpperCase()+DAYS_L[d.getDay()].slice(1)+" "+d.getDate()+" de "+MONTHS[d.getMonth()];
-  const como=c.tipo==="zoom"?`💻 Por Zoom: ${c.enlace||"(le envío el enlace)"}`:c.tipo==="whatsapp"?"📱 Por videollamada de WhatsApp, yo le llamo a este número.":`📍 En persona: ${c.lugar||"(le confirmo el lugar)"}`;
+  const como=c.tipo==="zoom"?"💻 *Por Zoom*":c.tipo==="whatsapp"?"📱 *Videollamada de WhatsApp*":"📍 *En persona*";
+  const det=c.tipo==="zoom"?(c.enlace?["","🔗 Enlace para entrar:",c.enlace]:[]):c.tipo==="whatsapp"?["","Yo le llamo a este número 📞"]:(c.lugar?["","📌 Lugar:",c.lugar]:[]);
   if(rec){const cu=c.fecha===TODAY?"hoy":c.fecha===dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1))?"mañana":"el "+dia.toLowerCase();
-    L.push(`Hola ${first} 👋`,"",`Le recuerdo nuestra reunión de *${cu} a las ${h12(c.hora)}*.`,"",como,"","¡Nos vemos! 🙌");if(yo)L.push(yo);return L.join("\n")}
-  L.push(`Hola ${first}, ¿cómo está? 😊`,"","Le confirmo nuestra reunión:","",`📅 *${dia}*`,`🕖 *${h12(c.hora)}*`,como,"","Agréguela a su calendario aquí 👇",citaGcal(c,"Reunión con "+(yo||"Action Leaders")),"","¡Nos vemos! 🙌");if(yo)L.push(yo);return L.join("\n")}
+    L.push(`Hola ${first} 👋`,"",`Le recuerdo nuestra reunión de *${cu}* a las *${h12(c.hora)}*.`,"",como,...det,"","¡Nos vemos! 🙌");if(yo)L.push(`*${yo}*`);return L.join("\n")}
+  L.push(`Hola ${first}, ¿cómo está? 😊`,"","Le confirmo nuestra reunión 👇","",`📅 *${dia}*`,`🕖 *${h12(c.hora)}*`,como,...det,"","📲 Agréguela a su calendario:",citaLink(c),"","¡Nos vemos! 🙌");if(yo)L.push(`*${yo}*`);return L.join("\n")}
 async function citaWa(c,rec){const t=citaMsg(c,rec),ct=c.cid&&contacts.find(x=>x.id===c.cid),n=ct?waNum(ct.phone,ct.cc):String(c.tel||"").replace(/\D/g,"");
   if(n){location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t);return}
   if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
@@ -2195,7 +2198,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019133953";var busy=false,pend=null;
+(function(){var V="20261019134244";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
