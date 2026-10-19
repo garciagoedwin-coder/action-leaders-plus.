@@ -1049,20 +1049,23 @@ async function bienCanvas(n,f,pat){const W=1080,H=1350,cv=document.createElement
   g.fillStyle="#d2d7e1";g.font="500 44px "+BF;g.fillText("Hoy empieza tu nueva historia.",540,935);
   g.fillStyle="#fff";const t=(f?"Tu patrocinador: ":"Tu patrocinador: ")+pat;fit(t,"700 {s}px "+BF,38,690);g.fillText(t,540,1048);
   return cv}
-function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null;const tel=c.phone?waNum(c.phone,c.cc):"",pat=miNombreCorto()||"Tu patrocinador";
+function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null;let tel=c.phone?waNum(c.phone,c.cc):"";const pat=miNombreCorto()||"Tu patrocinador",sinTel=!c.phone;
   openSheet(`<h2>🎉 Bienvenida a socio nuevo</h2>
    <div class="field"><label for="bnN">Nombre del socio nuevo</label><input class="inp" id="bnN" value="${esc(n)}" placeholder="Nombre y apellido"></div>
+   ${sinTel?`<div class="grid2"><div class="field"><label for="bnCC">País</label><select class="inp" id="bnCC">${PAISES.map(([pn,k],i)=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")&&i===PAISES.findIndex(x=>x[1]===(LS.get("lastCC")||"504"))?"selected":""}>${pn} (+${k})</option>`).join("")}</select></div>
+   <div class="field"><label for="bnTel">WhatsApp <span class="muted">(opcional)</span></label><input class="inp" id="bnTel" type="tel" autocomplete="tel" placeholder="Solo el número"></div></div>`:""}
    <div class="seg" id="bnG"><button aria-selected="true" data-g="m" type="button">Bienvenido</button><button aria-selected="false" data-g="f" type="button">Bienvenida</button></div>
    <div id="bnBox" style="aspect-ratio:4/5;border-radius:14px;background:#0b0b10;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Escribe el nombre…</span></div>
    <button class="btn" id="bnGo" style="width:100%">📤 Enviar flyer y mensaje${tel?" por WhatsApp":""}</button>
    <div class="row" style="gap:8px"><button class="btn ghost grow" id="bnCopy">Copiar mensaje</button><button class="btn ghost grow" id="bnDl">Descargar flyer</button></div>
-   ${tel?`<a class="btn ghost" id="bnWa" style="width:100%;justify-content:center" target="_blank" rel="noopener">Abrir chat de WhatsApp</a>`:""}
+   <a class="btn ghost" id="bnWa" style="width:100%;justify-content:center${tel?"":";display:none"}" target="_blank" rel="noopener">Abrir chat de WhatsApp</a>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     let tk=0;const upd=async()=>{n=$("#bnN").value.trim().replace(/\s+/g," ");const my=++tk;const box=$("#bnBox");if(!n){box.innerHTML='<span class="small" style="color:#fff">Escribe el nombre…</span>';file=null;return}
       const cv=await bienCanvas(n,f,pat);if(my!==tk)return;const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));file=new File([b],"Bienvenida-"+n.replace(/\s+/g,"-")+".jpg",{type:"image/jpeg"});
       box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im);
       const wa=$("#bnWa");if(wa)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat))};
     let deb;$("#bnN").oninput=()=>{clearTimeout(deb);deb=setTimeout(upd,450)};
+    const tI=$("#bnTel");if(tI){const syncTel=()=>{const v=tI.value;if(/^\s*(\+|00)/.test(v)){const sp=splitPhone(v);if(sp.cc){$("#bnCC").value=sp.cc;tI.value=sp.num}}tel=tI.value.trim()?waNum(tI.value,$("#bnCC").value):"";const wa=$("#bnWa");wa.style.display=tel?"":"none";if(n)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat))};tI.oninput=syncTel;tI.onchange=syncTel;$("#bnCC").onchange=()=>{LS.set("lastCC",$("#bnCC").value);syncTel()}}
     $("#bnG").onclick=e=>{const b=e.target.closest("[data-g]");if(!b)return;f=b.dataset.g==="f";$("#bnG").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));upd()};
     $("#bnCopy").onclick=async()=>{if(!n)return toast("Escribe el nombre");try{await navigator.clipboard.writeText(BIEN_MSG(n,f,pat));toast("Mensaje copiado")}catch(x){toast("No se pudo copiar")}};
     $("#bnDl").onclick=()=>{if(!file)return toast("Escribe el nombre");const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000)};
@@ -1576,7 +1579,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019001641";var busy=false,pend=null;
+(function(){var V="20261019001837";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
