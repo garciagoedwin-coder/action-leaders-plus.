@@ -634,8 +634,7 @@ const ROUTINE=[
  {k:"presentaciones",t:"Presentaciones del plan",goal:1,type:"count"},
  {k:"videos",t:"Subir video a redes sociales",goal:1,type:"count"},
  {k:"formacion",t:"15 min de formación",goal:1,type:"check"},
- {k:"equipo",t:"Apoyar a un socio de mi equipo",goal:1,type:"check"},
- {k:"producto",t:"Usar y recomendar el producto",goal:1,type:"check"}];
+ {k:"equipo",t:"Apoyar a un socio de mi equipo",goal:1,type:"check"}];
 const RETO_KEYS=["presentaciones","videos"];
 let day={};
 function dayScore(d){let s=0;ROUTINE.forEach(r=>{s+=Math.min((d&&d[r.k])||0,r.goal)/r.goal});return s/ROUTINE.length}
@@ -1340,7 +1339,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018205638";var busy=false;
+(function(){var V="20261018210846";var busy=false;
  function chk(){if(busy)return;busy=true;fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){t=(t||"").trim();
   if(t&&t!==V){var k="alp:upd:"+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}
    return fetch("./",{cache:"reload"}).catch(function(){}).then(function(){location.reload()})}}).catch(function(){}).then(function(){busy=false})}
