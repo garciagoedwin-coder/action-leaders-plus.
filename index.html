@@ -541,7 +541,7 @@ import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirec
 import {initializeFirestore,persistentLocalCache,doc,collection,getDoc,setDoc,getDocs,addDoc,deleteDoc,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});
 const auth=getAuth(app);
-let fdb;try{fdb=initializeFirestore(app,{localCache:persistentLocalCache()})}catch(e){fdb=initializeFirestore(app,{})}
+let fdb;try{fdb=initializeFirestore(app,{localCache:persistentLocalCache(),ignoreUndefinedProperties:true})}catch(e){fdb=initializeFirestore(app,{ignoreUndefinedProperties:true})}
 const wrapS=q=>({docs:q.docs.map(d=>({id:d.id,data:()=>d.data()}))});
 const D=p=>({get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>setDoc(doc(fdb,p),b,o||{}),delete:()=>deleteDoc(doc(fdb,p)),
   onSnapshot:(cb,er)=>onSnapshot(doc(fdb,p),x=>cb({exists:x.exists(),data:()=>x.data()}),er||(()=>{}))});
@@ -1117,7 +1117,8 @@ const welCfg=()=>Object.assign({},WEL_DEF,(T.config&&T.config.bienvenida)||{});
 const ytId=u=>{u=String(u||"").trim();const m=u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/);return m?m[1]:(/^[\w-]{11}$/.test(u)?u:"")};
 function welSteps(){const c=welCfg(),st=[{k:"video"}];st.unshift({k:"registro"});if(safeUrl(c.whatsapp))st.push({k:"whatsapp"});if(safeUrl(c.caja))st.push({k:"caja"});return st}
 function welDone(){return welSteps().every(x=>welState[x.k])}
-function welMark(k){if(welState[k])return;welState[k]=true;profile.welPasos=Object.assign({},welState);store.set("perfil",profile);renderWel()}
+function welSaveFlag(o){try{if(store.db){store.mine().doc("bienvenida").set(o,{merge:true}).catch(()=>{})}}catch(e){}}
+function welMark(k){if(welState[k])return;welState[k]=true;profile.welPasos=Object.assign({},welState);store.set("perfil",profile);welSaveFlag({pasos:{[k]:true}});renderWel()}
 function renderWel(){const el=$("#wel");
   if(welSigned===false){el.hidden=false;document.body.style.overflow="hidden";const C=$("#welC");if(C.dataset.v==="signin")return;C.dataset.v="signin";
     C.innerHTML=`<div class="wel-k">ACTION LEADERS<em>PLUS</em></div><div class="wel-bar"></div>
@@ -1184,7 +1185,7 @@ function renderWel(){const el=$("#wel");
     const i=$("#welNmI");i.focus();const ok=()=>{const v=i.value.trim().replace(/\s+/g," ").slice(0,30);if(!v)return;profile.nombrePila=v;store.set("perfil",profile);$("#hello").textContent="Hola, "+v.split(" ")[0];renderWel()};
     $("#welNmOk").onclick=ok;i.onkeydown=e=>{if(e.key==="Enter")ok()}};
   C.querySelectorAll("[data-wel]").forEach(a=>a.onclick=()=>setTimeout(()=>welMark(a.dataset.wel),300));
-  $("#welGo").onclick=()=>{if(!welDone())return;profile.bienvenida=true;LS.set("welDone",1);store.set("perfil",profile);renderWel();renderAviso();toast("¡Te damos la bienvenida al equipo!");if(welGate){const g=welGate;welGate=null;g()}};
+  $("#welGo").onclick=()=>{if(!welDone())return;profile.bienvenida=true;LS.set("welDone",1);store.set("perfil",profile);welSaveFlag({done:true,t:Date.now()});try{if(store.db)store.db.doc("users/"+store.uid).set({bienvenida:true},{merge:true})}catch(e){}renderWel();renderAviso();toast("¡Te damos la bienvenida al equipo!");if(welGate){const g=welGate;welGate=null;g()}};
   const rs=$("#welReset");if(rs)rs.onclick=()=>{welState={};profile.welPasos={};delete profile.registro;store.set("perfil",profile);try{localStorage.removeItem("alp:welpos")}catch(e){}$("#welC").dataset.v="";welVidFail=false;welOpenedAt=0;renderWel();window.scrollTo(0,0);$("#wel").scrollTop=0};
   const sk=$("#welSkip");if(sk)sk.onclick=()=>{$("#wel").hidden=true;document.body.style.overflow=""};
   clearTimeout(welTimer);if(!manualOk)welTimer=setTimeout(renderWel,Math.max(1000,120000-(Date.now()-welOpenedAt)+200))}
@@ -1231,7 +1232,7 @@ function miNombreFull(){return profile.miNombre||miRegistro().nombre||(fbUser&&f
 function miFotoUrl(){return fotoDe(miNombreFull())||(fbUser&&fbUser.photoURL)||""}
 function renderMeBtn(){const b=$("#meBtn");if(!b)return;b.hidden=!fbUser;if(!fbUser)return;const f=miFotoUrl();
   b.style.backgroundImage=f?`url('${f}')`:"";b.textContent=f?"":initials(miNombreFull()||"Yo")}
-function verBienvenidaOtraVez(){closeSheet();try{localStorage.removeItem("alp:welDone")}catch(e){}welState=Object.assign({},profile.welPasos||{},welState,{video:true});if(regDoc&&regDoc.registro)welState.registro=true;profile.welPasos=Object.assign({},welState);profile.bienvenida=false;store.set("perfil",profile);welOpenedAt=0;renderWel()}
+function verBienvenidaOtraVez(){closeSheet();try{localStorage.removeItem("alp:welDone")}catch(e){}welState=Object.assign({},profile.welPasos||{},welState,{video:true});if(regDoc&&regDoc.registro)welState.registro=true;profile.welPasos=Object.assign({},welState);profile.bienvenida=false;welOpenedAt=0;renderWel()}
 function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
   openSheet(`<div class="pf-head"><div class="pf-av" style="${f?`background-image:url('${f}')`:""}">${f?"":esc(initials(nm||"Yo"))}</div>
     <div style="min-width:0"><h2 style="margin:0">${esc(nm||"Mi perfil")}</h2><p class="small muted" style="margin:2px 0 0;overflow:hidden;text-overflow:ellipsis">${esc((fbUser&&fbUser.email)||"")}</p>
@@ -1291,6 +1292,8 @@ async function loadMine(){
   const vals=await Promise.all(ks.map(k=>store.get("rutina-"+k)));ks.forEach((k,i)=>{if(vals[i])weekCache[k]=vals[i]});
   day=Object.assign({},weekCache[TODAY]||{});
   if(profile.nombrePila)$("#hello").textContent="Hola, "+profile.nombrePila.split(" ")[0];
+  try{if(store.db){const b=await store.get("bienvenida");if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}}catch(e){}
+  if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
   welState=Object.assign({},profile.welPasos||{});renderWel();
   contacts=await store.contacts();
   renderAll()}
