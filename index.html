@@ -196,6 +196,15 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .stp button.cur{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
 .stp button.no.cur{background:var(--bad);border-color:var(--bad);color:#fff}
 .contact .note{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.rut-al{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:10px 14px;border-radius:14px;background:#e5383b;color:#fff;font-size:15px;margin-bottom:4px;animation:rutPulse 1.8s ease-in-out infinite}
+.rut-al b{font-weight:800}.rut-al span{opacity:.92;font-size:13.5px}
+.rut-al.ok{background:var(--good);animation:none}
+.rut-al.shake{animation:rutShake .7s cubic-bezier(.36,.07,.19,.97) .3s both,rutPulse 1.8s ease-in-out 1s infinite}
+.rut-al.ok.shake{animation:rutPop .5s ease both}
+@keyframes rutPulse{0%,100%{box-shadow:0 0 0 0 rgba(229,56,59,.55)}50%{box-shadow:0 0 0 8px rgba(229,56,59,0)}}
+@keyframes rutShake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
+@keyframes rutPop{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.rut-al,.rut-al.shake{animation:none}}
 .plan-sel{font:inherit;font-weight:600;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:2px 6px}
 .mstat{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
 .mstat div{background:var(--surface-2);border-radius:12px;padding:10px 4px;display:flex;flex-direction:column;gap:2px}
@@ -665,6 +674,7 @@ nav.tabs button{z-index:0;isolation:isolate}
       <div class="card" id="histCard" hidden></div>
       <div class="card" id="whoCard" hidden></div>
       <div class="card">
+        <div id="rutAlert"></div>
         <div class="row between"><h3>Progreso de hoy</h3><span class="num" style="font-size:20px" id="dayPct">0%</span></div>
         <p class="small muted" style="margin:-4px 0 0">Con 1 acción en cada punto, tu día queda completo.</p>
         <div class="bar"><i id="dayBar" style="width:0%"></i></div>
@@ -872,6 +882,9 @@ function renderTasks(){
     return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:"1"}</span><span class="grow ${done?"done-t":""}">${esc(r.t)}<br><span class="small muted">Mínimo 1${r.goal>1?" · ideal "+r.goal:""}${RETO_KEYS.includes(r.k)?" · cuenta para el reto":""}</span></span>
       <span class="counter"><button data-dec="${r.k}" aria-label="Restar">−</button><span class="num">${v}</span><button data-inc="${r.k}" aria-label="Sumar">+</button></span></div>`}).join("");
   const p=Math.round(dayScore(day)*100);$("#dayPct").textContent=p+"%";$("#dayBar").style.width=p+"%";
+  const falta=ROUTINE.filter(r=>(!r.desde||TODAY>=r.desde)&&!((day[r.k]||0)>=1)).length,ra=$("#rutAlert");
+  if(ra){const st=falta?"pend":"ok";if(ra.dataset.st!==st||ra.dataset.n!==String(falta)){ra.innerHTML=falta?`<div class="rut-al">🔥 <b>¡Haz tu rutina hoy!</b> <span>Te ${falta===1?"falta 1 acción":"faltan "+falta+" acciones"}</span></div>`:`<div class="rut-al ok">✅ <b>¡Rutina completa!</b> <span>Así se construye. Mañana otra vez.</span></div>`;
+    if(ra.dataset.st!==st)ra.firstChild&&ra.firstChild.classList.add("shake");ra.dataset.st=st;ra.dataset.n=String(falta)}}
 }
 let saveDayT;function saveDay(){clearTimeout(saveDayT);saveDayT=setTimeout(()=>store.set("rutina-"+TODAY,day),600);weekCache[TODAY]=day;renderWeek()}
 $("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
@@ -1746,7 +1759,9 @@ async function sendIA(){const text=$("#iaInput").value.trim();if(!text||busy)ret
 function setSeg(id,k){document.querySelectorAll("#"+id+" button").forEach(b=>b.setAttribute("aria-selected",b.dataset.k===k))}
 function go(v){document.querySelectorAll("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);
   document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v));$("#main").scrollTop=0;
-  try{localStorage.setItem("alp:tab",v)}catch(e){}}
+  try{localStorage.setItem("alp:tab",v)}catch(e){}if(v==="inicio")rutShake()}
+function rutShake(){const a=$("#rutAlert .rut-al");if(a&&!a.classList.contains("ok")){a.classList.remove("shake");void a.offsetWidth;a.classList.add("shake")}}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(rutShake,300)});
 $("#tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(b)go(b.dataset.v)});
 // ---------- bienvenida obligatoria ----------
 const REG_FORM="https://docs.google.com/forms/d/e/1FAIpQLSdEKTrG8N27CJrVqt7svD-ecHqtVaH7R1Pfo35hP52R7mDAHw/";
@@ -1999,7 +2014,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019111428";var busy=false,pend=null;
+(function(){var V="20261019111551";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
