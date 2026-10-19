@@ -1437,7 +1437,7 @@ function renderWel(){const el=$("#wel");
       <p class="small" id="regErr" style="color:var(--bad)" hidden></p>
       <button class="btn pill dark" id="regOk" type="submit">Enviar mi registro</button></form></div>`);
     const F=$("#regF");if(F)F.onsubmit=async ev=>{ev.preventDefault();const g=k=>$("#rg_"+k).value.trim(),err=$("#regErr");
-      const d={nombre:g("nombre"),patrocinador:g("patro"),plan:g("plan")};if(invSponsor){d.patrocinadorUid=invSponsor.uid;d.invitadoPor=invSponsor.nombre};
+      const d={nombre:g("nombre"),patrocinador:g("patro"),plan:g("plan")};if(invSponsor){d.patrocinadorUid=invSponsor.uid;d.invitadoPor=invSponsor.nombre}try{d.inv=(localStorage.getItem("alp:inv")||"").slice(0,60)}catch(x){};
       const lab={nombre:"Nombre completo",patrocinador:"Patrocinador",plan:"Plan"};
       for(const k in lab)if(!d[k]){err.textContent="Completa: "+lab[k];err.hidden=false;return}
       err.hidden=true;const bt=$("#regOk");bt.disabled=true;bt.textContent="Enviando…";
@@ -1597,7 +1597,8 @@ async function startApp(u){
   $("#addEvent").hidden=true;$("#eqSocios").hidden=!isAdmin;
   $("#crmNote").textContent="Tus contactos se guardan en tu cuenta y solo tú puedes verlos.";
   subscribeTeam(db);
-  if(u&&!(regDoc&&regDoc.registro)&&!isAdmin&&!(await invOK())){bloquearSinInvitacion();return}
+  const regValido=r=>!!(r&&(r.inv||r.patrocinadorUid||String(r.fecha||"")<"2026-10-19T06:45"));
+  if(u&&!isAdmin){const r=regDoc&&regDoc.registro;if(r?!regValido(r)&&!(await invOK()):!(await invOK())){bloquearSinInvitacion();return}}
   if(u&&isAdmin&&!(regDoc&&regDoc.registro))await invOK();
   await loadMine();
   if(regDoc&&regDoc.registro){welState.registro=true;publicarInv()}
@@ -1612,7 +1613,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019005711";var busy=false,pend=null;
+(function(){var V="20261019005950";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
