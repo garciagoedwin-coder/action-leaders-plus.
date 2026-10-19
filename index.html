@@ -196,6 +196,15 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .stp button.cur{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
 .stp button.no.cur{background:var(--bad);border-color:var(--bad);color:#fff}
 .contact .note{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.mstat{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
+.mstat div{background:var(--surface-2);border-radius:12px;padding:10px 4px;display:flex;flex-direction:column;gap:2px}
+.mstat b{font-size:20px}.mstat span{font-size:11px;color:var(--muted);font-weight:600}
+.mcal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.mcal .mh{text-align:center;font-size:11px;font-weight:700;color:var(--muted)}
+.mc{aspect-ratio:1;border-radius:10px;display:grid;place-items:center;font-size:13px;font-weight:600;color:var(--muted);background:transparent}
+.mc.none{background:var(--surface-2)}.mc.part{background:var(--good-soft);color:var(--good)}.mc.full{background:var(--good);color:#fff}
+.mc.today{outline:2px solid var(--brand);outline-offset:1px}
+.mc.mini{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:middle;aspect-ratio:auto}
 .ch{display:flex;gap:12px;align-items:center;width:100%;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .ch .av{flex:none}
 .ch .mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
@@ -466,13 +475,15 @@ nav.tabs button{z-index:0;isolation:isolate}
       <div class="card" id="whoCard" hidden></div>
       <div class="card">
         <div class="row between"><h3>Progreso de hoy</h3><span class="num" style="font-size:20px" id="dayPct">0%</span></div>
+        <p class="small muted" style="margin:-4px 0 0">Con 1 acción en cada punto, tu día queda completo.</p>
         <div class="bar"><i id="dayBar" style="width:0%"></i></div>
         <div class="list" id="tasks"></div>
       </div>
       <div class="card" id="nextEvents"></div>
       <div class="card">
-        <div class="row between"><h3>Últimos 7 días</h3><span class="small muted">Verde = rutina completa</span></div>
-        <div class="week" id="week"></div>
+        <div class="row between"><h3>Últimos 7 días</h3><button class="btn sm ghost" id="verMes">📅 Ver mi mes</button></div>
+        <div class="week" id="week" role="button" tabindex="0" style="cursor:pointer"></div>
+        <p class="small muted" style="margin:0">Verde = rutina completa · Toca para ver tu constancia del mes</p>
       </div>
       <div class="card reto" id="retoMini"></div>
       <div class="card">
@@ -659,12 +670,12 @@ const ROUTINE=[
  {k:"equipo",t:"Apoyar a un socio de mi equipo",goal:1,type:"check"}];
 const RETO_KEYS=["presentaciones","videos"];
 let day={};
-function dayScore(d){let s=0;ROUTINE.forEach(r=>{s+=Math.min((d&&d[r.k])||0,r.goal)/r.goal});return s/ROUTINE.length}
+function dayScore(d){let s=0;ROUTINE.forEach(r=>{s+=Math.min((d&&d[r.k])||0,1)});return s/ROUTINE.length}
 const okIcon=CHECK;
 function renderTasks(){
-  $("#tasks").innerHTML=ROUTINE.map(r=>{const v=day[r.k]||0,done=v>=r.goal;
+  $("#tasks").innerHTML=ROUTINE.map(r=>{const v=day[r.k]||0,done=v>=1;
     if(r.type==="check")return `<div class="task"><button class="check" aria-pressed="${done}" data-k="${r.k}" aria-label="Marcar ${esc(r.t)}">${done?CHECK:""}</button><span class="grow ${done?"done-t":""}">${esc(r.t)}</span></div>`;
-    return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:r.goal}</span><span class="grow ${done?"done-t":""}">${esc(r.t)}<br><span class="small muted">Meta diaria: ${r.goal}${RETO_KEYS.includes(r.k)?" · cuenta para el reto":""}</span></span>
+    return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:"1"}</span><span class="grow ${done?"done-t":""}">${esc(r.t)}<br><span class="small muted">Mínimo 1${r.goal>1?" · ideal "+r.goal:""}${RETO_KEYS.includes(r.k)?" · cuenta para el reto":""}</span></span>
       <span class="counter"><button data-dec="${r.k}" aria-label="Restar">−</button><span class="num">${v}</span><button data-inc="${r.k}" aria-label="Sumar">+</button></span></div>`}).join("");
   const p=Math.round(dayScore(day)*100);$("#dayPct").textContent=p+"%";$("#dayBar").style.width=p+"%";
 }
@@ -689,6 +700,29 @@ function renderWeek(){const out=[];let streak=0;
     out.push(`<div><i class="${s>=1?"full":s>0?"part":""} ${i===0?"today":""}">${d.getDate()}</i>${DAYS[d.getDay()]}</div>`)}
   for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)]);if(i===0&&s<1)continue;if(s>=1)streak++;else break}
   pushResumen();$("#week").innerHTML=out.join("");$("#streak").textContent="Racha "+streak+(streak===1?" día":" días")}
+
+// ---------- mi constancia (mes) ----------
+async function abrirMes(off){off=off||0;const b=new Date(now.getFullYear(),now.getMonth()+off,1),Y=b.getFullYear(),M=b.getMonth(),nd=new Date(Y,M+1,0).getDate();
+  openSheet(`<h2>📅 Mi constancia</h2><p class="small muted">Cargando ${MONTHS[M]}…</p>`);
+  const ks=Array.from({length:nd},(_,i)=>dkey(new Date(Y,M,i+1)));
+  const vals=await Promise.all(ks.map(k=>k===TODAY?day:weekCache[k]?weekCache[k]:k>TODAY?null:store.get("rutina-"+k).catch(()=>null)));
+  ks.forEach((k,i)=>{if(vals[i]&&k!==TODAY)weekCache[k]=vals[i]});
+  const pas=ks.filter(k=>k<=TODAY).length,sc=vals.map(v=>dayScore(v));
+  let act=0,full=0,best=0,run=0,tot={contactos:0,seguimientos:0,presentaciones:0,videos:0};
+  ks.forEach((k,i)=>{if(k>TODAY)return;const v=vals[i]||{};if(sc[i]>0)act++;if(sc[i]>=1){full++;run++;best=Math.max(best,run)}else if(k!==TODAY)run=0;Object.keys(tot).forEach(t=>tot[t]+=(+v[t]||0))});
+  const pct=pas?Math.round(act/pas*100):0,pad=(new Date(Y,M,1).getDay()+6)%7;
+  const cells=Array(pad).fill('<span></span>').concat(ks.map((k,i)=>{const s=sc[i],fut=k>TODAY,c=fut?"":s>=1?"full":s>0?"part":"none";
+    return `<span class="mc ${c} ${k===TODAY?"today":""}" title="${Math.round(s*100)}%">${i+1}</span>`})).join("");
+  const msg=pct>=80?"🔥 ¡Constancia de líder! Así se construye.":pct>=50?"💪 Vas bien. Sube un poco más cada semana.":pct>0?"🚀 Cada día cuenta. Una acción hoy hace la diferencia.":"Empieza hoy con una sola acción.";
+  $("#sheetPanel").innerHTML=`<div class="row between"><button class="btn sm ghost" data-m="${off-1}" aria-label="Mes anterior">‹</button><h2 style="margin:0;text-transform:capitalize">${MONTHS[M]} ${Y}</h2><button class="btn sm ghost" data-m="${off+1}" ${off>=0?"disabled":""} aria-label="Mes siguiente">›</button></div>
+   <div class="mstat"><div><b class="num">${pct}%</b><span>Constancia</span></div><div><b class="num">${act}/${pas}</b><span>Días activos</span></div><div><b class="num">${full}</b><span>Días completos</span></div><div><b class="num">${best}</b><span>Mejor racha</span></div></div>
+   <div class="mcal">${["L","M","M","J","V","S","D"].map(d=>`<span class="mh">${d}</span>`).join("")}${cells}</div>
+   <p class="small muted" style="margin:0"><span class="mc full mini"></span> Completo &nbsp; <span class="mc part mini"></span> Parcial &nbsp; <span class="mc none mini"></span> Sin acción</p>
+   <div class="mstat"><div><b class="num">${tot.contactos}</b><span>Contactos</span></div><div><b class="num">${tot.seguimientos}</b><span>Seguimientos</span></div><div><b class="num">${tot.presentaciones}</b><span>Presentaciones</span></div><div><b class="num">${tot.videos}</b><span>Videos</span></div></div>
+   <p class="small" style="font-weight:600;margin:0">${off===0?msg:""}</p>
+   <button class="btn ghost" data-close style="width:100%">Cerrar</button>`;
+  $("#sheetPanel").querySelectorAll("[data-m]").forEach(x=>x.onclick=()=>abrirMes(+x.dataset.m))}
+$("#verMes").onclick=()=>abrirMes(0);$("#week").onclick=()=>abrirMes(0);$("#week").onkeydown=e=>{if(e.key==="Enter")abrirMes(0)};
 
 // ---------- ¿quién eres? ----------
 function renderWho(){const c=$("#whoCard");c.hidden=true;return;
@@ -1690,7 +1724,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019092619";var busy=false,pend=null;
+(function(){var V="20261019092846";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
