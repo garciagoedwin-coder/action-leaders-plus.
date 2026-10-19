@@ -1154,7 +1154,7 @@ function renderTopRut(){const c=$("#topRut");if(!c)return;if(!constL||!constL.le
   c.innerHTML=`<div class="row between"><h3 style="margin:0">🔥 Top Consistencia</h3><button class="btn sm ghost" id="topRutVer">Ver ranking</button></div><p class="small muted" style="margin:2px 0 6px">Los socios que más cumplen su rutina diaria.</p>
    ${constL.slice(0,3).map((x,i)=>`<div class="row" style="gap:10px;padding:8px 0;${i<2?"border-bottom:1px solid var(--line)":""}"><span style="font-size:22px;width:28px;text-align:center">${md[i]}</span>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">📅 ${x.dias7}/7 días · Hoy ${x.hoy}%</div></div><span class="chip c-gold" style="flex:none">🔥 ${x.racha} ${x.racha===1?"día":"días"}</span></div>`).join("")}`;
   $("#topRutVer").onclick=()=>{eqTab="ranking";rankMetric="rutina";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()}}
-function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="false" data-k="presentaciones">Presentaciones</button><button aria-selected="false" data-k="nuevos">Socios nuevos</button><button aria-selected="true" data-k="rutina">🔥 Rutina</button></div><div class="seg" id="rankSeg" hidden></div>
+function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="false" data-k="presentaciones">Presentaciones</button><button aria-selected="false" data-k="nuevos">Activaciones</button><button aria-selected="true" data-k="rutina">🔥 Rutina</button></div><div class="seg" id="rankSeg" hidden></div>
    <p class="small muted">Ordenado por racha de días con la rutina completa, luego días activos de la semana y avance de hoy.</p>`;
   if(constL===null){b.innerHTML=segs+`<p class="muted small">Cargando…</p>`;bindRank();loadConst(true);return}
   if(!constL.length){b.innerHTML=segs+emptyCard("Aún nadie suma racha","Completa tu rutina hoy y toma el primer lugar.");bindRank();loadConst();return}
@@ -1192,7 +1192,7 @@ function renderEquipo(){const b=$("#eqBody");
     const unit=rankMetric==="nuevos"?["socio nuevo","socios nuevos"]:["presentación","presentaciones"];
     const u=v=>v===1?unit[0]:unit[1];
     const per=T.config&&T.config.rankingSemanaLabel;
-    const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="${rankMetric==="presentaciones"}" data-k="presentaciones">Presentaciones</button><button aria-selected="${rankMetric==="nuevos"}" data-k="nuevos">Socios nuevos</button><button aria-selected="false" data-k="rutina">🔥 Rutina</button></div>
+    const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="${rankMetric==="presentaciones"}" data-k="presentaciones">Presentaciones</button><button aria-selected="${rankMetric==="nuevos"}" data-k="nuevos">Activaciones</button><button aria-selected="false" data-k="rutina">🔥 Rutina</button></div>
      <div class="seg" role="tablist" id="rankSeg" hidden><button aria-selected="true" data-k="mes">Este mes</button></div>
      <p class="small muted">${rankMetric==="nuevos"?"Ordenado por volumen (Starter 50 · Classic 200 · Premium 500).":"Solo cuentan las presentaciones cuyo prospecto quedó registrado gratis en inCruises."}</p>`;
     if(!d.length){b.innerHTML=segs+emptyCard(rankMetric==="nuevos"?"Aún no hay socios nuevos en este periodo":"Aún no hay registros en este periodo","El primero en sumar toma el primer lugar.");bindRank();return}
@@ -1215,7 +1215,7 @@ function renderEquipo(){const b=$("#eqBody");
      <div class="kpis" style="grid-template-columns:repeat(2,1fr)"><div class="kpi"><b>${L.length}</b><span>Líderes calificados</span></div><div class="kpi"><b>${fmt(tp)}</b><span>Presentaciones</span></div><div class="kpi"><b>${fmt(L.reduce((s,l)=>s+(Number(l.nuevos)||0),0))}</b><span>Socios nuevos</span></div><div class="kpi"><b>${fmt(tv)}</b><span>Volumen total</span></div></div>
      <input class="inp" id="leadQ" type="search" placeholder="Buscar líder o línea ascendente" value="${esc(leadQ)}">
      <div class="stage-bar" id="leadPos">${["Todos"].concat(posKeys).map(k=>`<button aria-pressed="${k===leadPos}" data-p="${esc(k)}">${esc(rangoTxt(k))}<span class="n">${k==="Todos"?L.length:pos[k]}</span></button>`).join("")}</div>
-     <div class="seg" role="tablist" id="leadSeg"><button aria-selected="${leadSort==="posicion"}" data-k="posicion">Posición</button><button aria-selected="${leadSort==="presentaciones"}" data-k="presentaciones">Presentaciones</button><button aria-selected="${leadSort==="nuevos"}" data-k="nuevos">Socios nuevos</button><button aria-selected="${leadSort==="volumen"}" data-k="volumen">Volumen</button></div>
+     <div class="seg" role="tablist" id="leadSeg"><button aria-selected="${leadSort==="posicion"}" data-k="posicion">Posición</button><button aria-selected="${leadSort==="presentaciones"}" data-k="presentaciones">Presentaciones</button><button aria-selected="${leadSort==="nuevos"}" data-k="nuevos">Activaciones</button><button aria-selected="${leadSort==="volumen"}" data-k="volumen">Volumen</button></div>
      <div class="row wrap small muted" style="gap:6px">Volumen: <span class="chip c-good">500 o más</span><span class="chip c-warn">200 a 499</span><span class="chip c-bad">menos de 200</span></div>
      <div class="card"><div class="list" id="leadList"></div></div>
      <p class="updated">${updatedTxt(T.config&&T.config.liderazgoActualizado)}</p>`;
@@ -2076,7 +2076,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019122520";var busy=false,pend=null;
+(function(){var V="20261019123108";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
