@@ -1339,7 +1339,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018210846";var busy=false;
+(function(){var V="20261018222050";var busy=false;
  function chk(){if(busy)return;busy=true;fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){t=(t||"").trim();
   if(t&&t!==V){var k="alp:upd:"+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,"1")}catch(e){}
    return fetch("./",{cache:"reload"}).catch(function(){}).then(function(){location.reload()})}}).catch(function(){}).then(function(){busy=false})}
