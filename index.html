@@ -303,6 +303,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 .pf-it{display:flex;align-items:center;gap:12px;padding:14px 4px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;font-size:15px;font-weight:600;width:100%}
 .pf-it span.ic{width:30px;text-align:center;font-size:18px}
 .pf-it.out{color:var(--bad)}
+.qf{background:var(--bg);border:1px dashed var(--line);border-radius:14px;padding:10px 12px;margin:4px 0 10px}.qf-row{display:flex;flex-wrap:wrap;gap:8px}
 </style>
 
 </head>
@@ -926,8 +927,43 @@ $("#contactList").addEventListener("click",async e=>{const st=e.target.closest("
   if(st){const c=contacts.find(x=>x.id===st.dataset.cid);if(!c||c.stage===st.dataset.st)return;const prev=c.stage;c.stage=st.dataset.st;c.updated=Date.now();renderCRM();
     const id=await store.saveContact(Object.assign({},c));if(!id){c.stage=prev;renderCRM();return}toast(c.name.split(" ")[0]+": "+c.stage);return}
   const b=e.target.closest("[data-edit]");if(b)editContact(contacts.find(c=>c.id===b.dataset.edit))});
+
+// ---------- llenado rápido de contactos ----------
+function splitPhone(raw){let t=String(raw||"").trim();const intl=/^\s*(\+|00)/.test(t);let d=t.replace(/\D/g,"");if(/^00/.test(t))d=d.replace(/^00/,"");
+  if(intl){let best=null;for(const [n,k] of PAISES)if(d.startsWith(k)&&(!best||k.length>best[1].length))best=[n,k];if(best)return {cc:best[1],ccN:best[0],num:d.slice(best[1].length)}}
+  return {cc:null,num:d}}
+function parseContactText(t){t=String(t||"");const m=t.match(/(\+|00)?[\d][\d\s().\-]{6,}\d/);const phone=m?m[0]:"";
+  let name=t.replace(phone,"").split(/\n/).map(x=>x.replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g,"").trim()).filter(x=>x&&!/^(tel|cel|móvil|movil|whatsapp|phone)[:\s]*$/i.test(x))[0]||"";
+  name=name.replace(/^(nombre|name)\s*:\s*/i,"").replace(/[:\-–]+$/,"").trim();if(name.length>60)name="";return {name,phone}}
+function parseVcf(txt){const out=[];txt=String(txt||"").replace(/\r\n[ \t]/g,"");for(const card of txt.split(/BEGIN:VCARD/i).slice(1)){
+  const fn=(card.match(/^FN[^:\n]*:(.*)$/im)||[])[1]||"";const nn=(card.match(/^N[^:\n]*:(.*)$/im)||[])[1]||"";
+  const tels=[...card.matchAll(/^(?:item\d+\.)?TEL([^:\n]*):(.*)$/gim)];const tel=(tels.find(x=>/CELL|IPHONE|MOBILE|waid/i.test(x[1]))||tels[0]||[])[2]||"";
+  let name=fn.trim()||nn.split(";").slice(0,2).reverse().join(" ").trim();name=name.replace(/\\,/g,",").replace(/\;/g,";");
+  if(name||tel)out.push({name,phone:tel.trim()})}return out}
+function qfApply(name,phone){const msg=$("#qfMsg");if(name)$("#cName").value=name;
+  if(phone){const sp=splitPhone(phone);if(sp.cc){const sel=$("#cCC");const o=[...sel.options].find(x=>x.value===sp.cc&&x.dataset.n===sp.ccN)||[...sel.options].find(x=>x.value===sp.cc);if(o)sel.value=o.value,o.selected=true}$("#cPhone").value=sp.num}
+  if(msg){msg.hidden=false;msg.style.color="";msg.textContent=(name||phone)?"✓ Listo. Revisa los datos y guarda.":"No encontré un nombre o número."}}
+function bindQuickFill(){const msg=$("#qfMsg"),err=t=>{msg.hidden=false;msg.style.color="var(--bad)";msg.textContent=t};
+  const pk=$("#qfPick");if(pk)pk.onclick=async()=>{try{const r=await navigator.contacts.select(["name","tel"],{multiple:false});if(!r||!r.length)return;qfApply((r[0].name||[])[0]||"",(r[0].tel||[])[0]||"")}catch(e){err("No se pudo abrir tus contactos.")}};
+  $("#qfPaste").onclick=async()=>{let t="";try{t=await navigator.clipboard.readText()}catch(e){}
+    if(!t){err("No pude leer lo copiado. Mantén presionado el campo de teléfono y elige Pegar.");$("#cPhone").focus();return}
+    const v=/BEGIN:VCARD/i.test(t)?parseVcf(t)[0]:parseContactText(t);if(!v||(!v.name&&!v.phone)){err("Lo copiado no parece un número de teléfono.");return}qfApply(v.name,v.phone)};
+  $("#cPhone").addEventListener("paste",e=>{const t=(e.clipboardData||window.clipboardData).getData("text");if(!t)return;const v=parseContactText(t);if(v.phone){e.preventDefault();qfApply(v.name&&!$("#cName").value.trim()?v.name:"",v.phone)}});
+  $("#qfVcf").onchange=async e=>{const fs=[...e.target.files];if(!fs.length)return;let all=[];for(const f of fs){try{all=all.concat(parseVcf(await f.text()))}catch(x){}}
+    if(!all.length){err("No encontré contactos en ese archivo.");return}
+    if(all.length===1){qfApply(all[0].name,all[0].phone);return}
+    msg.hidden=false;msg.style.color="";msg.innerHTML=`Encontré <b>${all.length}</b> contactos. <button class="btn sm" id="qfAll" type="button">Agregar todos como Nuevo</button>`;
+    $("#qfAll").onclick=async()=>{$("#qfAll").disabled=true;let n=0;for(const v of all){if(!v.name&&!v.phone)continue;const sp=splitPhone(v.phone),cc=sp.cc||$("#cCC").value;
+      const o=[...$("#cCC").options].find(x=>x.value===cc);const nc={name:v.name||("+"+cc+" "+sp.num),cc,ccN:o?o.dataset.n:"",phone:sp.num,stage:"Nuevo",note:"",next:"",updated:Date.now()};
+      const id=await store.saveContact(nc);if(id){nc.id=id;contacts.push(nc);n++}}
+      renderCRM();closeSheet();toast(n+" contactos agregados")}}}
 function editContact(c){c=c||{name:"",phone:"",stage:"Nuevo",note:"",next:"",cc:LS.get("lastCC")||"504"};const ccSel=c.cc||(c.phone?"504":LS.get("lastCC")||"504");
   openSheet(`<h2>${c.id?"Editar contacto":"Nuevo contacto"}</h2>
+  ${c.id?"":`<div class="qf"><p class="small muted" style="margin:0 0 8px">Llénalo rápido, sin escribir:</p><div class="qf-row">
+   ${("contacts" in navigator&&navigator.contacts&&navigator.contacts.select)?`<button class="btn sm ghost" id="qfPick" type="button">📇 Mis contactos</button>`:""}
+   <button class="btn sm ghost" id="qfPaste" type="button">📋 Pegar número</button>
+   <label class="btn sm ghost" style="cursor:pointer">📎 Archivo de contacto<input type="file" id="qfVcf" accept=".vcf,text/vcard,text/x-vcard" multiple hidden></label></div>
+   <p class="small" id="qfMsg" hidden></p></div>`}
   <div class="field"><label for="cName">Nombre</label><input class="inp" id="cName" value="${esc(c.name)}" placeholder="Nombre y apellido"></div>
   <div class="grid2"><div class="field"><label for="cCC">País</label><select class="inp" id="cCC">${(()=>{const ix=Math.max(0,PAISES.findIndex(([n,k])=>c.ccN?n===c.ccN:k===ccSel));return PAISES.map(([n,k],i)=>`<option value="${k}" data-n="${n}" ${i===ix?"selected":""}>${n} (+${k})</option>`).join("")})()}</select></div>
   <div class="field"><label for="cPhone">Teléfono / WhatsApp</label><input class="inp" id="cPhone" type="tel" value="${esc(c.phone)}" placeholder="Solo el número"></div></div>
@@ -938,6 +974,7 @@ function editContact(c){c=c||{name:"",phone:"",stage:"Nuevo",note:"",next:"",cc:
   <p class="small" id="cErr" style="color:var(--bad)" hidden>Escribe el nombre del contacto.</p>
   <div class="row"><button class="btn grow" id="cSave">Guardar contacto</button><button class="btn ghost" data-close>Cancelar</button></div>
   ${c.id?`<div class="row" id="delRow"><button class="btn sm ghost" id="cDel" style="color:var(--bad)">Eliminar contacto</button></div>`:""}`,()=>{
+  if(!c.id)bindQuickFill();
   $("#cSave").onclick=async()=>{const name=$("#cName").value.trim();if(!name){$("#cErr").hidden=false;return}
     const ccE=$("#cCC");LS.set("lastCC",ccE.value);const nc={id:c.id,name,cc:ccE.value,ccN:ccE.selectedOptions[0].dataset.n,phone:$("#cPhone").value.trim(),stage:$("#cStage").value,note:$("#cNote").value.trim(),next:$("#cNext").value,updated:Date.now()};
     $("#cSave").disabled=true;const id=await store.saveContact(nc);if(!id){$("#cSave").disabled=false;return}
