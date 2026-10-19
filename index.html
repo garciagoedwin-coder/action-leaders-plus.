@@ -1987,7 +1987,8 @@ const REG_F=[{k:"nombre",e:"1500475489",t:"Nombre completo",ty:"text",ac:"name"}
 const AVISO_FORM="https://forms.gle/YNAGLjLTv9VTk33bA";
 const WEL_DEF={video:"6ySNnmhDjwk",whatsapp:"https://chat.whatsapp.com/H2qNlABTfsAAuZ12JqCiKi",caja:"https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"};
 const WEL_PARTS=[0,1,2,3,4,5].map(i=>"media/bienvenida-"+i+".mp4?v=720"),WEL_DUR=[180,180,180,180,180,173],WEL_TOT=WEL_DUR.reduce((a,b)=>a+b,0);
-let welVidFail=false;
+let welVidFail=false,welUnl=false;
+const welVidPct=()=>{let m=0;try{m=(JSON.parse(localStorage.getItem("alp:welpos")||"{}").max)||0}catch(e){}return Math.min(100,Math.round(m/WEL_TOT*100))};
 let welState={},welName="",welTimer=null,welOpenedAt=0;
 const welCfg=()=>Object.assign({},WEL_DEF,(T.config&&T.config.bienvenida)||{});
 const ytId=u=>{u=String(u||"").trim();const m=u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/);return m?m[1]:(/^[\w-]{11}$/.test(u)?u:"")};
@@ -2014,20 +2015,20 @@ function renderWel(){const el=$("#wel");
   el.hidden=false;document.body.style.overflow="hidden";if(!welOpenedAt)welOpenedAt=Date.now();
   const c=welCfg(),vid=ytId(c.video),steps=welSteps(),n=k=>steps.findIndex(x=>x.k===k)+1;
   const badge=k=>`<span class="wel-n ${welState[k]?"ok":""}">${welState[k]?CHECK:n(k)}</span>`;
-  const manualOk=true;
+  const manualOk=welVidFail||isAdmin||welUnl||welVidPct()>=90;if(manualOk)welUnl=true;
   const nm=profile.nombrePila||welName;
   const head=`<h1 id="welT">Te damos la bienvenida</h1>
    <p class="muted">Es un gusto tenerte en el equipo.<br>Desde hoy no caminas solo: vamos a crecer juntos.</p>
    <p><b>Lo más importante ahora es tomar acción ya.</b><br>Completa ${steps.length===1?"este paso":"estos "+steps.length+" pasos"} para entrar a la app.</p>`;
   const vh=`<div class="wel-h">${badge("video")}<h3>Mira tu video de bienvenida</h3></div>`;
-  const vbtn=`<button class="btn pill dark" id="welVidOk" ${welState.video||!manualOk?"disabled":""}>${welState.video?"Video visto ✓":manualOk?"Ya vi mi video":"Mira el video completo para continuar"}</button>`;
+  const vbtn=`<button class="btn pill dark" id="welVidOk" ${welState.video||!manualOk?"disabled":""}>${welState.video?"Video visto ✓":manualOk?"Ya vi mi video":"🔒 Mira el video para continuar · "+welVidPct()+"%"}</button>`;
   const rest=`${n("whatsapp")?`<div class="wel-step"><div class="wel-h">${badge("whatsapp")}<h3>Únete al grupo del equipo</h3></div>
     <p class="small muted">En nuestro grupo de WhatsApp compartimos los entrenamientos de la semana, avisos importantes y el apoyo de todo el equipo. Al solicitar el ingreso, te aprobamos en breve.</p>
     <a class="btn pill wa" href="${esc(c.whatsapp)}" target="_blank" rel="noopener" data-wel="whatsapp">${welState.whatsapp?"Grupo de WhatsApp ✓":"Unirme al grupo de WhatsApp"}</a></div>`:""}
    ${n("caja")?`<div class="wel-step"><div class="wel-h">${badge("caja")}<h3>Descarga tu caja de herramientas</h3></div>
     <p class="small muted">Ahí encontrarás el Plan de Inicio Rápido, la Hoja de trabajo de 7 días y el Workbook de presentación. Descárgala hoy y tenla a la mano.</p>
     <a class="btn pill outl" href="${esc(c.caja)}" target="_blank" rel="noopener" data-wel="caja">${welState.caja?"Caja de herramientas ✓":"Descargar caja de herramientas"}</a></div>`:""}
-   <div class="wel-step">${welDone()?"":(()=>{const NM={registro:"Completar tu registro",video:"Ver tu video y tocar «Ya vi mi video»",whatsapp:"Unirte al grupo de WhatsApp",caja:"Descargar tu caja de herramientas"},f=steps.filter(x=>!welState[x.k]);
+   <div class="wel-step">${welDone()?"":(()=>{const NM={registro:"Completar tu registro",video:(welUnl?"Tocar «Ya vi mi video»":"Ver tu video de bienvenida (vas en "+welVidPct()+"%)"),whatsapp:"Unirte al grupo de WhatsApp",caja:"Descargar tu caja de herramientas"},f=steps.filter(x=>!welState[x.k]);
      return `<button type="button" class="wel-falta" id="welFalta"><b>⚠️ ${f.length===1?"Te falta 1 paso":"Te faltan "+f.length+" pasos"} para entrar a la app</b>${f.map(x=>`<span>• ${NM[x.k]||x.k}</span>`).join("")}<small>Toca aquí para ir ${f.length===1?"al paso":"al primero"} ↑</small></button>`})()}
     <button class="btn pill gold" id="welGo" ${welDone()?"":"aria-disabled=\"true\" style=\"opacity:.55\""}>${welDone()?"Entrar a Action Leaders Plus":"Completa los pasos para entrar"}</button>
     ${isAdmin?`<button class="btn sm ghost" id="welSkip" style="align-self:center">Saltar (solo administrador)</button>`:""}</div>
@@ -2080,7 +2081,8 @@ function welVideo(){const box=$("#welVid");if(!box)return;
   v.setAttribute("controlsList","nodownload noplaybackrate");box.appendChild(v);
   const base=i=>WEL_DUR.slice(0,i).reduce((a,b)=>a+b,0);
   let cur=pos.i,maxG=pos.max||0,resumeT=pos.t||0,seekFix=false,lastSave=0;
-  const ui=()=>{const g=base(cur)+(v.currentTime||0);$("#welPart").textContent="Parte "+(cur+1)+" de "+WEL_PARTS.length;const pc=Math.min(100,Math.round(Math.max(maxG,g)/WEL_TOT*100));$("#welPct").textContent=pc+"% visto";$("#welBar").style.width=pc+"%"};
+  const ui=()=>{const g=base(cur)+(v.currentTime||0);$("#welPart").textContent="Parte "+(cur+1)+" de "+WEL_PARTS.length;const pc=Math.min(100,Math.round(Math.max(maxG,g)/WEL_TOT*100));$("#welPct").textContent=pc+"% visto";$("#welBar").style.width=pc+"%";
+    if(!welState.video&&!welUnl){const b=$("#welVidOk");if(pc>=90){welUnl=true;try{save()}catch(e){}renderWel();toast("¡Muy bien! Ya puedes tocar «Ya vi mi video» ✅")}else if(b)b.textContent="🔒 Mira el video para continuar · "+pc+"%"}};
   const save=()=>{try{localStorage.setItem("alp:welpos",JSON.stringify({i:cur,t:v.currentTime||0,max:maxG}))}catch(e){}};
   const blobs={},getPart=i=>Promise.resolve(WEL_PARTS[i]);
   const load=async(i,t,play)=>{cur=i;const pl=$("#welPart");if(pl)pl.textContent="Cargando parte "+(i+1)+" de "+WEL_PARTS.length+"…";
@@ -2239,7 +2241,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019140947";var busy=false,pend=null;
+(function(){var V="20261019141636";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
