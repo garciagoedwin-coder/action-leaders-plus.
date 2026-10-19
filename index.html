@@ -1060,7 +1060,7 @@ const REG_F=[{k:"nombre",e:"1500475489",t:"Nombre completo",ty:"text",ac:"name"}
   {k:"plan",e:"771484550",t:"Plan",ty:"select",opts:["Classic","Premium"]},{k:"pais",e:"987456673",t:"País",ty:"text",ac:"country-name"},{k:"ciudad",e:"1482142378",t:"Ciudad",ty:"text",ac:"address-level2"}];
 const AVISO_FORM="https://forms.gle/YNAGLjLTv9VTk33bA";
 const WEL_DEF={video:"6ySNnmhDjwk",whatsapp:"https://chat.whatsapp.com/H2qNlABTfsAAuZ12JqCiKi",caja:"https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"};
-const WEL_PARTS=[0,1,2,3,4,5].map(i=>"media/bienvenida-"+i+".mp4"),WEL_DUR=[180,180,180,180,180,173],WEL_TOT=WEL_DUR.reduce((a,b)=>a+b,0);
+const WEL_PARTS=[0,1,2,3,4,5].map(i=>"media/bienvenida-"+i+".mp4?v=720"),WEL_DUR=[180,180,180,180,180,173],WEL_TOT=WEL_DUR.reduce((a,b)=>a+b,0);
 let welVidFail=false;
 let welState={},welName="",welTimer=null,welOpenedAt=0;
 const welCfg=()=>Object.assign({},WEL_DEF,(T.config&&T.config.bienvenida)||{});
@@ -1141,7 +1141,7 @@ function renderWel(){const el=$("#wel");
 function welVideo(){const box=$("#welVid");if(!box)return;
   let pos={i:0,t:0,max:0};try{pos=Object.assign(pos,JSON.parse(localStorage.getItem("alp:welpos")||"{}"))}catch(e){}
   if(welState.video)pos={i:0,t:0,max:WEL_TOT};
-  const v=document.createElement("video");v.controls=true;v.playsInline=true;v.setAttribute("playsinline","");v.preload="metadata";v.poster="media/poster.jpg";
+  const v=document.createElement("video");v.controls=true;v.playsInline=true;v.setAttribute("playsinline","");v.preload="metadata";v.poster="media/poster.jpg?v=720";
   v.setAttribute("controlsList","nodownload noplaybackrate");box.appendChild(v);
   const base=i=>WEL_DUR.slice(0,i).reduce((a,b)=>a+b,0);
   let cur=pos.i,maxG=pos.max||0,resumeT=pos.t||0,seekFix=false,lastSave=0;
