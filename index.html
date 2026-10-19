@@ -217,6 +217,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .wkbars b{font-size:13px;min-height:16px}.wkbars small{font-size:10.5px;color:var(--muted);font-weight:600}
 .wkbars .hoy small{color:var(--brand)}
 #agMia[hidden],#agEquipo[hidden]{display:none!important}
+#sheetPanel input[type=date],#sheetPanel input[type=time]{min-width:0;width:100%;-webkit-appearance:none;appearance:none}
 #ciTipo{display:grid;grid-template-columns:1fr 1fr}#ciTipo button{white-space:normal}
 .plan-sel{font:inherit;font-weight:600;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:2px 6px}
 .mstat{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
@@ -1658,6 +1659,8 @@ $("#contactList").addEventListener("click",async e=>{const st=e.target.closest("
 // ---------- mi agenda personal ----------
 let citas=[],citasOk=false,agWk=0,agVista="equipo";
 const CITA_T={zoom:["💻","Zoom"],whatsapp:["📱","Videollamada WhatsApp"],persona:["📍","En persona"],lider:["⭐","Con líder"]};
+const NOTA_DEF={zoom:"Conéctese desde un lugar tranquilo\nCon la cámara encendida\nEntre a la sala 5 minutos antes",whatsapp:"Esté en un lugar tranquilo\nCon la cámara encendida\nTenga a mano su celular 5 minutos antes",persona:"Llegue 5 minutos antes\nTraiga sus preguntas"};
+const notaDef=t=>((profile.notaCita||{})[t]!=null?profile.notaCita[t]:NOTA_DEF[t]||"");
 const citaSort=(a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora);
 const citaIni=c=>{const[y,m,d]=c.fecha.split("-").map(Number),[h,mi]=(c.hora||"00:00").split(":").map(Number);return new Date(y,m-1,d,h,mi)};
 const citaCuando=c=>{const d=parseK(c.fecha),hoy=c.fecha===TODAY,man=c.fecha===dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1));return (hoy?"Hoy":man?"Mañana":DAYS_L[d.getDay()][0].toUpperCase()+DAYS_L[d.getDay()].slice(1)+" "+d.getDate()+" de "+MONTHS[d.getMonth()])+", "+h12(c.hora)};
@@ -1685,12 +1688,14 @@ function citaMsg(c,rec){const first=String(c.nombre||"").trim().split(/\s+/)[0]|
   const como=c.tipo==="zoom"?"💻 *Por Zoom*":c.tipo==="whatsapp"?"📱 *Videollamada de WhatsApp*":"📍 *En persona*";
   const det=c.tipo==="zoom"?(c.enlace?["","🔗 Enlace para entrar:",c.enlace]:[]):c.tipo==="whatsapp"?["","Yo le llamo a este número 📞"]:(c.lugar?["","📌 Lugar:",c.lugar]:[]);
   if(rec){const cu=c.fecha===TODAY?"hoy":c.fecha===dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1))?"mañana":"el "+dia.toLowerCase();
-    L.push(`Hola ${first} 👋`,"",`Le recuerdo nuestra reunión de *${cu}* a las *${h12(c.hora)}*.`,"",como,...det,"","¡Nos vemos! 🙌");if(yo)L.push(`*${yo}*`);return L.join("\n")}
-  L.push(`Hola ${first}, ¿cómo está? 😊`,"","Le confirmo nuestra reunión 👇","",`📅 *${dia}*`,`🕖 *${h12(c.hora)}*`,como,...det,"","📲 Agréguela a su calendario:",citaLink(c),"","¡Nos vemos! 🙌");if(yo)L.push(`*${yo}*`);return L.join("\n")}
+    const ind=String(c.nota||"").split("\n").map(x=>x.trim()).filter(Boolean);
+    L.push(`Hola ${first} 👋`,"",`Le recuerdo nuestra reunión de *${cu}* a las *${h12(c.hora)}*.`,"",como,...det,...(ind.length?["","📝 Recuerde:",...ind.map(x=>"• "+x)]:[]),"","¡Nos vemos! 🙌");if(yo)L.push(`*${yo}*`);return L.join("\n")}
+  const ind=String(c.nota||"").split("\n").map(x=>x.trim()).filter(Boolean),indL=ind.length?["","📝 *Para aprovechar la reunión:*",...ind.map(x=>"• "+x)]:[];
+  L.push(`Hola ${first}, ¿cómo está? 😊`,"","Le confirmo nuestra reunión 👇","",`📅 *${dia}*`,`🕖 *${h12(c.hora)}*`,como,...det,...indL,"","📲 Agréguela a su calendario:",citaLink(c),"","¡Nos vemos! 🙌");if(yo)L.push(`*${yo}*`);return L.join("\n")}
 async function citaWa(c,rec){const t=citaMsg(c,rec),ct=c.cid&&contacts.find(x=>x.id===c.cid),n=ct?waNum(ct.phone,ct.cc):String(c.tel||"").replace(/\D/g,"");
   if(n){location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t);return}
   if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
-function abrirCita(c,ct){const ed=!!(c&&c.id);c=Object.assign({tipo:"zoom",fecha:dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1)),hora:"19:00",dur:60,enlace:profile.zoom||"",lugar:"",nota:"",nombre:"",cid:""},c||{});
+function abrirCita(c,ct){const ed=!!(c&&c.id);c=Object.assign({tipo:"zoom",fecha:dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1)),hora:"19:00",dur:60,enlace:profile.zoom||"",lugar:"",nombre:"",cid:""},c||{});if(c.nota==null)c.nota=notaDef(c.tipo);
   if(ct){c.cid=ct.id;c.nombre=ct.name}
   const opts=contacts.slice().sort((a,b)=>String(a.name).localeCompare(b.name,"es"));
   openSheet(`<h2>📅 ${ed?"Editar cita":"Nueva cita"}</h2>
@@ -1702,7 +1707,7 @@ function abrirCita(c,ct){const ed=!!(c&&c.id);c=Object.assign({tipo:"zoom",fecha
    <div class="field"><label for="ciD">Duración</label><select class="inp" id="ciD">${[30,45,60,90,120].map(m=>`<option value="${m}" ${+c.dur===m?"selected":""}>${m<60?m+" min":m===60?"1 hora":m===90?"1 hora 30 min":"2 horas"}</option>`).join("")}</select></div>
    <div class="field" id="ciZW"><label for="ciZ">Enlace de Zoom</label><input class="inp" id="ciZ" type="url" placeholder="https://zoom.us/j/..." value="${esc(c.enlace||"")}"></div>
    <div class="field" id="ciLW"><label for="ciL">Lugar</label><input class="inp" id="ciL" placeholder="Dirección o lugar" value="${esc(c.lugar||"")}"></div>
-   <div class="field"><label for="ciN">Nota <span class="muted">(opcional)</span></label><input class="inp" id="ciN" value="${esc(c.nota||"")}"></div>
+   <div class="field"><label for="ciN">Indicaciones para el prospecto <span class="muted">(una por línea)</span></label><textarea class="inp" id="ciN" rows="3" style="resize:vertical">${esc(c.nota||"")}</textarea></div>
    <p class="small" id="ciWarn" style="color:var(--warn);font-weight:600;margin:0" hidden></p>
    <button class="btn" id="ciOk" style="width:100%">${ed?"Guardar cambios":"Agendar cita"}</button>
    ${ed?`<button class="btn ghost" id="ciDel" style="width:100%;color:var(--bad)">Eliminar cita</button>`:""}
@@ -1710,12 +1715,14 @@ function abrirCita(c,ct){const ed=!!(c&&c.id);c=Object.assign({tipo:"zoom",fecha
     let tipo=c.tipo;const sync=()=>{$("#ciTipo").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x.dataset.t===tipo));$("#ciPros").hidden=tipo==="lider";$("#ciTitW").hidden=tipo!=="lider";$("#ciZW").hidden=!(tipo==="zoom"||tipo==="lider");$("#ciLW").hidden=tipo!=="persona";chk()};
     const chk=()=>{const f=$("#ciF").value,h=$("#ciH").value,du=+$("#ciD").value;if(!f||!h){$("#ciWarn").hidden=true;return}const a=citaIni({fecha:f,hora:h}),b=a.getTime()+du*6e4;
       const ch=citas.find(x=>x.id!==c.id&&x.fecha===f&&citaIni(x).getTime()<b&&citaIni(x).getTime()+(x.dur||60)*6e4>a.getTime());const w=$("#ciWarn");w.hidden=!ch;if(ch)w.textContent="⚠️ Ya tienes una cita a esa hora: "+(ch.tipo==="lider"?ch.titulo:ch.nombre)+" ("+h12(ch.hora)+")"};
-    $("#ciTipo").onclick=e=>{const x=e.target.closest("[data-t]");if(!x)return;tipo=x.dataset.t;sync()};
+    $("#ciTipo").onclick=e=>{const x=e.target.closest("[data-t]");if(!x)return;const prev=tipo;tipo=x.dataset.t;const n=$("#ciN");if(n.value.trim()===notaDef(prev).trim())n.value=tipo==="lider"?"":notaDef(tipo);
+      const z=$("#ciZ");if(tipo==="lider"&&z.value===(profile.zoom||""))z.value="";else if(tipo==="zoom"&&!z.value)z.value=profile.zoom||"";sync()};
     $("#ciCid").onchange=()=>{$("#ciNom").hidden=!!$("#ciCid").value};["ciF","ciH","ciD"].forEach(k=>$("#"+k).oninput=chk);sync();
     $("#ciOk").onclick=async()=>{const cid=$("#ciCid").value,cc=contacts.find(x=>x.id===cid);const n={id:c.id,tipo,fecha:$("#ciF").value,hora:$("#ciH").value,dur:+$("#ciD").value,cid:tipo==="lider"?"":cid,nombre:tipo==="lider"?"":(cc?cc.name:$("#ciNom").value.trim()),titulo:tipo==="lider"?$("#ciTit").value.trim():"",enlace:$("#ciZ").value.trim(),lugar:$("#ciL").value.trim(),nota:$("#ciN").value.trim()};
       if(!n.fecha||!n.hora){toast("Elige día y hora");return}if(tipo!=="lider"&&!n.nombre){toast("Elige o escribe el nombre");return}if(tipo==="lider"&&!n.titulo){toast("Escribe con quién es la llamada");return}
       if(!ed)delete n.id;const bt=$("#ciOk");bt.disabled=true;const id=await saveCita(n);bt.disabled=false;if(!id)return;n.id=id;const i=citas.findIndex(x=>x.id===id);if(i>=0)citas[i]=n;else citas.push(n);
-      if(n.enlace&&tipo==="zoom"&&n.enlace!==profile.zoom){profile.zoom=n.enlace;store.set("perfil",profile)}
+      let pc=false;if(n.enlace&&tipo==="zoom"&&n.enlace!==profile.zoom){profile.zoom=n.enlace;pc=true}
+      if(tipo!=="lider"&&n.nota!==notaDef(tipo)){profile.notaCita=Object.assign({},profile.notaCita||{},{[tipo]:n.nota});pc=true}if(pc)store.set("perfil",profile);
       if(cc&&FLOW.indexOf(cc.stage||"Nuevo")<FLOW.indexOf("Presentación")&&cc.stage!=="Cliente"&&cc.stage!=="No interesado"){cc.stage="Presentación";cc.next=n.fecha;cc.updated=Date.now();await store.saveContact(Object.assign({},cc))}else if(cc&&(!cc.next||cc.next<n.fecha)){cc.next=n.fecha;await store.saveContact(Object.assign({},cc))}
       closeSheet();renderHoyCitas();renderMiAgenda();try{renderCRM()}catch(e){}
       if(tipo!=="lider"&&!ed)citaListo(n);else toast("Cita guardada ✓")};
@@ -1727,7 +1734,7 @@ function citaListo(c){openSheet(`<h2>✅ Cita agendada</h2><p style="margin:0"><
    <button class="btn ghost" data-close style="width:100%">Listo</button>`,()=>{$("#clWa").onclick=()=>citaWa(c,false);$("#clCal").onclick=()=>citaIcs(c)})}
 function citaCard(c){const t=CITA_T[c.tipo]||CITA_T.zoom,pas=citaIni(c).getTime()+(c.dur||60)*6e4<Date.now(),nm=c.tipo==="lider"?c.titulo:c.nombre;
   return `<div class="cita ${pas?"ev-past":""}"><div class="ch-h"><b>${esc(h12(c.hora))}</b><span class="small muted">${c.dur>=60?(c.dur/60)+" h":c.dur+" min"}</span></div><div class="grow" style="min-width:0">
-   <b style="font-weight:600">${esc(nm||"Cita")}</b><div class="small muted">${t[0]} ${t[1]}${c.tipo==="persona"&&c.lugar?" · "+esc(c.lugar):""}${c.nota?" · "+esc(c.nota):""}</div>
+   <b style="font-weight:600">${esc(nm||"Cita")}</b><div class="small muted">${t[0]} ${t[1]}${c.tipo==="persona"&&c.lugar?" · "+esc(c.lugar):""}${c.tipo==="lider"&&c.nota?" · "+esc(c.nota):""}</div>
    <div class="row wrap" style="gap:6px;margin-top:8px">${!pas&&c.tipo!=="lider"?`<button class="btn sm" style="background:#25D366;color:#fff" data-ciw="${esc(c.id)}">💬 Invitación</button><button class="btn sm ghost" data-cir="${esc(c.id)}">⏰ Recordatorio</button>`:""}${!pas&&c.enlace&&(c.tipo==="zoom"||c.tipo==="lider")?`<a class="btn sm ghost" href="${esc(safeUrl(c.enlace))}" target="_blank" rel="noopener">Entrar al Zoom</a>`:""}${!pas?`<button class="btn sm ghost" data-cic="${esc(c.id)}">➕ Calendario</button>`:""}<button class="btn sm ghost" data-cie="${esc(c.id)}">Editar</button></div></div></div>`}
 function bindCitas(root){root.querySelectorAll("[data-ciw]").forEach(b=>b.onclick=()=>citaWa(citas.find(x=>x.id===b.dataset.ciw),false));root.querySelectorAll("[data-cir]").forEach(b=>b.onclick=()=>citaWa(citas.find(x=>x.id===b.dataset.cir),true));
   root.querySelectorAll("[data-cic]").forEach(b=>b.onclick=()=>citaIcs(citas.find(x=>x.id===b.dataset.cic)));root.querySelectorAll("[data-cie]").forEach(b=>b.onclick=()=>abrirCita(citas.find(x=>x.id===b.dataset.cie)))}
@@ -2198,7 +2205,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019134244";var busy=false,pend=null;
+(function(){var V="20261019134959";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
