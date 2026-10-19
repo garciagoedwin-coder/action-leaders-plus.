@@ -860,6 +860,7 @@ function evMsg(e){const F={"Honduras":"🇭🇳","Miami":"🇺🇸","España":"�
   while(L.length&&L[L.length-1]==="")L.pop();return L.join("\n")}
 const imgLoad=(src,cors)=>new Promise(ok=>{const i=new Image();if(cors)i.crossOrigin="anonymous";i.onload=()=>ok(i);i.onerror=()=>ok(null);i.src=src});
 const RANGO_CORTO={"Senior Marketing Director":"Senior M Director","Regional Director":"Regional Director","National Director":"National Director","Marketing Director":"Marketing Director","Team Leader":"Team Leader","Calificado al sistema":"Sistema de Liderazgo"};
+function tituloFlyer(n){const t=(T.config&&T.config.titulos)||{};for(const k in t)if(t[k]&&sameN(k,n))return t[k];const r=rangoDe(n);return RANGO_CORTO[r]||r||""}
 async function flyerCanvas(e){const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
   try{await document.fonts.load("italic 500 30px Figtree");await document.fonts.load("600 30px Figtree")}catch(x){}
   const bg=await imgLoad("media/flyers/presentacion.jpg");if(!bg)return null;g.drawImage(bg,0,0,W,H);
@@ -871,7 +872,7 @@ async function flyerCanvas(e){const W=1080,H=1350,cv=document.createElement("can
     if(im){const s=Math.max(2*r/im.width,2*r/im.height);g.fillStyle="#e9e9ec";g.fillRect(152-r,cy-r,2*r,2*r);g.drawImage(im,152-im.width*s/2,cy-im.height*s/2,im.width*s,im.height*s)}
     else{g.fillStyle="#0b1a36";g.fillRect(152-r,cy-r,2*r,2*r);if(esc_)g.drawImage(esc_,152-50,cy-53,100,106)}
     g.restore();g.textAlign="center";g.textBaseline="alphabetic";
-    const nm=nombre||"Action Leaders",rg=nombre?(RANGO_CORTO[rangoDe(nombre)]||rangoDe(nombre)||""):"Equipo de líderes";
+    const nm=nombre||"Action Leaders",rg=nombre?tituloFlyer(nombre):"Equipo de líderes";
     g.fillStyle="#ffffff";fit(nm,"italic 500 {s}px Figtree, Arial, sans-serif",31,255);g.fillText(nm,400,ty);
     if(rg){g.fillStyle="#E7B54B";fit(rg,"italic 500 {s}px Figtree, Arial, sans-serif",23,255);g.fillText(rg,400,ty+28)}};
   await slot(e.responsable,755,750);await slot(e.edifica,957,950);
@@ -1398,7 +1399,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018224039";var busy=false,pend=null;
+(function(){var V="20261018224605";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
