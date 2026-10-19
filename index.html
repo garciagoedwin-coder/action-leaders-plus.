@@ -1034,8 +1034,8 @@ Ahí encontrará su rutina diaria, la agenda del equipo, cursos y todo lo necesa
 Cualquier duda, aquí estoy para apoyarle. ¡Hasta que funcione! 🚀
 
 ${pat}`;
-const BIEN_TH={classic:{img:"media/flyers/bienvenida-classic.jpg",acc:"#2AC1F1",hl:"#2AC1F1",glow:"rgba(42,193,241,.85)",txt:"#0a141e",lab:"SOCIO CLASSIC"},
-  premium:{img:"media/flyers/bienvenida-premium.jpg",acc:"#F0F0F2",hl:"#6EC8F5",glow:"rgba(80,170,240,.8)",txt:"#08080a",lab:"SOCIO PREMIUM"}};
+const BIEN_TH={classic:{img:"media/flyers/bienvenida-classic.jpg?v=2",acc:"#2AC1F1",hl:"#2AC1F1",glow:"rgba(42,193,241,.85)",txt:"#0a141e",lab:"SOCIO CLASSIC"},
+  premium:{img:"media/flyers/bienvenida-premium.jpg?v=2",acc:"#F0F0F2",hl:"#6EC8F5",glow:"rgba(80,170,240,.8)",txt:"#08080a",lab:"SOCIO PREMIUM"}};
 const PAIS_ISO={"Honduras":"HN","Estados Unidos":"US","España":"ES","Reino Unido":"GB","Guatemala":"GT","El Salvador":"SV","Nicaragua":"NI","Costa Rica":"CR","Panamá":"PA","México":"MX","Colombia":"CO","Venezuela":"VE","Perú":"PE","Ecuador":"EC","Chile":"CL","Argentina":"AR","República Dominicana":"DO","Canadá":"CA","Italia":"IT","Francia":"FR","Alemania":"DE"};
 const bandera=p=>{const c=PAIS_ISO[p];return c?String.fromCodePoint(...[...c].map(x=>127397+x.charCodeAt(0))):""};
 async function bienCanvas(n,f,pat,plan,fotoSrc,pais){const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");const T=BIEN_TH[plan]||BIEN_TH.classic;
@@ -1600,7 +1600,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019002845";var busy=false,pend=null;
+(function(){var V="20261019003315";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
