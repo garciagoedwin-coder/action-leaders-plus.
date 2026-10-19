@@ -225,6 +225,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .wel-falta b{color:#c62828;font-size:15px}.wel-falta span{font-size:14px}.wel-falta small{color:var(--muted);font-size:12.5px;margin-top:4px}
 .wel-flash{animation:welFlash 1.6s ease}
 @keyframes welFlash{0%,100%{box-shadow:none}20%,60%{box-shadow:0 0 0 4px rgba(229,56,59,.45);border-radius:16px}}
+.ep-it{display:flex;align-items:center;gap:10px;padding:10px 4px;border:0;border-bottom:1px solid var(--line);background:none;font:inherit;color:var(--ink);cursor:pointer;width:100%}
 .plan-sel{font:inherit;font-weight:600;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:2px 6px}
 .mstat{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center}
 .mstat div{background:var(--surface-2);border-radius:12px;padding:10px 4px;display:flex;flex-direction:column;gap:2px}
@@ -1529,18 +1530,44 @@ function abrirMiPagina(){if(!(regDoc&&regDoc.registro)){toast("Completa tu regis
    <div class="field"><label for="mpTel">Tu WhatsApp</label><input class="inp" id="mpTel" type="tel" value="${esc(w.num||"")}" placeholder="Para que te escriban"></div></div>
    <div class="field"><label for="mpRef">Tu enlace de inCruises</label><input class="inp" id="mpRef" type="url" value="${esc(profile.ref||"")}" placeholder="https://..."></div>
    <div class="card" style="word-break:break-all;font-weight:600" id="mpUrl">${esc(miPagina())}</div>
-   <button class="btn" id="mpShare" style="width:100%">📤 Guardar y compartir mi página</button>
+   <button class="btn" id="mpSend" style="width:100%;background:#25D366;color:#fff">💬 Enviar a un prospecto</button>
+   <button class="btn ghost" id="mpShare" style="width:100%">🖼️ Compartir con tarjeta</button>
    <div class="row" style="gap:8px"><button class="btn ghost grow" id="mpCopy">Copiar enlace</button><a class="btn ghost grow" href="${esc(miPagina())}" target="_blank" rel="noopener">Ver mi página</a></div>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     const save=async()=>{profile.waPublico={cc:$("#mpCC").value,num:$("#mpTel").value.trim()};profile.ref=$("#mpRef").value.trim();try{renderRef()}catch(x){}store.set("perfil",profile);const ok=await publicarPerfil();if(!ok)toast("No se pudo guardar tu página. Revisa tu conexión.");return ok};
     $("#mpCopy").onclick=async()=>{await save();try{await navigator.clipboard.writeText(miPagina());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};
+    $("#mpSend").onclick=async()=>{if(!$("#mpTel").value.trim()){toast("Pon tu WhatsApp para que te escriban");$("#mpTel").focus();return}const ok=await save();if(!ok)return;abrirEnviarPagina()};
     $("#mpShare").onclick=async()=>{if(!$("#mpTel").value.trim()){toast("Pon tu WhatsApp para que te escriban");$("#mpTel").focus();return}const ok=await save();if(!ok)return;
-      const txt="✈️ Te invito a conocer algo que me está cambiando la vida.\n\nMira este video corto 👇\n\n"+miPagina();
+      const txt=msgPagina("");
       const b=$("#mpShare"),bt=b.textContent;b.disabled=true;b.textContent="Creando tu tarjeta…";let file=null;
       try{const cv=await invCanvas();const bl=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));file=new File([bl],"te-invito.jpg",{type:"image/jpeg"})}catch(x){}
       b.disabled=false;b.textContent=bt;
       if(file&&navigator.canShare&&navigator.canShare({files:[file],text:txt})){try{await navigator.share({files:[file],text:txt});return}catch(x){if(x&&x.name==="AbortError")return}}
       if(navigator.share){try{await navigator.share({text:txt});return}catch(x){if(x&&x.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(txt)}})}
+function msgPagina(first){const yo=miNombreCorto()||"";return [`Hola${first?" *"+first+"*":""}, ¿cómo está? 😊`,"","Le comparto algo que me está cambiando la vida y creo que le puede interesar.","","En esta página puede ver un video corto, conocer lo que hacemos y, si gusta, *agendar una reunión conmigo* en el horario que mejor le quede 👇","",miPagina(),"","Cualquier pregunta, aquí estoy."].concat(yo?["*"+yo+"*"]:[]).join("\n")}
+async function enviarPaginaA(c){const n=waNum(c.phone,c.cc);if(!n){toast("Ese contacto no tiene WhatsApp guardado");return}
+  const first=String(c.name||"").trim().split(/\s+/)[0]||"";const marca="📩 Le envié mi página ("+niceDate(TODAY)+")";
+  if(!String(c.note||"").includes("📩 Le envié mi página")){c.note=(c.note?c.note+" · ":"")+marca}else c.note=String(c.note).replace(/📩 Le envié mi página \([^)]*\)/,marca);
+  if((c.stage||"Nuevo")==="Nuevo")c.stage="Contactado";const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+2);if(!c.next||c.next<TODAY)c.next=dkey(d);c.updated=Date.now();
+  await store.saveContact(Object.assign({},c));try{renderCRM()}catch(e){}closeSheet();location.href="https://wa.me/"+n+"?text="+encodeURIComponent(msgPagina(first))}
+function abrirEnviarPagina(){let q="";const L=()=>contacts.filter(c=>waNum(c.phone,c.cc)&&(!q||nrmN(c.name).includes(nrmN(q)))).sort((a,b)=>(b.updated||0)-(a.updated||0)).slice(0,40);
+  openSheet(`<h2>💬 Enviar mi página</h2><p class="small muted" style="margin:0">Elige a quién enviársela. Se abre su chat de WhatsApp con el mensaje listo.</p>
+   <button class="btn ghost" id="epNew" style="width:100%">+ Nuevo prospecto</button>
+   <div id="epNewF" hidden style="display:flex;flex-direction:column;gap:10px">
+    <div class="field"><label for="epN">Nombre</label><input class="inp" id="epN" placeholder="Nombre y apellido"></div>
+    <div class="grid2"><div class="field"><label for="epC">País</label><select class="inp" id="epC">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")?"selected":""}>${pn} (+${k})</option>`).join("")}</select></div>
+    <div class="field"><label for="epT">WhatsApp</label><input class="inp" id="epT" type="tel" placeholder="Número"></div></div>
+    <button class="btn" id="epNewOk" style="width:100%;background:#25D366;color:#fff">Guardar en CRM y enviar</button></div>
+   <input class="inp" id="epQ" placeholder="Buscar en mi CRM" autocomplete="off">
+   <div id="epL" style="display:flex;flex-direction:column"></div>
+   <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
+    const draw=()=>{const R=L();$("#epL").innerHTML=R.length?R.map(c=>`<button type="button" class="ep-it" data-ep="${esc(c.id)}">${avHTML(c.name,false,false)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(c.name)}</b><span class="small muted">${esc(c.stage||"Nuevo")}${String(c.note||"").includes("📩 Le envié mi página")?" · ya la recibió":""}</span></span><span style="color:#25D366;font-weight:800">Enviar ›</span></button>`).join(""):`<p class="small muted" style="margin:8px 0">${q?"No hay contactos con ese nombre.":"Aún no tienes contactos con WhatsApp en tu CRM."}</p>`};draw();
+    $("#epQ").oninput=()=>{q=$("#epQ").value.trim();draw()};
+    $("#epL").onclick=e=>{const b=e.target.closest("[data-ep]");if(b)enviarPaginaA(contacts.find(c=>c.id===b.dataset.ep))};
+    $("#epNew").onclick=()=>{const f=$("#epNewF");f.hidden=!f.hidden;f.style.display=f.hidden?"none":"flex";if(!f.hidden)$("#epN").focus()};$("#epNewF").style.display="none";
+    $("#epNewOk").onclick=async()=>{const nm=$("#epN").value.trim(),cc=$("#epC").value;let t=$("#epT").value.trim();const sp=splitPhone(t);const ccx=sp.cc||cc;t=sp.cc?sp.num:t.replace(/\D/g,"");
+      if(nm.length<2||t.length<6){toast("Escribe nombre y WhatsApp");return}LS.set("lastCC",cc);
+      const c={name:nm.slice(0,80),cc:ccx,phone:t.slice(0,15),stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(c);if(!id)return;c.id=id;contacts.push(c);enviarPaginaA(c)}})}
 async function invCanvas(){const W=1080,H=1350,K=2,cv=document.createElement("canvas");cv.width=W*K;cv.height=H*K;const g=cv.getContext("2d");g.scale(K,K);g.imageSmoothingQuality="high";
   try{await Promise.all(["700 64px 'Bricolage Grotesque'","600 40px Figtree","700 26px Figtree"].map(f=>document.fonts.load(f)))}catch(x){}
   const HF="'Bricolage Grotesque', Figtree, Arial, sans-serif",BF="Figtree, Arial, sans-serif";
@@ -2241,7 +2268,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019141636";var busy=false,pend=null;
+(function(){var V="20261019142459";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
