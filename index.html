@@ -848,12 +848,16 @@ const ZOOM_DEF={"Presentación":"https://us06web.zoom.us/j/7717273747"};
 const evLink=e=>safeUrl(e.enlace)||ZOOM_DEF[e.tipo]||"";
 const esFlyer=e=>e.tipo==="Presentación";
 const EMO={"Presentación":"🚢","Píldora":"💊","Capacitación":"🎓","Llamada":"📞","Reunión de líderes":"🛡️","Evento":"🎉"};
-function evMsg(e){const L=[];L.push((EMO[e.tipo]||"📌")+" *"+e.titulo+"*");L.push("📅 "+longDate(e.fecha).replace(/^./,c=>c.toUpperCase()));
-  const z=zoneTimes(e);L.push("🕗 "+(z?z.replace(/ · /g," | "):h12(e.hora)+" Honduras"));
-  if(e.responsable)L.push("🎤 Presenta: "+e.responsable+(e.edifica?" · Edifica: "+e.edifica:""));
-  if(e.lugar)L.push("📍 "+e.lugar);const k=evLink(e);if(k)L.push("","👉 Únete por Zoom: "+k);
-  if(e.tipo==="Presentación")L.push("","Descubre cómo construir libertad financiera mientras vives experiencias que transforman tu vida. ✈️");
-  return L.join("\n")}
+function evMsg(e){const F={"Honduras":"🇭🇳","Miami":"🇺🇸","España":"🇪🇸","Reino Unido":"🇬🇧"},L=[];
+  L.push((EMO[e.tipo]||"📌")+" *"+e.titulo.toUpperCase()+"*","");
+  L.push("📅 *"+longDate(e.fecha).replace(/^./,c=>c.toUpperCase())+"*","");
+  const z=zoneTimes(e);if(z){L.push("🕗 *Horarios:*");z.split(" · ").forEach(p=>{const k=p.lastIndexOf(" "),n=p.slice(0,k),h=p.slice(k+1).replace(/(am|pm)$/," $1");L.push((F[n]||"•")+" "+n+": "+h)});L.push("")}
+  else if(e.hora)L.push("🕗 "+h12(e.hora)+" (hora de Honduras)","");
+  if(e.responsable)L.push("🎤 *Presenta:* "+e.responsable);if(e.edifica)L.push("⭐ *Edifica:* "+e.edifica);if(e.responsable||e.edifica)L.push("");
+  if(e.lugar)L.push("📍 *Lugar:* "+e.lugar,"");
+  const k=evLink(e);if(k)L.push("💻 *Únete por Zoom:*",k,"");
+  if(e.tipo==="Presentación")L.push("✨ Descubre cómo construir libertad financiera mientras vives experiencias que transforman tu vida.");
+  while(L.length&&L[L.length-1]==="")L.pop();return L.join("\n")}
 const imgLoad=(src,cors)=>new Promise(ok=>{const i=new Image();if(cors)i.crossOrigin="anonymous";i.onload=()=>ok(i);i.onerror=()=>ok(null);i.src=src});
 const RANGO_CORTO={"Senior Marketing Director":"Senior M Director","Regional Director":"Regional Director","National Director":"National Director","Marketing Director":"Marketing Director","Team Leader":"Team Leader","Calificado al sistema":"Sistema de Liderazgo"};
 async function flyerCanvas(e){const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
@@ -1394,7 +1398,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261018223334";var busy=false,pend=null;
+(function(){var V="20261018224039";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
