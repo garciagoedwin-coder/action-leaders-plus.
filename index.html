@@ -1056,7 +1056,7 @@ function go(v){document.querySelectorAll("section.view").forEach(s=>s.hidden=s.i
 $("#tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(b)go(b.dataset.v)});
 // ---------- bienvenida obligatoria ----------
 const REG_FORM="https://docs.google.com/forms/d/e/1FAIpQLSdEKTrG8N27CJrVqt7svD-ecHqtVaH7R1Pfo35hP52R7mDAHw/";
-const REG_F=[{k:"nombre",e:"1500475489",t:"Nombre completo",ty:"text",ac:"name"},{k:"correo",e:"2043048630",t:"Correo",ty:"email",ac:"email"},{k:"patrocinador",e:"215396076",t:"Patrocinador (quién te invitó)",ty:"text"},
+const REG_F=[{k:"nombre",e:"1500475489",t:"Nombre completo",ty:"text",ac:"name"},{k:"correo",e:"2043048630",t:"Correo",ty:"email",ac:"email"},{k:"patrocinador",e:"215396076",t:"Nombre de tu patrocinador",ty:"text"},
   {k:"plan",e:"771484550",t:"Plan",ty:"select",opts:["Classic","Premium"]},{k:"pais",e:"987456673",t:"País",ty:"text",ac:"country-name"},{k:"ciudad",e:"1482142378",t:"Ciudad",ty:"text",ac:"address-level2"}];
 const AVISO_FORM="https://forms.gle/YNAGLjLTv9VTk33bA";
 const WEL_DEF={video:"6ySNnmhDjwk",whatsapp:"https://chat.whatsapp.com/H2qNlABTfsAAuZ12JqCiKi",caja:"https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"};
@@ -1115,17 +1115,13 @@ function renderWel(){const el=$("#wel");
      `<p class="small muted">Déjanos tus datos para darte acceso.</p>
      <form id="regF" style="display:flex;flex-direction:column;gap:10px;text-align:left" novalidate>
       <div class="field"><label for="rg_nombre">Nombre completo</label><input class="inp" id="rg_nombre" autocomplete="name" value="${esc(R0.nombre||(fbUser&&fbUser.displayName)||"")}"></div>
-      <div class="grid2"><div class="field"><label for="rg_cc">País del WhatsApp</label><select class="inp" id="rg_cc">${PAISES.map(([n,k],i)=>`<option value="${k}" data-n="${n}" ${i===0?"selected":""}>${n} (+${k})</option>`).join("")}</select></div>
-       <div class="field"><label for="rg_tel">WhatsApp</label><input class="inp" id="rg_tel" type="tel" placeholder="Solo el número"></div></div>
-      <div class="field"><label for="rg_patro">Patrocinador (quién te invitó)</label><input class="inp" id="rg_patro"></div>
-      <div class="field"><label for="rg_plan">Plan</label><select class="inp" id="rg_plan"><option value="">Elige tu plan</option><option>Classic</option><option>Premium</option></select></div>
-      <div class="grid2"><div class="field"><label for="rg_pais">País donde vives</label><input class="inp" id="rg_pais" autocomplete="country-name"></div>
-       <div class="field"><label for="rg_ciudad">Ciudad</label><input class="inp" id="rg_ciudad" autocomplete="address-level2"></div></div>
+      <div class="field"><label for="rg_patro">Nombre de tu patrocinador</label><input class="inp" id="rg_patro"></div>
+      <div class="field"><label for="rg_plan">Plan de inicio</label><select class="inp" id="rg_plan"><option value="">Elige tu plan</option><option>Classic</option><option>Premium</option></select></div>
       <p class="small" id="regErr" style="color:var(--bad)" hidden></p>
       <button class="btn pill dark" id="regOk" type="submit">Enviar mi registro</button></form></div>`);
     const F=$("#regF");if(F)F.onsubmit=async ev=>{ev.preventDefault();const g=k=>$("#rg_"+k).value.trim(),err=$("#regErr");
-      const d={nombre:g("nombre"),whatsapp:waNum(g("tel"),$("#rg_cc").value),patrocinador:g("patro"),plan:g("plan"),pais:g("pais"),ciudad:g("ciudad")};
-      const lab={nombre:"Nombre completo",whatsapp:"WhatsApp",patrocinador:"Patrocinador",plan:"Plan",pais:"País",ciudad:"Ciudad"};
+      const d={nombre:g("nombre"),patrocinador:g("patro"),plan:g("plan")};
+      const lab={nombre:"Nombre completo",patrocinador:"Patrocinador",plan:"Plan"};
       for(const k in lab)if(!d[k]){err.textContent="Completa: "+lab[k];err.hidden=false;return}
       err.hidden=true;const bt=$("#regOk");bt.disabled=true;bt.textContent="Enviando…";
       try{d.fecha=new Date().toISOString();await store.db.doc("users/"+store.uid).set({registro:d,nombre:d.nombre,email:(fbUser&&fbUser.email)||"",creado:window.FB.serverTimestamp()},{merge:true});
