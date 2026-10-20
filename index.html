@@ -145,6 +145,28 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .counter .num{min-width:30px;text-align:center;font-size:19px}
 .done-t{text-decoration:line-through;color:var(--muted)}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+#snBody{display:flex;flex-direction:column;gap:12px}
+.snWhy{position:relative;padding:18px 18px 16px;border-radius:20px;background:linear-gradient(135deg,#111827,#1f2937 60%,#0A7DAD);color:#fff;cursor:pointer}
+.snWhy .q{font-family:var(--f-display);font-size:42px;line-height:.6;color:#2AC1F1}.snWhy p{margin:6px 0 0;font-family:var(--f-display);font-size:21px;font-weight:700;line-height:1.25}
+.snWhy small{display:block;margin-top:8px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.snCru{position:relative;border-radius:22px;overflow:hidden;min-height:210px;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;cursor:pointer;background:linear-gradient(180deg,#38bdf8 0%,#0ea5e9 45%,#0369a1 70%,#0c4a6e 100%) center/cover;box-shadow:0 14px 30px -18px rgba(3,105,161,.8)}
+.snCru::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.65))}
+.snCru>*{position:relative}.snCru .k{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.9}
+.snCru b{font-family:var(--f-display);font-size:26px;line-height:1.1}.snCru .cd{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.92);color:#0c4a6e;border-radius:14px;padding:6px 10px;text-align:center;line-height:1}
+.snCru .cd b{display:block;font-family:var(--f-num);font-size:26px;color:#0c4a6e}.snCru .cd span{font-size:10px;font-weight:800;letter-spacing:.06em}
+.snPills{display:flex;gap:8px;flex-wrap:wrap}.snPills button{border:0;font:inherit;font-weight:700;font-size:13px;border-radius:999px;padding:8px 12px;color:#fff;cursor:pointer}
+.snGrid{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:118px;gap:8px;grid-auto-flow:dense}
+.snT{position:relative;border-radius:16px;overflow:hidden;background:#cbd5e1 center/cover;cursor:pointer;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:10px;animation:banIn .45s both}
+.snT::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.7))}.snT>*{position:relative}
+.snT.big{grid-column:span 2;grid-row:span 2}.snT.tall{grid-row:span 2}
+.snT .c{align-self:flex-start;font-size:10.5px;font-weight:800;background:rgba(255,255,255,.22);backdrop-filter:blur(6px);border-radius:999px;padding:3px 8px;margin-bottom:4px}
+.snT b{font-size:15px;line-height:1.15}.snT.big b{font-size:20px}.snT small{font-size:11.5px;opacity:.85}
+.snT.ok::after{content:"¡CUMPLIDO!";position:absolute;top:16px;right:-34px;transform:rotate(35deg);background:#16a34a;color:#fff;font-weight:900;font-size:11px;letter-spacing:.08em;padding:4px 40px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.snAdd{border:2px dashed var(--line);border-radius:16px;background:var(--surface);color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-weight:700;cursor:pointer;font:inherit}
+.snAdd span{font-size:26px;color:var(--brand)}
+.snTip{display:flex;gap:6px;flex-wrap:wrap}.snTip span{font-size:12px;font-weight:700;background:var(--surface-2);border-radius:999px;padding:5px 10px;color:var(--muted)}
+.snPh{width:100%;aspect-ratio:4/3;border-radius:14px;background:var(--surface-2) center/cover;display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700;border:2px dashed var(--line);cursor:pointer}
+.catSel{display:flex;gap:6px;flex-wrap:wrap}.catSel button{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 11px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}.catSel button[aria-pressed=true]{border-color:var(--brand);background:var(--gold-soft);color:var(--gold-ink)}
 .miwa{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--gold-soft);color:var(--gold-ink);font-size:13.5px;line-height:1.3}
 .miwa span{flex:1}.miwa .x{background:none;border:0;color:inherit;font-size:14px;padding:4px;cursor:pointer;opacity:.7}
 .metaStrip{border-radius:18px;padding:14px 16px;color:#fff;display:flex;flex-direction:column;gap:6px;cursor:pointer;box-shadow:0 10px 24px -14px rgba(0,0,0,.45);animation:banIn .5s cubic-bezier(.2,.8,.2,1)}
@@ -820,7 +842,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 
     <!-- ACADEMIA -->
     <section class="view" id="v-academia" hidden>
-      <div><p class="eyebrow">Aprende y crece</p><h1>Academia</h1></div>
+      <div class="row between"><div><p class="eyebrow">Aprende y crece</p><h1>Academia</h1></div><button class="btn sm ghost" id="goPrompts" type="button">🤖 Prompts IA</button></div>
       <div class="seg" role="tablist" id="acaSeg">
         <button aria-selected="true" data-k="arranque">Arranque</button>
         <button aria-selected="false" data-k="training">Training</button>
@@ -830,7 +852,13 @@ nav.tabs button{z-index:0;isolation:isolate}
     </section>
 
     <!-- IA -->
+    <section class="view" id="v-suenos" hidden>
+      <div><p class="eyebrow">Privado · solo usted lo ve</p><h1>Mi mapa de sueños</h1></div>
+      <div id="snBody"></div>
+      <button class="btn ghost" id="snShare" type="button" style="width:100%">📤 Compartir mi mapa en historias</button>
+    </section>
     <section class="view" id="v-ia" hidden>
+      <button class="btn sm ghost" id="iaBack" type="button" style="align-self:flex-start">‹ Volver a Academia</button>
       <div><p class="eyebrow">Biblioteca del equipo</p><h1>Prompts para IA</h1></div>
       <p class="small muted">Copia un prompt, cambia lo que está entre [corchetes] y pégalo en Claude (o tu IA favorita). Con "Abrir en Claude" se abre un chat nuevo con el prompt listo.</p>
       <div class="seg" role="tablist" id="plCat" style="overflow-x:auto;flex-wrap:nowrap"></div>
@@ -844,7 +872,7 @@ nav.tabs button{z-index:0;isolation:isolate}
     <button data-v="crm" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.8.7 3 2.5 3.5 5.2"/></svg>CRM</button>
     <button data-v="agenda" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</button>
     <button data-v="academia" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5M22 9v6"/></svg>Academia</button>
-    <button data-v="ia" aria-selected="false" aria-label="Prompts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>Prompts</button>
+    <button data-v="suenos" aria-selected="false" aria-label="Mis sueños"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>Sueños</button>
   </nav>
 </div>
 
@@ -1034,6 +1062,76 @@ function renderWeek(){const out=[];let streak=0;
   for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)streak++;else break}
   pushResumen();$("#week").innerHTML=out.join("");$("#streak").textContent="Racha "+streak+(streak===1?" día":" días")}
 
+
+// ---------- mapa de sueños (privado) ----------
+const SN_CAT=[{k:"tener",t:"🏠 Tener"},{k:"vivir",t:"✈️ Vivir"},{k:"ser",t:"🌱 Ser"},{k:"dar",t:"❤️ Dar"},{k:"libertad",t:"💰 Libertad"}];
+let snList=null,snInfo=null,snBusy=false,snInfoT=0;
+const snCol=()=>store.db.collection("users/"+store.uid+"/suenos");
+function snFoto(file,max,q){return new Promise(ok=>{const im=new Image(),u=URL.createObjectURL(file);im.onload=()=>{try{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);ok(c.toDataURL("image/jpeg",q||.8))}catch(e){ok(null)}URL.revokeObjectURL(u)};im.onerror=()=>ok(null);im.src=u})}
+function snPick(){return new Promise(ok=>{const i=document.createElement("input");i.type="file";i.accept="image/*";i.onchange=async()=>{const f=i.files&&i.files[0];ok(f?await snFoto(f,900,.8):null)};i.click()})}
+function snFalta(f){if(!f)return"";const d=Math.ceil((new Date(f+(f.length===7?"-01":"")+"T12:00:00")-new Date())/864e5);if(d<0)return"";if(d<=60)return"Faltan "+d+" días";const m=Math.round(d/30.4);return m<24?"Faltan "+m+" meses":"Faltan "+(m/12).toFixed(1).replace(".0","")+" años"}
+function snMes(f){if(!f)return"";const [y,m]=f.split("-");return MONTHS[+m-1]+" "+y}
+async function loadSuenos(){if(!store.db||!store.uid||snBusy)return;snBusy=true;try{const [q,inf]=await Promise.all([snCol().get(),store.get("suenosInfo").catch(()=>null)]);snList=q.docs.map(d=>Object.assign({id:d.id},d.data())).sort((a,b)=>(a.t||0)-(b.t||0));snInfo=inf||{}}catch(e){snList=snList||[];snInfo=snInfo||{}}snBusy=false;renderSuenos();renderMetas()}
+function renderSuenos(){const b=$("#snBody");if(!b)return;if(!fbUser||!store.db){b.innerHTML=emptyCard("Inicie sesión","Entre con su cuenta para crear su mapa de sueños.");return}
+  if(snList===null){b.innerHTML=`<p class="muted small">Cargando sus sueños…</p>`;loadSuenos();return}
+  const I=snInfo||{},C=I.crucero||{},M=misMetas(),r=proxRango(miRangoIdx());
+  const why=`<div class="snWhy" id="snWhyBtn"><div class="q">“</div><p>${I.porque?esc(I.porque):"Toque aquí y escriba su por qué: la razón que le hace levantarse cada día."}</p><small>Mi por qué ${I.porque?"· editar":""}</small></div>`;
+  const dCru=C.fecha?Math.ceil((new Date(C.fecha+"T12:00:00")-new Date())/864e5):null;
+  const cru=`<div class="snCru" id="snCruBtn" style="${C.img?`background-image:url('${C.img}')`:""}">${dCru!=null&&dCru>=0?`<div class="cd"><b>${dCru}</b><span>${dCru===1?"DÍA":"DÍAS"}</span></div>`:""}<span class="k">🚢 Mi próximo crucero</span><b>${C.dest?esc(C.dest):"¿A dónde navegará?"}</b><span class="small" style="opacity:.9">${C.fecha?niceDate(C.fecha)+" de "+C.fecha.slice(0,4):"Toque para elegir destino, fecha y foto"}</span></div>`;
+  const pills=`<div class="snPills">${M.sueno?`<button style="background:linear-gradient(120deg,#047857,#10b981)" data-meta>💰 ${usd(M.sueno)} / mes</button>`:`<button style="background:#64748B" data-meta>💰 Ingreso soñado ›</button>`}${r?`<button style="background:${r.c}" data-meta>🏅 Próximo: ${esc(r.n)}</button>`:""}</div>`;
+  const pat=["big","","","tall","","","","tall",""];
+  const tiles=snList.map((x,i)=>{const c=SN_CAT.find(z=>z.k===x.cat);return `<div class="snT ${pat[i%pat.length]} ${x.ok?"ok":""}" data-sn="${esc(x.id)}" style="background-image:url('${x.img||""}');animation-delay:${i*60}ms">${c?`<span class="c">${c.t}</span>`:""}<b>${esc(x.tit||"Mi sueño")}</b>${x.ok?`<small>✅ Cumplido</small>`:x.fecha?`<small>${esc(snMes(x.fecha))} · ${esc(snFalta(x.fecha))}</small>`:""}</div>`}).join("");
+  const add=`<button class="snAdd" id="snAdd" type="button" style="${snList.length?"":"grid-column:span 2;grid-row:span 2"}"><span>＋</span>${snList.length?"Agregar sueño":"Agregue su primer sueño"}</button>`;
+  const tip=snList.length<4?`<div class="snTip"><span>🏠 Tener</span><span>✈️ Vivir</span><span>🌱 Ser</span><span>❤️ Dar</span></div><p class="small muted" style="margin:-4px 0 0">Agregue al menos 1 sueño de cada tipo. Ideal: entre 6 y 9 sueños, concretos y con fecha.</p>`:"";
+  b.innerHTML=why+cru+pills+`<h3 style="margin:6px 0 0">✨ Mis sueños</h3>`+tip+`<div class="snGrid">${tiles}${add}</div><p class="small muted" style="margin:0;text-align:center">🔒 Su mapa es privado. Nadie más del equipo lo ve.</p>`;
+  $("#snWhyBtn").onclick=snEditWhy;$("#snCruBtn").onclick=snEditCru;$("#snAdd").onclick=()=>snEdit(null);
+  b.querySelectorAll("[data-meta]").forEach(x=>x.onclick=abrirMetas);b.querySelectorAll("[data-sn]").forEach(x=>x.onclick=()=>snEdit(snList.find(y=>y.id===x.dataset.sn)))}
+async function snSaveInfo(){await store.set("suenosInfo",snInfo);renderSuenos();renderMetas()}
+function snEditWhy(){openSheet(`<h2>💭 Mi por qué</h2><p class="small muted" style="margin:0">¿Por qué hace este negocio? Escríbalo con el corazón. Ej.: "Para que mis hijos estudien sin deudas y mis papás descansen".</p>
+  <textarea class="inp" id="snWhyT" rows="4" maxlength="180" placeholder="Lo hago para…">${esc((snInfo||{}).porque||"")}</textarea><button class="btn" id="snWhyOk" style="width:100%">Guardar</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`);
+  $("#snWhyOk").onclick=async()=>{snInfo=Object.assign({},snInfo,{porque:$("#snWhyT").value.trim().slice(0,180)});closeSheet();await snSaveInfo();toast("Guardado 💙")}}
+function snEditCru(){const C=Object.assign({},(snInfo||{}).crucero||{});
+  openSheet(`<h2>🚢 Mi próximo crucero</h2><div class="snPh" id="snCruPh" style="${C.img?`background-image:url('${C.img}');border-style:solid`:""}">${C.img?"":"📷 Elegir foto del destino o del barco"}</div>
+   <div class="field"><label for="snCruD">Destino</label><input class="inp" id="snCruD" maxlength="60" placeholder="Ej.: Caribe Occidental con mi esposa" value="${esc(C.dest||"")}"></div>
+   <div class="field"><label for="snCruF">Fecha de salida</label><input class="inp" id="snCruF" type="date" value="${esc(C.fecha||"")}"></div>
+   <button class="btn" id="snCruOk" style="width:100%">Guardar</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`);
+  $("#snCruPh").onclick=async()=>{const d=await snPick();if(d){C.img=d;const ph=$("#snCruPh");ph.style.backgroundImage=`url('${d}')`;ph.style.borderStyle="solid";ph.textContent=""}};
+  $("#snCruOk").onclick=async()=>{C.dest=$("#snCruD").value.trim().slice(0,60);C.fecha=$("#snCruF").value;snInfo=Object.assign({},snInfo,{crucero:C});closeSheet();try{await snSaveInfo();toast("¡Rumbo a su crucero! 🚢")}catch(e){toast("No se pudo guardar. Pruebe con una foto más pequeña.")}}}
+function snEdit(x){const n=!x;x=Object.assign({cat:"tener",tit:"",fecha:"",img:"",ok:false},x||{});
+  openSheet(`<h2>${n?"✨ Nuevo sueño":"✨ Mi sueño"}</h2><div class="snPh" id="snPh" style="${x.img?`background-image:url('${x.img}');border-style:solid`:""}">${x.img?"":"📷 Elegir foto"}</div>
+   <div class="catSel" id="snCat">${SN_CAT.map(c=>`<button type="button" data-c="${c.k}" aria-pressed="${x.cat===c.k}">${c.t}</button>`).join("")}</div>
+   <div class="field"><label for="snTit">Sea concreto</label><input class="inp" id="snTit" maxlength="50" placeholder="Ej.: Mi casa propia con jardín" value="${esc(x.tit)}"></div>
+   <div class="field"><label for="snF">Fecha meta</label><input class="inp" id="snF" type="month" value="${esc(x.fecha)}"></div>
+   <button class="btn" id="snOk" style="width:100%">${n?"Agregar a mi mapa":"Guardar"}</button>
+   ${n?"":`<button class="btn ghost" id="snCum" style="width:100%">${x.ok?"↩️ Marcar como pendiente":"✅ ¡Lo cumplí!"}</button><button class="btn ghost" id="snDel" style="width:100%;color:var(--bad)">🗑 Quitar de mi mapa</button>`}
+   <button class="btn ghost" data-close style="width:100%">Cancelar</button>`);
+  $("#snPh").onclick=async()=>{const d=await snPick();if(d){x.img=d;const ph=$("#snPh");ph.style.backgroundImage=`url('${d}')`;ph.style.borderStyle="solid";ph.textContent=""}};
+  $("#snCat").querySelectorAll("button").forEach(b=>b.onclick=()=>{x.cat=b.dataset.c;$("#snCat").querySelectorAll("button").forEach(y=>y.setAttribute("aria-pressed",y===b))});
+  const body=()=>({cat:x.cat,tit:$("#snTit").value.trim().slice(0,50),fecha:$("#snF").value,img:x.img||"",ok:!!x.ok,t:x.t||Date.now()});
+  $("#snOk").onclick=async()=>{const d=body();if(!d.img){toast("Elija una foto que le emocione 📷");return}if(!d.tit){toast("Póngale un nombre a su sueño");return}
+    $("#snOk").disabled=true;try{if(n){const r=await snCol().add(d);snList.push(Object.assign({id:r.id},d))}else{await snCol().doc(x.id).set(d);Object.assign(snList.find(y=>y.id===x.id),d)}closeSheet();renderSuenos();toast(n?"¡Sueño agregado! ✨":"Guardado")}catch(e){$("#snOk").disabled=false;toast("No se pudo guardar. Revise su conexión.")}};
+  if(!n){$("#snCum").onclick=async()=>{const d=Object.assign(body(),{ok:!x.ok,okT:Date.now()});try{await snCol().doc(x.id).set(d);Object.assign(snList.find(y=>y.id===x.id),d);closeSheet();renderSuenos();toast(d.ok?"🎉 ¡Felicidades! Un sueño cumplido":"Listo")}catch(e){toast("No se pudo guardar")}};
+    let arm=0;$("#snDel").onclick=async()=>{if(Date.now()-arm>4000){arm=Date.now();$("#snDel").textContent="Toque otra vez para confirmar";return}try{await snCol().doc(x.id).delete();snList=snList.filter(y=>y.id!==x.id);closeSheet();renderSuenos()}catch(e){toast("No se pudo quitar")}}}}
+function snImg(src){return new Promise(ok=>{if(!src)return ok(null);const im=new Image();im.onload=()=>ok(im);im.onerror=()=>ok(null);im.src=src})}
+function snCover(g,im,x,y,w,h,r){g.save();g.beginPath();g.roundRect(x,y,w,h,r);g.clip();if(im){const k=Math.max(w/im.width,h/im.height),iw=im.width*k,ih=im.height*k;g.drawImage(im,x+(w-iw)/2,y+(h-ih)/2,iw,ih)}else{g.fillStyle="#334155";g.fillRect(x,y,w,h)}g.restore()}
+async function snCompartir(){if(!snList||!snList.length){toast("Agregue primero algunos sueños ✨");return}toast("Creando su mapa…");
+  const W=1080,H=1920,c=document.createElement("canvas");c.width=W;c.height=H;const g=c.getContext("2d");
+  const bg=g.createLinearGradient(0,0,W,H);bg.addColorStop(0,"#0b1020");bg.addColorStop(1,"#0b3b57");g.fillStyle=bg;g.fillRect(0,0,W,H);
+  g.fillStyle="#2AC1F1";g.font="800 34px Figtree,system-ui,sans-serif";g.fillText("MI MAPA DE SUEÑOS",70,130);
+  g.fillStyle="#fff";g.font="800 64px 'Bricolage Grotesque',Figtree,system-ui,sans-serif";g.fillText(miNombreCorto()||"Líder",70,210);
+  const why=(snInfo&&snInfo.porque)||"";if(why){g.font="600 34px Figtree,system-ui,sans-serif";g.fillStyle="rgba(255,255,255,.85)";const ws=("“"+why+"”").split(" ");let ln="",y=275;for(const w of ws){if(g.measureText(ln+w).width>940){g.fillText(ln,70,y);ln="";y+=46;if(y>370)break}ln+=w+" "}if(y<=370)g.fillText(ln,70,y)}
+  const L=snList.slice(0,7),ims=await Promise.all(L.map(x=>snImg(x.img))),top=420,G=18,cw=(W-140-G)/2,bigH=500,n=L.length-1,rows=Math.ceil(n/2),rowH=rows?Math.min(320,(H-top-150-bigH-G*rows)/rows):0;
+  const slots=[[70,top,W-140,n?bigH:900]];for(let i=0;i<n;i++){const rI=Math.floor(i/2),col=i%2,solo=i===n-1&&n%2===1;slots.push([solo?70:70+col*(cw+G),top+bigH+G+rI*(rowH+G),solo?W-140:cw,rowH])}
+  const wrap=(t,x,y,mw,lh)=>{const ws=String(t).split(" ");let ln="",out=[];for(const w of ws){if(g.measureText(ln+w).width>mw&&ln){out.push(ln.trim());ln=""}ln+=w+" "}out.push(ln.trim());out=out.slice(0,2);out.reverse().forEach((l,k)=>g.fillText(l,x,y-k*lh))};
+  L.forEach((x,i)=>{const [sx,sy,sw,sh]=slots[i];snCover(g,ims[i],sx,sy,sw,sh,28);const gr=g.createLinearGradient(0,sy+sh*.4,0,sy+sh);gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(1,"rgba(0,0,0,.78)");g.save();g.beginPath();g.roundRect(sx,sy,sw,sh,28);g.clip();g.fillStyle=gr;g.fillRect(sx,sy,sw,sh);g.restore();
+    const fs=i===0||sw>600?44:30;g.fillStyle="#fff";g.font=`800 ${fs}px Figtree,system-ui,sans-serif`;wrap((x.ok?"✅ ":"")+(x.tit||""),sx+24,sy+sh-26,sw-48,fs*1.15)});
+  g.fillStyle="rgba(255,255,255,.7)";g.font="700 30px Figtree,system-ui,sans-serif";g.fillText("Action Leaders PLUS",70,H-60);
+  try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],"mi-mapa-de-suenos.jpg",{type:"image/jpeg"});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(x){if(x&&x.name==="AbortError")return}}
+    const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);toast("Imagen descargada 📲")}catch(e){toast("No se pudo crear la imagen")}}
+$("#snShare").onclick=snCompartir;
+$("#goPrompts").onclick=()=>go("ia");$("#iaBack").onclick=()=>go("academia");
+
 // ---------- mi constancia (mes) ----------
 function perfRankHtml(){let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}
   if(!rk)return `<p class="small muted" style="margin:0">Tus registros y activaciones aparecerán aquí cuando estés en el ranking del mes.</p>`;
@@ -1110,7 +1208,9 @@ function renderMetas(){const st=$("#metaStrip"),pm=$("#perfMeta");if(!st)return;
   const M=misMetas(),delMes=M.mes===mesMeta();let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}
   const A=rk?rk.A:0,V=rk?rk.V:0,cur=miRangoIdx(),r=proxRango(cur);M.rango=r?r.n:"";
   if(false){st.className="metaStrip vacia";st.innerHTML=`<div class="row between" style="gap:10px"><div><b>🎯 Defina su próximo rango y su sueño</b><small>Tenga su meta a la vista cada vez que abra la app.</small></div><button class="btn sm">Definir</button></div>`}
-  else{st.className="metaStrip";st.style.background=r?r.c:"linear-gradient(120deg,#F5B700,#F97316)";if(!r)st.innerHTML="";
+  else{if(snInfo===null&&store.db&&!snInfoT){snInfoT=1;store.get("suenosInfo").then(x=>{if(snInfo===null){snInfo=x||{};renderMetas()}}).catch(()=>{})}
+    const ci=snInfo&&snInfo.crucero&&snInfo.crucero.img,col=r?r.c:"linear-gradient(120deg,#F5B700,#F97316)";
+    st.className="metaStrip";st.style.background=ci&&col[0]==="#"?`linear-gradient(110deg,${col}f5 30%,${col}aa 70%,${col}55),url('${ci}') center/cover`:col;if(!r)st.innerHTML="";
     st.innerHTML=`${!r?`<div class="row between"><b class="mtN">👑 Ya es Board of Director</b><span class="mtE">Editar ›</span></div>`:""}${r?`<div class="row between"><span><small style="display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.85">🏅 Mi próximo rango</small><b class="mtN">${esc(rangoMetaTxt(M.rango))}</b></span><span class="mtE">Editar ›</span></div>`:""}
      ${r&&r.pts?`<div class="row between mtV"><span>Volumen personal del mes</span><b>${fmt(V)} / ${fmt(r.pts)} pts</b></div><div class="mtBar"><i style="width:${Math.min(100,Math.round(V/r.pts*100))}%"></i></div><small>${V>=r.pts?"✅ ¡Logrado este mes!":"Le faltan "+fmt(r.pts-V)+" pts"}</small>`:r?`<div class="row between mtV"><span>Volumen personal del mes</span><b>${fmt(V)} pts</b></div>`:""}
      ${M.sueno?`<div class="mtS">💰 Mi sueño: <b>${usd(M.sueno)} / mes</b> en 5 años</div>`:`<div class="mtS">💰 Defina su ingreso mensual soñado ›</div>`}`}
@@ -2210,7 +2310,7 @@ async function sendIA(){const text=$("#iaInput").value.trim();if(!text||busy)ret
 function setSeg(id,k){document.querySelectorAll("#"+id+" button").forEach(b=>b.setAttribute("aria-selected",b.dataset.k===k))}
 function go(v){document.querySelectorAll("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);
   document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v));$("#main").scrollTop=0;
-  try{localStorage.setItem("alp:tab",v)}catch(e){}if(v==="inicio")rutShake()}
+  try{localStorage.setItem("alp:tab",v)}catch(e){}if(v==="inicio")rutShake();if(v==="suenos")renderSuenos()}
 function rutShake(){const a=$("#rutAlert .rut-al");if(a&&!a.classList.contains("ok")){a.classList.remove("shake");void a.offsetWidth;a.classList.add("shake")}}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(rutShake,300)});
 $("#tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(b)go(b.dataset.v)});
@@ -2479,7 +2579,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020162834";var busy=false,pend=null;
+(function(){var V="20261020164043";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

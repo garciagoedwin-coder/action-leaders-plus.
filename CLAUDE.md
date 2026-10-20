@@ -84,6 +84,13 @@ App web móvil (PWA) del equipo de Edwin García Go (Director Nacional, inCruise
   - Próximo rango AUTOMÁTICO: rango actual = `registro.rango` (lo pone el admin en Editar socio; "" = automático), luego `config.rangos` en team.json (nombre → rango, para quien no está en la hoja; Edwin = National Director) y, si no, la Posición de la hoja Calificados (`liderazgo.rango`: Action Leader→Líder, Senior Marketing Director→SM Director); si no aparece, es "Socio". El próximo rango es siempre el siguiente; los demás salen con 🔒 y los anteriores "✓ Logrado".
   - Rangos y colores: 1 Líder (acceso al sistema) 200 pts gris, 2 Team Leader 500 pts azul marca, 3 Marketing Director verde, 4 SM Director azul, 5 Regional Director naranja, 6 National Director rojo, 7 International Director morado, 8 Executive Director negro, 9 Board of Director amarillo-naranja. Niveles 3-9 sin puntos aún. Los puntos = volumen de activaciones personales del mes.
 
+## 4b. Mi mapa de sueños (pestaña "Sueños", reemplazó a Prompts)
+
+- PRIVADO: solo lo ve el socio (no se muestra a patrocinador ni línea). Prompts IA se abre desde Academia (botón "🤖 Prompts IA").
+- Datos: `users/{uid}/datos/suenosInfo` {porque, crucero:{dest, fecha, img}} y `users/{uid}/suenos/{id}` {cat: tener|vivir|ser|dar|libertad, tit, fecha AAAA-MM, img (JPEG dataURL ≤900px), ok, t}.
+- Pantalla: "Mi por qué", "🚢 Mi próximo crucero" con cuenta regresiva, píldoras de ingreso soñado y próximo rango, collage de fotos (primera grande, patrón de tamaños), "¡CUMPLIDO!" en cumplidos, compartir como imagen 1080×1920.
+- La foto del crucero se ve de fondo en la franja de meta de Inicio.
+
 ## 5. Ranking: de dónde salen los números
 
 1. **Registros y presentaciones:**
