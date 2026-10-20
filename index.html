@@ -145,6 +145,14 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .counter .num{min-width:42px;text-align:center;font-size:19px}
 .done-t{text-decoration:line-through;color:var(--muted)}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.card.perf{background:linear-gradient(135deg,var(--gold-soft),color-mix(in srgb,var(--gold-soft) 55%,var(--surface)));border-color:transparent}
+.card.perf .week i:not(.full):not(.part){background:var(--surface)}
+.card.perf #verMes{background:var(--brand);color:var(--brand-ink);border-color:transparent}
+.perfRk{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.perfRk div{background:var(--gold-soft);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px}
+.perfRk b{font-family:var(--f-num);font-size:30px;line-height:1;color:var(--ink)}
+.perfRk span{font-size:12px;font-weight:700;color:var(--muted)}
+.perfRk em{font-style:normal;font-size:12.5px;font-weight:700;color:var(--gold-ink)}
 .week div{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11.5px;color:var(--muted)}
 .week i{width:100%;max-width:34px;aspect-ratio:1;border-radius:9px;background:var(--surface-2);display:grid;place-items:center;font-style:normal;font-family:var(--f-num);font-size:14px;color:var(--muted)}
 .week i.full{background:var(--good);color:#fff} .week i.part{background:var(--good-soft);color:var(--good)} .week i.today{outline:2px solid var(--gold);outline-offset:1px}
@@ -708,14 +716,14 @@ nav.tabs button{z-index:0;isolation:isolate}
         <div class="bar"><i id="dayBar" style="width:0%"></i></div>
         <div class="list" id="tasks"></div>
       </div>
+      <div class="card perf">
+        <div class="row between"><h3>Mi desempeño personal</h3><button class="btn sm" id="verMes">📊 Ver</button></div>
+        <div class="week" id="week" role="button" tabindex="0" style="cursor:pointer"></div>
+        <p class="small muted" style="margin:0">Verde = rutina completa · Toca para ver tu mes, registros, activaciones y tu lugar en el ranking</p>
+      </div>
       <div class="card" id="hoyCitas" hidden></div>
       <div class="card" id="topRut" hidden></div>
       <div class="card" id="nextEvents"></div>
-      <div class="card">
-        <div class="row between"><h3>Últimos 7 días</h3><button class="btn sm ghost" id="verMes">📅 Ver mi mes</button></div>
-        <div class="week" id="week" role="button" tabindex="0" style="cursor:pointer"></div>
-        <p class="small muted" style="margin:0">Verde = rutina completa · Toca para ver tu constancia del mes</p>
-      </div>
       <div class="card reto" id="retoMini"></div>
       <div class="card">
         <div class="row between"><h3>Tu enlace de referido</h3><button class="btn sm ghost" id="editRef">Editar</button></div>
@@ -986,8 +994,12 @@ function renderWeek(){const out=[];let streak=0;
   pushResumen();$("#week").innerHTML=out.join("");$("#streak").textContent="Racha "+streak+(streak===1?" día":" días")}
 
 // ---------- mi constancia (mes) ----------
+function perfRankHtml(){let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}
+  if(!rk)return `<p class="small muted" style="margin:0">Tus registros y activaciones aparecerán aquí cuando estés en el ranking del mes.</p>`;
+  const g=rk.R-rk.A,lp=rk.pPos?"#"+rk.pPos+" en Registros":"Aún sin lugar",la=rk.aPos?"#"+rk.aPos+" en Activaciones":"Aún sin lugar";
+  return `<p class="small" style="font-weight:800;margin:4px 0 -4px">🏆 Mis resultados del mes</p><div class="perfRk"><div><b>${fmt(g)}</b><span>Registros gratis</span><em>${lp}</em></div><div><b>${fmt(rk.A)}</b><span>Activaciones${rk.V?" · "+fmt(rk.V)+" vol.":""}</span><em>${la}</em></div></div>`}
 async function abrirMes(off){off=off||0;const b=new Date(now.getFullYear(),now.getMonth()+off,1),Y=b.getFullYear(),M=b.getMonth(),nd=new Date(Y,M+1,0).getDate();
-  openSheet(`<h2>📅 Mi constancia</h2><p class="small muted">Cargando ${MONTHS[M]}…</p>`);
+  openSheet(`<h2>📊 Mi desempeño</h2><p class="small muted">Cargando ${MONTHS[M]}…</p>`);
   const ks=Array.from({length:nd},(_,i)=>dkey(new Date(Y,M,i+1)));
   const vals=await Promise.all(ks.map(k=>k===TODAY?day:weekCache[k]?weekCache[k]:k>TODAY?null:store.get("rutina-"+k).catch(()=>null)));
   ks.forEach((k,i)=>{if(vals[i]&&k!==TODAY)weekCache[k]=vals[i]});
@@ -999,6 +1011,8 @@ async function abrirMes(off){off=off||0;const b=new Date(now.getFullYear(),now.g
     return `<span class="mc ${c} ${k===TODAY?"today":""}" title="${Math.round(s*100)}%">${i+1}</span>`})).join("");
   const msg=pct>=80?"🔥 ¡Constancia de líder! Así se construye.":pct>=50?"💪 Vas bien. Sube un poco más cada semana.":pct>0?"🚀 Cada día cuenta. Una acción hoy hace la diferencia.":"Empieza hoy con una sola acción.";
   $("#sheetPanel").innerHTML=`<div class="row between"><button class="btn sm ghost" data-m="${off-1}" aria-label="Mes anterior">‹</button><h2 style="margin:0;text-transform:capitalize">${MONTHS[M]} ${Y}</h2><button class="btn sm ghost" data-m="${off+1}" ${off>=0?"disabled":""} aria-label="Mes siguiente">›</button></div>
+   ${off===0?perfRankHtml():""}
+   <p class="small" style="font-weight:800;margin:4px 0 -4px">🔥 Constancia de rutina</p>
    <div class="mstat"><div><b class="num">${pct}%</b><span>Constancia</span></div><div><b class="num">${act}/${pas}</b><span>Días activos</span></div><div><b class="num">${full}</b><span>Días completos</span></div><div><b class="num">${best}</b><span>Mejor racha</span></div></div>
    <div class="mcal">${["L","M","M","J","V","S","D"].map(d=>`<span class="mh">${d}</span>`).join("")}${cells}</div>
    <p class="small muted" style="margin:0"><span class="mc full mini"></span> Completo &nbsp; <span class="mc part mini"></span> Parcial &nbsp; <span class="mc none mini"></span> Sin acción</p>
@@ -2355,7 +2369,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020100830";var busy=false,pend=null;
+(function(){var V="20261020102235";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
