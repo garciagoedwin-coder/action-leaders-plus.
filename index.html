@@ -145,6 +145,13 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .counter .num{min-width:42px;text-align:center;font-size:19px}
 .done-t{text-decoration:line-through;color:var(--muted)}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.metas .mt{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:14px;background:var(--surface-2)}
+.metas .mt .row{gap:8px}.metas .mt b.big{font-family:var(--f-num);font-size:26px;line-height:1}
+.metas .lbl{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.metas .anio{background:linear-gradient(120deg,#0b3b57,#0A7DAD);color:#fff}.metas .anio .lbl{color:rgba(255,255,255,.75)}
+.metas .bar{margin:2px 0 0;background:var(--surface)}.metas .ok{color:var(--good);font-weight:800}
+.rgList{display:flex;flex-direction:column;gap:6px}.rgList label{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-weight:600}
+.rgList label:has(input:checked){border-color:var(--brand);background:var(--gold-soft)}.rgList small{margin-left:auto;color:var(--muted);font-weight:700}
 .actBan{position:relative;border-radius:18px;padding:12px 14px;background:linear-gradient(120deg,#0b3b57,#0A7DAD 60%,#2AC1F1);color:#fff;box-shadow:0 10px 24px -12px rgba(10,125,173,.6);overflow:hidden;animation:banIn .5s cubic-bezier(.2,.8,.2,1)}
 .actBan::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 70%);background-size:250% 100%;animation:banShine 3.5s linear infinite;pointer-events:none}
 .actBan .ab{display:flex;align-items:center;gap:12px;animation:banIn .45s cubic-bezier(.2,.8,.2,1)}
@@ -740,6 +747,7 @@ nav.tabs button{z-index:0;isolation:isolate}
         <div class="week" id="week" role="button" tabindex="0" style="cursor:pointer"></div>
         <p class="small muted" style="margin:0">Verde = rutina completa · Toca para ver tu mes, registros, activaciones y tu lugar en el ranking</p>
       </div>
+      <div class="card metas" id="metasCard" hidden></div>
       <div class="card" id="hoyCitas" hidden></div>
       <div class="card" id="topRut" hidden></div>
       <div class="card" id="nextEvents"></div>
@@ -1069,6 +1077,35 @@ function renderAviso(){const c=$("#avisoCard");if(!c)return;c.hidden=true;return
   const done=()=>{profile.avisado=true;store.set("perfil",profile);renderAviso()};
   $("#avisoGo").onclick=()=>setTimeout(done,600);$("#avisoX").onclick=done}
 const ACC_DEF=[{t:"Audios en Spotify",i:"🎧",u:""},{t:"Caja de herramientas",i:"🧰",u:"https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"}];
+const RANGOS=[{n:"Líder",pts:200,d:"Acceso al sistema"},{n:"Team Leader",pts:500},{n:"Marketing Director"},{n:"SM Director"},{n:"Regional Director"},{n:"National Director"},{n:"International Director"},{n:"Executive Director"},{n:"Board of Director"}];
+const rangoMeta=n=>RANGOS.find(r=>r.n===n),rangoMetaTxt=n=>{const i=RANGOS.findIndex(r=>r.n===n);return i<0?"":"Nivel "+(i+1)+" · "+n};
+const mesMeta=()=>new Date().toISOString().slice(0,7);
+function misMetas(){return (regDoc&&regDoc.metas)||{}}
+function renderMetas(){const c=$("#metasCard");if(!c)return;if(!fbUser||!regDoc||SOLO_ADMIN.includes(String(fbUser.email||"").toLowerCase())){c.hidden=true;return}
+  const M=misMetas(),delMes=M.mes===mesMeta();let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}
+  const A=rk?rk.A:0,V=rk?rk.V:0,bar=(v,m)=>`<div class="bar"><i style="width:${Math.min(100,m?Math.round(v/m*100):0)}%"></i></div>`;
+  let mes="";
+  if(delMes&&(M.act||M.rango)){
+    const r=rangoMeta(M.rango);
+    mes=`${M.act?`<div class="mt"><span class="lbl">Activaciones personales</span><div class="row between"><b class="big">${A} <span class="small muted" style="font-family:var(--f-body)">de ${M.act}</span></b>${A>=M.act?`<span class="ok">✅ ¡Meta cumplida!</span>`:`<span class="small muted">Faltan ${M.act-A}</span>`}</div>${bar(A,M.act)}</div>`:""}
+     ${M.rango?`<div class="mt"><span class="lbl">Rango objetivo del mes</span><div class="row between"><b>${esc(rangoMetaTxt(M.rango))}</b>${r&&r.pts?(V>=r.pts?`<span class="ok">✅ Logrado</span>`:`<span class="small muted">${fmt(V)} / ${fmt(r.pts)} pts</span>`):""}</div>${r&&r.pts?bar(V,r.pts)+(V<r.pts?`<span class="small muted">Le faltan ${fmt(r.pts-V)} pts</span>`:""):""}</div>`:""}`}
+  else mes=`<div class="mt"><span class="lbl">Metas del mes</span><span class="small muted">Aún no ha definido sus metas de este mes.</span></div>`;
+  const anio=M.anio?`<div class="mt anio"><span class="lbl">⭐ Meta a 1 año</span><b style="font-size:17px">${esc(rangoMetaTxt(M.anio))}</b></div>`:"";
+  c.innerHTML=`<div class="row between"><h3>🎯 Mis metas</h3><button class="btn sm ghost" id="metasEdit">${delMes||M.anio?"Editar":"Definir"}</button></div>${mes}${anio}<p class="small muted" style="margin:0">Su patrocinador y su línea de arriba ven sus metas para acompañarle.</p>`;
+  c.hidden=false;$("#metasEdit").onclick=abrirMetas}
+function abrirMetas(){const M=misMetas(),delMes=M.mes===mesMeta();
+  const opts=(name,cur)=>RANGOS.map((r,i)=>`<label><input type="radio" name="${name}" value="${esc(r.n)}" ${cur===r.n?"checked":""}><span>Nivel ${i+1} · ${esc(r.n)}${r.d?` <span class="small muted">(${esc(r.d)})</span>`:""}</span>${r.pts?`<small>${r.pts} pts</small>`:""}</label>`).join("");
+  openSheet(`<h2>🎯 Mis metas</h2>
+   <p class="small" style="font-weight:800;margin:0">Metas del mes</p>
+   <label class="small muted" for="mtAct">Activaciones personales</label>
+   <input id="mtAct" type="number" inputmode="numeric" min="0" max="99" placeholder="Ej. 3" value="${delMes&&M.act?M.act:""}" data-nofocus>
+   <p class="small muted" style="margin:6px 0 0">Rango objetivo</p><div class="rgList">${opts("mtR",delMes?M.rango:"")}</div>
+   <p class="small" style="font-weight:800;margin:10px 0 0">⭐ Meta a 1 año · Rango</p><div class="rgList">${opts("mtY",M.anio||"")}</div>
+   <button class="btn" id="mtSave" style="width:100%">Guardar metas</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`);
+  $("#mtSave").onclick=async()=>{const q=n=>{const x=$("#sheetPanel").querySelector(`input[name=${n}]:checked`);return x?x.value:""};
+    const nm={mes:mesMeta(),act:Math.max(0,Math.min(99,parseInt($("#mtAct").value,10)||0)),rango:q("mtR"),anio:q("mtY"),t:Date.now()};
+    $("#mtSave").disabled=true;try{await store.db.doc("users/"+store.uid).set({metas:nm},{merge:true});regDoc=Object.assign({},regDoc,{metas:nm});closeSheet();renderMetas();toast("Metas guardadas 🎯")}
+    catch(e){$("#mtSave").disabled=false;toast("No se pudieron guardar. Revise su conexión.")}}}
 let banT=null,banI=0;
 function renderActBan(){const c=$("#actBan");if(!c)return;clearInterval(banT);
   const hoy=dkey(new Date()),G=[];
@@ -1211,6 +1248,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
        <span class="chip c-brand">👥 ${S.contactos||0} ${(S.contactos||0)===1?"contacto":"contactos"}</span>
        ${a.hist?`<span class="chip c-good">📸 Historia hoy</span>`:""}
        ${(()=>{const rk=rankDe(nm);return rk?`<span class="chip ${rk.pPos&&rk.pPos<=10?"c-gold":"c-brand"}">🏆 Registros: ${rk.R}${rk.pPos?" · #"+rk.pPos:""}</span><span class="chip ${rk.aPos&&rk.aPos<=10?"c-gold":"c-brand"}">🚀 Activaciones: ${rk.A} · Vol. ${fmt(rk.V)}${rk.aPos?" · #"+rk.aPos:""}</span>`:`<span class="chip c-brand">🏆 Sin registros en el ranking</span>`})()}
+       ${(()=>{const m=x.metas||{};if(!m.act&&!m.rango&&!m.anio)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(dm&&m.rango?`<span class="chip c-gold">📈 Rango del mes: ${esc(m.rango)}</span>`:"")+(m.anio?`<span class="chip c-brand">⭐ 1 año: ${esc(m.anio)}</span>`:"")})()}
        ${cs.length?cs.map(k=>`<span class="chip c-good">🎓 ${esc(cname(k))}</span>`).join(""):`<span class="chip c-brand">🎓 Sin cursos aún</span>`}
       </div><button class="btn sm" data-mot="${esc(x.uid)}" style="margin-top:10px;width:100%;background:#25D366;color:#fff">💬 Motivar por WhatsApp</button></div>`}).join("")}</div>
    <p class="small muted" style="margin:0">Presentaciones, contactos y días activos son de los últimos 7 días.${bien<n?" "+(n-bien)+" aún no ha"+(n-bien>1?"n":"")+" completado la bienvenida.":""}</p>
@@ -2330,7 +2368,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-refr
 async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
-  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
+  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();renderMetas();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
 let autoFotoHecho=false;
 function urlADataUrl(u,S){return new Promise(ok=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{S=S||240;const c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);
   c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);ok(c.toDataURL("image/jpeg",.85))}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=u})}
@@ -2381,7 +2419,7 @@ async function startApp(u){
   try{if(u&&localStorage.getItem("alp:welok")===u.uid){profile.bienvenida=true;const w=$("#wel");w.hidden=true;document.body.style.overflow=""}}catch(x){}
   welSigned=!!u;isAdmin=!!(u&&u.emailVerified&&ADMINS.includes((u.email||"").toLowerCase()));
   if(u){store.db=db;store.uid=u.uid;const nm=u.displayName||"";if(nm){welName=nm.split(" ")[0];if(!profile.nombrePila)$("#hello").textContent="Hola, "+welName}
-    try{const r=await db.doc("users/"+u.uid).get();regDoc=r.exists?r.data():null}catch(e){regDoc=null}
+    try{const r=await db.doc("users/"+u.uid).get();regDoc=r.exists?r.data():null}catch(e){regDoc=null}try{renderMetas()}catch(e){}
     if(regDoc&&regDoc.bienvenida){profile.bienvenida=true;try{localStorage.setItem("alp:welok",u.uid)}catch(x){}const w=$("#wel");if(w){w.hidden=true;document.body.style.overflow=""}}
     db.doc("users/"+u.uid).set({email:u.email||"",ultimoAcceso:window.FB.serverTimestamp()},{merge:true}).catch(()=>{})}
   else{store.db=null;store.uid=null}
@@ -2405,7 +2443,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020153640";var busy=false,pend=null;
+(function(){var V="20261020155813";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

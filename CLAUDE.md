@@ -75,6 +75,8 @@ App web móvil (PWA) del equipo de Edwin García Go (Director Nacional, inCruise
   - Arriba: "¡Vamos, líder! 🛡️" y frases animadas.
   - Banner de felicitación por activaciones del día.
   - Rutina, y debajo "Mi desempeño personal" (mes, registros gratis, activaciones y lugar en el ranking).
+  - "🎯 Mis metas": activaciones personales del mes, rango objetivo del mes y meta a 1 año. Se guardan en `users/{uid}.metas` {mes, act, rango, anio}; las metas del mes se reinician cada mes. Las ven el socio, su patrocinador y su línea de arriba (en Mis socios).
+  - Rangos: 1 Líder (acceso al sistema) 200 pts, 2 Team Leader 500 pts, 3 Marketing Director, 4 SM Director, 5 Regional Director, 6 National Director, 7 International Director, 8 Executive Director, 9 Board of Director (3-9 sin puntos aún). Los puntos = volumen de activaciones personales del mes.
 
 ## 5. Ranking: de dónde salen los números
 
