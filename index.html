@@ -1092,17 +1092,17 @@ function sociosCSV(){const rows=[["Nombre","Correo","WhatsApp","Patrocinador","P
   const csv="\ufeff"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="socios-action-leaders-"+TODAY+".csv";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
 let mios=null,miosErr=false;
-function rankDe(nombre){const num=v=>Number(v)||0,L=(T.ranking||[]).map(r=>({n:r.nombre,R:num(r.registros)+num(r.activaciones),A:num(r.activaciones),P:num(r.presentaciones)}));
+function rankDe(nombre){const num=v=>Number(v)||0,L=(T.ranking||[]).map(r=>({n:r.nombre,R:num(r.registros)+num(r.activaciones),A:num(r.activaciones),V:num(r.volumen),P:num(r.presentaciones)}));
   const me=L.find(r=>sameN(r.n,nombre));if(!me)return null;
   const pr=L.filter(x=>x.R>0).sort((a,b)=>b.R-a.R||b.A-a.A||b.P-a.P||String(a.n).localeCompare(b.n,"es"));
-  const ac=L.filter(x=>x.A>0).sort((a,b)=>b.A-a.A||b.R-a.R||String(a.n).localeCompare(b.n,"es"));
+  const ac=L.filter(x=>x.A>0).sort((a,b)=>b.V-a.V||b.A-a.A||b.R-a.R||String(a.n).localeCompare(b.n,"es"));
   const ip=pr.findIndex(x=>x===me),ia=ac.findIndex(x=>x===me);
-  return{R:me.R,A:me.A,pPos:ip>=0?ip+1:0,aPos:ia>=0?ia+1:0,pNext:ip>0?pr[ip-1].R-me.R+1:0,aNext:ia>0?ac[ia-1].A-me.A+1:0,pTop10:ip<0||ip>=10?Math.max(1,(pr[9]?pr[9].R:0)-me.R+1):0}}
+  return{R:me.R,A:me.A,V:me.V,pPos:ip>=0?ip+1:0,aPos:ia>=0?ia+1:0,pNext:ip>0?pr[ip-1].R-me.R+1:0,aNext:ia>0?ac[ia-1].A-me.A+1:0,pTop10:ip<0||ip>=10?Math.max(1,(pr[9]?pr[9].R:0)-me.R+1):0}}
 function msgMotiva(x){const r=x.registro||{},a=actDe(x),S=a.sem,first=(r.nombre||"").split(" ")[0]||"",rk=rankDe(r.nombre||""),yo=miNombreCorto()||"";
   const mes=(T.config&&T.config.rankingMes)||"este mes";const L=[],cs=(x.actividad||{}).cons,okW=cs&&cs.wk===lunesK(),dias=okW?cs.semDias:a.d7,racha=okW?cs.racha:a.racha;
   L.push(`*¡Hola, ${first}!* 👋`,"",`Le comparto cómo va en *Action Leaders* 📊`,"");
   L.push(`📅 *Días activos esta semana:* ${dias} de 7`,`🔥 *Racha:* ${racha} ${racha===1?"día":"días"}`,`👥 *Contactos esta semana:* ${S.contactos||0}`,"");
-  if(rk){L.push(`🏆 *Ranking de ${mes}*`,`🎯 Registros inCruises: *${rk.R}*${rk.pPos?` · Lugar *#${rk.pPos}*`:""}`,`🚀 Activaciones: *${rk.A}*${rk.aPos?` · Lugar *#${rk.aPos}*`:""}`,"")}
+  if(rk){L.push(`🏆 *Ranking de ${mes}*`,`🎯 Registros inCruises: *${rk.R}*${rk.pPos?` · Lugar *#${rk.pPos}*`:""}`,`🚀 Activaciones: *${rk.A}* · Volumen *${fmt(rk.V)}*${rk.aPos?` · Lugar *#${rk.aPos}*`:""}`,"")}
   if(!a.bien)L.push(`🎬 Le falta terminar su *video de bienvenida*. ¡Es el primer paso!`,"");
   L.push(racha>=3?`Lleva *${racha} días seguidos* 💪 Eso es disciplina de líder. ¡No rompa la racha!`:dias>=3?`Va avanzando muy bien 👏 Siga empujando, que está *más cerca de lo que cree*.`:dias>0?`Ya dio los primeros pasos 👏 Ahora lo que marca la diferencia es la *constancia*: una acción cada día.`:`Hoy es un gran día para arrancar 🔥 Con *una sola acción* de su rutina ya cuenta.`,"");
   if(rk&&rk.pPos===1)L.push(`🥇 *Su reto:* va *#1 en registros*. ¡Defienda ese lugar!`,"");
@@ -1154,7 +1154,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
        ${(()=>{const pn=((x.actividad||{}).presN)||[];return pn.length?`<button type="button" class="chip c-good" style="border:0;font:inherit;cursor:pointer" data-presn="${esc(pn.join(" · "))}">🎯 ${pn.length} ${pn.length===1?"presentación":"presentaciones"} ›</button>`:`<span class="chip ${(S.presentaciones||0)?"c-good":"c-brand"}">🎯 ${S.presentaciones||0} ${(S.presentaciones||0)===1?"presentación":"presentaciones"}</span>`})()}
        <span class="chip c-brand">👥 ${S.contactos||0} ${(S.contactos||0)===1?"contacto":"contactos"}</span>
        ${a.hist?`<span class="chip c-good">📸 Historia hoy</span>`:""}
-       ${(()=>{const rk=rankDe(nm);return rk?`<span class="chip ${rk.pPos&&rk.pPos<=10?"c-gold":"c-brand"}">🏆 Registros: ${rk.R}${rk.pPos?" · #"+rk.pPos:""}</span><span class="chip ${rk.aPos&&rk.aPos<=10?"c-gold":"c-brand"}">🚀 Activaciones: ${rk.A}${rk.aPos?" · #"+rk.aPos:""}</span>`:`<span class="chip c-brand">🏆 Sin registros en el ranking</span>`})()}
+       ${(()=>{const rk=rankDe(nm);return rk?`<span class="chip ${rk.pPos&&rk.pPos<=10?"c-gold":"c-brand"}">🏆 Registros: ${rk.R}${rk.pPos?" · #"+rk.pPos:""}</span><span class="chip ${rk.aPos&&rk.aPos<=10?"c-gold":"c-brand"}">🚀 Activaciones: ${rk.A} · Vol. ${fmt(rk.V)}${rk.aPos?" · #"+rk.aPos:""}</span>`:`<span class="chip c-brand">🏆 Sin registros en el ranking</span>`})()}
        ${cs.length?cs.map(k=>`<span class="chip c-good">🎓 ${esc(cname(k))}</span>`).join(""):`<span class="chip c-brand">🎓 Sin cursos aún</span>`}
       </div><button class="btn sm" data-mot="${esc(x.uid)}" style="margin-top:10px;width:100%;background:#25D366;color:#fff">💬 Motivar por WhatsApp</button></div>`}).join("")}</div>
    <p class="small muted" style="margin:0">Presentaciones, contactos y días activos son de los últimos 7 días.${bien<n?" "+(n-bien)+" aún no ha"+(n-bien>1?"n":"")+" completado la bienvenida.":""}</p>
@@ -2349,7 +2349,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020093339";var busy=false,pend=null;
+(function(){var V="20261020093907";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
