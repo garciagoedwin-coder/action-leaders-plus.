@@ -148,7 +148,9 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .metas .mt{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:14px;background:var(--surface-2)}
 .metas .mt .row{gap:8px}.metas .mt b.big{font-family:var(--f-num);font-size:26px;line-height:1}
 .metas .lbl{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.metas .anio{background:linear-gradient(120deg,#0b3b57,#0A7DAD);color:#fff}.metas .anio .lbl{color:rgba(255,255,255,.75)}
+.metas .rgo{color:#fff}.metas .rgo .lbl{color:rgba(255,255,255,.8)}.metas .rgo .bar{background:rgba(255,255,255,.3)}.metas .rgo .bar i{background:#fff}
+.metas .sueno{background:linear-gradient(120deg,#ECFDF5,#D1FAE5);color:#065F46}.metas .sueno .lbl{color:#047857}.metas .sueno .big{color:#065F46}
+.rgDot{width:14px;height:14px;border-radius:50%;flex:none}
 .metas .bar{margin:2px 0 0;background:var(--surface)}.metas .ok{color:var(--good);font-weight:800}
 .rgList{display:flex;flex-direction:column;gap:6px}.rgList label{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-weight:600}
 .rgList label:has(input:checked){border-color:var(--brand);background:var(--gold-soft)}.rgList small{margin-left:auto;color:var(--muted);font-weight:700}
@@ -1079,33 +1081,33 @@ function renderAviso(){const c=$("#avisoCard");if(!c)return;c.hidden=true;return
   const done=()=>{profile.avisado=true;store.set("perfil",profile);renderAviso()};
   $("#avisoGo").onclick=()=>setTimeout(done,600);$("#avisoX").onclick=done}
 const ACC_DEF=[{t:"Audios en Spotify",i:"🎧",u:""},{t:"Caja de herramientas",i:"🧰",u:"https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"}];
-const RANGOS=[{n:"Líder",pts:200,d:"Acceso al sistema"},{n:"Team Leader",pts:500},{n:"Marketing Director"},{n:"SM Director"},{n:"Regional Director"},{n:"National Director"},{n:"International Director"},{n:"Executive Director"},{n:"Board of Director"}];
+const RANGOS=[{n:"Líder",pts:200,d:"Acceso al sistema",c:"#64748B"},{n:"Team Leader",pts:500,c:"#0A7DAD"},{n:"Marketing Director",c:"#15803D"},{n:"SM Director",c:"#1D4ED8"},{n:"Regional Director",c:"#EA580C"},{n:"National Director",c:"#DC2626"},{n:"International Director",c:"#7C3AED"},{n:"Executive Director",c:"#111111"},{n:"Board of Director",c:"linear-gradient(120deg,#F5B700,#F97316)"}];
 const rangoMeta=n=>RANGOS.find(r=>r.n===n),rangoMetaTxt=n=>{const i=RANGOS.findIndex(r=>r.n===n);return i<0?"":"Nivel "+(i+1)+" · "+n};
 const mesMeta=()=>new Date().toISOString().slice(0,7);
-function misMetas(){return (regDoc&&regDoc.metas)||{}}
+function misMetas(){const m=(regDoc&&regDoc.metas)||{};return Object.assign({},m,{rango:m.rango||m.anio||""})}
+const usd=n=>"$"+Number(n||0).toLocaleString("en-US");
 function renderMetas(){const c=$("#metasCard");if(!c)return;if(!fbUser||!regDoc||SOLO_ADMIN.includes(String(fbUser.email||"").toLowerCase())){c.hidden=true;return}
   const M=misMetas(),delMes=M.mes===mesMeta();let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}
   const A=rk?rk.A:0,V=rk?rk.V:0,bar=(v,m)=>`<div class="bar"><i style="width:${Math.min(100,m?Math.round(v/m*100):0)}%"></i></div>`;
-  let mes="";
-  if(delMes&&(M.act||M.rango)){
-    const r=rangoMeta(M.rango);
-    mes=`${M.act?`<div class="mt"><span class="lbl">Activaciones personales</span><div class="row between"><b class="big">${A} <span class="small muted" style="font-family:var(--f-body)">de ${M.act}</span></b>${A>=M.act?`<span class="ok">✅ ¡Meta cumplida!</span>`:`<span class="small muted">Faltan ${M.act-A}</span>`}</div>${bar(A,M.act)}</div>`:""}
-     ${M.rango?`<div class="mt"><span class="lbl">Rango objetivo del mes</span><div class="row between"><b>${esc(rangoMetaTxt(M.rango))}</b>${r&&r.pts?(V>=r.pts?`<span class="ok">✅ Logrado</span>`:`<span class="small muted">${fmt(V)} / ${fmt(r.pts)} pts</span>`):""}</div>${r&&r.pts?bar(V,r.pts)+(V<r.pts?`<span class="small muted">Le faltan ${fmt(r.pts-V)} pts</span>`:""):""}</div>`:""}`}
-  else mes=`<div class="mt"><span class="lbl">Metas del mes</span><span class="small muted">Aún no ha definido sus metas de este mes.</span></div>`;
-  const anio=M.anio?`<div class="mt anio"><span class="lbl">⭐ Meta a 1 año</span><b style="font-size:17px">${esc(rangoMetaTxt(M.anio))}</b></div>`:"";
-  c.innerHTML=`<div class="row between"><h3>🎯 Mis metas</h3><button class="btn sm ghost" id="metasEdit">${delMes||M.anio?"Editar":"Definir"}</button></div>${mes}${anio}<p class="small muted" style="margin:0">Su patrocinador y su línea de arriba ven sus metas para acompañarle.</p>`;
+  const act=delMes&&M.act?`<div class="mt"><span class="lbl">Meta del mes · Activaciones personales</span><div class="row between"><b class="big">${A} <span class="small muted" style="font-family:var(--f-body)">de ${M.act}</span></b>${A>=M.act?`<span class="ok">✅ ¡Meta cumplida!</span>`:`<span class="small muted">Faltan ${M.act-A}</span>`}</div>${bar(A,M.act)}</div>`
+    :`<div class="mt"><span class="lbl">Meta del mes · Activaciones personales</span><span class="small muted">Aún no ha puesto su meta de este mes.</span></div>`;
+  const r=rangoMeta(M.rango);
+  const rg=r?`<div class="mt rgo" style="background:${r.c}"><span class="lbl">🏅 Rango objetivo</span><b style="font-size:19px">${esc(rangoMetaTxt(M.rango))}</b>${r.pts?`<div class="row between"><span class="small">${fmt(V)} / ${fmt(r.pts)} pts este mes</span>${V>=r.pts?`<b>✅ Logrado</b>`:""}</div>${bar(V,r.pts)}`:""}</div>`:"";
+  const su=M.sueno?`<div class="mt sueno"><span class="lbl">💰 Mi ingreso mensual soñado · en 5 años</span><b class="big" style="font-size:32px">${usd(M.sueno)}<span class="small muted" style="font-family:var(--f-body);font-size:13px"> / mes</span></b></div>`:"";
+  c.innerHTML=`<div class="row between"><h3>🎯 Mis metas</h3><button class="btn sm ghost" id="metasEdit">${M.act||M.rango||M.sueno?"Editar":"Definir"}</button></div>${act}${rg}${su}<p class="small muted" style="margin:0">Su patrocinador y su línea de arriba ven sus metas para acompañarle.</p>`;
   c.hidden=false;$("#metasEdit").onclick=abrirMetas}
 function abrirMetas(){const M=misMetas(),delMes=M.mes===mesMeta();
-  const opts=(name,cur)=>RANGOS.map((r,i)=>`<label><input type="radio" name="${name}" value="${esc(r.n)}" ${cur===r.n?"checked":""}><span>Nivel ${i+1} · ${esc(r.n)}${r.d?` <span class="small muted">(${esc(r.d)})</span>`:""}</span>${r.pts?`<small>${r.pts} pts</small>`:""}</label>`).join("");
+  const opts=RANGOS.map((r,i)=>`<label><input type="radio" name="mtR" value="${esc(r.n)}" ${M.rango===r.n?"checked":""}><i class="rgDot" style="background:${r.c}"></i><span>Nivel ${i+1} · ${esc(r.n)}${r.d?` <span class="small muted">(${esc(r.d)})</span>`:""}</span>${r.pts?`<small>${r.pts} pts</small>`:""}</label>`).join("");
   openSheet(`<h2>🎯 Mis metas</h2>
-   <p class="small" style="font-weight:800;margin:0">Metas del mes</p>
+   <p class="small" style="font-weight:800;margin:0">Meta del mes</p>
    <label class="small muted" for="mtAct">Activaciones personales (cuántas personas quiere activar este mes)</label>
    <input id="mtAct" type="number" inputmode="numeric" min="0" max="9999" placeholder="Ej. 3" value="${delMes&&M.act?M.act:""}" data-nofocus>
-   <p class="small muted" style="margin:6px 0 0">Rango objetivo</p><div class="rgList">${opts("mtR",delMes?M.rango:"")}</div>
-   <p class="small" style="font-weight:800;margin:10px 0 0">⭐ Meta a 1 año · Rango</p><div class="rgList">${opts("mtY",M.anio||"")}</div>
+   <p class="small" style="font-weight:800;margin:10px 0 0">🏅 Rango objetivo</p><div class="rgList">${opts}</div>
+   <p class="small" style="font-weight:800;margin:10px 0 0">💰 Mi ingreso mensual soñado (en 5 años)</p>
+   <div class="row" style="gap:8px;align-items:center"><b style="font-size:20px">$</b><input id="mtSue" type="number" inputmode="numeric" min="0" placeholder="Ej. 10000" value="${M.sueno||""}" style="flex:1"><span class="small muted">USD / mes</span></div>
    <button class="btn" id="mtSave" style="width:100%">Guardar metas</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`);
-  $("#mtSave").onclick=async()=>{const q=n=>{const x=$("#sheetPanel").querySelector(`input[name=${n}]:checked`);return x?x.value:""};
-    const nm={mes:mesMeta(),act:Math.max(0,Math.min(9999,parseInt($("#mtAct").value,10)||0)),rango:q("mtR"),anio:q("mtY"),t:Date.now()};
+  $("#mtSave").onclick=async()=>{const x=$("#sheetPanel").querySelector("input[name=mtR]:checked");
+    const nm={mes:mesMeta(),act:Math.max(0,Math.min(9999,parseInt($("#mtAct").value,10)||0)),rango:x?x.value:"",sueno:Math.max(0,Math.min(99999999,parseInt(String($("#mtSue").value).replace(/\D/g,""),10)||0)),t:Date.now()};
     $("#mtSave").disabled=true;try{await store.db.doc("users/"+store.uid).set({metas:nm},{merge:true});regDoc=Object.assign({},regDoc,{metas:nm});closeSheet();renderMetas();toast("Metas guardadas 🎯")}
     catch(e){$("#mtSave").disabled=false;toast("No se pudieron guardar. Revise su conexión.")}}}
 let banT=null,banI=0,banDone=false;
@@ -1252,7 +1254,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
        <span class="chip c-brand">👥 ${S.contactos||0} ${(S.contactos||0)===1?"contacto":"contactos"}</span>
        ${a.hist?`<span class="chip c-good">📸 Historia hoy</span>`:""}
        ${(()=>{const rk=rankDe(nm);return rk?`<span class="chip ${rk.pPos&&rk.pPos<=10?"c-gold":"c-brand"}">🏆 Registros: ${rk.R}${rk.pPos?" · #"+rk.pPos:""}</span><span class="chip ${rk.aPos&&rk.aPos<=10?"c-gold":"c-brand"}">🚀 Activaciones: ${rk.A} · Vol. ${fmt(rk.V)}${rk.aPos?" · #"+rk.aPos:""}</span>`:`<span class="chip c-brand">🏆 Sin registros en el ranking</span>`})()}
-       ${(()=>{const m=x.metas||{};if(!m.act&&!m.rango&&!m.anio)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(dm&&m.rango?`<span class="chip c-gold">📈 Rango del mes: ${esc(m.rango)}</span>`:"")+(m.anio?`<span class="chip c-brand">⭐ 1 año: ${esc(m.anio)}</span>`:"")})()}
+       ${(()=>{const m=x.metas||{},rg=m.rango||m.anio,R=rangoMeta(rg);if(!m.act&&!rg&&!m.sueno)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(R?`<span class="chip" style="background:${R.c};color:#fff">🏅 ${esc(rg)}</span>`:"")+(m.sueno?`<span class="chip c-good">💰 Sueño: ${usd(m.sueno)}/mes</span>`:"")})()}
        ${cs.length?cs.map(k=>`<span class="chip c-good">🎓 ${esc(cname(k))}</span>`).join(""):`<span class="chip c-brand">🎓 Sin cursos aún</span>`}
       </div><button class="btn sm" data-mot="${esc(x.uid)}" style="margin-top:10px;width:100%;background:#25D366;color:#fff">💬 Motivar por WhatsApp</button></div>`}).join("")}</div>
    <p class="small muted" style="margin:0">Presentaciones, contactos y días activos son de los últimos 7 días.${bien<n?" "+(n-bien)+" aún no ha"+(n-bien>1?"n":"")+" completado la bienvenida.":""}</p>
@@ -2447,7 +2449,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020160243";var busy=false,pend=null;
+(function(){var V="20261020160650";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
