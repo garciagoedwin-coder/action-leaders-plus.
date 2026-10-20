@@ -1093,7 +1093,7 @@ function renderAviso(){const c=$("#avisoCard");if(!c)return;c.hidden=true;return
   $("#avisoGo").onclick=()=>setTimeout(done,600);$("#avisoX").onclick=done}
 const ACC_DEF=[{t:"Audios en Spotify",i:"🎧",u:""},{t:"Caja de herramientas",i:"🧰",u:"https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"}];
 const RANGOS=[{n:"Líder",pts:200,d:"Acceso al sistema",c:"#64748B"},{n:"Team Leader",pts:500,c:"#0A7DAD"},{n:"Marketing Director",c:"#15803D"},{n:"SM Director",c:"#1D4ED8"},{n:"Regional Director",c:"#EA580C"},{n:"National Director",c:"#DC2626"},{n:"International Director",c:"#7C3AED"},{n:"Executive Director",c:"#111111"},{n:"Board of Director",c:"linear-gradient(120deg,#F5B700,#F97316)"}];
-const rangoMeta=n=>RANGOS.find(r=>r.n===n),rangoMetaTxt=n=>{const i=RANGOS.findIndex(r=>r.n===n);return i<0?"":"Nivel "+(i+1)+" · "+n};
+const rangoMeta=n=>RANGOS.find(r=>r.n===n),rangoMetaTxt=n=>rangoMeta(n)?n:"";
 const mesMeta=()=>new Date().toISOString().slice(0,7);
 function misMetas(){const m=(regDoc&&regDoc.metas)||{};return Object.assign({},m,{rango:m.rango||m.anio||""})}
 const usd=n=>"$"+Number(n||0).toLocaleString("en-US");
@@ -1101,9 +1101,9 @@ function renderMetas(){const st=$("#metaStrip"),pm=$("#perfMeta");if(!st)return;
   if(!fbUser||!regDoc||SOLO_ADMIN.includes(String(fbUser.email||"").toLowerCase())){st.hidden=true;if(pm)pm.innerHTML="";return}
   const M=misMetas(),delMes=M.mes===mesMeta();let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}
   const A=rk?rk.A:0,V=rk?rk.V:0,r=rangoMeta(M.rango);
-  if(!r&&!M.sueno){st.className="metaStrip vacia";st.innerHTML=`<div class="row between" style="gap:10px"><div><b>🎯 Defina su rango objetivo y su sueño</b><small>Tenga su meta a la vista cada vez que abra la app.</small></div><button class="btn sm">Definir</button></div>`}
+  if(!r&&!M.sueno){st.className="metaStrip vacia";st.innerHTML=`<div class="row between" style="gap:10px"><div><b>🎯 Defina su próximo rango y su sueño</b><small>Tenga su meta a la vista cada vez que abra la app.</small></div><button class="btn sm">Definir</button></div>`}
   else{st.className="metaStrip";st.style.background=r?r.c:"linear-gradient(120deg,#0b3b57,#0A7DAD)";
-    st.innerHTML=`${r?`<div class="row between"><b class="mtN">🏅 ${esc(rangoMetaTxt(M.rango))}</b><span class="mtE">Editar ›</span></div>`:""}
+    st.innerHTML=`${r?`<div class="row between"><span><small style="display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.85">🏅 Mi próximo rango</small><b class="mtN">${esc(rangoMetaTxt(M.rango))}</b></span><span class="mtE">Editar ›</span></div>`:""}
      ${r&&r.pts?`<div class="row between mtV"><span>Volumen personal del mes</span><b>${fmt(V)} / ${fmt(r.pts)} pts</b></div><div class="mtBar"><i style="width:${Math.min(100,Math.round(V/r.pts*100))}%"></i></div><small>${V>=r.pts?"✅ ¡Logrado este mes!":"Le faltan "+fmt(r.pts-V)+" pts"}</small>`:r?`<div class="row between mtV"><span>Volumen personal del mes</span><b>${fmt(V)} pts</b></div>`:""}
      ${M.sueno?`<div class="mtS">💰 Mi sueño: <b>${usd(M.sueno)} / mes</b> en 5 años</div>`:""}`}
   st.hidden=false;st.onclick=abrirMetas;
@@ -1111,12 +1111,12 @@ function renderMetas(){const st=$("#metaStrip"),pm=$("#perfMeta");if(!st)return;
     :`<button type="button" class="pmA pmCta" id="pmCta">🎯 Ponga su meta de activaciones del mes ›</button>`;
   const pc=$("#pmCta");if(pc)pc.onclick=abrirMetas}
 function abrirMetas(){const M=misMetas(),delMes=M.mes===mesMeta();
-  const opts=RANGOS.map((r,i)=>`<label><input type="radio" name="mtR" value="${esc(r.n)}" ${M.rango===r.n?"checked":""}><i class="rgDot" style="background:${r.c}"></i><span>Nivel ${i+1} · ${esc(r.n)}${r.d?` <span class="small muted">(${esc(r.d)})</span>`:""}</span>${r.pts?`<small>${r.pts} pts</small>`:""}</label>`).join("");
+  const opts=RANGOS.map((r,i)=>`<label><input type="radio" name="mtR" value="${esc(r.n)}" ${M.rango===r.n?"checked":""}><i class="rgDot" style="background:${r.c}"></i><span>${esc(r.n)}${r.d?` <span class="small muted">(${esc(r.d)})</span>`:""}</span>${r.pts?`<small>${r.pts} pts</small>`:""}</label>`).join("");
   openSheet(`<h2>🎯 Mis metas</h2>
    <p class="small" style="font-weight:800;margin:0">Meta del mes</p>
    <label class="small muted" for="mtAct">Activaciones personales (cuántas personas quiere activar este mes)</label>
    <input id="mtAct" type="number" inputmode="numeric" min="0" max="9999" placeholder="Ej. 3" value="${delMes&&M.act?M.act:""}" data-nofocus>
-   <p class="small" style="font-weight:800;margin:10px 0 0">🏅 Rango objetivo</p><div class="rgList">${opts}</div>
+   <p class="small" style="font-weight:800;margin:10px 0 0">🏅 Mi próximo rango</p><div class="rgList">${opts}</div>
    <p class="small" style="font-weight:800;margin:10px 0 0">💰 Mi ingreso mensual soñado (en 5 años)</p>
    <div class="row" style="gap:8px;align-items:center"><b style="font-size:20px">$</b><input id="mtSue" type="number" inputmode="numeric" min="0" placeholder="Ej. 10000" value="${M.sueno||""}" style="flex:1"><span class="small muted">USD / mes</span></div>
    <button class="btn" id="mtSave" style="width:100%">Guardar metas</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`);
@@ -2470,7 +2470,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020162203";var busy=false,pend=null;
+(function(){var V="20261020162213";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
