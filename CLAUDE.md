@@ -24,7 +24,7 @@ App web móvil (PWA) del equipo de Edwin García Go (Director Nacional, inCruise
 | `tools/ranking.py` | Recalcula el ranking de `team.json` (ver sección 5). |
 | `.publicar.sh` | Antes de cada commit de la app: sube `version.txt` y `var V=` para que la app instalada se actualice sola. |
 | `media/` | Videos de bienvenida, cursos, flyers, logos e íconos (`icono-1024.png` es el escudo Pro). |
-| `respaldo/firestore.rules` | Copia de las reglas de Firestore (ver aviso dentro del archivo). |
+| `respaldo/firestore.rules` | Copia exacta de las reglas de Firestore (al 2026-10-20). |
 | `respaldo/tareas/` | Instrucciones exactas de las tareas programadas. |
 
 **Publicar un cambio:** `./.publicar.sh && git add -A && git commit -m "…" && git push`. GitHub Pages tarda 1 o 2 minutos. Los socios deben cerrar y abrir la app para ver el cambio.
