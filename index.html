@@ -161,7 +161,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .rgDot{width:14px;height:14px;border-radius:50%;flex:none}
 .metas .bar{margin:2px 0 0;background:var(--surface)}.metas .ok{color:var(--good);font-weight:800}
 .rgList{display:flex;flex-direction:column;gap:6px}.rgList label{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-weight:600}
-.rgList label:has(input:checked){border-color:var(--brand);background:var(--gold-soft)}.rgList small{margin-left:auto;color:var(--muted);font-weight:700}
+.rgList label.lk{opacity:.5;cursor:default}.rgList label:has(input:checked){border-color:var(--brand);background:var(--gold-soft)}.rgList small{margin-left:auto;color:var(--muted);font-weight:700}
 .actBan{max-height:180px;position:relative;border-radius:18px;padding:12px 14px;background:linear-gradient(120deg,#0b3b57,#0A7DAD 60%,#2AC1F1);color:#fff;box-shadow:0 10px 24px -12px rgba(10,125,173,.6);overflow:hidden;animation:banIn .5s cubic-bezier(.2,.8,.2,1)}
 .actBan::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 70%);background-size:250% 100%;animation:banShine 3.5s linear infinite;pointer-events:none}
 .actBan .ab{display:flex;align-items:center;gap:12px;animation:banIn .45s cubic-bezier(.2,.8,.2,1)}
@@ -1097,26 +1097,33 @@ const rangoMeta=n=>RANGOS.find(r=>r.n===n),rangoMetaTxt=n=>rangoMeta(n)?n:"";
 const mesMeta=()=>new Date().toISOString().slice(0,7);
 function misMetas(){const m=(regDoc&&regDoc.metas)||{};return Object.assign({},m,{rango:m.rango||m.anio||""})}
 const usd=n=>"$"+Number(n||0).toLocaleString("en-US");
+const RANGO_ALIAS={"action leader":"Líder","lider":"Líder","senior marketing director":"SM Director","smd":"SM Director","sm director":"SM Director"};
+function idxRango(nm){nm=String(nm||"").trim();const a=RANGO_ALIAS[nm.toLowerCase()]||nm;return RANGOS.findIndex(r=>r.n.toLowerCase()===a.toLowerCase())}
+function rangoActualIdx(reg,nombre){reg=reg||{};if(reg.rango){if(reg.rango==="Socio")return -1;const i=idxRango(reg.rango);if(i>=0)return i}
+  const ns=[nombre,reg.nombre].filter(Boolean),L=(T.lideres||[]).find(l=>ns.some(n=>sameN(l.nombre,n)||String(l.nombreRanking||"").split("|").some(k=>k.trim()&&sameN(k.trim(),n))));
+  return L?idxRango(rangoTxt(L.rango)):-1}
+const miRangoIdx=()=>rangoActualIdx(miRegistro(),miNombreFull()||miNombreCorto());
+const proxRango=i=>RANGOS[i+1]||null;
 function renderMetas(){const st=$("#metaStrip"),pm=$("#perfMeta");if(!st)return;const mc=$("#metasCard");if(mc)mc.hidden=true;
   if(!fbUser||!regDoc||SOLO_ADMIN.includes(String(fbUser.email||"").toLowerCase())){st.hidden=true;if(pm)pm.innerHTML="";return}
   const M=misMetas(),delMes=M.mes===mesMeta();let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}
-  const A=rk?rk.A:0,V=rk?rk.V:0,r=rangoMeta(M.rango);
-  if(!r&&!M.sueno){st.className="metaStrip vacia";st.innerHTML=`<div class="row between" style="gap:10px"><div><b>🎯 Defina su próximo rango y su sueño</b><small>Tenga su meta a la vista cada vez que abra la app.</small></div><button class="btn sm">Definir</button></div>`}
-  else{st.className="metaStrip";st.style.background=r?r.c:"linear-gradient(120deg,#0b3b57,#0A7DAD)";
-    st.innerHTML=`${r?`<div class="row between"><span><small style="display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.85">🏅 Mi próximo rango</small><b class="mtN">${esc(rangoMetaTxt(M.rango))}</b></span><span class="mtE">Editar ›</span></div>`:""}
+  const A=rk?rk.A:0,V=rk?rk.V:0,cur=miRangoIdx(),r=proxRango(cur);M.rango=r?r.n:"";
+  if(false){st.className="metaStrip vacia";st.innerHTML=`<div class="row between" style="gap:10px"><div><b>🎯 Defina su próximo rango y su sueño</b><small>Tenga su meta a la vista cada vez que abra la app.</small></div><button class="btn sm">Definir</button></div>`}
+  else{st.className="metaStrip";st.style.background=r?r.c:"linear-gradient(120deg,#F5B700,#F97316)";if(!r)st.innerHTML="";
+    st.innerHTML=`${!r?`<div class="row between"><b class="mtN">👑 Ya es Board of Director</b><span class="mtE">Editar ›</span></div>`:""}${r?`<div class="row between"><span><small style="display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.85">🏅 Mi próximo rango</small><b class="mtN">${esc(rangoMetaTxt(M.rango))}</b></span><span class="mtE">Editar ›</span></div>`:""}
      ${r&&r.pts?`<div class="row between mtV"><span>Volumen personal del mes</span><b>${fmt(V)} / ${fmt(r.pts)} pts</b></div><div class="mtBar"><i style="width:${Math.min(100,Math.round(V/r.pts*100))}%"></i></div><small>${V>=r.pts?"✅ ¡Logrado este mes!":"Le faltan "+fmt(r.pts-V)+" pts"}</small>`:r?`<div class="row between mtV"><span>Volumen personal del mes</span><b>${fmt(V)} pts</b></div>`:""}
-     ${M.sueno?`<div class="mtS">💰 Mi sueño: <b>${usd(M.sueno)} / mes</b> en 5 años</div>`:""}`}
+     ${M.sueno?`<div class="mtS">💰 Mi sueño: <b>${usd(M.sueno)} / mes</b> en 5 años</div>`:`<div class="mtS">💰 Defina su ingreso mensual soñado ›</div>`}`}
   st.hidden=false;st.onclick=abrirMetas;
   if(pm)pm.innerHTML=delMes&&M.act?`<div class="pmA"><div class="row between"><span class="small" style="font-weight:700">🎯 Activaciones del mes</span><b>${A} de ${M.act}${A>=M.act?" ✅":""}</b></div><div class="bar" style="margin:4px 0 0;background:var(--surface)"><i style="width:${Math.min(100,Math.round(A/M.act*100))}%"></i></div></div>`
     :`<button type="button" class="pmA pmCta" id="pmCta">🎯 Ponga su meta de activaciones del mes ›</button>`;
   const pc=$("#pmCta");if(pc)pc.onclick=abrirMetas}
-function abrirMetas(){const M=misMetas(),delMes=M.mes===mesMeta();
-  const opts=RANGOS.map((r,i)=>`<label><input type="radio" name="mtR" value="${esc(r.n)}" ${M.rango===r.n?"checked":""}><i class="rgDot" style="background:${r.c}"></i><span>${esc(r.n)}${r.d?` <span class="small muted">(${esc(r.d)})</span>`:""}</span>${r.pts?`<small>${r.pts} pts</small>`:""}</label>`).join("");
+function abrirMetas(){const M=misMetas(),delMes=M.mes===mesMeta(),cur=miRangoIdx(),nx=proxRango(cur);
+  const opts=RANGOS.map((r,i)=>{const ok=i<=cur,next=i===cur+1;return `<label class="${next?"":"lk"}"><input type="radio" name="mtR" value="${esc(r.n)}" ${next?"checked":"disabled"}><i class="rgDot" style="background:${r.c}"></i><span>${esc(r.n)}${r.d?` <span class="small muted">(${esc(r.d)})</span>`:""}</span><small>${ok?"✓ Logrado":next?(r.pts?r.pts+" pts":"Siguiente"):"🔒"}</small></label>`}).join("");
   openSheet(`<h2>🎯 Mis metas</h2>
    <p class="small" style="font-weight:800;margin:0">Meta del mes</p>
    <label class="small muted" for="mtAct">Activaciones personales (cuántas personas quiere activar este mes)</label>
    <input id="mtAct" type="number" inputmode="numeric" min="0" max="9999" placeholder="Ej. 3" value="${delMes&&M.act?M.act:""}" data-nofocus>
-   <p class="small" style="font-weight:800;margin:10px 0 0">🏅 Mi próximo rango</p><div class="rgList">${opts}</div>
+   <p class="small" style="font-weight:800;margin:10px 0 0">🏅 Mi próximo rango</p><p class="small muted" style="margin:0">Rango actual: <b>${cur<0?"Socio":esc(RANGOS[cur].n)}</b>. Los siguientes se desbloquean al alcanzar cada rango.</p><div class="rgList">${opts}</div>
    <p class="small" style="font-weight:800;margin:10px 0 0">💰 Mi ingreso mensual soñado (en 5 años)</p>
    <div class="row" style="gap:8px;align-items:center"><b style="font-size:20px">$</b><input id="mtSue" type="number" inputmode="numeric" min="0" placeholder="Ej. 10000" value="${M.sueno||""}" style="flex:1"><span class="small muted">USD / mes</span></div>
    <button class="btn" id="mtSave" style="width:100%">Guardar metas</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`);
@@ -1268,7 +1275,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
        <span class="chip c-brand">👥 ${S.contactos||0} ${(S.contactos||0)===1?"contacto":"contactos"}</span>
        ${a.hist?`<span class="chip c-good">📸 Historia hoy</span>`:""}
        ${(()=>{const rk=rankDe(nm);return rk?`<span class="chip ${rk.pPos&&rk.pPos<=10?"c-gold":"c-brand"}">🏆 Registros: ${rk.R}${rk.pPos?" · #"+rk.pPos:""}</span><span class="chip ${rk.aPos&&rk.aPos<=10?"c-gold":"c-brand"}">🚀 Activaciones: ${rk.A} · Vol. ${fmt(rk.V)}${rk.aPos?" · #"+rk.aPos:""}</span>`:`<span class="chip c-brand">🏆 Sin registros en el ranking</span>`})()}
-       ${(()=>{const m=x.metas||{},rg=m.rango||m.anio,R=rangoMeta(rg);if(!m.act&&!rg&&!m.sueno)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(R?`<span class="chip" style="background:${R.c};color:#fff">🏅 ${esc(rg)}</span>`:"")+(m.sueno?`<span class="chip c-good">💰 Sueño: ${usd(m.sueno)}/mes</span>`:"")})()}
+       ${(()=>{const m=x.metas||{},R=proxRango(rangoActualIdx(x.registro,nm)),rg=R?R.n:"";if(!m.act&&!rg&&!m.sueno)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(R?`<span class="chip" style="background:${R.c};color:#fff">🏅 Próximo: ${esc(rg)}</span>`:"")+(m.sueno?`<span class="chip c-good">💰 Sueño: ${usd(m.sueno)}/mes</span>`:"")})()}
        ${cs.length?cs.map(k=>`<span class="chip c-good">🎓 ${esc(cname(k))}</span>`).join(""):`<span class="chip c-brand">🎓 Sin cursos aún</span>`}
       </div><button class="btn sm" data-mot="${esc(x.uid)}" style="margin-top:10px;width:100%;background:#25D366;color:#fff">💬 Motivar por WhatsApp</button></div>`}).join("")}</div>
    <p class="small muted" style="margin:0">Presentaciones, contactos y días activos son de los últimos 7 días.${bien<n?" "+(n-bien)+" aún no ha"+(n-bien>1?"n":"")+" completado la bienvenida.":""}</p>
@@ -1281,13 +1288,14 @@ function editarSocio(uid){const x=(socios||[]).find(y=>y.uid===uid);if(!x)return
    <div class="field"><label for="esPat">Patrocinador</label><select class="inp" id="esPat"><option value="">— Sin patrocinador —</option>${opts.map(y=>`<option value="${esc(y.uid)}" ${y.uid===r.patrocinadorUid?"selected":""}>${esc(y.registro.nombre)}</option>`).join("")}</select>
     ${r.patrocinador&&!r.patrocinadorUid?`<span class="small muted">Escribió: "${esc(r.patrocinador)}"</span>`:""}</div>
    <div class="field"><label for="esPlan">Paquete</label><select class="inp" id="esPlan"><option ${r.plan!=="Premium"?"selected":""}>Classic</option><option ${r.plan==="Premium"?"selected":""}>Premium</option></select></div>
+   <div class="field"><label for="esRg">Rango actual</label><select class="inp" id="esRg"><option value="" ${!r.rango?"selected":""}>Automático (hoja de líderes)</option><option ${r.rango==="Socio"?"selected":""}>Socio</option>${RANGOS.map(g=>`<option ${r.rango===g.n?"selected":""}>${esc(g.n)}</option>`).join("")}</select></div>
    <button class="btn" id="esOk" style="width:100%">Guardar cambios</button>`:`<p class="small muted">Este usuario entró pero no completó su registro.</p>`}
    <hr style="border:0;border-top:1px solid var(--line);margin:4px 0">
    <button class="btn ghost" id="esDel" style="width:100%;color:var(--bad)">🗑 Eliminar socio de la app</button>
    <p class="small muted" style="margin:0" id="esDelTx">Se borra su registro y su avance del panel. Si vuelve a entrar, tendrá que registrarse de nuevo con un enlace de invitación.</p>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     const ok=$("#esOk");if(ok)ok.onclick=async()=>{const pu=$("#esPat").value,sp=opts.find(y=>y.uid===pu),nn=$("#esNom").value.trim()||r.nombre,pl=$("#esPlan").value;
-      const d={nombre:nn,plan:pl,patrocinadorUid:pu||"",invitadoPor:sp?sp.registro.nombre:"",patrocinador:sp?sp.registro.nombre:(pu?r.patrocinador:r.patrocinador||"")};if(pl!==r.plan){d.planPor="admin";d.planCambio=new Date().toISOString()}
+      const d={nombre:nn,plan:pl,rango:$("#esRg").value,patrocinadorUid:pu||"",invitadoPor:sp?sp.registro.nombre:"",patrocinador:sp?sp.registro.nombre:(pu?r.patrocinador:r.patrocinador||"")};if(pl!==r.plan){d.planPor="admin";d.planCambio=new Date().toISOString()}
       ok.disabled=true;try{await store.db.doc("users/"+uid).set({registro:d,nombre:nn},{merge:true});Object.assign(x.registro,d);x.nombre=nn;toast("Cambios guardados ✓");closeSheet();renderEquipo();reconstruirLineas(true)}catch(e){ok.disabled=false;toast("No se pudo guardar. Falta el permiso de admin en Firebase.")}};
     let arm=0;$("#esDel").onclick=async()=>{const bt=$("#esDel");if(Date.now()-arm>5000){arm=Date.now();bt.textContent="Toca otra vez para confirmar";bt.style.background="var(--bad)";bt.style.color="#fff";return}
       bt.disabled=true;bt.textContent="Eliminando…";try{await store.db.doc("users/"+uid).delete();try{await store.db.doc("fotos/"+uid).delete()}catch(e){}
@@ -2470,7 +2478,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020162213";var busy=false,pend=null;
+(function(){var V="20261020162552";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
