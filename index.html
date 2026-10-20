@@ -912,7 +912,7 @@ const okIcon=CHECK;
 function renderTasks(){
   $("#tasks").innerHTML=ROUTINE.map(r=>{const v=day[r.k]||0,done=v>=1;
     if(r.type==="check")return `<div class="task"><button class="check" aria-pressed="${done}" data-k="${r.k}" aria-label="Marcar ${esc(r.t)}">${done?CHECK:""}</button><span class="grow"><span class="${done?"done-t":""}">${esc(r.t)}</span>${r.sub&&!done?`<br><span class="small muted">${esc(r.sub)}</span>`:""}${r.link?`<br><a class="chip c-good" style="display:inline-flex;margin-top:6px;text-decoration:none;font-weight:700" href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.linkT||"Abrir")}</a>`:""}</span></div>`;
-    return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:"1"}</span><span class="grow ${done?"done-t":""}">${esc(r.t)}<br><span class="small muted">Mínimo 1${r.goal>1?" · ideal "+r.goal:""}${RETO_KEYS.includes(r.k)?" · cuenta para el reto":""}</span></span>
+    return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:"1"}</span><span class="grow ${done?"done-t":""}">${esc(r.t)}<br><span class="small muted">${r.k==="presentaciones"&&(day.presL||[]).length?"🎯 "+day.presL.map(x=>esc(x.n.split(" ")[0])).join(", "):"Mínimo 1"+(r.goal>1?" · ideal "+r.goal:"")+(RETO_KEYS.includes(r.k)?" · cuenta para el reto":"")}</span></span>
       <span class="counter"><button data-dec="${r.k}" aria-label="Restar">−</button><span class="num">${v}</span><button data-inc="${r.k}" aria-label="Sumar">+</button></span></div>`}).join("");
   const p=Math.round(dayScore(day)*100);$("#dayPct").textContent=p+"%";$("#dayBar").style.width=p+"%";
   const falta=ROUTINE.filter(r=>(!r.desde||TODAY>=r.desde)&&!((day[r.k]||0)>=1)).length,ra=$("#rutAlert");
@@ -922,11 +922,41 @@ function renderTasks(){
 let saveDayT;function saveDay(){clearTimeout(saveDayT);saveDayT=setTimeout(()=>store.set("rutina-"+TODAY,day),600);weekCache[TODAY]=day;renderWeek()}
 $("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
   if(b.dataset.k){day[b.dataset.k]=day[b.dataset.k]?0:1}
+  else if(b.dataset.inc==="presentaciones"){abrirPres();return}
+  else if(b.dataset.dec==="presentaciones"){quitarPres();return}
   else if(b.dataset.inc){const k=b.dataset.inc;day[k]=(day[k]||0)+1;if(RETO_KEYS.includes(k))bumpReto(k,1)}
   else if(b.dataset.dec){const k=b.dataset.dec;if((day[k]||0)>0){day[k]--;if(RETO_KEYS.includes(k))bumpReto(k,-1)}}
   else return;
   renderTasks();saveDay()});
 const weekCache={};
+// ---------- presentaciones con nombre ----------
+const presSemana=()=>{const l=lunesK(),o=[];for(let d=parseK(l);dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=k===TODAY?day:weekCache[k];((v&&v.presL)||[]).forEach(x=>o.push(Object.assign({f:k},x)))}return o};
+async function sumarPres(c,ci){const ya=presSemana();if(c.id&&ya.some(x=>x.cid===c.id)){toast(c.name.split(" ")[0]+" ya cuenta como presentación esta semana");return false}
+  day.presL=(day.presL||[]).concat([{cid:c.id||"",n:String(c.name||"").slice(0,60)}]);day.presentaciones=Math.max((day.presentaciones||0)+1,day.presL.length);bumpReto("presentaciones",1);renderTasks();saveDay();
+  if(c.id&&FLOW.indexOf(c.stage||"Nuevo")<FLOW.indexOf("Presentación")&&c.stage!=="Cliente"&&c.stage!=="No interesado"){c.stage="Presentación";c.updated=Date.now();await store.saveContact(Object.assign({},c));try{renderCRM()}catch(e){}}
+  const cc=ci||citas.find(x=>x.fecha===TODAY&&x.cid&&x.cid===c.id&&!x.hecha);if(cc){cc.hecha=true;await saveCita(cc);renderHoyCitas();renderMiAgenda()}
+  toast("🎯 Presentación a "+c.name.split(" ")[0]+" registrada");return true}
+function quitarPres(){if(!(day.presentaciones>0))return;const L=day.presL||[];if(L.length){const x=L[L.length-1];day.presL=L.slice(0,-1);const cc=citas.find(y=>y.fecha===TODAY&&y.cid&&y.cid===x.cid&&y.hecha);if(cc){cc.hecha=false;saveCita(cc)}toast("Quitada: "+x.n.split(" ")[0])}
+  day.presentaciones--;bumpReto("presentaciones",-1);renderTasks();saveDay();renderHoyCitas()}
+function abrirPres(){let q="";const ya=new Set(presSemana().map(x=>x.cid).filter(Boolean)),hoyC=new Set(citas.filter(x=>x.fecha===TODAY&&x.cid).map(x=>x.cid));
+  const pr=c=>hoyC.has(c.id)?0:({"Presentación":1,"Contactado":2,"Seguimiento":3,"Nuevo":4}[c.stage||"Nuevo"]||5);
+  const L=()=>contacts.filter(c=>!ya.has(c.id)&&c.stage!=="Socio"&&c.stage!=="Cliente"&&(!q||nrmN(c.name).includes(nrmN(q)))).sort((a,b)=>pr(a)-pr(b)||(b.updated||0)-(a.updated||0)).slice(0,30);
+  openSheet(`<div data-nofocus></div><h2>🎯 ¿A quién le presentaste?</h2><p class="small muted" style="margin:0">Cada presentación lleva nombre. La misma persona cuenta una vez por semana.</p>
+   <button class="ep-op" id="psNew"><span class="ic">➕</span><span class="grow"><b>Persona nueva</b><small>Se guarda en tu CRM</small></span><span>›</span></button>
+   <div id="psNewF" style="display:none;flex-direction:column;gap:10px">
+    <div class="field"><label for="psN">Nombre</label><input class="inp" id="psN" placeholder="Nombre y apellido"></div>
+    <div class="grid2"><div class="field"><label for="psC">País</label><select class="inp" id="psC">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")?"selected":""}>${pn} (+${k})</option>`).join("")}</select></div>
+    <div class="field"><label for="psT">WhatsApp <span class="muted">(opcional)</span></label><input class="inp" id="psT" type="tel" placeholder="Número"></div></div>
+    <button class="btn" id="psNewOk" style="width:100%">Guardar y registrar</button></div>
+   <div class="ep-sep"><span>o elígela de tu CRM</span></div>
+   <input class="inp" id="psQ" placeholder="🔍 Buscar por nombre" autocomplete="off"><div id="psL" style="display:flex;flex-direction:column"></div>
+   <button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
+    const draw=()=>{const R=L();$("#psL").innerHTML=R.length?R.map(c=>`<button type="button" class="ep-it" data-ps="${esc(c.id)}">${avHTML(c.name,false,false)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(c.name)}</b><span class="small muted">${hoyC.has(c.id)?"📅 Tiene cita hoy · ":""}${esc(c.stage||"Nuevo")}</span></span><span style="color:var(--brand);font-weight:800">+</span></button>`).join(""):`<p class="small muted" style="margin:8px 0">${q?"No hay contactos con ese nombre.":"No hay contactos disponibles. Agrega una persona nueva."}</p>`};draw();
+    $("#psQ").oninput=()=>{q=$("#psQ").value.trim();draw()};
+    $("#psL").onclick=async e=>{const b=e.target.closest("[data-ps]");if(!b)return;if(await sumarPres(contacts.find(c=>c.id===b.dataset.ps)))closeSheet()};
+    $("#psNew").onclick=()=>{const f=$("#psNewF"),o=f.style.display==="none";f.style.display=o?"flex":"none";if(o)$("#psN").focus()};
+    $("#psNewOk").onclick=async()=>{const nm=$("#psN").value.trim(),cc=$("#psC").value;let t=$("#psT").value.trim();const sp=splitPhone(t);t=sp.cc?sp.num:t.replace(/\D/g,"");if(nm.length<2){toast("Escribe el nombre");return}LS.set("lastCC",cc);
+      const c={name:nm.slice(0,80),cc:sp.cc||cc,phone:t.slice(0,15),stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(c);if(!id)return;c.id=id;contacts.push(c);if(await sumarPres(c))closeSheet()}})}
 const lunesK=()=>{const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7));return dkey(d)};
 function constStats(){const ini=k=>k<CONST_INI?CONST_INI:k,sc=k=>dayScore(k===TODAY?day:weekCache[k],k);
   const per=a=>{let act=0,comp=0,best=0,run=0,pres=0;for(let d=parseK(ini(a));dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=sc(k);pres+=+((k===TODAY?day:weekCache[k])||{}).presentaciones||0;if(v>0)act++;if(v>=1){comp++;run++;best=Math.max(best,run)}else if(k!==TODAY)run=0}return{act,comp,best,pres}};
@@ -939,7 +969,7 @@ let resT;function pushResumen(){if(!store.db||!store.uid)return;clearTimeout(res
   for(let i=0;i<30;i++){const d=new Date(now);d.setDate(d.getDate()-i);const sc=dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&sc<1)continue;if(sc>=1)racha++;else break}
   const et={};(contacts||[]).forEach(c=>{et[c.stage||"Nuevo"]=(et[c.stage||"Nuevo"]||0)+1});
   const a={fecha:TODAY,hoy:Math.round(dayScore(day)*100),racha,dias7:dias,semana:sum,crm:(contacts||[]).length,etapas:Object.keys(et).map(k=>k+":"+et[k]),
-    historia:!!(profile.historias||{})[TODAY],bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),cons:constStats(),t:Date.now()};
+    presN:presSemana().map(x=>x.n).slice(0,30),historia:!!(profile.historias||{})[TODAY],bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),cons:constStats(),t:Date.now()};
   await store.db.doc("users/"+store.uid).set({actividad:a},{merge:true});
   const nm=(miRegistro().nombre||"").trim(),em=String((fbUser&&fbUser.email)||"").toLowerCase();
   if(nm&&!SOLO_ADMIN.includes(em))await store.db.doc("constancia/"+store.uid).set(Object.assign({nombre:nm,hoy:a.hoy,fecha:TODAY,acc:Object.values(sum).reduce((x,y)=>x+(+y||0),0),t:Date.now()},a.cons));if(constL)loadConst(true)}catch(e){}},3000)}
@@ -1083,7 +1113,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
   if(mios===null){b.innerHTML=`<p class="muted small">Cargando tus socios…</p>`;loadMios();return}
   const inv=`<div class="card"><h3 style="margin:0">🔗 Tu enlace de invitación</h3><p class="small muted" style="margin:0">Los socios que se registren con tu enlace aparecen aquí con su avance.</p>
     <div class="ref"><code style="word-break:break-all">${esc(miEnlace())}</code><button class="btn sm gold" id="miosCopy">Copiar</button></div></div>`;
-  const bind=()=>{b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=String((x.registro||{}).whatsapp||"").replace(/\D/g,"");
+  const bind=()=>{b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=String((x.registro||{}).whatsapp||"").replace(/\D/g,"");
     if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}
     if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)});const c=$("#miosCopy");if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(miEnlace());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
   if(miosErr){b.innerHTML=emptyCard("No se pudo cargar tu equipo","Revisa tu conexión e intenta de nuevo. Si sigue igual, avisa al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
@@ -1104,7 +1134,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
        <span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"🎬 Bienvenida ✓":"🎬 Bienvenida pendiente"}</span>
        <span class="chip ${a.racha?"c-gold":"c-brand"}">🔥 Racha ${a.racha} ${a.racha===1?"día":"días"}</span>
        <span class="chip c-brand">📅 ${a.d7}/7 días activos</span>
-       <span class="chip ${(S.presentaciones||0)?"c-good":"c-brand"}">🎯 ${S.presentaciones||0} ${(S.presentaciones||0)===1?"presentación":"presentaciones"} (rutina)</span>
+       ${(()=>{const pn=((x.actividad||{}).presN)||[];return pn.length?`<button type="button" class="chip c-good" style="border:0;font:inherit;cursor:pointer" data-presn="${esc(pn.join(" · "))}">🎯 ${pn.length} ${pn.length===1?"presentación":"presentaciones"} ›</button>`:`<span class="chip ${(S.presentaciones||0)?"c-good":"c-brand"}">🎯 ${S.presentaciones||0} ${(S.presentaciones||0)===1?"presentación":"presentaciones"}</span>`})()}
        <span class="chip c-brand">👥 ${S.contactos||0} ${(S.contactos||0)===1?"contacto":"contactos"}</span>
        ${a.hist?`<span class="chip c-good">📸 Historia hoy</span>`:""}
        ${(()=>{const rk=rankDe(nm);return rk?`<span class="chip ${rk.pPos&&rk.pPos<=10?"c-gold":"c-brand"}">🏆 Registros: ${rk.R}${rk.pPos?" · #"+rk.pPos:""}</span><span class="chip ${rk.aPos&&rk.aPos<=10?"c-gold":"c-brand"}">🚀 Activaciones: ${rk.A}${rk.aPos?" · #"+rk.aPos:""}</span>`:`<span class="chip c-brand">🏆 Sin registros en el ranking</span>`})()}
@@ -1798,8 +1828,10 @@ function citaListo(c){openSheet(`<h2>✅ Cita agendada</h2><p style="margin:0"><
 function citaCard(c){const t=CITA_T[c.tipo]||CITA_T.zoom,pas=citaIni(c).getTime()+(c.dur||60)*6e4<Date.now(),nm=c.tipo==="lider"?c.titulo:c.nombre;
   return `<div class="cita ${pas?"ev-past":""}"><div class="ch-h"><b>${esc(h12(c.hora))}</b><span class="small muted">${c.dur>=60?(c.dur/60)+" h":c.dur+" min"}</span></div><div class="grow" style="min-width:0">
    <b style="font-weight:600">${esc(nm||"Cita")}</b><div class="small muted">${t[0]} ${t[1]}${c.tipo==="persona"&&c.lugar?" · "+esc(c.lugar):""}${c.tipo==="lider"&&c.nota?" · "+esc(c.nota):""}</div>
-   <div class="row wrap" style="gap:6px;margin-top:8px">${!pas&&c.tipo!=="lider"?`<button class="btn sm" style="background:#25D366;color:#fff" data-ciw="${esc(c.id)}">💬 Invitación</button><button class="btn sm ghost" data-cir="${esc(c.id)}">⏰ Recordatorio</button>`:""}${!pas&&c.enlace&&(c.tipo==="zoom"||c.tipo==="lider")?`<a class="btn sm ghost" href="${esc(safeUrl(c.enlace))}" target="_blank" rel="noopener">Entrar al Zoom</a>`:""}${!pas?`<button class="btn sm ghost" data-cic="${esc(c.id)}">➕ Calendario</button>`:""}<button class="btn sm ghost" data-cie="${esc(c.id)}">Editar</button></div></div></div>`}
-function bindCitas(root){root.querySelectorAll("[data-ciw]").forEach(b=>b.onclick=()=>citaWa(citas.find(x=>x.id===b.dataset.ciw),false));root.querySelectorAll("[data-cir]").forEach(b=>b.onclick=()=>citaWa(citas.find(x=>x.id===b.dataset.cir),true));
+   <div class="row wrap" style="gap:6px;margin-top:8px">${pas&&c.fecha===TODAY&&c.tipo!=="lider"&&!c.hecha?`<button class="btn sm" data-cid2="${esc(c.id)}">✅ Sí, se dio la reunión</button>`:""}${c.hecha?'<span class="chip c-good">🎯 Presentación registrada</span>':""}${!pas&&c.tipo!=="lider"?`<button class="btn sm" style="background:#25D366;color:#fff" data-ciw="${esc(c.id)}">💬 Invitación</button><button class="btn sm ghost" data-cir="${esc(c.id)}">⏰ Recordatorio</button>`:""}${!pas&&c.enlace&&(c.tipo==="zoom"||c.tipo==="lider")?`<a class="btn sm ghost" href="${esc(safeUrl(c.enlace))}" target="_blank" rel="noopener">Entrar al Zoom</a>`:""}${!pas?`<button class="btn sm ghost" data-cic="${esc(c.id)}">➕ Calendario</button>`:""}<button class="btn sm ghost" data-cie="${esc(c.id)}">Editar</button></div></div></div>`}
+function bindCitas(root){root.querySelectorAll("[data-cid2]").forEach(b=>b.onclick=async()=>{const ci=citas.find(x=>x.id===b.dataset.cid2);if(!ci)return;let ct=ci.cid&&contacts.find(x=>x.id===ci.cid);
+    if(!ct){ct={name:ci.nombre||"Prospecto",cc:"504",phone:"",stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(ct);if(!id)return;ct.id=id;contacts.push(ct);ci.cid=id}
+    if(!(await sumarPres(ct,ci))){ci.hecha=true;await saveCita(ci);renderHoyCitas();renderMiAgenda()}});root.querySelectorAll("[data-ciw]").forEach(b=>b.onclick=()=>citaWa(citas.find(x=>x.id===b.dataset.ciw),false));root.querySelectorAll("[data-cir]").forEach(b=>b.onclick=()=>citaWa(citas.find(x=>x.id===b.dataset.cir),true));
   root.querySelectorAll("[data-cic]").forEach(b=>b.onclick=()=>citaIcs(citas.find(x=>x.id===b.dataset.cic)));root.querySelectorAll("[data-cie]").forEach(b=>b.onclick=()=>abrirCita(citas.find(x=>x.id===b.dataset.cie)))}
 const HOR_DEF={dias:[1,2,3,4,5],horas:["19:00","21:00"]};
 const miHorario=()=>Object.assign({},HOR_DEF,profile.horario||{});
@@ -1834,8 +1866,9 @@ function renderMiAgenda(){const el=$("#agMia");if(!el||agVista!=="mia")return;if
      ${x.L.length?x.L.map(citaCard).join(""):`<p class="small muted" style="margin:0">Libre</p>`}</div>`).join("")}`;
   $("#ciNew").onclick=()=>abrirCita();$("#hEdit").onclick=abrirHorario;$("#wkPrev").onclick=()=>{agWk--;renderMiAgenda()};$("#wkNext").onclick=()=>{agWk++;renderMiAgenda()};
   el.querySelectorAll("[data-cinew]").forEach(b=>b.onclick=()=>abrirCita({fecha:b.dataset.cinew}));bindCitas(el)}
-function renderHoyCitas(){const c=$("#hoyCitas");if(!c)return;const L=citas.filter(x=>x.fecha===TODAY&&citaIni(x).getTime()+(x.dur||60)*6e4>Date.now()).sort(citaSort);if(!L.length){c.hidden=true;return}c.hidden=false;
-  c.innerHTML=`<div class="row between"><h3 style="margin:0">📅 Hoy tienes ${L.length} ${L.length===1?"cita":"citas"}</h3><button class="btn sm ghost" id="hcVer">Mi agenda</button></div>${L.map(citaCard).join("")}`;
+function renderHoyCitas(){const c=$("#hoyCitas");if(!c)return;const L=citas.filter(x=>x.fecha===TODAY&&(citaIni(x).getTime()+(x.dur||60)*6e4>Date.now()||(x.tipo!=="lider"&&!x.hecha))).sort(citaSort);if(!L.length){c.hidden=true;return}c.hidden=false;
+  const pend=L.filter(x=>citaIni(x).getTime()+(x.dur||60)*6e4>Date.now()).length;
+  c.innerHTML=`<div class="row between"><h3 style="margin:0">📅 ${pend?"Hoy tienes "+pend+" "+(pend===1?"cita":"citas"):"¿Cómo te fue hoy?"}</h3><button class="btn sm ghost" id="hcVer">Mi agenda</button></div>${L.map(citaCard).join("")}`;
   $("#hcVer").onclick=()=>{go("agenda");setAgVista("mia")};bindCitas(c)}
 function setAgVista(v){agVista=v;setSeg("agView",v);$("#agMia").hidden=v!=="mia";$("#agEquipo").hidden=v==="mia";if(v==="mia")renderMiAgenda()}
 $("#agView").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setAgVista(b.dataset.k)});
@@ -2297,7 +2330,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019203434";var busy=false,pend=null;
+(function(){var V="20261019204019";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
