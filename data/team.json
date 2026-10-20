@@ -265,15 +265,15 @@
    "id": "jonathan-rodriguez"
   },
   {
-   "actSemana": 0,
-   "activaciones": 0,
+   "actSemana": 1,
+   "activaciones": 1,
    "linea": "Juan Carlos Granados",
    "nombre": "José Raúl Hernández",
    "presSemana": 0,
    "presentaciones": 2,
    "regSemana": 0,
    "registros": 2,
-   "volumen": 0,
+   "volumen": 200,
    "id": "jose-raul-hernandez"
   },
   {
@@ -2201,6 +2201,14 @@
    "fecha": "2026-10-20T02:55:08.000Z",
    "fuente": "gmail",
    "id": "alma-martinez"
+  },
+  {
+   "socio": "Evelyn Johany Dubón Castro",
+   "paquete": "Classic",
+   "patrocinador": "Jose Raul Dubón Hernández",
+   "fecha": "2026-10-20T19:55:03.000Z",
+   "id": "evelyn-johany-dubon-castro",
+   "fuente": "gmail"
   }
  ],
  "academia": [],
@@ -2218,7 +2226,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-20T02:55:08.000Z",
+  "activacionesCorte": "2026-10-20T19:55:03.000Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
