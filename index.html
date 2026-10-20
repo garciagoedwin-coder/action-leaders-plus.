@@ -1091,16 +1091,16 @@ function rankDe(nombre){const num=v=>Number(v)||0,L=(T.ranking||[]).map(r=>({n:r
   const ip=pr.findIndex(x=>x===me),ia=ac.findIndex(x=>x===me);
   return{R:me.R,A:me.A,pPos:ip>=0?ip+1:0,aPos:ia>=0?ia+1:0,pNext:ip>0?pr[ip-1].R-me.R+1:0,aNext:ia>0?ac[ia-1].A-me.A+1:0,pTop10:ip<0||ip>=10?Math.max(1,(pr[9]?pr[9].R:0)-me.R+1):0}}
 function msgMotiva(x){const r=x.registro||{},a=actDe(x),S=a.sem,first=(r.nombre||"").split(" ")[0]||"",rk=rankDe(r.nombre||""),yo=miNombreCorto()||"";
-  const mes=(T.config&&T.config.rankingMes)||"este mes";const L=[];
-  L.push(`*¡Hola ${first}!* 👋`,"",`Te comparto cómo vas en *Action Leaders* 📊`,"");
-  L.push(`📅 *Días activos esta semana:* ${a.d7} de 7`,`🔥 *Racha:* ${a.racha} ${a.racha===1?"día":"días"}`,`👥 *Contactos esta semana:* ${S.contactos||0}`,"");
-  if(rk){L.push(`🏆 *Ranking de ${mes}*`,`🎯 Registros gratis: *${rk.R}*${rk.pPos?` · Lugar *#${rk.pPos}*`:""}`,`🚀 Activaciones: *${rk.A}*${rk.aPos?` · Lugar *#${rk.aPos}*`:""}`,"")}
-  if(!a.bien)L.push(`🎬 Te falta terminar tu *video de bienvenida*. ¡Es el primer paso!`,"");
-  L.push(a.racha>=3?`Llevas *${a.racha} días seguidos* 💪 Eso es disciplina de líder. ¡No rompas la racha!`:a.d7>=3?`Vas avanzando muy bien 👏 Sigue empujando, que estás *más cerca de lo que crees*.`:a.d7>0?`Ya diste los primeros pasos 👏 Ahora lo que marca la diferencia es la *constancia*: una acción cada día.`:`Hoy es un gran día para arrancar 🔥 Con *una sola acción* de tu rutina ya cuenta.`,"");
-  if(rk&&rk.pPos===1)L.push(`🥇 *Tu reto:* vas *#1 en registros*. ¡Defiende ese lugar!`,"");
-  else if(rk&&rk.pPos&&rk.pNext)L.push(`🎯 *Tu reto:* con *${rk.pNext} ${rk.pNext===1?"registro":"registros"} más* subes al lugar *#${rk.pPos-1}*.`,"");
-  else L.push(`🎯 *Tu reto:* con *1 registro gratis* ya entras al ranking.`,"");
-  L.push(`Cuenta conmigo, aquí estoy para apoyarte.`,`*¡Hasta que funcione!* 🚀`);if(yo)L.push("",`— ${yo}`);return L.join("\n")}
+  const mes=(T.config&&T.config.rankingMes)||"este mes";const L=[],cs=(x.actividad||{}).cons,okW=cs&&cs.wk===lunesK(),dias=okW?cs.semDias:a.d7,racha=okW?cs.racha:a.racha;
+  L.push(`*¡Hola, ${first}!* 👋`,"",`Le comparto cómo va en *Action Leaders* 📊`,"");
+  L.push(`📅 *Días activos esta semana:* ${dias} de 7`,`🔥 *Racha:* ${racha} ${racha===1?"día":"días"}`,`👥 *Contactos esta semana:* ${S.contactos||0}`,"");
+  if(rk){L.push(`🏆 *Ranking de ${mes}*`,`🎯 Registros inCruises: *${rk.R}*${rk.pPos?` · Lugar *#${rk.pPos}*`:""}`,`🚀 Activaciones: *${rk.A}*${rk.aPos?` · Lugar *#${rk.aPos}*`:""}`,"")}
+  if(!a.bien)L.push(`🎬 Le falta terminar su *video de bienvenida*. ¡Es el primer paso!`,"");
+  L.push(racha>=3?`Lleva *${racha} días seguidos* 💪 Eso es disciplina de líder. ¡No rompa la racha!`:dias>=3?`Va avanzando muy bien 👏 Siga empujando, que está *más cerca de lo que cree*.`:dias>0?`Ya dio los primeros pasos 👏 Ahora lo que marca la diferencia es la *constancia*: una acción cada día.`:`Hoy es un gran día para arrancar 🔥 Con *una sola acción* de su rutina ya cuenta.`,"");
+  if(rk&&rk.pPos===1)L.push(`🥇 *Su reto:* va *#1 en registros*. ¡Defienda ese lugar!`,"");
+  else if(rk&&rk.pPos&&rk.pNext)L.push(`🎯 *Su reto:* con *${rk.pNext} ${rk.pNext===1?"registro":"registros"} más* sube al lugar *#${rk.pPos-1}*.`,"");
+  else L.push(`🎯 *Su reto:* con *1 registro* ya entra al ranking.`,"");
+  L.push(`Cuente conmigo, aquí estoy para apoyarle.`,`*¡Hasta que funcione!* 🚀`);if(yo)L.push("",`— ${yo}`);return L.join("\n")}
 let miosVista="dir";
 async function loadMios(){miosErr=false;const me=store.uid,M={};
   try{const q=await store.db.collection("users").where("registro.patrocinadorUid",me).get();q.docs.forEach(d=>M[d.id]=Object.assign({uid:d.id},d.data()))}catch(e){miosErr=true}
@@ -1365,10 +1365,10 @@ function evMsg(e){const F={"Honduras":"🇭🇳","Miami":"🇺🇸","España":"�
   else if(e.hora)L.push("🕗 "+h12(e.hora)+" (hora de Honduras)","");
   if(e.responsable)L.push("🎤 *Presenta:* "+e.responsable);if(e.edifica)L.push("⭐ *Edifica:* "+e.edifica);if(e.responsable||e.edifica)L.push("");
   if(e.lugar)L.push("📍 *Lugar:* "+e.lugar,"");
-  const pil=/p[ií]ldora/i.test(e.titulo||"");const k=evLink(e);if(pil)L.push("📱 *En vivo por TikTok Live*",(T.config&&T.config.tiktok)||"Síguenos en TikTok y activa las notificaciones 🔔","");else if(k)L.push("💻 *Únete por Zoom:*",k,"");
-  if(pil)L.push("☀️ Despierta tu mejor versión cada mañana y toma decisiones que te acerquen a tu libertad financiera.");
-  if(tr)L.push("✨ Aprende, lidera y lleva tu negocio a otro nivel junto a una comunidad de líderes.","","⚠️ _Este enlace es solo para socios del equipo. Por favor no lo compartas con prospectos._");
-  if(e.tipo==="Presentación")L.push("✨ Descubre cómo construir libertad financiera mientras vives experiencias que transforman tu vida.");
+  const pil=/p[ií]ldora/i.test(e.titulo||"");const k=evLink(e);if(pil)L.push("📱 *En vivo por TikTok Live*",(T.config&&T.config.tiktok)||"Síganos en TikTok y active las notificaciones 🔔","");else if(k)L.push("💻 *Únase por Zoom:*",k,"");
+  if(pil)L.push("☀️ Despierte su mejor versión cada mañana y tome decisiones que le acerquen a su libertad financiera.");
+  if(tr)L.push("✨ Aprenda, lidere y lleve su negocio a otro nivel junto a una comunidad de líderes.","","⚠️ _Este enlace es solo para socios del equipo. Por favor no lo comparta con prospectos._");
+  if(e.tipo==="Presentación")L.push("✨ Descubra cómo construir libertad financiera mientras vive experiencias que transforman su vida.");
   while(L.length&&L[L.length-1]==="")L.pop();return L.join("\n")}
 const imgLoad=(src,cors)=>new Promise(ok=>{const i=new Image();if(cors)i.crossOrigin="anonymous";i.onload=()=>ok(i);i.onerror=()=>ok(null);i.src=src});
 const RANGO_CORTO={"Senior Marketing Director":"Senior M Director","Regional Director":"Regional Director","National Director":"National Director","Marketing Director":"Marketing Director","Team Leader":"Team Leader","Calificado al sistema":"Action Leader"};
@@ -1471,7 +1471,7 @@ async function histCanvas(k){const W=1080,H=1920,cv=document.createElement("canv
   const im=src?await imgLoad(src,!/^data:/.test(src)):null;g.save();g.beginPath();g.arc(150,y0+60,60,0,Math.PI*2);g.clip();
   if(im){const s=Math.max(120/im.width,120/im.height);g.drawImage(im,150-im.width*s/2,y0+60-im.height*s/2,im.width*s,im.height*s)}else{g.fillStyle="#2AC1F1";g.fillRect(90,y0,120,120);g.fillStyle="#10222b";g.font="800 46px "+HF;g.textAlign="center";g.fillText(initials(nm),150,y0+76)}
   g.restore();g.beginPath();g.arc(150,y0+60,62,0,Math.PI*2);g.lineWidth=4;g.strokeStyle="#2AC1F1";g.stroke();
-  g.textAlign="left";g.font="700 40px "+BF;g.fillStyle="#fff";g.fillText(nm,235,y0+52);g.font="500 32px "+BF;g.fillStyle="#2AC1F1";g.fillText("Escríbeme \"INFO\"",235,y0+100);
+  g.textAlign="left";g.font="700 40px "+BF;g.fillStyle="#fff";g.fillText(nm,235,y0+52);g.font="500 32px "+BF;g.fillStyle="#2AC1F1";g.fillText("Escríbame \"INFO\"",235,y0+100);
   return cv}
 let histFile=null,histKey="";window.__histCanvas=histCanvas;
 async function renderHist(){const c=$("#histCard");if(!c)return;const hecho=(profile.historias||{})[TODAY];if(!fbUser||hecho){c.hidden=true;return}c.hidden=false;
@@ -2330,7 +2330,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019204019";var busy=false,pend=null;
+(function(){var V="20261020092710";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
