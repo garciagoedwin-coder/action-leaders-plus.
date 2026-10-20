@@ -1054,7 +1054,7 @@ function sociosCSV(){const rows=[["Nombre","Correo","WhatsApp","Patrocinador","P
   const csv="\ufeff"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="socios-action-leaders-"+TODAY+".csv";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
 let mios=null,miosErr=false;
-function rankDe(nombre){const num=v=>Number(v)||0,L=(T.ranking||[]).map(r=>({n:r.nombre,R:num(r.registros),A:num(r.activaciones),P:num(r.presentaciones)}));
+function rankDe(nombre){const num=v=>Number(v)||0,L=(T.ranking||[]).map(r=>({n:r.nombre,R:num(r.registros)+num(r.activaciones),A:num(r.activaciones),P:num(r.presentaciones)}));
   const me=L.find(r=>sameN(r.n,nombre));if(!me)return null;
   const pr=L.filter(x=>x.R>0).sort((a,b)=>b.R-a.R||b.A-a.A||b.P-a.P||String(a.n).localeCompare(b.n,"es"));
   const ac=L.filter(x=>x.A>0).sort((a,b)=>b.A-a.A||b.R-a.R||String(a.n).localeCompare(b.n,"es"));
@@ -1222,7 +1222,7 @@ function renderEquipo(){const b=$("#eqBody");
     if(!T.ranking.length){b.innerHTML=emptyCard("El ranking aún no tiene datos","Aquí aparecerán las presentaciones registradas gratis en inCruises y los socios nuevos de cada miembro del equipo.");return}
     const sem=rankTab==="semana",kR=sem?"regSemana":"registros",kA=sem?"actSemana":"activaciones",kP=sem?"presSemana":"presentaciones";
     const num=v=>Number(v)||0;
-    let d=T.ranking.map(r=>({...r,R:num(r[kR]),A:num(r[kA]),P:num(r[kP]),me:r.nombre===profile.miNombre}));
+    let d=T.ranking.map(r=>({...r,R:num(r[kR])+num(r[kA]),A:num(r[kA]),P:num(r[kP]),me:r.nombre===profile.miNombre}));
     d=rankMetric==="nuevos"?d.filter(x=>x.A>0).sort((a,b)=>b.A-a.A||b.R-a.R||b.P-a.P||String(a.nombre).localeCompare(b.nombre,"es")):d.filter(x=>x.R>0).sort((a,b)=>b.R-a.R||b.A-a.A||b.P-a.P||String(a.nombre).localeCompare(b.nombre,"es"));
     d.forEach(x=>x.v=rankMetric==="nuevos"?x.A:x.R);
     const PKV={Starter:50,Classic:200,Premium:500},nrm=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim();
@@ -2297,7 +2297,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261019161442";var busy=false,pend=null;
+(function(){var V="20261019200230";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
