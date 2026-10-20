@@ -697,6 +697,7 @@ nav.tabs button{z-index:0;isolation:isolate}
         <span class="chip c-gold" id="streak">Racha 0 días</span>
       </div>
       <div class="card" id="avisoCard" hidden></div>
+      <div class="card" id="miWaCard" hidden style="gap:8px"></div>
       <div class="card" id="accesos" hidden></div>
       <div class="card" id="histCard" hidden></div>
       <div class="card" id="whoCard" hidden></div>
@@ -1013,6 +1014,13 @@ function renderWho(){const c=$("#whoCard");c.hidden=true;return;
   c.innerHTML=`<h3>¿Cuál es tu nombre en el reporte del equipo?</h3><p class="small muted">Elígelo una vez para ver tus presentaciones y tu posición resaltada en el ranking.</p>
    <div class="row"><select class="inp grow" id="whoSel"><option value="">Selecciona tu nombre</option>${names.map(n=>`<option>${esc(n)}</option>`).join("")}</select><button class="btn" id="whoOk">Listo</button></div>`;
   $("#whoOk").onclick=()=>{const v=$("#whoSel").value;if(!v)return;profile.miNombre=v;store.set("perfil",profile);renderMe();toast("Listo, "+v.split(" ")[0]+". Ahora sube tu foto")}}
+function renderMiWa(){const c=$("#miWaCard");if(!c)return;const r=(regDoc&&regDoc.registro)||null;if(!r||!store.db||String(r.whatsapp||"").replace(/\D/g,"").length>=8||LS.get("miWaNo")===TODAY){c.hidden=true;return}c.hidden=false;
+  c.innerHTML=`<b>📱 Agrega tu WhatsApp</b><p class="small muted" style="margin:0">Así tu patrocinador y tu equipo pueden escribirte directo desde la app.</p>
+   <div class="row" style="gap:8px"><select class="inp" id="mwC" style="max-width:120px">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")?"selected":""}>+${k}</option>`).join("")}</select><input class="inp grow" id="mwT" type="tel" placeholder="Tu número" style="min-width:0"></div>
+   <div class="row" style="gap:8px"><button class="btn sm grow" id="mwOk">Guardar</button><button class="btn sm ghost" id="mwNo">Ahora no</button></div>`;
+  $("#mwNo").onclick=()=>{LS.set("miWaNo",TODAY);c.hidden=true};
+  $("#mwOk").onclick=async()=>{const v=$("#mwT").value.trim(),sp=splitPhone(v),n=sp.cc?sp.cc+sp.num:waNum(v,$("#mwC").value);if(n.length<8){toast("Escribe tu número");return}
+    try{await store.db.doc("users/"+store.uid).set({registro:{whatsapp:n}},{merge:true});regDoc.registro.whatsapp=n;c.hidden=true;toast("¡Listo! WhatsApp guardado ✓")}catch(e){toast("No se pudo guardar")}}}
 function renderAviso(){const c=$("#avisoCard");if(!c)return;c.hidden=true;return;if(profile.avisado||!profile.bienvenida||welSigned!==true){c.hidden=true;return}
   c.hidden=false;c.innerHTML=`<h3>¡Ya estás dentro! Avísanos</h3><p class="small muted">Llena tus datos para que tu equipo sepa que ya entraste a Action Leaders Plus.</p>
    <div class="row" style="margin-top:8px"><a class="btn grow" href="${AVISO_FORM}" target="_blank" rel="noopener" id="avisoGo">Avisar que ya estoy dentro</a><button class="btn ghost" id="avisoX">Ya lo hice</button></div>`;
@@ -1101,8 +1109,18 @@ function msgMotiva(x){const r=x.registro||{},a=actDe(x),S=a.sem,first=(r.nombre|
   else if(rk&&rk.pPos&&rk.pNext)L.push(`🎯 *Su reto:* con *${rk.pNext} ${rk.pNext===1?"registro":"registros"} más* sube al lugar *#${rk.pPos-1}*.`,"");
   else L.push(`🎯 *Su reto:* con *1 registro* ya entra al ranking.`,"");
   L.push(`Cuente conmigo, aquí estoy para apoyarle.`,`*¡Hasta que funcione!* 🚀`);if(yo)L.push("",`— ${yo}`);return L.join("\n")}
-let miosVista="dir";
-async function loadMios(){miosErr=false;const me=store.uid,M={};
+let miosVista="dir",telSoc=null;
+function waSocio(x){const r=x.registro||{},w=String(r.whatsapp||"").replace(/\D/g,"");if(w.length>=8)return w;const t=(telSoc||{})[x.uid];if(t)return t;
+  const c=(contacts||[]).find(c=>sameN(c.name,r.nombre||"")&&waNum(c.phone,c.cc));return c?waNum(c.phone,c.cc):""}
+function pedirWaSocio(x,t){const nm=(x.registro||{}).nombre||"este socio";
+  openSheet(`<h2>📱 WhatsApp de ${esc(nm.split(" ")[0])}</h2><p class="small muted" style="margin:0">Guárdalo una vez y la próxima vez se abre su chat directo.</p>
+   <div class="grid2"><div class="field"><label for="wsC">País</label><select class="inp" id="wsC">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")?"selected":""}>${pn} (+${k})</option>`).join("")}</select></div>
+   <div class="field"><label for="wsT">WhatsApp</label><input class="inp" id="wsT" type="tel" placeholder="Número"></div></div>
+   <button class="btn" id="wsOk" style="width:100%;background:#25D366;color:#fff">Guardar y abrir chat</button><button class="btn ghost" id="wsSh" style="width:100%">Elegir el chat en WhatsApp</button>`,()=>{
+    $("#wsOk").onclick=async()=>{let v=$("#wsT").value.trim();const sp=splitPhone(v),n=sp.cc?sp.cc+sp.num:waNum(v,$("#wsC").value);if(n.length<8){toast("Escribe el número");return}
+      telSoc=Object.assign({},telSoc||{},{[x.uid]:n});store.set("telsocios",telSoc);LS.set("lastCC",$("#wsC").value);closeSheet();location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t)};
+    $("#wsSh").onclick=async()=>{closeSheet();if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}})}
+async function loadMios(){miosErr=false;const me=store.uid,M={};if(telSoc===null){try{telSoc=(await store.get("telsocios"))||{}}catch(e){telSoc={}}}
   try{const q=await store.db.collection("users").where("registro.patrocinadorUid",me).get();q.docs.forEach(d=>M[d.id]=Object.assign({uid:d.id},d.data()))}catch(e){miosErr=true}
   try{const q=await store.db.collection("users").where("registro.linea",me,"array-contains").get();q.docs.forEach(d=>{if(!M[d.id])M[d.id]=Object.assign({uid:d.id},d.data())})}catch(e){}
   const L=Object.values(M).filter(x=>x.registro&&x.uid!==me);
@@ -1113,9 +1131,8 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
   if(mios===null){b.innerHTML=`<p class="muted small">Cargando tus socios…</p>`;loadMios();return}
   const inv=`<div class="card"><h3 style="margin:0">🔗 Tu enlace de invitación</h3><p class="small muted" style="margin:0">Los socios que se registren con tu enlace aparecen aquí con su avance.</p>
     <div class="ref"><code style="word-break:break-all">${esc(miEnlace())}</code><button class="btn sm gold" id="miosCopy">Copiar</button></div></div>`;
-  const bind=()=>{b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=String((x.registro||{}).whatsapp||"").replace(/\D/g,"");
-    if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}
-    if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)});const c=$("#miosCopy");if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(miEnlace());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
+  const bind=()=>{b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=waSocio(x);
+    if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});const c=$("#miosCopy");if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(miEnlace());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
   if(miosErr){b.innerHTML=emptyCard("No se pudo cargar tu equipo","Revisa tu conexión e intenta de nuevo. Si sigue igual, avisa al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
   if(!mios.length){b.innerHTML=`<div class="card empty"><h3>Aún no tienes socios en la app</h3><p class="small muted">Cuando firmes a alguien, mándale tu mensaje de bienvenida desde el CRM o comparte tu enlace. Al registrarse aparecerá aquí.</p></div>`+inv;bind();return}
   const lin=true;const V=miosVista==="dir"?mios.filter(x=>x.nivel===1):mios.slice().sort((a,b)=>a.nivel-b.nivel||byAct(a,b));
@@ -2135,12 +2152,14 @@ function renderWel(){const el=$("#wel");
       <div class="field"><label for="rg_nombre">Nombre completo</label><input class="inp" id="rg_nombre" autocomplete="name" value="${esc(R0.nombre||(invData&&invData.nombre)||(fbUser&&fbUser.displayName)||"")}"></div>
       ${invSponsor?`<div class="card" style="text-align:left;gap:4px;padding:12px 14px"><span class="small muted">Tu patrocinador</span><b style="font-weight:600">${esc(invSponsor.nombre||"Tu patrocinador")} ✓</b>${invData&&invData.plan?`<span class="small muted" style="margin-top:4px">Tu paquete</span><b style="font-weight:600">${esc(invData.plan)} ✓</b>`:""}</div>`:`<div class="field"><label for="rg_patro">Nombre de tu patrocinador</label><input class="inp" id="rg_patro" value=""></div>`}
       ${invData&&invData.plan?"":`<div class="field"><label for="rg_plan">Plan de inicio</label><select class="inp" id="rg_plan"><option value="">Elige tu plan</option><option>Classic</option><option>Premium</option></select></div>`}
+      ${invData&&invData.wa?"":`<div class="field"><label for="rg_wa">Tu WhatsApp</label><div class="row" style="gap:8px"><select class="inp" id="rg_cc" style="max-width:110px">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")?"selected":""}>+${k}</option>`).join("")}</select><input class="inp grow" id="rg_wa" type="tel" placeholder="Para que tu patrocinador te escriba" style="min-width:0"></div></div>`}
       <p class="small" id="regErr" style="color:var(--bad)" hidden></p>
       <button class="btn pill dark" id="regOk" type="submit">${invSponsor?"Entrar al equipo":"Enviar mi registro"}</button></form></div>`);
     const F=$("#regF");if(F)F.onsubmit=async ev=>{ev.preventDefault();const g=k=>$("#rg_"+k).value.trim(),err=$("#regErr");
       const g2=k=>{const e=$("#rg_"+k);return e?e.value.trim():""};const d={nombre:g("nombre"),patrocinador:invSponsor?invSponsor.nombre:g2("patro"),plan:invData&&invData.plan?invData.plan:g2("plan")};if(invSponsor){d.patrocinadorUid=invSponsor.uid;d.invitadoPor=invSponsor.nombre}
       if(invSponsor){let sl=[];try{const fd=await store.db.doc("fotos/"+invSponsor.uid).get();if(fd.exists&&Array.isArray(fd.data().linea))sl=fd.data().linea}catch(x){}d.linea=[invSponsor.uid].concat(sl.filter(u=>u&&u!==invSponsor.uid&&u!==store.uid)).slice(0,60)}
-      if(invData){d.invId=invData.id;d.planPor="patrocinador";if(invData.pais)d.pais=invData.pais;if(invData.wa)d.whatsapp=String(invData.wa).replace(/\D/g,"").slice(0,15)}try{d.inv=(localStorage.getItem("alp:inv")||"").slice(0,60)}catch(x){};
+      if(invData){d.invId=invData.id;d.planPor="patrocinador";if(invData.pais)d.pais=invData.pais;if(invData.wa)d.whatsapp=String(invData.wa).replace(/\D/g,"").slice(0,15)}
+      {const we=$("#rg_wa");if(we&&we.value.trim()){const sp=splitPhone(we.value),n=sp.cc?sp.cc+sp.num:waNum(we.value,$("#rg_cc").value);if(n.length>=8)d.whatsapp=n.slice(0,15)}}try{d.inv=(localStorage.getItem("alp:inv")||"").slice(0,60)}catch(x){};
       const lab={nombre:"Nombre completo",patrocinador:"Patrocinador",plan:"Plan"};
       for(const k in lab)if(!d[k]){err.textContent="Completa: "+lab[k];err.hidden=false;return}
       err.hidden=true;const bt=$("#regOk");bt.disabled=true;bt.textContent="Enviando…";
@@ -2320,7 +2339,7 @@ async function startApp(u){
   await loadMine();
   if(regDoc&&regDoc.registro){welState.registro=true;publicarInv();if(profile.waPublico)setTimeout(publicarPerfil,4000)}
   renderWel();renderAviso();renderAccesos();
-  renderMeBtn();setTimeout(renderHist,800);setTimeout(()=>loadConst(true),1800);if(isAdmin)setTimeout(()=>{if(!socios)loadSocios();else syncConst()},2500);
+  renderMeBtn();setTimeout(renderHist,800);setTimeout(renderMiWa,1200);setTimeout(()=>loadConst(true),1800);if(isAdmin)setTimeout(()=>{if(!socios)loadSocios();else syncConst()},2500);
   try{renderEquipo();renderCal();renderNext();renderAca()}catch(e){}
 }
 function bootFB(){if(window.FB&&window.FB.__ready!==undefined)return;}
@@ -2330,7 +2349,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020092710";var busy=false,pend=null;
+(function(){var V="20261020093339";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
