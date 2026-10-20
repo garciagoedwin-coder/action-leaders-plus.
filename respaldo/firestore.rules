@@ -1,0 +1,80 @@
+// ⚠️ RECONSTRUIDO el 2026-10-20 a partir del código de la app y de los pasos
+// que Edwin pegó en la consola. NO es la copia exacta de la consola.
+// Para dejar la copia exacta: Firebase → Firestore Database → Reglas → copiar
+// todo y reemplazar este archivo (y quitar este aviso).
+// Proyecto: action-leaders-plus-8f1b8
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() && request.auth.token.email_verified == true &&
+        request.auth.token.email in ['garciagoedwin@gmail.com','actionleadersoficial@gmail.com','edwing.go@gmail.com'];
+    }
+    function userDoc(uid) { return get(/databases/$(database)/documents/users/$(uid)).data; }
+
+    // Datos del equipo que edita el admin (reto, calendario, academia)
+    match /team/{doc=**} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    // Cada socio
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin()
+        || resource.data.registro.patrocinadorUid == request.auth.uid
+        || request.auth.uid in resource.data.registro.linea);
+      allow create: if signedIn() && request.auth.uid == uid;
+      allow update: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow delete: if isAdmin();
+
+      // perfil, rutina-AAAA-MM-DD, bienvenida, telsocios…
+      match /datos/{doc} {
+        allow read, write: if signedIn() && (request.auth.uid == uid || isAdmin());
+      }
+      match /crm/{doc} {
+        allow read, write: if signedIn() && request.auth.uid == uid;
+      }
+      match /citas/{doc} {
+        allow read, write: if signedIn() && request.auth.uid == uid;
+      }
+      // La página pública "Agenda conmigo" (conoce.html) crea prospectos sin sesión
+      match /prospectos/{doc} {
+        allow read, delete: if signedIn() && request.auth.uid == uid;
+        allow create: if request.resource.data.keys().hasOnly(['nombre','cc','tel','interes','t','s','tipo'])
+          && request.resource.data.nombre is string && request.resource.data.nombre.size() < 80;
+      }
+    }
+
+    // Invitaciones personales (las crea el patrocinador, las lee quien se registra)
+    match /invitaciones/{id} {
+      allow read: if true;
+      allow create: if signedIn();
+      allow update, delete: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+    }
+
+    // Ranking de constancia (rutina)
+    match /constancia/{uid} {
+      allow read: if signedIn();
+      allow write: if signedIn() && (request.auth.uid == uid || isAdmin());
+    }
+
+    // Fotos de perfil
+    match /fotos/{uid} {
+      allow read: if true;
+      allow write: if signedIn() && (request.auth.uid == uid || isAdmin());
+    }
+
+    // Página pública del socio (conoce.html) y sus reservas
+    match /perfiles/{code} {
+      allow read: if true;
+      allow write: if signedIn() && request.resource.data.uid == request.auth.uid;
+    }
+    match /reservas/{id} {
+      allow read: if true;
+      allow create: if !exists(/databases/$(database)/documents/reservas/$(id));
+    }
+  }
+}
