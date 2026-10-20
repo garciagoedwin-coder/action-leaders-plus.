@@ -142,9 +142,17 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .check svg{width:16px;height:16px}
 .counter{display:flex;align-items:center;gap:6px;flex:none}
 .counter button{width:30px;height:30px;border-radius:9px;border:0;background:var(--surface-2);font-weight:700;font-size:17px;line-height:1;padding:0}
-.counter .num{min-width:42px;text-align:center;font-size:19px}
+.counter .num{min-width:30px;text-align:center;font-size:19px}
 .done-t{text-decoration:line-through;color:var(--muted)}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.miwa{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--gold-soft);color:var(--gold-ink);font-size:13.5px;line-height:1.3}
+.miwa span{flex:1}.miwa .x{background:none;border:0;color:inherit;font-size:14px;padding:4px;cursor:pointer;opacity:.7}
+.metaStrip{border-radius:18px;padding:14px 16px;color:#fff;display:flex;flex-direction:column;gap:6px;cursor:pointer;box-shadow:0 10px 24px -14px rgba(0,0,0,.45);animation:banIn .5s cubic-bezier(.2,.8,.2,1)}
+.metaStrip .mtN{font-size:17px}.metaStrip .mtE{font-size:12.5px;font-weight:700;opacity:.85}.metaStrip .mtV{font-size:13px;opacity:.95}
+.metaStrip .mtBar{height:8px;border-radius:99px;background:rgba(255,255,255,.3);overflow:hidden}.metaStrip .mtBar i{display:block;height:100%;background:#fff;border-radius:99px}
+.metaStrip small{font-size:12px;opacity:.9}.metaStrip .mtS{font-size:13.5px;padding-top:6px;border-top:1px solid rgba(255,255,255,.25)}
+.metaStrip.vacia{background:var(--surface)!important;color:var(--ink);border:1.5px dashed var(--brand);box-shadow:none}.metaStrip.vacia small{display:block;color:var(--muted);opacity:1}
+.pmA{padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--surface) 70%,transparent)}.pmCta{width:100%;border:0;font:inherit;font-weight:700;color:var(--gold-ink);text-align:left;cursor:pointer}
 .metas .mt{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:14px;background:var(--surface-2)}
 .metas .mt .row{gap:8px}.metas .mt b.big{font-family:var(--f-num);font-size:26px;line-height:1}
 .metas .lbl{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
@@ -186,7 +194,7 @@ h1.motto{overflow:hidden;height:1.3em;line-height:1.3em;margin-top:2px}
 .week i{width:100%;max-width:34px;aspect-ratio:1;border-radius:9px;background:var(--surface-2);display:grid;place-items:center;font-style:normal;font-family:var(--f-num);font-size:14px;color:var(--muted)}
 .week i.full{background:var(--good);color:#fff} .week i.part{background:var(--good-soft);color:var(--good)} .week i.today{outline:2px solid var(--gold);outline-offset:1px}
 .step-n{width:30px;height:30px;border-radius:50%;background:var(--surface-2);color:var(--brand);display:grid;place-items:center;font-family:var(--f-num);font-weight:700;font-size:16px;flex:none}
-.step-n.ok{background:var(--good);color:#fff}
+.step-n:not(.ok){background:transparent;border:2px solid var(--line)}.step-n.ok{background:var(--good);color:#fff}
 .step-n svg{width:16px;height:16px}
 /* ranking */
 .podium{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:end;gap:8px}
@@ -734,29 +742,31 @@ nav.tabs button{z-index:0;isolation:isolate}
         <span class="chip c-gold" id="streak">Racha 0 días</span>
       </div>
       <div class="card" id="avisoCard" hidden></div>
-      <div class="card" id="miWaCard" hidden style="gap:8px"></div>
+      <div class="miwa" id="miWaCard" hidden></div>
       <div class="actBan" id="actBan" hidden></div>
-      <div class="card" id="accesos" hidden></div>
-      <div class="card" id="histCard" hidden></div>
+      <div class="metaStrip" id="metaStrip" hidden></div>
       <div class="card" id="whoCard" hidden></div>
       <div class="card">
+        <div class="row between"><h3>🔥 Tu día</h3><span class="num" style="font-size:20px" id="dayPct">0%</span></div>
         <div id="rutAlert"></div>
-        <div class="row between"><h3>Progreso de hoy</h3><span class="num" style="font-size:20px" id="dayPct">0%</span></div>
-        <p class="small muted" style="margin:-4px 0 0">Con 1 acción en cada punto, tu día queda completo.</p>
         <div class="bar"><i id="dayBar" style="width:0%"></i></div>
         <div class="list" id="tasks"></div>
       </div>
-      <div class="card perf">
-        <div class="row between"><h3>Mi desempeño personal</h3><button class="btn sm" id="verMes">📊 Ver</button></div>
-        <div class="week" id="week" role="button" tabindex="0" style="cursor:pointer"></div>
-        <p class="small muted" style="margin:0">Verde = rutina completa · Toca para ver tu mes, registros, activaciones y tu lugar en el ranking</p>
-      </div>
-      <div class="card metas" id="metasCard" hidden></div>
+      <div class="card" id="accesos" hidden></div>
       <div class="card" id="hoyCitas" hidden></div>
-      <div class="card" id="topRut" hidden></div>
       <div class="card" id="nextEvents"></div>
-      <div class="card reto" id="retoMini"></div>
-      <div class="card">
+      <div class="card perf">
+        <div class="row between"><h3>📊 Mi semana</h3><button class="btn sm" id="verMes">Ver mi mes</button></div>
+        <div class="week" id="week" role="button" tabindex="0" style="cursor:pointer"></div>
+        <div id="perfMeta"></div>
+        <p class="small muted" style="margin:0">Verde = rutina completa · Toque para ver su mes y su lugar en el ranking</p>
+      </div>
+      <div class="card" id="topAct" hidden></div>
+      <div id="histCard" hidden></div>
+      <div class="card metas" id="metasCard" hidden></div>
+      <div class="card" id="topRut" hidden></div>
+      <div class="card reto" id="retoMini" hidden></div>
+      <div class="card" hidden>
         <div class="row between"><h3>Tu enlace de referido</h3><button class="btn sm ghost" id="editRef">Editar</button></div>
         <div class="ref"><code id="refLink"></code><button class="btn sm gold" id="copyRef">Copiar</button></div>
         <p class="small muted" id="refHint">Pega aquí tu enlace oficial de la compañía y compártelo con tus prospectos.</p>
@@ -956,16 +966,16 @@ function dayScore(d,key){key=key||TODAY;const L=ROUTINE.filter(r=>!r.desde||key>
 const okIcon=CHECK;
 function renderTasks(){
   $("#tasks").innerHTML=ROUTINE.map(r=>{const v=day[r.k]||0,done=v>=1;
-    if(r.type==="check")return `<div class="task"><button class="check" aria-pressed="${done}" data-k="${r.k}" aria-label="Marcar ${esc(r.t)}">${done?CHECK:""}</button><span class="grow"><span class="${done?"done-t":""}">${esc(r.t)}</span>${r.sub&&!done?`<br><span class="small muted">${esc(r.sub)}</span>`:""}${r.link?`<br><a class="chip c-good" style="display:inline-flex;margin-top:6px;text-decoration:none;font-weight:700" href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.linkT||"Abrir")}</a>`:""}</span></div>`;
-    return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:"1"}</span><span class="grow ${done?"done-t":""}">${esc(r.t)}<br><span class="small muted">${r.k==="presentaciones"&&(day.presL||[]).length?"🎯 "+day.presL.map(x=>esc(x.n.split(" ")[0])).join(", "):"Mínimo 1"+(r.goal>1?" · ideal "+r.goal:"")+(RETO_KEYS.includes(r.k)?" · cuenta para el reto":"")}</span></span>
+    if(r.type==="check")return `<div class="task"><button class="check" aria-pressed="${done}" data-k="${r.k}" aria-label="Marcar ${esc(r.t)}">${done?CHECK:""}</button><span class="grow"><span class="${done?"done-t":""}">${esc(r.t)}</span>${r.k==="historia"?`<br><button type="button" class="chip ${done?"c-brand":"c-good"}" data-hist="1" style="border:0;font:inherit;font-weight:700;margin-top:6px;cursor:pointer">${done?"Ver / compartir otra vez":"📤 Compartir mi historia"}</button>`:r.sub&&!done?`<br><span class="small muted">${esc(r.sub)}</span>`:""}${r.link?`<br><a class="chip c-good" style="display:inline-flex;margin-top:6px;text-decoration:none;font-weight:700" href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.linkT||"Abrir")}</a>`:""}</span></div>`;
+    return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:""}</span><span class="grow ${done?"done-t":""}">${esc(r.t)}<br><span class="small muted">${r.k==="presentaciones"&&(day.presL||[]).length?"🎯 "+day.presL.map(x=>esc(x.n.split(" ")[0])).join(", "):"Mínimo 1"+(r.goal>1?" · ideal "+r.goal:"")}</span></span>
       <span class="counter"><button data-dec="${r.k}" aria-label="Restar">−</button><span class="num">${v}</span><button data-inc="${r.k}" aria-label="Sumar">+</button></span></div>`}).join("");
   const p=Math.round(dayScore(day)*100);$("#dayPct").textContent=p+"%";$("#dayBar").style.width=p+"%";
   const falta=ROUTINE.filter(r=>(!r.desde||TODAY>=r.desde)&&!((day[r.k]||0)>=1)).length,ra=$("#rutAlert");
-  if(ra){const st=falta?"pend":"ok";if(ra.dataset.st!==st||ra.dataset.n!==String(falta)){ra.innerHTML=falta?`<div class="rut-al">🔥 <b>¡Haz tu rutina hoy!</b> <span>Te ${falta===1?"falta 1 acción":"faltan "+falta+" acciones"}</span></div>`:`<div class="rut-al ok">✅ <b>¡Rutina completa!</b> <span>Así se construye. Mañana otra vez.</span></div>`;
+  if(ra){const st=falta?"pend":"ok";if(ra.dataset.st!==st||ra.dataset.n!==String(falta)){ra.innerHTML=falta?`<div class="rut-al">🔥 <b>¡Haga su rutina hoy!</b> <span>Le ${falta===1?"falta 1 acción":"faltan "+falta+" acciones"} · 1 en cada punto</span></div>`:`<div class="rut-al ok">✅ <b>¡Rutina completa!</b> <span>Así se construye. Mañana otra vez.</span></div>`;
     if(ra.dataset.st!==st)ra.firstChild&&ra.firstChild.classList.add("shake");ra.dataset.st=st;ra.dataset.n=String(falta)}}
 }
 let saveDayT;function saveDay(){clearTimeout(saveDayT);saveDayT=setTimeout(()=>store.set("rutina-"+TODAY,day),600);weekCache[TODAY]=day;renderWeek()}
-$("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+$("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.hist){abrirHist();return}
   if(b.dataset.k){day[b.dataset.k]=day[b.dataset.k]?0:1}
   else if(b.dataset.inc==="presentaciones"){abrirPres();return}
   else if(b.dataset.dec==="presentaciones"){quitarPres();return}
@@ -1069,12 +1079,13 @@ function renderWho(){const c=$("#whoCard");c.hidden=true;return;
    <div class="row"><select class="inp grow" id="whoSel"><option value="">Selecciona tu nombre</option>${names.map(n=>`<option>${esc(n)}</option>`).join("")}</select><button class="btn" id="whoOk">Listo</button></div>`;
   $("#whoOk").onclick=()=>{const v=$("#whoSel").value;if(!v)return;profile.miNombre=v;store.set("perfil",profile);renderMe();toast("Listo, "+v.split(" ")[0]+". Ahora sube tu foto")}}
 function renderMiWa(){const c=$("#miWaCard");if(!c)return;const r=(regDoc&&regDoc.registro)||null;if(!r||!store.db||String(r.whatsapp||"").replace(/\D/g,"").length>=8||LS.get("miWaNo")===TODAY){c.hidden=true;return}c.hidden=false;
-  c.innerHTML=`<b>📱 Agrega tu WhatsApp</b><p class="small muted" style="margin:0">Así tu patrocinador y tu equipo pueden escribirte directo desde la app.</p>
-   <div class="row" style="gap:8px"><select class="inp" id="mwC" style="max-width:120px">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")?"selected":""}>+${k}</option>`).join("")}</select><input class="inp grow" id="mwT" type="tel" placeholder="Tu número" style="min-width:0"></div>
-   <div class="row" style="gap:8px"><button class="btn sm grow" id="mwOk">Guardar</button><button class="btn sm ghost" id="mwNo">Ahora no</button></div>`;
+  c.innerHTML=`<span>📱 <b>Agregue su WhatsApp</b> para que su equipo le escriba directo</span><button class="btn sm" id="mwAbrir">Agregar</button><button class="x" id="mwNo" aria-label="Ahora no">✕</button>`;
   $("#mwNo").onclick=()=>{LS.set("miWaNo",TODAY);c.hidden=true};
-  $("#mwOk").onclick=async()=>{const v=$("#mwT").value.trim(),sp=splitPhone(v),n=sp.cc?sp.cc+sp.num:waNum(v,$("#mwC").value);if(n.length<8){toast("Escribe tu número");return}
-    try{await store.db.doc("users/"+store.uid).set({registro:{whatsapp:n}},{merge:true});regDoc.registro.whatsapp=n;c.hidden=true;toast("¡Listo! WhatsApp guardado ✓")}catch(e){toast("No se pudo guardar")}}}
+  $("#mwAbrir").onclick=()=>{openSheet(`<h2>📱 Su WhatsApp</h2><p class="small muted" style="margin:0">Así su patrocinador y su equipo pueden escribirle directo desde la app.</p>
+   <div class="row" style="gap:8px"><select class="inp" id="mwC" style="max-width:120px">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")?"selected":""}>+${k}</option>`).join("")}</select><input class="inp grow" id="mwT" type="tel" placeholder="Su número" style="min-width:0"></div>
+   <button class="btn" id="mwOk" style="width:100%">Guardar</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`);
+  $("#mwOk").onclick=async()=>{const v=$("#mwT").value.trim(),sp=splitPhone(v),n=sp.cc?sp.cc+sp.num:waNum(v,$("#mwC").value);if(n.length<8){toast("Escriba su número");return}
+    try{await store.db.doc("users/"+store.uid).set({registro:{whatsapp:n}},{merge:true});regDoc.registro.whatsapp=n;c.hidden=true;closeSheet();toast("¡Listo! WhatsApp guardado ✓")}catch(e){toast("No se pudo guardar")}}}}
 function renderAviso(){const c=$("#avisoCard");if(!c)return;c.hidden=true;return;if(profile.avisado||!profile.bienvenida||welSigned!==true){c.hidden=true;return}
   c.hidden=false;c.innerHTML=`<h3>¡Ya estás dentro! Avísanos</h3><p class="small muted">Llena tus datos para que tu equipo sepa que ya entraste a Action Leaders Plus.</p>
    <div class="row" style="margin-top:8px"><a class="btn grow" href="${AVISO_FORM}" target="_blank" rel="noopener" id="avisoGo">Avisar que ya estoy dentro</a><button class="btn ghost" id="avisoX">Ya lo hice</button></div>`;
@@ -1086,16 +1097,19 @@ const rangoMeta=n=>RANGOS.find(r=>r.n===n),rangoMetaTxt=n=>{const i=RANGOS.findI
 const mesMeta=()=>new Date().toISOString().slice(0,7);
 function misMetas(){const m=(regDoc&&regDoc.metas)||{};return Object.assign({},m,{rango:m.rango||m.anio||""})}
 const usd=n=>"$"+Number(n||0).toLocaleString("en-US");
-function renderMetas(){const c=$("#metasCard");if(!c)return;if(!fbUser||!regDoc||SOLO_ADMIN.includes(String(fbUser.email||"").toLowerCase())){c.hidden=true;return}
+function renderMetas(){const st=$("#metaStrip"),pm=$("#perfMeta");if(!st)return;const mc=$("#metasCard");if(mc)mc.hidden=true;
+  if(!fbUser||!regDoc||SOLO_ADMIN.includes(String(fbUser.email||"").toLowerCase())){st.hidden=true;if(pm)pm.innerHTML="";return}
   const M=misMetas(),delMes=M.mes===mesMeta();let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}
-  const A=rk?rk.A:0,V=rk?rk.V:0,bar=(v,m)=>`<div class="bar"><i style="width:${Math.min(100,m?Math.round(v/m*100):0)}%"></i></div>`;
-  const act=delMes&&M.act?`<div class="mt"><span class="lbl">Meta del mes · Activaciones personales</span><div class="row between"><b class="big">${A} <span class="small muted" style="font-family:var(--f-body)">de ${M.act}</span></b>${A>=M.act?`<span class="ok">✅ ¡Meta cumplida!</span>`:`<span class="small muted">Faltan ${M.act-A}</span>`}</div>${bar(A,M.act)}</div>`
-    :`<div class="mt"><span class="lbl">Meta del mes · Activaciones personales</span><span class="small muted">Aún no ha puesto su meta de este mes.</span></div>`;
-  const r=rangoMeta(M.rango);
-  const rg=r?`<div class="mt rgo" style="background:${r.c}"><span class="lbl">🏅 Rango objetivo</span><b style="font-size:19px">${esc(rangoMetaTxt(M.rango))}</b>${r.pts?`<div class="row between"><span class="small">${fmt(V)} / ${fmt(r.pts)} pts este mes</span>${V>=r.pts?`<b>✅ Logrado</b>`:""}</div>${bar(V,r.pts)}`:""}</div>`:"";
-  const su=M.sueno?`<div class="mt sueno"><span class="lbl">💰 Mi ingreso mensual soñado · en 5 años</span><b class="big" style="font-size:32px">${usd(M.sueno)}<span class="small muted" style="font-family:var(--f-body);font-size:13px"> / mes</span></b></div>`:"";
-  c.innerHTML=`<div class="row between"><h3>🎯 Mis metas</h3><button class="btn sm ghost" id="metasEdit">${M.act||M.rango||M.sueno?"Editar":"Definir"}</button></div>${act}${rg}${su}<p class="small muted" style="margin:0">Su patrocinador y su línea de arriba ven sus metas para acompañarle.</p>`;
-  c.hidden=false;$("#metasEdit").onclick=abrirMetas}
+  const A=rk?rk.A:0,V=rk?rk.V:0,r=rangoMeta(M.rango);
+  if(!r&&!M.sueno){st.className="metaStrip vacia";st.innerHTML=`<div class="row between" style="gap:10px"><div><b>🎯 Defina su rango objetivo y su sueño</b><small>Tenga su meta a la vista cada vez que abra la app.</small></div><button class="btn sm">Definir</button></div>`}
+  else{st.className="metaStrip";st.style.background=r?r.c:"linear-gradient(120deg,#0b3b57,#0A7DAD)";
+    st.innerHTML=`${r?`<div class="row between"><b class="mtN">🏅 ${esc(rangoMetaTxt(M.rango))}</b><span class="mtE">Editar ›</span></div>`:""}
+     ${r&&r.pts?`<div class="row between mtV"><span>Volumen personal del mes</span><b>${fmt(V)} / ${fmt(r.pts)} pts</b></div><div class="mtBar"><i style="width:${Math.min(100,Math.round(V/r.pts*100))}%"></i></div><small>${V>=r.pts?"✅ ¡Logrado este mes!":"Le faltan "+fmt(r.pts-V)+" pts"}</small>`:r?`<div class="row between mtV"><span>Volumen personal del mes</span><b>${fmt(V)} pts</b></div>`:""}
+     ${M.sueno?`<div class="mtS">💰 Mi sueño: <b>${usd(M.sueno)} / mes</b> en 5 años</div>`:""}`}
+  st.hidden=false;st.onclick=abrirMetas;
+  if(pm)pm.innerHTML=delMes&&M.act?`<div class="pmA"><div class="row between"><span class="small" style="font-weight:700">🎯 Activaciones del mes</span><b>${A} de ${M.act}${A>=M.act?" ✅":""}</b></div><div class="bar" style="margin:4px 0 0;background:var(--surface)"><i style="width:${Math.min(100,Math.round(A/M.act*100))}%"></i></div></div>`
+    :`<button type="button" class="pmA pmCta" id="pmCta">🎯 Ponga su meta de activaciones del mes ›</button>`;
+  const pc=$("#pmCta");if(pc)pc.onclick=abrirMetas}
 function abrirMetas(){const M=misMetas(),delMes=M.mes===mesMeta();
   const opts=RANGOS.map((r,i)=>`<label><input type="radio" name="mtR" value="${esc(r.n)}" ${M.rango===r.n?"checked":""}><i class="rgDot" style="background:${r.c}"></i><span>Nivel ${i+1} · ${esc(r.n)}${r.d?` <span class="small muted">(${esc(r.d)})</span>`:""}</span>${r.pts?`<small>${r.pts} pts</small>`:""}</label>`).join("");
   openSheet(`<h2>🎯 Mis metas</h2>
@@ -1136,7 +1150,7 @@ function retoPct(){const r=getReto();return Math.round(r.metas.reduce((s,m)=>s+M
 function daysLeft(){const e=new Date(now.getFullYear(),now.getMonth()+1,0);return e.getDate()-now.getDate()}
 function retoMetasHTML(){return getReto().metas.map(m=>{const v=reto[m.k]||0,p=Math.min(100,Math.round(v/(m.meta||1)*100));
   return `<div style="display:flex;flex-direction:column;gap:6px"><div class="row between"><span>${esc(m.t)}</span><span class="num" style="font-size:17px">${fmt(v)} / ${fmt(m.meta)}</span></div><div class="bar gold"><i style="width:${p}%"></i></div></div>`}).join("")}
-function renderRetoMini(){const r=getReto();$("#retoMini").innerHTML=`<div class="row between"><p class="eyebrow">Reto de ${MONTHS[now.getMonth()]}</p><span class="chip c-gold">Quedan ${daysLeft()} días</span></div>
+function renderRetoMini(){const _rc=$("#retoMini");if(_rc)_rc.hidden=true;const r=getReto();$("#retoMini").innerHTML=`<div class="row between"><p class="eyebrow">Reto de ${MONTHS[now.getMonth()]}</p><span class="chip c-gold">Quedan ${daysLeft()} días</span></div>
   <h2 style="color:#fff">${esc(r.titulo)}</h2>${retoMetasHTML()}
   <p class="small" style="opacity:.85">Suma tus presentaciones y videos en la rutina de hoy.</p>`}
 let retoT;function bumpReto(k,d){reto[k]=Math.max(0,(reto[k]||0)+d);clearTimeout(retoT);retoT=setTimeout(()=>store.set("reto-"+MONTH,reto),600);renderRetoMini();if(acaTab==="retos")renderAca()}
@@ -1344,7 +1358,13 @@ async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now(
 const diasSem=()=>{const l=lunesK(),i=l<CONST_INI?CONST_INI:l;return Math.round((parseK(TODAY)-parseK(i))/864e5)+1};
 const diasMes=()=>{const m=TODAY.slice(0,7)+"-01",i=m<CONST_INI?CONST_INI:m;return Math.round((parseK(TODAY)-parseK(i))/864e5)+1};
 const constSub=x=>constVista==="sem"?`📅 ${x.semDias}/${diasSem()} ${diasSem()===1?"día":"días"} · Hoy ${x.hoy}% · 🎯 ${x.sinPres?"—":x.semPres} pres.`:`✅ ${x.mesComp} completos · 📅 ${x.mesDias}/${diasMes()} · 🎯 ${x.sinPres?"—":x.mesPres} pres.`;
-function renderTopRut(){const c=$("#topRut");if(!c)return;if(!constL||!constL.length){c.hidden=true;return}c.hidden=false;const md=["🥇","🥈","🥉"];if(constVista!=="sem"){constVista="sem";constSort(constL)}
+function renderTopAct(){const c=$("#topAct");if(!c)return;const num=v=>Number(v)||0;
+  const L=(T.ranking||[]).map(r=>({n:r.nombre,A:num(r.activaciones),V:num(r.volumen),S:num(r.actSemana)})).filter(x=>x.A>0).sort((a,b)=>b.V-a.V||b.A-a.A||String(a.n).localeCompare(b.n,"es"));
+  if(!L.length){c.hidden=true;return}c.hidden=false;const md=["🥇","🥈","🥉"];
+  c.innerHTML=`<div class="row between"><h3 style="margin:0">🚀 Top Activaciones</h3><button class="btn sm ghost" id="topActVer">Ver ranking</button></div><p class="small muted" style="margin:2px 0 4px">Los que más socios nuevos han activado este mes.</p>
+   ${L.slice(0,3).map((x,i)=>`<div class="row" style="gap:10px;padding:8px 0;${i<Math.min(L.length,3)-1?"border-bottom:1px solid var(--line)":""}"><span style="font-size:22px;width:28px;text-align:center">${md[i]}</span>${avHTML(x.n,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.n)}</b><div class="small muted">${x.A} ${x.A===1?"activación":"activaciones"}${x.S?" · "+x.S+" esta semana":""}</div></div><span class="chip c-gold" style="flex:none">${fmt(x.V)} vol.</span></div>`).join("")}`;
+  $("#topActVer").onclick=()=>{eqTab="ranking";rankMetric="nuevos";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()}}
+function renderTopRut(){const c=$("#topRut");if(!c)return;c.hidden=true;return;if(!constL||!constL.length){c.hidden=true;return}c.hidden=false;const md=["🥇","🥈","🥉"];if(constVista!=="sem"){constVista="sem";constSort(constL)}
   c.innerHTML=`<div class="row between"><h3 style="margin:0">🔥 Top Consistencia</h3><button class="btn sm ghost" id="topRutVer">Ver ranking</button></div><p class="small muted" style="margin:2px 0 6px">${constDia()===1?"🚀 ¡Hoy empezamos! Día 1: completa tu rutina y arranca tu racha.":constDia()<=7?"Día "+constDia()+" del ranking de consistencia.":"Los socios que más cumplen su rutina diaria."}</p>
    ${constL.slice(0,3).map((x,i)=>`<div class="row" style="gap:10px;padding:8px 0;${i<2?"border-bottom:1px solid var(--line)":""}"><span style="font-size:22px;width:28px;text-align:center">${md[i]}</span>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">📅 ${x.semDias}/${diasSem()} esta semana · Hoy ${x.hoy}%</div></div><span class="chip c-gold" style="flex:none">🔥 ${x.racha} ${x.racha===1?"día":"días"}</span></div>`).join("")}`;
   $("#topRutVer").onclick=()=>{eqTab="ranking";rankMetric="rutina";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()}}
@@ -1591,15 +1611,16 @@ async function histCanvas(k){const W=1080,H=1920,cv=document.createElement("canv
   g.textAlign="left";g.font="700 40px "+BF;g.fillStyle="#fff";g.fillText(nm,235,y0+52);g.font="500 32px "+BF;g.fillStyle="#2AC1F1";g.fillText("Escríbame \"INFO\"",235,y0+100);
   return cv}
 let histFile=null,histKey="";window.__histCanvas=histCanvas;
-async function renderHist(){const c=$("#histCard");if(!c)return;const hecho=(profile.historias||{})[TODAY];if(!fbUser||hecho){c.hidden=true;return}c.hidden=false;
-  c.innerHTML=`<div class="row between"><div><h3 style="margin:0">📸 Tu historia de hoy</h3><p class="small muted" style="margin:2px 0 0">Publícala en tus estados de WhatsApp o Instagram.</p></div>${hecho?'<span class="chip c-good">Compartida ✓</span>':""}</div>
-   <div id="histImg" style="border-radius:14px;overflow:hidden;background:#0b0b10;aspect-ratio:9/16;max-height:420px;margin:0 auto;width:100%;max-width:236px;display:flex;align-items:center;justify-content:center"><span class="small" style="color:#fff">Creando tu historia…</span></div>
-   <button class="btn" id="histShare" style="width:100%">📤 Compartir en mis historias</button>`;
+function renderHist(){const c=$("#histCard");if(c)c.hidden=true}
+async function abrirHist(){if(!fbUser)return;const hecho=(profile.historias||{})[TODAY];
+  openSheet(`<h2 style="margin:0">📸 Su historia de hoy</h2><p class="small muted" style="margin:0">Publíquela en sus estados de WhatsApp o Instagram.</p>
+   <div id="histImg" style="border-radius:14px;overflow:hidden;background:#0b0b10;aspect-ratio:9/16;max-height:60vh;margin:0 auto;width:100%;max-width:300px;display:flex;align-items:center;justify-content:center"><span class="small" style="color:#fff">Creando su historia…</span></div>
+   <button class="btn" id="histShare" style="width:100%">📤 ${hecho?"Compartir otra vez":"Compartir en mis historias"}</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`);
   $("#histShare").onclick=compartirHist;
   if(histKey!==TODAY+miNombreCorto()+miFotoUrl()||!histFile){histKey=TODAY+miNombreCorto()+miFotoUrl();const cv=await histCanvas(TODAY);try{const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));histFile=new File([b],"historia-"+TODAY+".jpg",{type:"image/jpeg"})}catch(x){histFile=null}}
   const box=$("#histImg");if(box&&histFile){box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(histFile);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im)}}
 async function compartirHist(){if(!histFile){toast("La historia aún se está creando");return}
-  const marcar=()=>{day.historia=1;try{renderTasks();saveDay()}catch(e){}profile.historias=Object.assign({},profile.historias||{},{[TODAY]:true});store.set("perfil",profile);pushResumen();toast("¡Historia de hoy completada! 🔥 Mañana tendrás una nueva.");const c=$("#histCard");if(c){c.style.transition="opacity .4s";c.style.opacity="0";setTimeout(()=>{c.hidden=true;c.style.opacity=""},450)}};
+  const marcar=()=>{day.historia=1;try{renderTasks();saveDay()}catch(e){}profile.historias=Object.assign({},profile.historias||{},{[TODAY]:true});store.set("perfil",profile);pushResumen();toast("¡Historia de hoy completada! 🔥 Mañana tendrá una nueva.");closeSheet()};
   if(navigator.canShare&&navigator.canShare({files:[histFile]})){try{await navigator.share({files:[histFile]});marcar();return}catch(x){if(x&&x.name==="AbortError")return}}
   const a=document.createElement("a");a.href=URL.createObjectURL(histFile);a.download=histFile.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);marcar();toast("Historia descargada. Súbela a tus estados 📲")}
 
@@ -2374,7 +2395,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-refr
 async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
-  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();renderMetas();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
+  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();renderMetas();renderTopAct();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
 let autoFotoHecho=false;
 function urlADataUrl(u,S){return new Promise(ok=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{S=S||240;const c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);
   c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);ok(c.toDataURL("image/jpeg",.85))}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=u})}
@@ -2449,7 +2470,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020160650";var busy=false,pend=null;
+(function(){var V="20261020162016";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

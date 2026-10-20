@@ -71,10 +71,15 @@ App web móvil (PWA) del equipo de Edwin García Go (Director Nacional, inCruise
   - Puntos: contactos, seguimientos, presentaciones (con nombre, 1 por persona por semana), video, historia del día (se marca sola), 15 min de audio (Spotify), 30 min de formación, apoyar a un socio.
 - **Bienvenida:** el video es obligatorio; "Ya vi mi video" se desbloquea al 90%. Una alerta dice qué pasos faltan.
 - **Mis socios:** cada socio ve **toda su línea hacia abajo**, sin límite de profundidad. Usa `registro.linea` con array-contains.
-- **Inicio:**
-  - Arriba: "¡Vamos, líder! 🛡️" y frases animadas.
-  - Banner de felicitación por activaciones del día.
-  - Rutina, y debajo "Mi desempeño personal" (mes, registros gratis, activaciones y lugar en el ranking).
+- **Inicio (rediseño 2026-10-20, orden fijo):**
+  1. Saludo "¡Vamos, líder! 🛡️" + frase animada + racha.
+  2. Barra delgada "Agregue su WhatsApp" (solo si falta) y banner de felicitación por activaciones del día (aparece al abrir y se va solo).
+  3. Franja de meta (`#metaStrip`): rango objetivo con su color, volumen personal del mes vs puntos del rango e ingreso soñado. Si no hay metas, invita a definirlas.
+  4. "🔥 Tu día" (rutina). La historia del día es una línea de la rutina con botón "Compartir" que abre la imagen en una hoja; ya no hay tarjeta grande.
+  5. Accesos directos. 6. Citas de hoy y próximas actividades.
+  7. "📊 Mi semana": 7 días + meta de activaciones del mes + "Ver mi mes" (registros gratis, activaciones, lugar en el ranking, constancia).
+  8. "🚀 Top Activaciones": top 3 por volumen del mes.
+  - Quitados de Inicio: tarjeta grande de historia, Reto del mes, Tu enlace de referido (se edita en Mi página) y Top Consistencia (sigue en Equipo → Ranking → Rutina).
   - "🎯 Mis metas": activaciones personales del mes (se reinicia cada mes), rango objetivo (sin plazo, con el color del rango) e ingreso mensual soñado en 5 años (USD). Se guardan en `users/{uid}.metas` {mes, act, rango, sueno}. Las ven el socio, su patrocinador y su línea de arriba (en Mis socios).
   - Rangos y colores: 1 Líder (acceso al sistema) 200 pts gris, 2 Team Leader 500 pts azul marca, 3 Marketing Director verde, 4 SM Director azul, 5 Regional Director naranja, 6 National Director rojo, 7 International Director morado, 8 Executive Director negro, 9 Board of Director amarillo-naranja. Niveles 3-9 sin puntos aún. Los puntos = volumen de activaciones personales del mes.
 
