@@ -1099,13 +1099,13 @@ function abrirMetas(){const M=misMetas(),delMes=M.mes===mesMeta();
   const opts=(name,cur)=>RANGOS.map((r,i)=>`<label><input type="radio" name="${name}" value="${esc(r.n)}" ${cur===r.n?"checked":""}><span>Nivel ${i+1} · ${esc(r.n)}${r.d?` <span class="small muted">(${esc(r.d)})</span>`:""}</span>${r.pts?`<small>${r.pts} pts</small>`:""}</label>`).join("");
   openSheet(`<h2>🎯 Mis metas</h2>
    <p class="small" style="font-weight:800;margin:0">Metas del mes</p>
-   <label class="small muted" for="mtAct">Activaciones personales</label>
-   <input id="mtAct" type="number" inputmode="numeric" min="0" max="99" placeholder="Ej. 3" value="${delMes&&M.act?M.act:""}" data-nofocus>
+   <label class="small muted" for="mtAct">Activaciones personales (cuántas personas quiere activar este mes)</label>
+   <input id="mtAct" type="number" inputmode="numeric" min="0" max="9999" placeholder="Ej. 3" value="${delMes&&M.act?M.act:""}" data-nofocus>
    <p class="small muted" style="margin:6px 0 0">Rango objetivo</p><div class="rgList">${opts("mtR",delMes?M.rango:"")}</div>
    <p class="small" style="font-weight:800;margin:10px 0 0">⭐ Meta a 1 año · Rango</p><div class="rgList">${opts("mtY",M.anio||"")}</div>
    <button class="btn" id="mtSave" style="width:100%">Guardar metas</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`);
   $("#mtSave").onclick=async()=>{const q=n=>{const x=$("#sheetPanel").querySelector(`input[name=${n}]:checked`);return x?x.value:""};
-    const nm={mes:mesMeta(),act:Math.max(0,Math.min(99,parseInt($("#mtAct").value,10)||0)),rango:q("mtR"),anio:q("mtY"),t:Date.now()};
+    const nm={mes:mesMeta(),act:Math.max(0,Math.min(9999,parseInt($("#mtAct").value,10)||0)),rango:q("mtR"),anio:q("mtY"),t:Date.now()};
     $("#mtSave").disabled=true;try{await store.db.doc("users/"+store.uid).set({metas:nm},{merge:true});regDoc=Object.assign({},regDoc,{metas:nm});closeSheet();renderMetas();toast("Metas guardadas 🎯")}
     catch(e){$("#mtSave").disabled=false;toast("No se pudieron guardar. Revise su conexión.")}}}
 let banT=null,banI=0,banDone=false;
@@ -2447,7 +2447,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020160047";var busy=false,pend=null;
+(function(){var V="20261020160243";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
