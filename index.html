@@ -1035,7 +1035,7 @@ const ACC_DEF=[{t:"Audios en Spotify",i:"🎧",u:""},{t:"Caja de herramientas",i
 function renderAccesos(){const c=$("#accesos");if(!c)return;const L=((T.config&&Array.isArray(T.config.accesos)&&T.config.accesos.length)?T.config.accesos:ACC_DEF).filter(a=>safeUrl(a.u));
   if(!L.length){c.hidden=true;return}c.hidden=false;
   c.innerHTML=`<h3>Accesos directos</h3><div class="acc"><a href="#" id="accBien"><span class="ic">🎉</span>Bienvenida socio nuevo</a><a href="#" id="accPag"><span class="ic">🌐</span>Mi página prospectos</a>${L.map(a=>`<a href="${esc(a.u)}" target="_blank" rel="noopener"><span class="ic">${esc(a.i||"🔗")}</span>${esc(a.t)}</a>`).join("")}</div>`;$("#accBien").onclick=e=>{e.preventDefault();abrirBienvenida()};$("#accPag").onclick=e=>{e.preventDefault();abrirMiPagina()}}
-function renderMe(){const me=myRow(),rk=me?null:rankDe(miNombreFull()||miNombreCorto()),v=me?(Number(me.registros)||0)+(Number(me.activaciones)||0):rk?rk.R:null;$("#topPv").textContent=v!=null?fmt(v):"—";$("#topPvBox").toggleAttribute("data-empty",v==null);renderWho();if(eqTab==="ranking")renderEquipo()}
+function renderMe(){let rk=null;const me=myRow();try{if(!me&&fbUser)rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}const v=me?(Number(me.registros)||0)+(Number(me.activaciones)||0):rk?rk.R:null;$("#topPv").textContent=v!=null?fmt(v):"—";$("#topPvBox").toggleAttribute("data-empty",v==null);renderWho();if(eqTab==="ranking")renderEquipo()}
 
 // ---------- retos ----------
 let reto={};
@@ -2355,7 +2355,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020100322";var busy=false,pend=null;
+(function(){var V="20261020100830";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
