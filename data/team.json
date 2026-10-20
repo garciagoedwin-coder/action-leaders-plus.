@@ -1,26 +1,26 @@
 {
  "ranking": [
   {
-   "actSemana": 2,
+   "actSemana": 0,
    "activaciones": 4,
    "linea": "Jorge Turcios",
    "nombre": "Joany Isabel Perla Gámez",
-   "presSemana": 0,
-   "presentaciones": 12,
+   "presSemana": 1,
+   "presentaciones": 13,
    "regSemana": 0,
    "registros": 13,
    "volumen": 500,
    "id": "joany-isabel-perla-gamez"
   },
   {
-   "actSemana": 4,
+   "actSemana": 0,
    "activaciones": 4,
    "linea": "Cecilia Hernández",
    "nombre": "Carlos Alberto Rubio Valladares",
    "presSemana": 0,
    "presentaciones": 16,
    "regSemana": 0,
-   "registros": 7,
+   "registros": 9,
    "volumen": 1100,
    "id": "carlos-alberto-rubio-valladares"
   },
@@ -29,10 +29,10 @@
    "activaciones": 1,
    "linea": "Glenda Álvarez",
    "nombre": "Denia Rocha",
-   "presSemana": 0,
-   "presentaciones": 9,
-   "regSemana": 0,
-   "registros": 7,
+   "presSemana": 1,
+   "presentaciones": 10,
+   "regSemana": 1,
+   "registros": 8,
    "volumen": 200,
    "id": "denia-rocha"
   },
@@ -49,7 +49,7 @@
    "id": "joel-salgado"
   },
   {
-   "actSemana": 1,
+   "actSemana": 0,
    "activaciones": 2,
    "linea": "Cecilia Hernández",
    "nombre": "Yeny Mildred Castellanos",
@@ -121,14 +121,14 @@
    "id": "olga-lizzette-melendez-norales"
   },
   {
-   "actSemana": 1,
+   "actSemana": 0,
    "activaciones": 1,
    "linea": "Nuvia Martínez",
    "nombre": "Maynor Agustín Larios Lobo",
-   "presSemana": 0,
-   "presentaciones": 6,
-   "regSemana": 0,
-   "registros": 2,
+   "presSemana": 1,
+   "presentaciones": 7,
+   "regSemana": 1,
+   "registros": 3,
    "volumen": 200,
    "id": "maynor-agustin-larios-lobo"
   },
@@ -157,14 +157,14 @@
    "id": "luis-edilberto-mejia"
   },
   {
-   "actSemana": 1,
+   "actSemana": 0,
    "activaciones": 1,
    "linea": "Mayckol Turcios",
    "nombre": "Silian Gissel Castillo Murillo",
-   "presSemana": 0,
-   "presentaciones": 2,
-   "regSemana": 0,
-   "registros": 2,
+   "presSemana": 1,
+   "presentaciones": 3,
+   "regSemana": 1,
+   "registros": 3,
    "volumen": 50,
    "id": "silian-gissel-castillo-murillo"
   },
@@ -229,7 +229,7 @@
    "id": "alba-luz-martinez-hernandez"
   },
   {
-   "actSemana": 1,
+   "actSemana": 0,
    "activaciones": 1,
    "linea": "Edwin García",
    "nombre": "Alejandra María Pérez Ponce",
@@ -281,10 +281,10 @@
    "activaciones": 0,
    "linea": "José Luis Rodríguez",
    "nombre": "Saby Isaguirre",
-   "presSemana": 0,
-   "presentaciones": 2,
-   "regSemana": 0,
-   "registros": 2,
+   "presSemana": 2,
+   "presentaciones": 4,
+   "regSemana": 2,
+   "registros": 4,
    "volumen": 0,
    "id": "saby-isaguirre"
   },
@@ -313,7 +313,7 @@
    "id": "mabis-franco"
   },
   {
-   "actSemana": 1,
+   "actSemana": 0,
    "activaciones": 1,
    "linea": "Flor Reyes",
    "nombre": "Flor Idalma Reyes Padilla",
@@ -337,15 +337,15 @@
    "id": "jorge-turcios"
   },
   {
-   "actSemana": 0,
-   "activaciones": 1,
+   "actSemana": 1,
+   "activaciones": 2,
    "linea": "Juan Carlos Granados",
    "nombre": "Marcia Sauceda",
    "presSemana": 0,
    "presentaciones": 1,
    "regSemana": 0,
    "registros": 1,
-   "volumen": 50,
+   "volumen": 250,
    "id": "marcia-sauceda"
   },
   {
@@ -393,7 +393,7 @@
    "presentaciones": 1,
    "regSemana": 0,
    "registros": 1,
-   "volumen": 200,
+   "volumen": 0,
    "id": "francisco-caballero"
   },
   {
@@ -606,7 +606,7 @@
    "linea": "Edwin García",
    "nombre": "Betty Carolina Amador Pérez",
    "presSemana": 0,
-   "presentaciones": 3,
+   "presentaciones": 6,
    "regSemana": 0,
    "registros": 0,
    "volumen": 0,
@@ -630,7 +630,7 @@
    "linea": "Lorena Velásquez",
    "nombre": "Lorena Velásquez",
    "presSemana": 0,
-   "presentaciones": 2,
+   "presentaciones": 4,
    "regSemana": 0,
    "registros": 0,
    "volumen": 0,
@@ -717,7 +717,7 @@
    "nombre": "Denia Rocha",
    "nombreRanking": "Denia Rocha",
    "nuevos": 1,
-   "presentaciones": 7,
+   "presentaciones": 8,
    "rango": "Team Leader",
    "volumen": 200,
    "volumenDetalle": "1 Classic",
@@ -1038,7 +1038,7 @@
    "nombre": "Maynor Agustín Larios Lobo",
    "nombreRanking": "Maynor Agustín Larios Lobo",
    "nuevos": 1,
-   "presentaciones": 2,
+   "presentaciones": 3,
    "rango": "Team Leader",
    "volumen": 200,
    "volumenDetalle": "1 Classic",
@@ -1149,7 +1149,7 @@
    "nombre": "Saby Isaguirre",
    "nombreRanking": "Saby Isaguirre",
    "nuevos": 0,
-   "presentaciones": 2,
+   "presentaciones": 4,
    "rango": "Team Leader",
    "volumen": 0,
    "volumenDetalle": "",
@@ -2193,6 +2193,14 @@
    "patrocinador": "Flor Reyes",
    "socio": "Yolanda Morales mejia",
    "id": "yolanda-morales-mejia"
+  },
+  {
+   "socio": "Alma Martínez",
+   "paquete": "Classic",
+   "patrocinador": "Marcia Sauceda",
+   "fecha": "2026-10-20T02:55:08.000Z",
+   "fuente": "gmail",
+   "id": "alma-martinez"
   }
  ],
  "academia": [],
@@ -2210,7 +2218,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-18T01:20:07Z",
+  "activacionesCorte": "2026-10-20T02:55:08.000Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2220,7 +2228,7 @@
   "calendarioActualizado": "2026-10-18T22:20:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-19T07:10:00-06:00",
+  "rankingActualizado": "2026-10-20T20:10:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
