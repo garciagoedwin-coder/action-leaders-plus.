@@ -145,6 +145,14 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .counter .num{min-width:42px;text-align:center;font-size:19px}
 .done-t{text-decoration:line-through;color:var(--muted)}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.hiSpar{margin:2px 0 0;font-weight:700;font-size:15px;color:var(--muted)}
+h1.motto{overflow:hidden;height:1.3em;line-height:1.3em;margin-top:2px}
+#motto{display:inline-block;background:linear-gradient(90deg,var(--ink) 0%,var(--brand) 50%,var(--ink) 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:mottoShine 4s linear infinite}
+#motto.out{animation:mottoOut .35s ease-in forwards}#motto.in{animation:mottoIn .45s cubic-bezier(.2,.8,.2,1),mottoShine 4s linear infinite}
+@keyframes mottoShine{to{background-position:-200% 0}}
+@keyframes mottoOut{to{transform:translateY(-110%);opacity:0}}
+@keyframes mottoIn{from{transform:translateY(110%);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){#motto,#motto.in,#motto.out{animation:none;color:var(--ink);background:none}}
 .card.perf{background:linear-gradient(135deg,var(--gold-soft),color-mix(in srgb,var(--gold-soft) 55%,var(--surface)));border-color:transparent}
 .card.perf .week i:not(.full):not(.part){background:var(--surface)}
 .card.perf #verMes{background:var(--brand);color:var(--brand-ink);border-color:transparent}
@@ -701,7 +709,7 @@ nav.tabs button{z-index:0;isolation:isolate}
     <!-- INICIO -->
     <section class="view" id="v-inicio">
       <div class="row between">
-        <div><p class="eyebrow" id="todayLbl">Hoy</p><h1>Tu rutina de acción</h1></div>
+        <div><p class="eyebrow" id="todayLbl">Hoy</p><p class="hiSpar">Bienvenid@, espartan@ 🛡️</p><h1 class="motto"><span id="motto">Haz que suceda.</span></h1></div>
         <span class="chip c-gold" id="streak">Racha 0 días</span>
       </div>
       <div class="card" id="avisoCard" hidden></div>
@@ -1020,6 +1028,10 @@ async function abrirMes(off){off=off||0;const b=new Date(now.getFullYear(),now.g
    <p class="small" style="font-weight:600;margin:0">${off===0?msg:""}</p>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`;
   $("#sheetPanel").querySelectorAll("[data-m]").forEach(x=>x.onclick=()=>abrirMes(+x.dataset.m))}
+
+(function(){const F=["Haz que suceda.","Manos a la obra.","Hoy se construye.","Acción vence excusas.","Un día más, un paso más."];let i=0;
+ setInterval(()=>{const el=document.getElementById("motto");if(!el||document.hidden)return;el.className="out";
+  setTimeout(()=>{i=(i+1)%F.length;el.textContent=F[i];el.className="in"},350)},3200)})();
 $("#verMes").onclick=()=>abrirMes(0);$("#week").onclick=()=>abrirMes(0);$("#week").onkeydown=e=>{if(e.key==="Enter")abrirMes(0)};
 
 // ---------- ¿quién eres? ----------
@@ -2369,7 +2381,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020102235";var busy=false,pend=null;
+(function(){var V="20261020102447";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
