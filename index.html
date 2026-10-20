@@ -152,13 +152,15 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .metas .bar{margin:2px 0 0;background:var(--surface)}.metas .ok{color:var(--good);font-weight:800}
 .rgList{display:flex;flex-direction:column;gap:6px}.rgList label{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-weight:600}
 .rgList label:has(input:checked){border-color:var(--brand);background:var(--gold-soft)}.rgList small{margin-left:auto;color:var(--muted);font-weight:700}
-.actBan{position:relative;border-radius:18px;padding:12px 14px;background:linear-gradient(120deg,#0b3b57,#0A7DAD 60%,#2AC1F1);color:#fff;box-shadow:0 10px 24px -12px rgba(10,125,173,.6);overflow:hidden;animation:banIn .5s cubic-bezier(.2,.8,.2,1)}
+.actBan{max-height:180px;position:relative;border-radius:18px;padding:12px 14px;background:linear-gradient(120deg,#0b3b57,#0A7DAD 60%,#2AC1F1);color:#fff;box-shadow:0 10px 24px -12px rgba(10,125,173,.6);overflow:hidden;animation:banIn .5s cubic-bezier(.2,.8,.2,1)}
 .actBan::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 70%);background-size:250% 100%;animation:banShine 3.5s linear infinite;pointer-events:none}
 .actBan .ab{display:flex;align-items:center;gap:12px;animation:banIn .45s cubic-bezier(.2,.8,.2,1)}
 .actBan .av{color:#fff;position:relative;z-index:1;width:44px;height:44px;border-radius:50%;flex:none;background:rgba(255,255,255,.2) center/cover;display:grid;place-items:center;font-weight:800;font-size:15px;border:2px solid rgba(255,255,255,.7)}
 .actBan b{display:block;font-size:15.5px;line-height:1.2}.actBan small{display:block;font-size:12.5px;opacity:.9;margin-top:2px}
-.actBan .tag{margin-left:auto;flex:none;font-size:11px;font-weight:800;letter-spacing:.06em;background:rgba(255,255,255,.2);border-radius:999px;padding:4px 8px}
+.actBan .tag{margin-left:auto;position:relative;z-index:1;flex:none;font-size:11px;font-weight:800;letter-spacing:.06em;background:rgba(255,255,255,.2);border-radius:999px;padding:4px 8px}
 .actBan .dots{display:flex;gap:4px;justify-content:center;margin-top:8px}.actBan .dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4)}.actBan .dots i.on{background:#fff}
+.actBan .x{flex:none;font-size:14px;opacity:.8;padding:4px;cursor:pointer;position:relative;z-index:1}.actBan{cursor:pointer}
+.actBan.bye{animation:banOut .45s ease-in forwards}@keyframes banOut{to{opacity:0;transform:translateY(-10px);max-height:0;padding:0 14px;margin:-8px 0}}
 @keyframes banIn{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
 @keyframes banShine{from{background-position:150% 0}to{background-position:-100% 0}}
 @media (prefers-reduced-motion:reduce){.actBan,.actBan .ab{animation:none}.actBan::after{display:none}}
@@ -1106,8 +1108,9 @@ function abrirMetas(){const M=misMetas(),delMes=M.mes===mesMeta();
     const nm={mes:mesMeta(),act:Math.max(0,Math.min(99,parseInt($("#mtAct").value,10)||0)),rango:q("mtR"),anio:q("mtY"),t:Date.now()};
     $("#mtSave").disabled=true;try{await store.db.doc("users/"+store.uid).set({metas:nm},{merge:true});regDoc=Object.assign({},regDoc,{metas:nm});closeSheet();renderMetas();toast("Metas guardadas 🎯")}
     catch(e){$("#mtSave").disabled=false;toast("No se pudieron guardar. Revise su conexión.")}}}
-let banT=null,banI=0;
-function renderActBan(){const c=$("#actBan");if(!c)return;clearInterval(banT);
+let banT=null,banI=0,banDone=false;
+function cerrarBan(){const c=$("#actBan");clearInterval(banT);banDone=true;if(!c||c.hidden)return;c.classList.add("bye");setTimeout(()=>{c.hidden=true;c.innerHTML="";c.classList.remove("bye")},450)}
+function renderActBan(){const c=$("#actBan");if(!c||banDone)return;clearInterval(banT);
   const hoy=dkey(new Date()),G=[];
   (T.activaciones||[]).forEach(a=>{if(!a.fecha||dkey(new Date(a.fecha))!==hoy)return;
     const r=(T.ranking||[]).find(x=>sameN(x.nombre,a.patrocinador)),nom=r?r.nombre:a.patrocinador;
@@ -1116,9 +1119,10 @@ function renderActBan(){const c=$("#actBan");if(!c)return;clearInterval(banT);
   const corto=n=>{const w=String(n||"").trim().split(/\s+/);return w.length>2?w[0]+" "+w[w.length>3?2:1]:w.join(" ")},cap=t=>String(t||"").toLowerCase().replace(/(^|\s)\S/g,m=>m.toUpperCase());
   const card=g=>{const f=fotoDe(g.nom),ini=corto(g.nom).split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase(),n=g.L.length;
     const det=n===1?`Activó a ${esc(corto(cap(g.L[0].socio)))} · ${esc(g.L[0].paquete)}`:`Activó ${n} socios nuevos hoy`;
-    return `<div class="ab"><span class="av" style="${f?`background-image:url('${f}')`:""}">${f?"":esc(ini)}</span><div><b>🎉 ¡Felicidades, ${esc(corto(g.nom))}!</b><small>${det}</small></div><span class="tag">HOY</span></div>`};
+    return `<div class="ab"><span class="av" style="${f?`background-image:url('${f}')`:""}">${f?"":esc(ini)}</span><div><b>🎉 ¡Felicidades, ${esc(corto(g.nom))}!</b><small>${det}</small></div><span class="tag">HOY</span><span class="x" aria-label="Cerrar">✕</span></div>`};
   const show=()=>{c.innerHTML=card(G[banI%G.length])+(G.length>1?`<div class="dots">${G.map((_,i)=>`<i class="${i===banI%G.length?"on":""}"></i>`).join("")}</div>`:"")};
-  banI=0;show();c.hidden=false;if(G.length>1)banT=setInterval(()=>{if(document.hidden)return;banI++;show()},4500)}
+  banI=0;banDone=true;show();c.hidden=false;c.onclick=cerrarBan;
+  let vistos=1;banT=setInterval(()=>{if(document.hidden)return;if(vistos>=G.length){cerrarBan();return}banI++;vistos++;show()},4500)}
 function renderAccesos(){const c=$("#accesos");if(!c)return;const L=((T.config&&Array.isArray(T.config.accesos)&&T.config.accesos.length)?T.config.accesos:ACC_DEF).filter(a=>safeUrl(a.u));
   if(!L.length){c.hidden=true;return}c.hidden=false;
   c.innerHTML=`<h3>Accesos directos</h3><div class="acc"><a href="#" id="accBien"><span class="ic">🎉</span>Bienvenida socio nuevo</a><a href="#" id="accPag"><span class="ic">🌐</span>Mi página prospectos</a>${L.map(a=>`<a href="${esc(a.u)}" target="_blank" rel="noopener"><span class="ic">${esc(a.i||"🔗")}</span>${esc(a.t)}</a>`).join("")}</div>`;$("#accBien").onclick=e=>{e.preventDefault();abrirBienvenida()};$("#accPag").onclick=e=>{e.preventDefault();abrirMiPagina()}}
@@ -2443,7 +2447,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020155813";var busy=false,pend=null;
+(function(){var V="20261020160047";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
