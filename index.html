@@ -1100,7 +1100,8 @@ const usd=n=>"$"+Number(n||0).toLocaleString("en-US");
 const RANGO_ALIAS={"action leader":"Líder","lider":"Líder","senior marketing director":"SM Director","smd":"SM Director","sm director":"SM Director"};
 function idxRango(nm){nm=String(nm||"").trim();const a=RANGO_ALIAS[nm.toLowerCase()]||nm;return RANGOS.findIndex(r=>r.n.toLowerCase()===a.toLowerCase())}
 function rangoActualIdx(reg,nombre){reg=reg||{};if(reg.rango){if(reg.rango==="Socio")return -1;const i=idxRango(reg.rango);if(i>=0)return i}
-  const ns=[nombre,reg.nombre].filter(Boolean),L=(T.lideres||[]).find(l=>ns.some(n=>sameN(l.nombre,n)||String(l.nombreRanking||"").split("|").some(k=>k.trim()&&sameN(k.trim(),n))));
+  const ns=[nombre,reg.nombre].filter(Boolean),CR=(T.config&&T.config.rangos)||{};for(const k in CR)if(ns.some(n=>sameN(k,n))){const i=idxRango(CR[k]);if(i>=0)return i}
+  const L=(T.lideres||[]).find(l=>ns.some(n=>sameN(l.nombre,n)||String(l.nombreRanking||"").split("|").some(k=>k.trim()&&sameN(k.trim(),n))));
   return L?idxRango(rangoTxt(L.rango)):-1}
 const miRangoIdx=()=>rangoActualIdx(miRegistro(),miNombreFull()||miNombreCorto());
 const proxRango=i=>RANGOS[i+1]||null;
@@ -2478,7 +2479,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020162552";var busy=false,pend=null;
+(function(){var V="20261020162834";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
