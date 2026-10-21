@@ -2222,8 +2222,8 @@
    "alias": {
     "Yolany perla": "Joany Isabel Perla Gámez"
    },
-   "total": 49,
-   "hoy": 5,
+   "total": 52,
+   "hoy": 8,
    "sinNombre": 2,
    "top": [
     {
@@ -2323,6 +2323,25 @@
      ]
     },
     {
+     "nombre": "Irma Hernandez",
+     "n": 3,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Edmi E.",
+       "f": "15/10"
+      },
+      {
+       "n": "Walter I.",
+       "f": "15/10"
+      },
+      {
+       "n": "Leticia I.",
+       "f": "21/10"
+      }
+     ]
+    },
+    {
      "nombre": "Mabis Franco",
      "n": 3,
      "hoy": 0,
@@ -2391,21 +2410,6 @@
      ]
     },
     {
-     "nombre": "Irma Hernandez",
-     "n": 2,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Edmi E.",
-       "f": "15/10"
-      },
-      {
-       "n": "Walter I.",
-       "f": "15/10"
-      }
-     ]
-    },
-    {
      "nombre": "Jonathan Rodríguez",
      "n": 2,
      "hoy": 0,
@@ -2417,6 +2421,21 @@
       {
        "n": "Nahaman E.",
        "f": "14/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Josue Delgado",
+     "n": 2,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Francisco G.",
+       "f": "08/10"
+      },
+      {
+       "n": "Sandra M.",
+       "f": "21/10"
       }
      ]
     },
@@ -2466,6 +2485,21 @@
      ]
     },
     {
+     "nombre": "Saby Isaguirre",
+     "n": 2,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Yorleny V.",
+       "f": "19/10"
+      },
+      {
+       "n": "Karla L.",
+       "f": "21/10"
+      }
+     ]
+    },
+    {
      "nombre": "Alba Luz Martínez Hernández",
      "n": 1,
      "hoy": 0,
@@ -2484,17 +2518,6 @@
       {
        "n": "Evelin P.",
        "f": "20/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Josue Delgado",
-     "n": 1,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Francisco G.",
-       "f": "08/10"
       }
      ]
     },
@@ -2554,17 +2577,6 @@
      ]
     },
     {
-     "nombre": "Saby Isaguirre",
-     "n": 1,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Yorleny V.",
-       "f": "19/10"
-      }
-     ]
-    },
-    {
      "nombre": "Yolanda Morales",
      "n": 1,
      "hoy": 0,
@@ -2576,7 +2588,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-21T12:56:00-06:00",
+   "actualizado": "2026-10-21T13:26:00-06:00",
    "repetidos": 4
   }
  },
