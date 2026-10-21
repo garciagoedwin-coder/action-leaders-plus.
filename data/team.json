@@ -575,6 +575,18 @@
    "registros": 0,
    "volumen": 250,
    "id": "marcia-sauceda"
+  },
+  {
+   "nombre": "Lilia Marlene Silva Pozo",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "lilia-marlene-silva-pozo",
+   "activaciones": 1,
+   "volumen": 200,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -2149,6 +2161,14 @@
    "fecha": "2026-10-20T19:55:03.000Z",
    "id": "evelyn-johany-dubon-castro",
    "fuente": "gmail"
+  },
+  {
+   "socio": "Carmen Modesta Fajardo Vera",
+   "paquete": "Classic",
+   "patrocinador": "Lilia Marlene Silva Pozo",
+   "fecha": "2026-10-21T19:55:03.000Z",
+   "fuente": "gmail",
+   "id": "carmen-modesta-fajardo-vera"
   }
  ],
  "academia": [],
@@ -2166,7 +2186,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-20T19:55:03.000Z",
+  "activacionesCorte": "2026-10-21T19:55:03.000Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2176,7 +2196,7 @@
   "calendarioActualizado": "2026-10-18T22:20:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-20T18:48:00-06:00",
+  "rankingActualizado": "2026-10-21T15:55:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
