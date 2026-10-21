@@ -123,6 +123,10 @@ Las instrucciones exactas de cada una están en `respaldo/tareas/`:
 
 Hoja de Google de la agenda: spreadsheetId `1-0ct30l0fcn8rtzgfOcrkLTGmgRHOa2xEmm2X0izvG4`.
 
+## 6b. Flyer de cada actualización (pedido fijo de Edwin)
+
+Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350 con la fecha y las novedades (máximo 5, cortas, de usted) y mandárselo a Edwin por el chat para que lo envíe al equipo. Plantilla: `tools/flyer/actualizacion.html` (editar fecha y lista; captura con Playwright a 1080×1350). Cierra con "Para verla: cierre la app por completo y vuelva a abrirla".
+
 ## 7. Estilo
 
 - **Paleta:** fondo #F3F6F9, marca #0A7DAD, celeste #2AC1F1, tinta #2B2A2D. Hay modo oscuro.
