@@ -2219,133 +2219,365 @@
    "fecha": "2026-10-26",
    "lugar": "San Pedro Sula",
    "meta": 0,
-   "alias": {},
-   "total": 51,
-   "hoy": 3,
+   "alias": {
+    "Yolany perla": "Joany Isabel Perla Gámez"
+   },
+   "total": 49,
+   "hoy": 5,
    "sinNombre": 2,
    "top": [
     {
-     "nombre": "Joel Salgado",
-     "n": 8,
-     "hoy": 2
-    },
-    {
      "nombre": "Betty Amador",
      "n": 5,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Jesus A.",
+       "f": "12/10"
+      },
+      {
+       "n": "Dania B.",
+       "f": "20/10"
+      },
+      {
+       "n": "Roberto T.",
+       "f": "13/10"
+      },
+      {
+       "n": "Iris G.",
+       "f": "18/10"
+      },
+      {
+       "n": "José A.",
+       "f": "18/10"
+      }
+     ]
     },
     {
      "nombre": "Erick Miranda",
      "n": 4,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Nicole V.",
+       "f": "13/10"
+      },
+      {
+       "n": "Keyli A.",
+       "f": "09/10"
+      },
+      {
+       "n": "Anahy M.",
+       "f": "08/10"
+      },
+      {
+       "n": "Keyla G.",
+       "f": "08/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Joany Isabel Perla Gámez",
+     "n": 4,
+     "hoy": 2,
+     "inv": [
+      {
+       "n": "Ruth H.",
+       "f": "18/10"
+      },
+      {
+       "n": "Juan I.",
+       "f": "18/10"
+      },
+      {
+       "n": "Yolanda V.",
+       "f": "21/10"
+      },
+      {
+       "n": "Jose A.",
+       "f": "21/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Joel Salgado",
+     "n": 4,
+     "hoy": 2,
+     "inv": [
+      {
+       "n": "Maria R.",
+       "f": "20/10"
+      },
+      {
+       "n": "Angelica M.",
+       "f": "20/10"
+      },
+      {
+       "n": "Karen J.",
+       "f": "21/10"
+      },
+      {
+       "n": "Senny A.",
+       "f": "21/10"
+      }
+     ]
     },
     {
      "nombre": "Mabis Franco",
      "n": 3,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Sarah L.",
+       "f": "18/10"
+      },
+      {
+       "n": "Genesis S.",
+       "f": "18/10"
+      },
+      {
+       "n": "Yorlin B.",
+       "f": "18/10"
+      }
+     ]
     },
     {
      "nombre": "Rosa Oliva",
      "n": 3,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Kimberlyn C.",
+       "f": "14/10"
+      },
+      {
+       "n": "Liliana C.",
+       "f": "18/10"
+      },
+      {
+       "n": "Jimy Q.",
+       "f": "14/10"
+      }
+     ]
     },
     {
      "nombre": "Erick Moncada",
      "n": 2,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Elvin M.",
+       "f": "09/10"
+      },
+      {
+       "n": "Dario G.",
+       "f": "09/10"
+      }
+     ]
     },
     {
      "nombre": "Francisco Caballero",
      "n": 2,
-     "hoy": 1
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Sandra L.",
+       "f": "21/10"
+      },
+      {
+       "n": "Lourdes A.",
+       "f": "19/10"
+      }
+     ]
     },
     {
      "nombre": "Irma Hernandez",
      "n": 2,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Edmi E.",
+       "f": "15/10"
+      },
+      {
+       "n": "Walter I.",
+       "f": "15/10"
+      }
+     ]
     },
     {
      "nombre": "Jonathan Rodríguez",
      "n": 2,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Karla H.",
+       "f": "19/10"
+      },
+      {
+       "n": "Nahaman E.",
+       "f": "14/10"
+      }
+     ]
     },
     {
      "nombre": "José Raúl Hernández",
      "n": 2,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "José L.",
+       "f": "14/10"
+      },
+      {
+       "n": "Laura J.",
+       "f": "14/10"
+      }
+     ]
     },
     {
      "nombre": "Miriam Cuellar",
      "n": 2,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Karem A.",
+       "f": "16/10"
+      },
+      {
+       "n": "Karla F.",
+       "f": "16/10"
+      }
+     ]
     },
     {
      "nombre": "Rosa Fuentes",
      "n": 2,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Irma F.",
+       "f": "18/10"
+      },
+      {
+       "n": "Andrea G.",
+       "f": "18/10"
+      }
+     ]
     },
     {
      "nombre": "Alba Luz Martínez Hernández",
      "n": 1,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Dina Y.",
+       "f": "20/10"
+      }
+     ]
     },
     {
      "nombre": "Angelica",
      "n": 1,
-     "hoy": 0
-    },
-    {
-     "nombre": "Joany Isabel Perla Gámez",
-     "n": 1,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Evelin P.",
+       "f": "20/10"
+      }
+     ]
     },
     {
      "nombre": "Josue Delgado",
      "n": 1,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Francisco G.",
+       "f": "08/10"
+      }
+     ]
     },
     {
      "nombre": "Juan Carlos Granados Claros",
      "n": 1,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Edvin S.",
+       "f": "08/10"
+      }
+     ]
     },
     {
      "nombre": "Karen Arias",
      "n": 1,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Simon M.",
+       "f": "19/10"
+      }
+     ]
     },
     {
      "nombre": "Karla Patricia Calderon Fajardo",
      "n": 1,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Gabriela V.",
+       "f": "20/10"
+      }
+     ]
     },
     {
      "nombre": "Natalie",
      "n": 1,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Stefany L.",
+       "f": "20/10"
+      }
+     ]
     },
     {
      "nombre": "Olga",
      "n": 1,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Dunia I.",
+       "f": "09/10"
+      }
+     ]
     },
     {
      "nombre": "Saby Isaguirre",
      "n": 1,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Yorleny V.",
+       "f": "19/10"
+      }
+     ]
     },
     {
      "nombre": "Yolanda Morales",
      "n": 1,
-     "hoy": 0
-    },
-    {
-     "nombre": "Yolany Perla",
-     "n": 1,
-     "hoy": 0
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Ramón E.",
+       "f": "20/10"
+      }
+     ]
     }
    ],
-   "actualizado": "2026-10-21T12:46:00-06:00"
+   "actualizado": "2026-10-21T12:56:00-06:00",
+   "repetidos": 4
   }
  },
  "fotos": [

@@ -1253,7 +1253,10 @@ function renderEvento(){const c=$("#evCard");if(!c)return;const E=(T.config&&T.c
    ${E.meta?`<div class="bar" style="background:rgba(255,255,255,.2);margin:0"><i style="width:${Math.min(100,Math.round(E.total/E.meta*100))}%;background:#fff"></i></div><span class="small" style="opacity:.85;margin-top:-4px">Meta: ${E.meta} invitados</span>`:""}
    <div>${L.slice(0,3).map(row).join("")}</div>
    ${iy>2?`<div class="evMe">Usted va <b>#${iy+1}</b> con <b>${L[iy].n}</b> ${L[iy].n===1?"invitado":"invitados"}. ¡A invitar! 💪</div>`:iy<0&&fbUser?`<div class="evMe">Aún no tiene invitados registrados. ¡Invite y súbase al ranking! 💪</div>`:""}
-   <button class="btn sm" id="evVer" type="button">Ver ranking completo (${L.length})</button>`;
+   <div class="row" style="gap:8px">${iy>=0&&(L[iy].inv||[]).length?`<button class="btn sm" id="evMis" type="button" style="flex:1;background:#fff;color:#4c1d95">👥 Mis invitados · ${L[iy].inv.length}</button>`:""}<button class="btn sm" id="evVer" type="button" style="flex:1">Ver ranking (${L.length})</button></div>`;
+  const mb=$("#evMis");if(mb)mb.onclick=()=>{const I=L[iy].inv.slice().reverse();openSheet(`<h2>👥 Mis invitados</h2><p class="small muted" style="margin:0">${esc(E.titulo||"Evento")} · ${I.length} ${I.length===1?"persona registrada":"personas registradas"} con su nombre. Confírmeles la asistencia 💪</p>
+    <div style="display:flex;flex-direction:column">${I.map((x,i)=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)"><span class="step-n ok" style="width:28px;height:28px;font-size:13px">${I.length-i}</span><b style="flex:1;font-weight:600">${esc(x.n)}</b><span class="small muted">${esc(x.f)}</span></div>`).join("")}</div>
+    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`)};
   $("#evVer").onclick=()=>openSheet(`<h2>🎟️ ${esc(E.titulo||"Reto de invitados")}</h2><p class="small muted" style="margin:0">${E.total} invitados registrados${E.actualizado?" · actualizado "+new Date(E.actualizado).toLocaleString("es",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):""}</p>
     <div style="display:flex;flex-direction:column">${L.map((x,i)=>`<div class="row" style="gap:10px;padding:9px 0;border-bottom:1px solid var(--line)"><span style="width:28px;text-align:center;font-weight:800">${md[i]||i+1}</span>${avHTML(x.nombre,false,false)}<b style="flex:1;font-weight:600">${esc(x.nombre)}</b>${x.hoy?`<span class="chip c-good">+${x.hoy} hoy</span>`:""}<b class="num" style="font-size:20px">${x.n}</b></div>`).join("")}</div>
     <button class="btn ghost" data-close style="width:100%">Cerrar</button>`)}
@@ -2604,7 +2607,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261021124707";var busy=false,pend=null;
+(function(){var V="20261021125633";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

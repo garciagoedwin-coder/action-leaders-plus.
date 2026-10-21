@@ -109,7 +109,7 @@ App web móvil (PWA) del equipo de Edwin García Go (Director Nacional, inCruise
 
 - Tarjeta morada en Inicio (`#evCard`) mientras `config.evento.fecha` no haya pasado: total de invitados, "+N hoy", top 3 y ranking completo.
 - Fuente: hoja del formulario del evento (evento actual: spreadsheet `1zAt3bZ0zBhh35YkryE9DDyMdAB5ek-nEKIJfthff554`, pestaña "Respuestas de formulario 1", columnas A Marca temporal y F "Invitado por"). Solo lectura: no hay permiso de edición.
-- `python3 tools/evento.py evento.txt` (líneas `dd/mm/aaaa h:mm:ss|Invitado por`) agrupa nombres mal escritos (Eric/Erick, sin acentos, solo primer nombre si es único) y guarda `config.evento` {titulo, fecha, lugar, meta, alias, total, hoy, top[]}. Si dos nombres no se unen solos, agregar `config.evento.alias`.
+- `python3 tools/evento.py evento.txt` (líneas `dd/mm/aaaa h:mm:ss|Invitado por|Nombre del invitado`, columnas A, F y C; en la app solo se muestra nombre + inicial, y cada socio ve solo "Mis invitados"; registros repetidos con el mismo nombre cuentan una vez) agrupa nombres mal escritos (Eric/Erick, sin acentos, solo primer nombre si es único) y guarda `config.evento` {titulo, fecha, lugar, meta, alias, total, hoy, top[]}. Si dos nombres no se unen solos, agregar `config.evento.alias`.
 - Se actualiza cada hora (recordatorio "CICLO EVENTO" en el chat) hasta el día del evento. Nunca se guardan correos ni teléfonos de invitados.
 
 ## 6. Tareas programadas
