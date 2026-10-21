@@ -93,15 +93,13 @@ App web móvil (PWA) del equipo de Edwin García Go (Director Nacional, inCruise
 
 ## 5. Ranking: de dónde salen los números
 
-1. **Registros y presentaciones:**
-   - Vienen del artefacto "Ranking Action Leaders", https://claude.ai/artifact/6yt41DTCmkM6EQnTMhSUXP. Lo actualiza otro chat.
-   - Se lee con la herramienta Artifact (read, path `index.html`). Dentro hay un bloque `<script id="ranking-data">` con el JSON.
+1. **Registros gratis:** reporte CSV que Edwin sube a la carpeta de Google Drive `1QubWm4w4K8tNsPUxfRgjo3NueoFKvtrP`, un archivo por día con nombre `DD-MM-AA.csv` (ej. `20-10-26.csv` = 20 oct 2026). Es acumulado del mes: cada fila es una cuenta gratis creada (columnas level, first_name, last_name, email, sponsor_name, sponsor_id, country, account_created). Se usa el archivo más reciente, se cuenta por `sponsor_id` (filas con account_created dentro del mes) y se guarda solo patrocinador y fecha (nunca correos). Las cuentas que se activan desaparecen del reporte; por eso la app suma registros + activaciones.
 2. **Activaciones (socios nuevos):**
    - Vienen de los correos de no-reply@incruises.com: "Tienes un nuevo Socio en tu equipo." y "Tienes un nuevo Miembro en tu equipo.".
    - En el correo, el 1.er recuadro es la persona nueva y el 2.º su **patrocinador directo**.
    - Se guardan en `team.json → activaciones`, sin correo ni teléfono.
    - `config.activacionesCorte` es la fecha del último socio nuevo guardado.
-3. **Recalcular:** `python3 tools/ranking.py '<json de activaciones nuevas>' <ruta del index.html del artefacto>`. Luego commit y push.
+3. **Recalcular:** escribir `/tmp/.../reg.txt` con líneas `sponsor_id|sponsor_name|account_created` a partir del CSV (Drive `read_file_content`; el proxy no deja descargarlo por shell) y correr `python3 tools/ranking.py reg.txt '<json de activaciones nuevas>'`. Luego commit y push.
 
 **Cómo corre hoy:** la tarea programada en sesiones nuevas falla porque esas sesiones no tienen permiso para hacer push al repo (está **pausada**). Por eso la actualización corre como recordatorios encadenados dentro del chat de Claude Code donde se construyó la app, a las 9:55, 12:55, 3:55 y 6:55 pm hora de Honduras. Si ese chat se pierde, hay dos opciones:
 - Rehacer esa cadena desde el chat nuevo.
