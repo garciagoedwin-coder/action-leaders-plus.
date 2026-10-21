@@ -1593,7 +1593,7 @@ function renderCal(){$("#calTitle").textContent=MONTHS[calM.getMonth()][0].toUpp
 
 // ---------- compartir actividades y flyers ----------
 const ZOOM_DEF={"Presentación":"https://us06web.zoom.us/j/7717273747"};
-const ZOOM_TIT={"action leaders training":"https://us06web.zoom.us/launch/jc/89020324859"};
+const ZOOM_TIT={"action leaders training":"https://us06web.zoom.us/j/89020324859"};
 const evLink=e=>safeUrl(e.enlace)||ZOOM_TIT[(e.titulo||"").toLowerCase().trim()]||ZOOM_DEF[e.tipo]||"";
 const FLYERS={
   presentacion:{img:"media/flyers/presentacion.jpg",c:[[152,755,83],[152,957,83]],tx:400,ny:[750,950],tw:255,rc:"#E7B54B",d:[255,1179,160],h:[571,1179,140]},
@@ -2579,7 +2579,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020164043";var busy=false,pend=null;
+(function(){var V="20261020200122";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
