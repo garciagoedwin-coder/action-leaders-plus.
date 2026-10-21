@@ -145,6 +145,15 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .counter .num{min-width:30px;text-align:center;font-size:19px}
 .done-t{text-decoration:line-through;color:var(--muted)}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.evCard{background:linear-gradient(135deg,#1e1b4b,#4c1d95 55%,#be185d);color:#fff;border:0;gap:10px}
+.evCard .evK{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.evCard .evT{display:flex;align-items:flex-end;gap:10px}.evCard .evT b{font-family:var(--f-num);font-size:44px;line-height:.9}
+.evCard .evHoy{background:rgba(255,255,255,.18);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:800}
+.evCard .evRow{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid rgba(255,255,255,.14)}
+.evCard .evRow .nm{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evCard .evRow .ct{font-family:var(--f-num);font-size:22px;font-weight:700}.evCard .evRow small{font-size:11px;color:#a7f3d0;font-weight:800}
+.evCard .av{border:2px solid rgba(255,255,255,.6);border-radius:50%;overflow:hidden}.evCard .evMe{background:rgba(255,255,255,.12);border-radius:12px;padding:8px 10px;font-size:13px}
+.evCard .btn{background:rgba(255,255,255,.16);color:#fff;border:0}
 #snBody{display:flex;flex-direction:column;gap:12px}
 .snWhy{position:relative;padding:18px 18px 16px;border-radius:20px;background:linear-gradient(135deg,#111827,#1f2937 60%,#0A7DAD);color:#fff;cursor:pointer}
 .snWhy .q{font-family:var(--f-display);font-size:42px;line-height:.6;color:#2AC1F1}.snWhy p{margin:6px 0 0;font-family:var(--f-display);font-size:21px;font-weight:700;line-height:1.25}
@@ -768,6 +777,7 @@ nav.tabs button{z-index:0;isolation:isolate}
       <div class="miwa" id="miWaCard" hidden></div>
       <div class="actBan" id="actBan" hidden></div>
       <div class="metaStrip" id="metaStrip" hidden></div>
+      <div class="card evCard" id="evCard" hidden></div>
       <div class="card" id="whoCard" hidden></div>
       <div class="card">
         <div class="row between"><h3>🔥 Tu día</h3><span class="num" style="font-size:20px" id="dayPct">0%</span></div>
@@ -1233,6 +1243,20 @@ function abrirMetas(){const M=misMetas(),delMes=M.mes===mesMeta(),cur=miRangoIdx
     const nm={mes:mesMeta(),act:Math.max(0,Math.min(9999,parseInt($("#mtAct").value,10)||0)),rango:x?x.value:"",sueno:Math.max(0,Math.min(99999999,parseInt(String($("#mtSue").value).replace(/\D/g,""),10)||0)),t:Date.now()};
     $("#mtSave").disabled=true;try{await store.db.doc("users/"+store.uid).set({metas:nm},{merge:true});regDoc=Object.assign({},regDoc,{metas:nm});closeSheet();renderMetas();toast("Metas guardadas 🎯")}
     catch(e){$("#mtSave").disabled=false;toast("No se pudieron guardar. Revise su conexión.")}}}
+function renderEvento(){const c=$("#evCard");if(!c)return;const E=(T.config&&T.config.evento)||null;
+  if(!E||!E.top||!E.top.length||!E.fecha||TODAY>E.fecha){c.hidden=true;return}c.hidden=false;
+  const md=["🥇","🥈","🥉"],L=E.top,yo=miNombreFull()||miNombreCorto(),iy=L.findIndex(x=>sameN(x.nombre,yo));
+  const dias=Math.round((parseK(E.fecha)-parseK(TODAY))/864e5),cuando=dias===0?"¡Es hoy!":dias===1?"Mañana":"Faltan "+dias+" días";
+  const row=(x,i)=>`<div class="evRow"><span style="font-size:20px;width:26px;text-align:center">${md[i]||"#"+(i+1)}</span>${avHTML(x.nombre,false,false)}<span class="nm">${esc(x.nombre)}</span>${x.hoy?`<small>+${x.hoy} hoy</small>`:""}<span class="ct">${x.n}</span></div>`;
+  c.innerHTML=`<div class="row between"><span class="evK">🎟️ Reto de invitados · ${esc(E.titulo||"Evento")}</span><span class="evHoy">${cuando}</span></div>
+   <div class="evT"><b>${E.total}</b><span style="padding-bottom:4px;font-weight:700">invitados registrados${E.hoy?` · <span class="evHoy">+${E.hoy} hoy</span>`:""}</span></div>
+   ${E.meta?`<div class="bar" style="background:rgba(255,255,255,.2);margin:0"><i style="width:${Math.min(100,Math.round(E.total/E.meta*100))}%;background:#fff"></i></div><span class="small" style="opacity:.85;margin-top:-4px">Meta: ${E.meta} invitados</span>`:""}
+   <div>${L.slice(0,3).map(row).join("")}</div>
+   ${iy>2?`<div class="evMe">Usted va <b>#${iy+1}</b> con <b>${L[iy].n}</b> ${L[iy].n===1?"invitado":"invitados"}. ¡A invitar! 💪</div>`:iy<0&&fbUser?`<div class="evMe">Aún no tiene invitados registrados. ¡Invite y súbase al ranking! 💪</div>`:""}
+   <button class="btn sm" id="evVer" type="button">Ver ranking completo (${L.length})</button>`;
+  $("#evVer").onclick=()=>openSheet(`<h2>🎟️ ${esc(E.titulo||"Reto de invitados")}</h2><p class="small muted" style="margin:0">${E.total} invitados registrados${E.actualizado?" · actualizado "+new Date(E.actualizado).toLocaleString("es",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):""}</p>
+    <div style="display:flex;flex-direction:column">${L.map((x,i)=>`<div class="row" style="gap:10px;padding:9px 0;border-bottom:1px solid var(--line)"><span style="width:28px;text-align:center;font-weight:800">${md[i]||i+1}</span>${avHTML(x.nombre,false,false)}<b style="flex:1;font-weight:600">${esc(x.nombre)}</b>${x.hoy?`<span class="chip c-good">+${x.hoy} hoy</span>`:""}<b class="num" style="font-size:20px">${x.n}</b></div>`).join("")}</div>
+    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`)}
 let banT=null,banI=0,banDone=false;
 function cerrarBan(){const c=$("#actBan");clearInterval(banT);banDone=true;if(!c||c.hidden)return;c.classList.add("bye");setTimeout(()=>{c.hidden=true;c.innerHTML="";c.classList.remove("bye")},450)}
 function renderActBan(){const c=$("#actBan");if(!c||banDone)return;clearInterval(banT);
@@ -2505,7 +2529,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-refr
 async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
-  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();renderMetas();renderTopAct();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
+  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();renderMetas();renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
 let autoFotoHecho=false;
 function urlADataUrl(u,S){return new Promise(ok=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{S=S||240;const c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);
   c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);ok(c.toDataURL("image/jpeg",.85))}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=u})}
@@ -2580,7 +2604,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261021102306";var busy=false,pend=null;
+(function(){var V="20261021124707";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

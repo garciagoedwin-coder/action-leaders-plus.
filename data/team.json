@@ -2213,7 +2213,140 @@
    "Edwin Garcia Go": "National Director",
    "Edwin Alexander Garcia Gomez": "National Director"
   },
-  "rankingFuente": "drive-csv"
+  "rankingFuente": "drive-csv",
+  "evento": {
+   "titulo": "Evento San Pedro Sula",
+   "fecha": "2026-10-26",
+   "lugar": "San Pedro Sula",
+   "meta": 0,
+   "alias": {},
+   "total": 51,
+   "hoy": 3,
+   "sinNombre": 2,
+   "top": [
+    {
+     "nombre": "Joel Salgado",
+     "n": 8,
+     "hoy": 2
+    },
+    {
+     "nombre": "Betty Amador",
+     "n": 5,
+     "hoy": 0
+    },
+    {
+     "nombre": "Erick Miranda",
+     "n": 4,
+     "hoy": 0
+    },
+    {
+     "nombre": "Mabis Franco",
+     "n": 3,
+     "hoy": 0
+    },
+    {
+     "nombre": "Rosa Oliva",
+     "n": 3,
+     "hoy": 0
+    },
+    {
+     "nombre": "Erick Moncada",
+     "n": 2,
+     "hoy": 0
+    },
+    {
+     "nombre": "Francisco Caballero",
+     "n": 2,
+     "hoy": 1
+    },
+    {
+     "nombre": "Irma Hernandez",
+     "n": 2,
+     "hoy": 0
+    },
+    {
+     "nombre": "Jonathan Rodríguez",
+     "n": 2,
+     "hoy": 0
+    },
+    {
+     "nombre": "José Raúl Hernández",
+     "n": 2,
+     "hoy": 0
+    },
+    {
+     "nombre": "Miriam Cuellar",
+     "n": 2,
+     "hoy": 0
+    },
+    {
+     "nombre": "Rosa Fuentes",
+     "n": 2,
+     "hoy": 0
+    },
+    {
+     "nombre": "Alba Luz Martínez Hernández",
+     "n": 1,
+     "hoy": 0
+    },
+    {
+     "nombre": "Angelica",
+     "n": 1,
+     "hoy": 0
+    },
+    {
+     "nombre": "Joany Isabel Perla Gámez",
+     "n": 1,
+     "hoy": 0
+    },
+    {
+     "nombre": "Josue Delgado",
+     "n": 1,
+     "hoy": 0
+    },
+    {
+     "nombre": "Juan Carlos Granados Claros",
+     "n": 1,
+     "hoy": 0
+    },
+    {
+     "nombre": "Karen Arias",
+     "n": 1,
+     "hoy": 0
+    },
+    {
+     "nombre": "Karla Patricia Calderon Fajardo",
+     "n": 1,
+     "hoy": 0
+    },
+    {
+     "nombre": "Natalie",
+     "n": 1,
+     "hoy": 0
+    },
+    {
+     "nombre": "Olga",
+     "n": 1,
+     "hoy": 0
+    },
+    {
+     "nombre": "Saby Isaguirre",
+     "n": 1,
+     "hoy": 0
+    },
+    {
+     "nombre": "Yolanda Morales",
+     "n": 1,
+     "hoy": 0
+    },
+    {
+     "nombre": "Yolany Perla",
+     "n": 1,
+     "hoy": 0
+    }
+   ],
+   "actualizado": "2026-10-21T12:46:00-06:00"
+  }
  },
  "fotos": [
   {
