@@ -382,6 +382,7 @@ header.top{background:linear-gradient(135deg,#2B2A2D 0%,#3D3B3B 60%,#0E4E66 140%
 body::before{background:#2B2A2D}
 .top-t span{display:inline-block;margin-top:3px;font-size:13px;opacity:.85}
 .top .pv{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:7px 12px}
+.top .pv{display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:12px;flex:none}.top .pv b{font-size:22px}.top .pv small{font-size:9.5px;line-height:1.15;text-align:left;letter-spacing:.05em}
 .top .pv[data-empty]{display:none}
 main{padding-block:18px 28px}
 section.view{gap:14px}
@@ -752,7 +753,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 <div class="app">
   <header class="top">
     <div class="top-t"><b>Action Leaders <em>PLUS</em></b><span id="hello">Hola, líder</span></div>
-    <div class="pv" id="topPvBox" data-empty><b class="num" id="topPv">—</b><small>Registros inCruises</small></div>
+    <div class="pv" id="topPvBox" data-empty><b class="num" id="topPv">—</b><small>Registros<br>inCruises</small></div>
     <button class="me-btn" id="meBtn" aria-label="Mi perfil" title="Mi perfil"></button>
   </header>
 
@@ -2579,7 +2580,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261020200122";var busy=false,pend=null;
+(function(){var V="20261021102306";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
