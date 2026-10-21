@@ -1258,8 +1258,10 @@ function renderEvento(){const c=$("#evCard");if(!c)return;const E=(T.config&&T.c
     <div style="display:flex;flex-direction:column">${I.map((x,i)=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)"><span class="step-n ok" style="width:28px;height:28px;font-size:13px">${I.length-i}</span><b style="flex:1;font-weight:600">${esc(x.n)}</b><span class="small muted">${esc(x.f)}</span></div>`).join("")}</div>
     <button class="btn ghost" data-close style="width:100%">Cerrar</button>`)};
   $("#evVer").onclick=()=>openSheet(`<h2>🎟️ ${esc(E.titulo||"Reto de invitados")}</h2><p class="small muted" style="margin:0">${E.total} invitados registrados${E.actualizado?" · actualizado "+new Date(E.actualizado).toLocaleString("es",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):""}</p>
-    <div style="display:flex;flex-direction:column">${L.map((x,i)=>`<div class="row" style="gap:10px;padding:9px 0;border-bottom:1px solid var(--line)"><span style="width:28px;text-align:center;font-weight:800">${md[i]||i+1}</span>${avHTML(x.nombre,false,false)}<b style="flex:1;font-weight:600">${esc(x.nombre)}</b>${x.hoy?`<span class="chip c-good">+${x.hoy} hoy</span>`:""}<b class="num" style="font-size:20px">${x.n}</b></div>`).join("")}</div>
-    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`)}
+    ${isAdmin?`<p class="small" style="margin:0;font-weight:700;color:var(--brand)">👑 Vista de admin: toque un socio para ver sus invitados.</p>`:""}
+    <div style="display:flex;flex-direction:column">${L.map((x,i)=>`<div ${isAdmin?`data-evi="${i}" role="button" style="cursor:pointer;border-bottom:1px solid var(--line)"`:`style="border-bottom:1px solid var(--line)"`}><div class="row" style="gap:10px;padding:9px 0"><span style="width:28px;text-align:center;font-weight:800">${md[i]||i+1}</span>${avHTML(x.nombre,false,false)}<b style="flex:1;font-weight:600">${esc(x.nombre)}</b>${x.hoy?`<span class="chip c-good">+${x.hoy} hoy</span>`:""}<b class="num" style="font-size:20px">${x.n}</b>${isAdmin?`<span class="muted" style="font-size:18px">›</span>`:""}</div>${isAdmin?`<div class="evInv" hidden style="padding:0 0 10px 38px;display:flex;flex-wrap:wrap;gap:6px">${(x.inv||[]).map(v=>`<span class="chip c-brand">${esc(v.n)} · ${esc(v.f)}</span>`).join("")||`<span class="small muted">Sin nombres</span>`}</div>`:""}</div>`).join("")}</div>
+    ${isAdmin&&(E.sinNombre||E.repetidos)?`<p class="small muted" style="margin:0">Sin "invitado por" válido: ${E.sinNombre||0} · Registros repetidos no contados: ${E.repetidos||0}</p>`:""}
+    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{if(isAdmin)$("#sheetPanel").querySelectorAll("[data-evi]").forEach(r=>r.onclick=()=>{const v=r.querySelector(".evInv");if(v)v.hidden=!v.hidden})})}
 let banT=null,banI=0,banDone=false;
 function cerrarBan(){const c=$("#actBan");clearInterval(banT);banDone=true;if(!c||c.hidden)return;c.classList.add("bye");setTimeout(()=>{c.hidden=true;c.innerHTML="";c.classList.remove("bye")},450)}
 function renderActBan(){const c=$("#actBan");if(!c||banDone)return;clearInterval(banT);
@@ -2607,7 +2609,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261021125633";var busy=false,pend=null;
+(function(){var V="20261021125936";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
