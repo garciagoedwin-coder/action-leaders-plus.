@@ -1094,8 +1094,17 @@ function renderWeek(){const out=[];let streak=0;
 const SN_CAT=[{k:"tener",t:"🏠 Tener"},{k:"vivir",t:"✈️ Vivir"},{k:"ser",t:"🌱 Ser"},{k:"dar",t:"❤️ Dar"},{k:"libertad",t:"💰 Libertad"}];
 let snList=null,snInfo=null,snBusy=false,snInfoT=0;
 const snCol=()=>store.db.collection("users/"+store.uid+"/suenos");
-function snFoto(file,max,q){return new Promise(ok=>{const im=new Image(),u=URL.createObjectURL(file);im.onload=()=>{try{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);ok(c.toDataURL("image/jpeg",q||.8))}catch(e){ok(null)}URL.revokeObjectURL(u)};im.onerror=()=>ok(null);im.src=u})}
-function snPick(){return new Promise(ok=>{const i=document.createElement("input");i.type="file";i.accept="image/*";i.onchange=async()=>{const f=i.files&&i.files[0];ok(f?await snFoto(f,900,.8):null)};i.click()})}
+async function snDecode(file,max){
+  try{if(window.createImageBitmap){const b=await createImageBitmap(file);const k=Math.min(1,max/Math.max(b.width,b.height));
+    if(k<1){try{const r=await createImageBitmap(file,{resizeWidth:Math.round(b.width*k),resizeHeight:Math.round(b.height*k),resizeQuality:"high"});b.close&&b.close();return r}catch(e){}}return b}}catch(e){}
+  return await new Promise(ok=>{const im=new Image(),u=URL.createObjectURL(file);im.onload=()=>{ok(im);setTimeout(()=>URL.revokeObjectURL(u),3000)};im.onerror=()=>{URL.revokeObjectURL(u);ok(null)};im.src=u})}
+async function snFoto(file,max,q){const im=await snDecode(file,max);if(!im||!im.width)return null;
+  try{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.max(1,Math.round(im.width*k));c.height=Math.max(1,Math.round(im.height*k));
+    const g=c.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);im.close&&im.close();
+    let qq=q||.8,d=c.toDataURL("image/jpeg",qq);while(d.length>600000&&qq>.4){qq-=.1;d=c.toDataURL("image/jpeg",qq)}return d.length>20?d:null}catch(e){return null}}
+function snPick(){return new Promise(ok=>{const i=document.createElement("input");i.type="file";i.accept="image/*";i.style.cssText="position:fixed;left:-9999px;opacity:0";document.body.appendChild(i);
+  i.onchange=async()=>{const f=i.files&&i.files[0];i.remove();if(!f)return ok(null);toast("Preparando la foto…");const d=await snFoto(f,1000,.82);
+    if(!d)toast("No se pudo abrir esa foto. Pruebe con otra o tómele captura de pantalla y suba la captura.");ok(d)};i.click()})}
 function snFalta(f){if(!f)return"";const d=Math.ceil((new Date(f+(f.length===7?"-01":"")+"T12:00:00")-new Date())/864e5);if(d<0)return"";if(d<=60)return"Faltan "+d+" días";const m=Math.round(d/30.4);return m<24?"Faltan "+m+" meses":"Faltan "+(m/12).toFixed(1).replace(".0","")+" años"}
 function snMes(f){if(!f)return"";const [y,m]=f.split("-");return MONTHS[+m-1]+" "+y}
 async function loadSuenos(){if(!store.db||!store.uid||snBusy)return;snBusy=true;try{const [q,inf]=await Promise.all([snCol().get(),store.get("suenosInfo").catch(()=>null)]);snList=q.docs.map(d=>Object.assign({id:d.id},d.data())).sort((a,b)=>(a.t||0)-(b.t||0));snInfo=inf||{}}catch(e){snList=snList||[];snInfo=snInfo||{}}snBusy=false;renderSuenos();renderMetas()}
@@ -2644,7 +2653,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261021194017";var busy=false,pend=null;
+(function(){var V="20261021195115";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
