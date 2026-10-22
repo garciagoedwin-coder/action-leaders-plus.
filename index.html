@@ -2461,7 +2461,7 @@ function renderWel(){const el=$("#wel");
       <div class="field"><label for="rg_nombre">Nombre completo</label><input class="inp" id="rg_nombre" autocomplete="name" value="${esc(R0.nombre||(invData&&invData.nombre)||(fbUser&&fbUser.displayName)||"")}"></div>
       ${invSponsor?`<div class="card" style="text-align:left;gap:4px;padding:12px 14px"><span class="small muted">Tu patrocinador</span><b style="font-weight:600">${esc(invSponsor.nombre||"Tu patrocinador")} ✓</b>${invData&&invData.plan?`<span class="small muted" style="margin-top:4px">Tu paquete</span><b style="font-weight:600">${esc(invData.plan)} ✓</b>`:""}</div>`:`<div class="field"><label for="rg_patro">Nombre de tu patrocinador</label><input class="inp" id="rg_patro" value=""></div>`}
       ${invData&&invData.plan?"":`<div class="field"><label for="rg_plan">Plan de inicio</label><select class="inp" id="rg_plan"><option value="">Elige tu plan</option><option>Classic</option><option>Premium</option></select></div>`}
-      ${invData&&invData.wa?"":`<div class="field"><label for="rg_wa">Tu WhatsApp</label><div class="row" style="gap:8px"><select class="inp" id="rg_cc" style="max-width:110px">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")?"selected":""}>+${k}</option>`).join("")}</select><input class="inp grow" id="rg_wa" type="tel" placeholder="Para que tu patrocinador te escriba" style="min-width:0"></div></div>`}
+      ${invData&&invData.wa?"":`<div class="field"><label for="rg_wa">Tu WhatsApp <span style="color:var(--bad)">*</span></label><div class="row" style="gap:8px"><select class="inp" id="rg_cc" style="max-width:110px">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")?"selected":""}>+${k}</option>`).join("")}</select><input class="inp grow" id="rg_wa" type="tel" placeholder="Para que tu patrocinador te escriba" required inputmode="tel" autocomplete="tel-national" style="min-width:0"></div></div>`}
       <p class="small" id="regErr" style="color:var(--bad)" hidden></p>
       <button class="btn pill dark" id="regOk" type="submit">${invSponsor?"Entrar al equipo":"Enviar mi registro"}</button></form></div>`);
     const F=$("#regF");if(F)F.onsubmit=async ev=>{ev.preventDefault();const g=k=>$("#rg_"+k).value.trim(),err=$("#regErr");
@@ -2471,6 +2471,7 @@ function renderWel(){const el=$("#wel");
       {const we=$("#rg_wa");if(we&&we.value.trim()){const sp=splitPhone(we.value),n=sp.cc?sp.cc+sp.num:waNum(we.value,$("#rg_cc").value);if(n.length>=8)d.whatsapp=n.slice(0,15)}}try{d.inv=(localStorage.getItem("alp:inv")||"").slice(0,60)}catch(x){};
       const lab={nombre:"Nombre completo",patrocinador:"Patrocinador",plan:"Plan"};
       for(const k in lab)if(!d[k]){err.textContent="Completa: "+lab[k];err.hidden=false;return}
+      if(String(d.whatsapp||"").replace(/\D/g,"").length<8){err.textContent="Escribe tu número de WhatsApp completo para que tu patrocinador pueda escribirte.";err.hidden=false;const we=$("#rg_wa");if(we)we.focus();return}
       err.hidden=true;const bt=$("#regOk");bt.disabled=true;bt.textContent="Enviando…";
       try{d.fecha=new Date().toISOString();await store.db.doc("users/"+store.uid).set({registro:d,nombre:d.nombre,email:(fbUser&&fbUser.email)||"",creado:window.FB.serverTimestamp()},{merge:true});
         regDoc=Object.assign({},regDoc||{},{registro:d});if(!profile.nombrePila){profile.nombrePila=d.nombre.split(" ")[0];$("#hello").textContent="Hola, "+profile.nombrePila}
@@ -2658,7 +2659,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261021210011";var busy=false,pend=null;
+(function(){var V="20261021210630";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
