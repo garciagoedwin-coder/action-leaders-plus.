@@ -2254,10 +2254,41 @@
    "alias": {
     "Yolany perla": "Joany Isabel Perla Gámez"
    },
-   "total": 55,
-   "hoy": 11,
+   "total": 57,
+   "hoy": 13,
    "sinNombre": 2,
    "top": [
+    {
+     "nombre": "Joel Salgado",
+     "n": 6,
+     "hoy": 4,
+     "inv": [
+      {
+       "n": "Maria R.",
+       "f": "20/10"
+      },
+      {
+       "n": "Angelica M.",
+       "f": "20/10"
+      },
+      {
+       "n": "Karen J.",
+       "f": "21/10"
+      },
+      {
+       "n": "Mayra J.",
+       "f": "21/10"
+      },
+      {
+       "n": "Ana R.",
+       "f": "21/10"
+      },
+      {
+       "n": "Senny A.",
+       "f": "21/10"
+      }
+     ]
+    },
     {
      "nombre": "Betty Amador",
      "n": 5,
@@ -2327,29 +2358,6 @@
       },
       {
        "n": "Jose A.",
-       "f": "21/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Joel Salgado",
-     "n": 4,
-     "hoy": 2,
-     "inv": [
-      {
-       "n": "Maria R.",
-       "f": "20/10"
-      },
-      {
-       "n": "Angelica M.",
-       "f": "20/10"
-      },
-      {
-       "n": "Karen J.",
-       "f": "21/10"
-      },
-      {
-       "n": "Senny A.",
        "f": "21/10"
       }
      ]
@@ -2646,8 +2654,8 @@
      ]
     }
    ],
-   "actualizado": "2026-10-21T19:27:00-06:00",
-   "repetidos": 4
+   "actualizado": "2026-10-21T20:26:00-06:00",
+   "repetidos": 5
   }
  },
  "fotos": [
