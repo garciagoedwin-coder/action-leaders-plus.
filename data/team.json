@@ -2242,8 +2242,8 @@
    "alias": {
     "Yolany perla": "Joany Isabel Perla Gámez"
    },
-   "total": 53,
-   "hoy": 9,
+   "total": 55,
+   "hoy": 11,
    "sinNombre": 2,
    "top": [
     {
@@ -2546,6 +2546,28 @@
      ]
     },
     {
+     "nombre": "Edwin García",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Esdras R.",
+       "f": "21/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Jose Sagastume",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Carlos E.",
+       "f": "21/10"
+      }
+     ]
+    },
+    {
      "nombre": "Juan Carlos Granados Claros",
      "n": 1,
      "hoy": 0,
@@ -2612,7 +2634,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-21T18:26:00-06:00",
+   "actualizado": "2026-10-21T19:27:00-06:00",
    "repetidos": 4
   }
  },
