@@ -456,7 +456,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 .pf-it span.ic{width:30px;text-align:center;font-size:18px}
 .pf-it.out{color:var(--bad)}
 .qf{background:var(--bg);border:1px dashed var(--line);border-radius:14px;padding:10px 12px;margin:4px 0 10px}.qf-row{display:flex;flex-wrap:wrap;gap:8px}
-.curso{gap:12px}.cursoMin{flex-direction:row!important;align-items:center;gap:12px!important;border:0;font:inherit;color:inherit;width:100%;cursor:pointer;background:linear-gradient(135deg,#ecfdf5,#fff)}.cursoMin b{display:block;margin:6px 0 2px;font-size:15.5px;line-height:1.2}.cursoMin small{font-size:12.5px}.cmOk{flex:none;width:40px;height:40px;border-radius:50%;background:var(--good,#16a34a);color:#fff;display:grid;place-items:center}.cmOk svg{width:20px;height:20px}.cmGo{font-size:26px;color:var(--muted,#94a3b8);flex:none}.yt{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000}.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.emCp{display:flex;align-items:center;gap:6px;margin-top:4px;max-width:100%;border:0;background:#EEF6FB;color:var(--brand,#0A7DAD);font:inherit;font-size:12.5px;font-weight:600;border-radius:8px;padding:4px 8px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.emCp span{font-size:11px;opacity:.7;margin-left:auto;padding-left:6px}.curso{gap:12px}.cursoMin{flex-direction:row!important;align-items:center;gap:12px!important;border:0;font:inherit;color:inherit;width:100%;cursor:pointer;background:linear-gradient(135deg,#ecfdf5,#fff)}.cursoMin b{display:block;margin:6px 0 2px;font-size:15.5px;line-height:1.2}.cursoMin small{font-size:12.5px}.cmOk{flex:none;width:40px;height:40px;border-radius:50%;background:var(--good,#16a34a);color:#fff;display:grid;place-items:center}.cmOk svg{width:20px;height:20px}.cmGo{font-size:26px;color:var(--muted,#94a3b8);flex:none}.yt{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000}.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 #cal button.past{opacity:.35}#cal button.past .dots i{background:var(--muted)}.ev.ev-past{opacity:.45;filter:grayscale(1)}.ev.ev-past .hr{color:var(--muted)}
 #sheetPanel>*{flex-shrink:0}
 </style>
@@ -1000,6 +1000,7 @@ const store={db:null,uid:null,
 // ---------- datos del equipo (compartidos, los carga el administrador) ----------
 const T={fotos:[],ranking:[],lideres:[],red:null,eventos:[],videos:[],config:null,loaded:false};
 let isAdmin=false;
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-cpem]");if(!b)return;const t=b.dataset.cpem;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("Correo copiado")).catch(()=>{prompt("Copie el correo:",t)})});
 const DEFAULT_RETO={titulo:"Reto del mes",descripcion:"Presenta el plan y sube contenido a tus redes. Quien complete las dos metas recibe reconocimiento en la próxima reunión.",
   metas:[{k:"presentaciones",t:"Presentaciones",meta:20},{k:"videos",t:"Videos subidos a redes",meta:15}]};
 const getReto=()=>{const r=(T.config&&T.config.reto)||DEFAULT_RETO;return{titulo:r.titulo||DEFAULT_RETO.titulo,descripcion:r.descripcion||"",metas:(r.metas&&r.metas.length?r.metas:DEFAULT_RETO.metas)}};
@@ -1440,7 +1441,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
    <div class="card" style="gap:0">${V.map(x=>{const r=x.registro||{},a=actDe(x),S=a.sem,nm=r.nombre||"Socio",ua=tsMs(x.ultimoAcceso),cs=((x.actividad||{}).cursos||[]);
      const hd=miosVista==="todo"&&x.nivel!==lvl?(lvl=x.nivel,`<div class="lvl-h">Nivel ${x.nivel} <span>${(c=>c+(c===1?" socio":" socios"))(V.filter(y=>y.nivel===x.nivel).length)}</span></div>`):"";
      return `${hd}<div style="padding:12px 0;border-bottom:1px solid var(--line)">${miosVista==="todo"&&x.nivel>1?`<div class="small" style="color:var(--brand);font-weight:700;margin-bottom:6px">Línea de ${esc(x.piernaNom||"tu equipo")} · Patrocinador: ${esc(x.patNom||r.invitadoPor||r.patrocinador||"—")}</div>`:""}<div class="row" style="align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0">
-      <b style="font-weight:600">${esc(nm)}</b><div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.fecha?"Desde "+niceDate(String(r.fecha).slice(0,10)):""}${ua?" · Entró "+haceTxt(ua):""}</div></div>
+      <b style="font-weight:600">${esc(nm)}</b><div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.fecha?"Desde "+niceDate(String(r.fecha).slice(0,10)):""}${ua?" · Entró "+haceTxt(ua):""}</div>${isAdmin?[...new Set([x.email,r.correo].map(e=>String(e||"").trim().toLowerCase()).filter(Boolean))].map(e=>`<button type="button" class="emCp" data-cpem="${esc(e)}">✉️ ${esc(e)} <span>Copiar</span></button>`).join(""):""}</div>
       <span class="chip ${a.hoy>=100?"c-good":a.hoy>0?"c-gold":"c-brand"}">Hoy ${a.hoy}%</span></div>
       <div class="row wrap" style="gap:6px;margin-top:8px">
        <span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"🎬 Bienvenida ✓":"🎬 Bienvenida pendiente"}</span>
@@ -2656,7 +2657,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261021204548";var busy=false,pend=null;
+(function(){var V="20261021205410";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
