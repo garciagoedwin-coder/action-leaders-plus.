@@ -1327,24 +1327,26 @@ function banMarca(nm,L){const o=LS.get(nm)||{},lim=Date.now()-30*864e5;Object.ke
 function renderActBan(){const c=$("#actBan");if(!c||banDone)return;
   if(!store.uid||!(T.activaciones||[]).length)return;
   if(mios===null&&store.db&&!banMiosT){banMiosT=1;loadMios().catch(()=>{}).finally(()=>renderActBan());return}
+  if(isAdmin&&socios===null&&store.db&&!banSocT){banSocT=1;Promise.resolve(loadSocios()).catch(()=>{}).finally(()=>renderActBan());return}
   clearInterval(banT);
   const hoy=dkey(new Date()),hace7=dkey(new Date(Date.now()-7*864e5)),G0=[],vis=LS.get("banVisto")||{},bien=LS.get("banBienv")||{};
-  (T.activaciones||[]).forEach(a=>{if(!a.fecha)return;const f=dkey(new Date(a.fecha));if(f<hace7)return;
+  (T.activaciones||[]).forEach(a=>{if(!a.fecha||/starter/i.test(a.paquete||""))return;const f=dkey(new Date(a.fecha));if(f<hace7)return;
     const r=(T.ranking||[]).find(x=>sameN(x.nombre,a.patrocinador)),nom=r?r.nombre:a.patrocinador;
     let g=G0.find(x=>sameN(x.nom,nom));if(!g){g={nom,L:[]};G0.push(g)}g.L.push(Object.assign({_f:f},a))});
-  const G=[];G0.forEach(g=>{const pu=banPuede(g),L=g.L.filter(a=>pu?!bien[banK(a)]:(a._f===hoy&&!vis[banK(a)]));if(L.length)G.push({nom:g.nom,L})});
+  const G=[];G0.forEach(g=>{const pu=banPuede(g),ok=a=>pu&&!!banWa(a),L=g.L.filter(a=>ok(a)?!bien[banK(a)]:(a._f===hoy&&!vis[banK(a)]));if(L.length)G.push({nom:g.nom,L,W:L.filter(ok)})});
   banMarca("banVisto",G.flatMap(g=>g.L));
   if(!G.length){c.hidden=true;c.innerHTML="";return}
   const corto=n=>{const w=String(n||"").trim().split(/\s+/);return w.length>2?w[0]+" "+w[w.length>3?2:1]:w.join(" ")},cap=t=>String(t||"").toLowerCase().replace(/(^|\s)\S/g,m=>m.toUpperCase());
   const card=g=>{const f=fotoDe(g.nom),ini=corto(g.nom).split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase(),n=g.L.length;
     const det=n===1?`Activó a ${esc(corto(cap(g.L[0].socio)))} · ${esc(g.L[0].paquete)}`:`Activó ${n} socios nuevos`;const tg=g.L.every(a=>a._f===hoy)?"HOY":(([y,m,d])=>d+"/"+m)(g.L[0]._f.split("-"));
-    return `<div class="ab"><span class="av" style="${f?`background-image:url('${f}')`:""}">${f?"":esc(ini)}</span><div><b>🎉 ¡Felicidades, ${esc(corto(g.nom))}!</b><small>${det}</small>${banPuede(g)?`<button type="button" class="abWa" data-abwa="1">💬 Darle la bienvenida</button>`:""}</div><span class="tag">${tg}</span><span class="x" aria-label="Cerrar">✕</span></div>`};
+    return `<div class="ab"><span class="av" style="${f?`background-image:url('${f}')`:""}">${f?"":esc(ini)}</span><div><b>🎉 ¡Felicidades, ${esc(corto(g.nom))}!</b><small>${det}</small>${g.W.length?`<button type="button" class="abWa" data-abwa="1">💬 Darle la bienvenida</button>`:""}</div><span class="tag">${tg}</span><span class="x" aria-label="Cerrar">✕</span></div>`};
   const show=()=>{c.innerHTML=card(G[banI%G.length])+(G.length>1?`<div class="dots">${G.map((_,i)=>`<i class="${i===banI%G.length?"on":""}"></i>`).join("")}</div>`:"")};
   banI=0;banDone=true;show();c.hidden=false;
   c.onclick=e=>{if(e.target.closest("[data-abwa]")){clearInterval(banT);banBienvenida(G[banI%G.length]);return}cerrarBan()};
   if(mios===null&&store.db&&store.uid&&!banMiosT){banMiosT=1;loadMios().then(()=>{if(!c.hidden&&c.innerHTML)show()}).catch(()=>{})}
-  let vistos=1;banT=setInterval(()=>{if(document.hidden)return;if(vistos>=G.length){if(!G.some(banPuede))cerrarBan();else{clearInterval(banT)}return}banI++;vistos++;show()},4500)}
-let banMiosT=0;
+  let vistos=1;banT=setInterval(()=>{if(document.hidden)return;if(vistos>=G.length){if(!G.some(g=>g.W.length))cerrarBan();else{clearInterval(banT)}return}banI++;vistos++;show()},4500)}
+let banMiosT=0,banSocT=0;
+function banWa(a){const x=(mios||[]).concat(socios||[]).find(y=>sameN((y.registro||{}).nombre||"",a.socio));return x?waSocio(x):""}
 function banPuede(g){const yo=miNombreFull();if(!store.uid||sameN(yo,g.nom))return false;if(isAdmin)return true;
   let ri=-1;try{ri=miRangoIdx()}catch(e){}if(ri<0)return false;
   const M=mios||[];return M.some(x=>{const n=(x.registro||{}).nombre||"";return sameN(n,g.nom)||g.L.some(a=>sameN(n,a.socio))})}
@@ -1352,9 +1354,8 @@ function banMsg(a,g){const yo=miNombreFull()||miNombreCorto(),cap=t=>String(t||"
   const ri=(()=>{try{return miRangoIdx()}catch(e){return -1}})(),rg=ri>=0&&RANGOS[ri]?RANGOS[ri].n:"";const soyPat=sameN(yo,g.nom);
   const quien=soyPat?"su patrocinador(a)":"parte de su línea de patrocinio en Action Leaders (equipo de "+cap(String(g.nom).split(/\s+/)[0])+")";
   return [`¡Hola ${first}! 🎉`,``,`*¡Bienvenido(a) a la familia Action Leaders!* Felicidades por su decisión de empezar con inCruises.`,``,`Soy *${yo}*${rg?`, *${rg}*`:""}, ${quien}.`,`Estoy aquí para ayudarle en lo que necesite: dudas, presentaciones, su primer crucero o cómo arrancar con su equipo.`,``,`📲 *Guarde mi número* para que me tenga a mano.`,``,`¡Vamos con todo! 🚀`].join("\n")}
-function banBienvenida(g){const L=g.L;const ir=a=>{banMarca("banBienv",[a]);if(L.every(z=>(LS.get("banBienv")||{})[banK(z)]))setTimeout(cerrarBan,300);const t=banMsg(a,g),x=(mios||[]).find(y=>sameN((y.registro||{}).nombre||"",a.socio));const w=x?waSocio(x):"";
-    if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}
-    pedirWaSocio(x||{uid:"act-"+String(a.id||a.socio).replace(/[^a-z0-9]/gi,"").slice(0,40),registro:{nombre:a.socio}},t)};
+function banBienvenida(g){const L=g.W||[];if(!L.length)return;const ir=a=>{banMarca("banBienv",[a]);if(L.every(z=>(LS.get("banBienv")||{})[banK(z)]))setTimeout(cerrarBan,300);const t=banMsg(a,g),w=banWa(a);
+    if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}toast("Aún no tenemos su WhatsApp")};
   if(L.length===1){ir(L[0]);return}
   openSheet(`<h2>💬 Darle la bienvenida</h2><p class="small muted" style="margin:0">¿A quién le escribe?</p>${L.map((a,i)=>`<button class="ep-op" data-bw="${i}"><span class="ic">🎉</span><span class="grow"><b>${esc(a.socio)}</b><small>${esc(a.paquete||"")}</small></span><span>›</span></button>`).join("")}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     document.querySelectorAll("[data-bw]").forEach(b=>b.onclick=()=>{closeSheet();setTimeout(()=>ir(L[+b.dataset.bw]),250)})})}
@@ -2695,7 +2696,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261021213950";var busy=false,pend=null;
+(function(){var V="20261021214404";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
