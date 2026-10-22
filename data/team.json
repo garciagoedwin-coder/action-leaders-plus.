@@ -2255,13 +2255,13 @@
     "Yolany perla": "Joany Isabel Perla Gámez"
    },
    "total": 60,
-   "hoy": 16,
+   "hoy": 0,
    "sinNombre": 3,
    "top": [
     {
      "nombre": "Joel Salgado",
      "n": 7,
-     "hoy": 5,
+     "hoy": 0,
      "inv": [
       {
        "n": "Maria R.",
@@ -2346,7 +2346,7 @@
     {
      "nombre": "Joany Isabel Perla Gámez",
      "n": 4,
-     "hoy": 2,
+     "hoy": 0,
      "inv": [
       {
        "n": "Ruth H.",
@@ -2369,7 +2369,7 @@
     {
      "nombre": "Francisco Caballero",
      "n": 3,
-     "hoy": 2,
+     "hoy": 0,
      "inv": [
       {
        "n": "Sandra L.",
@@ -2388,7 +2388,7 @@
     {
      "nombre": "Irma Hernandez",
      "n": 3,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Edmi E.",
@@ -2475,7 +2475,7 @@
     {
      "nombre": "Josue Delgado",
      "n": 2,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Francisco G.",
@@ -2535,7 +2535,7 @@
     {
      "nombre": "Saby Isaguirre",
      "n": 2,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Yorleny V.",
@@ -2561,7 +2561,7 @@
     {
      "nombre": "Angel Salgado",
      "n": 1,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Evelyn P.",
@@ -2583,7 +2583,7 @@
     {
      "nombre": "Edwin García",
      "n": 1,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Esdras R.",
@@ -2594,7 +2594,7 @@
     {
      "nombre": "Jose Sagastume",
      "n": 1,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Carlos E.",
@@ -2669,7 +2669,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-21T22:26:00-06:00",
+   "actualizado": "2026-10-22T07:26:00-06:00",
    "repetidos": 5
   }
  },
