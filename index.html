@@ -1441,7 +1441,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
    <div class="card" style="gap:0">${V.map(x=>{const r=x.registro||{},a=actDe(x),S=a.sem,nm=r.nombre||"Socio",ua=tsMs(x.ultimoAcceso),cs=((x.actividad||{}).cursos||[]);
      const hd=miosVista==="todo"&&x.nivel!==lvl?(lvl=x.nivel,`<div class="lvl-h">Nivel ${x.nivel} <span>${(c=>c+(c===1?" socio":" socios"))(V.filter(y=>y.nivel===x.nivel).length)}</span></div>`):"";
      return `${hd}<div style="padding:12px 0;border-bottom:1px solid var(--line)">${miosVista==="todo"&&x.nivel>1?`<div class="small" style="color:var(--brand);font-weight:700;margin-bottom:6px">Línea de ${esc(x.piernaNom||"tu equipo")} · Patrocinador: ${esc(x.patNom||r.invitadoPor||r.patrocinador||"—")}</div>`:""}<div class="row" style="align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0">
-      <b style="font-weight:600">${esc(nm)}</b><div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.fecha?"Desde "+niceDate(String(r.fecha).slice(0,10)):""}${ua?" · Entró "+haceTxt(ua):""}</div>${isAdmin?[...new Set([x.email,r.correo].map(e=>String(e||"").trim().toLowerCase()).filter(Boolean))].map(e=>`<button type="button" class="emCp" data-cpem="${esc(e)}">✉️ ${esc(e)} <span>Copiar</span></button>`).join(""):""}</div>
+      <b style="font-weight:600">${esc(nm)}</b><div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.fecha?"Desde "+niceDate(String(r.fecha).slice(0,10)):""}${ua?" · Entró "+haceTxt(ua):""}</div>${(isAdmin||r.patrocinadorUid===store.uid)?[...new Set([x.email,r.correo].map(e=>String(e||"").trim().toLowerCase()).filter(Boolean))].map(e=>`<button type="button" class="emCp" data-cpem="${esc(e)}">✉️ ${esc(e)} <span>Copiar</span></button>`).join(""):""}</div>
       <span class="chip ${a.hoy>=100?"c-good":a.hoy>0?"c-gold":"c-brand"}">Hoy ${a.hoy}%</span></div>
       <div class="row wrap" style="gap:6px;margin-top:8px">
        <span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"🎬 Bienvenida ✓":"🎬 Bienvenida pendiente"}</span>
@@ -2657,7 +2657,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261021205410";var busy=false,pend=null;
+(function(){var V="20261021205835";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
