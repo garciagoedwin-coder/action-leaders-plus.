@@ -2256,14 +2256,14 @@
     "Álva martinz": "Alba Luz Martínez Hernández",
     "Alba martines": "Alba Luz Martínez Hernández"
    },
-   "total": 65,
-   "hoy": 5,
-   "sinNombre": 3,
+   "total": 68,
+   "hoy": 8,
+   "sinNombre": 4,
    "top": [
     {
      "nombre": "Joel Salgado",
-     "n": 7,
-     "hoy": 0,
+     "n": 8,
+     "hoy": 1,
      "inv": [
       {
        "n": "Maria R.",
@@ -2288,6 +2288,10 @@
       {
        "n": "Evelin J.",
        "f": "21/10"
+      },
+      {
+       "n": "Juan A.",
+       "f": "22/10"
       },
       {
        "n": "Senny A.",
@@ -2319,6 +2323,33 @@
       {
        "n": "José A.",
        "f": "18/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Saby Isaguirre",
+     "n": 5,
+     "hoy": 3,
+     "inv": [
+      {
+       "n": "Yorleny V.",
+       "f": "19/10"
+      },
+      {
+       "n": "Karla L.",
+       "f": "21/10"
+      },
+      {
+       "n": "Bessy M.",
+       "f": "22/10"
+      },
+      {
+       "n": "Suany I.",
+       "f": "22/10"
+      },
+      {
+       "n": "Lesbia K.",
+       "f": "22/10"
       }
      ]
     },
@@ -2365,29 +2396,6 @@
       {
        "n": "Jose A.",
        "f": "21/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Saby Isaguirre",
-     "n": 4,
-     "hoy": 2,
-     "inv": [
-      {
-       "n": "Yorleny V.",
-       "f": "19/10"
-      },
-      {
-       "n": "Karla L.",
-       "f": "21/10"
-      },
-      {
-       "n": "Bessy M.",
-       "f": "22/10"
-      },
-      {
-       "n": "Suany I.",
-       "f": "22/10"
       }
      ]
     },
@@ -2705,7 +2713,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-22T13:26:00-06:00",
+   "actualizado": "2026-10-22T14:25:00-06:00",
    "repetidos": 6
   }
  },
