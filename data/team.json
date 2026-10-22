@@ -2256,8 +2256,8 @@
     "Álva martinz": "Alba Luz Martínez Hernández",
     "Alba martines": "Alba Luz Martínez Hernández"
    },
-   "total": 68,
-   "hoy": 8,
+   "total": 69,
+   "hoy": 9,
    "sinNombre": 4,
    "top": [
     {
@@ -2603,6 +2603,17 @@
      ]
     },
     {
+     "nombre": "Blanca Dina Ramirez Melendez",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Jose A.",
+       "f": "22/10"
+      }
+     ]
+    },
+    {
      "nombre": "Edwin García",
      "n": 1,
      "hoy": 0,
@@ -2713,8 +2724,8 @@
      ]
     }
    ],
-   "actualizado": "2026-10-22T14:25:00-06:00",
-   "repetidos": 6
+   "actualizado": "2026-10-22T15:26:00-06:00",
+   "repetidos": 7
   }
  },
  "fotos": [
