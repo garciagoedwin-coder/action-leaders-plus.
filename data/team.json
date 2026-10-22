@@ -2254,8 +2254,8 @@
    "alias": {
     "Yolany perla": "Joany Isabel Perla Gámez"
    },
-   "total": 60,
-   "hoy": 0,
+   "total": 63,
+   "hoy": 3,
    "sinNombre": 3,
    "top": [
     {
@@ -2443,6 +2443,25 @@
      ]
     },
     {
+     "nombre": "Saby Isaguirre",
+     "n": 3,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Yorleny V.",
+       "f": "19/10"
+      },
+      {
+       "n": "Karla L.",
+       "f": "21/10"
+      },
+      {
+       "n": "Bessy M.",
+       "f": "22/10"
+      }
+     ]
+    },
+    {
      "nombre": "Erick Moncada",
      "n": 2,
      "hoy": 0,
@@ -2533,21 +2552,6 @@
      ]
     },
     {
-     "nombre": "Saby Isaguirre",
-     "n": 2,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Yorleny V.",
-       "f": "19/10"
-      },
-      {
-       "n": "Karla L.",
-       "f": "21/10"
-      }
-     ]
-    },
-    {
      "nombre": "Alba Luz Martínez Hernández",
      "n": 1,
      "hoy": 0,
@@ -2555,6 +2559,17 @@
       {
        "n": "Dina Y.",
        "f": "20/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Alba Luz Martínez Hernández",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Sony M.",
+       "f": "22/10"
       }
      ]
     },
@@ -2667,10 +2682,21 @@
        "f": "20/10"
       }
      ]
+    },
+    {
+     "nombre": "Zamir Fuentes",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Mayra I.",
+       "f": "22/10"
+      }
+     ]
     }
    ],
-   "actualizado": "2026-10-22T07:26:00-06:00",
-   "repetidos": 5
+   "actualizado": "2026-10-22T12:25:00-06:00",
+   "repetidos": 6
   }
  },
  "fotos": [
