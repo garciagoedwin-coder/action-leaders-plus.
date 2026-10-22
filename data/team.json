@@ -2242,8 +2242,8 @@
    "alias": {
     "Yolany perla": "Joany Isabel Perla Gámez"
    },
-   "total": 52,
-   "hoy": 8,
+   "total": 53,
+   "hoy": 9,
    "sinNombre": 2,
    "top": [
     {
@@ -2343,6 +2343,25 @@
      ]
     },
     {
+     "nombre": "Francisco Caballero",
+     "n": 3,
+     "hoy": 2,
+     "inv": [
+      {
+       "n": "Sandra L.",
+       "f": "21/10"
+      },
+      {
+       "n": "Rosa I.",
+       "f": "21/10"
+      },
+      {
+       "n": "Lourdes A.",
+       "f": "19/10"
+      }
+     ]
+    },
+    {
      "nombre": "Irma Hernandez",
      "n": 3,
      "hoy": 1,
@@ -2411,21 +2430,6 @@
       {
        "n": "Dario G.",
        "f": "09/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Francisco Caballero",
-     "n": 2,
-     "hoy": 1,
-     "inv": [
-      {
-       "n": "Sandra L.",
-       "f": "21/10"
-      },
-      {
-       "n": "Lourdes A.",
-       "f": "19/10"
       }
      ]
     },
@@ -2608,7 +2612,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-21T13:26:00-06:00",
+   "actualizado": "2026-10-21T18:26:00-06:00",
    "repetidos": 4
   }
  },
