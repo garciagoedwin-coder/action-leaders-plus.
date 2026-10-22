@@ -36,7 +36,7 @@ d = json.load(open('data/team.json'))
 ev = d['config'].setdefault('evento', {})
 alias = {n(k): v for k, v in (ev.get('alias') or {}).items()}
 equipo = [x['nombre'] for x in d.get('ranking', [])] + [x['nombre'] for x in d.get('liderazgo', [])]
-IGN = {'socio', 'otro', 'ninguno', 'nadie', 'na', 'no'}
+IGN = {'socio', 'otro', 'ninguno', 'nadie', 'na', 'no', 'una del grupo', 'uno del grupo', 'del grupo'}
 
 filas = []
 for ln in open(sys.argv[1], encoding='utf-8'):

@@ -2254,14 +2254,14 @@
    "alias": {
     "Yolany perla": "Joany Isabel Perla Gámez"
    },
-   "total": 57,
-   "hoy": 13,
-   "sinNombre": 2,
+   "total": 60,
+   "hoy": 16,
+   "sinNombre": 3,
    "top": [
     {
      "nombre": "Joel Salgado",
-     "n": 6,
-     "hoy": 4,
+     "n": 7,
+     "hoy": 5,
      "inv": [
       {
        "n": "Maria R.",
@@ -2281,6 +2281,10 @@
       },
       {
        "n": "Ana R.",
+       "f": "21/10"
+      },
+      {
+       "n": "Evelin J.",
        "f": "21/10"
       },
       {
@@ -2555,6 +2559,17 @@
      ]
     },
     {
+     "nombre": "Angel Salgado",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Evelyn P.",
+       "f": "21/10"
+      }
+     ]
+    },
+    {
      "nombre": "Angelica",
      "n": 1,
      "hoy": 0,
@@ -2654,7 +2669,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-21T20:26:00-06:00",
+   "actualizado": "2026-10-21T22:26:00-06:00",
    "repetidos": 5
   }
  },
