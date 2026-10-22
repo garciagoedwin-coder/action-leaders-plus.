@@ -1345,7 +1345,8 @@ function renderActBan(){const c=$("#actBan");if(!c||banDone)return;
   if(mios===null&&store.db&&store.uid&&!banMiosT){banMiosT=1;loadMios().then(()=>{if(!c.hidden&&c.innerHTML)show()}).catch(()=>{})}
   let vistos=1;banT=setInterval(()=>{if(document.hidden)return;if(vistos>=G.length){if(!G.some(banPuede))cerrarBan();else{clearInterval(banT)}return}banI++;vistos++;show()},4500)}
 let banMiosT=0;
-function banPuede(g){const yo=miNombreFull();if(!store.uid)return false;if(isAdmin||sameN(yo,g.nom))return true;
+function banPuede(g){const yo=miNombreFull();if(!store.uid||sameN(yo,g.nom))return false;if(isAdmin)return true;
+  let ri=-1;try{ri=miRangoIdx()}catch(e){}if(ri<0)return false;
   const M=mios||[];return M.some(x=>{const n=(x.registro||{}).nombre||"";return sameN(n,g.nom)||g.L.some(a=>sameN(n,a.socio))})}
 function banMsg(a,g){const yo=miNombreFull()||miNombreCorto(),cap=t=>String(t||"").toLowerCase().replace(/(^|\s)\S/g,m=>m.toUpperCase()),first=cap(String(a.socio||"").trim().split(/\s+/)[0]);
   const ri=(()=>{try{return miRangoIdx()}catch(e){return -1}})(),rg=ri>=0&&RANGOS[ri]?RANGOS[ri].n:"";const soyPat=sameN(yo,g.nom);
@@ -2694,7 +2695,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261021213651";var busy=false,pend=null;
+(function(){var V="20261021213950";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
