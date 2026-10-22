@@ -2252,7 +2252,9 @@
    "lugar": "San Pedro Sula",
    "meta": 0,
    "alias": {
-    "Yolany perla": "Joany Isabel Perla Gámez"
+    "Yolany perla": "Joany Isabel Perla Gámez",
+    "Álva martinz": "Alba Luz Martínez Hernández",
+    "Alba martines": "Alba Luz Martínez Hernández"
    },
    "total": 63,
    "hoy": 3,
@@ -2462,6 +2464,21 @@
      ]
     },
     {
+     "nombre": "Alba Luz Martínez Hernández",
+     "n": 2,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Dina Y.",
+       "f": "20/10"
+      },
+      {
+       "n": "Sony M.",
+       "f": "22/10"
+      }
+     ]
+    },
+    {
      "nombre": "Erick Moncada",
      "n": 2,
      "hoy": 0,
@@ -2548,28 +2565,6 @@
       {
        "n": "Andrea G.",
        "f": "18/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Alba Luz Martínez Hernández",
-     "n": 1,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Dina Y.",
-       "f": "20/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Alba Luz Martínez Hernández",
-     "n": 1,
-     "hoy": 1,
-     "inv": [
-      {
-       "n": "Sony M.",
-       "f": "22/10"
       }
      ]
     },
@@ -2695,7 +2690,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-22T12:25:00-06:00",
+   "actualizado": "2026-10-22T12:26:00-06:00",
    "repetidos": 6
   }
  },
