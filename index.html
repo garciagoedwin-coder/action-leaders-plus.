@@ -456,7 +456,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 .pf-it span.ic{width:30px;text-align:center;font-size:18px}
 .pf-it.out{color:var(--bad)}
 .qf{background:var(--bg);border:1px dashed var(--line);border-radius:14px;padding:10px 12px;margin:4px 0 10px}.qf-row{display:flex;flex-wrap:wrap;gap:8px}
-.emCp{display:flex;align-items:center;gap:6px;margin-top:4px;max-width:100%;border:0;background:#EEF6FB;color:var(--brand,#0A7DAD);font:inherit;font-size:12.5px;font-weight:600;border-radius:8px;padding:4px 8px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.emCp span{font-size:11px;opacity:.7;margin-left:auto;padding-left:6px}.curso{gap:12px}.cursoMin{flex-direction:row!important;align-items:center;gap:12px!important;border:0;font:inherit;color:inherit;width:100%;cursor:pointer;background:linear-gradient(135deg,#ecfdf5,#fff)}.cursoMin b{display:block;margin:6px 0 2px;font-size:15.5px;line-height:1.2}.cursoMin small{font-size:12.5px}.cmOk{flex:none;width:40px;height:40px;border-radius:50%;background:var(--good,#16a34a);color:#fff;display:grid;place-items:center}.cmOk svg{width:20px;height:20px}.cmGo{font-size:26px;color:var(--muted,#94a3b8);flex:none}.yt{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000}.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.emCp{display:flex;align-items:center;gap:6px;margin-top:4px;max-width:100%;border:0;background:#EEF6FB;color:var(--brand,#0A7DAD);font:inherit;font-size:12.5px;font-weight:600;border-radius:8px;padding:4px 8px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.emCp span{font-size:11px;opacity:.7;margin-left:auto;padding-left:6px}.waGate{position:fixed;inset:0;z-index:500;background:rgba(10,14,22,.82);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px}.waBox{background:var(--card,#fff);border-radius:22px;padding:24px 20px;max-width:380px;width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)}.waBox h2{margin:0}.curso{gap:12px}.cursoMin{flex-direction:row!important;align-items:center;gap:12px!important;border:0;font:inherit;color:inherit;width:100%;cursor:pointer;background:linear-gradient(135deg,#ecfdf5,#fff)}.cursoMin b{display:block;margin:6px 0 2px;font-size:15.5px;line-height:1.2}.cursoMin small{font-size:12.5px}.cmOk{flex:none;width:40px;height:40px;border-radius:50%;background:var(--good,#16a34a);color:#fff;display:grid;place-items:center}.cmOk svg{width:20px;height:20px}.cmGo{font-size:26px;color:var(--muted,#94a3b8);flex:none}.yt{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000}.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 #cal button.past{opacity:.35}#cal button.past .dots i{background:var(--muted)}.ev.ev-past{opacity:.45;filter:grayscale(1)}.ev.ev-past .hr{color:var(--muted)}
 #sheetPanel>*{flex-shrink:0}
 </style>
@@ -1232,14 +1232,20 @@ function renderWho(){const c=$("#whoCard");c.hidden=true;return;
   c.innerHTML=`<h3>¿Cuál es tu nombre en el reporte del equipo?</h3><p class="small muted">Elígelo una vez para ver tus presentaciones y tu posición resaltada en el ranking.</p>
    <div class="row"><select class="inp grow" id="whoSel"><option value="">Selecciona tu nombre</option>${names.map(n=>`<option>${esc(n)}</option>`).join("")}</select><button class="btn" id="whoOk">Listo</button></div>`;
   $("#whoOk").onclick=()=>{const v=$("#whoSel").value;if(!v)return;profile.miNombre=v;store.set("perfil",profile);renderMe();toast("Listo, "+v.split(" ")[0]+". Ahora sube tu foto")}}
-function renderMiWa(){const c=$("#miWaCard");if(!c)return;const r=(regDoc&&regDoc.registro)||null;if(!r||!store.db||String(r.whatsapp||"").replace(/\D/g,"").length>=8||LS.get("miWaNo")===TODAY){c.hidden=true;return}c.hidden=false;
-  c.innerHTML=`<span>📱 <b>Agregue su WhatsApp</b> para que su equipo le escriba directo</span><button class="btn sm" id="mwAbrir">Agregar</button><button class="x" id="mwNo" aria-label="Ahora no">✕</button>`;
-  $("#mwNo").onclick=()=>{LS.set("miWaNo",TODAY);c.hidden=true};
-  $("#mwAbrir").onclick=()=>{openSheet(`<h2>📱 Su WhatsApp</h2><p class="small muted" style="margin:0">Así su patrocinador y su equipo pueden escribirle directo desde la app.</p>
-   <div class="row" style="gap:8px"><select class="inp" id="mwC" style="max-width:120px">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")?"selected":""}>+${k}</option>`).join("")}</select><input class="inp grow" id="mwT" type="tel" placeholder="Su número" style="min-width:0"></div>
-   <button class="btn" id="mwOk" style="width:100%">Guardar</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`);
-  $("#mwOk").onclick=async()=>{const v=$("#mwT").value.trim(),sp=splitPhone(v),n=sp.cc?sp.cc+sp.num:waNum(v,$("#mwC").value);if(n.length<8){toast("Escriba su número");return}
-    try{await store.db.doc("users/"+store.uid).set({registro:{whatsapp:n}},{merge:true});regDoc.registro.whatsapp=n;c.hidden=true;closeSheet();toast("¡Listo! WhatsApp guardado ✓")}catch(e){toast("No se pudo guardar")}}}}
+function renderMiWa(){const c=$("#miWaCard");if(c)c.hidden=true;const g0=document.querySelector(".waGate");
+  const r=(regDoc&&regDoc.registro)||null;if(!r||!store.db||isAdmin||String(r.whatsapp||"").replace(/\D/g,"").length>=8){if(g0)g0.remove();return}
+  if(g0)return;const g=document.createElement("div");g.className="waGate";
+  g.innerHTML=`<div class="waBox"><div style="font-size:44px;line-height:1">📱</div><h2>Agregue su WhatsApp</h2>
+   <p class="small muted" style="margin:0">Es necesario para continuar. Así su patrocinador y su equipo pueden escribirle directo desde la app.</p>
+   <div class="row" style="gap:8px;width:100%"><select class="inp" id="mwC" style="max-width:110px">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")?"selected":""}>+${k}</option>`).join("")}</select><input class="inp grow" id="mwT" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="Su número" style="min-width:0"></div>
+   <p class="small" id="mwErr" style="color:var(--bad);margin:0" hidden></p>
+   <button class="btn" id="mwOk" style="width:100%;background:#25D366;color:#fff">Guardar y continuar</button></div>`;
+  document.body.appendChild(g);
+  g.querySelector("#mwOk").onclick=async()=>{const v=g.querySelector("#mwT").value.trim(),sp=splitPhone(v),n=sp.cc?sp.cc+sp.num:waNum(v,g.querySelector("#mwC").value),er=g.querySelector("#mwErr");
+    if(n.length<8){er.textContent="Escriba su número de WhatsApp completo.";er.hidden=false;return}
+    const bt=g.querySelector("#mwOk");bt.disabled=true;bt.textContent="Guardando…";
+    try{await store.db.doc("users/"+store.uid).set({registro:{whatsapp:n.slice(0,15)}},{merge:true});regDoc.registro.whatsapp=n.slice(0,15);LS.set("lastCC",g.querySelector("#mwC").value);g.remove();toast("¡Listo! WhatsApp guardado ✓")}
+    catch(e){bt.disabled=false;bt.textContent="Guardar y continuar";er.textContent="No se pudo guardar. Revise su conexión e intente de nuevo.";er.hidden=false}}}
 function renderAviso(){const c=$("#avisoCard");if(!c)return;c.hidden=true;return;if(profile.avisado||!profile.bienvenida||welSigned!==true){c.hidden=true;return}
   c.hidden=false;c.innerHTML=`<h3>¡Ya estás dentro! Avísanos</h3><p class="small muted">Llena tus datos para que tu equipo sepa que ya entraste a Action Leaders Plus.</p>
    <div class="row" style="margin-top:8px"><a class="btn grow" href="${AVISO_FORM}" target="_blank" rel="noopener" id="avisoGo">Avisar que ya estoy dentro</a><button class="btn ghost" id="avisoX">Ya lo hice</button></div>`;
@@ -2635,7 +2641,7 @@ async function startApp(u){
   try{if(u&&localStorage.getItem("alp:welok")===u.uid){profile.bienvenida=true;const w=$("#wel");w.hidden=true;document.body.style.overflow=""}}catch(x){}
   welSigned=!!u;isAdmin=!!(u&&u.emailVerified&&ADMINS.includes((u.email||"").toLowerCase()));
   if(u){store.db=db;store.uid=u.uid;const nm=u.displayName||"";if(nm){welName=nm.split(" ")[0];if(!profile.nombrePila)$("#hello").textContent="Hola, "+welName}
-    try{const r=await db.doc("users/"+u.uid).get();regDoc=r.exists?r.data():null}catch(e){regDoc=null}try{renderMetas()}catch(e){}
+    try{const r=await db.doc("users/"+u.uid).get();regDoc=r.exists?r.data():null}catch(e){regDoc=null}try{renderMetas()}catch(e){}try{renderMiWa()}catch(e){}
     if(regDoc&&regDoc.bienvenida){profile.bienvenida=true;try{localStorage.setItem("alp:welok",u.uid)}catch(x){}const w=$("#wel");if(w){w.hidden=true;document.body.style.overflow=""}}
     db.doc("users/"+u.uid).set({email:u.email||"",ultimoAcceso:window.FB.serverTimestamp()},{merge:true}).catch(()=>{})}
   else{store.db=null;store.uid=null}
@@ -2659,7 +2665,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261021210630";var busy=false,pend=null;
+(function(){var V="20261021211021";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
