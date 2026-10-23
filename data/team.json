@@ -2256,8 +2256,8 @@
     "Álva martinz": "Alba Luz Martínez Hernández",
     "Alba martines": "Alba Luz Martínez Hernández"
    },
-   "total": 69,
-   "hoy": 9,
+   "total": 70,
+   "hoy": 10,
    "sinNombre": 4,
    "top": [
     {
@@ -2625,6 +2625,17 @@
      ]
     },
     {
+     "nombre": "Flor Idalma Reyes Padilla",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Maura J.",
+       "f": "22/10"
+      }
+     ]
+    },
+    {
      "nombre": "Jose Sagastume",
      "n": 1,
      "hoy": 0,
@@ -2724,7 +2735,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-22T15:26:00-06:00",
+   "actualizado": "2026-10-22T18:26:00-06:00",
    "repetidos": 7
   }
  },
