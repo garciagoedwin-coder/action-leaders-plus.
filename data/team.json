@@ -2268,8 +2268,8 @@
     "Álva martinz": "Alba Luz Martínez Hernández",
     "Alba martines": "Alba Luz Martínez Hernández"
    },
-   "total": 76,
-   "hoy": 4,
+   "total": 79,
+   "hoy": 7,
    "sinNombre": 2,
    "top": [
     {
@@ -2442,6 +2442,29 @@
       },
       {
        "n": "Martha S.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Zamir Fuentes",
+     "n": 4,
+     "hoy": 3,
+     "inv": [
+      {
+       "n": "Mayra I.",
+       "f": "22/10"
+      },
+      {
+       "n": "Orlin A.",
+       "f": "23/10"
+      },
+      {
+       "n": "Juan A.",
+       "f": "23/10"
+      },
+      {
+       "n": "Danessy P.",
        "f": "23/10"
       }
      ]
@@ -2766,20 +2789,9 @@
        "f": "20/10"
       }
      ]
-    },
-    {
-     "nombre": "Zamir Fuentes",
-     "n": 1,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Mayra I.",
-       "f": "22/10"
-      }
-     ]
     }
    ],
-   "actualizado": "2026-10-23T10:26:00-06:00",
+   "actualizado": "2026-10-23T11:26:00-06:00",
    "repetidos": 0
   }
  },
