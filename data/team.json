@@ -2266,10 +2266,11 @@
    "alias": {
     "Yolany perla": "Joany Isabel Perla Gámez",
     "Álva martinz": "Alba Luz Martínez Hernández",
-    "Alba martines": "Alba Luz Martínez Hernández"
+    "Alba martines": "Alba Luz Martínez Hernández",
+    "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 82,
-   "hoy": 10,
+   "total": 83,
+   "hoy": 11,
    "sinNombre": 2,
    "top": [
     {
@@ -2795,6 +2796,17 @@
      ]
     },
     {
+     "nombre": "Noelmi Guadalupe Diaz Ruiz",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Gerardo S.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
      "nombre": "Olga Lizzette Meléndez Norales",
      "n": 1,
      "hoy": 0,
@@ -2817,7 +2829,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-23T13:26:00-06:00",
+   "actualizado": "2026-10-23T14:26:00-06:00",
    "repetidos": 0
   }
  },
