@@ -2268,8 +2268,8 @@
     "Álva martinz": "Alba Luz Martínez Hernández",
     "Alba martines": "Alba Luz Martínez Hernández"
    },
-   "total": 79,
-   "hoy": 7,
+   "total": 81,
+   "hoy": 9,
    "sinNombre": 2,
    "top": [
     {
@@ -2527,6 +2527,25 @@
      ]
     },
     {
+     "nombre": "Josue Delgado",
+     "n": 3,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Francisco G.",
+       "f": "08/10"
+      },
+      {
+       "n": "Sandra M.",
+       "f": "21/10"
+      },
+      {
+       "n": "Monica S.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
      "nombre": "Mabis Franco",
      "n": 3,
      "hoy": 0,
@@ -2606,21 +2625,6 @@
       {
        "n": "Karla H.",
        "f": "19/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Josue Delgado",
-     "n": 2,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Francisco G.",
-       "f": "08/10"
-      },
-      {
-       "n": "Sandra M.",
-       "f": "21/10"
       }
      ]
     },
@@ -2747,6 +2751,17 @@
      ]
     },
     {
+     "nombre": "Keidy Linares",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Alejandra C.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
      "nombre": "Kevin Izaguirre",
      "n": 1,
      "hoy": 0,
@@ -2791,7 +2806,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-23T11:26:00-06:00",
+   "actualizado": "2026-10-23T12:26:00-06:00",
    "repetidos": 0
   }
  },
