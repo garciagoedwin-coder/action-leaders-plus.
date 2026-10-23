@@ -2256,8 +2256,8 @@
     "Álva martinz": "Alba Luz Martínez Hernández",
     "Alba martines": "Alba Luz Martínez Hernández"
    },
-   "total": 70,
-   "hoy": 10,
+   "total": 71,
+   "hoy": 11,
    "sinNombre": 4,
    "top": [
     {
@@ -2491,6 +2491,21 @@
      ]
     },
     {
+     "nombre": "Blanca Dina Ramirez Melendez",
+     "n": 2,
+     "hoy": 2,
+     "inv": [
+      {
+       "n": "Jose A.",
+       "f": "22/10"
+      },
+      {
+       "n": "Ely C.",
+       "f": "22/10"
+      }
+     ]
+    },
+    {
      "nombre": "Erick Moncada",
      "n": 2,
      "hoy": 0,
@@ -2599,17 +2614,6 @@
       {
        "n": "Evelin P.",
        "f": "20/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Blanca Dina Ramirez Melendez",
-     "n": 1,
-     "hoy": 1,
-     "inv": [
-      {
-       "n": "Jose A.",
-       "f": "22/10"
       }
      ]
     },
@@ -2735,7 +2739,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-22T18:26:00-06:00",
+   "actualizado": "2026-10-22T19:26:00-06:00",
    "repetidos": 7
   }
  },
