@@ -2268,8 +2268,8 @@
     "Álva martinz": "Alba Luz Martínez Hernández",
     "Alba martines": "Alba Luz Martínez Hernández"
    },
-   "total": 81,
-   "hoy": 9,
+   "total": 82,
+   "hoy": 10,
    "sinNombre": 2,
    "top": [
     {
@@ -2773,6 +2773,17 @@
      ]
     },
     {
+     "nombre": "Mayckol Turcios",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Martha O.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
      "nombre": "Natalie",
      "n": 1,
      "hoy": 0,
@@ -2806,7 +2817,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-23T12:26:00-06:00",
+   "actualizado": "2026-10-23T13:26:00-06:00",
    "repetidos": 0
   }
  },
