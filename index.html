@@ -2728,10 +2728,10 @@ function entRender(){const v=document.querySelector(".entV");if(!v)return;v.quer
   $("#entSrchW").hidden=entTab==="r";const st=$("#entStat"),L=$("#entList");if(!entData)return;const q=entQ.trim();
   if(entTab==="s"){const S=entSoc(),acc=S.filter(s=>s.a),ll=acc.filter(s=>entCk[s.id]),P=x=>x.filter(s=>s.tk==="PREMIUM").length,C=x=>x.filter(s=>s.tk==="CLASSIC").length;
     $("#entQ").placeholder="Buscar socio por nombre o # de ticket…";
-    st.innerHTML=`<div class="entBig"><b>${ll.length}</b><span>de ${acc.length} socios con acceso han entrado</span></div><div class="entMini"><span>🟣 Premium ${P(ll)}/${P(acc)}</span><span>🔵 Classic ${C(ll)}/${C(acc)}</span><span>⛔ Pendientes ${S.length-acc.length}</span></div>`;
+    st.innerHTML=`<div class="entBig"><b>${ll.length}</b><span>de ${acc.length} socios con acceso han entrado</span></div><div class="entMini"><span>🟣 Premium ${P(ll)}/${P(acc)}</span><span>🔵 Classic ${C(ll)}/${C(acc)}</span><span>⛔ Pendiente acceso ${S.length-acc.length}</span></div>`;
     let R;const num=q.replace(/^#\s*/,"");
     if(/^\d+$/.test(num)){const c=Object.values(entCk).find(c=>c.tipo==="s"&&String(c.tk)===String(+num));R=c?S.filter(s=>s.id===c.id):[]}else R=q?S.filter(s=>entMatch(s.n,q)):null;
-    const row=s=>{const c=entCk[s.id];return `<button type="button" class="entRow" data-es="${esc(s.id)}"><span class="entDot ${c?"ok":s.a?"go":"no"}"></span><span class="grow"><b>${esc(s.n)}</b><small>${c?`✅ Entró ${entHora(c.at)} · Ticket #${esc(String(c.tk||""))}`:s.a?(s.tk==="PREMIUM"?"🟣 PREMIUM · con buffet":"🔵 CLASSIC · solo acceso"):"⛔ Pago pendiente · no puede entrar"}</small></span><span class="muted">›</span></button>`};
+    const row=s=>{const c=entCk[s.id];return `<button type="button" class="entRow" data-es="${esc(s.id)}"><span class="entDot ${c?"ok":s.a?"go":"no"}"></span><span class="grow"><b>${esc(s.n)}</b><small>${c?`✅ Entró ${entHora(c.at)} · Ticket #${esc(String(c.tk||""))}`:s.a?(s.tk==="PREMIUM"?"🟣 PREMIUM · con buffet":"🔵 CLASSIC · solo acceso"):"⛔ Pendiente acceso · comunicarse con su líder"}</small></span><span class="muted">›</span></button>`};
     if(R===null){const U=Object.values(entCk).filter(c=>c.tipo==="s").sort((a,b)=>b.at-a.at).slice(0,8);L.innerHTML=`<p class="entHint">Escriba el nombre del socio o el número del ticket.</p>${U.length?`<p class="entSub">Últimas entradas</p>`+U.map(c=>row(S.find(s=>s.id===c.id)||{id:c.id,n:c.n,a:true,tk:c.tkT})).join(""):""}`}
     else L.innerHTML=R.slice(0,30).map(row).join("")||`<div class="entMsg">No aparece en la lista de socios.<br><small>Pídale que hable con su líder o pase a caja.</small></div>${isAdmin&&!/^\d+$/.test(num)?`<button type="button" class="btn ghost" id="entAddS" style="width:100%">➕ Agregar socio que pagó en puerta</button>`:""}`;
     L.querySelectorAll("[data-es]").forEach(b=>b.onclick=()=>entSheetS(b.dataset.es));const ad=$("#entAddS");if(ad)ad.onclick=()=>entAddSocio(q)}
@@ -2754,10 +2754,10 @@ async function entGuardar(id,d,msg){try{await store.db.doc("evento/"+ENT.id+"/ch
 async function entDeshacer(id){try{await store.db.doc("evento/"+ENT.id+"/checkin/"+id).delete();delete entCk[id];closeSheet();toast("Entrada anulada");entRender();entResumen()}catch(e){toast("No se pudo anular")}}
 function entSheetS(id){const s=entSoc().find(x=>x.id===id);if(!s)return;const c=entCk[id];
   if(c){openSheet(`<h2>${esc(s.n)}</h2><div class="entOk">✅ Ya entró a las ${entHora(c.at)}<br><b>Ticket #${esc(String(c.tk||"—"))}</b> · ${s.tk==="PREMIUM"?"🟣 Premium":"🔵 Classic"}<br><small>Lo recibió ${esc(c.byN||"—")}</small></div>${isAdmin?`<button class="btn ghost" id="entUndo" style="width:100%;color:var(--bad)">Anular esta entrada</button>`:""}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{const u=$("#entUndo");if(u)u.onclick=()=>entDeshacer(id)});return}
-  if(!s.a){openSheet(`<h2>${esc(s.n)}</h2><div class="entNo">⛔ SIN ACCESO<br><b>Pago pendiente</b> · no puede entrar todavía.</div><p style="margin:0">Líder responsable: <b>${esc(s.l||"—")}</b></p><p class="small muted" style="margin:0">Pídale que hable con su líder o con el administrador.</p>${isAdmin?`<button class="btn" id="entDar" style="width:100%;background:var(--good)">✅ Dar acceso (ya pagó)</button>`:""}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{const d=$("#entDar");if(d)d.onclick=async()=>{try{await store.db.doc("evento/"+ENT.id+"/ovr/"+id).set(Object.assign({a:true,t:Date.now()},entYo()));entOvr[id]={a:true};toast("Acceso dado ✓");entRender();entSheetS(id)}catch(e){toast("No se pudo guardar")}}});return}
+  if(!s.a){openSheet(`<h2>${esc(s.n)}</h2><div class="entNo">⛔ PENDIENTE ACCESO</div><p style="margin:0">Comuníquese con su líder responsable: <b>${esc(s.l||"—")}</b></p>${isAdmin?`<button class="btn" id="entDar" style="width:100%;background:var(--good)">✅ Dar acceso</button>`:""}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{const d=$("#entDar");if(d)d.onclick=async()=>{try{await store.db.doc("evento/"+ENT.id+"/ovr/"+id).set(Object.assign({a:true,t:Date.now()},entYo()));entOvr[id]={a:true};toast("Acceso dado ✓");entRender();entSheetS(id)}catch(e){toast("No se pudo guardar")}}});return}
   const pr=s.tk==="PREMIUM";
   openSheet(`<div data-nofocus></div><h2>${esc(s.n)}</h2><div class="entTk ${pr?"pr":"cl"}">${pr?"★ PREMIUM":"CLASSIC"}<small>${pr?"Entregar ticket CON talón de buffet":"Entregar ticket SIN talón (solo acceso)"}</small></div>
-   ${s.pago?`<p class="small" style="margin:0;color:var(--good);font-weight:700">✅ Pago confirmado por el administrador</p>`:""}
+   ${s.pago?`<p class="small" style="margin:0;color:var(--good);font-weight:700">✅ Acceso confirmado por el administrador</p>`:""}
    <p style="margin:0">Líder responsable: <b>${esc(s.l||"—")}</b></p>
    <div class="field"><label for="entTkN">Número del ticket que le entrega</label><input class="inp" id="entTkN" type="number" inputmode="numeric" min="1" placeholder="Ej.: 57" style="font-size:22px;font-weight:800"></div>
    <p class="small" id="entErr" style="color:var(--bad);margin:0" hidden></p>
@@ -2820,7 +2820,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261022230252";var busy=false,pend=null;
+(function(){var V="20261022231045";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
