@@ -2268,8 +2268,8 @@
     "Álva martinz": "Alba Luz Martínez Hernández",
     "Alba martines": "Alba Luz Martínez Hernández"
    },
-   "total": 71,
-   "hoy": 11,
+   "total": 72,
+   "hoy": 12,
    "sinNombre": 4,
    "top": [
     {
@@ -2707,6 +2707,17 @@
      ]
     },
     {
+     "nombre": "Lizandro Castro",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Claudia P.",
+       "f": "22/10"
+      }
+     ]
+    },
+    {
      "nombre": "Natalie",
      "n": 1,
      "hoy": 0,
@@ -2751,7 +2762,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-22T19:26:00-06:00",
+   "actualizado": "2026-10-22T20:26:00-06:00",
    "repetidos": 7
   }
  },
