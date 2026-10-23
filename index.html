@@ -481,10 +481,11 @@ nav.tabs button{z-index:0;isolation:isolate}
 :root{--hero:#16181D;--hero-ink:#F4F6F8;--hero-mut:rgba(244,246,248,.66);--hero-line:rgba(255,255,255,.12)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--hero:#2A2D33}}
 :root[data-theme="dark"]{--hero:#2A2D33}
-.metaStrip{background:var(--hero)!important;color:var(--hero-ink);box-shadow:var(--shadow);border-left:4px solid var(--mt-c,var(--brand))}
-.metaStrip .mtN{color:var(--hero-ink)}.metaStrip .mtE{color:var(--hero-mut);opacity:1}
-.metaStrip .mtBar{background:var(--hero-line)}.metaStrip .mtBar i{background:var(--mt-c,var(--brand))}
-.metaStrip .mtS{border-top-color:var(--hero-line);color:var(--hero-mut)}.metaStrip .mtS b{color:var(--hero-ink)}
+.metaStrip{background:color-mix(in srgb,var(--mt-c,var(--brand)) 16%,var(--surface))!important;color:var(--ink);box-shadow:none;border:1px solid color-mix(in srgb,var(--mt-c,var(--brand)) 35%,transparent);border-left:4px solid var(--mt-c,var(--brand))}
+.metaStrip .mtN{color:var(--ink)}.metaStrip .mtE{color:color-mix(in srgb,var(--mt-c,var(--brand)) 70%,var(--ink));opacity:1}
+.metaStrip .mtBar{background:color-mix(in srgb,var(--mt-c,var(--brand)) 20%,var(--surface))}.metaStrip .mtBar i{background:var(--mt-c,var(--brand))}
+.metaStrip .mtS{border-top-color:color-mix(in srgb,var(--mt-c,var(--brand)) 25%,transparent);color:var(--muted)}.metaStrip .mtS b{color:var(--ink)}
+.metaStrip small{color:var(--muted)}
 .metaStrip .mtRg{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--mt-c,var(--brand));margin-right:6px;vertical-align:1px}
 .evCard{background:linear-gradient(160deg,#0B0B0D,#17171B 60%,#1E1A12);color:#F3E7C2;border:1px solid rgba(212,175,55,.35);box-shadow:0 12px 30px -14px rgba(0,0,0,.6)}
 .evCard .evK{color:#D4AF37;opacity:1}.evCard .evHoy{background:rgba(212,175,55,.14);color:#E8C547}
@@ -2848,7 +2849,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261023001832";var busy=false,pend=null;
+(function(){var V="20261023001951";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
