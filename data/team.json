@@ -2268,8 +2268,8 @@
     "Álva martinz": "Alba Luz Martínez Hernández",
     "Alba martines": "Alba Luz Martínez Hernández"
    },
-   "total": 72,
-   "hoy": 12,
+   "total": 73,
+   "hoy": 13,
    "sinNombre": 4,
    "top": [
     {
@@ -2312,9 +2312,9 @@
      ]
     },
     {
-     "nombre": "Betty Amador",
-     "n": 5,
-     "hoy": 0,
+     "nombre": "Betty Carolina Amador Perez",
+     "n": 6,
+     "hoy": 1,
      "inv": [
       {
        "n": "Jesus A.",
@@ -2335,6 +2335,10 @@
       {
        "n": "José A.",
        "f": "18/10"
+      },
+      {
+       "n": "Aníbal A.",
+       "f": "22/10"
       }
      ]
     },
@@ -2762,7 +2766,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-22T20:26:00-06:00",
+   "actualizado": "2026-10-22T21:26:00-06:00",
    "repetidos": 7
   }
  },
