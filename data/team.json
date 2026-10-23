@@ -2268,8 +2268,8 @@
     "Álva martinz": "Alba Luz Martínez Hernández",
     "Alba martines": "Alba Luz Martínez Hernández"
    },
-   "total": 72,
-   "hoy": 0,
+   "total": 74,
+   "hoy": 2,
    "sinNombre": 2,
    "top": [
     {
@@ -2424,6 +2424,29 @@
      ]
     },
     {
+     "nombre": "Lizandro Castro",
+     "n": 4,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Claudia P.",
+       "f": "22/10"
+      },
+      {
+       "n": "Alexander C.",
+       "f": "22/10"
+      },
+      {
+       "n": "Anner F.",
+       "f": "22/10"
+      },
+      {
+       "n": "Martha S.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
      "nombre": "Francisco Caballero",
      "n": 3,
      "hoy": 0,
@@ -2458,25 +2481,6 @@
       {
        "n": "Leticia I.",
        "f": "21/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Lizandro Castro",
-     "n": 3,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Claudia P.",
-       "f": "22/10"
-      },
-      {
-       "n": "Alexander C.",
-       "f": "22/10"
-      },
-      {
-       "n": "Anner F.",
-       "f": "22/10"
       }
      ]
     },
@@ -2661,6 +2665,17 @@
      ]
     },
     {
+     "nombre": "Glenda Elizabeth Lopez Flores",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Lady A.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
      "nombre": "Juan Carlos Granados Claros",
      "n": 1,
      "hoy": 0,
@@ -2749,7 +2764,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-23T07:26:00-06:00",
+   "actualizado": "2026-10-23T08:27:00-06:00",
    "repetidos": 0
   }
  },
