@@ -566,6 +566,8 @@ nav.tabs button{z-index:0;isolation:isolate}
 .land .l-boot img{width:84px;animation:lBeat 1.4s ease-in-out infinite}
 @keyframes lBeat{50%{transform:scale(1.08);filter:drop-shadow(0 0 24px rgba(34,184,240,.7))}}
 .land:not(.boot) .l-boot{opacity:0;pointer-events:none}
+.land.prev button:not(.l-back){display:none!important}
+.l-back{position:fixed;top:calc(env(safe-area-inset-top) + 12px);right:12px;z-index:10000;border:0;border-radius:999px;padding:10px 16px;background:rgba(255,255,255,.92);color:#0d0c12;font:inherit;font-size:14px;font-weight:800;box-shadow:0 6px 20px rgba(0,0,0,.35);cursor:pointer}
 .land.bye{opacity:0;transition:opacity .5s;pointer-events:none}
 /* celular */
 @media (max-width:899px){
@@ -808,7 +810,9 @@ nav.tabs button{z-index:0;isolation:isolate}
   setTimeout(function(){requestAnimationFrame(f)},900)})}
  var done=false;
  function show(){if(done)return;done=true;L.classList.remove("boot");L.classList.add("show");count()}
- function bye(){done=true;L.classList.add("bye");setTimeout(function(){L.remove()},550)}
+ function bye(){done=true;L.classList.add("bye");setTimeout(function(){L.style.display="none";L.classList.remove("bye")},550)}
+ window.verPortada=function(){L.style.display="";L.classList.remove("boot","bye");L.classList.add("show","prev");if(!done){done=true}count();L.scrollTop=0;
+  if(!document.getElementById("lBack")){var x=document.createElement("button");x.id="lBack";x.className="l-back";x.type="button";x.textContent="← Volver a la app";x.onclick=function(){L.style.display="none";L.classList.remove("prev")};L.appendChild(x)}}
  window.addEventListener("fb-ready",function(e){e.detail?bye():show()});
  setTimeout(function(){if(!done)bye()},14000);
  var b=document.getElementById("lLogin"),er=document.getElementById("lErr");
@@ -2640,6 +2644,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <button class="pf-it" id="pfInv"><span class="ic">🔗</span>Mi enlace de invitación</button>
     <button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
+    <button class="pf-it" id="pfFront"><span class="ic">🏠</span>Ver la portada de la app</button>
     ${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
@@ -2652,6 +2657,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
       <p><b>iPhone (Safari):</b> toca <b>Compartir</b> (cuadro con flecha) → <b>Agregar a pantalla de inicio</b> → <b>Agregar</b>.</p>
       <p><b>Android (Chrome):</b> toca los <b>tres puntos</b> → <b>Instalar app</b> o <b>Agregar a la pantalla principal</b>.</p>
       <button class="btn" data-close style="width:100%">Listo</button>`);
+    const pfr=$("#pfFront");if(pfr)pfr.onclick=()=>{closeSheet();if(window.verPortada)verPortada();else toast("Vuelva a abrir la app e intente de nuevo")};
     const pv=$("#pfPrev");if(pv)pv.onclick=()=>{closeSheet();welPreview=true;welSigned=false;$("#welC").dataset.v="";renderWel()};
     $("#pfOut").onclick=async()=>{const b=$("#pfOut");if(b.dataset.ok!=="1"){b.dataset.ok="1";b.innerHTML='<span class="ic">🚪</span>Toca otra vez para confirmar';return}closeSheet();try{await window.FB.logout()}catch(e){}};
   })}
@@ -2856,7 +2862,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261023002806";var busy=false,pend=null;
+(function(){var V="20261023003044";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
