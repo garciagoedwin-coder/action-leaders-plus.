@@ -469,7 +469,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 .entDot{flex:none;width:14px;height:14px;border-radius:50%}.entDot.ok{background:#16a34a}.entDot.go{background:#cbd5e1}.entDot.no{background:#dc2626}
 .entHint{text-align:center;color:var(--muted,#64748b);font-size:14px;margin:8px 0}.entSub{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted,#64748b);margin:8px 0 2px}
 .entMsg{text-align:center;padding:16px;border-radius:14px;background:#fff7ed;color:#9a3412;font-weight:700}.entMsg small{font-weight:500}
-.entTk{border-radius:16px;padding:16px;text-align:center;font-size:26px;font-weight:900;color:#fff}.entTk.pr{background:linear-gradient(135deg,#6d28d9,#a855f7)}.entTk.cl{background:linear-gradient(135deg,#1d4ed8,#38bdf8)}.entTk small{display:block;font-size:15px;font-weight:700;margin-top:4px}
+.entTk{border-radius:16px;padding:16px;text-align:center;font-size:26px;font-weight:900;color:#fff}.entTk.pr{background:linear-gradient(135deg,#000,#1f1f1f);color:#E8C547;border:2px solid #C9A227;box-shadow:0 8px 24px rgba(201,162,39,.25)}.entTk.cl{background:linear-gradient(135deg,#0FB5BA,#14C8C4);color:#fff}.entTk small{display:block;font-size:15px;font-weight:700;margin-top:4px}
 .entOk{border-radius:16px;padding:16px;background:#dcfce7;color:#166534;font-size:17px;text-align:center}.entNo{border-radius:16px;padding:16px;background:#fee2e2;color:#991b1b;font-size:18px;text-align:center;font-weight:800}
 .entRk{display:flex;align-items:center;gap:10px;background:var(--card,#fff);border:1px solid var(--line,#e2e8f0);border-radius:14px;padding:12px}.entRk.top{border-color:#fbbf24;background:#fffbeb}.entRk .md{width:30px;text-align:center;font-size:20px;font-weight:800}.entRk .n{font-size:24px;font-weight:900;color:var(--brand,#0A7DAD)}.entRk small{color:var(--muted,#64748b)}
 .evLive{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border-radius:12px;padding:8px 10px;font-weight:700;margin-top:6px}.evLive i{width:9px;height:9px;border-radius:50%;background:#ef4444;animation:rutPulse 1.4s infinite}
@@ -2756,7 +2756,7 @@ function entSheetS(id){const s=entSoc().find(x=>x.id===id);if(!s)return;const c=
   if(c){openSheet(`<h2>${esc(s.n)}</h2><div class="entOk">✅ Ya entró a las ${entHora(c.at)}<br><b>Ticket #${esc(String(c.tk||"—"))}</b> · ${s.tk==="PREMIUM"?"🟣 Premium":"🔵 Classic"}<br><small>Lo recibió ${esc(c.byN||"—")}</small></div>${isAdmin?`<button class="btn ghost" id="entUndo" style="width:100%;color:var(--bad)">Anular esta entrada</button>`:""}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{const u=$("#entUndo");if(u)u.onclick=()=>entDeshacer(id)});return}
   if(!s.a){openSheet(`<h2>${esc(s.n)}</h2><div class="entNo">⛔ SIN ACCESO<br><b>Pago pendiente</b> · no puede entrar todavía.</div><p style="margin:0">Líder responsable: <b>${esc(s.l||"—")}</b></p><p class="small muted" style="margin:0">Pídale que hable con su líder o con el administrador.</p>${isAdmin?`<button class="btn" id="entDar" style="width:100%;background:var(--good)">✅ Dar acceso (ya pagó)</button>`:""}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{const d=$("#entDar");if(d)d.onclick=async()=>{try{await store.db.doc("evento/"+ENT.id+"/ovr/"+id).set(Object.assign({a:true,t:Date.now()},entYo()));entOvr[id]={a:true};toast("Acceso dado ✓");entRender();entSheetS(id)}catch(e){toast("No se pudo guardar")}}});return}
   const pr=s.tk==="PREMIUM";
-  openSheet(`<div data-nofocus></div><h2>${esc(s.n)}</h2><div class="entTk ${pr?"pr":"cl"}">${pr?"🟣 PREMIUM":"🔵 CLASSIC"}<small>${pr?"Entregar ticket CON talón de buffet":"Entregar ticket SIN talón (solo acceso)"}</small></div>
+  openSheet(`<div data-nofocus></div><h2>${esc(s.n)}</h2><div class="entTk ${pr?"pr":"cl"}">${pr?"★ PREMIUM":"CLASSIC"}<small>${pr?"Entregar ticket CON talón de buffet":"Entregar ticket SIN talón (solo acceso)"}</small></div>
    ${s.pago?`<p class="small" style="margin:0;color:var(--good);font-weight:700">✅ Pago confirmado por el administrador</p>`:""}
    <p style="margin:0">Líder responsable: <b>${esc(s.l||"—")}</b></p>
    <div class="field"><label for="entTkN">Número del ticket que le entrega</label><input class="inp" id="entTkN" type="number" inputmode="numeric" min="1" placeholder="Ej.: 57" style="font-size:22px;font-weight:800"></div>
@@ -2820,7 +2820,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261022225001";var busy=false,pend=null;
+(function(){var V="20261022230252";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
