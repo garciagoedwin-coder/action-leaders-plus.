@@ -2269,8 +2269,8 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 83,
-   "hoy": 11,
+   "total": 88,
+   "hoy": 16,
    "sinNombre": 2,
    "top": [
     {
@@ -2352,6 +2352,64 @@
      ]
     },
     {
+     "nombre": "Erick Miranda",
+     "n": 6,
+     "hoy": 2,
+     "inv": [
+      {
+       "n": "Anahy M.",
+       "f": "08/10"
+      },
+      {
+       "n": "Keyla G.",
+       "f": "08/10"
+      },
+      {
+       "n": "Keyli A.",
+       "f": "09/10"
+      },
+      {
+       "n": "Nicole V.",
+       "f": "13/10"
+      },
+      {
+       "n": "Odalis A.",
+       "f": "23/10"
+      },
+      {
+       "n": "Érika O.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Joany Isabel Perla Gámez",
+     "n": 5,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Juan I.",
+       "f": "18/10"
+      },
+      {
+       "n": "Ruth H.",
+       "f": "18/10"
+      },
+      {
+       "n": "Yolanda V.",
+       "f": "21/10"
+      },
+      {
+       "n": "Jose A.",
+       "f": "21/10"
+      },
+      {
+       "n": "Juan C.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
      "nombre": "Saby Isaguirre",
      "n": 5,
      "hoy": 0,
@@ -2379,48 +2437,25 @@
      ]
     },
     {
-     "nombre": "Erick Miranda",
+     "nombre": "Blanca Dina Ramirez Melendez",
      "n": 4,
-     "hoy": 0,
+     "hoy": 2,
      "inv": [
-      {
-       "n": "Anahy M.",
-       "f": "08/10"
-      },
-      {
-       "n": "Keyla G.",
-       "f": "08/10"
-      },
-      {
-       "n": "Keyli A.",
-       "f": "09/10"
-      },
-      {
-       "n": "Nicole V.",
-       "f": "13/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Joany Isabel Perla Gámez",
-     "n": 4,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Juan I.",
-       "f": "18/10"
-      },
-      {
-       "n": "Ruth H.",
-       "f": "18/10"
-      },
-      {
-       "n": "Yolanda V.",
-       "f": "21/10"
-      },
       {
        "n": "Jose A.",
-       "f": "21/10"
+       "f": "22/10"
+      },
+      {
+       "n": "Ely C.",
+       "f": "22/10"
+      },
+      {
+       "n": "Mayra E.",
+       "f": "23/10"
+      },
+      {
+       "n": "Melva C.",
+       "f": "23/10"
       }
      ]
     },
@@ -2581,21 +2616,6 @@
       {
        "n": "Liliana C.",
        "f": "18/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Blanca Dina Ramirez Melendez",
-     "n": 2,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Jose A.",
-       "f": "22/10"
-      },
-      {
-       "n": "Ely C.",
-       "f": "22/10"
       }
      ]
     },
@@ -2829,8 +2849,8 @@
      ]
     }
    ],
-   "actualizado": "2026-10-23T14:26:00-06:00",
-   "repetidos": 0
+   "actualizado": "2026-10-23T15:26:00-06:00",
+   "repetidos": 1
   }
  },
  "fotos": [
