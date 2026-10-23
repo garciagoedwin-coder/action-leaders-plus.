@@ -2269,9 +2269,9 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 88,
-   "hoy": 16,
-   "sinNombre": 2,
+   "total": 90,
+   "hoy": 18,
+   "sinNombre": 3,
    "top": [
     {
      "nombre": "Joel Salgado",
@@ -2410,6 +2410,33 @@
      ]
     },
     {
+     "nombre": "Lizandro Castro",
+     "n": 5,
+     "hoy": 2,
+     "inv": [
+      {
+       "n": "Claudia P.",
+       "f": "22/10"
+      },
+      {
+       "n": "Alexander C.",
+       "f": "22/10"
+      },
+      {
+       "n": "Anner F.",
+       "f": "22/10"
+      },
+      {
+       "n": "Martha S.",
+       "f": "23/10"
+      },
+      {
+       "n": "Fernanda H.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
      "nombre": "Saby Isaguirre",
      "n": 5,
      "hoy": 0,
@@ -2455,29 +2482,6 @@
       },
       {
        "n": "Melva C.",
-       "f": "23/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Lizandro Castro",
-     "n": 4,
-     "hoy": 1,
-     "inv": [
-      {
-       "n": "Claudia P.",
-       "f": "22/10"
-      },
-      {
-       "n": "Alexander C.",
-       "f": "22/10"
-      },
-      {
-       "n": "Anner F.",
-       "f": "22/10"
-      },
-      {
-       "n": "Martha S.",
        "f": "23/10"
       }
      ]
@@ -2849,7 +2853,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-23T15:26:00-06:00",
+   "actualizado": "2026-10-23T16:26:00-06:00",
    "repetidos": 1
   }
  },
