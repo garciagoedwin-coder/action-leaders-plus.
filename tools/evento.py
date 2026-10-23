@@ -62,15 +62,16 @@ def corto(x):
     return a + (' ' + w[1][:1].upper() + '.' if len(w) > 1 else '')
 
 G = []  # grupos: {nom, formas{}, n, hoy}
+SIN = []
 hoy = (datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=6)).date()
 sin = 0
 for t, q, inv in filas:
     k = n(q)
-    if not k or k in IGN: sin += 1; continue
+    if not k or k in IGN: sin += 1; SIN.append(inv); continue
     q = alias.get(k, q)
     g = next((g for g in G if n(g['nom']) == n(q) or parecido(g['nom'], q) or any(parecido(f, q) for f in g['formas'])), None)
     if not g: g = {'nom': q, 'formas': {}, 'n': 0, 'hoy': 0, 'inv': []}; G.append(g)
-    if inv: g['inv'].append({'n': corto(inv), 'f': t.strftime('%d/%m') if t else ''})
+    if inv: g['inv'].append({'n': corto(inv), 'f': t.strftime('%d/%m') if t else ''}); g.setdefault('rows', []).append(inv)
     g['formas'][q] = g['formas'].get(q, 0) + 1; g['n'] += 1
     if t and t.date() == hoy: g['hoy'] += 1
 
@@ -78,7 +79,7 @@ for t, q, inv in filas:
 for g in [g for g in G if len(n(g['nom']).split()) == 1]:
     c = [h for h in G if h is not g and len(n(h['nom']).split()) > 1 and wsim(n(h['nom']).split()[0], n(g['nom']))]
     if len(c) == 1:
-        c[0]['n'] += g['n']; c[0]['hoy'] += g['hoy']; c[0]['formas'].update(g['formas']); c[0]['inv'] += g['inv']; G.remove(g)
+        c[0]['n'] += g['n']; c[0]['hoy'] += g['hoy']; c[0]['formas'].update(g['formas']); c[0]['inv'] += g['inv']; c[0].setdefault('rows', []).extend(g.get('rows', [])); G.remove(g)
 
 for g in G:  # nombre bonito: el del equipo si coincide, si no la forma más usada
     m = next((e for e in equipo if parecido(e, g['nom']) or any(parecido(e, f) for f in g['formas'])), None)
@@ -94,3 +95,8 @@ if cambio: ev['actualizado'] = (datetime.datetime.now(datetime.UTC) - datetime.t
 json.dump(d, open('data/team.json', 'w'), ensure_ascii=False, indent=1)
 print('total', nuevo['total'], 'hoy', nuevo['hoy'], 'sin nombre', sin, 'repetidos', repetidos)
 for g in top: print(g['n'], g['nom'], '<-', list(g['formas']))
+
+import os
+if os.environ.get('EV_MAP'):  # lista completa para el modo entrada (archivo local, nunca al repo)
+    m = [{'n': ' '.join(x.split()), 's': g['nom']} for g in G for x in g.get('rows', [])] + [{'n': ' '.join(x.split()), 's': ''} for x in SIN if x.strip()]
+    json.dump(m, open(os.environ['EV_MAP'], 'w'), ensure_ascii=False)

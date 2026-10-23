@@ -2268,9 +2268,9 @@
     "Álva martinz": "Alba Luz Martínez Hernández",
     "Alba martines": "Alba Luz Martínez Hernández"
    },
-   "total": 73,
-   "hoy": 13,
-   "sinNombre": 4,
+   "total": 74,
+   "hoy": 14,
+   "sinNombre": 3,
    "top": [
     {
      "nombre": "Joel Salgado",
@@ -2284,6 +2284,10 @@
       {
        "n": "Angelica M.",
        "f": "20/10"
+      },
+      {
+       "n": "Senny A.",
+       "f": "21/10"
       },
       {
        "n": "Karen J.",
@@ -2304,10 +2308,6 @@
       {
        "n": "Juan A.",
        "f": "22/10"
-      },
-      {
-       "n": "Senny A.",
-       "f": "21/10"
       }
      ]
     },
@@ -2321,10 +2321,6 @@
        "f": "12/10"
       },
       {
-       "n": "Dania B.",
-       "f": "20/10"
-      },
-      {
        "n": "Roberto T.",
        "f": "13/10"
       },
@@ -2335,6 +2331,10 @@
       {
        "n": "José A.",
        "f": "18/10"
+      },
+      {
+       "n": "Dania B.",
+       "f": "20/10"
       },
       {
        "n": "Aníbal A.",
@@ -2375,20 +2375,20 @@
      "hoy": 0,
      "inv": [
       {
-       "n": "Nicole V.",
-       "f": "13/10"
-      },
-      {
-       "n": "Keyli A.",
-       "f": "09/10"
-      },
-      {
        "n": "Anahy M.",
        "f": "08/10"
       },
       {
        "n": "Keyla G.",
        "f": "08/10"
+      },
+      {
+       "n": "Keyli A.",
+       "f": "09/10"
+      },
+      {
+       "n": "Nicole V.",
+       "f": "13/10"
       }
      ]
     },
@@ -2398,11 +2398,11 @@
      "hoy": 0,
      "inv": [
       {
-       "n": "Ruth H.",
+       "n": "Juan I.",
        "f": "18/10"
       },
       {
-       "n": "Juan I.",
+       "n": "Ruth H.",
        "f": "18/10"
       },
       {
@@ -2421,16 +2421,16 @@
      "hoy": 0,
      "inv": [
       {
+       "n": "Lourdes A.",
+       "f": "19/10"
+      },
+      {
        "n": "Sandra L.",
        "f": "21/10"
       },
       {
        "n": "Rosa I.",
        "f": "21/10"
-      },
-      {
-       "n": "Lourdes A.",
-       "f": "19/10"
       }
      ]
     },
@@ -2482,12 +2482,12 @@
        "f": "14/10"
       },
       {
-       "n": "Liliana C.",
-       "f": "18/10"
-      },
-      {
        "n": "Jimy Q.",
        "f": "14/10"
+      },
+      {
+       "n": "Liliana C.",
+       "f": "18/10"
       }
      ]
     },
@@ -2542,12 +2542,12 @@
      "hoy": 0,
      "inv": [
       {
-       "n": "Karla H.",
-       "f": "19/10"
-      },
-      {
        "n": "Nahaman E.",
        "f": "14/10"
+      },
+      {
+       "n": "Karla H.",
+       "f": "19/10"
       }
      ]
     },
@@ -2578,6 +2578,36 @@
       {
        "n": "Laura J.",
        "f": "14/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Juan Carlos Granados Claros",
+     "n": 2,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Edvin S.",
+       "f": "08/10"
+      },
+      {
+       "n": "Laura V.",
+       "f": "22/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Lizandro Castro",
+     "n": 2,
+     "hoy": 2,
+     "inv": [
+      {
+       "n": "Claudia P.",
+       "f": "22/10"
+      },
+      {
+       "n": "Alexander C.",
+       "f": "22/10"
       }
      ]
     },
@@ -2667,17 +2697,6 @@
      ]
     },
     {
-     "nombre": "Juan Carlos Granados Claros",
-     "n": 1,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Edvin S.",
-       "f": "08/10"
-      }
-     ]
-    },
-    {
      "nombre": "Karen Arias",
      "n": 1,
      "hoy": 0,
@@ -2706,17 +2725,6 @@
      "inv": [
       {
        "n": "Nery J.",
-       "f": "22/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Lizandro Castro",
-     "n": 1,
-     "hoy": 1,
-     "inv": [
-      {
-       "n": "Claudia P.",
        "f": "22/10"
       }
      ]
@@ -2766,7 +2774,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-22T21:26:00-06:00",
+   "actualizado": "2026-10-22T22:45:00-06:00",
    "repetidos": 7
   }
  },

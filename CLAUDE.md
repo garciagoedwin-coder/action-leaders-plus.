@@ -132,3 +132,11 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - **Paleta:** fondo #F3F6F9, marca #0A7DAD, celeste #2AC1F1, tinta #2B2A2D. Hay modo oscuro.
 - **Fuentes:** Figtree (texto), Bricolage Grotesque (títulos), Barlow Condensed (números).
 - **Diseño:** minimalista, "pro" y fácil de duplicar. Botones limpios, sin recuadros de más. Probar siempre en el celular.
+
+
+## 5c. Modo entrada del evento (San Pedro Sula, 26 oct 2026)
+- Recepción (socios marcados por el admin en Admin → Editar socio → "🎟️ Recepción del evento", doc `eventoStaff/{uid}`) y el admin ven en Inicio la tarjeta "Modo entrada".
+- Lista cifrada en el repo: `data/entrada.enc` (AES-GCM). La arma `tools/entrada.py SOCIOS.txt MAPA.json CLAVE` con la pestaña 'SOCIOS EVENTO' (A:E: NO, nombre, líder, ACCESO/Pendiente, PREMIUM/CLASSIC) y el mapa invitado→socio que genera `EV_MAP=... tools/evento.py`. La clave vive en Firestore `evento/sps26/priv/llave` (solo staff) y localmente en /home/claude/.evk; NUNCA en el repo.
+- Check-ins en Firestore `evento/sps26/checkin/{id}` (tipo s = socio con número de ticket, tipo i = invitado; manual = registrado en puerta con WhatsApp). `evento/sps26/ovr/{id}` = acceso dado por el admin (pagó en puerta). `evento/sps26` doc `resumen` = conteo público para la tarjeta del reto.
+- Premio: el socio con más invitados que LLEGARON (incluye los registrados en puerta).
+- Reglas de Firestore: ver `respaldo/firestore.rules` (bloque "Modo entrada").

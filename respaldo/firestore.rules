@@ -1,4 +1,4 @@
-// Copia EXACTA de las reglas de Firestore (consola de Firebase), pegada por Edwin el 2026-10-20.
+// Reglas de Firestore. Base: copia pegada por Edwin el 2026-10-20 + bloque del modo entrada (2026-10-22).
 // Proyecto: action-leaders-plus-8f1b8. Si cambian en la consola, actualizar este archivo.
 rules_version = '2';
 service cloud.firestore {
@@ -49,6 +49,20 @@ match /reservas/{id} { allow read: if true; allow create: if request.resource.da
       allow create: if request.resource.data.keys().hasOnly(['nombre','cc','tel','interes','t'])
         && request.resource.data.nombre is string && request.resource.data.nombre.size() < 80
         && request.resource.data.tel is string && request.resource.data.tel.size() < 21;
+    }
+
+      // ---- Modo entrada del evento (agregado 2026-10-22) ----
+    function staffEvento() { return signedIn() && (isAdmin() || exists(/databases/$(database)/documents/eventoStaff/$(request.auth.uid))); }
+    match /eventoStaff/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if isAdmin();
+    }
+    match /evento/{eid} {
+      allow read: if signedIn();
+      allow write: if staffEvento();
+      match /priv/{d} { allow read: if staffEvento(); allow write: if isAdmin(); }
+      match /checkin/{id} { allow read, write: if staffEvento(); }
+      match /ovr/{id} { allow read: if staffEvento(); allow write: if isAdmin(); }
     }
 
   }
