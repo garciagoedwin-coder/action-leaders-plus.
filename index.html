@@ -486,13 +486,13 @@ nav.tabs button{z-index:0;isolation:isolate}
 .metaStrip .mtBar{background:var(--hero-line)}.metaStrip .mtBar i{background:var(--mt-c,var(--brand))}
 .metaStrip .mtS{border-top-color:var(--hero-line);color:var(--hero-mut)}.metaStrip .mtS b{color:var(--hero-ink)}
 .metaStrip .mtRg{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--mt-c,var(--brand));margin-right:6px;vertical-align:1px}
-.evCard{background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:var(--shadow)}
-.evCard .evK{color:var(--muted);opacity:1}.evCard .evHoy{background:var(--gold-soft);color:var(--brand)}
-.evCard .evRow{border-top-color:var(--line)}.evCard .evRow small{color:var(--good)}
-.evCard .av{border-color:var(--line)}.evCard .evMe{background:var(--bg);color:var(--ink)}
-.evCard .btn{background:transparent;color:var(--ink);border:1px solid var(--line)}
-.evCard #evMis{background:var(--brand)!important;color:var(--brand-ink)!important;border-color:transparent}
-.evLive{background:var(--bad-soft);color:var(--ink)}
+.evCard{background:linear-gradient(160deg,#0B0B0D,#17171B 60%,#1E1A12);color:#F3E7C2;border:1px solid rgba(212,175,55,.35);box-shadow:0 12px 30px -14px rgba(0,0,0,.6)}
+.evCard .evK{color:#D4AF37;opacity:1}.evCard .evHoy{background:rgba(212,175,55,.14);color:#E8C547}
+.evCard .evT b{color:#E8C547}.evCard .evRow{border-top-color:rgba(212,175,55,.18)}.evCard .evRow .nm{color:#F3E7C2}.evCard .evRow .ct{color:#E8C547}.evCard .evRow small{color:#C9A227}
+.evCard .av{border-color:rgba(212,175,55,.5)}.evCard .evMe{background:rgba(212,175,55,.08);color:#F3E7C2;border:1px solid rgba(212,175,55,.2)}
+.evCard .btn{background:transparent;color:#E8C547;border:1px solid rgba(212,175,55,.45);white-space:nowrap;font-size:14px;padding-left:8px;padding-right:8px}
+.evCard #evMis{background:linear-gradient(135deg,#C9A227,#E8C547)!important;color:#111!important;border-color:transparent}
+.evLive{background:rgba(212,175,55,.1);color:#F3E7C2}
 .entCard{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:4px solid var(--good);box-shadow:var(--shadow)}
 .entCard .muted{color:var(--muted)!important}.entCard #entGo{background:#12805C;color:#fff}
 .actBan{background:var(--hero);color:var(--hero-ink);box-shadow:var(--shadow)}.actBan::after{display:none}
@@ -2848,7 +2848,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261023001440";var busy=false,pend=null;
+(function(){var V="20261023001832";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
