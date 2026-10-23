@@ -2268,8 +2268,8 @@
     "Álva martinz": "Alba Luz Martínez Hernández",
     "Alba martines": "Alba Luz Martínez Hernández"
    },
-   "total": 74,
-   "hoy": 2,
+   "total": 75,
+   "hoy": 3,
    "sinNombre": 2,
    "top": [
     {
@@ -2676,6 +2676,17 @@
      ]
     },
     {
+     "nombre": "Jose Luis Rodriguez",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Jeymi R.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
      "nombre": "Juan Carlos Granados Claros",
      "n": 1,
      "hoy": 0,
@@ -2764,7 +2775,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-23T08:27:00-06:00",
+   "actualizado": "2026-10-23T09:26:00-06:00",
    "repetidos": 0
   }
  },
