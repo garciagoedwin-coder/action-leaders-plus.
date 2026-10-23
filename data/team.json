@@ -403,8 +403,8 @@
    "nombre": "Carlos Alberto Rubio Valladares",
    "presSemana": 0,
    "presentaciones": 16,
-   "regSemana": 4,
-   "registros": 9,
+   "regSemana": 5,
+   "registros": 10,
    "volumen": 1100,
    "id": "carlos-alberto-rubio-valladares"
   },
@@ -548,6 +548,18 @@
    "registros": 1,
    "regSemana": 1,
    "id": "henrry-antonio-munoz-sosa",
+   "activaciones": 0,
+   "volumen": 0,
+   "actSemana": 0
+  },
+  {
+   "nombre": "Maria Virginia Garcia Portillo",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 1,
+   "regSemana": 1,
+   "id": "maria-virginia-garcia-portillo",
    "activaciones": 0,
    "volumen": 0,
    "actSemana": 0
@@ -2208,7 +2220,7 @@
   "calendarioActualizado": "2026-10-18T22:20:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-21T19:32:00-06:00",
+  "rankingActualizado": "2026-10-22T19:48:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
