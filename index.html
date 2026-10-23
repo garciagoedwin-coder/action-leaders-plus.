@@ -483,6 +483,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 .rutCard.done::before{animation:none;background:var(--good)}
 @keyframes rutGiro{to{--rutAng:360deg}}
 @media (prefers-reduced-motion:reduce){.rutCard::before{animation:none;background:var(--brand)}}
+.fuego{display:inline-block;transform-origin:50% 90%;animation:fuego 1.1s ease-in-out infinite}@keyframes fuego{0%,100%{transform:scale(1) rotate(-4deg)}25%{transform:scale(1.12,1.18) rotate(3deg)}50%{transform:scale(.96,1.06) rotate(-2deg)}75%{transform:scale(1.08,1.12) rotate(4deg)}}@media (prefers-reduced-motion:reduce){.fuego{animation:none}}
 /* ===== Estilo sobrio (oct 2026): superficies neutras, un acento de marca, color solo como detalle ===== */
 :root{--hero:#16181D;--hero-ink:#F4F6F8;--hero-mut:rgba(244,246,248,.66);--hero-line:rgba(255,255,255,.12)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--hero:#2A2D33}}
@@ -1448,7 +1449,7 @@ $("#editRef").onclick=()=>openSheet(`<h2>Tu enlace de referido</h2><p class="sma
   $("#refSave").onclick=()=>{profile.ref=$("#refInp").value.trim();store.set("perfil",profile);renderRef();closeSheet();toast("Enlace guardado")}});
 
 // ---------- equipo: ranking / liderazgo / red ----------
-let eqTab="ranking",rankTab="mes",rankMetric="presentaciones",leadSort="posicion",leadPos="Todos",leadQ="";
+let eqTab="ranking",rankTab="mes",rankMetric="nuevos",leadSort="posicion",leadPos="Todos",leadQ="";
 const POS_ORDER=["presidential","executive","senior marketing","regional","marketing director","team leader","calificado"];
 function posRank(p){p=String(p||"").toLowerCase();const i=POS_ORDER.findIndex(k=>p.includes(k));return i<0?50:i}
 function renderLeadList(){const el=$("#leadList");if(!el)return;const q=leadQ.trim().toLowerCase();
@@ -1658,7 +1659,7 @@ function renderTopRut(){const c=$("#topRut");if(!c)return;c.hidden=true;return;i
   $("#topRutVer").onclick=()=>{eqTab="ranking";rankMetric="rutina";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()}}
 const CONST_INI="2026-10-19";const constDia=()=>Math.floor((parseK(TODAY)-parseK(CONST_INI))/864e5)+1;
 const constBanner=()=>{const d=constDia();if(d<1||d>7)return"";return `<div class="card" style="background:linear-gradient(135deg,#2AC1F1,#6b4dff);color:#fff;gap:4px"><b style="font-size:17px">🚀 ${d===1?"¡Hoy empezamos! Día 1":"Día "+d+" del ranking"}</b><span style="font-size:14px;opacity:.95">${d===1?"El ranking de consistencia arrancó hoy, todos parten de cero. Completa tu rutina hoy al 100% y mañana empiezas tu racha 🔥":"El ranking arrancó el lunes 19 de octubre. Cada día que completas tu rutina suma a tu racha 🔥"}</span></div>`};
-function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="false" data-k="presentaciones">Registros inCruises</button><button aria-selected="false" data-k="nuevos">Activaciones</button><button aria-selected="true" data-k="rutina">🔥 Rutina</button></div><div class="seg" id="rankSeg" hidden></div>
+function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="false" data-k="nuevos">Activaciones</button><button aria-selected="false" data-k="presentaciones">Registros inCruises</button><button aria-selected="true" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button></div><div class="seg" id="rankSeg" hidden></div>
    <div class="seg" id="consV"><button aria-selected="${constVista==="sem"}" data-cv="sem">Esta semana</button><button aria-selected="${constVista==="mes"}" data-cv="mes">Este mes</button></div>
    <p class="small muted">${constVista==="sem"?"La semana va de lunes a domingo y se reinicia cada lunes. Ordenado por racha (días seguidos con la rutina completa), luego días completos; si empatan, gana quien hizo más presentaciones del plan.":"Ordenado por días con la rutina completa en el mes; si empatan, gana quien hizo más presentaciones del plan."}</p>`;
   if(constL===null){b.innerHTML=segs+`<p class="muted small">Cargando…</p>`;bindRank();loadConst(true);return}
@@ -1698,7 +1699,7 @@ function renderEquipo(){const b=$("#eqBody");
     const unit=rankMetric==="nuevos"?["socio nuevo","socios nuevos"]:["registro","registros"];
     const u=v=>v===1?unit[0]:unit[1];
     const per=T.config&&T.config.rankingSemanaLabel;
-    const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="${rankMetric==="presentaciones"}" data-k="presentaciones">Registros inCruises</button><button aria-selected="${rankMetric==="nuevos"}" data-k="nuevos">Activaciones</button><button aria-selected="false" data-k="rutina">🔥 Rutina</button></div>
+    const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="${rankMetric==="nuevos"}" data-k="nuevos">Activaciones</button><button aria-selected="${rankMetric==="presentaciones"}" data-k="presentaciones">Registros inCruises</button><button aria-selected="false" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button></div>
      <div class="seg" role="tablist" id="rankSeg" hidden><button aria-selected="true" data-k="mes">Este mes</button></div>
      <p class="small muted">${rankMetric==="nuevos"?"Ordenado por volumen (Starter 50 · Classic 200 · Premium 500).":"Solo cuentan los prospectos registrados gratis en inCruises."}</p>`;
     if(!d.length){b.innerHTML=segs+emptyCard(rankMetric==="nuevos"?"Aún no hay socios nuevos en este periodo":"Aún no hay registros en este periodo","El primero en sumar toma el primer lugar.");bindRank();return}
@@ -2867,7 +2868,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261023003529";var busy=false,pend=null;
+(function(){var V="20261023003809";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
