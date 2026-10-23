@@ -2268,14 +2268,14 @@
     "Álva martinz": "Alba Luz Martínez Hernández",
     "Alba martines": "Alba Luz Martínez Hernández"
    },
-   "total": 74,
-   "hoy": 14,
-   "sinNombre": 3,
+   "total": 72,
+   "hoy": 0,
+   "sinNombre": 2,
    "top": [
     {
      "nombre": "Joel Salgado",
-     "n": 8,
-     "hoy": 1,
+     "n": 10,
+     "hoy": 0,
      "inv": [
       {
        "n": "Maria R.",
@@ -2294,11 +2294,19 @@
        "f": "21/10"
       },
       {
+       "n": "Carlos E.",
+       "f": "21/10"
+      },
+      {
        "n": "Mayra J.",
        "f": "21/10"
       },
       {
        "n": "Ana R.",
+       "f": "21/10"
+      },
+      {
+       "n": "Evelyn P.",
        "f": "21/10"
       },
       {
@@ -2314,7 +2322,7 @@
     {
      "nombre": "Betty Carolina Amador Perez",
      "n": 6,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Jesus A.",
@@ -2345,7 +2353,7 @@
     {
      "nombre": "Saby Isaguirre",
      "n": 5,
-     "hoy": 3,
+     "hoy": 0,
      "inv": [
       {
        "n": "Yorleny V.",
@@ -2454,6 +2462,25 @@
      ]
     },
     {
+     "nombre": "Lizandro Castro",
+     "n": 3,
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Claudia P.",
+       "f": "22/10"
+      },
+      {
+       "n": "Alexander C.",
+       "f": "22/10"
+      },
+      {
+       "n": "Anner F.",
+       "f": "22/10"
+      }
+     ]
+    },
+    {
      "nombre": "Mabis Franco",
      "n": 3,
      "hoy": 0,
@@ -2494,7 +2521,7 @@
     {
      "nombre": "Alba Luz Martínez Hernández",
      "n": 2,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Dina Y.",
@@ -2509,7 +2536,7 @@
     {
      "nombre": "Blanca Dina Ramirez Melendez",
      "n": 2,
-     "hoy": 2,
+     "hoy": 0,
      "inv": [
       {
        "n": "Jose A.",
@@ -2582,36 +2609,6 @@
      ]
     },
     {
-     "nombre": "Juan Carlos Granados Claros",
-     "n": 2,
-     "hoy": 1,
-     "inv": [
-      {
-       "n": "Edvin S.",
-       "f": "08/10"
-      },
-      {
-       "n": "Laura V.",
-       "f": "22/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Lizandro Castro",
-     "n": 2,
-     "hoy": 2,
-     "inv": [
-      {
-       "n": "Claudia P.",
-       "f": "22/10"
-      },
-      {
-       "n": "Alexander C.",
-       "f": "22/10"
-      }
-     ]
-    },
-    {
      "nombre": "Miriam Cuellar",
      "n": 2,
      "hoy": 0,
@@ -2642,28 +2639,6 @@
      ]
     },
     {
-     "nombre": "Angel Salgado",
-     "n": 1,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Evelyn P.",
-       "f": "21/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Angelica",
-     "n": 1,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Evelin P.",
-       "f": "20/10"
-      }
-     ]
-    },
-    {
      "nombre": "Edwin García",
      "n": 1,
      "hoy": 0,
@@ -2677,7 +2652,7 @@
     {
      "nombre": "Flor Idalma Reyes Padilla",
      "n": 1,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Maura J.",
@@ -2686,13 +2661,13 @@
      ]
     },
     {
-     "nombre": "Jose Sagastume",
+     "nombre": "Juan Carlos Granados Claros",
      "n": 1,
      "hoy": 0,
      "inv": [
       {
-       "n": "Carlos E.",
-       "f": "21/10"
+       "n": "Laura V.",
+       "f": "22/10"
       }
      ]
     },
@@ -2721,7 +2696,7 @@
     {
      "nombre": "Kevin Izaguirre",
      "n": 1,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Nery J.",
@@ -2741,7 +2716,7 @@
      ]
     },
     {
-     "nombre": "Olga",
+     "nombre": "Olga Lizzette Meléndez Norales",
      "n": 1,
      "hoy": 0,
      "inv": [
@@ -2765,7 +2740,7 @@
     {
      "nombre": "Zamir Fuentes",
      "n": 1,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Mayra I.",
@@ -2774,8 +2749,8 @@
      ]
     }
    ],
-   "actualizado": "2026-10-22T22:45:00-06:00",
-   "repetidos": 7
+   "actualizado": "2026-10-23T07:26:00-06:00",
+   "repetidos": 0
   }
  },
  "fotos": [
