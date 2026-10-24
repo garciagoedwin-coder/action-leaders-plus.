@@ -1677,7 +1677,8 @@ function constMsg(x){const n=String(x.nombre||"").split(" ")[0],p=hoyPts(x),f=RO
   if(p>0)return `¡Hola, ${n}! 👋\n\nHoy ya lleva *${p} de ${ROUTINE.length}* acciones de su rutina 💪\nLe ${f===1?"falta solo 1":"faltan "+f} para completar el día${r?` y mantener su racha de ${r} ${r===1?"día":"días"} 🔥`:" y empezar su racha 🔥"}.\n\n¡Usted puede! Entre a la app y termínela:\n${url}`+firma;
   return `¡Hola, ${n}! 👋\n\nHoy es un gran día para empezar su racha 🔥\n\nSon solo 5 acciones: su historia, escuchar o leer, agregar personas nuevas, presentar el plan y dar seguimiento. Con una sola ya suma puntos.\n\n¡Vamos, yo creo en usted! 💪\n${url}`+firma}
 const cwaHoy=()=>{const o=LS.get("cwaEnv")||{};return o.d===TODAY?o:{d:TODAY,u:{}}};
-const cwaMarca=(uid,tipo)=>{const o=cwaHoy();o.u[uid]=tipo;LS.set("cwaEnv",o)};
+const cwaMarca=(uid,tipo)=>{const o=cwaHoy();o.u[uid]=tipo;LS.set("cwaEnv",o);if(store.db)store.set("mensajes-"+TODAY,{d:TODAY,u:o.u}).catch(()=>{})};
+let cwaNubeD="";async function cwaNube(){if(!store.db||!store.uid||cwaNubeD===TODAY)return;cwaNubeD=TODAY;try{const v=await store.get("mensajes-"+TODAY);if(v&&v.u){const o=cwaHoy();Object.assign(o.u,v.u);Object.keys(o.u).forEach(k=>{if(v.u[k]==="fel")o.u[k]="fel"});LS.set("cwaEnv",o);if(eqTab==="ranking"&&rankMetric==="rutina")renderEquipo()}}catch(e){}}
 const constBtn=x=>{if(!constUser(x))return"";const ok=hoyPts(x)>=ROUTINE.length,ya=cwaHoy().u[x.uid];
   if(ya&&(ya==="fel"||!ok))return `<span class="chip" style="margin-top:6px;display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;background:var(--good-soft);color:var(--good)">✓ ${ya==="fel"?"Felicitado":"Motivado"} hoy</span>`;
   return `<button type="button" class="chip" data-cwa="${esc(x.uid)}" style="border:0;font:inherit;font-size:13px;font-weight:700;margin-top:6px;cursor:pointer;background:#25D366;color:#fff;display:inline-flex;align-items:center;gap:5px">${WA_IC} ${ok?"Felicitar":"Motivar"}</button>`};
@@ -1706,7 +1707,7 @@ function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetr
    <div class="card" style="gap:0">${L.slice(3).map(x=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)${x.uid===store.uid?";background:var(--brand-soft,rgba(42,193,241,.08))":""}"><b class="num" style="width:26px;text-align:center">${x.rk}</b>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">${constSub(x)}</div><div class="small">${hoyTxt(x)}</div>${constBtn(x)}</div><span class="chip ${(constVista==="sem"?x.racha:x.mesMejor)?"c-gold":"c-brand"}" style="flex:none">${(constVista==="sem"?x.semPts:x.mesPts)} pts</span></div>`).join("")||`<p class="small muted" style="padding:8px 0">¡Súmese al ranking haciendo su rutina!</p>`}</div>`;
   b.querySelectorAll("[data-cv]").forEach(x=>x.onclick=()=>{constVista=x.dataset.cv;constSort(constL);renderEquipo()});
   b.querySelectorAll("[data-cwa]").forEach(bt=>bt.onclick=()=>{const x=L.find(y=>y.uid===bt.dataset.cwa),u=x&&constUser(x);if(!u)return;const t=constMsg(x),w=waSocio(u);cwaMarca(x.uid,hoyPts(x)>=ROUTINE.length?"fel":"mot");renderEquipo();if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(u,t)});
-  if(mios===null&&store.db&&store.uid&&!constMiosT){constMiosT=1;loadMios().catch(()=>{})}
+  cwaNube();if(mios===null&&store.db&&store.uid&&!constMiosT){constMiosT=1;loadMios().catch(()=>{})}
   if(isAdmin&&socios===null&&store.db&&!constSocT){constSocT=1;Promise.resolve(loadSocios()).catch(()=>{}).finally(()=>{if(eqTab==="ranking"&&rankMetric==="rutina")renderEquipo()})}
   bindRank();loadConst()}
 function renderEquipo(){const b=$("#eqBody");
@@ -2909,7 +2910,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261023235837";var busy=false,pend=null;
+(function(){var V="20261024000106";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
