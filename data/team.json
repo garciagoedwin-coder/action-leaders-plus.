@@ -2269,8 +2269,8 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 112,
-   "hoy": 10,
+   "total": 113,
+   "hoy": 11,
    "sinNombre": 4,
    "top": [
     {
@@ -2623,6 +2623,29 @@
      ]
     },
     {
+     "nombre": "Rosa Oliva",
+     "n": 4,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Kimberlyn C.",
+       "f": "14/10"
+      },
+      {
+       "n": "Jimy Q.",
+       "f": "14/10"
+      },
+      {
+       "n": "Liliana C.",
+       "f": "18/10"
+      },
+      {
+       "n": "Vilma P.",
+       "f": "24/10"
+      }
+     ]
+    },
+    {
      "nombre": "Alba Luz Martínez Hernández",
      "n": 3,
      "hoy": 0,
@@ -2695,25 +2718,6 @@
       {
        "n": "Denia V.",
        "f": "24/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Rosa Oliva",
-     "n": 3,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Kimberlyn C.",
-       "f": "14/10"
-      },
-      {
-       "n": "Jimy Q.",
-       "f": "14/10"
-      },
-      {
-       "n": "Liliana C.",
-       "f": "18/10"
       }
      ]
     },
@@ -2937,7 +2941,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-24T14:26:00-06:00",
+   "actualizado": "2026-10-24T16:25:00-06:00",
    "repetidos": 4
   }
  },
