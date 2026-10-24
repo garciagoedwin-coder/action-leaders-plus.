@@ -68,7 +68,9 @@ App web móvil (PWA) del equipo de Edwin García Go (Director Nacional, inCruise
 - **Alias:** `config.alias` une nombres que son la misma persona. Por ejemplo, "Daniel y Alejandra Interiano" = "Alejandra María Pérez Ponce".
 - **Rutina:**
   - Con 1 acción en cada punto el día queda completo.
-  - Puntos: contactos, seguimientos, presentaciones (con nombre, 1 por persona por semana), video, historia del día (se marca sola), 15 min de audio (Spotify), 30 min de formación, apoyar a un socio.
+  - Desde 2026-10-24 son 5 puntos, en este orden: 1) Historia del día (se marca sola al compartir), 2) "Escuchar, leer o Training" (clic), 3) Agregar personas nuevas a la lista (+1 abre el formulario; solo cuenta si la persona NO está ya en su CRM; se guarda en el CRM; day.conL), 4) Presentar el plan (con nombre, 1 por persona por semana; day.presL), 5) Seguimiento a prospectos (elige del CRM, 1 por persona al día, marca c.ultSeg; day.segL). El "+" nunca suma sin nombre; el "−" quita el último nombre.
+  - Puntos: cada uno de los 5 da máximo 1 punto al día (aunque agregue 10 personas, suma 1). Se guardan semPts/mesPts en constancia.
+  - Ranking "Mi Racha": 1) días completos, 2) presentaciones, 3) puntos, 4) racha seguida. Solo aparecen quienes tienen al menos 1 punto.
 - **Bienvenida:** el video es obligatorio; "Ya vi mi video" se desbloquea al 90%. Una alerta dice qué pasos faltan.
 - **Mis socios:** cada socio ve **toda su línea hacia abajo**, sin límite de profundidad. Usa `registro.linea` con array-contains.
 - **Inicio (rediseño 2026-10-20, orden fijo):**

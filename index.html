@@ -720,7 +720,7 @@ nav.tabs button{z-index:0;isolation:isolate}
   <p class="k">La solución</p>
   <h2>Un sistema completo en su celular.</h2>
   <div class="feats">
-   <div class="feat"><i>🔥</i><b>Rutina diaria con racha</b><span>8 acciones claras cada día. Mantenga la racha y vea su constancia del mes.</span></div>
+   <div class="feat"><i>🔥</i><b>Rutina diaria con racha</b><span>5 acciones claras cada día. Mantenga la racha y vea su constancia del mes.</span></div>
    <div class="feat"><i>🏅</i><b>Metas y próximo rango</b><span>Su próximo rango, su volumen del mes y su ingreso soñado, siempre a la vista.</span></div>
    <div class="feat"><i>✨</i><b>Mi mapa de sueños</b><span>Su collage privado de sueños, con fechas, su próximo crucero y frases que lo impulsan.</span></div>
    <div class="feat"><i>👥</i><b>CRM de prospectos</b><span>Etapas, seguimientos y mensajes listos para WhatsApp. Cada persona nueva suma en su rutina.</span></div>
@@ -1076,13 +1076,11 @@ const myRow=()=>profile.miNombre?T.ranking.find(r=>r.nombre===profile.miNombre):
 // ---------- rutina diaria ----------
 const ROUTINE=[
  {k:"historia",t:"Publicar la historia del día",goal:1,type:"check",desde:"2026-10-19",sub:"Se marca sola al compartirla"},
- {k:"audio",t:"Escuchar 15 min de audio",goal:1,type:"check",desde:"2026-10-19",link:"https://open.spotify.com/show/2rpLxUc9jiXVhB2ItVicbp",linkT:"🎧 Escuchar en Spotify"},
- {k:"formacion",t:"Conectarme al sistema",goal:1,type:"check",nota:"Píldora · AL System · Yess"},
- {k:"contactos",t:"Agregar personas nuevas",goal:5,type:"count"},
- {k:"presentaciones",t:"Presentar el plan",goal:1,type:"count"},
- {k:"seguimientos",t:"Seguimiento a prospectos",goal:3,type:"count"},
- {k:"equipo",t:"Apoyar a mi equipo",goal:1,type:"check"},
- {k:"videos",t:"Subir video a redes sociales",goal:1,type:"count"}];
+ {k:"audio",t:"Escuchar, leer o Training",goal:1,type:"check",desde:"2026-10-19",nota:"Audio, libro, desarrollo personal o Training",link:"https://open.spotify.com/show/2rpLxUc9jiXVhB2ItVicbp",linkT:"🎧 Escuchar en Spotify"},
+ {k:"contactos",t:"Agregar personas nuevas a la lista",goal:5,type:"count",lk:"conL",ic:"📝",vac:"Toque + y escriba el nombre · se guarda en su CRM"},
+ {k:"presentaciones",t:"Presentar el plan",goal:1,type:"count",lk:"presL",ic:"🎯",vac:"Toque + y elija a quién le presentó"},
+ {k:"seguimientos",t:"Seguimiento a prospectos",goal:3,type:"count",lk:"segL",ic:"🔁",vac:"Toque + y elija de su CRM a quién le dio seguimiento"}];
+const ptsDia=(d,key)=>{key=key||TODAY;return ROUTINE.filter(r=>!r.desde||key>=r.desde).reduce((s,r)=>s+Math.min((d&&d[r.k])||0,1),0)};
 const RETO_KEYS=["presentaciones","videos"];
 let day={};
 function dayScore(d,key){key=key||TODAY;const L=ROUTINE.filter(r=>!r.desde||key>=r.desde);let s=0;L.forEach(r=>{s+=Math.min((d&&d[r.k])||0,1)});return s/L.length}
@@ -1096,7 +1094,7 @@ function rutFold(ok){const t=$("#tasks"),bar=$("#dayBar")&&$("#dayBar").parentEl
 function renderTasks(){
   $("#tasks").innerHTML=ROUTINE.map(r=>{const v=day[r.k]||0,done=v>=1;
     if(r.type==="check")return `<div class="task"><button class="check" aria-pressed="${done}" data-k="${r.k}" aria-label="Marcar ${esc(r.t)}">${done?CHECK:""}</button><span class="grow"><span class="${done?"done-t":""}">${esc(r.t)}</span>${r.k==="historia"?`<br><button type="button" class="chip ${done?"c-brand":"c-good"}" data-hist="1" style="border:0;font:inherit;font-weight:700;margin-top:6px;cursor:pointer">${done?"Ver / compartir otra vez":"📤 Compartir mi historia"}</button>`:r.sub&&!done?`<br><span class="small muted">${esc(r.sub)}</span>`:r.nota?`<br><span class="small muted">${esc(r.nota)}</span>`:""}${r.link?`<br><a class="chip c-good" style="display:inline-flex;margin-top:6px;text-decoration:none;font-weight:700" href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.linkT||"Abrir")}</a>`:""}</span></div>`;
-    return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:""}</span><span class="grow ${done?"done-t":""}">${esc(r.t)}<br><span class="small muted">${r.k==="presentaciones"&&(day.presL||[]).length?"🎯 "+day.presL.map(x=>esc(x.n.split(" ")[0])).join(", "):"Mínimo 1"+(r.goal>1?" · ideal "+r.goal:"")}</span>${r.k==="contactos"?`<br><button type="button" class="chip c-brand" data-crmadd="1" style="border:0;font:inherit;font-weight:700;margin-top:6px;cursor:pointer">➕ Agregar al CRM</button>`:""}</span>
+    return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:""}</span><span class="grow ${done?"done-t":""}">${esc(r.t)}<br><span class="small muted">${(day[r.lk]||[]).length?r.ic+" "+day[r.lk].map(x=>esc(String(x.n).split(" ")[0])).join(", "):v?"Mínimo 1"+(r.goal>1?" · ideal "+r.goal:""):esc(r.vac||"")}</span></span>
       <span class="counter"><button data-dec="${r.k}" aria-label="Restar">−</button><span class="num">${v}</span><button data-inc="${r.k}" aria-label="Sumar">+</button></span></div>`}).join("");
   const p=Math.round(dayScore(day)*100);$("#dayPct").textContent=p+"%";$("#dayBar").style.width=p+"%";
   const falta=ROUTINE.filter(r=>(!r.desde||TODAY>=r.desde)&&!((day[r.k]||0)>=1)).length,ra=$("#rutAlert");
@@ -1106,15 +1104,32 @@ function renderTasks(){
 }
 let saveDayT;function saveDay(){clearTimeout(saveDayT);saveDayT=setTimeout(()=>store.set("rutina-"+TODAY,day),600);weekCache[TODAY]=day;renderWeek()}
 $("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.hist){abrirHist();return}
-  if(b.dataset.crmadd){editContact(null,()=>{day.contactos=(day.contactos||0)+1;renderTasks();saveDay();toast("✅ Contacto agregado · cuenta en su rutina")});return}
   if(b.dataset.k){day[b.dataset.k]=day[b.dataset.k]?0:1}
   else if(b.dataset.inc==="presentaciones"){abrirPres();return}
   else if(b.dataset.dec==="presentaciones"){quitarPres();return}
-  else if(b.dataset.inc){const k=b.dataset.inc;day[k]=(day[k]||0)+1;if(RETO_KEYS.includes(k))bumpReto(k,1)}
-  else if(b.dataset.dec){const k=b.dataset.dec;if((day[k]||0)>0){day[k]--;if(RETO_KEYS.includes(k))bumpReto(k,-1)}}
+  else if(b.dataset.inc==="contactos"){editContact(null,null,{lista:1});return}
+  else if(b.dataset.inc==="seguimientos"){abrirSeg();return}
+  else if(b.dataset.dec){const k=b.dataset.dec,r=ROUTINE.find(x=>x.k===k);if(!((day[k]||0)>0))return;const L=r&&r.lk?(day[r.lk]||[]):[];if(L.length){toast("Quitado: "+String(L[L.length-1].n).split(" ")[0]);day[r.lk]=L.slice(0,-1)}day[k]--}
   else return;
   renderTasks();saveDay()});
 const weekCache={};
+// ---------- lista (personas nuevas) y seguimientos con nombre ----------
+function conNuevo(c){if(!c)return;day.conL=(day.conL||[]).concat([{cid:c.id||"",n:String(c.name||"").slice(0,60)}]);day.contactos=Math.max((day.contactos||0)+1,day.conL.length);renderTasks();saveDay()}
+const yaEnCRM=(name,phone,id)=>{const k=nrmN(name),ph=String(phone||"").replace(/\D/g,"");return contacts.find(x=>x.id!==id&&((k&&nrmN(x.name)===k)||(ph.length>=7&&String(x.phone||"").replace(/\D/g,"").slice(-8)===ph.slice(-8))))};
+async function sumarSeg(c){if(!c)return false;if((day.segL||[]).some(x=>x.cid===c.id)){toast(c.name.split(" ")[0]+" ya cuenta como seguimiento hoy");return false}
+  day.segL=(day.segL||[]).concat([{cid:c.id,n:String(c.name||"").slice(0,60)}]);day.seguimientos=Math.max((day.seguimientos||0)+1,day.segL.length);renderTasks();saveDay();
+  c.ultSeg=TODAY;c.updated=Date.now();if(FLOW.indexOf(c.stage||"Nuevo")>=0&&FLOW.indexOf(c.stage||"Nuevo")<FLOW.indexOf("Seguimiento"))c.stage="Seguimiento";
+  try{await store.saveContact(Object.assign({},c));renderCRM()}catch(e){}
+  toast("🔁 Seguimiento a "+c.name.split(" ")[0]+" registrado");return true}
+function abrirSeg(){let q="";const hoy=new Set((day.segL||[]).map(x=>x.cid));
+  const pr=c=>({"Seguimiento":1,"Presentación":2,"Contactado":3,"Nuevo":4}[c.stage||"Nuevo"]||5);
+  const L=()=>contacts.filter(c=>!hoy.has(c.id)&&c.stage!=="No interesado"&&(!q||nrmN(c.name).includes(nrmN(q)))).sort((a,b)=>pr(a)-pr(b)||(a.ultSeg||"").localeCompare(b.ultSeg||"")||(b.updated||0)-(a.updated||0)).slice(0,40);
+  openSheet(`<div data-nofocus></div><h2>🔁 ¿A quién le dio seguimiento?</h2><p class="small muted" style="margin:0">Elíjalo de su CRM. Cada persona cuenta una vez al día.</p>
+   <input class="inp" id="sgQ" placeholder="🔍 Buscar por nombre" autocomplete="off"><div id="sgL" style="display:flex;flex-direction:column"></div>
+   <button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
+    const draw=()=>{const R=L();$("#sgL").innerHTML=R.length?R.map(c=>`<button type="button" class="ep-it" data-sg="${esc(c.id)}">${avHTML(c.name,false,false)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(c.name)}</b><span class="small muted">${esc(c.stage||"Nuevo")}${c.ultSeg?" · último seguimiento "+esc(c.ultSeg.slice(8)+"/"+c.ultSeg.slice(5,7)):""}</span></span><span style="color:var(--brand);font-weight:800">+</span></button>`).join(""):`<p class="small muted" style="margin:8px 0">${q?"No hay contactos con ese nombre.":contacts.length?"Ya registró seguimiento a todos hoy 👏":"Aún no tiene personas en su CRM. Primero agregue personas nuevas a la lista."}</p>`};draw();
+    $("#sgQ").oninput=()=>{q=$("#sgQ").value.trim();draw()};
+    $("#sgL").onclick=async e=>{const b=e.target.closest("[data-sg]");if(!b)return;if(await sumarSeg(contacts.find(c=>c.id===b.dataset.sg)))closeSheet()}})}
 // ---------- presentaciones con nombre ----------
 const presSemana=()=>{const l=lunesK(),o=[];for(let d=parseK(l);dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=k===TODAY?day:weekCache[k];((v&&v.presL)||[]).forEach(x=>o.push(Object.assign({f:k},x)))}return o};
 async function sumarPres(c,ci){const ya=presSemana();if(c.id&&ya.some(x=>x.cid===c.id)){toast(c.name.split(" ")[0]+" ya cuenta como presentación esta semana");return false}
@@ -1141,14 +1156,14 @@ function abrirPres(){let q="";const ya=new Set(presSemana().map(x=>x.cid).filter
     $("#psQ").oninput=()=>{q=$("#psQ").value.trim();draw()};
     $("#psL").onclick=async e=>{const b=e.target.closest("[data-ps]");if(!b)return;if(await sumarPres(contacts.find(c=>c.id===b.dataset.ps)))closeSheet()};
     $("#psNew").onclick=()=>{const f=$("#psNewF"),o=f.style.display==="none";f.style.display=o?"flex":"none";if(o)$("#psN").focus()};
-    $("#psNewOk").onclick=async()=>{const nm=$("#psN").value.trim(),cc=$("#psC").value;let t=$("#psT").value.trim();const sp=splitPhone(t);t=sp.cc?sp.num:t.replace(/\D/g,"");if(nm.length<2){toast("Escribe el nombre");return}LS.set("lastCC",cc);
-      const c={name:nm.slice(0,80),cc:sp.cc||cc,phone:t.slice(0,15),stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(c);if(!id)return;c.id=id;contacts.push(c);if(await sumarPres(c))closeSheet()}})}
+    $("#psNewOk").onclick=async()=>{const nm=$("#psN").value.trim(),cc=$("#psC").value;let t=$("#psT").value.trim();const sp=splitPhone(t);t=sp.cc?sp.num:t.replace(/\D/g,"");if(nm.length<2){toast("Escribe el nombre");return}{const dup=yaEnCRM(nm,t);if(dup){toast("Ya está en su CRM como "+dup.name+": elíjalo de la lista");$("#psQ").value=dup.name.split(" ")[0];q=$("#psQ").value;draw();return}}LS.set("lastCC",cc);
+      const c={name:nm.slice(0,80),cc:sp.cc||cc,phone:t.slice(0,15),stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(c);if(!id)return;c.id=id;contacts.push(c);conNuevo(c);if(await sumarPres(c))closeSheet()}})}
 const lunesK=()=>{const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7));return dkey(d)};
 function constStats(){const ini=k=>k<CONST_INI?CONST_INI:k,sc=k=>dayScore(k===TODAY?day:weekCache[k],k);
-  const per=a=>{let act=0,comp=0,best=0,run=0,pres=0;for(let d=parseK(ini(a));dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=sc(k);pres+=+((k===TODAY?day:weekCache[k])||{}).presentaciones||0;if(v>0)act++;if(v>=1){comp++;run++;best=Math.max(best,run)}else if(k!==TODAY)run=0}return{act,comp,best,pres}};
+  const per=a=>{let act=0,comp=0,best=0,run=0,pres=0,pts=0;for(let d=parseK(ini(a));dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=sc(k),dd=(k===TODAY?day:weekCache[k])||{};pres+=+dd.presentaciones||0;pts+=ptsDia(dd,k);if(v>0)act++;if(v>=1){comp++;run++;best=Math.max(best,run)}else if(k!==TODAY)run=0}return{act,comp,best,pres,pts}};
   const lun=lunesK(),mes=TODAY.slice(0,7),W=per(lun),M=per(mes+"-01");let racha=0;
   for(let d=parseK(TODAY);dkey(d)>=ini(lun);d.setDate(d.getDate()-1)){const k=dkey(d),v=sc(k);if(k===TODAY&&v<1)continue;if(v>=1)racha++;else break}
-  return{wk:lun,racha,semDias:W.act,semComp:W.comp,semPres:W.pres,mes,mesDias:M.act,mesComp:M.comp,mesMejor:M.best,mesPres:M.pres}}
+  return{wk:lun,racha,semDias:W.act,semComp:W.comp,semPres:W.pres,semPts:W.pts,mes,mesDias:M.act,mesComp:M.comp,mesMejor:M.best,mesPres:M.pres,mesPts:M.pts}}
 let resT;function pushResumen(){if(!store.db||!store.uid)return;clearTimeout(resT);resT=setTimeout(async()=>{try{
   const sum={contactos:0,seguimientos:0,presentaciones:0,videos:0};let dias=0,racha=0;
   for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()-i);const w=weekCache[dkey(d)];if(w){Object.keys(sum).forEach(k=>sum[k]+=(+w[k]||0));if(dayScore(w,dkey(d))>0)dias++}}
@@ -1643,15 +1658,15 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
   $("#socCsv").onclick=sociosCSV;const sv=$("#socVinc");if(sv)sv.onclick=abrirVincular;const sl=$("#socLin");if(sl)sl.onclick=async()=>{sl.disabled=true;sl.textContent="Reconstruyendo…";await reconstruirLineas(false);sl.disabled=false;sl.textContent="Reconstruir líneas"};$("#socReload").onclick=()=>{socios=null;renderEquipo()}}
 let constL=null,constT=0;
 let constVista="sem";
-const constSort=L=>{const sem=constVista==="sem";L.sort((a,b)=>sem?(b.racha-a.racha||b.semComp-a.semComp||b.semPres-a.semPres||b.semDias-a.semDias||b.hoy-a.hoy||(b.acc||0)-(a.acc||0)):(b.mesComp-a.mesComp||b.mesPres-a.mesPres||b.mesDias-a.mesDias||b.mesMejor-a.mesMejor||b.hoy-a.hoy)||String(a.nombre).localeCompare(b.nombre,"es"));L.forEach((x,i)=>x.rk=i+1);return L};
+const constSort=L=>{const sem=constVista==="sem";L.sort((a,b)=>sem?(b.semComp-a.semComp||b.semPres-a.semPres||b.semPts-a.semPts||b.racha-a.racha):(b.mesComp-a.mesComp||b.mesPres-a.mesPres||b.mesPts-a.mesPts||b.mesMejor-a.mesMejor)||String(a.nombre).localeCompare(b.nombre,"es"));L.forEach((x,i)=>x.rk=i+1);return L};
 async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now()-constT<120000)return;try{const q=await store.db.collection("constancia").get();constT=Date.now();
   const ay=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()-1)),lun=lunesK(),mes=TODAY.slice(0,7);
   constL=constSort(q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.nombre).map(x=>{const hoy=x.fecha===TODAY?(+x.hoy||0):0,okW=x.wk===lun&&x.fecha>=lun,okM=x.mes===mes;
-    return Object.assign(x,{hoy,racha:okW&&x.fecha>=ay?(+x.racha||0):(hoy>=100?1:0),semDias:okW?(+x.semDias||0):(hoy>0?1:0),semComp:okW?(+x.semComp||0):(hoy>=100?1:0),mesDias:okM?(+x.mesDias||0):(hoy>0?1:0),mesComp:okM?(+x.mesComp||0):(hoy>=100?1:0),mesMejor:okM?(+x.mesMejor||0):(hoy>=100?1:0),semPres:okW?(+x.semPres||0):0,mesPres:okM?(+x.mesPres||0):0,sinPres:x.semPres==null})}))}catch(e){constL=constL||[]}
+    return Object.assign(x,{hoy,racha:okW&&x.fecha>=ay?(+x.racha||0):(hoy>=100?1:0),semDias:okW?(+x.semDias||0):(hoy>0?1:0),semComp:okW?(+x.semComp||0):(hoy>=100?1:0),mesDias:okM?(+x.mesDias||0):(hoy>0?1:0),mesComp:okM?(+x.mesComp||0):(hoy>=100?1:0),mesMejor:okM?(+x.mesMejor||0):(hoy>=100?1:0),semPres:okW?(+x.semPres||0):0,mesPres:okM?(+x.mesPres||0):0,semPts:okW?(x.semPts!=null?+x.semPts||0:+x.semDias||0):Math.round(hoy*5/100),mesPts:okM?(x.mesPts!=null?+x.mesPts||0:+x.mesDias||0):Math.round(hoy*5/100),sinPres:x.semPres==null})}))}catch(e){constL=constL||[]}
   renderTopRut();if(eqTab==="ranking"&&rankMetric==="rutina")renderEquipo()}
 const diasSem=()=>{const l=lunesK(),i=l<CONST_INI?CONST_INI:l;return Math.round((parseK(TODAY)-parseK(i))/864e5)+1};
 const diasMes=()=>{const m=TODAY.slice(0,7)+"-01",i=m<CONST_INI?CONST_INI:m;return Math.round((parseK(TODAY)-parseK(i))/864e5)+1};
-const constSub=x=>constVista==="sem"?`📅 ${x.semDias}/${diasSem()} ${diasSem()===1?"día":"días"} · Hoy ${x.hoy}% · 🎯 ${x.sinPres?"—":x.semPres} pres.`:`✅ ${x.mesComp} completos · 📅 ${x.mesDias}/${diasMes()} · 🎯 ${x.sinPres?"—":x.mesPres} pres.`;
+const constSub=x=>constVista==="sem"?`🔥 ${x.semComp} ${x.semComp===1?"día completo":"días completos"} · 🎯 ${x.sinPres?"—":x.semPres} pres. · ${x.semPts} pts`:`🔥 ${x.mesComp} ${x.mesComp===1?"día completo":"días completos"} · 🎯 ${x.sinPres?"—":x.mesPres} pres. · ${x.mesPts} pts`;
 function renderTopAct(){const c=$("#topAct");if(!c)return;const num=v=>Number(v)||0;
   const L=(T.ranking||[]).map(r=>({n:r.nombre,A:num(r.activaciones),V:num(r.volumen),S:num(r.actSemana)})).filter(x=>x.A>0).sort((a,b)=>b.V-a.V||b.A-a.A||String(a.n).localeCompare(b.n,"es"));
   if(!L.length){c.hidden=true;return}c.hidden=false;const md=["🥇","🥈","🥉"];
@@ -1666,13 +1681,13 @@ const CONST_INI="2026-10-19";const constDia=()=>Math.floor((parseK(TODAY)-parseK
 const constBanner=()=>{const d=constDia();if(d<1||d>7)return"";return `<div class="card" style="background:linear-gradient(135deg,#2AC1F1,#6b4dff);color:#fff;gap:4px"><b style="font-size:17px">🚀 ${d===1?"¡Hoy empezamos! Día 1":"Día "+d+" del ranking"}</b><span style="font-size:14px;opacity:.95">${d===1?"El ranking de consistencia arrancó hoy, todos parten de cero. Completa tu rutina hoy al 100% y mañana empiezas tu racha 🔥":"El ranking arrancó el lunes 19 de octubre. Cada día que completas tu rutina suma a tu racha 🔥"}</span></div>`};
 function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="false" data-k="nuevos">Activaciones</button><button aria-selected="false" data-k="presentaciones">Registros inCruises</button><button aria-selected="true" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button></div><div class="seg" id="rankSeg" hidden></div>
    <div class="seg" id="consV"><button aria-selected="${constVista==="sem"}" data-cv="sem">Esta semana</button><button aria-selected="${constVista==="mes"}" data-cv="mes">Este mes</button></div>
-   <p class="small muted">${constVista==="sem"?"La semana va de lunes a domingo y se reinicia cada lunes. Ordenado por racha (días seguidos con la rutina completa), luego días completos; si empatan, gana quien hizo más presentaciones del plan.":"Ordenado por días con la rutina completa en el mes; si empatan, gana quien hizo más presentaciones del plan."}</p>`;
+   <p class="small muted">Cada acción de la rutina da 1 punto al día (máximo 5). Orden: 1) días completos, 2) presentaciones del plan, 3) puntos${constVista==="sem"?", 4) racha seguida. La semana va de lunes a domingo y se reinicia cada lunes.":"."}</p>`;
   if(constL===null){b.innerHTML=segs+`<p class="muted small">Cargando…</p>`;bindRank();loadConst(true);return}
   if(!constL.length){b.innerHTML=segs+emptyCard("Aún nadie suma racha","Completa tu rutina hoy y toma el primer lugar.");bindRank();loadConst();return}
-  const L=constL,pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.uid===store.uid,true)}<span class="nm">${esc(p.nombre)}</span><div class="block"><b>${p.rk}</b>${constVista==="sem"?`<span class="small num">🔥 ${p.racha} ${p.racha===1?"día":"días"}</span><span class="small num" style="opacity:.85">Hoy ${p.hoy}% · 🎯 ${p.sinPres?"—":p.semPres}</span>`:`<span class="small num">✅ ${p.mesComp} ${p.mesComp===1?"día":"días"}</span><span class="small num" style="opacity:.85">🎯 ${p.sinPres?"—":p.mesPres} pres.</span>`}</div></div>`:"<div></div>";
-  const mine=L.find(x=>x.uid===store.uid);
-  b.innerHTML=segs+constBanner()+(mine?`<div class="card row between"><span>Tu lugar ${constVista==="sem"?"esta semana":"este mes"}</span><b class="num" style="font-size:20px">#${mine.rk}</b></div>`:`<div class="card small">Completa tu rutina para aparecer en este ranking 💪</div>`)+`<div class="card"><div class="podium">${pod(L[1],1)+pod(L[0],0)+pod(L[2],2)}</div></div>
-   <div class="card" style="gap:0">${L.slice(3).map(x=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)${x.uid===store.uid?";background:var(--brand-soft,rgba(42,193,241,.08))":""}"><b class="num" style="width:26px;text-align:center">${x.rk}</b>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">${constSub(x)}</div></div><span class="chip ${(constVista==="sem"?x.racha:x.mesComp)?"c-gold":"c-brand"}" style="flex:none">${constVista==="sem"?"🔥 "+x.racha:"✅ "+x.mesComp}</span></div>`).join("")||`<p class="small muted" style="padding:8px 0">¡Súmate al ranking completando tu rutina!</p>`}</div>`;
+  const L=constL.filter(x=>constVista==="sem"?x.semPts>0:x.mesPts>0).map((x,i)=>Object.assign(x,{rk:i+1})),pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.uid===store.uid,true)}<span class="nm">${esc(p.nombre)}</span><div class="block"><b>${p.rk}</b>${(c=>`<span class="small num">🔥 ${c} ${c===1?"día":"días"}</span>`)(constVista==="sem"?p.semComp:p.mesComp)}<span class="small num" style="opacity:.85">🎯 ${p.sinPres?"—":(constVista==="sem"?p.semPres:p.mesPres)} · ${constVista==="sem"?p.semPts:p.mesPts} pts</span></div></div>`:"<div></div>";
+  const mine=L.find(x=>x.uid===store.uid);if(!L.length){b.innerHTML=segs+emptyCard("Aún nadie suma puntos "+(constVista==="sem"?"esta semana":"este mes"),"Haga una acción de su rutina y tome el primer lugar.");b.querySelectorAll("[data-cv]").forEach(x=>x.onclick=()=>{constVista=x.dataset.cv;constSort(constL);renderEquipo()});bindRank();loadConst();return}
+  b.innerHTML=segs+constBanner()+(mine?`<div class="card row between"><span>Tu lugar ${constVista==="sem"?"esta semana":"este mes"}</span><b class="num" style="font-size:20px">#${mine.rk}</b></div>`:`<div class="card small">Haga al menos una acción de su rutina para aparecer en este ranking 💪</div>`)+`<div class="card"><div class="podium">${pod(L[1],1)+pod(L[0],0)+pod(L[2],2)}</div></div>
+   <div class="card" style="gap:0">${L.slice(3).map(x=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)${x.uid===store.uid?";background:var(--brand-soft,rgba(42,193,241,.08))":""}"><b class="num" style="width:26px;text-align:center">${x.rk}</b>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">${constSub(x)}</div></div><span class="chip ${(constVista==="sem"?x.semComp:x.mesComp)?"c-gold":"c-brand"}" style="flex:none">${(constVista==="sem"?x.semPts:x.mesPts)} pts</span></div>`).join("")||`<p class="small muted" style="padding:8px 0">¡Súmese al ranking haciendo su rutina!</p>`}</div>`;
   b.querySelectorAll("[data-cv]").forEach(x=>x.onclick=()=>{constVista=x.dataset.cv;constSort(constL);renderEquipo()});
   bindRank();loadConst()}
 function renderEquipo(){const b=$("#eqBody");
@@ -2053,8 +2068,8 @@ function abrirEnviarPagina(){let q="";const L=()=>contacts.filter(c=>!q||nrmN(c.
     $("#epL").onclick=e=>{const b=e.target.closest("[data-ep]");if(b)enviarPaginaA(contacts.find(c=>c.id===b.dataset.ep))};
     $("#epNew").onclick=()=>{const f=$("#epNewF"),open=f.style.display==="none";f.style.display=open?"flex":"none";if(open)$("#epN").focus()};
     $("#epNewOk").onclick=async()=>{const nm=$("#epN").value.trim(),cc=$("#epC").value;let t=$("#epT").value.trim();const sp=splitPhone(t);const ccx=sp.cc||cc;t=sp.cc?sp.num:t.replace(/\D/g,"");
-      if(nm.length<2){toast("Escribe el nombre");return}LS.set("lastCC",cc);
-      const c={name:nm.slice(0,80),cc:ccx,phone:t.slice(0,15),stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(c);if(!id)return;c.id=id;contacts.push(c);enviarPaginaA(c)};
+      if(nm.length<2){toast("Escribe el nombre");return}{const dup=yaEnCRM(nm,t);if(dup){toast("Ya está en su CRM como "+dup.name);enviarPaginaA(dup);return}}LS.set("lastCC",cc);
+      const c={name:nm.slice(0,80),cc:ccx,phone:t.slice(0,15),stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(c);if(!id)return;c.id=id;contacts.push(c);conNuevo(c);enviarPaginaA(c)};
     $("#epCard").onclick=()=>compartirTarjeta("");$("#epCfg").onclick=()=>configMiPagina(false);
     $("#epCopy").onclick=async()=>{try{await navigator.clipboard.writeText(miPagina());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})}
 async function invCanvas(){const W=1080,H=1350,K=2,cv=document.createElement("canvas");cv.width=W*K;cv.height=H*K;const g=cv.getContext("2d");g.scale(K,K);g.imageSmoothingQuality="high";
@@ -2335,8 +2350,8 @@ function bindQuickFill(){const msg=$("#qfMsg"),err=t=>{msg.hidden=false;msg.styl
       const o=[...$("#cCC").options].find(x=>x.value===cc);const nc={name:v.name||("+"+cc+" "+sp.num),cc,ccN:o?o.dataset.n:"",phone:sp.num,stage:"Nuevo",note:"",next:"",updated:Date.now()};
       const id=await store.saveContact(nc);if(id){nc.id=id;contacts.push(nc);n++}}
       renderCRM();closeSheet();toast(n+" contactos agregados")}}}
-function editContact(c,onNew){const esNuevo=!c;c=c||{name:"",phone:"",stage:"Nuevo",note:"",next:"",cc:LS.get("lastCC")||"504"};const ccSel=c.cc||(c.phone?"504":LS.get("lastCC")||"504");
-  openSheet(`<h2>${c.id?"Editar contacto":"Nuevo contacto"}</h2>
+function editContact(c,onNew,opts){opts=opts||{};const esNuevo=!c;c=c||{name:"",phone:"",stage:"Nuevo",note:"",next:"",cc:LS.get("lastCC")||"504"};const ccSel=c.cc||(c.phone?"504":LS.get("lastCC")||"504");
+  openSheet(`<h2>${c.id?"Editar contacto":opts.lista?"📝 Persona nueva a la lista":"Nuevo contacto"}</h2>${opts.lista?`<p class="small muted" style="margin:0">Solo cuentan personas que aún no están en su CRM. Se guarda en su CRM y suma en su rutina.</p>`:""}
   ${c.id?"":`<div class="qf"><p class="small muted" style="margin:0 0 8px">Llénalo rápido, sin escribir:</p><div class="qf-row">
    ${("contacts" in navigator&&navigator.contacts&&navigator.contacts.select)?`<button class="btn sm ghost" id="qfPick" type="button">📇 Mis contactos</button>`:""}
    <button class="btn sm ghost" id="qfPaste" type="button">📋 Pegar número</button>
@@ -2355,11 +2370,12 @@ function editContact(c,onNew){const esNuevo=!c;c=c||{name:"",phone:"",stage:"Nue
   ${c.id?`<div class="row" id="delRow"><button class="btn sm ghost" id="cDel" style="color:var(--bad)">Eliminar contacto</button></div>`:""}`,()=>{
   if(!c.id)bindQuickFill();
   {const ph=$("#cPhone"),fix=()=>{const v=ph.value;if(/^\s*(\+|00)/.test(v)||/[\s()\-.]/.test(v)){const sp=splitPhone(v);if(sp.cc){const o=[...$("#cCC").options].find(x=>x.value===sp.cc&&x.dataset.n===sp.ccN)||[...$("#cCC").options].find(x=>x.value===sp.cc);if(o)$("#cCC").value=o.value}ph.value=sp.num}};ph.addEventListener("change",fix);ph.addEventListener("blur",fix);setTimeout(()=>ph.addEventListener("input",()=>{if(ph.value.length>9&&/^\s*(\+|00)/.test(ph.value))fix()}),0)}
-  $("#cSave").onclick=async()=>{const name=$("#cName").value.trim();if(!name){$("#cErr").hidden=false;return}
+  $("#cSave").onclick=async()=>{const name=$("#cName").value.trim();if(!name){$("#cErr").textContent="Escriba el nombre del contacto.";$("#cErr").hidden=false;return}
+    if(esNuevo){const dup=yaEnCRM(name,$("#cPhone").value);if(dup){$("#cErr").textContent="Esta persona ya está en su lista (CRM) como "+dup.name+". Solo cuentan personas nuevas.";$("#cErr").hidden=false;return}}
     const ccE=$("#cCC");LS.set("lastCC",ccE.value);const nc={id:c.id,name,cc:ccE.value,ccN:ccE.selectedOptions[0].dataset.n,phone:$("#cPhone").value.trim(),stage:$("#cStage").value,note:$("#cNote").value.trim(),next:$("#cNext").value,updated:Date.now()};
     $("#cSave").disabled=true;const id=await store.saveContact(nc);if(!id){$("#cSave").disabled=false;return}
     nc.id=id;const i=contacts.findIndex(x=>x.id===id);if(i>=0)contacts[i]=nc;else contacts.push(nc);
-    renderCRM();closeSheet();if(esNuevo&&onNew)onNew(nc);else toast("Contacto guardado")};
+    renderCRM();closeSheet();if(esNuevo){conNuevo(nc);if(onNew)onNew(nc);else toast("✅ "+name.split(" ")[0]+" agregado a la lista · suma en su rutina")}else toast("Contacto guardado")};
   if(c.id)$("#cDel").onclick=()=>{$("#delRow").innerHTML=`<span class="small grow">¿Eliminar a ${esc(c.name)}?</span><button class="btn sm" style="background:var(--bad);color:#fff" id="cDelOk">Sí, eliminar</button>`;
     $("#cDelOk").onclick=async()=>{await store.delContact(c.id);contacts=contacts.filter(x=>x.id!==c.id);renderCRM();closeSheet();toast("Contacto eliminado")}}})}
 
@@ -2874,7 +2890,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261023004511";var busy=false,pend=null;
+(function(){var V="20261023233849";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
