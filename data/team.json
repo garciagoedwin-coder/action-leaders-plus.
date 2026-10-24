@@ -2269,8 +2269,8 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 105,
-   "hoy": 3,
+   "total": 106,
+   "hoy": 4,
    "sinNombre": 3,
    "top": [
     {
@@ -2751,6 +2751,21 @@
      ]
     },
     {
+     "nombre": "Keidy Linares",
+     "n": 2,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Alejandra C.",
+       "f": "23/10"
+      },
+      {
+       "n": "Ligia D.",
+       "f": "24/10"
+      }
+     ]
+    },
+    {
      "nombre": "Miriam Cuellar",
      "n": 2,
      "hoy": 0,
@@ -2858,17 +2873,6 @@
      ]
     },
     {
-     "nombre": "Keidy Linares",
-     "n": 1,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Alejandra C.",
-       "f": "23/10"
-      }
-     ]
-    },
-    {
      "nombre": "Kevin Izaguirre",
      "n": 1,
      "hoy": 0,
@@ -2913,7 +2917,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-24T07:26:00-06:00",
+   "actualizado": "2026-10-24T09:26:00-06:00",
    "repetidos": 3
   }
  },
