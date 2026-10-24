@@ -2269,8 +2269,8 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 99,
-   "hoy": 27,
+   "total": 98,
+   "hoy": 26,
    "sinNombre": 3,
    "top": [
     {
@@ -2530,29 +2530,6 @@
      ]
     },
     {
-     "nombre": "Mayckol Turcios",
-     "n": 4,
-     "hoy": 4,
-     "inv": [
-      {
-       "n": "Martha O.",
-       "f": "23/10"
-      },
-      {
-       "n": "Iván C.",
-       "f": "23/10"
-      },
-      {
-       "n": "Jose A.",
-       "f": "23/10"
-      },
-      {
-       "n": "Jose A.",
-       "f": "23/10"
-      }
-     ]
-    },
-    {
      "nombre": "Zamir Fuentes",
      "n": 4,
      "hoy": 3,
@@ -2647,6 +2624,25 @@
       },
       {
        "n": "Monica S.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Mayckol Turcios",
+     "n": 3,
+     "hoy": 3,
+     "inv": [
+      {
+       "n": "Martha O.",
+       "f": "23/10"
+      },
+      {
+       "n": "Iván C.",
+       "f": "23/10"
+      },
+      {
+       "n": "Jose A.",
        "f": "23/10"
       }
      ]
@@ -2889,8 +2885,8 @@
      ]
     }
    ],
-   "actualizado": "2026-10-23T22:26:00-06:00",
-   "repetidos": 2
+   "actualizado": "2026-10-23T23:08:00-06:00",
+   "repetidos": 3
   }
  },
  "fotos": [

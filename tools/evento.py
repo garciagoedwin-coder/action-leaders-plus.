@@ -59,6 +59,9 @@ for t, q, inv in filas:
         i = vistos[k]
         if ign(unicas[i][1]) and not ign(q): unicas[i] = (unicas[i][0], q, unicas[i][2])  # el repetido sí dice quién lo invitó
         continue
+    # mismo socio y nombre casi igual con 3+ palabras ("Jose Antonio Ramos" = "Jose Antonio Ramos Argueta")
+    if k and len(k.split()) >= 3 and any(len(n(u[2]).split()) >= 3 and parecido(inv, u[2]) and (n(u[1]) == n(q) or parecido(u[1], q) or wsim(n(u[1]).replace(' ', ''), n(q).replace(' ', ''))) for u in unicas):
+        repetidos += 1; continue
     if k: vistos[k] = len(unicas)
     unicas.append((t, q, inv))
 filas = unicas
