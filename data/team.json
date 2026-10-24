@@ -2269,14 +2269,14 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 98,
-   "hoy": 26,
+   "total": 105,
+   "hoy": 3,
    "sinNombre": 3,
    "top": [
     {
      "nombre": "Joel Salgado",
      "n": 11,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Maria R.",
@@ -2327,7 +2327,7 @@
     {
      "nombre": "Lizandro Castro",
      "n": 8,
-     "hoy": 5,
+     "hoy": 0,
      "inv": [
       {
        "n": "Claudia P.",
@@ -2360,6 +2360,41 @@
       {
        "n": "Marvin R.",
        "f": "23/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Mayckol Turcios",
+     "n": 7,
+     "hoy": 3,
+     "inv": [
+      {
+       "n": "Martha O.",
+       "f": "23/10"
+      },
+      {
+       "n": "Iván C.",
+       "f": "23/10"
+      },
+      {
+       "n": "Jose A.",
+       "f": "23/10"
+      },
+      {
+       "n": "Dayana M.",
+       "f": "23/10"
+      },
+      {
+       "n": "Sandra G.",
+       "f": "24/10"
+      },
+      {
+       "n": "César D.",
+       "f": "24/10"
+      },
+      {
+       "n": "Josué O.",
+       "f": "24/10"
       }
      ]
     },
@@ -2397,7 +2432,7 @@
     {
      "nombre": "Erick Miranda",
      "n": 6,
-     "hoy": 2,
+     "hoy": 0,
      "inv": [
       {
        "n": "Anahy M.",
@@ -2428,7 +2463,7 @@
     {
      "nombre": "Saby Isaguirre",
      "n": 6,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Yorleny V.",
@@ -2459,7 +2494,7 @@
     {
      "nombre": "Joany Isabel Perla Gámez",
      "n": 5,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Juan I.",
@@ -2486,7 +2521,7 @@
     {
      "nombre": "Blanca Dina Ramirez Melendez",
      "n": 4,
-     "hoy": 2,
+     "hoy": 0,
      "inv": [
       {
        "n": "Jose A.",
@@ -2507,9 +2542,32 @@
      ]
     },
     {
+     "nombre": "Josue Delgado",
+     "n": 4,
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Francisco G.",
+       "f": "08/10"
+      },
+      {
+       "n": "Sandra M.",
+       "f": "21/10"
+      },
+      {
+       "n": "Monica S.",
+       "f": "23/10"
+      },
+      {
+       "n": "Delny V.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
      "nombre": "Mabis Franco",
      "n": 4,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Sarah L.",
@@ -2532,7 +2590,7 @@
     {
      "nombre": "Zamir Fuentes",
      "n": 4,
-     "hoy": 3,
+     "hoy": 0,
      "inv": [
       {
        "n": "Mayra I.",
@@ -2555,7 +2613,7 @@
     {
      "nombre": "Alba Luz Martínez Hernández",
      "n": 3,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Dina Y.",
@@ -2610,44 +2668,6 @@
      ]
     },
     {
-     "nombre": "Josue Delgado",
-     "n": 3,
-     "hoy": 1,
-     "inv": [
-      {
-       "n": "Francisco G.",
-       "f": "08/10"
-      },
-      {
-       "n": "Sandra M.",
-       "f": "21/10"
-      },
-      {
-       "n": "Monica S.",
-       "f": "23/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Mayckol Turcios",
-     "n": 3,
-     "hoy": 3,
-     "inv": [
-      {
-       "n": "Martha O.",
-       "f": "23/10"
-      },
-      {
-       "n": "Iván C.",
-       "f": "23/10"
-      },
-      {
-       "n": "Jose A.",
-       "f": "23/10"
-      }
-     ]
-    },
-    {
      "nombre": "Rosa Oliva",
      "n": 3,
      "hoy": 0,
@@ -2663,6 +2683,25 @@
       {
        "n": "Liliana C.",
        "f": "18/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Yolanda Morales",
+     "n": 3,
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Ramón E.",
+       "f": "20/10"
+      },
+      {
+       "n": "Belinda P.",
+       "f": "23/10"
+      },
+      {
+       "n": "Jesus A.",
+       "f": "23/10"
       }
      ]
     },
@@ -2766,7 +2805,7 @@
     {
      "nombre": "Glenda Elizabeth Lopez Flores",
      "n": 1,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Lady A.",
@@ -2777,7 +2816,7 @@
     {
      "nombre": "Jose Luis Rodriguez",
      "n": 1,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Jeymi R.",
@@ -2821,7 +2860,7 @@
     {
      "nombre": "Keidy Linares",
      "n": 1,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Alejandra C.",
@@ -2854,7 +2893,7 @@
     {
      "nombre": "Noelmi Guadalupe Diaz Ruiz",
      "n": 1,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Gerardo S.",
@@ -2872,20 +2911,9 @@
        "f": "09/10"
       }
      ]
-    },
-    {
-     "nombre": "Yolanda Morales",
-     "n": 1,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Ramón E.",
-       "f": "20/10"
-      }
-     ]
     }
    ],
-   "actualizado": "2026-10-23T23:08:00-06:00",
+   "actualizado": "2026-10-24T07:26:00-06:00",
    "repetidos": 3
   }
  },
