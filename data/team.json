@@ -2269,8 +2269,8 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 108,
-   "hoy": 6,
+   "total": 110,
+   "hoy": 8,
    "sinNombre": 4,
    "top": [
     {
@@ -2365,8 +2365,8 @@
     },
     {
      "nombre": "Mayckol Turcios",
-     "n": 7,
-     "hoy": 3,
+     "n": 8,
+     "hoy": 4,
      "inv": [
       {
        "n": "Martha O.",
@@ -2394,6 +2394,10 @@
       },
       {
        "n": "Josué O.",
+       "f": "24/10"
+      },
+      {
+       "n": "Ángel J.",
        "f": "24/10"
       }
      ]
@@ -2523,6 +2527,33 @@
      ]
     },
     {
+     "nombre": "Zamir Fuentes",
+     "n": 5,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Mayra I.",
+       "f": "22/10"
+      },
+      {
+       "n": "Orlin A.",
+       "f": "23/10"
+      },
+      {
+       "n": "Juan A.",
+       "f": "23/10"
+      },
+      {
+       "n": "Danessy P.",
+       "f": "23/10"
+      },
+      {
+       "n": "Fany C.",
+       "f": "24/10"
+      }
+     ]
+    },
+    {
      "nombre": "Blanca Dina Ramirez Melendez",
      "n": 4,
      "hoy": 0,
@@ -2587,29 +2618,6 @@
       },
       {
        "n": "Leticia S.",
-       "f": "23/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Zamir Fuentes",
-     "n": 4,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Mayra I.",
-       "f": "22/10"
-      },
-      {
-       "n": "Orlin A.",
-       "f": "23/10"
-      },
-      {
-       "n": "Juan A.",
-       "f": "23/10"
-      },
-      {
-       "n": "Danessy P.",
        "f": "23/10"
       }
      ]
@@ -2921,7 +2929,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-24T11:26:00-06:00",
+   "actualizado": "2026-10-24T13:26:00-06:00",
    "repetidos": 3
   }
  },
