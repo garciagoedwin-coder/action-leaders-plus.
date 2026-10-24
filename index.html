@@ -1668,6 +1668,15 @@ async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now(
 const diasSem=()=>{const l=lunesK(),i=l<CONST_INI?CONST_INI:l;return Math.round((parseK(TODAY)-parseK(i))/864e5)+1};
 const diasMes=()=>{const m=TODAY.slice(0,7)+"-01",i=m<CONST_INI?CONST_INI:m;return Math.round((parseK(TODAY)-parseK(i))/864e5)+1};
 const rachaTxt=(n,mes)=>n?`🔥 ${n} ${n===1?"día":"días"} ${mes?"(mejor racha)":"de racha"}`:"Sin racha";
+const hoyPts=x=>x.fecha===TODAY?Math.round((+x.hoy||0)*ROUTINE.length/100):0;
+let constMiosT=0,constSocT=0;
+const constUser=x=>x.uid&&x.uid!==store.uid?((isAdmin?(socios||[]):[]).concat(mios||[])).find(y=>y.uid===x.uid):null;
+function constMsg(x){const n=String(x.nombre||"").split(" ")[0],p=hoyPts(x),f=ROUTINE.length-p,r=+x.racha||0,url="https://actionleadersplus.com";
+  if(p>=ROUTINE.length)return `¡Felicidades, ${n}! 🎉🔥 Hoy completó su rutina al 100%${r>1?` y ya lleva *${r} días de racha*`:""}. Así se construye el éxito. ¡Siga así, mañana otra vez! 💪`;
+  if(p>0)return `¡Hola, ${n}! 👋 Hoy ya lleva *${p} de ${ROUTINE.length}* acciones de su rutina 💪 Le ${f===1?"falta solo 1":"faltan "+f} para completar el día${r?` y mantener su racha de ${r} ${r===1?"día":"días"} 🔥`:" y empezar su racha 🔥"}. ¡Usted puede! Entre a la app y termínela: ${url}`;
+  return `¡Hola, ${n}! 👋 Hoy es un gran día para empezar su racha 🔥 Son solo 5 acciones: su historia, escuchar o leer, agregar personas nuevas, presentar el plan y dar seguimiento. Con una sola ya suma puntos. ¡Vamos, yo creo en usted! 💪 ${url}`}
+const constBtn=x=>{if(!constUser(x))return"";const ok=hoyPts(x)>=ROUTINE.length;return `<button type="button" class="chip" data-cwa="${esc(x.uid)}" style="border:0;font:inherit;font-size:13px;font-weight:700;margin-top:6px;cursor:pointer;background:#25D366;color:#fff;display:inline-flex;align-items:center;gap:5px">${WA_IC} ${ok?"Felicitar":"Motivar"}</button>`};
+const hoyTxt=x=>{const p=hoyPts(x);return `<span style="font-weight:700;color:${p>=ROUTINE.length?"var(--good,#1a8f5a)":p?"var(--ink)":"var(--bad,#c0392b)"}">Hoy ${p} pts</span>`};
 const constSub=x=>constVista==="sem"?`${rachaTxt(x.racha)} · 🎯 ${x.sinPres?"—":x.semPres} pres.`:`${rachaTxt(x.mesMejor,1)} · 🎯 ${x.sinPres?"—":x.mesPres} pres.`;
 function renderTopAct(){const c=$("#topAct");if(!c)return;const num=v=>Number(v)||0;
   const L=(T.ranking||[]).map(r=>({n:r.nombre,A:num(r.activaciones),V:num(r.volumen),S:num(r.actSemana)})).filter(x=>x.A>0).sort((a,b)=>b.V-a.V||b.A-a.A||String(a.n).localeCompare(b.n,"es"));
@@ -1686,11 +1695,14 @@ function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetr
    <p class="small muted">Cada acción de la rutina da 1 punto al día (máximo 5). Orden: 1) ${constVista==="sem"?"racha actual (días seguidos con la rutina completa; si falla un día, vuelve a cero)":"mejor racha del mes"}, 2) presentaciones del plan, 3) puntos.${constVista==="sem"?" La semana va de lunes a domingo y se reinicia cada lunes.":""}</p>`;
   if(constL===null){b.innerHTML=segs+`<p class="muted small">Cargando…</p>`;bindRank();loadConst(true);return}
   if(!constL.length){b.innerHTML=segs+emptyCard("Aún nadie suma racha","Completa tu rutina hoy y toma el primer lugar.");bindRank();loadConst();return}
-  const L=constL.filter(x=>constVista==="sem"?x.semPts>0:x.mesPts>0).map((x,i)=>Object.assign(x,{rk:i+1})),pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.uid===store.uid,true)}<span class="nm">${esc(p.nombre)}</span><div class="block"><b>${p.rk}</b>${(c=>`<span class="small num">${c?"🔥 "+c+" "+(c===1?"día":"días"):"Sin racha"}</span>`)(constVista==="sem"?p.racha:p.mesMejor)}<span class="small num" style="opacity:.85">🎯 ${p.sinPres?"—":(constVista==="sem"?p.semPres:p.mesPres)} pres. · ${constVista==="sem"?p.semPts:p.mesPts} pts</span></div></div>`:"<div></div>";
+  const L=constL.filter(x=>constVista==="sem"?x.semPts>0:x.mesPts>0).map((x,i)=>Object.assign(x,{rk:i+1})),pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.uid===store.uid,true)}<span class="nm">${esc(p.nombre)}</span><div class="block"><b>${p.rk}</b>${(c=>`<span class="small num">${c?"🔥 "+c+" "+(c===1?"día":"días"):"Sin racha"}</span>`)(constVista==="sem"?p.racha:p.mesMejor)}<span class="small num" style="opacity:.85">🎯 ${p.sinPres?"—":(constVista==="sem"?p.semPres:p.mesPres)} pres. · ${constVista==="sem"?p.semPts:p.mesPts} pts</span><span class="small num" style="opacity:.85">Hoy ${hoyPts(p)} pts</span></div>${constBtn(p)}</div>`:"<div></div>";
   const mine=L.find(x=>x.uid===store.uid);if(!L.length){b.innerHTML=segs+emptyCard("Aún nadie suma puntos "+(constVista==="sem"?"esta semana":"este mes"),"Haga una acción de su rutina y tome el primer lugar.");b.querySelectorAll("[data-cv]").forEach(x=>x.onclick=()=>{constVista=x.dataset.cv;constSort(constL);renderEquipo()});bindRank();loadConst();return}
   b.innerHTML=segs+constBanner()+(mine?`<div class="card row between"><span>Tu lugar ${constVista==="sem"?"esta semana":"este mes"}</span><b class="num" style="font-size:20px">#${mine.rk}</b></div>`:`<div class="card small">Haga al menos una acción de su rutina para aparecer en este ranking 💪</div>`)+`<div class="card"><div class="podium">${pod(L[1],1)+pod(L[0],0)+pod(L[2],2)}</div></div>
-   <div class="card" style="gap:0">${L.slice(3).map(x=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)${x.uid===store.uid?";background:var(--brand-soft,rgba(42,193,241,.08))":""}"><b class="num" style="width:26px;text-align:center">${x.rk}</b>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">${constSub(x)}</div></div><span class="chip ${(constVista==="sem"?x.racha:x.mesMejor)?"c-gold":"c-brand"}" style="flex:none">${(constVista==="sem"?x.semPts:x.mesPts)} pts</span></div>`).join("")||`<p class="small muted" style="padding:8px 0">¡Súmese al ranking haciendo su rutina!</p>`}</div>`;
+   <div class="card" style="gap:0">${L.slice(3).map(x=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)${x.uid===store.uid?";background:var(--brand-soft,rgba(42,193,241,.08))":""}"><b class="num" style="width:26px;text-align:center">${x.rk}</b>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">${constSub(x)}</div><div class="small">${hoyTxt(x)}</div>${constBtn(x)}</div><span class="chip ${(constVista==="sem"?x.racha:x.mesMejor)?"c-gold":"c-brand"}" style="flex:none">${(constVista==="sem"?x.semPts:x.mesPts)} pts</span></div>`).join("")||`<p class="small muted" style="padding:8px 0">¡Súmese al ranking haciendo su rutina!</p>`}</div>`;
   b.querySelectorAll("[data-cv]").forEach(x=>x.onclick=()=>{constVista=x.dataset.cv;constSort(constL);renderEquipo()});
+  b.querySelectorAll("[data-cwa]").forEach(bt=>bt.onclick=()=>{const x=L.find(y=>y.uid===bt.dataset.cwa),u=x&&constUser(x);if(!u)return;const t=constMsg(x),w=waSocio(u);if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(u,t)});
+  if(mios===null&&store.db&&store.uid&&!constMiosT){constMiosT=1;loadMios().catch(()=>{})}
+  if(isAdmin&&socios===null&&store.db&&!constSocT){constSocT=1;Promise.resolve(loadSocios()).catch(()=>{}).finally(()=>{if(eqTab==="ranking"&&rankMetric==="rutina")renderEquipo()})}
   bindRank();loadConst()}
 function renderEquipo(){const b=$("#eqBody");
   if(eqTab==="socios"){renderSocios(b);return}
@@ -2892,7 +2904,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261023234554";var busy=false,pend=null;
+(function(){var V="20261023234949";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

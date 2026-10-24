@@ -70,7 +70,7 @@ App web móvil (PWA) del equipo de Edwin García Go (Director Nacional, inCruise
   - Con 1 acción en cada punto el día queda completo.
   - Desde 2026-10-24 son 5 puntos, en este orden: 1) Historia del día (se marca sola al compartir), 2) "Escuchar, leer o Training" (clic), 3) Agregar personas nuevas a la lista (+1 abre el formulario; solo cuenta si la persona NO está ya en su CRM; se guarda en el CRM; day.conL), 4) Presentar el plan (con nombre, 1 por persona por semana; day.presL), 5) Seguimiento a prospectos (elige del CRM, 1 por persona al día, marca c.ultSeg; day.segL). El "+" nunca suma sin nombre; el "−" quita el último nombre.
   - Puntos: cada uno de los 5 da máximo 1 punto al día (aunque agregue 10 personas, suma 1). Se guardan semPts/mesPts en constancia.
-  - Ranking "Mi Racha" (semana): 1) racha actual (días seguidos completos; si falla un día vuelve a 0 y no muestra 🔥), 2) presentaciones, 3) puntos. Vista mes: mejor racha del mes, presentaciones, puntos. Solo aparecen quienes tienen al menos 1 punto.
+  - Ranking "Mi Racha" (semana): 1) racha actual (días seguidos completos; si falla un día vuelve a 0 y no muestra 🔥), 2) presentaciones, 3) puntos. Vista mes: mejor racha del mes, presentaciones, puntos. Solo aparecen quienes tienen al menos 1 punto. Cada socio muestra "Hoy N pts" y, solo a su línea de arriba (y admin), un botón verde de WhatsApp: "Felicitar" si hoy completó 5/5, "Motivar" si va 1-4 (cuántas le faltan) o 0 (empezar su racha).
 - **Bienvenida:** el video es obligatorio; "Ya vi mi video" se desbloquea al 90%. Una alerta dice qué pasos faltan.
 - **Mis socios:** cada socio ve **toda su línea hacia abajo**, sin límite de profundidad. Usa `registro.linea` con array-contains.
 - **Inicio (rediseño 2026-10-20, orden fijo):**
