@@ -2269,8 +2269,8 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 95,
-   "hoy": 23,
+   "total": 99,
+   "hoy": 27,
    "sinNombre": 3,
    "top": [
     {
@@ -2320,6 +2320,45 @@
       },
       {
        "n": "Antonio P.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Lizandro Castro",
+     "n": 8,
+     "hoy": 5,
+     "inv": [
+      {
+       "n": "Claudia P.",
+       "f": "22/10"
+      },
+      {
+       "n": "Alexander C.",
+       "f": "22/10"
+      },
+      {
+       "n": "Anner F.",
+       "f": "22/10"
+      },
+      {
+       "n": "Martha S.",
+       "f": "23/10"
+      },
+      {
+       "n": "Fernanda H.",
+       "f": "23/10"
+      },
+      {
+       "n": "Angela C.",
+       "f": "23/10"
+      },
+      {
+       "n": "Teresa C.",
+       "f": "23/10"
+      },
+      {
+       "n": "Marvin R.",
        "f": "23/10"
       }
      ]
@@ -2382,37 +2421,6 @@
       },
       {
        "n": "Érika O.",
-       "f": "23/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Lizandro Castro",
-     "n": 6,
-     "hoy": 3,
-     "inv": [
-      {
-       "n": "Claudia P.",
-       "f": "22/10"
-      },
-      {
-       "n": "Alexander C.",
-       "f": "22/10"
-      },
-      {
-       "n": "Anner F.",
-       "f": "22/10"
-      },
-      {
-       "n": "Martha S.",
-       "f": "23/10"
-      },
-      {
-       "n": "Fernanda H.",
-       "f": "23/10"
-      },
-      {
-       "n": "Angela C.",
        "f": "23/10"
       }
      ]
@@ -2517,6 +2525,29 @@
       },
       {
        "n": "Leticia S.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Mayckol Turcios",
+     "n": 4,
+     "hoy": 4,
+     "inv": [
+      {
+       "n": "Martha O.",
+       "f": "23/10"
+      },
+      {
+       "n": "Iván C.",
+       "f": "23/10"
+      },
+      {
+       "n": "Jose A.",
+       "f": "23/10"
+      },
+      {
+       "n": "Jose A.",
        "f": "23/10"
       }
      ]
@@ -2681,21 +2712,6 @@
       {
        "n": "Laura J.",
        "f": "14/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Mayckol Turcios",
-     "n": 2,
-     "hoy": 2,
-     "inv": [
-      {
-       "n": "Martha O.",
-       "f": "23/10"
-      },
-      {
-       "n": "Iván C.",
-       "f": "23/10"
       }
      ]
     },
@@ -2873,8 +2889,8 @@
      ]
     }
    ],
-   "actualizado": "2026-10-23T21:26:00-06:00",
-   "repetidos": 1
+   "actualizado": "2026-10-23T22:26:00-06:00",
+   "repetidos": 2
   }
  },
  "fotos": [

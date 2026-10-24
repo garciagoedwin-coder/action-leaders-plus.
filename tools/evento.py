@@ -48,11 +48,18 @@ for ln in open(sys.argv[1], encoding='utf-8'):
     filas.append((t, quien, inv))
 
 # registros repetidos (misma persona invitada llenó el formulario varias veces): cuenta una sola vez
-vistos = set(); unicas = []; repetidos = 0
+def ign(x):
+    k = n(x)
+    return (not k) or k in IGN or 'tiktok' in k.replace(' ', '') or k.startswith('vi en ')
+vistos = {}; unicas = []; repetidos = 0
 for t, q, inv in filas:
     k = n(inv)
-    if k and k in vistos: repetidos += 1; continue
-    if k: vistos.add(k)
+    if k and k in vistos:
+        repetidos += 1
+        i = vistos[k]
+        if ign(unicas[i][1]) and not ign(q): unicas[i] = (unicas[i][0], q, unicas[i][2])  # el repetido sí dice quién lo invitó
+        continue
+    if k: vistos[k] = len(unicas)
     unicas.append((t, q, inv))
 filas = unicas
 def corto(x):
@@ -67,7 +74,7 @@ hoy = (datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=6)).date()
 sin = 0
 for t, q, inv in filas:
     k = n(q)
-    if not k or k in IGN: sin += 1; SIN.append(inv); continue
+    if ign(q): sin += 1; SIN.append(inv); continue
     q = alias.get(k, q)
     g = next((g for g in G if n(g['nom']) == n(q) or parecido(g['nom'], q) or any(parecido(f, q) for f in g['formas'])), None)
     if not g: g = {'nom': q, 'formas': {}, 'n': 0, 'hoy': 0, 'inv': []}; G.append(g)
