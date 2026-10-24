@@ -1385,9 +1385,14 @@ function abrirMetas(){const M=misMetas(),delMes=M.mes===mesMeta(),cur=miRangoIdx
     const nm={mes:mesMeta(),act:Math.max(0,Math.min(9999,parseInt($("#mtAct").value,10)||0)),rango:x?x.value:"",sueno:Math.max(0,Math.min(99999999,parseInt(String($("#mtSue").value).replace(/\D/g,""),10)||0)),t:Date.now()};
     $("#mtSave").disabled=true;try{await store.db.doc("users/"+store.uid).set({metas:nm},{merge:true});regDoc=Object.assign({},regDoc,{metas:nm});closeSheet();renderMetas();toast("Metas guardadas 🎯")}
     catch(e){$("#mtSave").disabled=false;toast("No se pudieron guardar. Revise su conexión.")}}}
+// nombre parecido: Isaguirre/Izaguirre, Eric/Erick (1 letra de diferencia en palabras de 4+ letras)
+const levN=(a,b)=>{if(Math.abs(a.length-b.length)>1)return 9;let p=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){const c=[i];for(let j=1;j<=b.length;j++)c.push(Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]!==b[j-1])));p=c}return p[b.length]};
+const wsimN=(x,y)=>x===y||(Math.min(x.length,y.length)>=4&&levN(x,y)<=1);
+const parecidoN=(a,b)=>{const A=nrmN(a).split(" ").filter(Boolean),B=nrmN(b).split(" ").filter(Boolean);if(!A.length||!B.length)return false;const[S,L]=A.length<=B.length?[A,B]:[B,A];return S.length>=2&&S.every(w=>L.some(v=>wsimN(w,v)))};
+function evMiIdx(L,noms){noms=noms.filter(Boolean);let i=L.findIndex(x=>noms.some(n=>sameN(x.nombre,n)));if(i<0)i=L.findIndex(x=>noms.some(n=>parecidoN(x.nombre,n)));return i}
 function renderEvento(){const c=$("#evCard");if(!c)return;const E=(T.config&&T.config.evento)||null;
   if(!E||!E.top||!E.top.length||!E.fecha||TODAY>E.fecha){c.hidden=true;return}c.hidden=false;
-  const md=["🥇","🥈","🥉"],L=E.top,yo=miNombreFull()||miNombreCorto(),iy=L.findIndex(x=>sameN(x.nombre,yo));
+  const md=["🥇","🥈","🥉"],L=E.top,yo=miNombreFull()||miNombreCorto(),iy=evMiIdx(L,[yo,miNombreCorto()]);
   const dias=Math.round((parseK(E.fecha)-parseK(TODAY))/864e5),cuando=dias===0?"¡Es hoy!":dias===1?"Mañana":"Faltan "+dias+" días";
   const row=(x,i)=>`<div class="evRow"><span style="font-size:20px;width:26px;text-align:center">${md[i]||"#"+(i+1)}</span>${avHTML(x.nombre,false,false)}<span class="nm">${esc(x.nombre)}</span>${x.hoy?`<small>+${x.hoy} hoy</small>`:""}<span class="ct">${x.n}</span></div>`;
   c.innerHTML=`<div class="row between"><span class="evK">🎟️ Reto de invitados · ${esc(E.titulo||"Evento")}</span><span class="evHoy">${cuando}</span></div>
@@ -2910,7 +2915,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261024000106";var busy=false,pend=null;
+(function(){var V="20261024114911";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
