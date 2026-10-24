@@ -1663,7 +1663,7 @@ const constSort=L=>{const sem=constVista==="sem";L.sort((a,b)=>sem?(b.racha-a.ra
 async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now()-constT<120000)return;try{const q=await store.db.collection("constancia").get();constT=Date.now();
   const ay=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()-1)),lun=lunesK(),mes=TODAY.slice(0,7);
   constL=constSort(q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.nombre).map(x=>{const hoy=x.fecha===TODAY?(+x.hoy||0):0,okW=x.wk===lun&&x.fecha>=lun,okM=x.mes===mes;
-    return Object.assign(x,{hoy,racha:okW&&x.fecha>=ay?(+x.racha||0):(hoy>=100?1:0),semDias:okW?(+x.semDias||0):(hoy>0?1:0),semComp:okW?(+x.semComp||0):(hoy>=100?1:0),mesDias:okM?(+x.mesDias||0):(hoy>0?1:0),mesComp:okM?(+x.mesComp||0):(hoy>=100?1:0),mesMejor:okM?(+x.mesMejor||0):(hoy>=100?1:0),semPres:okW?(+x.semPres||0):0,mesPres:okM?(+x.mesPres||0):0,semPts:okW?(x.semPts!=null?+x.semPts||0:+x.semDias||0):Math.round(hoy*5/100),mesPts:okM?(x.mesPts!=null?+x.mesPts||0:+x.mesDias||0):Math.round(hoy*5/100),sinPres:x.semPres==null})}))}catch(e){constL=constL||[]}
+    return Object.assign(x,{hoy,racha:okW&&x.fecha>=ay?(+x.racha||0):(hoy>=100?1:0),semDias:okW?(+x.semDias||0):(hoy>0?1:0),semComp:okW?(+x.semComp||0):(hoy>=100?1:0),mesDias:okM?(+x.mesDias||0):(hoy>0?1:0),mesComp:okM?(+x.mesComp||0):(hoy>=100?1:0),mesMejor:okM?(+x.mesMejor||0):(hoy>=100?1:0),semPres:okW?(+x.semPres||0):0,mesPres:okM?(+x.mesPres||0):0,semPts:okW?(x.semPts!=null?+x.semPts||0:(+x.semComp||0)*5+Math.max(0,(+x.semDias||0)-(+x.semComp||0))):Math.round(hoy*5/100),mesPts:okM?(x.mesPts!=null?+x.mesPts||0:(+x.mesComp||0)*5+Math.max(0,(+x.mesDias||0)-(+x.mesComp||0))):Math.round(hoy*5/100),sinPres:x.semPres==null})}))}catch(e){constL=constL||[]}
   renderTopRut();if(eqTab==="ranking"&&rankMetric==="rutina")renderEquipo()}
 const diasSem=()=>{const l=lunesK(),i=l<CONST_INI?CONST_INI:l;return Math.round((parseK(TODAY)-parseK(i))/864e5)+1};
 const diasMes=()=>{const m=TODAY.slice(0,7)+"-01",i=m<CONST_INI?CONST_INI:m;return Math.round((parseK(TODAY)-parseK(i))/864e5)+1};
@@ -2904,7 +2904,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261023234949";var busy=false,pend=null;
+(function(){var V="20261023235209";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
