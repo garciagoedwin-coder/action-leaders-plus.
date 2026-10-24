@@ -1007,8 +1007,13 @@ const fmt=n=>Number(n||0).toLocaleString("es-HN");
 const initials=n=>String(n||"?").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
 const nrmN=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim();
 const sameN=(a,b)=>{a=nrmN(a);b=nrmN(b);if(!a||!b)return false;if(a===b)return true;const A=a.split(" "),B=b.split(" "),[S,L]=A.length<=B.length?[A,B]:[B,A];return S.length>=2&&S.every(w=>L.includes(w))};
+// nombre parecido: Isaguirre/Izaguirre, Eric/Erick (1 letra de diferencia en palabras de 4+ letras)
+const levN=(a,b)=>{if(Math.abs(a.length-b.length)>1)return 9;let p=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){const c=[i];for(let j=1;j<=b.length;j++)c.push(Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]!==b[j-1])));p=c}return p[b.length]};
+const wsimN=(x,y)=>x===y||(Math.min(x.length,y.length)>=4&&levN(x,y)<=1);
+const parecidoN=(a,b)=>{const A=nrmN(a).split(" ").filter(Boolean),B=nrmN(b).split(" ").filter(Boolean);if(!A.length||!B.length)return false;const[S,L]=A.length<=B.length?[A,B]:[B,A];return S.length>=2&&S.every(w=>L.some(v=>wsimN(w,v)))};
 const slugN=t=>nrmN(t).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 function fotoDe(n,_r){if(!n||!T.fotos||!T.fotos.length)return"";if(!_r){const a=(T.config&&T.config.alias)||{};for(const k in a)if(sameN(a[k],n)){const f=fotoDe(n,1)||fotoDe(k,1);return f}}let best=null;for(const f of T.fotos){if(f.img&&(sameN(f.nombre,n)||(f.alias&&sameN(f.alias,n)))&&(!best||(f.t||0)>(best.t||0)))best=f}if(best)return best.img;
+  {const c=T.fotos.filter(f=>f.img&&(parecidoN(f.nombre,n)||(f.alias&&parecidoN(f.alias,n))));const u=[...new Set(c.map(f=>nrmN(f.nombre)))];if(u.length===1)return c.sort((a,b)=>(b.t||0)-(a.t||0))[0].img}
   const W=t=>nrmN(t).split(" ").filter(w=>w.length>1&&!["de","del","la","los","y"].includes(w)),A=W(n);if(A.length<2)return"";
   const pre=(x,y)=>x.length>=3&&y.length>=3&&(x.startsWith(y)||y.startsWith(x));let cands=[];
   for(const f of T.fotos){if(!f.img)continue;for(const nm of [f.nombre,f.alias]){const B=W(nm);if(B.length<2)continue;
@@ -1385,10 +1390,6 @@ function abrirMetas(){const M=misMetas(),delMes=M.mes===mesMeta(),cur=miRangoIdx
     const nm={mes:mesMeta(),act:Math.max(0,Math.min(9999,parseInt($("#mtAct").value,10)||0)),rango:x?x.value:"",sueno:Math.max(0,Math.min(99999999,parseInt(String($("#mtSue").value).replace(/\D/g,""),10)||0)),t:Date.now()};
     $("#mtSave").disabled=true;try{await store.db.doc("users/"+store.uid).set({metas:nm},{merge:true});regDoc=Object.assign({},regDoc,{metas:nm});closeSheet();renderMetas();toast("Metas guardadas 🎯")}
     catch(e){$("#mtSave").disabled=false;toast("No se pudieron guardar. Revise su conexión.")}}}
-// nombre parecido: Isaguirre/Izaguirre, Eric/Erick (1 letra de diferencia en palabras de 4+ letras)
-const levN=(a,b)=>{if(Math.abs(a.length-b.length)>1)return 9;let p=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){const c=[i];for(let j=1;j<=b.length;j++)c.push(Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]!==b[j-1])));p=c}return p[b.length]};
-const wsimN=(x,y)=>x===y||(Math.min(x.length,y.length)>=4&&levN(x,y)<=1);
-const parecidoN=(a,b)=>{const A=nrmN(a).split(" ").filter(Boolean),B=nrmN(b).split(" ").filter(Boolean);if(!A.length||!B.length)return false;const[S,L]=A.length<=B.length?[A,B]:[B,A];return S.length>=2&&S.every(w=>L.some(v=>wsimN(w,v)))};
 function evMiIdx(L,noms){noms=noms.filter(Boolean);let i=L.findIndex(x=>noms.some(n=>sameN(x.nombre,n)));if(i<0)i=L.findIndex(x=>noms.some(n=>parecidoN(x.nombre,n)));return i}
 function renderEvento(){const c=$("#evCard");if(!c)return;const E=(T.config&&T.config.evento)||null;
   if(!E||!E.top||!E.top.length||!E.fecha||TODAY>E.fecha){c.hidden=true;return}c.hidden=false;
@@ -2915,7 +2916,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261024114911";var busy=false,pend=null;
+(function(){var V="20261024115118";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
