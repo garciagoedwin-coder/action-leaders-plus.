@@ -2269,14 +2269,14 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 92,
-   "hoy": 20,
+   "total": 94,
+   "hoy": 22,
    "sinNombre": 3,
    "top": [
     {
      "nombre": "Joel Salgado",
-     "n": 10,
-     "hoy": 0,
+     "n": 11,
+     "hoy": 1,
      "inv": [
       {
        "n": "Maria R.",
@@ -2317,6 +2317,10 @@
       {
        "n": "Juan A.",
        "f": "22/10"
+      },
+      {
+       "n": "Antonio P.",
+       "f": "23/10"
       }
      ]
     },
@@ -2491,6 +2495,29 @@
      ]
     },
     {
+     "nombre": "Mabis Franco",
+     "n": 4,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Sarah L.",
+       "f": "18/10"
+      },
+      {
+       "n": "Genesis S.",
+       "f": "18/10"
+      },
+      {
+       "n": "Yorlin B.",
+       "f": "18/10"
+      },
+      {
+       "n": "Leticia S.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
      "nombre": "Zamir Fuentes",
      "n": 4,
      "hoy": 3,
@@ -2586,25 +2613,6 @@
       {
        "n": "Monica S.",
        "f": "23/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Mabis Franco",
-     "n": 3,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Sarah L.",
-       "f": "18/10"
-      },
-      {
-       "n": "Genesis S.",
-       "f": "18/10"
-      },
-      {
-       "n": "Yorlin B.",
-       "f": "18/10"
       }
      ]
     },
@@ -2861,7 +2869,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-23T18:26:00-06:00",
+   "actualizado": "2026-10-23T19:26:00-06:00",
    "repetidos": 1
   }
  },
