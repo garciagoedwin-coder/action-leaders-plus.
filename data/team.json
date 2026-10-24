@@ -2269,8 +2269,8 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 110,
-   "hoy": 8,
+   "total": 112,
+   "hoy": 10,
    "sinNombre": 4,
    "top": [
     {
@@ -2680,6 +2680,25 @@
      ]
     },
     {
+     "nombre": "Juan Carlos Granados Claros",
+     "n": 3,
+     "hoy": 2,
+     "inv": [
+      {
+       "n": "Laura V.",
+       "f": "22/10"
+      },
+      {
+       "n": "Grevil C.",
+       "f": "24/10"
+      },
+      {
+       "n": "Denia V.",
+       "f": "24/10"
+      }
+     ]
+    },
+    {
      "nombre": "Rosa Oliva",
      "n": 3,
      "hoy": 0,
@@ -2852,17 +2871,6 @@
      ]
     },
     {
-     "nombre": "Juan Carlos Granados Claros",
-     "n": 1,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Laura V.",
-       "f": "22/10"
-      }
-     ]
-    },
-    {
      "nombre": "Karen Arias",
      "n": 1,
      "hoy": 0,
@@ -2929,8 +2937,8 @@
      ]
     }
    ],
-   "actualizado": "2026-10-24T13:26:00-06:00",
-   "repetidos": 3
+   "actualizado": "2026-10-24T14:26:00-06:00",
+   "repetidos": 4
   }
  },
  "fotos": [
