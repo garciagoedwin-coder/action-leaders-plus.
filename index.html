@@ -1672,9 +1672,10 @@ const hoyPts=x=>x.fecha===TODAY?Math.round((+x.hoy||0)*ROUTINE.length/100):0;
 let constMiosT=0,constSocT=0;
 const constUser=x=>x.uid&&x.uid!==store.uid?((isAdmin?(socios||[]):[]).concat(mios||[])).find(y=>y.uid===x.uid):null;
 function constMsg(x){const n=String(x.nombre||"").split(" ")[0],p=hoyPts(x),f=ROUTINE.length-p,r=+x.racha||0,url="https://actionleadersplus.com";
-  if(p>=ROUTINE.length)return `¡Felicidades, ${n}! 🎉🔥 Hoy completó su rutina al 100%${r>1?` y ya lleva *${r} días de racha*`:""}. Así se construye el éxito. ¡Siga así, mañana otra vez! 💪`;
-  if(p>0)return `¡Hola, ${n}! 👋 Hoy ya lleva *${p} de ${ROUTINE.length}* acciones de su rutina 💪 Le ${f===1?"falta solo 1":"faltan "+f} para completar el día${r?` y mantener su racha de ${r} ${r===1?"día":"días"} 🔥`:" y empezar su racha 🔥"}. ¡Usted puede! Entre a la app y termínela: ${url}`;
-  return `¡Hola, ${n}! 👋 Hoy es un gran día para empezar su racha 🔥 Son solo 5 acciones: su historia, escuchar o leer, agregar personas nuevas, presentar el plan y dar seguimiento. Con una sola ya suma puntos. ¡Vamos, yo creo en usted! 💪 ${url}`}
+  let yo="";try{yo=String((miRegistro().nombre||"")||(fbUser&&fbUser.displayName)||"").trim().split(" ")[0]}catch(e){}if(!yo&&isAdmin)yo="Edwin";const firma=yo?`\n\nAtt. ${yo}`:"";
+  if(p>=ROUTINE.length)return `¡Felicidades, ${n}! 🎉🔥\n\nHoy completó su rutina al 100%${r>1?` y ya lleva *${r} días de racha*`:""}.\n\nAsí se construye el éxito. ¡Siga así, mañana otra vez! 💪`+firma;
+  if(p>0)return `¡Hola, ${n}! 👋\n\nHoy ya lleva *${p} de ${ROUTINE.length}* acciones de su rutina 💪\nLe ${f===1?"falta solo 1":"faltan "+f} para completar el día${r?` y mantener su racha de ${r} ${r===1?"día":"días"} 🔥`:" y empezar su racha 🔥"}.\n\n¡Usted puede! Entre a la app y termínela:\n${url}`+firma;
+  return `¡Hola, ${n}! 👋\n\nHoy es un gran día para empezar su racha 🔥\n\nSon solo 5 acciones: su historia, escuchar o leer, agregar personas nuevas, presentar el plan y dar seguimiento. Con una sola ya suma puntos.\n\n¡Vamos, yo creo en usted! 💪\n${url}`+firma}
 const constBtn=x=>{if(!constUser(x))return"";const ok=hoyPts(x)>=ROUTINE.length;return `<button type="button" class="chip" data-cwa="${esc(x.uid)}" style="border:0;font:inherit;font-size:13px;font-weight:700;margin-top:6px;cursor:pointer;background:#25D366;color:#fff;display:inline-flex;align-items:center;gap:5px">${WA_IC} ${ok?"Felicitar":"Motivar"}</button>`};
 const hoyTxt=x=>{const p=hoyPts(x);return `<span style="font-weight:700;color:${p>=ROUTINE.length?"var(--good,#1a8f5a)":p?"var(--ink)":"var(--bad,#c0392b)"}">Hoy ${p} pts</span>`};
 const constSub=x=>constVista==="sem"?`${rachaTxt(x.racha)} · 🎯 ${x.sinPres?"—":x.semPres} pres.`:`${rachaTxt(x.mesMejor,1)} · 🎯 ${x.sinPres?"—":x.mesPres} pres.`;
@@ -2904,7 +2905,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261023235209";var busy=false,pend=null;
+(function(){var V="20261023235421";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
