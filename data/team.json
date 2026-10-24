@@ -2269,8 +2269,8 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 91,
-   "hoy": 19,
+   "total": 92,
+   "hoy": 20,
    "sinNombre": 3,
    "top": [
     {
@@ -2383,6 +2383,37 @@
      ]
     },
     {
+     "nombre": "Saby Isaguirre",
+     "n": 6,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Yorleny V.",
+       "f": "19/10"
+      },
+      {
+       "n": "Karla L.",
+       "f": "21/10"
+      },
+      {
+       "n": "Bessy M.",
+       "f": "22/10"
+      },
+      {
+       "n": "Suany I.",
+       "f": "22/10"
+      },
+      {
+       "n": "Lesbia K.",
+       "f": "22/10"
+      },
+      {
+       "n": "Heydi T.",
+       "f": "23/10"
+      }
+     ]
+    },
+    {
      "nombre": "Joany Isabel Perla Gámez",
      "n": 5,
      "hoy": 1,
@@ -2433,33 +2464,6 @@
       {
        "n": "Fernanda H.",
        "f": "23/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Saby Isaguirre",
-     "n": 5,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Yorleny V.",
-       "f": "19/10"
-      },
-      {
-       "n": "Karla L.",
-       "f": "21/10"
-      },
-      {
-       "n": "Bessy M.",
-       "f": "22/10"
-      },
-      {
-       "n": "Suany I.",
-       "f": "22/10"
-      },
-      {
-       "n": "Lesbia K.",
-       "f": "22/10"
       }
      ]
     },
@@ -2857,7 +2861,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-23T17:26:00-06:00",
+   "actualizado": "2026-10-23T18:26:00-06:00",
    "repetidos": 1
   }
  },
