@@ -2792,7 +2792,7 @@ function bloquearSinInvitacion(){const d=document.createElement("div");d.style.c
   d.innerHTML=`<img src="media/escudo.png" style="width:80px"><h2 style="margin:6px 0 0;font-size:24px">Acceso exclusivo para socios</h2><p style="max-width:340px;opacity:.8;margin:0;line-height:1.5">Para entrar a Action Leaders PLUS necesitas el enlace de invitación que te comparte tu patrocinador al asociarte.</p><button id="bqOut" style="margin-top:10px;background:#fff;color:#111;border:0;border-radius:999px;padding:12px 22px;font:inherit;font-weight:700">Salir</button>`;
   document.body.appendChild(d);d.querySelector("#bqOut").onclick=async()=>{try{await window.FB.logout()}catch(e){}location.reload()}}
 // ---------- Modo entrada del evento (Recepción) ----------
-const ENT={id:"sps26",tit:"Evento San Pedro Sula",fecha:"2026-10-26",fin:"2026-10-27"};
+const ENT={id:"sps26",tit:"Evento San Pedro Sula",fecha:"2026-10-25",fin:"2026-10-26"};
 let entStaff=false,entKey=null,entData=null,entCk={},entOvr={},entUnsub=[],entTab="s",entQ="",entT=null,entPub=null,entResT=null;
 const entPuede=()=>isAdmin||entStaff;
 async function entInit(){if(!store.db||!store.uid)return;
@@ -2836,8 +2836,8 @@ function entRender(){const v=document.querySelector(".entV");if(!v)return;v.quer
     let R;const num=q.replace(/^#\s*/,"");
     if(/^\d+$/.test(num)){const c=Object.values(entCk).find(c=>c.tipo==="s"&&String(c.tk)===String(+num));R=c?S.filter(s=>s.id===c.id):[]}else R=q?S.filter(s=>entMatch(s.n,q)):null;
     const row=s=>{const c=entCk[s.id];return `<button type="button" class="entRow" data-es="${esc(s.id)}"><span class="entDot ${c?"ok":s.a?"go":"no"}"></span><span class="grow"><b>${esc(s.n)}</b><small>${c?`✅ Entró ${entHora(c.at)} · Ticket #${esc(String(c.tk||""))}`:s.a?(s.tk==="PREMIUM"?"★ PREMIUM · con buffet":"CLASSIC · solo acceso"):"⛔ Pendiente acceso · comunicarse con su líder"}</small></span><span class="muted">›</span></button>`};
-    if(R===null){const U=Object.values(entCk).filter(c=>c.tipo==="s").sort((a,b)=>b.at-a.at).slice(0,8);L.innerHTML=`<p class="entHint">Escriba el nombre del socio o el número del ticket.</p>${U.length?`<p class="entSub">Últimas entradas</p>`+U.map(c=>row(S.find(s=>s.id===c.id)||{id:c.id,n:c.n,a:true,tk:c.tkT})).join(""):""}`}
-    else L.innerHTML=R.slice(0,30).map(row).join("")||`<div class="entMsg">No aparece en la lista de socios.<br><small>Pídale que hable con su líder o pase a caja.</small></div>${isAdmin&&!/^\d+$/.test(num)?`<button type="button" class="btn ghost" id="entAddS" style="width:100%">➕ Agregar socio que pagó en puerta</button>`:""}`;
+    if(R===null){const U=Object.values(entCk).filter(c=>c.tipo==="s").sort((a,b)=>b.at-a.at).slice(0,8);L.innerHTML=`<p class="entHint">Escriba el nombre del socio o el número del ticket.</p>${entPuede()?`<button type="button" class="btn ghost" id="entAddS" style="width:100%;margin-bottom:8px">➕ Agregar socio que no está en la lista</button>`:""}${U.length?`<p class="entSub">Últimas entradas</p>`+U.map(c=>row(S.find(s=>s.id===c.id)||{id:c.id,n:c.n,a:true,tk:c.tkT})).join(""):""}`}
+    else L.innerHTML=R.slice(0,30).map(row).join("")||`<div class="entMsg">No aparece en la lista de socios.<br><small>Pídale que hable con su líder o pase a caja.</small></div>${entPuede()&&!/^\d+$/.test(num)?`<button type="button" class="btn ghost" id="entAddS" style="width:100%">➕ Agregar socio que no está en la lista</button>`:""}`;
     L.querySelectorAll("[data-es]").forEach(b=>b.onclick=()=>entSheetS(b.dataset.es));const ad=$("#entAddS");if(ad)ad.onclick=()=>entAddSocio(q)}
   else if(entTab==="i"){const I=entInv(),ll=I.filter(x=>entCk[x.id]);$("#entQ").placeholder="Buscar invitado por nombre…";
     st.innerHTML=`<div class="entBig"><b>${ll.length}</b><span>invitados han llegado · ${I.length} en la lista</span></div>`;
@@ -2870,7 +2870,7 @@ function entSheetS(id){const s=entSoc().find(x=>x.id===id);if(!s)return;const c=
     $("#entOkS").onclick=async()=>{const t=parseInt($("#entTkN").value,10),er=$("#entErr");if(!(t>0)){er.textContent="Escriba el número del ticket.";er.hidden=false;return}
       const dup=Object.values(entCk).find(c=>c.tipo==="s"&&+c.tk===t&&c.id!==id);if(dup){er.textContent=`El ticket #${t} ya se le entregó a ${dup.n}.`;er.hidden=false;return}
       $("#entOkS").disabled=true;if(!await entGuardar(id,{tipo:"s",n:s.n,tk:t,tkT:s.tk},`✅ ${s.n.split(" ")[0]} entró · Ticket #${t}`))$("#entOkS").disabled=false}})}
-function entAddSocio(q){openSheet(`<h2>➕ Socio que pagó en puerta</h2><div class="field"><label for="entSn">Nombre completo</label><input class="inp" id="entSn" value="${esc(q||"")}"></div>
+function entAddSocio(q){openSheet(`<h2>➕ Agregar socio</h2><p class="small muted" style="margin:0">Para socios que no se registraron en la lista. Queda con entrada y su número de ticket.</p><div class="field"><label for="entSn">Nombre completo</label><input class="inp" id="entSn" value="${esc(q||"")}"></div>
    <div class="field"><label for="entSt">Ticket</label><select class="inp" id="entSt"><option>PREMIUM</option><option>CLASSIC</option></select></div>
    <div class="field"><label for="entSk">Número del ticket</label><input class="inp" id="entSk" type="number" inputmode="numeric" min="1"></div><p class="small" id="entErr" style="color:var(--bad);margin:0" hidden></p>
    <button class="btn" id="entOkA" style="width:100%">✅ Registrar y dar entrada</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
@@ -2926,7 +2926,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261024203327";var busy=false,pend=null;
+(function(){var V="20261025074151";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
