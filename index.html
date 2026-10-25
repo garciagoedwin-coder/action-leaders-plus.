@@ -1403,9 +1403,10 @@ function renderEvento(){const c=$("#evCard");if(!c)return;const E=(T.config&&T.c
    <div>${L.slice(0,3).map(row).join("")}</div>
    ${iy>2?`<div class="evMe">Usted va <b>#${iy+1}</b> con <b>${L[iy].n}</b> ${L[iy].n===1?"invitado":"invitados"}. ¡A invitar! 💪</div>`:iy<0&&fbUser?`<div class="evMe">Aún no tiene invitados registrados. ¡Invite y súbase al ranking! 💪</div>`:""}
    <div class="row" style="gap:8px">${iy>=0&&(L[iy].inv||[]).length?`<button class="btn sm" id="evMis" type="button" style="flex:1">👥 Mis invitados · ${L[iy].inv.length}</button>`:""}<button class="btn sm" id="evVer" type="button" style="flex:1">Ver ranking (${L.length})</button></div>`;
+  const evHoy=String(E.fecha||"")===TODAY;
   const mb=$("#evMis");if(mb)mb.onclick=()=>{const I=L[iy].inv.slice().reverse();openSheet(`<h2>👥 Mis invitados</h2><p class="small muted" style="margin:0">${esc(E.titulo||"Evento")} · ${I.length} ${I.length===1?"persona registrada":"personas registradas"} con su nombre. Confírmeles la asistencia 💪</p>
-    <div style="display:flex;flex-direction:column">${I.map((x,i)=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)"><span class="step-n ok" style="width:28px;height:28px;font-size:13px">${I.length-i}</span><b style="flex:1;font-weight:600">${esc(x.n)}</b><span class="small muted">${esc(x.f)}</span></div>`).join("")}</div>
-    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`)};
+    <div style="display:flex;flex-direction:column">${I.map((x,i)=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)"><span class="step-n ok" style="width:28px;height:28px;font-size:13px">${I.length-i}</span><b style="flex:1;font-weight:600;min-width:0">${esc(x.n)}<br><span class="small muted" style="font-weight:400">${esc(x.f)}</span></b>${evHoy?`<button type="button" class="btn" data-evrec="${i}" style="background:#25D366;color:#fff;padding:8px 12px;font-size:13px;white-space:nowrap">📲 Recordar</button>`:""}</div>`).join("")}</div>
+    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{document.querySelectorAll("[data-evrec]").forEach(b=>b.onclick=()=>evRecordar(I[+b.dataset.evrec].n,E))})};
   $("#evVer").onclick=()=>openSheet(`<h2>🎟️ ${esc(E.titulo||"Reto de invitados")}</h2><p class="small muted" style="margin:0">${E.total} invitados registrados${E.actualizado?" · actualizado "+new Date(E.actualizado).toLocaleString("es",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):""}</p>
     ${isAdmin?`<p class="small" style="margin:0;font-weight:700;color:var(--brand)">👑 Vista de admin: toque un socio para ver sus invitados.</p>`:""}
     <div style="display:flex;flex-direction:column">${L.map((x,i)=>`<div ${isAdmin?`data-evi="${i}" role="button" style="cursor:pointer;border-bottom:1px solid var(--line)"`:`style="border-bottom:1px solid var(--line)"`}><div class="row" style="gap:10px;padding:9px 0"><span style="width:28px;text-align:center;font-weight:800">${md[i]||i+1}</span>${avHTML(x.nombre,false,false)}<b style="flex:1;font-weight:600">${esc(x.nombre)}</b>${x.hoy?`<span class="chip c-good">+${x.hoy} hoy</span>`:""}<b class="num" style="font-size:20px">${x.n}</b>${isAdmin?`<span class="muted" style="font-size:18px">›</span>`:""}</div>${isAdmin?`<div class="evInv" hidden style="padding:0 0 10px 38px;display:flex;flex-wrap:wrap;gap:6px">${(x.inv||[]).map(v=>`<span class="chip c-brand">${esc(v.n)} · ${esc(v.f)}</span>`).join("")||`<span class="small muted">Sin nombres</span>`}</div>`:""}</div>`).join("")}</div>
@@ -1923,6 +1924,11 @@ const HIST={
   ["¿Qué harías con más tiempo libre?",["Viajar","Estar con mi familia","Emprender"]],
   ["¿Te gustaría aprender a generar ingresos desde tu celular?",["Sí","Tal vez","Cuéntame más"]]]};
 const histDia=k=>{const n=Math.floor(parseK(k).getTime()/864e5),tipo=["pregunta","frase","encuesta"][n%3],L=HIST[tipo];return{tipo,item:L[Math.floor(n/3)%L.length],foto:"media/comunidad/c"+String((n*7)%20).padStart(2,"0")+".webp"}};
+function evRecordar(nc,E){const w=String(nc||"").trim().split(/\s+/),pila=w[0]||"",ini=nrmN((w[1]||"").replace(/\./g,""));
+  const cand=(contacts||[]).filter(c=>{const v=nrmN(c.name||"").split(" ");return v[0]&&v[0]===nrmN(pila)&&(!ini||v.slice(1).some(z=>z.startsWith(ini)))&&String(c.phone||"").replace(/\D/g,"").length>=7});
+  const num=cand.length===1?waNum(cand[0].phone,cand[0].cc||"504"):"";
+  const t=`Hola ${pila}, ¡hoy es el gran día! 🎉\n\nLe recuerdo el *${E.titulo||"evento"}*.`+(E.hora?`\n🕑 Hora: ${E.hora}`:"")+`\n📍 Lugar: ${E.lugarTxt||E.lugar||""}`+(E.mapa?`\n🗺️ ${E.mapa}`:"")+`\n\nLo espero, va a ser una gran experiencia. Cualquier cosa me escribe.\n\nAtt. ${miNombreCorto()}`;
+  if(!num)toast("Elija el contacto de "+pila+" en WhatsApp");setTimeout(()=>{location.href="https://wa.me/"+(num||"")+"?text="+encodeURIComponent(t)},num?0:600)}
 function miNombreCorto(){const n=(miRegistro().nombre||miNombreFull()||profile.nombrePila||"").trim().split(/\s+/);return n.length>2?n[0]+" "+n[n.length>3?2:1]:n.join(" ")}
 async function histCanvas(k){const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");const h=histDia(k);
   try{await Promise.all(["800 90px 'Bricolage Grotesque'","500 40px Figtree","700 40px Figtree"].map(f=>document.fonts.load(f)))}catch(x){}
@@ -2946,7 +2952,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261025100822";var busy=false,pend=null;
+(function(){var V="20261025111508";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
