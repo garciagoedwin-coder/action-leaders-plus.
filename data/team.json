@@ -2269,8 +2269,8 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 113,
-   "hoy": 11,
+   "total": 115,
+   "hoy": 13,
    "sinNombre": 4,
    "top": [
     {
@@ -2326,8 +2326,8 @@
     },
     {
      "nombre": "Lizandro Castro",
-     "n": 8,
-     "hoy": 0,
+     "n": 9,
+     "hoy": 1,
      "inv": [
       {
        "n": "Claudia P.",
@@ -2360,6 +2360,10 @@
       {
        "n": "Marvin R.",
        "f": "23/10"
+      },
+      {
+       "n": "Jesus M.",
+       "f": "24/10"
       }
      ]
     },
@@ -2403,6 +2407,41 @@
      ]
     },
     {
+     "nombre": "Betty Carolina Amador Perez",
+     "n": 7,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Jesus A.",
+       "f": "12/10"
+      },
+      {
+       "n": "Roberto T.",
+       "f": "13/10"
+      },
+      {
+       "n": "Iris G.",
+       "f": "18/10"
+      },
+      {
+       "n": "José A.",
+       "f": "18/10"
+      },
+      {
+       "n": "Dania B.",
+       "f": "20/10"
+      },
+      {
+       "n": "Aníbal A.",
+       "f": "22/10"
+      },
+      {
+       "n": "Yuri L.",
+       "f": "24/10"
+      }
+     ]
+    },
+    {
      "nombre": "Saby Isaguirre",
      "n": 7,
      "hoy": 1,
@@ -2434,37 +2473,6 @@
       {
        "n": "Yolani R.",
        "f": "24/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Betty Carolina Amador Perez",
-     "n": 6,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Jesus A.",
-       "f": "12/10"
-      },
-      {
-       "n": "Roberto T.",
-       "f": "13/10"
-      },
-      {
-       "n": "Iris G.",
-       "f": "18/10"
-      },
-      {
-       "n": "José A.",
-       "f": "18/10"
-      },
-      {
-       "n": "Dania B.",
-       "f": "20/10"
-      },
-      {
-       "n": "Aníbal A.",
-       "f": "22/10"
       }
      ]
     },
@@ -2941,7 +2949,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-24T16:25:00-06:00",
+   "actualizado": "2026-10-24T18:25:00-06:00",
    "repetidos": 4
   }
  },
