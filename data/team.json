@@ -2267,7 +2267,8 @@
     "Yolany perla": "Joany Isabel Perla Gámez",
     "Álva martinz": "Alba Luz Martínez Hernández",
     "Alba martines": "Alba Luz Martínez Hernández",
-    "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
+    "Noelmy": "Noelmi Guadalupe Diaz Ruiz",
+    "José paz": "Jose Meza"
    },
    "total": 132,
    "hoy": 1,
@@ -2838,6 +2839,21 @@
      ]
     },
     {
+     "nombre": "José Pablo Meza Paz",
+     "n": 2,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Delia R.",
+       "f": "24/10"
+      },
+      {
+       "n": "Yojana M.",
+       "f": "25/10"
+      }
+     ]
+    },
+    {
      "nombre": "José Raúl Hernández",
      "n": 2,
      "hoy": 0,
@@ -2964,28 +2980,6 @@
       {
        "n": "Delci S.",
        "f": "24/10"
-      }
-     ]
-    },
-    {
-     "nombre": "José Pablo Meza Paz",
-     "n": 1,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Delia R.",
-       "f": "24/10"
-      }
-     ]
-    },
-    {
-     "nombre": "José Pablo Meza Paz",
-     "n": 1,
-     "hoy": 1,
-     "inv": [
-      {
-       "n": "Yojana M.",
-       "f": "25/10"
       }
      ]
     },
