@@ -1588,7 +1588,8 @@ const SOLO_ADMIN=["garciagoedwin@gmail.com"];const esSoloAdmin=x=>SOLO_ADMIN.inc
 function editarSocio(uid){const x=(socios||[]).find(y=>y.uid===uid);if(!x)return;const r=x.registro||{},nm=r.nombre||x.email||"Socio";
   const opts=(socios||[]).filter(y=>y.uid!==uid&&y.registro&&y.registro.nombre&&!esSoloAdmin(y)).sort((a,b)=>a.registro.nombre.localeCompare(b.registro.nombre,"es"));
   openSheet(`<h2>✏️ Editar socio</h2><p style="margin:0"><b style="font-weight:600">${esc(nm)}</b><br><span class="small muted">${esc(x.email||"")}</span></p>
-   ${x.registro?`<div class="field"><label for="esNom">Nombre</label><input class="inp" id="esNom" value="${esc(r.nombre||"")}"></div>
+   ${!x.registro?`<p class="small" style="margin:0;padding:10px 12px;border-radius:12px;background:var(--warn-soft);color:var(--warn)">Esta persona entró pero no completó su registro. Llene su nombre, patrocinador y paquete, y toque Guardar para completarlo usted.</p>`:""}
+   ${true?`<div class="field"><label for="esNom">Nombre</label><input class="inp" id="esNom" value="${esc(r.nombre||x.nombre||"")}" placeholder="Nombre y apellido"></div>
    <div class="field"><label for="esPat">Patrocinador</label><select class="inp" id="esPat"><option value="">— Sin patrocinador —</option>${opts.map(y=>`<option value="${esc(y.uid)}" ${y.uid===r.patrocinadorUid?"selected":""}>${esc(y.registro.nombre)}</option>`).join("")}</select>
     ${r.patrocinador&&!r.patrocinadorUid?`<span class="small muted">Escribió: "${esc(r.patrocinador)}"</span>`:""}</div>
    <div class="field"><label for="esPlan">Paquete</label><select class="inp" id="esPlan"><option ${r.plan!=="Premium"?"selected":""}>Classic</option><option ${r.plan==="Premium"?"selected":""}>Premium</option></select></div>
@@ -1602,8 +1603,9 @@ function editarSocio(uid){const x=(socios||[]).find(y=>y.uid===uid);if(!x)return
     const rc=$("#esRec");if(rc){store.db.doc("eventoStaff/"+uid).get().then(d=>{rc.checked=!!d.exists}).catch(()=>{});
       rc.onchange=async()=>{try{if(rc.checked)await store.db.doc("eventoStaff/"+uid).set({n:r.nombre||nm,t:Date.now()});else await store.db.doc("eventoStaff/"+uid).delete();toast(rc.checked?"🎟️ Ahora es de Recepción":"Ya no es de Recepción")}catch(e){rc.checked=!rc.checked;toast("No se pudo guardar. ¿Ya pegó las reglas nuevas en Firebase?")}}}
     const ok=$("#esOk");if(ok)ok.onclick=async()=>{const pu=$("#esPat").value,sp=opts.find(y=>y.uid===pu),nn=$("#esNom").value.trim()||r.nombre,pl=$("#esPlan").value;
-      const d={nombre:nn,plan:pl,rango:$("#esRg").value,patrocinadorUid:pu||"",invitadoPor:sp?sp.registro.nombre:"",patrocinador:sp?sp.registro.nombre:(pu?r.patrocinador:r.patrocinador||"")};if(pl!==r.plan){d.planPor="admin";d.planCambio=new Date().toISOString()}
-      ok.disabled=true;try{await store.db.doc("users/"+uid).set({registro:d,nombre:nn},{merge:true});Object.assign(x.registro,d);x.nombre=nn;toast("Cambios guardados ✓");closeSheet();renderEquipo();reconstruirLineas(true)}catch(e){ok.disabled=false;toast("No se pudo guardar. Falta el permiso de admin en Firebase.")}};
+      if(!x.registro&&(!nn||!pu)){toast("Escriba el nombre y elija el patrocinador");return}
+      const d={nombre:nn,plan:pl,rango:$("#esRg").value,patrocinadorUid:pu||"",invitadoPor:sp?sp.registro.nombre:"",patrocinador:sp?sp.registro.nombre:(pu?r.patrocinador:r.patrocinador||"")};if(pl!==r.plan){d.planPor="admin";d.planCambio=new Date().toISOString()}if(!x.registro){d.fecha=new Date().toISOString();d.completadoPor="admin"}
+      ok.disabled=true;try{await store.db.doc("users/"+uid).set({registro:d,nombre:nn},{merge:true});x.registro=Object.assign(x.registro||{},d);x.nombre=nn;toast("Cambios guardados ✓");closeSheet();renderEquipo();reconstruirLineas(true)}catch(e){ok.disabled=false;toast("No se pudo guardar. Falta el permiso de admin en Firebase.")}};
     let arm=0;$("#esDel").onclick=async()=>{const bt=$("#esDel");if(Date.now()-arm>5000){arm=Date.now();bt.textContent="Toca otra vez para confirmar";bt.style.background="var(--bad)";bt.style.color="#fff";return}
       bt.disabled=true;bt.textContent="Eliminando…";try{await store.db.doc("users/"+uid).delete();try{await store.db.doc("fotos/"+uid).delete()}catch(e){}
         socios=socios.filter(y=>y.uid!==uid);toast(nm.split(" ")[0]+" fue eliminado");closeSheet();renderEquipo()}catch(e){bt.disabled=false;bt.textContent="🗑 Eliminar socio de la app";bt.style.background="";bt.style.color="var(--bad)";toast("No se pudo eliminar. Falta el permiso en Firebase.")}}})}
@@ -2920,7 +2922,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261024201318";var busy=false,pend=null;
+(function(){var V="20261024202108";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
