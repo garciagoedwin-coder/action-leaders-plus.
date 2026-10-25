@@ -2269,8 +2269,8 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 129,
-   "hoy": 27,
+   "total": 131,
+   "hoy": 0,
    "sinNombre": 4,
    "top": [
     {
@@ -2327,7 +2327,7 @@
     {
      "nombre": "Betty Carolina Amador Perez",
      "n": 9,
-     "hoy": 3,
+     "hoy": 0,
      "inv": [
       {
        "n": "Jesus A.",
@@ -2370,7 +2370,7 @@
     {
      "nombre": "Karla Patricia Calderon Fajardo",
      "n": 9,
-     "hoy": 8,
+     "hoy": 0,
      "inv": [
       {
        "n": "Gabriela V.",
@@ -2413,7 +2413,7 @@
     {
      "nombre": "Lizandro Castro",
      "n": 9,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Claudia P.",
@@ -2456,7 +2456,7 @@
     {
      "nombre": "Mayckol Turcios",
      "n": 8,
-     "hoy": 4,
+     "hoy": 0,
      "inv": [
       {
        "n": "Martha O.",
@@ -2495,7 +2495,7 @@
     {
      "nombre": "Saby Isaguirre",
      "n": 7,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Yorleny V.",
@@ -2561,7 +2561,7 @@
     {
      "nombre": "Blanca Dina Ramirez Melendez",
      "n": 5,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Jose A.",
@@ -2615,7 +2615,7 @@
     {
      "nombre": "Zamir Fuentes",
      "n": 5,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Mayra I.",
@@ -2642,7 +2642,7 @@
     {
      "nombre": "Alba Luz Martínez Hernández",
      "n": 4,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Dina Y.",
@@ -2711,7 +2711,7 @@
     {
      "nombre": "Rosa Oliva",
      "n": 4,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Kimberlyn C.",
@@ -2772,7 +2772,7 @@
     {
      "nombre": "Juan Carlos Granados Claros",
      "n": 3,
-     "hoy": 2,
+     "hoy": 0,
      "inv": [
       {
        "n": "Laura V.",
@@ -2855,7 +2855,7 @@
     {
      "nombre": "Keidy Linares",
      "n": 2,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Alejandra C.",
@@ -2879,6 +2879,21 @@
       {
        "n": "Karla F.",
        "f": "16/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Nicolle Cruz",
+     "n": 2,
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Nicolle C.",
+       "f": "24/10"
+      },
+      {
+       "n": "Anyoli A.",
+       "f": "24/10"
       }
      ]
     },
@@ -2944,10 +2959,21 @@
     {
      "nombre": "Josue Salgado",
      "n": 1,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Delci S.",
+       "f": "24/10"
+      }
+     ]
+    },
+    {
+     "nombre": "José Pablo Meza Paz",
+     "n": 1,
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Delia R.",
        "f": "24/10"
       }
      ]
@@ -2986,17 +3012,6 @@
      ]
     },
     {
-     "nombre": "Nicolle Cruz",
-     "n": 1,
-     "hoy": 1,
-     "inv": [
-      {
-       "n": "Nicolle C.",
-       "f": "24/10"
-      }
-     ]
-    },
-    {
      "nombre": "Noelmi Guadalupe Diaz Ruiz",
      "n": 1,
      "hoy": 0,
@@ -3019,7 +3034,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-24T22:25:00-06:00",
+   "actualizado": "2026-10-25T07:26:00-06:00",
    "repetidos": 6
   }
  },
