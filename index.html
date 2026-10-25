@@ -2836,9 +2836,9 @@ function entRender(){const v=document.querySelector(".entV");if(!v)return;v.quer
     let R;const num=q.replace(/^#\s*/,"");
     if(/^\d+$/.test(num)){const c=Object.values(entCk).find(c=>c.tipo==="s"&&String(c.tk)===String(+num));R=c?S.filter(s=>s.id===c.id):[]}else R=q?S.filter(s=>entMatch(s.n,q)):null;
     const row=s=>{const c=entCk[s.id];return `<button type="button" class="entRow" data-es="${esc(s.id)}"><span class="entDot ${c?"ok":s.a?"go":"no"}"></span><span class="grow"><b>${esc(s.n)}</b><small>${c?`✅ Entró ${entHora(c.at)} · Ticket #${esc(String(c.tk||""))}`:s.a?(s.tk==="PREMIUM"?"★ PREMIUM · con buffet":"CLASSIC · solo acceso"):"⛔ Pendiente acceso · comunicarse con su líder"}</small></span><span class="muted">›</span></button>`};
-    if(R===null){const U=Object.values(entCk).filter(c=>c.tipo==="s").sort((a,b)=>b.at-a.at).slice(0,8);L.innerHTML=`<p class="entHint">Escriba el nombre del socio o el número del ticket.</p>${entPuede()?`<button type="button" class="btn ghost" id="entAddS" style="width:100%;margin-bottom:8px">➕ Agregar socio que no está en la lista</button>`:""}${U.length?`<p class="entSub">Últimas entradas</p>`+U.map(c=>row(S.find(s=>s.id===c.id)||{id:c.id,n:c.n,a:true,tk:c.tkT})).join(""):""}`}
-    else L.innerHTML=R.slice(0,30).map(row).join("")||`<div class="entMsg">No aparece en la lista de socios.<br><small>Pídale que hable con su líder o pase a caja.</small></div>${entPuede()&&!/^\d+$/.test(num)?`<button type="button" class="btn ghost" id="entAddS" style="width:100%">➕ Agregar socio que no está en la lista</button>`:""}`;
-    L.querySelectorAll("[data-es]").forEach(b=>b.onclick=()=>entSheetS(b.dataset.es));const ad=$("#entAddS");if(ad)ad.onclick=()=>entAddSocio(q)}
+    if(R===null){const U=Object.values(entCk).filter(c=>c.tipo==="s").sort((a,b)=>b.at-a.at).slice(0,8);L.innerHTML=`<p class="entHint">Escriba el nombre del socio o el número del ticket.</p>${isAdmin?`<button type="button" class="btn ghost" id="entAddS" style="width:100%;margin-bottom:8px">➕ Agregar socio que no está en la lista</button>`:""}${U.length?`<p class="entSub">Últimas entradas</p>`+U.map(c=>row(S.find(s=>s.id===c.id)||{id:c.id,n:c.n,a:true,tk:c.tkT})).join(""):""}`}
+    else L.innerHTML=R.slice(0,30).map(row).join("")||`<div class="entMsg">No aparece en la lista de socios.<br><small>Pídale que hable con su líder o pase a caja.</small></div>${isAdmin&&!/^\d+$/.test(num)?`<button type="button" class="btn ghost" id="entAddS" style="width:100%">➕ Agregar socio que no está en la lista</button>`:""}`;
+    L.querySelectorAll("[data-es]").forEach(b=>b.onclick=()=>entSheetS(b.dataset.es));const ad=$("#entAddS");if(ad&&isAdmin)ad.onclick=()=>entAddSocio(q)}
   else if(entTab==="i"){const I=entInv(),ll=I.filter(x=>entCk[x.id]);$("#entQ").placeholder="Buscar invitado por nombre…";
     st.innerHTML=`<div class="entBig"><b>${ll.length}</b><span>invitados han llegado · ${I.length} en la lista</span></div>`;
     const row=x=>{const c=entCk[x.id],s=entSocioDe(x);return `<button type="button" class="entRow" data-ei="${esc(x.id)}"><span class="entDot ${c?"ok":"go"}"></span><span class="grow"><b>${esc(x.n)}</b><small>${c?`✅ Llegó ${entHora(c.at)} · `:""}${s?"Invitado por "+esc(s):"⚠️ Sin socio asignado"}</small></span><span class="muted">›</span></button>`};
@@ -2926,7 +2926,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261025074151";var busy=false,pend=null;
+(function(){var V="20261025074604";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
