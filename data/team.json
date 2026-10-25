@@ -2269,8 +2269,8 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 117,
-   "hoy": 15,
+   "total": 126,
+   "hoy": 24,
    "sinNombre": 4,
    "top": [
     {
@@ -2321,6 +2321,49 @@
       {
        "n": "Antonio P.",
        "f": "23/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Betty Carolina Amador Perez",
+     "n": 9,
+     "hoy": 3,
+     "inv": [
+      {
+       "n": "Jesus A.",
+       "f": "12/10"
+      },
+      {
+       "n": "Roberto T.",
+       "f": "13/10"
+      },
+      {
+       "n": "Iris G.",
+       "f": "18/10"
+      },
+      {
+       "n": "José A.",
+       "f": "18/10"
+      },
+      {
+       "n": "Dania B.",
+       "f": "20/10"
+      },
+      {
+       "n": "Aníbal A.",
+       "f": "22/10"
+      },
+      {
+       "n": "Yuri L.",
+       "f": "24/10"
+      },
+      {
+       "n": "Juan B.",
+       "f": "24/10"
+      },
+      {
+       "n": "Yolva E.",
+       "f": "24/10"
       }
      ]
     },
@@ -2407,36 +2450,36 @@
      ]
     },
     {
-     "nombre": "Betty Carolina Amador Perez",
+     "nombre": "Karla Patricia Calderon Fajardo",
      "n": 7,
-     "hoy": 1,
+     "hoy": 6,
      "inv": [
       {
-       "n": "Jesus A.",
-       "f": "12/10"
-      },
-      {
-       "n": "Roberto T.",
-       "f": "13/10"
-      },
-      {
-       "n": "Iris G.",
-       "f": "18/10"
-      },
-      {
-       "n": "José A.",
-       "f": "18/10"
-      },
-      {
-       "n": "Dania B.",
+       "n": "Gabriela V.",
        "f": "20/10"
       },
       {
-       "n": "Aníbal A.",
-       "f": "22/10"
+       "n": "Carlos A.",
+       "f": "24/10"
       },
       {
-       "n": "Yuri L.",
+       "n": "Marlene L.",
+       "f": "24/10"
+      },
+      {
+       "n": "Eva S.",
+       "f": "24/10"
+      },
+      {
+       "n": "Kelyn H.",
+       "f": "24/10"
+      },
+      {
+       "n": "Javier M.",
+       "f": "24/10"
+      },
+      {
+       "n": "Martin C.",
        "f": "24/10"
       }
      ]
@@ -2504,6 +2547,33 @@
       {
        "n": "Érika O.",
        "f": "23/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Blanca Dina Ramirez Melendez",
+     "n": 5,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Jose A.",
+       "f": "22/10"
+      },
+      {
+       "n": "Ely C.",
+       "f": "22/10"
+      },
+      {
+       "n": "Mayra E.",
+       "f": "23/10"
+      },
+      {
+       "n": "Melva C.",
+       "f": "23/10"
+      },
+      {
+       "n": "María D.",
+       "f": "24/10"
       }
      ]
     },
@@ -2581,29 +2651,6 @@
       {
        "n": "Lesly C.",
        "f": "24/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Blanca Dina Ramirez Melendez",
-     "n": 4,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Jose A.",
-       "f": "22/10"
-      },
-      {
-       "n": "Ely C.",
-       "f": "22/10"
-      },
-      {
-       "n": "Mayra E.",
-       "f": "23/10"
-      },
-      {
-       "n": "Melva C.",
-       "f": "23/10"
       }
      ]
     },
@@ -2909,17 +2956,6 @@
      ]
     },
     {
-     "nombre": "Karla Patricia Calderon Fajardo",
-     "n": 1,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Gabriela V.",
-       "f": "20/10"
-      }
-     ]
-    },
-    {
      "nombre": "Kevin Izaguirre",
      "n": 1,
      "hoy": 0,
@@ -2964,7 +3000,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-24T19:26:00-06:00",
+   "actualizado": "2026-10-24T20:26:00-06:00",
    "repetidos": 5
   }
  },
