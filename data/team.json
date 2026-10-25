@@ -2270,8 +2270,8 @@
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz",
     "José paz": "Jose Meza"
    },
-   "total": 136,
-   "hoy": 5,
+   "total": 140,
+   "hoy": 9,
    "sinNombre": 4,
    "top": [
     {
@@ -2802,6 +2802,25 @@
      ]
     },
     {
+     "nombre": "Noelmi Guadalupe Diaz Ruiz",
+     "n": 3,
+     "hoy": 2,
+     "inv": [
+      {
+       "n": "Gerardo S.",
+       "f": "23/10"
+      },
+      {
+       "n": "Marta L.",
+       "f": "25/10"
+      },
+      {
+       "n": "Carmen R.",
+       "f": "25/10"
+      }
+     ]
+    },
+    {
      "nombre": "Yolanda Morales",
      "n": 3,
      "hoy": 0,
@@ -3018,6 +3037,17 @@
      ]
     },
     {
+     "nombre": "Kevin Matute",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Madelyn Y.",
+       "f": "25/10"
+      }
+     ]
+    },
+    {
      "nombre": "Loani",
      "n": 1,
      "hoy": 1,
@@ -3040,17 +3070,6 @@
      ]
     },
     {
-     "nombre": "Noelmi Guadalupe Diaz Ruiz",
-     "n": 1,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Gerardo S.",
-       "f": "23/10"
-      }
-     ]
-    },
-    {
      "nombre": "Olga Lizzette Meléndez Norales",
      "n": 1,
      "hoy": 0,
@@ -3060,9 +3079,20 @@
        "f": "09/10"
       }
      ]
+    },
+    {
+     "nombre": "Reina Isabel Garcia",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Iris R.",
+       "f": "25/10"
+      }
+     ]
     }
    ],
-   "actualizado": "2026-10-25T13:55:00-06:00",
+   "actualizado": "2026-10-25T15:26:00-06:00",
    "repetidos": 6,
    "hora": "2:40 pm",
    "llegar": "2:30 pm",
