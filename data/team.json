@@ -2269,8 +2269,8 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 126,
-   "hoy": 24,
+   "total": 128,
+   "hoy": 26,
    "sinNombre": 4,
    "top": [
     {
@@ -2368,6 +2368,49 @@
      ]
     },
     {
+     "nombre": "Karla Patricia Calderon Fajardo",
+     "n": 9,
+     "hoy": 8,
+     "inv": [
+      {
+       "n": "Gabriela V.",
+       "f": "20/10"
+      },
+      {
+       "n": "Carlos A.",
+       "f": "24/10"
+      },
+      {
+       "n": "Marlene L.",
+       "f": "24/10"
+      },
+      {
+       "n": "Eva S.",
+       "f": "24/10"
+      },
+      {
+       "n": "Kelyn H.",
+       "f": "24/10"
+      },
+      {
+       "n": "Javier M.",
+       "f": "24/10"
+      },
+      {
+       "n": "Martin C.",
+       "f": "24/10"
+      },
+      {
+       "n": "Mauricio G.",
+       "f": "24/10"
+      },
+      {
+       "n": "Ever C.",
+       "f": "24/10"
+      }
+     ]
+    },
+    {
      "nombre": "Lizandro Castro",
      "n": 9,
      "hoy": 1,
@@ -2445,41 +2488,6 @@
       },
       {
        "n": "Ángel J.",
-       "f": "24/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Karla Patricia Calderon Fajardo",
-     "n": 7,
-     "hoy": 6,
-     "inv": [
-      {
-       "n": "Gabriela V.",
-       "f": "20/10"
-      },
-      {
-       "n": "Carlos A.",
-       "f": "24/10"
-      },
-      {
-       "n": "Marlene L.",
-       "f": "24/10"
-      },
-      {
-       "n": "Eva S.",
-       "f": "24/10"
-      },
-      {
-       "n": "Kelyn H.",
-       "f": "24/10"
-      },
-      {
-       "n": "Javier M.",
-       "f": "24/10"
-      },
-      {
-       "n": "Martin C.",
        "f": "24/10"
       }
      ]
@@ -3000,8 +3008,8 @@
      ]
     }
    ],
-   "actualizado": "2026-10-24T20:26:00-06:00",
-   "repetidos": 5
+   "actualizado": "2026-10-24T21:26:00-06:00",
+   "repetidos": 6
   }
  },
  "fotos": [
