@@ -2269,8 +2269,8 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 115,
-   "hoy": 13,
+   "total": 117,
+   "hoy": 15,
    "sinNombre": 4,
    "top": [
     {
@@ -2562,6 +2562,29 @@
      ]
     },
     {
+     "nombre": "Alba Luz Martínez Hernández",
+     "n": 4,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Dina Y.",
+       "f": "20/10"
+      },
+      {
+       "n": "Sony M.",
+       "f": "22/10"
+      },
+      {
+       "n": "Alfredo A.",
+       "f": "23/10"
+      },
+      {
+       "n": "Lesly C.",
+       "f": "24/10"
+      }
+     ]
+    },
+    {
      "nombre": "Blanca Dina Ramirez Melendez",
      "n": 4,
      "hoy": 0,
@@ -2650,25 +2673,6 @@
       {
        "n": "Vilma P.",
        "f": "24/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Alba Luz Martínez Hernández",
-     "n": 3,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Dina Y.",
-       "f": "20/10"
-      },
-      {
-       "n": "Sony M.",
-       "f": "22/10"
-      },
-      {
-       "n": "Alfredo A.",
-       "f": "23/10"
       }
      ]
     },
@@ -2883,6 +2887,17 @@
      ]
     },
     {
+     "nombre": "Josue Salgado",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Delci S.",
+       "f": "24/10"
+      }
+     ]
+    },
+    {
      "nombre": "Karen Arias",
      "n": 1,
      "hoy": 0,
@@ -2949,8 +2964,8 @@
      ]
     }
    ],
-   "actualizado": "2026-10-24T18:25:00-06:00",
-   "repetidos": 4
+   "actualizado": "2026-10-24T19:26:00-06:00",
+   "repetidos": 5
   }
  },
  "fotos": [
