@@ -1683,7 +1683,7 @@ function constMsg(x){const n=String(x.nombre||"").split(" ")[0],p=hoyPts(x),f=RO
   let yo="";try{yo=String((miRegistro().nombre||"")||(fbUser&&fbUser.displayName)||"").trim().split(" ")[0]}catch(e){}if(!yo&&isAdmin)yo="Edwin";const firma=yo?`\n\nAtt. ${yo}`:"";
   if(p>=ROUTINE.length)return `¡Felicidades, ${n}! 🎉🔥\n\nHoy completó su rutina al 100%${r>1?` y ya lleva *${r} días de racha*`:""}.\n\nAsí se construye el éxito. ¡Siga así, mañana otra vez! 💪`+firma;
   if(p>0)return `¡Hola, ${n}! 👋\n\nHoy ya lleva *${p} de ${ROUTINE.length}* acciones de su rutina 💪\nLe ${f===1?"falta solo 1":"faltan "+f} para completar el día${r?` y mantener su racha de ${r} ${r===1?"día":"días"} 🔥`:" y empezar su racha 🔥"}.\n\n¡Usted puede! Entre a la app y termínela:\n${url}`+firma;
-  return `¡Hola, ${n}! 👋\n\nHoy es un gran día para empezar su racha 🔥\n\nSon solo 5 acciones: su historia, escuchar o leer, agregar personas nuevas, presentar el plan y dar seguimiento. Con una sola ya suma puntos.\n\n¡Vamos, yo creo en usted! 💪\n${url}`+firma}
+  return `¡Hola, ${n}! 👋\n\nLe cuento que en la app tenemos el *ranking de Mi Racha* 🔥 Para entrar solo tiene que hacer su *rutina del día*:\n\n1️⃣ Publicar su historia\n2️⃣ Escuchar, leer o Training\n3️⃣ Agregar personas nuevas a su lista\n4️⃣ Presentar el plan\n5️⃣ Dar seguimiento a sus prospectos\n\nCada acción le da 1 punto, y si completa las 5 empieza su racha y sube en el ranking.\n\nSi necesita ayuda o quiere que le explique cómo hacerlo, con gusto estoy para apoyarle 🙌\n\nEntre aquí: ${url}`+firma}
 const cwaHoy=()=>{const o=LS.get("cwaEnv")||{};return o.d===TODAY?o:{d:TODAY,u:{}}};
 const cwaMarca=(uid,tipo)=>{const o=cwaHoy();o.u[uid]=tipo;LS.set("cwaEnv",o);if(store.db)store.set("mensajes-"+TODAY,{d:TODAY,u:o.u}).catch(()=>{})};
 let cwaNubeD="";async function cwaNube(){if(!store.db||!store.uid||cwaNubeD===TODAY)return;cwaNubeD=TODAY;try{const v=await store.get("mensajes-"+TODAY);if(v&&v.u){const o=cwaHoy();Object.assign(o.u,v.u);Object.keys(o.u).forEach(k=>{if(v.u[k]==="fel")o.u[k]="fel"});LS.set("cwaEnv",o);if(eqTab==="ranking"&&rankMetric==="rutina")renderEquipo()}}catch(e){}}
@@ -2926,7 +2926,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261024203204";var busy=false,pend=null;
+(function(){var V="20261024203327";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
