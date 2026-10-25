@@ -2836,9 +2836,9 @@ function entRender(){const v=document.querySelector(".entV");if(!v)return;v.quer
     let R;const num=q.replace(/^#\s*/,"");
     if(/^\d+$/.test(num)){const c=Object.values(entCk).find(c=>c.tipo==="s"&&String(c.tk)===String(+num));R=c?S.filter(s=>s.id===c.id):[]}else R=q?S.filter(s=>entMatch(s.n,q)):null;
     const row=s=>{const c=entCk[s.id];return `<button type="button" class="entRow" data-es="${esc(s.id)}"><span class="entDot ${c?"ok":s.a?"go":"no"}"></span><span class="grow"><b>${esc(s.n)}</b><small>${c?`✅ Entró ${entHora(c.at)} · Ticket #${esc(String(c.tk||""))}`:s.a?(s.tk==="PREMIUM"?"★ PREMIUM · con buffet":"CLASSIC · solo acceso"):"⛔ Pendiente acceso · comunicarse con su líder"}</small></span><span class="muted">›</span></button>`};
-    if(R===null){const U=Object.values(entCk).filter(c=>c.tipo==="s").sort((a,b)=>b.at-a.at).slice(0,8);L.innerHTML=`<p class="entHint">Escriba el nombre del socio o el número del ticket.</p>${isAdmin?`<button type="button" class="btn ghost" id="entAddS" style="width:100%;margin-bottom:8px">➕ Agregar socio que no está en la lista</button>`:""}${U.length?`<p class="entSub">Últimas entradas</p>`+U.map(c=>row(S.find(s=>s.id===c.id)||{id:c.id,n:c.n,a:true,tk:c.tkT})).join(""):""}`}
+    if(R===null){const U=Object.values(entCk).filter(c=>c.tipo==="s").sort((a,b)=>b.at-a.at).slice(0,8);L.innerHTML=`<p class="entHint">Escriba el nombre del socio o el número del ticket.</p>${isAdmin?`<button type="button" class="btn" id="entTodos" style="width:100%;margin-bottom:8px">📋 Ver lista completa de los que entraron (${Object.values(entCk).filter(c=>c.tipo==="s").length})</button><button type="button" class="btn ghost" id="entAddS" style="width:100%;margin-bottom:8px">➕ Agregar socio que no está en la lista</button>`:""}${U.length?`<p class="entSub">Últimas entradas</p>`+U.map(c=>row(S.find(s=>s.id===c.id)||{id:c.id,n:c.n,a:true,tk:c.tkT})).join(""):""}`}
     else L.innerHTML=R.slice(0,30).map(row).join("")||`<div class="entMsg">No aparece en la lista de socios.<br><small>Pídale que hable con su líder o pase a caja.</small></div>${isAdmin&&!/^\d+$/.test(num)?`<button type="button" class="btn ghost" id="entAddS" style="width:100%">➕ Agregar socio que no está en la lista</button>`:""}`;
-    L.querySelectorAll("[data-es]").forEach(b=>b.onclick=()=>entSheetS(b.dataset.es));const ad=$("#entAddS");if(ad&&isAdmin)ad.onclick=()=>entAddSocio(q)}
+    L.querySelectorAll("[data-es]").forEach(b=>b.onclick=()=>entSheetS(b.dataset.es));const ad=$("#entAddS");if(ad&&isAdmin)ad.onclick=()=>entAddSocio(q);const et=$("#entTodos");if(et&&isAdmin)et.onclick=entVerTodos}
   else if(entTab==="i"){const I=entInv(),ll=I.filter(x=>entCk[x.id]);$("#entQ").placeholder="Buscar invitado por nombre…";
     st.innerHTML=`<div class="entBig"><b>${ll.length}</b><span>invitados han llegado · ${I.length} en la lista</span></div>`;
     const row=x=>{const c=entCk[x.id],s=entSocioDe(x);return `<button type="button" class="entRow" data-ei="${esc(x.id)}"><span class="entDot ${c?"ok":"go"}"></span><span class="grow"><b>${esc(x.n)}</b><small>${c?`✅ Llegó ${entHora(c.at)} · `:""}${s?"Invitado por "+esc(s):"⚠️ Sin socio asignado"}</small></span><span class="muted">›</span></button>`};
@@ -2870,6 +2870,17 @@ function entSheetS(id){const s=entSoc().find(x=>x.id===id);if(!s)return;const c=
     $("#entOkS").onclick=async()=>{const t=parseInt($("#entTkN").value,10),er=$("#entErr");if(!(t>0)){er.textContent="Escriba el número del ticket.";er.hidden=false;return}
       const dup=Object.values(entCk).find(c=>c.tipo==="s"&&+c.tk===t&&c.id!==id);if(dup){er.textContent=`El ticket #${t} ya se le entregó a ${dup.n}.`;er.hidden=false;return}
       $("#entOkS").disabled=true;if(!await entGuardar(id,{tipo:"s",n:s.n,tk:t,tkT:s.tk},`✅ ${s.n.split(" ")[0]} entró · Ticket #${t}`))$("#entOkS").disabled=false}})}
+function entVerTodos(){if(!isAdmin)return;const S=entSoc(),E=Object.values(entCk).filter(c=>c.tipo==="s").sort((a,b)=>(a.at||0)-(b.at||0)),dentro=new Set(E.map(c=>c.id)),F=S.filter(s=>s.a&&!dentro.has(s.id)).sort((a,b)=>a.n.localeCompare(b.n,"es"));
+  const tk=c=>(c.tkT||(S.find(s=>s.id===c.id)||{}).tk||"");let vista="in";
+  const draw=()=>{const L=vista==="in"?E.map((c,i)=>`<div class="row" style="gap:10px;padding:9px 0;border-bottom:1px solid var(--line)"><b class="num" style="width:26px;text-align:center">${i+1}</b><div class="grow" style="min-width:0"><b style="font-weight:600">${esc(c.n||"")}</b><div class="small muted">${entHora(c.at)} · Ticket #${esc(String(c.tk||"—"))} · ${tk(c)==="PREMIUM"?"★ Premium":"Classic"}${c.manual?" · agregado en puerta":""}${c.byN?" · recibió "+esc(c.byN):""}</div></div></div>`).join(""):F.map(s=>`<div class="row" style="gap:10px;padding:9px 0;border-bottom:1px solid var(--line)"><div class="grow" style="min-width:0"><b style="font-weight:600">${esc(s.n)}</b><div class="small muted">${s.tk==="PREMIUM"?"★ Premium":"Classic"} · Líder: ${esc(s.l||"—")}</div></div></div>`).join("");
+    $("#etL").innerHTML=L||`<p class="small muted">${vista==="in"?"Aún no ha entrado nadie.":"Ya entraron todos 🎉"}</p>`;$("#etIn").setAttribute("aria-selected",String(vista==="in"));$("#etF").setAttribute("aria-selected",String(vista!=="in"))};
+  const P=E.filter(c=>tk(c)==="PREMIUM").length;
+  openSheet(`<h2>📋 Socios en el evento</h2><p class="small muted" style="margin:0">Solo lo ve el administrador. ★ Premium ${P} · Classic ${E.length-P}</p>
+   <div class="seg"><button id="etIn" aria-selected="true">Entraron (${E.length})</button><button id="etF" aria-selected="false">Faltan (${F.length})</button></div>
+   <div id="etL" style="display:flex;flex-direction:column;max-height:60vh;overflow:auto"></div>
+   <button class="btn ghost" id="etCopy" style="width:100%">📄 Copiar lista</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{draw();
+    $("#etIn").onclick=()=>{vista="in";draw()};$("#etF").onclick=()=>{vista="f";draw()};
+    $("#etCopy").onclick=async()=>{const t=vista==="in"?E.map((c,i)=>`${i+1}. ${c.n} — #${c.tk||"—"} ${tk(c)==="PREMIUM"?"Premium":"Classic"} (${entHora(c.at)})`).join("\n"):F.map((s,i)=>`${i+1}. ${s.n} — ${s.tk==="PREMIUM"?"Premium":"Classic"} · ${s.l||""}`).join("\n");try{await navigator.clipboard.writeText(t);toast("Lista copiada")}catch(e){toast("No se pudo copiar")}}})}
 function entAddSocio(q){openSheet(`<h2>➕ Agregar socio</h2><p class="small muted" style="margin:0">Para socios que no se registraron en la lista. Queda con entrada y su número de ticket.</p><div class="field"><label for="entSn">Nombre completo</label><input class="inp" id="entSn" value="${esc(q||"")}"></div>
    <div class="field"><label for="entSt">Ticket</label><select class="inp" id="entSt"><option>PREMIUM</option><option>CLASSIC</option></select></div>
    <div class="field"><label for="entSk">Número del ticket</label><input class="inp" id="entSk" type="number" inputmode="numeric" min="1"></div><p class="small" id="entErr" style="color:var(--bad);margin:0" hidden></p>
@@ -2926,7 +2937,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261025074604";var busy=false,pend=null;
+(function(){var V="20261025090922";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
