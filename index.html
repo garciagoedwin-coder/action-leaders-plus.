@@ -1927,7 +1927,7 @@ const histDia=k=>{const n=Math.floor(parseK(k).getTime()/864e5),tipo=["pregunta"
 function evRecordar(nc,E){const w=String(nc||"").trim().split(/\s+/),pila=w[0]||"",ini=nrmN((w[1]||"").replace(/\./g,""));
   const cand=(contacts||[]).filter(c=>{const v=nrmN(c.name||"").split(" ");return v[0]&&v[0]===nrmN(pila)&&(!ini||v.slice(1).some(z=>z.startsWith(ini)))&&String(c.phone||"").replace(/\D/g,"").length>=7});
   const num=cand.length===1?waNum(cand[0].phone,cand[0].cc||"504"):"";
-  const t=`Hola ${pila}, ¡hoy es el gran día! 🎉\n\nLe recuerdo el *${E.titulo||"evento"}*.`+(E.hora?`\n🕑 Hora: ${E.hora}`:"")+`\n📍 Lugar: ${E.lugarTxt||E.lugar||""}`+(E.mapa?`\n🗺️ ${E.mapa}`:"")+`\n\nLo espero, va a ser una gran experiencia. Cualquier cosa me escribe.\n\nAtt. ${miNombreCorto()}`;
+  const t=`Hola ${pila} 👋 ¡Hoy es el gran día! 🎉\n\nLe espero en el *${E.titulo||"evento"}*.\n`+(E.hora?`\n🕑 Registro: *${E.hora}*`:"")+(E.llegar?`\n⏰ Le recomiendo llegar 10 minutos antes: *${E.llegar}*`:"")+`\n📍 ${E.lugarTxt||E.lugar||""}`+(E.mapa?`\n🗺️ ${E.mapa}`:"")+`\n\nVa a ser una experiencia que le puede cambiar la forma de viajar y de generar ingresos. ¡No se la pierda!\n\nConfírmeme con un 👍 que ahí nos vemos.\n\nAtt. ${miNombreCorto()}`;
   if(!num)toast("Elija el contacto de "+pila+" en WhatsApp");setTimeout(()=>{location.href="https://wa.me/"+(num||"")+"?text="+encodeURIComponent(t)},num?0:600)}
 function miNombreCorto(){const n=(miRegistro().nombre||miNombreFull()||profile.nombrePila||"").trim().split(/\s+/);return n.length>2?n[0]+" "+n[n.length>3?2:1]:n.join(" ")}
 async function histCanvas(k){const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");const h=histDia(k);
@@ -2952,7 +2952,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261025111508";var busy=false,pend=null;
+(function(){var V="20261025111741";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
