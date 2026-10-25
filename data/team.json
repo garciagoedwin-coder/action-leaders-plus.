@@ -2270,8 +2270,8 @@
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz",
     "José paz": "Jose Meza"
    },
-   "total": 132,
-   "hoy": 1,
+   "total": 133,
+   "hoy": 2,
    "sinNombre": 4,
    "top": [
     {
@@ -3006,6 +3006,17 @@
      ]
     },
     {
+     "nombre": "Loani",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Lesvi D.",
+       "f": "25/10"
+      }
+     ]
+    },
+    {
      "nombre": "Natalie",
      "n": 1,
      "hoy": 0,
@@ -3039,7 +3050,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-25T08:30:00-06:00",
+   "actualizado": "2026-10-25T10:16:00-06:00",
    "repetidos": 6
   }
  },
