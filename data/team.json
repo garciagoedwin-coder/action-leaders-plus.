@@ -2270,8 +2270,8 @@
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz",
     "José paz": "Jose Meza"
    },
-   "total": 135,
-   "hoy": 4,
+   "total": 136,
+   "hoy": 5,
    "sinNombre": 4,
    "top": [
     {
@@ -2622,6 +2622,33 @@
      ]
     },
     {
+     "nombre": "Rosa Oliva",
+     "n": 5,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Kimberlyn C.",
+       "f": "14/10"
+      },
+      {
+       "n": "Jimy Q.",
+       "f": "14/10"
+      },
+      {
+       "n": "Liliana C.",
+       "f": "18/10"
+      },
+      {
+       "n": "Vilma P.",
+       "f": "24/10"
+      },
+      {
+       "n": "Yamileth G.",
+       "f": "25/10"
+      }
+     ]
+    },
+    {
      "nombre": "Zamir Fuentes",
      "n": 5,
      "hoy": 0,
@@ -2714,29 +2741,6 @@
       {
        "n": "Leticia S.",
        "f": "23/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Rosa Oliva",
-     "n": 4,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Kimberlyn C.",
-       "f": "14/10"
-      },
-      {
-       "n": "Jimy Q.",
-       "f": "14/10"
-      },
-      {
-       "n": "Liliana C.",
-       "f": "18/10"
-      },
-      {
-       "n": "Vilma P.",
-       "f": "24/10"
       }
      ]
     },
@@ -3058,7 +3062,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-25T12:57:00-06:00",
+   "actualizado": "2026-10-25T13:55:00-06:00",
    "repetidos": 6,
    "hora": "2:40 pm",
    "llegar": "2:30 pm",
