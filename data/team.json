@@ -2270,14 +2270,14 @@
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz",
     "José paz": "Jose Meza"
    },
-   "total": 133,
-   "hoy": 2,
+   "total": 134,
+   "hoy": 3,
    "sinNombre": 4,
    "top": [
     {
      "nombre": "Joel Salgado",
-     "n": 11,
-     "hoy": 0,
+     "n": 12,
+     "hoy": 1,
      "inv": [
       {
        "n": "Maria R.",
@@ -2322,6 +2322,10 @@
       {
        "n": "Antonio P.",
        "f": "23/10"
+      },
+      {
+       "n": "Erika C.",
+       "f": "25/10"
       }
      ]
     },
@@ -3050,7 +3054,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-25T10:16:00-06:00",
+   "actualizado": "2026-10-25T12:34:00-06:00",
    "repetidos": 6,
    "hora": "2:40 pm",
    "llegar": "2:30 pm",
