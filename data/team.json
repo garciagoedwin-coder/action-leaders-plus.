@@ -2270,8 +2270,8 @@
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz",
     "José paz": "Jose Meza"
    },
-   "total": 134,
-   "hoy": 3,
+   "total": 135,
+   "hoy": 4,
    "sinNombre": 4,
    "top": [
     {
@@ -2325,6 +2325,53 @@
       },
       {
        "n": "Erika C.",
+       "f": "25/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Lizandro Castro",
+     "n": 10,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Claudia P.",
+       "f": "22/10"
+      },
+      {
+       "n": "Alexander C.",
+       "f": "22/10"
+      },
+      {
+       "n": "Anner F.",
+       "f": "22/10"
+      },
+      {
+       "n": "Martha S.",
+       "f": "23/10"
+      },
+      {
+       "n": "Fernanda H.",
+       "f": "23/10"
+      },
+      {
+       "n": "Angela C.",
+       "f": "23/10"
+      },
+      {
+       "n": "Teresa C.",
+       "f": "23/10"
+      },
+      {
+       "n": "Marvin R.",
+       "f": "23/10"
+      },
+      {
+       "n": "Jesus M.",
+       "f": "24/10"
+      },
+      {
+       "n": "Lizandro C.",
        "f": "25/10"
       }
      ]
@@ -2411,49 +2458,6 @@
       },
       {
        "n": "Ever C.",
-       "f": "24/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Lizandro Castro",
-     "n": 9,
-     "hoy": 0,
-     "inv": [
-      {
-       "n": "Claudia P.",
-       "f": "22/10"
-      },
-      {
-       "n": "Alexander C.",
-       "f": "22/10"
-      },
-      {
-       "n": "Anner F.",
-       "f": "22/10"
-      },
-      {
-       "n": "Martha S.",
-       "f": "23/10"
-      },
-      {
-       "n": "Fernanda H.",
-       "f": "23/10"
-      },
-      {
-       "n": "Angela C.",
-       "f": "23/10"
-      },
-      {
-       "n": "Teresa C.",
-       "f": "23/10"
-      },
-      {
-       "n": "Marvin R.",
-       "f": "23/10"
-      },
-      {
-       "n": "Jesus M.",
        "f": "24/10"
       }
      ]
@@ -3054,7 +3058,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-25T12:34:00-06:00",
+   "actualizado": "2026-10-25T12:57:00-06:00",
    "repetidos": 6,
    "hora": "2:40 pm",
    "llegar": "2:30 pm",
