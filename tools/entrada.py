@@ -22,6 +22,7 @@ for ln in open(sys.argv[1], encoding='utf-8'):
     p = [x.strip() for x in ln.rstrip('\n').split('|')]
     if len(p) < 5 or not p[1]: continue
     i = hid('s', p[1])
+    if i in vistos and any(c.isdigit() for c in p[1]): i = hid('s', p[1] + ' ' + ''.join(c for c in p[1] if c.isdigit()) + 'n')
     if i in vistos: continue
     vistos.add(i)
     socios.append({'id': i, 'n': bonito(p[1]), 'l': bonito(p[2]), 'a': n(p[3]) == 'acceso', 'tk': 'CLASSIC' if 'classic' in n(p[4]) else 'PREMIUM'})
