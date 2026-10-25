@@ -2269,8 +2269,8 @@
     "Alba martines": "Alba Luz Martínez Hernández",
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz"
    },
-   "total": 128,
-   "hoy": 26,
+   "total": 129,
+   "hoy": 27,
    "sinNombre": 4,
    "top": [
     {
@@ -2986,6 +2986,17 @@
      ]
     },
     {
+     "nombre": "Nicolle Cruz",
+     "n": 1,
+     "hoy": 1,
+     "inv": [
+      {
+       "n": "Nicolle C.",
+       "f": "24/10"
+      }
+     ]
+    },
+    {
      "nombre": "Noelmi Guadalupe Diaz Ruiz",
      "n": 1,
      "hoy": 0,
@@ -3008,7 +3019,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-24T21:26:00-06:00",
+   "actualizado": "2026-10-24T22:25:00-06:00",
    "repetidos": 6
   }
  },
