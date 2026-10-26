@@ -1837,7 +1837,7 @@
    "id": "2026-10-26-0800-pildora-millonaria"
   },
   {
-   "edifica": "",
+   "edifica": "Blanca Ramírez",
    "enlace": "",
    "fecha": "2026-10-26",
    "hora": "20:00",
@@ -1845,7 +1845,7 @@
    "lugar": "",
    "modalidad": "Virtual",
    "notas": "",
-   "responsable": "",
+   "responsable": "Josué Delgado",
    "tipo": "Presentación",
    "titulo": "Presentación Latinoamérica",
    "id": "2026-10-26-2000-presentacion-latinoamerica"
@@ -1865,7 +1865,7 @@
    "id": "2026-10-27-0800-yessmovemente-training"
   },
   {
-   "edifica": "Cesia Flores",
+   "edifica": "Gabriela Castillo",
    "enlace": "",
    "fecha": "2026-10-27",
    "hora": "14:00",
@@ -1879,7 +1879,7 @@
    "id": "2026-10-27-1400-presentacion-europa"
   },
   {
-   "edifica": "",
+   "edifica": "Kevin Izaguirre",
    "enlace": "",
    "fecha": "2026-10-27",
    "hora": "20:00",
@@ -1887,7 +1887,7 @@
    "lugar": "",
    "modalidad": "Virtual",
    "notas": "",
-   "responsable": "",
+   "responsable": "Edwin Garcia Go",
    "tipo": "Capacitación",
    "titulo": "Action Leaders Training",
    "id": "2026-10-27-2000-action-leaders-training"
@@ -1907,7 +1907,7 @@
    "id": "2026-10-28-0800-pildora-millonaria"
   },
   {
-   "edifica": "",
+   "edifica": "Flor Reyes",
    "enlace": "",
    "fecha": "2026-10-28",
    "hora": "20:00",
@@ -1915,7 +1915,7 @@
    "lugar": "",
    "modalidad": "Virtual",
    "notas": "",
-   "responsable": "",
+   "responsable": "Edwin Garcia Go",
    "tipo": "Presentación",
    "titulo": "Presentación Latinoamérica",
    "id": "2026-10-28-2000-presentacion-latinoamerica"
@@ -1935,7 +1935,7 @@
    "id": "2026-10-29-0800-yessmovemente-training"
   },
   {
-   "edifica": "",
+   "edifica": "Francisco Caballero",
    "enlace": "",
    "fecha": "2026-10-29",
    "hora": "14:00",
@@ -1943,13 +1943,13 @@
    "lugar": "",
    "modalidad": "Virtual",
    "notas": "",
-   "responsable": "Fernando Tovar",
+   "responsable": "Juan Carlos Granados",
    "tipo": "Presentación",
    "titulo": "Presentación Europa",
    "id": "2026-10-29-1400-presentacion-europa"
   },
   {
-   "edifica": "",
+   "edifica": "Mabis Franco",
    "enlace": "",
    "fecha": "2026-10-29",
    "hora": "20:00",
@@ -1957,7 +1957,7 @@
    "lugar": "",
    "modalidad": "Virtual",
    "notas": "",
-   "responsable": "",
+   "responsable": "Flor Reyes",
    "tipo": "Capacitación",
    "titulo": "Action Leaders Training",
    "id": "2026-10-29-2000-action-leaders-training"
@@ -1977,18 +1977,18 @@
    "id": "2026-10-30-0800-pildora-millonaria"
   },
   {
-   "edifica": "",
+   "edifica": "Nuvia Martinez",
    "enlace": "",
    "fecha": "2026-10-30",
    "hora": "20:00",
    "horaFin": "",
    "lugar": "",
    "modalidad": "Virtual",
-   "notas": "",
-   "responsable": "",
+   "notas": "Testimonio: Alba Martínez",
+   "responsable": "Nuvia Martinez",
    "tipo": "Presentación",
-   "titulo": "Presentación Latinoamérica",
-   "id": "2026-10-30-2000-presentacion-latinoamerica"
+   "titulo": "Presentación con testimonio",
+   "id": "2026-10-30-2000-presentacion-con-testimonio"
   },
   {
    "edifica": "",
@@ -2003,6 +2003,20 @@
    "tipo": "Píldora",
    "titulo": "Píldora Millonaria",
    "id": "2026-10-31-0800-pildora-millonaria"
+  },
+  {
+   "edifica": "",
+   "enlace": "",
+   "fecha": "2026-11-01",
+   "hora": "20:00",
+   "horaFin": "",
+   "lugar": "",
+   "modalidad": "Virtual",
+   "notas": "",
+   "responsable": "Zamir Fuentes y Josué Delgado",
+   "tipo": "Llamada",
+   "titulo": "Llamada de Poder",
+   "id": "2026-11-01-2000-llamada-de-poder"
   }
  ],
  "activaciones": [
@@ -2245,7 +2259,7 @@
    "video": "https://youtu.be/6ySNnmhDjwk",
    "whatsapp": "https://chat.whatsapp.com/H2qNlABTfsAAuZ12JqCiKi"
   },
-  "calendarioActualizado": "2026-10-18T22:20:44-06:00",
+  "calendarioActualizado": "2026-10-26T11:49:19-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
   "rankingActualizado": "2026-10-26T09:57:00-06:00",
