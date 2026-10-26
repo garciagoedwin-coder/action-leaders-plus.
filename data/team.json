@@ -43,7 +43,7 @@
    "nombre": "Gabriela Castillo",
    "presSemana": 0,
    "presentaciones": 5,
-   "regSemana": 2,
+   "regSemana": 0,
    "registros": 4,
    "volumen": 0,
    "id": "gabriela-castillo"
@@ -67,7 +67,7 @@
    "nombre": "Flor Idalma Reyes Padilla",
    "presSemana": 0,
    "presentaciones": 1,
-   "regSemana": 6,
+   "regSemana": 0,
    "registros": 6,
    "volumen": 500,
    "id": "flor-idalma-reyes-padilla"
@@ -127,7 +127,7 @@
    "nombre": "Lidia Sosa",
    "presSemana": 0,
    "presentaciones": 1,
-   "regSemana": 2,
+   "regSemana": 0,
    "registros": 3,
    "volumen": 0,
    "id": "lidia-sosa"
@@ -176,7 +176,7 @@
    "linea": "Juan Carlos Granados",
    "registros": 2,
    "presentaciones": 0,
-   "regSemana": 1,
+   "regSemana": 0,
    "presSemana": 0,
    "id": "juan-carlos-granados-claros"
   },
@@ -193,7 +193,7 @@
    "id": "francisco-caballero"
   },
   {
-   "actSemana": 1,
+   "actSemana": 0,
    "activaciones": 1,
    "linea": "Juan Carlos Granados",
    "nombre": "José Raúl Hernández",
@@ -235,7 +235,7 @@
    "nombre": "Kemyie Núñez",
    "presSemana": 0,
    "presentaciones": 1,
-   "regSemana": 1,
+   "regSemana": 0,
    "registros": 2,
    "volumen": 0,
    "id": "kemyie-nunez"
@@ -259,7 +259,7 @@
    "nombre": "Joany Isabel Perla Gámez",
    "presSemana": 1,
    "presentaciones": 13,
-   "regSemana": 2,
+   "regSemana": 0,
    "registros": 13,
    "volumen": 500,
    "id": "joany-isabel-perla-gamez"
@@ -271,7 +271,7 @@
    "nombre": "Silian Gissel Castillo Murillo",
    "presSemana": 1,
    "presentaciones": 3,
-   "regSemana": 3,
+   "regSemana": 0,
    "registros": 4,
    "volumen": 50,
    "id": "silian-gissel-castillo-murillo"
@@ -294,7 +294,7 @@
    "presentaciones": 0,
    "presSemana": 0,
    "registros": 1,
-   "regSemana": 1,
+   "regSemana": 0,
    "id": "maria-virginia-garcia-portillo",
    "activaciones": 0,
    "volumen": 0,
@@ -306,7 +306,7 @@
    "presentaciones": 0,
    "presSemana": 0,
    "registros": 1,
-   "regSemana": 1,
+   "regSemana": 0,
    "id": "henrry-antonio-munoz-sosa",
    "activaciones": 0,
    "volumen": 0,
@@ -343,7 +343,7 @@
    "nombre": "Denia Rocha",
    "presSemana": 1,
    "presentaciones": 10,
-   "regSemana": 3,
+   "regSemana": 0,
    "registros": 9,
    "volumen": 200,
    "id": "denia-rocha"
@@ -355,7 +355,7 @@
    "nombre": "Maynor Agustín Larios Lobo",
    "presSemana": 1,
    "presentaciones": 7,
-   "regSemana": 1,
+   "regSemana": 0,
    "registros": 2,
    "volumen": 200,
    "id": "maynor-agustin-larios-lobo"
@@ -434,14 +434,14 @@
   },
   {
    "actSemana": 0,
-   "activaciones": 0,
+   "activaciones": 1,
    "linea": "José Luis Rodríguez",
    "nombre": "Saby Isaguirre",
    "presSemana": 2,
    "presentaciones": 4,
-   "regSemana": 2,
+   "regSemana": 0,
    "registros": 4,
-   "volumen": 0,
+   "volumen": 50,
    "id": "saby-isaguirre"
   },
   {
@@ -522,7 +522,7 @@
    "presentaciones": 0,
    "presSemana": 0,
    "registros": 1,
-   "regSemana": 1,
+   "regSemana": 0,
    "id": "josefina-pacheco",
    "activaciones": 0,
    "volumen": 0,
@@ -559,7 +559,7 @@
    "nombre": "Carlos Alberto Rubio Valladares",
    "presSemana": 0,
    "presentaciones": 16,
-   "regSemana": 7,
+   "regSemana": 0,
    "registros": 12,
    "volumen": 1100,
    "id": "carlos-alberto-rubio-valladares"
@@ -589,7 +589,7 @@
    "id": "milton-nunez"
   },
   {
-   "actSemana": 1,
+   "actSemana": 0,
    "activaciones": 2,
    "linea": "Juan Carlos Granados",
    "nombre": "Marcia Sauceda",
@@ -610,7 +610,7 @@
    "id": "lilia-marlene-silva-pozo",
    "activaciones": 1,
    "volumen": 200,
-   "actSemana": 1
+   "actSemana": 0
   },
   {
    "nombre": "Rosa Cantillano",
@@ -622,7 +622,7 @@
    "id": "rosa-cantillano",
    "activaciones": 1,
    "volumen": 200,
-   "actSemana": 1
+   "actSemana": 0
   }
  ],
  "liderazgo": [
@@ -2213,6 +2213,14 @@
    "fecha": "2026-10-26T00:55:02.000Z",
    "fuente": "gmail",
    "id": "monica-leticia-salgado-lopez"
+  },
+  {
+   "socio": "Lesbia Karina Izaguirre Aguilar",
+   "paquete": "Starter",
+   "patrocinador": "Saby Odett Isaguirre Aguilar",
+   "fecha": "2026-10-26T01:55:03.000Z",
+   "fuente": "gmail",
+   "id": "lesbia-karina-izaguirre-aguilar"
   }
  ],
  "academia": [],
@@ -2230,7 +2238,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-26T00:55:02.000Z",
+  "activacionesCorte": "2026-10-26T01:55:03.000Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2240,7 +2248,7 @@
   "calendarioActualizado": "2026-10-18T22:20:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-25T18:55:00-06:00",
+  "rankingActualizado": "2026-10-26T09:57:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
