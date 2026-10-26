@@ -1848,7 +1848,7 @@ function evMsg(e){const F={"Honduras":"🇭🇳","Miami":"🇺🇸","España":"�
   L.push("📅 *"+longDate(e.fecha).replace(/^./,c=>c.toUpperCase())+"*","");
   const z=zoneTimes(e);if(z){L.push("🕗 *Horarios:*");z.split(" · ").forEach(p=>{const k=p.lastIndexOf(" "),n=p.slice(0,k),h=p.slice(k+1).replace(/(am|pm)$/," $1");L.push((F[n]||"•")+" "+n+": "+h)});L.push("")}
   else if(e.hora)L.push("🕗 "+h12(e.hora)+" (hora de Honduras)","");
-  if(e.responsable)L.push("🎤 *Presenta:* "+e.responsable);if(e.edifica)L.push("⭐ *Edifica:* "+e.edifica);if(e.responsable||e.edifica)L.push("");
+  if(e.responsable)L.push("🎤 *Presenta:* "+e.responsable);if(e.edifica)L.push((edLbl(e)==="Testimonio"?"🌟 *Testimonio:* ":"⭐ *Edifica:* ")+e.edifica);if(e.responsable||e.edifica)L.push("");
   if(e.lugar)L.push("📍 *Lugar:* "+e.lugar,"");
   const pil=/p[ií]ldora/i.test(e.titulo||"");const k=evLink(e);if(pil)L.push("📱 *En vivo por TikTok Live*",(T.config&&T.config.tiktok)||"Síganos en TikTok y active las notificaciones 🔔","");else if(k)L.push("💻 *Únase por Zoom:*",k,"");
   if(pil)L.push("☀️ Despierte su mejor versión cada mañana y tome decisiones que le acerquen a su libertad financiera.");
@@ -2140,7 +2140,7 @@ async function invCanvas(){const W=1080,H=1350,K=2,cv=document.createElement("ca
 window.__invCanvas=invCanvas;
 function evHTML(e){const fin=finalizada(e);return `<div class="ev ${fin?"ev-past":""}"><span class="hr">${esc(h12(e.hora))||"—"}${e.horaFin?`<br><span class="small muted" style="font-family:var(--f-body);font-weight:600">a ${esc(h12(e.horaFin))}</span>`:""}</span><div class="body">
   <div class="row between" style="align-items:flex-start"><b>${esc(e.titulo)}</b><span class="row" style="gap:4px;flex:none">${fin?'<span class="chip c-brand" style="color:var(--muted)">Finalizada</span>':modoChip(e)}</span></div>
-  <div class="meta">${e.responsable?`<span>${USER}Presenta: <b style="font-weight:600;color:var(--ink)">${esc(e.responsable)}</b></span>`:pendiente(e)&&!fin?`<span class="chip c-warn">Presentador por asignar</span>`:""}${e.edifica?`<span>Edifica: <b style="font-weight:600;color:var(--ink)">${esc(e.edifica)}</b></span>`:""}</div>
+  <div class="meta">${e.responsable?`<span>${USER}Presenta: <b style="font-weight:600;color:var(--ink)">${esc(e.responsable)}</b></span>`:pendiente(e)&&!fin?`<span class="chip c-warn">Presentador por asignar</span>`:""}${e.edifica?`<span>${edLbl(e)}: <b style="font-weight:600;color:var(--ink)">${esc(e.edifica)}</b></span>`:""}</div>
   <div class="meta">${zoneTimes(e)?`<span>${esc(zoneTimes(e))}</span>`:""}${e.lugar?`<span>${PIN}${esc(e.lugar)}</span>`:""}</div>
   ${e.notas?`<span class="small muted">${esc(e.notas)}</span>`:""}
   <div class="row" style="gap:8px;flex-wrap:wrap">${!fin&&e.id?`<button class="btn sm" data-share="${esc(e.id)}" type="button">📤 Compartir${esFlyer(e)?" con flyer":""}</button>`:""}${espDe(e)&&espDe(e).enlace&&!fin?`<a class="btn sm ghost" href="${esc(espDe(e).enlace)}" target="_blank" rel="noopener">${esc(espDe(e).boton||"Abrir enlace")}</a>`:evLink(e)&&!fin?`<a class="btn sm ghost" href="${esc(evLink(e))}" target="_blank" rel="noopener">Entrar al Zoom</a>`:""}</div>
@@ -2170,6 +2170,7 @@ function renderNext(){const nowHM=pad(now.getHours())+":"+pad(now.getMinutes());
    (up.length?`<div class="list">${up.map(e=>`<div class="ev"><span class="hr" style="font-size:15px">${e.fecha===TODAY?"Hoy":esc(niceDate(e.fecha).replace(" de "," "))}<br><span class="muted" style="font-size:14px">${esc(h12(e.hora))}</span></span><div class="body"><div class="row between" style="align-items:flex-start"><b>${esc(e.titulo)}</b>${modoChip(e)}</div><div class="meta">${e.lugar?`<span>${PIN}${esc(e.lugar)}</span>`:""}${e.responsable?`<span>${USER}${esc(e.responsable)}</span>`:pendiente(e)?`<span class="chip c-warn">Por asignar</span>`:""}</div>${e.id?`<button type="button" class="nxShare" data-share="${esc(e.id)}">${WA_IC} Compartir${esFlyer(e)?" flyer":""}</button>`:""}</div></div>`).join("")}</div>`
    :welSigned===false&&!T.eventos.length?`<p class="small muted">Crea tu cuenta gratis en <a href="https://claude.ai/login" target="_blank" rel="noopener"><b>Claude</b></a> para ver la agenda del equipo.</p>`:`<p class="small muted">No hay actividades próximas en el calendario.</p>`);
   $("#goAgenda").onclick=()=>go("agenda")}
+const edLbl=e=>/testimonio/i.test((e&&e.titulo)||"")?"Testimonio":"Edifica";
 function editEvent(ev){ev=ev||{titulo:"",fecha:selDay||TODAY,hora:"19:00",lugar:"",responsable:"",edifica:"",tipo:"Presentación",notas:"",enlace:""};
   openSheet(`<h2>${ev.id?"Editar actividad":"Nueva actividad"}</h2>
    <div class="field"><label for="eT">Actividad</label><input class="inp" id="eT" value="${esc(ev.titulo)}" placeholder="Ej.: Presentación de oportunidad"></div>
@@ -2964,7 +2965,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261025153419";var busy=false,pend=null;
+(function(){var V="20261026122259";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
