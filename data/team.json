@@ -2017,6 +2017,20 @@
    "tipo": "Llamada",
    "titulo": "Llamada de Poder",
    "id": "2026-11-01-2000-llamada-de-poder"
+  },
+  {
+   "edifica": "",
+   "enlace": "",
+   "fecha": "2026-11-01",
+   "hora": "21:00",
+   "horaFin": "",
+   "lugar": "",
+   "modalidad": "Virtual",
+   "notas": "Para el equipo de liderazgo.",
+   "responsable": "Edwin Garcia Go",
+   "tipo": "Reunión de líderes",
+   "titulo": "Llamada de Liderazgo",
+   "id": "2026-11-01-2100-llamada-de-liderazgo"
   }
  ],
  "activaciones": [
@@ -2259,7 +2273,7 @@
    "video": "https://youtu.be/6ySNnmhDjwk",
    "whatsapp": "https://chat.whatsapp.com/H2qNlABTfsAAuZ12JqCiKi"
   },
-  "calendarioActualizado": "2026-10-26T11:49:19-06:00",
+  "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
   "rankingActualizado": "2026-10-26T09:57:00-06:00",
