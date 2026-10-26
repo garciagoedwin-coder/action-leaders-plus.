@@ -611,6 +611,18 @@
    "activaciones": 1,
    "volumen": 200,
    "actSemana": 1
+  },
+  {
+   "nombre": "Rosa Cantillano",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "rosa-cantillano",
+   "activaciones": 1,
+   "volumen": 200,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -2193,6 +2205,14 @@
    "fecha": "2026-10-21T19:55:03.000Z",
    "fuente": "gmail",
    "id": "carmen-modesta-fajardo-vera"
+  },
+  {
+   "socio": "Monica Leticia Salgado Lopez",
+   "paquete": "Classic",
+   "patrocinador": "Rosa Cantillano",
+   "fecha": "2026-10-26T00:55:02.000Z",
+   "fuente": "gmail",
+   "id": "monica-leticia-salgado-lopez"
   }
  ],
  "academia": [],
@@ -2210,7 +2230,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-21T19:55:03.000Z",
+  "activacionesCorte": "2026-10-26T00:55:02.000Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2220,7 +2240,7 @@
   "calendarioActualizado": "2026-10-18T22:20:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-24T21:45:00-06:00",
+  "rankingActualizado": "2026-10-25T18:55:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
