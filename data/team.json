@@ -2326,14 +2326,14 @@
     "Noelmy": "Noelmi Guadalupe Diaz Ruiz",
     "José paz": "Jose Meza"
    },
-   "total": 140,
-   "hoy": 9,
+   "total": 139,
+   "hoy": 0,
    "sinNombre": 4,
    "top": [
     {
      "nombre": "Joel Salgado",
      "n": 12,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Maria R.",
@@ -2381,53 +2381,6 @@
       },
       {
        "n": "Erika C.",
-       "f": "25/10"
-      }
-     ]
-    },
-    {
-     "nombre": "Lizandro Castro",
-     "n": 10,
-     "hoy": 1,
-     "inv": [
-      {
-       "n": "Claudia P.",
-       "f": "22/10"
-      },
-      {
-       "n": "Alexander C.",
-       "f": "22/10"
-      },
-      {
-       "n": "Anner F.",
-       "f": "22/10"
-      },
-      {
-       "n": "Martha S.",
-       "f": "23/10"
-      },
-      {
-       "n": "Fernanda H.",
-       "f": "23/10"
-      },
-      {
-       "n": "Angela C.",
-       "f": "23/10"
-      },
-      {
-       "n": "Teresa C.",
-       "f": "23/10"
-      },
-      {
-       "n": "Marvin R.",
-       "f": "23/10"
-      },
-      {
-       "n": "Jesus M.",
-       "f": "24/10"
-      },
-      {
-       "n": "Lizandro C.",
        "f": "25/10"
       }
      ]
@@ -2514,6 +2467,49 @@
       },
       {
        "n": "Ever C.",
+       "f": "24/10"
+      }
+     ]
+    },
+    {
+     "nombre": "Lizandro Castro",
+     "n": 9,
+     "hoy": 0,
+     "inv": [
+      {
+       "n": "Claudia P.",
+       "f": "22/10"
+      },
+      {
+       "n": "Alexander C.",
+       "f": "22/10"
+      },
+      {
+       "n": "Anner F.",
+       "f": "22/10"
+      },
+      {
+       "n": "Martha S.",
+       "f": "23/10"
+      },
+      {
+       "n": "Fernanda H.",
+       "f": "23/10"
+      },
+      {
+       "n": "Angela C.",
+       "f": "23/10"
+      },
+      {
+       "n": "Teresa C.",
+       "f": "23/10"
+      },
+      {
+       "n": "Marvin R.",
+       "f": "23/10"
+      },
+      {
+       "n": "Jesus M.",
        "f": "24/10"
       }
      ]
@@ -2680,7 +2676,7 @@
     {
      "nombre": "Rosa Oliva",
      "n": 5,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Kimberlyn C.",
@@ -2860,7 +2856,7 @@
     {
      "nombre": "Noelmi Guadalupe Diaz Ruiz",
      "n": 3,
-     "hoy": 2,
+     "hoy": 0,
      "inv": [
       {
        "n": "Gerardo S.",
@@ -2928,7 +2924,7 @@
     {
      "nombre": "José Pablo Meza Paz",
      "n": 2,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Delia R.",
@@ -3095,7 +3091,7 @@
     {
      "nombre": "Kevin Matute",
      "n": 1,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Madelyn Y.",
@@ -3106,7 +3102,7 @@
     {
      "nombre": "Loani",
      "n": 1,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Lesvi D.",
@@ -3139,7 +3135,7 @@
     {
      "nombre": "Reina Isabel Garcia",
      "n": 1,
-     "hoy": 1,
+     "hoy": 0,
      "inv": [
       {
        "n": "Iris R.",
@@ -3148,7 +3144,7 @@
      ]
     }
    ],
-   "actualizado": "2026-10-25T15:26:00-06:00",
+   "actualizado": "2026-10-26T21:19:00-06:00",
    "repetidos": 6,
    "hora": "2:40 pm",
    "llegar": "2:30 pm",
