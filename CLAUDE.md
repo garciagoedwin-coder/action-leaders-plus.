@@ -164,3 +164,7 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Video y momentos: constantes `VIDEO`, `CAPS` y `MOM` al inicio del script de sala.html (fracción <1 o segundos). Cambiarlas no obliga a recargar la app.
 - Datos: `users/{uid}/sala/{id}` {n, c, t0, t, pct, r1, pais, pulso, resp, como, motivo, dur}. Reglas en `respaldo/reglas-sala.txt` (Edwin debe pegarlas en Firebase).
 - App: CRM → "🎬 Presentación" (envía el enlace por WhatsApp), Perfil → "🎬 Mi presentación virtual" (lista con nivel 🔥/🟠/❄️ y mensaje de seguimiento), tarjeta en Inicio con lo nuevo. Lecturas: solo si el socio ya envió alguna (LS salaOn) y solo documentos nuevos (where t > última sincronización).
+
+## 11. Cambios del 27 oct
+- Tarjeta del evento (reto/resultados) OCULTA en Inicio: `const EV_SHOW=false` en index.html. Los datos (team.json config.evento, Firestore evento/sps26, data/entrada.enc) se conservan; para mostrarla, EV_SHOW=true.
+- Rutina: encabezado "🔥 Su rutina de hoy" + chip de racha + barra "X de 5" y una sola línea "👉 Siguiente paso" con botón (el primer pendiente; de 6 pm en adelante avisa si se pierde la racha; al completar "¡Día completo! … Mañana va por N"). Textos de los 5 puntos en imperativo (campos nx/bt en ROUTINE).
