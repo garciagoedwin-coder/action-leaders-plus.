@@ -867,6 +867,7 @@ nav.tabs button{z-index:0;isolation:isolate}
         <div id="rutAlert"></div>
         <div class="bar"><i id="dayBar" style="width:0%"></i></div>
         <div class="list" id="tasks"></div>
+        <div class="row" style="gap:8px"><button class="btn sm" id="rutVerRacha" type="button" style="flex:1">🔥 Ver Mi Racha</button><button class="btn sm ghost" id="rutVerIdx" type="button" style="flex:1">⚡ Índice de Acción</button></div>
       </div>
       <div class="card" id="accesos" hidden></div>
       <div class="card" id="hoyCitas" hidden></div>
@@ -1835,6 +1836,7 @@ function renderEquipo(){const b=$("#eqBody");
     <p class="small muted">El nivel 1 son los directos. Cada nivel siguiente son los socios que inscribió el nivel anterior.</p></div>`:""}
    <p class="updated">${updatedTxt(R.actualizado)}</p>`}
 $("#eqSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;eqTab=b.dataset.k;setSeg("eqSeg",eqTab);renderEquipo()});
+$("#rutVerRacha").onclick=()=>{eqTab="ranking";rankMetric="rutina";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()};$("#rutVerIdx").onclick=()=>{eqTab="mios";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()};
 
 // ---------- calendario ----------
 const TIPOS=["Presentación","Capacitación","Píldora","Llamada","Reunión de líderes","Evento","Otro"];
@@ -2992,7 +2994,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261026182254";var busy=false,pend=null;
+(function(){var V="20261026183456";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
