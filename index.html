@@ -1406,7 +1406,7 @@ function evResultados(c,E){const L=E.top,yo=miNombreFull()||miNombreCorto(),iy=e
    ${R.length?`<div>${R.slice(0,3).map((x,i)=>`<div class="evRow"><span style="font-size:20px;width:26px;text-align:center">${md[i]}</span>${avHTML(x.s,false,false)}<span class="nm">${esc(x.s)}</span><small>de ${x.r}</small><span class="ct">${x.n}</span></div>`).join("")}</div>`:""}
    ${me}<div class="row" style="gap:8px">${iy>=0?`<button class="btn sm" id="evSeg" type="button" style="flex:1">📲 Seguimiento del evento</button>`:""}${R.length?`<button class="btn sm" id="evLlg2" type="button" style="flex:1">🏆 Llegadas</button>`:""}</div>`;
   const a=$("#evSeg");if(a)a.onclick=()=>evSeguimiento(E,iy);const b=$("#evLlg2");if(b)b.onclick=()=>evLlegadas(L,iy)}
-function evMsg(E,n,ok){const f=String(n||"").split(" ")[0],yo=miNombreCorto(),dia=["el domingo","el lunes","el martes","el miércoles","el jueves","el viernes","el sábado"][parseK(E.fecha).getDay()],ev=E.titulo||"evento";
+function evSegMsg(E,n,ok){const f=String(n||"").split(" ")[0],yo=miNombreCorto(),dia=["el domingo","el lunes","el martes","el miércoles","el jueves","el viernes","el sábado"][parseK(E.fecha).getDay()],ev=E.titulo||"evento";
   return ok?`Hola ${f} 👋 ¡Gracias por acompañarnos ${dia} en el *${ev}*! 🙌\n\n¿Qué fue lo que más le gustó? Me encantaría platicar unos minutos para resolver sus dudas y ver cómo puede empezar.\n\n¿Le gustaría que nos reunamos esta semana?${yo?`\n\nAtt. ${yo}`:""}`
    :`Hola ${f} 👋 ${dia[0].toUpperCase()+dia.slice(1)} le estuvimos esperando en el *${ev}* 🙌 Sé que a veces surgen imprevistos.\n\nFue una tarde increíble y no quiero que se quede sin conocer la información.\n\nMe gustaría invitarle a una reunión corta, por Zoom o en persona, donde le explico lo más importante en pocos minutos.\n\n¿Le interesa que le reserve un espacio esta semana?${yo?`\n\nAtt. ${yo}`:""}`}
 function evMatchCRM(n){const w=String(n||"").trim().split(/\s+/),f=nrmN(w[0]||""),ini=nrmN((w[1]||"").replace(/\./g,""));const C=(contacts||[]).filter(c=>{const v=nrmN(c.name||"").split(" ");return v[0]===f&&(!ini||v.slice(1).some(z=>z.startsWith(ini)))});return C.length===1?C[0]:null}
@@ -1421,7 +1421,7 @@ function evSeguimiento(E,iy){const m=evMios(E,iy),A=m.R.filter(x=>x.ok),F=m.R.fi
    <p class="entSub" style="margin:10px 0 0">⏳ No llegaron (${F.length})</p>${F.map(x=>row(x,false)).join("")||`<p class="small muted">¡Llegaron todos! 🎉</p>`}
    <p class="small muted" style="margin:0">📲 abre WhatsApp con un mensaje listo. Si la persona está en su CRM con número, se abre su chat directo.</p><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     const P=$("#sheetPanel");
-    P.querySelectorAll("[data-evw]").forEach(b=>b.onclick=()=>{const n=b.dataset.evw,c=evMatchCRM(n),num=c&&String(c.phone||"").replace(/\D/g,"").length>=7?waNum(c.phone,c.cc||"504"):"";if(!num)toast("Elija el contacto de "+n.split(" ")[0]+" en WhatsApp");const t=evMsg(E,n,b.dataset.ok==="1");setTimeout(()=>{location.href="https://wa.me/"+(num||"")+"?text="+encodeURIComponent(t)},num?0:600)});
+    P.querySelectorAll("[data-evw]").forEach(b=>b.onclick=()=>{const n=b.dataset.evw,c=evMatchCRM(n),num=c&&String(c.phone||"").replace(/\D/g,"").length>=7?waNum(c.phone,c.cc||"504"):"";if(!num)toast("Elija el contacto de "+n.split(" ")[0]+" en WhatsApp");const t=evSegMsg(E,n,b.dataset.ok==="1");setTimeout(()=>{location.href="https://wa.me/"+(num||"")+"?text="+encodeURIComponent(t)},num?0:600)});
     P.querySelectorAll("[data-evc]").forEach(b=>b.onclick=async()=>{b.disabled=true;const r=await evToCRM(E,b.dataset.evc,b.dataset.ok==="1");if(!r){b.disabled=false;toast("No se pudo guardar");return}b.textContent=r==="new"?"✓ Agregado":"✓ Actualizado";try{renderCRM()}catch(e){}});
     $("#evAll").onclick=async()=>{const bt=$("#evAll");bt.disabled=true;let nw=0,up=0;for(const x of A.concat(F)){const r=await evToCRM(E,x.n,x.ok);if(r==="new")nw++;else if(r==="upd")up++}try{renderCRM()}catch(e){}bt.textContent=`✓ ${nw} agregados · ${up} actualizados`;toast("Listo: revise su CRM y complete los WhatsApp que falten");setTimeout(()=>evSeguimiento(E,iy),1200)}})}
 function renderEvento(){const c=$("#evCard");if(!c)return;const E=(T.config&&T.config.evento)||null;
@@ -3022,7 +3022,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261026184730";var busy=false,pend=null;
+(function(){var V="20261026184759";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
