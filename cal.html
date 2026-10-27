@@ -6,7 +6,8 @@ a.b{display:block;margin:14px auto 0;padding:16px;border-radius:999px;background
 a.b.g{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}a.z{color:#9fdcff;word-break:break-all;font-size:14px}</style></head>
 <body><div class="w"><div style="font-size:46px">📅</div><h2 id="t">Agregar al calendario</h2><p class="d" id="when"></p><p class="s" id="z"></p>
 <a class="b" id="ios" href="#">🍎 Calendario del iPhone</a><a class="b g" id="gc" href="#" target="_blank" rel="noopener">📅 Google Calendar</a>
-<p class="s" style="margin-top:22px">Toca una opción y luego <b>Agregar</b> o <b>Guardar</b>.</p></div>
+<p class="s" style="margin-top:22px">Toque una opción y luego <b>Agregar</b> o <b>Guardar</b>.</p>
+<p class="s" id="help" hidden style="background:rgba(255,255,255,.08);border-radius:14px;padding:12px">¿No se abrió el calendario? Si está dentro de la app, toque <b>⋯</b> o el ícono de compartir y elija <b>Abrir en Safari</b>, y vuelva a tocar el botón. También puede usar <b>Google Calendar</b>.</p></div>
 <script>
 (function(){var p=new URLSearchParams(location.search),ics="",ti="Reunión",a,b,z="";
 function g(d){return d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"")}
@@ -17,6 +18,15 @@ try{if(p.get("t")){var t=p.get("t");a=new Date(Date.UTC(+t.slice(0,4),+t.slice(4
   document.getElementById("when").textContent=a.toLocaleDateString("es",{weekday:"long",day:"numeric",month:"long"})+" · "+a.toLocaleTimeString("es",{hour:"numeric",minute:"2-digit",hour12:true});
   if(z)document.getElementById("z").innerHTML='Enlace: <a class="z" href="'+z+'">'+z+'</a>'}
  else{ics=decodeURIComponent(location.hash.slice(1));var m=ics.match(/SUMMARY:(.*)/);if(m)ti=m[1];var gc=ics.match(/X-GCAL:(.*)/);document.getElementById("gc").style.display="none"}
- document.getElementById("t").textContent=ti;document.getElementById("ios").href="data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);
+ document.getElementById("t").textContent=ti;
+ // Google Calendar también cuando la cita llega completa en el enlace (#ics)
+ if(!p.get("t")){var gx=function(k){var r=ics.match(new RegExp("^"+k+":(.*)$","m"));return r?r[1].trim():""};var ds=gx("DTSTART"),de=gx("DTEND");
+   if(ds){var gcE=document.getElementById("gc");gcE.style.display="";gcE.href="https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(ti)+"&dates="+ds+"/"+(de||ds)+"&details="+encodeURIComponent(gx("DESCRIPTION"))+"&location="+encodeURIComponent(gx("LOCATION"));
+     try{var y=ds.match(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/);if(y){var dd=/Z$/.test(ds)?new Date(Date.UTC(+y[1],+y[2]-1,+y[3],+y[4],+y[5])):new Date(+y[1],+y[2]-1,+y[3],+y[4],+y[5]);document.getElementById("when").textContent=dd.toLocaleDateString("es",{weekday:"long",day:"numeric",month:"long"})+" · "+dd.toLocaleTimeString("es",{hour:"numeric",minute:"2-digit",hour12:true})}}catch(e){}}}
+ var iosB=document.getElementById("ios");iosB.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);
+ // iPhone: abrir el archivo .ics como blob (Safari muestra "Agregar al calendario"); si no pasa nada, explicar la alternativa
+ iosB.addEventListener("click",function(e){if(!/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent))return;e.preventDefault();
+   try{var u=URL.createObjectURL(new Blob([ics],{type:"text/calendar;charset=utf-8"}));location.href=u}catch(x){}
+   setTimeout(function(){if(document.visibilityState==="visible"){document.getElementById("help").hidden=false}},2500)});
  if(!/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){var i=document.getElementById("ios");i.textContent="📥 Descargar para mi calendario";i.className="b g";i.setAttribute("download","cita.ics");document.getElementById("gc").className="b"}}catch(e){}})();
 </script></body></html>
