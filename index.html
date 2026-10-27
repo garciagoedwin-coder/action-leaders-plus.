@@ -1558,27 +1558,54 @@ async function loadMios(){miosErr=false;const me=store.uid,M={};if(telSoc===null
   L.forEach(x=>{const r=x.registro,ln=Array.isArray(r.linea)?r.linea:[];if(r.patrocinadorUid===me){x.nivel=1;x.pierna=x.uid;return}const i=ln.indexOf(me);x.nivel=i>=0?i+1:1;x.pierna=i>0?ln[i-1]:x.uid});
   L.forEach(x=>{const p=M[x.pierna],q=M[x.registro.patrocinadorUid];x.piernaNom=p&&p.registro?p.registro.nombre:"";x.patNom=q&&q.registro?q.registro.nombre:""});
   if(miosErr&&L.length)miosErr=false;mios=L.sort(byAct);renderEquipo()}
+const IDX_C=p=>p>=70?"#16A34A":p>=40?"#D97706":"#DC2626";
+let idxPer="sem",idxStk=[];
+function idxPool(){return isAdmin?(socios||[]).filter(x=>x.registro&&x.registro.nombre&&!esSoloAdmin(x)):(mios||[])}
+function idxC(uid){return (constL||[]).find(y=>y.uid===uid)}
+function idxPers(uid){const c=idxC(uid),pts=c?(idxPer==="sem"?c.semPts:c.mesPts):0,pos=ROUTINE.length*(idxPer==="sem"?diasSem():diasMes());return pos>0?Math.min(100,Math.round((+pts||0)*100/pos)):0}
+function idxHoy(uid){const c=idxC(uid);return !!(c&&c.fecha===TODAY&&(+c.hoy||0)>0)}
+function idxEq(L){return L.length?Math.round(L.reduce((t,x)=>t+idxPers(x.uid),0)/L.length):null}
+function idxDesc(uid,P){return P.filter(y=>{const r=y.registro||{};return y.uid!==uid&&((Array.isArray(r.linea)&&r.linea.includes(uid))||r.patrocinadorUid===uid)})}
+function idxCard(){const P=idxPool();if(!P.length)return"";if(!constL){if(!window._ldC){window._ldC=1;loadConst().then(()=>{try{renderEquipo()}catch(e){}})}return`<div class="card"><b>⚡ Índice de Acción</b><span class="small muted">Calculando…</span></div>`}
+  const v=idxEq(P),act=P.filter(x=>idxHoy(x.uid)).length,me=isAdmin?null:idxPers(store.uid);
+  return `<div class="card" style="gap:10px"><div class="row between" style="gap:8px;flex-wrap:wrap"><b style="font-size:17px">⚡ Índice de Acción</b><div class="seg" style="width:auto;margin:0"><button aria-selected="${idxPer==="sem"}" data-ip="sem">Semana</button><button aria-selected="${idxPer==="mes"}" data-ip="mes">Mes</button></div></div>
+   <div class="row" style="gap:14px;align-items:center"><b class="num" style="font-size:54px;line-height:1;color:${IDX_C(v)}">${v}%</b><span class="small muted">Promedio de la rutina de ${isAdmin?"todo el equipo":"todo su equipo"} (${P.length} ${P.length===1?"socio":"socios"}) ${idxPer==="sem"?"esta semana":"este mes"}.</span></div>
+   <div style="height:10px;border-radius:99px;background:var(--line);overflow:hidden"><i style="display:block;height:100%;width:${v}%;background:${IDX_C(v)}"></i></div>
+   <div class="row wrap" style="gap:6px"><span class="chip c-good">✅ Hoy: ${act} de ${P.length} hicieron su rutina</span>${me!=null?`<span class="chip" style="background:${IDX_C(me)};color:#fff">Mi índice: ${me}%</span>`:""}</div>
+   <button class="btn sm" data-idxv="" style="width:100%">Ver el índice de cada socio ›</button></div>`}
+function idxSheet(uid){const P=idxPool(),ids=new Set(P.map(x=>x.uid)),root=!uid;
+  const D=root?(isAdmin?P.filter(x=>!ids.has((x.registro||{}).patrocinadorUid)):P.filter(x=>x.nivel===1)):P.filter(x=>(x.registro||{}).patrocinadorUid===uid);
+  const T=root?P:idxDesc(uid,P),v=idxEq(T),who=root?(isAdmin?"Todo el equipo":"Mi equipo"):(((P.find(x=>x.uid===uid)||{}).registro||{}).nombre||"Socio");
+  const rows=D.map(x=>{const E=idxDesc(x.uid,P);return{x,p:idxPers(x.uid),E,e:idxEq(E)}}).sort((a,b)=>(b.e==null?b.p:b.e)-(a.e==null?a.p:a.e)||b.p-a.p);
+  openSheet(`${idxStk.length>1?`<button type="button" class="btn sm ghost" id="idxBack" style="align-self:flex-start">‹ Volver</button>`:""}<h2>⚡ ${esc(who)}</h2>
+   <p class="small muted" style="margin:0">Índice de Acción ${idxPer==="sem"?"de la semana":"del mes"}${v!=null?`: <b style="font-size:18px;color:${IDX_C(v)}">${v}%</b> · ${T.length} ${T.length===1?"socio":"socios"}`:""}${!root?` · Personal: <b style="color:${IDX_C(idxPers(uid))}">${idxPers(uid)}%</b>`:""}</p>
+   <div style="display:flex;flex-direction:column">${rows.map(({x,p,E,e})=>`<div class="row" ${E.length?`data-idxv="${esc(x.uid)}" `:""}style="gap:10px;padding:9px 0;border-bottom:1px solid var(--line);${E.length?"cursor:pointer":""}">${avHTML(x.registro.nombre,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.registro.nombre)}</b><div class="small muted">${E.length?`Su equipo: <b style="color:${IDX_C(e)}">${e}%</b> (${E.length}) ›`:"Sin equipo aún"}${idxHoy(x.uid)?" · ✅ hoy":""}</div></div><b class="num" style="font-size:22px;color:${IDX_C(p)}">${p}%</b></div>`).join("")||`<p class="small muted">Aún no tiene socios directos.</p>`}</div>
+   <p class="small muted" style="margin:0">% = puntos de la rutina ÷ puntos posibles (5 por día). 🟢 70% o más · 🟡 40–69% · 🔴 menos de 40%. Toque un socio con equipo para ver su índice.</p><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
+    document.querySelectorAll("#sheetPanel [data-idxv]").forEach(r=>r.onclick=()=>{idxStk.push(r.dataset.idxv);idxSheet(r.dataset.idxv)});
+    const bk=$("#idxBack");if(bk)bk.onclick=()=>{idxStk.pop();idxSheet(idxStk[idxStk.length-1]||"")}})}
 function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia sesión","Entra con tu cuenta para ver a tus socios.");return}
   if(mios===null){b.innerHTML=`<p class="muted small">Cargando tus socios…</p>`;loadMios();return}
+  if(isAdmin&&socios===null&&!window._ldS){window._ldS=1;loadSocios()}
   const inv=`<div class="card"><h3 style="margin:0">🔗 Tu enlace de invitación</h3><p class="small muted" style="margin:0">Los socios que se registren con tu enlace aparecen aquí con su avance.</p>
     <div class="ref"><code style="word-break:break-all">${esc(miEnlace())}</code><button class="btn sm gold" id="miosCopy">Copiar</button></div></div>`;
   const bind=()=>{b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=waSocio(x);
-    if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});const c=$("#miosCopy");if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(miEnlace());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
+    if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});b.querySelectorAll("[data-ip]").forEach(x=>x.onclick=()=>{idxPer=x.dataset.ip;renderEquipo()});b.querySelectorAll("[data-idxv]").forEach(x=>x.onclick=()=>{idxStk=[""];idxSheet("")});const c=$("#miosCopy");if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(miEnlace());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
   if(miosErr){b.innerHTML=emptyCard("No se pudo cargar tu equipo","Revisa tu conexión e intenta de nuevo. Si sigue igual, avisa al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
-  if(!mios.length){b.innerHTML=`<div class="card empty"><h3>Aún no tienes socios en la app</h3><p class="small muted">Cuando firmes a alguien, mándale tu mensaje de bienvenida desde el CRM o comparte tu enlace. Al registrarse aparecerá aquí.</p></div>`+inv;bind();return}
+  if(!mios.length){b.innerHTML=idxCard()+`<div class="card empty"><h3>Aún no tienes socios en la app</h3><p class="small muted">Cuando firmes a alguien, mándale tu mensaje de bienvenida desde el CRM o comparte tu enlace. Al registrarse aparecerá aquí.</p></div>`+inv;bind();return}
   const lin=true;const V=miosVista==="dir"?mios.filter(x=>x.nivel===1):mios.slice().sort((a,b)=>a.nivel-b.nivel||byAct(a,b));
   const seg=lin?`<div class="seg" id="miosSeg"><button aria-selected="${miosVista==="dir"}" data-mv="dir">Directos (${mios.filter(x=>x.nivel===1).length})</button><button aria-selected="${miosVista==="todo"}" data-mv="todo">Toda mi línea (${mios.length})</button></div>`:"";
   const A=V.map(x=>actDe(x)),n=V.length,hoy=A.filter(a=>a.hoy>0).length,sem=A.filter(a=>a.d7>0).length,bien=A.filter(a=>a.bien).length,pres=A.reduce((t,a)=>t+(a.sem.presentaciones||0),0);
   const st=(v,t,c)=>`<div class="card" style="gap:2px"><b class="num" style="font-size:28px${c?";color:"+c:""}">${v}</b><span class="small muted">${t}</span></div>`;
   const cname=k=>{const c=CURSOS.find(x=>x.k===k);return c?c.t:k};
   let lvl=0;
-  b.innerHTML=`${seg}<div class="grid2">${st(n,miosVista==="todo"?"Socios en toda tu línea":n===1?"Socio directo":"Socios directos")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}${st(pres,"Presentaciones esta semana")}</div>
+  b.innerHTML=`${idxCard()}${seg}<div class="grid2">${st(n,miosVista==="todo"?"Socios en toda tu línea":n===1?"Socio directo":"Socios directos")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}${st(pres,"Presentaciones esta semana")}</div>
    <div class="card" style="gap:0">${V.map(x=>{const r=x.registro||{},a=actDe(x),S=a.sem,nm=r.nombre||"Socio",ua=tsMs(x.ultimoAcceso),cs=((x.actividad||{}).cursos||[]);
      const hd=miosVista==="todo"&&x.nivel!==lvl?(lvl=x.nivel,`<div class="lvl-h">Nivel ${x.nivel} <span>${(c=>c+(c===1?" socio":" socios"))(V.filter(y=>y.nivel===x.nivel).length)}</span></div>`):"";
      return `${hd}<div style="padding:12px 0;border-bottom:1px solid var(--line)">${miosVista==="todo"&&x.nivel>1?`<div class="small" style="color:var(--brand);font-weight:700;margin-bottom:6px">Línea de ${esc(x.piernaNom||"tu equipo")} · Patrocinador: ${esc(x.patNom||r.invitadoPor||r.patrocinador||"—")}</div>`:""}<div class="row" style="align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0">
       <b style="font-weight:600">${esc(nm)}</b><div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.fecha?"Desde "+niceDate(String(r.fecha).slice(0,10)):""}${ua?" · Entró "+haceTxt(ua):""}</div>${(isAdmin||r.patrocinadorUid===store.uid)?[...new Set([x.email,r.correo].map(e=>String(e||"").trim().toLowerCase()).filter(Boolean))].map(e=>`<button type="button" class="emCp" data-cpem="${esc(e)}">✉️ ${esc(e)} <span>Copiar</span></button>`).join(""):""}</div>
       <span class="chip ${a.hoy>=100?"c-good":a.hoy>0?"c-gold":"c-brand"}">Hoy ${a.hoy}%</span></div>
       <div class="row wrap" style="gap:6px;margin-top:8px">
+       ${constL?(()=>{const ip=idxPers(x.uid),E=idxDesc(x.uid,idxPool()),e=idxEq(E);return `<span class="chip" style="background:${IDX_C(ip)};color:#fff">⚡ Índice ${ip}%</span>${E.length?`<span class="chip" style="background:${IDX_C(e)};color:#fff">⚡ Su equipo ${e}% (${E.length})</span>`:""}`})():""}
        <span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"🎬 Bienvenida ✓":"🎬 Bienvenida pendiente"}</span>
        <span class="chip ${a.racha?"c-gold":"c-brand"}">🔥 Racha ${a.racha} ${a.racha===1?"día":"días"}</span>
        <span class="chip c-brand">📅 ${a.d7}/7 días activos</span>
@@ -2965,7 +2992,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261026122259";var busy=false,pend=null;
+(function(){var V="20261026182254";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
