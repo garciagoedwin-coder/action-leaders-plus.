@@ -1,11 +1,13 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Agregar al calendario</title>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Agregar al calendario</title>
 <meta name="robots" content="noindex"><link rel="icon" href="/icon-192.png?v=5">
 <style>body{margin:0;font-family:-apple-system,system-ui,Segoe UI,Roboto,sans-serif;background:#0d0c12;color:#fff;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;text-align:center}
 .w{max-width:360px;width:100%}h2{margin:10px 0 4px;font-size:22px}.d{font-size:17px;font-weight:700;color:#9fdcff;margin:0}.s{opacity:.7;line-height:1.5;font-size:14px}
 a.b{display:block;margin:14px auto 0;padding:16px;border-radius:999px;background:#2AC1F1;color:#0a141e;font-weight:800;text-decoration:none;font-size:16px}
+#x{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:12px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font-size:20px;display:grid;place-items:center;cursor:pointer}
 a.b.g{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}a.z{color:#9fdcff;word-break:break-all;font-size:14px}</style></head>
-<body><div class="w"><div style="font-size:46px">📅</div><h2 id="t">Agregar al calendario</h2><p class="d" id="when"></p><p class="s" id="z"></p>
+<body><button id="x" type="button" aria-label="Volver a la app">✕</button><div class="w"><div style="font-size:46px">📅</div><h2 id="t">Agregar al calendario</h2><p class="d" id="when"></p><p class="s" id="z"></p>
 <a class="b" id="ios" href="#">🍎 Calendario del iPhone</a><a class="b g" id="gc" href="#" target="_blank" rel="noopener">📅 Google Calendar</a>
+<a class="b g" id="volver" href="/">← Volver a la app</a>
 <p class="s" style="margin-top:22px">Toque una opción y luego <b>Agregar</b> o <b>Guardar</b>.</p>
 <p class="s" id="help" hidden style="background:rgba(255,255,255,.08);border-radius:14px;padding:12px">¿No se abrió el calendario? Si está dentro de la app, toque <b>⋯</b> o el ícono de compartir y elija <b>Abrir en Safari</b>, y vuelva a tocar el botón. También puede usar <b>Google Calendar</b>.</p></div>
 <script>
@@ -29,4 +31,6 @@ try{if(p.get("t")){var t=p.get("t");a=new Date(Date.UTC(+t.slice(0,4),+t.slice(4
    try{var u=URL.createObjectURL(new Blob([ics],{type:"text/calendar;charset=utf-8"}));location.href=u}catch(x){}
    setTimeout(function(){if(document.visibilityState==="visible"){document.getElementById("help").hidden=false}},2500)});
  if(!/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){var i=document.getElementById("ios");i.textContent="📥 Descargar para mi calendario";i.className="b g";i.setAttribute("download","cita.ics");document.getElementById("gc").className="b"}}catch(e){}})();
+(function(){function salir(e){if(e)e.preventDefault();try{window.close()}catch(x){}setTimeout(function(){if(history.length>1)history.back();else location.href="/"},250)}
+ document.getElementById("x").onclick=salir;document.getElementById("volver").onclick=salir})();
 </script></body></html>
