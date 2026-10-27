@@ -174,3 +174,7 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Líder: tarjeta #l3Card en Inicio (loadL3: where para==yo y nP==true) con Aceptar / Otra hora / No puedo. Al aceptar se agenda solo (l3AgendaLider) y puede avisar por WhatsApp (lee users/{de}.registro.whatsapp).
 - Respuesta al socio: where de==yo y nD==true (solo si LS l3Env); actualiza el título de su cita (✅/🕗/✖). Si el líder propone otra hora, el socio la acepta y al líder se le agenda sola.
 - Reglas: respaldo/reglas-llamadas3.txt (Edwin debe pegarlas). Sin notificación push (requiere Blaze + FCM).
+
+## 13. Cambios de horario (desde 27 oct)
+- "Presentación Europa" = 22:00 hora de Madrid y "YessMovemente Training" = 16:00 hora de Madrid (invierno europeo: 3:00 pm y 9:00 am Honduras; verano: 2:00 pm y 8:00 am). Todo lo demás está anclado a la hora de Honduras (UTC-6, sin cambio).
+- Tarea programada "Cambios de horario (Europa / EE.UU.) en la agenda": cada miércoles 10:47 am Honduras revisa si en 8 días cambia Europa o EE.UU.; si cambia Europa, ajusta la hoja Agenda (col. C) y team.json, y avisa a Edwin. Miami solo se informa (la app calcula su hora sola).
