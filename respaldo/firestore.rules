@@ -67,3 +67,19 @@ match /reservas/{id} { allow read: if true; allow create: if request.resource.da
 
   }
 }
+
+// ===== Agregado el 27/10/2026 (pegado por Edwin después del bloque "Modo entrada", dentro de documents) =====
+    // ---- Llamada de 3 ----
+    match /llamadas3/{id} {
+      allow create: if request.auth != null && request.resource.data.de == request.auth.uid && request.resource.data.para is string;
+      allow read: if request.auth != null && (resource.data.de == request.auth.uid || resource.data.para == request.auth.uid);
+      allow update: if request.auth != null && (resource.data.de == request.auth.uid || resource.data.para == request.auth.uid)
+        && request.resource.data.de == resource.data.de && request.resource.data.para == resource.data.para;
+      allow delete: if request.auth != null && resource.data.de == request.auth.uid;
+    }
+    // ---- Presentación virtual (sala) ----
+    match /users/{uid}/sala/{id} {
+      allow create, update: if request.resource.data.keys().hasOnly(['n','c','t0','t','pct','r1','pais','pulso','resp','como','motivo','dur'])
+        && request.resource.data.n is string && request.resource.data.n.size() <= 60
+        && request.resource.data.t is number;
+    }
