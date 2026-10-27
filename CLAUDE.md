@@ -34,17 +34,17 @@ App web móvil (PWA) del equipo de Edwin García Go (Director Nacional, inCruise
 ## 3. Datos (Firestore)
 
 - `users/{uid}`
-  - `registro`: nombre, patrocinador, patrocinadorUid, invitadoPor, plan (Classic/Premium), planPor, linea[] (todos los uid de arriba), whatsapp, pais, invId, fecha.
+  - `registro`: nombre, patrocinador, patrocinadorUid, invitadoPor, plan (Classic/Premium), planPor, linea[] (todos los uid de arriba), whatsapp, waOk (el socio confirmó su WhatsApp), pais, invId, fecha.
   - `actividad`: hoy, racha, dias7, semana, cons{…}, presN[], cursos, bienvenida, historia, t.
   - Subcolecciones:
-    - `datos/`: perfil, `rutina-AAAA-MM-DD` (con presL[{cid,n}] = nombres de las presentaciones), bienvenida, telsocios.
+    - `datos/`: perfil, `rutina-AAAA-MM-DD` (con presL[{cid,n}] = nombres de las presentaciones), bienvenida, telsocios (número corregido por el líder: {uid:{n,b}}; se usa mientras el registro siga con el número b).
     - `crm/`: los prospectos del socio.
-    - `citas/`: tipo zoom/whatsapp/persona/lider, fecha, hora, dur (60), cid, nombre, enlace, lugar, nota, hecha.
+    - `citas/`: tipo zoom/whatsapp/persona/lider, fecha, hora, dur (60), cid, nombre, enlace, lugar, nota, hecha, reprog (veces reprogramada).
     - `prospectos/`: los que entran desde `conoce.html`.
 - `invitaciones/{id}`: invitación personal. El patrocinador elige plan, país y WhatsApp.
 - `constancia/{uid}`: resumen de la rutina para el ranking "Top Consistencia".
   - Semana de lunes a domingo, reinicia el lunes. Inicio: 2026-10-19.
-  - Campos: wk, racha, semDias, semComp, semPres, mes, mesDias, mesComp, mesMejor, mesPres.
+  - Campos: wk, racha, semDias, semComp, semPres, semPts, pwk/pSemPts (puntos de la semana pasada, para la flecha ↑↓ del Índice de Duplicación), mes, mesDias, mesComp, mesMejor, mesPres, mesPts.
 - `perfiles/{code}`: página pública del socio (uid, nombre, foto, wa, ref, slots[], zoom).
 - `reservas/{code_slotms}`: horarios ya tomados.
 - `fotos/{uid}`: foto del socio (inv, invNombre, linea).
@@ -151,3 +151,9 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Fotos de Firestore: `cargarFotos()` con caché local de 6 h (getDocsFromCache), sin escucha en vivo.
 - `constancia` (Mi Racha / Índice) se lee solo al abrir esas vistas (caché 10 min), no al iniciar la app.
 - Antes de cada cambio, decirle a Edwin si puede afectar el rendimiento o las lecturas.
+
+## 9. Cambios del 26 oct (noche)
+- WhatsApp de socios: el registro con enlace de bienvenida ahora muestra el número y pregunta "¿Este es su WhatsApp?". Inicio pide confirmar una vez (registro.waOk). Perfil → "👤 Mis datos" (nombre, WhatsApp, ranking secundario). Líder: "✏️ Número" en Mis socios (cambiarNumSocio; el admin corrige el registro directo). Admin → tarjeta "⚠️ WhatsApp repetidos".
+- Citas: "🔁 Reprogramar" (abrirReprog) con mensaje de nuevo horario (citaMsg(c,"rep")).
+- "Índice de Acción" se llama ahora "Índice de Duplicación"; chips "⚡ Personal X%" y "⚡ Equipo de Nombre Y% (n socios)".
+- YessMovemente: el botón de la agenda es "📧 ¿Cómo entrar?" (abrirYess), no se comparte el enlace.

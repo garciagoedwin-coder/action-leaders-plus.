@@ -875,7 +875,7 @@ nav.tabs button{z-index:0;isolation:isolate}
         <div id="rutAlert"></div>
         <div class="bar"><i id="dayBar" style="width:0%"></i></div>
         <div class="list" id="tasks"></div>
-        <div class="row" style="gap:8px"><button class="btn sm" id="rutVerRacha" type="button" style="flex:1">🔥 Ver Mi Racha</button><button class="btn sm ghost" id="rutVerIdx" type="button" style="flex:1">⚡ Índice de Acción</button></div>
+        <div class="row" style="gap:8px"><button class="btn sm" id="rutVerRacha" type="button" style="flex:1">🔥 Ver Mi Racha</button><button class="btn sm ghost" id="rutVerIdx" type="button" style="flex:1">⚡ Índice de Duplicación</button></div>
       </div>
       <div class="card" id="accesos" hidden></div>
       <div class="card" id="hoyCitas" hidden></div>
@@ -1177,7 +1177,11 @@ function constStats(){const ini=k=>k<CONST_INI?CONST_INI:k,sc=k=>dayScore(k===TO
   const per=a=>{let act=0,comp=0,best=0,run=0,pres=0,pts=0;for(let d=parseK(ini(a));dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=sc(k),dd=(k===TODAY?day:weekCache[k])||{};pres+=+dd.presentaciones||0;pts+=ptsDia(dd,k);if(v>0)act++;if(v>=1){comp++;run++;best=Math.max(best,run)}else if(k!==TODAY)run=0}return{act,comp,best,pres,pts}};
   const lun=lunesK(),mes=TODAY.slice(0,7),W=per(lun),M=per(mes+"-01");let racha=0;
   for(let d=parseK(TODAY);dkey(d)>=ini(lun);d.setDate(d.getDate()-1)){const k=dkey(d),v=sc(k);if(k===TODAY&&v<1)continue;if(v>=1)racha++;else break}
-  return{wk:lun,racha,semDias:W.act,semComp:W.comp,semPres:W.pres,semPts:W.pts,mes,mesDias:M.act,mesComp:M.comp,mesMejor:M.best,mesPres:M.pres,mesPts:M.pts}}
+  const pl=(()=>{const d=parseK(lun);d.setDate(d.getDate()-7);return dkey(d)})();let pSem=null;
+  if(window._wkFrom&&window._wkFrom<=pl){pSem=0;for(let d=parseK(pl);dkey(d)<lun;d.setDate(d.getDate()+1)){const k=dkey(d);if(k>=CONST_INI)pSem+=ptsDia(weekCache[k]||{},k)}}
+  else{const o=LS.get("wkp");if(o&&o.wk===pl)pSem=+o.pts||0}
+  LS.set("wkp",{wk:lun,pts:W.pts});
+  return{wk:lun,pwk:pl,pSemPts:pSem,racha,semDias:W.act,semComp:W.comp,semPres:W.pres,semPts:W.pts,mes,mesDias:M.act,mesComp:M.comp,mesMejor:M.best,mesPres:M.pres,mesPts:M.pts}}
 let resT;function pushResumen(){if(!store.db||!store.uid)return;clearTimeout(resT);resT=setTimeout(async()=>{try{
   const sum={contactos:0,seguimientos:0,presentaciones:0,videos:0};let dias=0,racha=0;
   for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()-i);const w=weekCache[dkey(d)];if(w){Object.keys(sum).forEach(k=>sum[k]+=(+w[k]||0));if(dayScore(w,dkey(d))>0)dias++}}
@@ -1338,7 +1342,12 @@ function renderWho(){const c=$("#whoCard");c.hidden=true;return;
    <div class="row"><select class="inp grow" id="whoSel"><option value="">Selecciona tu nombre</option>${names.map(n=>`<option>${esc(n)}</option>`).join("")}</select><button class="btn" id="whoOk">Listo</button></div>`;
   $("#whoOk").onclick=()=>{const v=$("#whoSel").value;if(!v)return;if(!nomOk(v,$("#whoOk")))return;profile.miNombre=v;store.set("perfil",profile);renderMe();toast("Listo, "+v.split(" ")[0]+". Ahora sube tu foto")}}
 function renderMiWa(){const c=$("#miWaCard");if(c)c.hidden=true;const g0=document.querySelector(".waGate");
-  const r=(regDoc&&regDoc.registro)||null;if(!r||!store.db||isAdmin||String(r.whatsapp||"").replace(/\D/g,"").length>=8){if(g0)g0.remove();return}
+  const r=(regDoc&&regDoc.registro)||null;if(!r||!store.db||isAdmin||String(r.whatsapp||"").replace(/\D/g,"").length>=8){if(g0)g0.remove();
+    if(c&&r&&store.db&&!isAdmin&&!r.waOk&&String(r.whatsapp||"").replace(/\D/g,"").length>=8){c.hidden=false;c.style.flexWrap="wrap";
+      c.innerHTML=`<span style="min-width:180px">📱 ¿Este es su WhatsApp? <b style="white-space:nowrap">${esc(waFmt(r.whatsapp))}</b><br><span class="small muted">Su equipo le escribe a este número.</span></span><button class="btn sm" id="mwSi" type="button">✅ Sí, es correcto</button><button class="btn sm ghost" id="mwCh" type="button">Cambiar</button>`;
+      $("#mwSi").onclick=async()=>{try{await store.db.doc("users/"+store.uid).set({registro:{waOk:true}},{merge:true});r.waOk=true;c.hidden=true;toast("¡Gracias! WhatsApp confirmado ✓")}catch(e){toast("No se pudo guardar. Revise su conexión.")}};
+      $("#mwCh").onclick=()=>abrirMisDatos()}
+    return}
   if(g0)return;const g=document.createElement("div");g.className="waGate";
   g.innerHTML=`<div class="waBox"><div style="font-size:44px;line-height:1">📱</div><h2>Agregue su WhatsApp</h2>
    <p class="small muted" style="margin:0">Es necesario para continuar. Así su patrocinador y su equipo pueden escribirle directo desde la app.</p>
@@ -1349,7 +1358,7 @@ function renderMiWa(){const c=$("#miWaCard");if(c)c.hidden=true;const g0=documen
   g.querySelector("#mwOk").onclick=async()=>{const v=g.querySelector("#mwT").value.trim(),sp=splitPhone(v),n=sp.cc?sp.cc+sp.num:waNum(v,g.querySelector("#mwC").value),er=g.querySelector("#mwErr");
     if(n.length<8){er.textContent="Escriba su número de WhatsApp completo.";er.hidden=false;return}
     const bt=g.querySelector("#mwOk");bt.disabled=true;bt.textContent="Guardando…";
-    try{await store.db.doc("users/"+store.uid).set({registro:{whatsapp:n.slice(0,15)}},{merge:true});regDoc.registro.whatsapp=n.slice(0,15);LS.set("lastCC",g.querySelector("#mwC").value);g.remove();toast("¡Listo! WhatsApp guardado ✓")}
+    try{await store.db.doc("users/"+store.uid).set({registro:{whatsapp:n.slice(0,15),waOk:true}},{merge:true});regDoc.registro.whatsapp=n.slice(0,15);regDoc.registro.waOk=true;LS.set("lastCC",g.querySelector("#mwC").value);g.remove();toast("¡Listo! WhatsApp guardado ✓")}
     catch(e){bt.disabled=false;bt.textContent="Guardar y continuar";er.textContent="No se pudo guardar. Revise su conexión e intente de nuevo.";er.hidden=false}}}
 function renderAviso(){const c=$("#avisoCard");if(!c)return;c.hidden=true;return;if(profile.avisado||!profile.bienvenida||welSigned!==true){c.hidden=true;return}
   c.hidden=false;c.innerHTML=`<h3>¡Ya estás dentro! Avísanos</h3><p class="small muted">Llena tus datos para que tu equipo sepa que ya entraste a Action Leaders Plus.</p>
@@ -1579,15 +1588,24 @@ function msgMotiva(x){const r=x.registro||{},a=actDe(x),S=a.sem,first=(r.nombre|
   else L.push(`🎯 *Su reto:* con *1 registro* ya entra al ranking.`,"");
   L.push(`Cuente conmigo, aquí estoy para apoyarle.`,`*¡Hasta que funcione!* 🚀`);if(yo)L.push("",`— ${yo}`);return L.join("\n")}
 let miosVista="dir",telSoc=null;
-function waSocio(x){const r=x.registro||{},w=String(r.whatsapp||"").replace(/\D/g,"");if(w.length>=8)return w;const t=(telSoc||{})[x.uid];if(t)return t;
+function waSocio(x){const r=x.registro||{},w=String(r.whatsapp||"").replace(/\D/g,""),t=(telSoc||{})[x.uid];if(t&&typeof t==="object"&&t.n&&t.b===w)return t.n;if(w.length>=8)return w;if(t)return typeof t==="string"?t:t.n;
   const c=(contacts||[]).find(c=>sameN(c.name,r.nombre||"")&&waNum(c.phone,c.cc));return c?waNum(c.phone,c.cc):""}
+function cambiarNumSocio(x){const r=x.registro||{},nm=(r.nombre||"este socio").split(" ")[0],cur=waSocio(x),sp=cur?splitPhone("+"+cur):{cc:null,num:""},cc0=sp.cc||LS.get("lastCC")||"504";
+  openSheet(`<h2>✏️ WhatsApp de ${esc(nm)}</h2><span data-nofocus hidden></span><p class="small muted" style="margin:0">${cur?`Número actual: <b>${esc(waFmt(cur))}</b>. `:""}Si no es el correcto, escriba el número bueno. ${isAdmin?"Se corrige para todo el equipo.":"Se usará cuando usted le escriba desde la app."}</p>
+   <div class="grid2"><div class="field"><label for="cnC">País</label><select class="inp" id="cnC">${PAISES.map(([pn,k],i)=>`<option value="${k}" ${k===cc0&&i===PAISES.findIndex(y=>y[1]===cc0)?"selected":""}>${pn} (+${k})</option>`).join("")}</select></div>
+   <div class="field"><label for="cnT">WhatsApp</label><input class="inp" id="cnT" type="tel" inputmode="tel" value="${esc(sp.num||"")}" placeholder="Número"></div></div>
+   <button class="btn" id="cnOk" style="width:100%">Guardar número</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
+    $("#cnOk").onclick=async()=>{const v=$("#cnT").value.trim(),p2=splitPhone(v),n=(p2.cc?p2.cc+p2.num:waNum(v,$("#cnC").value)).slice(0,15);if(n.length<8){toast("Escriba el número completo");return}
+      const w=String(r.whatsapp||"").replace(/\D/g,"");$("#cnOk").disabled=true;
+      if(isAdmin&&x.registro){try{await store.db.doc("users/"+x.uid).set({registro:{whatsapp:n,waOk:false}},{merge:true});r.whatsapp=n;r.waOk=false;if(telSoc&&telSoc[x.uid]){delete telSoc[x.uid];store.set("telsocios",telSoc)}closeSheet();toast("📱 Número corregido ✓");try{renderEquipo()}catch(e){}return}catch(e){}}
+      telSoc=Object.assign({},telSoc||{},{[x.uid]:{n,b:w}});store.set("telsocios",telSoc);LS.set("lastCC",$("#cnC").value);closeSheet();toast("📱 Número guardado ✓");try{renderEquipo()}catch(e){}}})}
 function pedirWaSocio(x,t){const nm=(x.registro||{}).nombre||"este socio";
   openSheet(`<h2>📱 WhatsApp de ${esc(nm.split(" ")[0])}</h2><p class="small muted" style="margin:0">Guárdalo una vez y la próxima vez se abre su chat directo.</p>
    <div class="grid2"><div class="field"><label for="wsC">País</label><select class="inp" id="wsC">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")?"selected":""}>${pn} (+${k})</option>`).join("")}</select></div>
    <div class="field"><label for="wsT">WhatsApp</label><input class="inp" id="wsT" type="tel" placeholder="Número"></div></div>
    <button class="btn" id="wsOk" style="width:100%;background:#25D366;color:#fff">Guardar y abrir chat</button><button class="btn ghost" id="wsSh" style="width:100%">Elegir el chat en WhatsApp</button>`,()=>{
     $("#wsOk").onclick=async()=>{let v=$("#wsT").value.trim();const sp=splitPhone(v),n=sp.cc?sp.cc+sp.num:waNum(v,$("#wsC").value);if(n.length<8){toast("Escribe el número");return}
-      telSoc=Object.assign({},telSoc||{},{[x.uid]:n});store.set("telsocios",telSoc);LS.set("lastCC",$("#wsC").value);closeSheet();location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t)};
+      telSoc=Object.assign({},telSoc||{},{[x.uid]:{n,b:String((x.registro||{}).whatsapp||"").replace(/\D/g,"")}});store.set("telsocios",telSoc);LS.set("lastCC",$("#wsC").value);closeSheet();location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t)};
     $("#wsSh").onclick=async()=>{closeSheet();if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}})}
 async function loadMios(){miosErr=false;const me=store.uid,M={};if(telSoc===null){try{telSoc=(await store.get("telsocios"))||{}}catch(e){telSoc={}}}
   try{const q=await store.db.collection("users").where("registro.patrocinadorUid",me).get();q.docs.forEach(d=>M[d.id]=Object.assign({uid:d.id},d.data()))}catch(e){miosErr=true}
@@ -1601,23 +1619,27 @@ let idxPer="sem",idxStk=[];
 function idxPool(){return isAdmin?(socios||[]).filter(x=>x.registro&&x.registro.nombre&&!esSoloAdmin(x)):(mios||[])}
 function idxC(uid){return (constL||[]).find(y=>y.uid===uid)}
 function idxPers(uid){const c=idxC(uid),pts=c?(idxPer==="sem"?c.semPts:c.mesPts):0,pos=ROUTINE.length*(idxPer==="sem"?diasSem():diasMes());return pos>0?Math.min(100,Math.round((+pts||0)*100/pos)):0}
+const diasPrev=()=>{const d=parseK(lunesK());d.setDate(d.getDate()-7);let n=0;for(let i=0;i<7;i++){if(dkey(d)>=CONST_INI)n++;d.setDate(d.getDate()+1)}return n};
+function idxPrev(uid){const c=idxC(uid),pos=ROUTINE.length*diasPrev();if(!c||c.prevPts==null||pos<=0)return null;return Math.min(100,Math.round((+c.prevPts||0)*100/pos))}
+function idxEqPrev(L){const v=L.map(x=>idxPrev(x.uid)).filter(p=>p!=null);return v.length&&v.length>=L.length*.6?Math.round(v.reduce((a,b)=>a+b,0)/v.length):null}
+function idxDelta(v,pv){if(idxPer!=="sem"||pv==null||v==null||!diasPrev())return"";const d=v-pv;return `<span class="chip" style="background:${d>0?"var(--good-soft)":d<0?"rgba(220,38,38,.12)":"var(--line)"};color:${d>0?"var(--good)":d<0?"#DC2626":"var(--muted)"};font-weight:800">${d>0?"↑ +"+d:d<0?"↓ "+d:"= 0"} vs. semana pasada (${pv}%)</span>`}
 function idxHoy(uid){const c=idxC(uid);return !!(c&&c.fecha===TODAY&&(+c.hoy||0)>0)}
 function idxEq(L){return L.length?Math.round(L.reduce((t,x)=>t+idxPers(x.uid),0)/L.length):null}
 function idxDesc(uid,P){return P.filter(y=>{const r=y.registro||{};return y.uid!==uid&&((Array.isArray(r.linea)&&r.linea.includes(uid))||r.patrocinadorUid===uid)})}
-function idxCard(){const P=idxPool();if(!P.length)return"";if(!constL){if(!window._ldC){window._ldC=1;loadConst().then(()=>{try{renderEquipo()}catch(e){}})}return`<div class="card"><b>⚡ Índice de Acción</b><span class="small muted">Calculando…</span></div>`}
+function idxCard(){const P=idxPool();if(!P.length)return"";if(!constL){if(!window._ldC){window._ldC=1;loadConst().then(()=>{try{renderEquipo()}catch(e){}})}return`<div class="card"><b>⚡ Índice de Duplicación</b><span class="small muted">Calculando…</span></div>`}
   const v=idxEq(P),act=P.filter(x=>idxHoy(x.uid)).length,me=isAdmin?null:idxPers(store.uid);
-  return `<div class="card" style="gap:10px"><div class="row between" style="gap:8px;flex-wrap:wrap"><b style="font-size:17px">⚡ Índice de Acción</b><div class="seg" style="width:auto;margin:0"><button aria-selected="${idxPer==="sem"}" data-ip="sem">Semana</button><button aria-selected="${idxPer==="mes"}" data-ip="mes">Mes</button></div></div>
+  return `<div class="card" style="gap:10px"><div class="row between" style="gap:8px;flex-wrap:wrap"><b style="font-size:17px">⚡ Índice de Duplicación</b><div class="seg" style="width:auto;margin:0"><button aria-selected="${idxPer==="sem"}" data-ip="sem">Semana</button><button aria-selected="${idxPer==="mes"}" data-ip="mes">Mes</button></div></div>
    <div class="row" style="gap:14px;align-items:center"><b class="num" style="font-size:54px;line-height:1;color:${IDX_C(v)}">${v}%</b><span class="small muted">Promedio de la rutina de ${isAdmin?"todo el equipo":"todo su equipo"} (${P.length} ${P.length===1?"socio":"socios"}) ${idxPer==="sem"?"esta semana":"este mes"}.</span></div>
    <div style="height:10px;border-radius:99px;background:var(--line);overflow:hidden"><i style="display:block;height:100%;width:${v}%;background:${IDX_C(v)}"></i></div>
-   <div class="row wrap" style="gap:6px"><span class="chip c-good">✅ Hoy: ${act} de ${P.length} hicieron su rutina</span>${me!=null?`<span class="chip" style="background:${IDX_C(me)};color:#fff">Mi índice: ${me}%</span>`:""}</div>
+   <div class="row wrap" style="gap:6px">${idxDelta(v,idxEqPrev(P))}<span class="chip c-good">✅ Hoy: ${act} de ${P.length} hicieron su rutina</span>${me!=null?`<span class="chip" style="background:${IDX_C(me)};color:#fff">Mi índice: ${me}%</span>`:""}${me!=null&&idxPer==="sem"&&idxPrev(store.uid)!=null?`<span class="chip c-brand">Yo: ${(d=>d>0?"↑ +"+d:d<0?"↓ "+d:"= 0")(me-idxPrev(store.uid))} vs. semana pasada</span>`:""}</div>
    <button class="btn sm" data-idxv="" style="width:100%">Ver el índice de cada socio ›</button></div>`}
 function idxSheet(uid){const P=idxPool(),ids=new Set(P.map(x=>x.uid)),root=!uid;
   const D=root?(isAdmin?P.filter(x=>!ids.has((x.registro||{}).patrocinadorUid)):P.filter(x=>x.nivel===1)):P.filter(x=>(x.registro||{}).patrocinadorUid===uid);
   const T=root?P:idxDesc(uid,P),v=idxEq(T),who=root?(isAdmin?"Todo el equipo":"Mi equipo"):(((P.find(x=>x.uid===uid)||{}).registro||{}).nombre||"Socio");
   const rows=D.map(x=>{const E=idxDesc(x.uid,P);return{x,p:idxPers(x.uid),E,e:idxEq(E)}}).sort((a,b)=>(b.e==null?b.p:b.e)-(a.e==null?a.p:a.e)||b.p-a.p);
   openSheet(`${idxStk.length>1?`<button type="button" class="btn sm ghost" id="idxBack" style="align-self:flex-start">‹ Volver</button>`:""}<h2>⚡ ${esc(who)}</h2>
-   <p class="small muted" style="margin:0">Índice de Acción ${idxPer==="sem"?"de la semana":"del mes"}${v!=null?`: <b style="font-size:18px;color:${IDX_C(v)}">${v}%</b> · ${T.length} ${T.length===1?"socio":"socios"}`:""}${!root?` · Personal: <b style="color:${IDX_C(idxPers(uid))}">${idxPers(uid)}%</b>`:""}</p>
-   <div style="display:flex;flex-direction:column">${rows.map(({x,p,E,e})=>`<div class="row" ${E.length?`data-idxv="${esc(x.uid)}" `:""}style="gap:10px;padding:9px 0;border-bottom:1px solid var(--line);${E.length?"cursor:pointer":""}">${avHTML(x.registro.nombre,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.registro.nombre)}</b><div class="small muted">${E.length?`Su equipo: <b style="color:${IDX_C(e)}">${e}%</b> (${E.length}) ›`:"Sin equipo aún"}${idxHoy(x.uid)?" · ✅ hoy":""}</div></div><b class="num" style="font-size:22px;color:${IDX_C(p)}">${p}%</b></div>`).join("")||`<p class="small muted">Aún no tiene socios directos.</p>`}</div>
+   <p class="small muted" style="margin:0">Índice de Duplicación ${idxPer==="sem"?"de la semana":"del mes"}${v!=null?`: <b style="font-size:18px;color:${IDX_C(v)}">${v}%</b> · ${T.length} ${T.length===1?"socio":"socios"}`:""}${!root?` · Personal: <b style="color:${IDX_C(idxPers(uid))}">${idxPers(uid)}%</b>`:""}</p>
+   <div style="display:flex;flex-direction:column">${rows.map(({x,p,E,e})=>`<div class="row" ${E.length?`data-idxv="${esc(x.uid)}" `:""}style="gap:10px;padding:9px 0;border-bottom:1px solid var(--line);${E.length?"cursor:pointer":""}">${avHTML(x.registro.nombre,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.registro.nombre)}</b><div class="small muted">${E.length?`Equipo de ${esc(x.registro.nombre.split(" ")[0])}: <b style="color:${IDX_C(e)}">${e}%</b> (${E.length} ${E.length===1?"socio":"socios"}) ›`:"Sin equipo aún"}${idxHoy(x.uid)?" · ✅ hoy":""}</div></div><b class="num" style="font-size:22px;color:${IDX_C(p)}">${p}%</b></div>`).join("")||`<p class="small muted">Aún no tiene socios directos.</p>`}</div>
    <p class="small muted" style="margin:0">% = puntos de la rutina ÷ puntos posibles (5 por día). 🟢 70% o más · 🟡 40–69% · 🔴 menos de 40%. Toque un socio con equipo para ver su índice.</p><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     document.querySelectorAll("#sheetPanel [data-idxv]").forEach(r=>r.onclick=()=>{idxStk.push(r.dataset.idxv);idxSheet(r.dataset.idxv)});
     const bk=$("#idxBack");if(bk)bk.onclick=()=>{idxStk.pop();idxSheet(idxStk[idxStk.length-1]||"")}})}
@@ -1627,7 +1649,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
   const inv=`<div class="card"><h3 style="margin:0">🔗 Tu enlace de invitación</h3><p class="small muted" style="margin:0">Los socios que se registren con tu enlace aparecen aquí con su avance.</p>
     <div class="ref"><code style="word-break:break-all">${esc(miEnlace())}</code><button class="btn sm gold" id="miosCopy">Copiar</button></div></div>`;
   const bind=()=>{b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=waSocio(x);
-    if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});b.querySelectorAll("[data-ip]").forEach(x=>x.onclick=()=>{idxPer=x.dataset.ip;renderEquipo()});b.querySelectorAll("[data-idxv]").forEach(x=>x.onclick=()=>{idxStk=[""];idxSheet("")});const c=$("#miosCopy");if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(miEnlace());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
+    if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});b.querySelectorAll("[data-wnum]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.wnum);if(x)cambiarNumSocio(x)});b.querySelectorAll("[data-ip]").forEach(x=>x.onclick=()=>{idxPer=x.dataset.ip;renderEquipo()});b.querySelectorAll("[data-idxv]").forEach(x=>x.onclick=()=>{idxStk=[""];idxSheet("")});const c=$("#miosCopy");if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(miEnlace());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
   if(miosErr){b.innerHTML=emptyCard("No se pudo cargar tu equipo","Revisa tu conexión e intenta de nuevo. Si sigue igual, avisa al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
   if(!mios.length){b.innerHTML=idxCard()+`<div class="card empty"><h3>Aún no tienes socios en la app</h3><p class="small muted">Cuando firmes a alguien, mándale tu mensaje de bienvenida desde el CRM o comparte tu enlace. Al registrarse aparecerá aquí.</p></div>`+inv;bind();return}
   const lin=true;const V=miosVista==="dir"?mios.filter(x=>x.nivel===1):mios.slice().sort((a,b)=>a.nivel-b.nivel||byAct(a,b));
@@ -1643,7 +1665,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
       <b style="font-weight:600">${esc(nm)}</b><div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.fecha?"Desde "+niceDate(String(r.fecha).slice(0,10)):""}${ua?" · Entró "+haceTxt(ua):""}</div>${(isAdmin||r.patrocinadorUid===store.uid)?[...new Set([x.email,r.correo].map(e=>String(e||"").trim().toLowerCase()).filter(Boolean))].map(e=>`<button type="button" class="emCp" data-cpem="${esc(e)}">✉️ ${esc(e)} <span>Copiar</span></button>`).join(""):""}</div>
       <span class="chip ${a.hoy>=100?"c-good":a.hoy>0?"c-gold":"c-brand"}">Hoy ${a.hoy}%</span></div>
       <div class="row wrap" style="gap:6px;margin-top:8px">
-       ${constL?(()=>{const ip=idxPers(x.uid),E=idxDesc(x.uid,idxPool()),e=idxEq(E);return `<span class="chip" style="background:${IDX_C(ip)};color:#fff">⚡ Índice ${ip}%</span>${E.length?`<span class="chip" style="background:${IDX_C(e)};color:#fff">⚡ Su equipo ${e}% (${E.length})</span>`:""}`})():""}
+       ${constL?(()=>{const ip=idxPers(x.uid),E=idxDesc(x.uid,idxPool()),e=idxEq(E);return `<span class="chip" style="background:${IDX_C(ip)};color:#fff">⚡ Personal ${ip}%</span>${E.length?`<span class="chip" style="background:${IDX_C(e)};color:#fff">⚡ Equipo de ${esc(nm.split(" ")[0])} ${e}% (${E.length} ${E.length===1?"socio":"socios"})</span>`:""}`})():""}
        <span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"🎬 Bienvenida ✓":"🎬 Bienvenida pendiente"}</span>
        <span class="chip ${a.racha?"c-gold":"c-brand"}">🔥 Racha ${a.racha} ${a.racha===1?"día":"días"}</span>
        <span class="chip c-brand">📅 ${a.d7}/7 días activos</span>
@@ -1653,7 +1675,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
        ${(()=>{const rk=rankDe(nm);return rk?`<span class="chip ${rk.pPos&&rk.pPos<=10?"c-gold":"c-brand"}">🏆 Registros: ${rk.R}${rk.pPos?" · #"+rk.pPos:""}</span><span class="chip ${rk.aPos&&rk.aPos<=10?"c-gold":"c-brand"}">🚀 Activaciones: ${rk.A} · Vol. ${fmt(rk.V)}${rk.aPos?" · #"+rk.aPos:""}</span>`:`<span class="chip c-brand">🏆 Sin registros en el ranking</span>`})()}
        ${(()=>{const m=x.metas||{},R=proxRango(rangoActualIdx(x.registro,nm)),rg=R?R.n:"";if(!m.act&&!rg&&!m.sueno)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(R?`<span class="chip" style="background:${R.c};color:#fff">🏅 Próximo: ${esc(rg)}</span>`:"")+(m.sueno?`<span class="chip c-good">💰 Sueño: ${usd(m.sueno)}/mes</span>`:"")})()}
        ${cs.length?cs.map(k=>`<span class="chip c-good">🎓 ${esc(cname(k))}</span>`).join(""):`<span class="chip c-brand">🎓 Sin cursos aún</span>`}
-      </div><button class="btn sm" data-mot="${esc(x.uid)}" style="margin-top:10px;width:100%;background:#25D366;color:#fff">💬 Motivar por WhatsApp</button></div>`}).join("")}</div>
+      </div><div class="row" style="gap:8px;margin-top:10px"><button class="btn sm grow" data-mot="${esc(x.uid)}" style="background:#25D366;color:#fff">💬 Motivar por WhatsApp</button><button class="btn sm ghost" data-wnum="${esc(x.uid)}" type="button" aria-label="Cambiar número de WhatsApp de ${esc(nm)}">✏️ Número</button></div></div>`}).join("")}</div>
    <p class="small muted" style="margin:0">Presentaciones, contactos y días activos son de los últimos 7 días.${bien<n?" "+(n-bien)+" aún no ha"+(n-bien>1?"n":"")+" completado la bienvenida.":""}</p>
    <button class="btn sm ghost" id="miosReload" style="align-self:flex-start">Actualizar lista</button>${inv}`;bind()}
 const SOLO_ADMIN=["garciagoedwin@gmail.com"];const esSoloAdmin=x=>SOLO_ADMIN.includes(String(x.email||"").toLowerCase());
@@ -1666,12 +1688,14 @@ function editarSocio(uid){const x=(socios||[]).find(y=>y.uid===uid);if(!x)return
     ${r.patrocinador&&!r.patrocinadorUid?`<span class="small muted">Escribió: "${esc(r.patrocinador)}"</span>`:""}</div>
    <div class="field"><label for="esPlan">Paquete</label><select class="inp" id="esPlan"><option ${r.plan!=="Premium"?"selected":""}>Classic</option><option ${r.plan==="Premium"?"selected":""}>Premium</option></select></div>
    <div class="field"><label for="esRg">Rango actual</label><select class="inp" id="esRg"><option value="" ${!r.rango?"selected":""}>Automático (hoja de líderes)</option><option ${r.rango==="Socio"?"selected":""}>Socio</option>${RANGOS.map(g=>`<option ${r.rango===g.n?"selected":""}>${esc(g.n)}</option>`).join("")}</select></div>
+   ${x.registro?`<button class="btn ghost" id="esWa" type="button" style="width:100%">📱 WhatsApp: ${esc(waFmt(r.whatsapp)||"sin número")} · Cambiar</button>`:""}
    <button class="btn" id="esOk" style="width:100%">Guardar cambios</button>
    <label class="row" style="gap:10px;align-items:center;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer"><input type="checkbox" id="esRec" style="width:22px;height:22px"><span class="grow"><b style="font-weight:700">🎟️ Recepción del evento</b><br><span class="small muted">Puede usar el modo entrada el día del evento</span></span></label>`:`<p class="small muted">Este usuario entró pero no completó su registro.</p>`}
    <hr style="border:0;border-top:1px solid var(--line);margin:4px 0">
    <button class="btn ghost" id="esDel" style="width:100%;color:var(--bad)">🗑 Eliminar socio de la app</button>
    <p class="small muted" style="margin:0" id="esDelTx">Se borra su registro y su avance del panel. Si vuelve a entrar, tendrá que registrarse de nuevo con un enlace de invitación.</p>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
+    const ew=$("#esWa");if(ew)ew.onclick=()=>cambiarNumSocio(x);
     const rc=$("#esRec");if(rc){store.db.doc("eventoStaff/"+uid).get().then(d=>{rc.checked=!!d.exists}).catch(()=>{});
       rc.onchange=async()=>{try{if(rc.checked)await store.db.doc("eventoStaff/"+uid).set({n:r.nombre||nm,t:Date.now()});else await store.db.doc("eventoStaff/"+uid).delete();toast(rc.checked?"🎟️ Ahora es de Recepción":"Ya no es de Recepción")}catch(e){rc.checked=!rc.checked;toast("No se pudo guardar. ¿Ya pegó las reglas nuevas en Firebase?")}}}
     const ok=$("#esOk");if(ok)ok.onclick=async()=>{const pu=$("#esPat").value,sp=opts.find(y=>y.uid===pu),nn=$("#esNom").value.trim()||r.nombre,pl=$("#esPlan").value;
@@ -1712,7 +1736,9 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
   const reg=socios.filter(x=>x.registro&&!esSoloAdmin(x)).length,sin=socios.length-reg,hoy=socios.filter(x=>actDe(x).hoy>0).length,sem=socios.filter(x=>actDe(x).d7>0).length;
   const st=(n,t,c)=>`<div class="card" style="gap:2px"><b class="num" style="font-size:28px${c?";color:"+c:""}">${n}</b><span class="small muted">${t}</span></div>`;
   const sinP=socios.filter(x=>x.registro&&!x.registro.patrocinadorUid&&!esSoloAdmin(x)).length;
-  b.innerHTML=`<div class="card" style="gap:6px"><h3 style="margin:0">🌳 Líneas del equipo</h3><p class="small muted" style="margin:0">Arma la línea completa de cada socio para que cada líder vea a todos los que tiene debajo.</p><button class="btn sm ghost" id="socLin" style="align-self:flex-start">Reconstruir líneas</button></div>${sinP?`<div class="card" style="gap:8px"><div class="row between"><div><h3 style="margin:0">🔗 Vincular patrocinadores</h3><p class="small muted" style="margin:2px 0 0">${sinP} ${sinP===1?"socio se registró":"socios se registraron"} sin enlace. Vincúlalos para que su patrocinador los vea en "Mis socios".</p></div></div><button class="btn sm gold" id="socVinc" style="align-self:flex-start">Vincular ahora</button></div>`:""}<div class="grid2">${st(reg,"Socios registrados")}${st(sin,"Entraron sin registrarse")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}</div>
+  const wm={};socios.forEach(x=>{const w=String((x.registro||{}).whatsapp||"").replace(/\D/g,"");if(w.length>=8&&!esSoloAdmin(x))(wm[w]=wm[w]||[]).push(x)});const dups=Object.keys(wm).filter(k=>wm[k].length>1);
+  const dupH=dups.length?`<div class="card" style="gap:8px;border:1.5px solid var(--warn)"><h3 style="margin:0">⚠️ WhatsApp repetidos (${dups.length})</h3><p class="small muted" style="margin:0">Estos socios tienen el mismo número. Corrija el que no corresponde con «Número».</p>${dups.map(k=>`<div style="padding:8px 0;border-top:1px solid var(--line)"><b class="small">${esc(waFmt(k))}</b>${wm[k].map(x=>`<div class="row between" style="gap:8px;margin-top:6px"><span class="small" style="min-width:0">${esc((x.registro||{}).nombre||x.email||"Socio")}${(x.registro||{}).waOk?" · ✅ confirmó":""}</span><button class="btn sm ghost" type="button" data-wfix="${esc(x.uid)}">✏️ Número</button></div>`).join("")}</div>`).join("")}</div>`:"";
+  b.innerHTML=`<div class="card" style="gap:6px"><h3 style="margin:0">🌳 Líneas del equipo</h3><p class="small muted" style="margin:0">Arma la línea completa de cada socio para que cada líder vea a todos los que tiene debajo.</p><button class="btn sm ghost" id="socLin" style="align-self:flex-start">Reconstruir líneas</button></div>${sinP?`<div class="card" style="gap:8px"><div class="row between"><div><h3 style="margin:0">🔗 Vincular patrocinadores</h3><p class="small muted" style="margin:2px 0 0">${sinP} ${sinP===1?"socio se registró":"socios se registraron"} sin enlace. Vincúlalos para que su patrocinador los vea en "Mis socios".</p></div></div><button class="btn sm gold" id="socVinc" style="align-self:flex-start">Vincular ahora</button></div>`:""}${dupH}<div class="grid2">${st(reg,"Socios registrados")}${st(sin,"Entraron sin registrarse")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}</div>
    <div class="seg" id="socOrd"><button aria-selected="${sociosOrd==="act"}" data-o="act">Más activos</button><button aria-selected="${sociosOrd==="rec"}" data-o="rec">Recientes</button><button aria-selected="${sociosOrd==="inact"}" data-o="inact">Sin actividad</button></div>
    <div class="row"><input class="inp grow" id="socQ" placeholder="Buscar por nombre, patrocinador o plan" value="${esc(sociosQ)}"><button class="btn sm ghost" id="socCsv">Descargar</button></div>
    <div class="card" style="gap:0">${L.length?L.map(x=>{const r=x.registro||{},a=actDe(x),S=a.sem;const nm=r.nombre||x.nombre||x.email||"Sin nombre";const wa=r.whatsapp?`https://wa.me/${r.whatsapp}`:"";
@@ -1735,6 +1761,7 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
     if(!confirm("¿Cambiar a "+(x.registro.nombre||"este socio")+" a "+nv+"?")){sel.value=prev;return}
     try{await store.db.doc("users/"+x.uid).set({registro:{plan:nv,planPor:"admin",planCambio:new Date().toISOString()}},{merge:true});x.registro.plan=nv;toast((x.registro.nombre||"Socio").split(" ")[0]+" ahora es "+nv+" ✓")}catch(e){sel.value=prev;toast("No se pudo cambiar el paquete")}});
   b.querySelectorAll("[data-sedit]").forEach(bt=>bt.onclick=()=>editarSocio(bt.dataset.sedit));
+  b.querySelectorAll("[data-wfix]").forEach(bt=>bt.onclick=()=>{const x=(socios||[]).find(y=>y.uid===bt.dataset.wfix);if(x)cambiarNumSocio(x)});
   b.querySelectorAll("[data-amot]").forEach(bt=>bt.onclick=()=>{const x=(socios||[]).find(y=>y.uid===bt.dataset.amot);if(!x)return;let t="";try{t=msgMotiva(x)}catch(e){t="Hola "+(((x.registro||{}).nombre||"").split(" ")[0]||"")+" 👋"}const w=waSocio(x);if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});
   $("#socCsv").onclick=sociosCSV;const sv=$("#socVinc");if(sv)sv.onclick=abrirVincular;const sl=$("#socLin");if(sl)sl.onclick=async()=>{sl.disabled=true;sl.textContent="Reconstruyendo…";await reconstruirLineas(false);sl.disabled=false;sl.textContent="Reconstruir líneas"};$("#socReload").onclick=()=>{socios=null;renderEquipo()}}
 let constL=null,constT=0;
@@ -1742,7 +1769,8 @@ let constVista="sem";
 const constSort=L=>{const sem=constVista==="sem";L.sort((a,b)=>sem?(b.racha-a.racha||b.semPres-a.semPres||b.semPts-a.semPts):(b.mesMejor-a.mesMejor||b.mesPres-a.mesPres||b.mesPts-a.mesPts)||String(a.nombre).localeCompare(b.nombre,"es"));L.forEach((x,i)=>x.rk=i+1);return L};
 async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now()-constT<600000)return;try{const q=await store.db.collection("constancia").get();constT=Date.now();
   const ay=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()-1)),lun=lunesK(),mes=TODAY.slice(0,7);
-  constL=constSort(q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.nombre).map(x=>{const hoy=x.fecha===TODAY?(+x.hoy||0):0,okW=x.wk===lun&&x.fecha>=lun,okM=x.mes===mes;
+  const pl=(()=>{const d=parseK(lun);d.setDate(d.getDate()-7);return dkey(d)})();
+  constL=constSort(q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.nombre).map(x=>{x.prevPts=x.wk===pl?(+x.semPts||0):x.wk===lun?(x.pwk===pl&&x.pSemPts!=null?+x.pSemPts||0:null):0;const hoy=x.fecha===TODAY?(+x.hoy||0):0,okW=x.wk===lun&&x.fecha>=lun,okM=x.mes===mes;
     return Object.assign(x,{hoy,racha:okW&&x.fecha>=ay?(+x.racha||0):(hoy>=100?1:0),semDias:okW?(+x.semDias||0):(hoy>0?1:0),semComp:okW?(+x.semComp||0):(hoy>=100?1:0),mesDias:okM?(+x.mesDias||0):(hoy>0?1:0),mesComp:okM?(+x.mesComp||0):(hoy>=100?1:0),mesMejor:okM?(+x.mesMejor||0):(hoy>=100?1:0),semPres:okW?(+x.semPres||0):0,mesPres:okM?(+x.mesPres||0):0,semPts:okW?(x.semPts!=null?+x.semPts||0:(+x.semComp||0)*5+Math.max(0,(+x.semDias||0)-(+x.semComp||0))):Math.round(hoy*5/100),mesPts:okM?(x.mesPts!=null?+x.mesPts||0:(+x.mesComp||0)*5+Math.max(0,(+x.mesDias||0)-(+x.mesComp||0))):Math.round(hoy*5/100),sinPres:x.semPres==null})}))}catch(e){constL=constL||[]}
   renderTopRut();if(eqTab==="ranking"&&rankMetric==="rutina")renderEquipo()}
 const diasSem=()=>{const l=lunesK(),i=l<CONST_INI?CONST_INI:l;return Math.round((parseK(TODAY)-parseK(i))/864e5)+1};
@@ -2346,11 +2374,11 @@ function citaMsg(c,rec){const first=String(c.nombre||"").trim().split(/\s+/)[0]|
   const dia=DAYS_L[d.getDay()][0].toUpperCase()+DAYS_L[d.getDay()].slice(1)+" "+d.getDate()+" de "+MONTHS[d.getMonth()];
   const como=c.tipo==="zoom"?"💻 *Por Zoom*":c.tipo==="whatsapp"?"📱 *Videollamada de WhatsApp*":"📍 *En persona*";
   const det=c.tipo==="zoom"?(c.enlace?["","🔗 Enlace para entrar:",c.enlace]:[]):c.tipo==="whatsapp"?["","Yo le llamo a este número 📞"]:(c.lugar?["","📌 Lugar:",c.lugar]:[]);
-  if(rec){const cu=c.fecha===TODAY?"hoy":c.fecha===dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1))?"mañana":"el "+dia.toLowerCase();
+  if(rec&&rec!=="rep"){const cu=c.fecha===TODAY?"hoy":c.fecha===dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1))?"mañana":"el "+dia.toLowerCase();
     const ind=String(c.nota||"").split("\n").map(x=>x.trim()).filter(Boolean);
     L.push(`Hola ${first} 👋`,"",`Le recuerdo nuestra reunión de *${cu}* a las *${h12(c.hora)}*.`,"",como,...det,...(ind.length?["","📝 Recuerde:",...ind.map(x=>"• "+x)]:[]),"","¡Nos vemos! 🙌");if(yo)L.push(`*${yo}*`);return L.join("\n")}
   const ind=String(c.nota||"").split("\n").map(x=>x.trim()).filter(Boolean),indL=ind.length?["","📝 *Para aprovechar la reunión:*",...ind.map(x=>"• "+x)]:[];
-  L.push(`Hola ${first}, ¿cómo está? 😊`,"","Le confirmo nuestra reunión 👇","",`📅 *${dia}*`,`🕖 *${h12(c.hora)}*`,como,...det,...indL,"","📲 Agréguela a su calendario:",citaLink(c),"","¡Nos vemos! 🙌");if(yo)L.push(`*${yo}*`);return L.join("\n")}
+  L.push(`Hola ${first}, ¿cómo está? 😊`,"",rec==="rep"?"Le confirmo el *nuevo horario* de nuestra reunión 👇":"Le confirmo nuestra reunión 👇","",`📅 *${dia}*`,`🕖 *${h12(c.hora)}*`,como,...det,...indL,"","📲 Agréguela a su calendario:",citaLink(c),"","¡Nos vemos! 🙌");if(yo)L.push(`*${yo}*`);return L.join("\n")}
 async function citaWa(c,rec){const t=citaMsg(c,rec),ct=c.cid&&contacts.find(x=>x.id===c.cid),n=ct?waNum(ct.phone,ct.cc):String(c.tel||"").replace(/\D/g,"");
   if(n){location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t);return}
   if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
@@ -2394,11 +2422,27 @@ function citaListo(c){openSheet(`<h2>✅ Cita agendada</h2><p style="margin:0"><
 function citaCard(c){const t=CITA_T[c.tipo]||CITA_T.zoom,pas=citaIni(c).getTime()+(c.dur||60)*6e4<Date.now(),nm=c.tipo==="lider"?c.titulo:c.nombre;
   return `<div class="cita ${pas?"ev-past":""}"><div class="ch-h"><b>${esc(h12(c.hora))}</b><span class="small muted">${c.dur>=60?(c.dur/60)+" h":c.dur+" min"}</span></div><div class="grow" style="min-width:0">
    <b style="font-weight:600">${esc(nm||"Cita")}</b><div class="small muted">${t[0]} ${t[1]}${c.tipo==="persona"&&c.lugar?" · "+esc(c.lugar):""}${c.tipo==="lider"&&c.nota?" · "+esc(c.nota):""}</div>
-   <div class="row wrap" style="gap:6px;margin-top:8px">${pas&&c.fecha===TODAY&&c.tipo!=="lider"&&!c.hecha?`<button class="btn sm" data-cid2="${esc(c.id)}">✅ Sí, se dio la reunión</button>`:""}${c.hecha?'<span class="chip c-good">🎯 Presentación registrada</span>':""}${!pas&&c.tipo!=="lider"?`<button class="btn sm" style="background:#25D366;color:#fff" data-ciw="${esc(c.id)}">💬 Invitación</button><button class="btn sm ghost" data-cir="${esc(c.id)}">⏰ Recordatorio</button>`:""}${!pas&&c.enlace&&(c.tipo==="zoom"||c.tipo==="lider")?`<a class="btn sm ghost" href="${esc(safeUrl(c.enlace))}" target="_blank" rel="noopener">Entrar al Zoom</a>`:""}${!pas?`<button class="btn sm ghost" data-cic="${esc(c.id)}">➕ Calendario</button>`:""}<button class="btn sm ghost" data-cie="${esc(c.id)}">Editar</button></div></div></div>`}
+   <div class="row wrap" style="gap:6px;margin-top:8px">${pas&&c.fecha===TODAY&&c.tipo!=="lider"&&!c.hecha?`<button class="btn sm" data-cid2="${esc(c.id)}">✅ Sí, se dio la reunión</button>`:""}${c.hecha?'<span class="chip c-good">🎯 Presentación registrada</span>':""}${c.reprog&&!c.hecha?`<span class="chip c-gold">🔁 Reprogramada${c.reprog>1?" ("+c.reprog+")":""}</span>`:""}${!pas&&c.tipo!=="lider"?`<button class="btn sm" style="background:#25D366;color:#fff" data-ciw="${esc(c.id)}">💬 Invitación</button><button class="btn sm ghost" data-cir="${esc(c.id)}">⏰ Recordatorio</button>`:""}${!pas&&c.enlace&&(c.tipo==="zoom"||c.tipo==="lider")?`<a class="btn sm ghost" href="${esc(safeUrl(c.enlace))}" target="_blank" rel="noopener">Entrar al Zoom</a>`:""}${!pas?`<button class="btn sm ghost" data-cic="${esc(c.id)}">➕ Calendario</button>`:""}${!c.hecha?`<button class="btn sm ${pas?"gold":"ghost"}" data-cip="${esc(c.id)}">🔁 Reprogramar</button>`:""}<button class="btn sm ghost" data-cie="${esc(c.id)}">Editar</button></div></div></div>`}
 function bindCitas(root){root.querySelectorAll("[data-cid2]").forEach(b=>b.onclick=async()=>{const ci=citas.find(x=>x.id===b.dataset.cid2);if(!ci)return;let ct=ci.cid&&contacts.find(x=>x.id===ci.cid);
     if(!ct){ct={name:ci.nombre||"Prospecto",cc:"504",phone:"",stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(ct);if(!id)return;ct.id=id;contacts.push(ct);ci.cid=id}
     if(!(await sumarPres(ct,ci))){ci.hecha=true;await saveCita(ci);renderHoyCitas();renderMiAgenda()}});root.querySelectorAll("[data-ciw]").forEach(b=>b.onclick=()=>citaWa(citas.find(x=>x.id===b.dataset.ciw),false));root.querySelectorAll("[data-cir]").forEach(b=>b.onclick=()=>citaWa(citas.find(x=>x.id===b.dataset.cir),true));
-  root.querySelectorAll("[data-cic]").forEach(b=>b.onclick=()=>citaIcs(citas.find(x=>x.id===b.dataset.cic)));root.querySelectorAll("[data-cie]").forEach(b=>b.onclick=()=>abrirCita(citas.find(x=>x.id===b.dataset.cie)))}
+  root.querySelectorAll("[data-cic]").forEach(b=>b.onclick=()=>citaIcs(citas.find(x=>x.id===b.dataset.cic)));root.querySelectorAll("[data-cie]").forEach(b=>b.onclick=()=>abrirCita(citas.find(x=>x.id===b.dataset.cie)));root.querySelectorAll("[data-cip]").forEach(b=>b.onclick=()=>abrirReprog(citas.find(x=>x.id===b.dataset.cip)))}
+function abrirReprog(c){if(!c)return;const pas=citaIni(c).getTime()<Date.now(),nm=c.tipo==="lider"?c.titulo:c.nombre,f0=pas||c.fecha<TODAY?dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1)):c.fecha;
+  openSheet(`<h2>🔁 Reprogramar cita</h2><span data-nofocus hidden></span><p class="small muted" style="margin:0">${esc(nm||"Cita")} · antes: ${esc(citaCuando(c))}${c.reprog?` · reprogramada ${c.reprog} ${c.reprog===1?"vez":"veces"}`:""}</p>
+   <div class="grid2"><div class="field"><label for="rpF">Nuevo día</label><input class="inp" type="date" id="rpF" value="${esc(f0)}" min="${TODAY}"></div><div class="field"><label for="rpH">Nueva hora</label><input class="inp" type="time" id="rpH" value="${esc(c.hora||"19:00")}"></div></div>
+   <p class="small" id="rpWarn" style="margin:0;color:var(--warn)" hidden></p>
+   <button class="btn" id="rpOk" style="width:100%">Guardar nuevo horario</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
+    const chk=()=>{const f=$("#rpF").value,h=$("#rpH").value,w=$("#rpWarn");if(!f||!h){w.hidden=true;return}const a=citaIni({fecha:f,hora:h}).getTime(),b=a+(c.dur||60)*6e4;
+      const ch=citas.find(x=>x.id!==c.id&&x.fecha===f&&citaIni(x).getTime()<b&&citaIni(x).getTime()+(x.dur||60)*6e4>a);
+      w.hidden=!(ch||a<Date.now());w.textContent=a<Date.now()?"⚠️ Esa hora ya pasó. Elija una fecha y hora futuras.":ch?"⚠️ Ya tiene una cita a esa hora: "+(ch.tipo==="lider"?ch.titulo:ch.nombre||"Cita")+" ("+h12(ch.hora)+")":""};
+    $("#rpF").oninput=chk;$("#rpH").oninput=chk;chk();
+    $("#rpOk").onclick=async()=>{const f=$("#rpF").value,h=$("#rpH").value;if(!f||!h){toast("Elija día y hora");return}if(citaIni({fecha:f,hora:h}).getTime()<Date.now()){toast("Elija una fecha y hora futuras");return}
+      const n=Object.assign({},c,{fecha:f,hora:h,reprog:(+c.reprog||0)+1,hecha:false});const bt=$("#rpOk");bt.disabled=true;const id=await saveCita(n);bt.disabled=false;if(!id)return;
+      const i=citas.findIndex(x=>x.id===c.id);if(i>=0)citas[i]=n;renderHoyCitas();renderMiAgenda();publicarSlots();try{renderCRM()}catch(e){}
+      if(n.tipo==="lider"){closeSheet();toast("🔁 Cita reprogramada");return}
+      openSheet(`<h2>✅ Cita reprogramada</h2><p style="margin:0"><b>${esc(nm||"Cita")}</b><br><span class="muted">Nuevo horario: ${esc(citaCuando(n))}</span></p><p class="small muted" style="margin:0">Avísele el nuevo horario con un clic:</p>
+       <button class="btn" id="rpWa" style="width:100%;background:#25D366;color:#fff">💬 Avisar por WhatsApp</button><button class="btn ghost" id="rpCal" style="width:100%">➕ Actualizar mi calendario</button><button class="btn ghost" data-close style="width:100%">Listo</button>`,()=>{
+        $("#rpWa").onclick=()=>citaWa(n,"rep");$("#rpCal").onclick=()=>citaIcs(n)})}})}
 const HOR_DEF={dias:[1,2,3,4,5],horas:["19:00","21:00"]};
 const miHorario=()=>Object.assign({},HOR_DEF,profile.horario||{});
 function calcSlots(){const H=miHorario(),out=[],busy=citas.map(c=>{const a=citaIni(c).getTime();return[a,a+(c.dur||60)*6e4]});
@@ -2705,14 +2749,14 @@ function renderWel(){const el=$("#wel");
       <div class="field"><label for="rg_nombre">Nombre completo</label><input class="inp" id="rg_nombre" autocomplete="name" value="${esc(R0.nombre||(invData&&invData.nombre)||(fbUser&&fbUser.displayName)||"")}"></div>
       ${invSponsor?`<div class="card" style="text-align:left;gap:4px;padding:12px 14px"><span class="small muted">Tu patrocinador</span><b style="font-weight:600">${esc(invSponsor.nombre||"Tu patrocinador")} ✓</b>${invData&&invData.plan?`<span class="small muted" style="margin-top:4px">Tu paquete</span><b style="font-weight:600">${esc(invData.plan)} ✓</b>`:""}</div>`:`<div class="field"><label for="rg_patro">Nombre de tu patrocinador</label><input class="inp" id="rg_patro" value=""></div>`}
       ${invData&&invData.plan?"":`<div class="field"><label for="rg_plan">Plan de inicio</label><select class="inp" id="rg_plan"><option value="">Elige tu plan</option><option>Classic</option><option>Premium</option></select></div>`}
-      ${invData&&invData.wa?"":`<div class="field"><label for="rg_wa">Tu WhatsApp <span style="color:var(--bad)">*</span></label><div class="row" style="gap:8px"><select class="inp" id="rg_cc" style="max-width:110px">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")?"selected":""}>+${k}</option>`).join("")}</select><input class="inp grow" id="rg_wa" type="tel" placeholder="Para que tu patrocinador te escriba" required inputmode="tel" autocomplete="tel-national" style="min-width:0"></div></div>`}
+      ${(()=>{const pw=invData&&invData.wa?splitPhone("+"+String(invData.wa).replace(/\D/g,"")):null,cc0=pw&&pw.cc?pw.cc:(LS.get("lastCC")||"504");return `<div class="field"><label for="rg_wa">${pw?"¿Este es su WhatsApp?":"Tu WhatsApp"} <span style="color:var(--bad)">*</span></label><div class="row" style="gap:8px"><select class="inp" id="rg_cc" style="max-width:110px">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===cc0?"selected":""}>+${k}</option>`).join("")}</select><input class="inp grow" id="rg_wa" type="tel" placeholder="Para que tu patrocinador te escriba" required inputmode="tel" autocomplete="tel-national" style="min-width:0" value="${pw?esc(pw.num):""}"></div>${pw?`<span class="small muted">Revise que sea su número. Si no lo es, corríjalo aquí.</span>`:""}</div>`})()}
       <p class="small" id="regErr" style="color:var(--bad)" hidden></p>
       <button class="btn pill dark" id="regOk" type="submit">${invSponsor?"Entrar al equipo":"Enviar mi registro"}</button></form></div>`);
     const F=$("#regF");if(F)F.onsubmit=async ev=>{ev.preventDefault();const g=k=>$("#rg_"+k).value.trim(),err=$("#regErr");
       const g2=k=>{const e=$("#rg_"+k);return e?e.value.trim():""};const d={nombre:g("nombre"),patrocinador:invSponsor?invSponsor.nombre:g2("patro"),plan:invData&&invData.plan?invData.plan:g2("plan")};if(invSponsor){d.patrocinadorUid=invSponsor.uid;d.invitadoPor=invSponsor.nombre}
       if(invSponsor){let sl=[];try{const fd=await store.db.doc("fotos/"+invSponsor.uid).get();if(fd.exists&&Array.isArray(fd.data().linea))sl=fd.data().linea}catch(x){}d.linea=[invSponsor.uid].concat(sl.filter(u=>u&&u!==invSponsor.uid&&u!==store.uid)).slice(0,60)}
       if(invData){d.invId=invData.id;d.planPor="patrocinador";if(invData.pais)d.pais=invData.pais;if(invData.wa)d.whatsapp=String(invData.wa).replace(/\D/g,"").slice(0,15)}
-      {const we=$("#rg_wa");if(we&&we.value.trim()){const sp=splitPhone(we.value),n=sp.cc?sp.cc+sp.num:waNum(we.value,$("#rg_cc").value);if(n.length>=8)d.whatsapp=n.slice(0,15)}}try{d.inv=(localStorage.getItem("alp:inv")||"").slice(0,60)}catch(x){};
+      {const we=$("#rg_wa");if(we&&we.value.trim()){const sp=splitPhone(we.value),n=sp.cc?sp.cc+sp.num:waNum(we.value,$("#rg_cc").value);if(n.length>=8){d.whatsapp=n.slice(0,15);d.waOk=true}}}try{d.inv=(localStorage.getItem("alp:inv")||"").slice(0,60)}catch(x){};
       const lab={nombre:"Nombre completo",patrocinador:"Patrocinador",plan:"Plan"};
       for(const k in lab)if(!d[k]){err.textContent="Completa: "+lab[k];err.hidden=false;return}
       if(String(d.whatsapp||"").replace(/\D/g,"").length<8){err.textContent="Escribe tu número de WhatsApp completo para que tu patrocinador pueda escribirte.";err.hidden=false;const we=$("#rg_wa");if(we)we.focus();return}
@@ -2763,6 +2807,21 @@ function welVideo(){const box=$("#welVid");if(!box)return;
 window.addEventListener("message",e=>{if(!/youtube(-nocookie)?\.com$/.test((()=>{try{return new URL(e.origin).hostname}catch(x){return""}})()))return;
   let d=e.data;try{if(typeof d==="string")d=JSON.parse(d)}catch(x){return}const i=d&&d.info;if(!i)return;
   if(i.playerState===0||(i.duration>0&&i.currentTime/i.duration>=.9))welMark("video")});
+const waFmt=w=>{w=String(w||"").replace(/\D/g,"");if(!w)return"";const sp=splitPhone("+"+w);return "+"+(sp.cc?sp.cc+" "+sp.num:w)};
+function abrirMisDatos(){const r=(regDoc&&regDoc.registro)||null,w=String((r&&r.whatsapp)||"").replace(/\D/g,""),sp=w?splitPhone("+"+w):{cc:null,num:""},cc0=sp.cc||LS.get("lastCC")||"504";
+  openSheet(`<h2>👤 Mis datos</h2><span data-nofocus hidden></span>
+  <div class="field"><label for="mdN">Mi nombre <span class="muted">(así le saluda la app)</span></label><input class="inp" id="mdN" maxlength="30" value="${esc(profile.nombrePila||"")}" placeholder="Ej.: Edwin"></div>
+  ${r&&store.db?`<div class="field"><label for="mdT">📱 Mi WhatsApp</label><div class="row" style="gap:8px"><select class="inp" id="mdC" style="max-width:110px">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===cc0?"selected":""}>+${k}</option>`).join("")}</select><input class="inp grow" id="mdT" type="tel" inputmode="tel" autocomplete="tel-national" value="${esc(sp.num||(sp.cc?"":w))}" placeholder="Su número" style="min-width:0"></div><span class="small muted">Su patrocinador y su equipo le escriben a este número desde la app.</span></div>`:""}
+  ${T.ranking.length?`<details style="border-top:1px solid var(--line);padding-top:10px"><summary class="small" style="cursor:pointer;color:var(--brand);font-weight:700">¿No aparece en el ranking? Elíjase aquí</summary><div class="field" style="margin-top:8px"><label for="rkI">Mi nombre en el ranking</label><select class="inp" id="rkI"><option value="">No aparezco todavía</option>${[...new Set(T.ranking.map(x=>x.nombre).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"es")).map(n=>`<option ${n===profile.miNombre?"selected":""}>${esc(n)}</option>`).join("")}</select><p class="small muted" style="margin:4px 0 0">Normalmente la app lo encuentra sola. Úselo solo si no aparece o aparece con otro nombre.</p></div></details>`:""}
+  <p class="small" id="mdErr" style="color:var(--bad);margin:0" hidden></p>
+  <div class="row"><button class="btn grow" id="mdOk">Guardar</button><button class="btn ghost" data-close>Cancelar</button></div>`,()=>{
+    $("#mdOk").onclick=async()=>{const er=$("#mdErr"),bt=$("#mdOk"),rk=$("#rkI");er.hidden=true;
+      if(rk&&rk.value&&rk.value!==profile.miNombre&&!nomOk(rk.value,bt))return;
+      const te=$("#mdT");let nw=null;if(te){const v=te.value.trim(),p2=splitPhone(v),n=p2.cc?p2.cc+p2.num:waNum(v,$("#mdC").value);if(n.length<8){er.textContent="Escriba su número de WhatsApp completo.";er.hidden=false;te.focus();return}nw=n.slice(0,15)}
+      bt.disabled=true;
+      if(nw&&(nw!==w||!r.waOk)){try{await store.db.doc("users/"+store.uid).set({registro:{whatsapp:nw,waOk:true}},{merge:true});r.whatsapp=nw;r.waOk=true;LS.set("lastCC",$("#mdC").value)}catch(e){bt.disabled=false;er.textContent="No se pudo guardar el WhatsApp. Revise su conexión.";er.hidden=false;return}}
+      if(rk)profile.miNombre=rk.value;const v=$("#mdN").value.trim().replace(/\s+/g," ");if(v){profile.nombrePila=v;$("#hello").textContent="Hola, "+v.split(" ")[0]}store.set("perfil",profile);
+      closeSheet();renderMe();try{renderMiWa()}catch(e){}toast(nw&&nw!==w?"📱 WhatsApp actualizado ✓":"Datos guardados ✓")}})}
 function abrirNombre(){openSheet(`<h2>¿Cómo te llamamos?</h2><p class="small muted">Así te saludará la app.</p>
   <div class="field"><label for="nmI">Tu nombre</label><input class="inp" id="nmI" maxlength="30" value="${esc(profile.nombrePila||"")}" placeholder="Ej.: Edwin"></div>
   ${T.ranking.length?`<div class="field"><label for="rkI">Tu nombre en el ranking <span class="muted">(opcional)</span></label><select class="inp" id="rkI"><option value="">No aparezco todavía</option>${[...new Set(T.ranking.map(r=>r.nombre).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"es")).map(n=>`<option ${n===profile.miNombre?"selected":""}>${esc(n)}</option>`).join("")}</select><p class="small muted">Para ver tus presentaciones arriba y resaltarte en el ranking.</p></div>`:""}
@@ -2788,9 +2847,9 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <p class="small" style="margin:6px 0 0">${R.plan?`<span class="chip">${esc(R.plan)}</span> `:""}${R.patrocinador?`<span class="muted">Patrocinador: ${esc(R.patrocinador)}</span>`:""}</p></div></div>
    <div class="pf-list">
     <button class="pf-it" id="pfFoto"><span class="ic">📷</span>Cambiar mi foto</button>
-    <button class="pf-it" id="pfNombre"><span class="ic">✏️</span>Mi nombre y mi lugar en el ranking</button>
+    <button class="pf-it" id="pfNombre"><span class="ic">👤</span>Mis datos <span class="small muted" style="font-weight:500">· nombre y WhatsApp</span></button>
     <button class="pf-it" id="pfPag"><span class="ic">🌐</span>Mi página para prospectos</button>
-    <button class="pf-it" id="pfInv"><span class="ic">🔗</span>Mi enlace de invitación</button>
+    <button class="pf-it" id="pfInv"><span class="ic">🔗</span>Mi enlace de invitación para socios</button>
     <button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
     <button class="pf-it" id="pfFront"><span class="ic">🏠</span>Ver la portada de la app</button>
@@ -2798,7 +2857,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
-    $("#pfNombre").onclick=abrirNombre;
+    $("#pfNombre").onclick=abrirMisDatos;
     $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;
     $("#pfInv").onclick=()=>{if(!(regDoc&&regDoc.registro)){toast("Completa tu registro primero");return}const u=miEnlace();openSheet(`<h2>🔗 Tu enlace de invitación</h2><p class="small muted">Compártelo solo con tus socios nuevos. Al registrarse, aparecerás como su patrocinador.</p>
       <div class="card" style="word-break:break-all;font-weight:600">${esc(u)}</div><button class="btn" id="invCp" style="width:100%">Copiar enlace</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#invCp").onclick=async()=>{try{await navigator.clipboard.writeText(u);toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})};
@@ -2860,7 +2919,7 @@ async function loadMine(){
   const ks=Array.from({length:nk},(_,i)=>{const d=new Date(now);d.setDate(d.getDate()-i);return dkey(d)});
   const [p,r,bw,...vals]=await Promise.all([store.get("perfil"),store.get("reto-"+MONTH),store.db?store.get("bienvenida").catch(()=>null):null].concat(ks.map(k=>store.get("rutina-"+k))));
   profile=Object.assign({ref:"",training:{},arranque:{},miNombre:""},p||{});try{if(store.uid&&localStorage.getItem("alp:welok")===store.uid)profile.bienvenida=true}catch(x){}
-  if(r)reto=r;ks.forEach((k,i)=>{if(vals[i])weekCache[k]=vals[i]});
+  if(r)reto=r;ks.forEach((k,i)=>{if(vals[i])weekCache[k]=vals[i]});window._wkFrom=ks[ks.length-1];
   day=Object.assign({},weekCache[TODAY]||{});if((profile.historias||{})[TODAY]&&!day.historia)day.historia=1;
   if(profile.nombrePila)$("#hello").textContent="Hola, "+profile.nombrePila.split(" ")[0];
   try{const b=bw;if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}catch(e){}
@@ -3042,7 +3101,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261026213729";var busy=false,pend=null;
+(function(){var V="20261026222109";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
