@@ -136,9 +136,11 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - **Diseño:** minimalista, "pro" y fácil de duplicar. Botones limpios, sin recuadros de más. Probar siempre en el celular.
 
 
-## 5c. Modo entrada del evento (San Pedro Sula, 26 oct 2026)
+## 5c. Modo entrada del evento (San Pedro Sula, 25 oct 2026) — reutilizable
 - Recepción (socios marcados por el admin en Admin → Editar socio → "🎟️ Recepción del evento", doc `eventoStaff/{uid}`) y el admin ven en Inicio la tarjeta "Modo entrada".
 - Lista cifrada en el repo: `data/entrada.enc` (AES-GCM). La arma `tools/entrada.py SOCIOS.txt MAPA.json CLAVE` con la pestaña 'SOCIOS EVENTO' (A:E: NO, nombre, líder, ACCESO/Pendiente, PREMIUM/CLASSIC) y el mapa invitado→socio que genera `EV_MAP=... tools/evento.py`. La clave vive en Firestore `evento/sps26/priv/llave` (solo staff) y localmente en /home/claude/.evk; NUNCA en el repo.
 - Check-ins en Firestore `evento/sps26/checkin/{id}` (tipo s = socio con número de ticket, tipo i = invitado; manual = registrado en puerta con WhatsApp). `evento/sps26/ovr/{id}` = acceso dado por el admin (pagó en puerta). `evento/sps26` doc `resumen` = conteo público para la tarjeta del reto.
 - Premio: el socio con más invitados que LLEGARON (incluye los registrados en puerta).
 - Reglas de Firestore: ver `respaldo/firestore.rules` (bloque "Modo entrada").
+- Después del evento (hasta 7 días): la tarjeta del reto pasa a "Resultados" (naranja), con "📲 Seguimiento del evento" (mensajes de WhatsApp para los que llegaron / no llegaron, con la página de prospectos del socio, y "➕ CRM") y "🏆 Llegadas". La tarjeta "Modo entrada" se oculta tras el día del evento; el admin entra al detalle desde "🔎 Admin: ver quién llegó de cada socio" hasta ENT.res.
+- PRÓXIMO EVENTO (reutilizar): 1) cambiar `const ENT={id,tit,fecha,fin,res}` en index.html (id nuevo, p. ej. "tgu27"); 2) config.evento en team.json (titulo, fecha, lugar, lugarTxt, hora, llegar, mapa) y vaciar alias/top; 3) nueva clave AES (`python3 -c "import os,base64;print(base64.urlsafe_b64encode(os.urandom(32)).decode().rstrip('=')")` → /home/claude/.evk) y enlace de activación `?evk=CLAVE` abierto una vez por el admin; 4) hojas de invitados (A/F/C) y socios (A:E) → evento.py + entrada.py; 5) marcar recepción en Admin → Editar socio. Resultados de SPS 2026: 140 registrados, 51 llegaron.

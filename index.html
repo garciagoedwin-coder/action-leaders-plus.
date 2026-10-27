@@ -1412,8 +1412,8 @@ function evResultados(c,E){const L=E.top,yo=miNombreFull()||miNombreCorto(),iy=e
   c.innerHTML=`<div class="row between"><span class="evK">🎟️ Resultados · ${esc(E.titulo||"Evento")}</span><span class="evHoy">Terminó</span></div>
    ${entPub&&entPub.inv?`<div class="evT"><b>${entPub.inv}</b><span style="padding-bottom:4px;font-weight:700">invitados llegaron · de ${E.total} registrados</span></div>`:`<div class="evT"><b>${E.total}</b><span style="padding-bottom:4px;font-weight:700">invitados registrados</span></div>`}
    ${R.length?`<div>${R.slice(0,3).map((x,i)=>`<div class="evRow"><span style="font-size:20px;width:26px;text-align:center">${md[i]}</span>${avHTML(x.s,false,false)}<span class="nm">${esc(x.s)}</span><small>de ${x.r}</small><span class="ct">${x.n}</span></div>`).join("")}</div>`:""}
-   ${me}<div class="row" style="gap:8px">${iy>=0?`<button class="btn sm" id="evSeg" type="button" style="flex:1">📲 Seguimiento del evento</button>`:""}${R.length?`<button class="btn sm" id="evLlg2" type="button" style="flex:1">🏆 Llegadas</button>`:""}</div>`;
-  const a=$("#evSeg");if(a)a.onclick=()=>evSeguimiento(E,iy);const b=$("#evLlg2");if(b)b.onclick=()=>evLlegadas(L,iy)}
+   ${me}<div class="row" style="gap:8px">${iy>=0?`<button class="btn sm" id="evSeg" type="button" style="flex:1">📲 Seguimiento del evento</button>`:""}${R.length?`<button class="btn sm" id="evLlg2" type="button" style="flex:1">🏆 Llegadas</button>`:""}</div>+(isAdmin&&TODAY<=ENT.res?`<button class="btn sm" id="evAdm" type="button" style="width:100%;font-size:12.5px;opacity:.85">🔎 Admin: ver quién llegó de cada socio</button>`:"")+'';
+  const a=$("#evSeg");if(a)a.onclick=()=>evSeguimiento(E,iy);const b=$("#evLlg2");if(b)b.onclick=()=>evLlegadas(L,iy);const ad=$("#evAdm");if(ad)ad.onclick=()=>{abrirEntrada();entTab="r";setTimeout(()=>{try{entRender()}catch(e){}},300)}}
 function evSegMsg(E,n,ok){const f=String(n||"").split(" ")[0],yo=miNombreCorto(),dia=["el domingo","el lunes","el martes","el miércoles","el jueves","el viernes","el sábado"][parseK(E.fecha).getDay()],ev=E.titulo||"evento";
   let pg="";try{if(miPaginaLista())pg=miPagina()}catch(e){}
   return ok?`Hola ${f} 👋 ¡Gracias por acompañarnos ${dia} en el *${ev}*! 🙌\n\n¿Qué fue lo que más le gustó? Me encantaría platicar unos minutos para resolver sus dudas y ver cómo puede empezar.${pg?`\n\nAquí puede volver a ver la información y elegir el horario que le quede mejor para hablar conmigo:\n${pg}`:""}\n\n¿Le gustaría que nos reunamos esta semana?${yo?`\n\nAtt. ${yo}`:""}`
@@ -2879,7 +2879,7 @@ async function entInit(){if(!store.db||!store.uid)return;
   if(!isAdmin){try{const s=await store.db.doc("eventoStaff/"+store.uid).get();entStaff=!!s.exists}catch(e){entStaff=false}}
   renderEntCard();
   if(TODAY>=ENT.fecha&&TODAY<=ENT.res)store.db.doc("evento/"+ENT.id).onSnapshot(d=>{entPub=d.exists?(d.data().resumen||null):null;try{renderEvento()}catch(e){}},()=>{})}
-function renderEntCard(){const c=$("#entCard");if(!c)return;if(!entPuede()||(TODAY>ENT.fin&&!(isAdmin&&TODAY<=ENT.res))){c.hidden=true;return}c.hidden=false;
+function renderEntCard(){const c=$("#entCard");if(!c)return;if(!entPuede()||TODAY>ENT.fecha){c.hidden=true;return}c.hidden=false;
   c.innerHTML=`<div class="row between" style="gap:10px"><div><b style="font-size:16px">🎟️ Modo entrada</b><div class="small muted">${esc(ENT.tit)} · ${isAdmin?"Administrador":"Recepción"}</div></div><button class="btn" id="entGo">Abrir</button></div>`;$("#entGo").onclick=abrirEntrada}
 const b64u=s=>{s=String(s).replace(/-/g,"+").replace(/_/g,"/");s+="=".repeat((4-s.length%4)%4);return Uint8Array.from(atob(s),c=>c.charCodeAt(0))};
 async function entCargar(){if(!entKey){const d=await store.db.doc("evento/"+ENT.id+"/priv/llave").get();entKey=d.exists?d.data().k:null}if(!entKey)throw new Error("sin-llave");
@@ -3031,7 +3031,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261026185306";var busy=false,pend=null;
+(function(){var V="20261026185946";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
