@@ -157,3 +157,9 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Citas: "🔁 Reprogramar" (abrirReprog) con mensaje de nuevo horario (citaMsg(c,"rep")).
 - "Índice de Acción" se llama ahora "Índice de Duplicación"; chips "⚡ Personal X%" y "⚡ Equipo de Nombre Y% (n socios)".
 - YessMovemente: el botón de la agenda es "📧 ¿Cómo entrar?" (abrirYess), no se comparte el enlace.
+
+## 10. Presentación virtual (`sala.html`)
+- Enlace: `sala.html?de=CODIGO_PERFIL&p=Nombre&c=idCRM`. Sala oscura con el video de YouTube sin controles (capa encima, no se puede adelantar, retoma donde quedó), capítulos, preguntas dentro del video (inicio: qué tiene más valor; país; "¿Le está gustando?") y cierre (respuesta, cómo prefiere el contacto o motivo) con botón "🎁 Quiero mi link de registro" al WhatsApp del socio (`perfiles.wa` o `perfiles.waS`).
+- Video y momentos: constantes `VIDEO`, `CAPS` y `MOM` al inicio del script de sala.html (fracción <1 o segundos). Cambiarlas no obliga a recargar la app.
+- Datos: `users/{uid}/sala/{id}` {n, c, t0, t, pct, r1, pais, pulso, resp, como, motivo, dur}. Reglas en `respaldo/reglas-sala.txt` (Edwin debe pegarlas en Firebase).
+- App: CRM → "🎬 Presentación" (envía el enlace por WhatsApp), Perfil → "🎬 Mi presentación virtual" (lista con nivel 🔥/🟠/❄️ y mensaje de seguimiento), tarjeta en Inicio con lo nuevo. Lecturas: solo si el socio ya envió alguna (LS salaOn) y solo documentos nuevos (where t > última sincronización).

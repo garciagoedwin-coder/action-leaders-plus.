@@ -1,0 +1,8 @@
+// ===== Presentación virtual (sala.html) — pegar DENTRO de "match /databases/{database}/documents { ... }" =====
+    match /users/{uid}/sala/{id} {
+      allow create, update: if request.resource.data.keys().hasOnly(['n','c','t0','t','pct','r1','pais','pulso','resp','como','motivo','dur'])
+        && request.resource.data.n is string && request.resource.data.n.size() <= 60
+        && request.resource.data.t is number
+        && (!('pais' in request.resource.data) || (request.resource.data.pais is string && request.resource.data.pais.size() <= 80))
+        && (!('motivo' in request.resource.data) || (request.resource.data.motivo is string && request.resource.data.motivo.size() <= 40));
+    }

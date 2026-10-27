@@ -1,0 +1,184 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Presentación privada · Action Leaders PLUS</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A0F1C">
+<meta property="og:title" content="Presentación privada · 15 minutos">
+<meta property="og:description" content="Viaje más, gaste menos y genere ingresos extra.">
+<meta property="og:image" content="https://actionleadersplus.com/media/sala-fondo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Sala oscura tipo auditorio: un escenario, pocas palabras, un foco por pantalla */
+:root{--ink:#0A0F1C;--stage:#111A2E;--line:rgba(255,255,255,.12);--fg:#F3F5FA;--mute:#9AA6BF;--gold:#F5B83D;--blue:#2AC1F1;--ok:#2BC48A;
+ --fd:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;--fb:"Figtree",ui-sans-serif,system-ui,sans-serif;color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0;background:var(--ink);color:var(--fg);font-family:var(--fb);font-size:16px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+body{min-height:100vh;padding:env(safe-area-inset-top,0) max(16px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0)) max(16px,env(safe-area-inset-left,0px))}
+h1,h2{font-family:var(--fd);margin:0;letter-spacing:-.015em;text-wrap:balance}
+button{font:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.wrap{max-width:720px;margin:0 auto}
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.av{width:48px;height:48px;border-radius:50%;flex:none;display:grid;place-items:center;font-family:var(--fd);font-weight:800;background:linear-gradient(135deg,#0A7DAD,#2AC1F1) center/cover;border:2px solid var(--gold);font-size:17px;color:#fff}
+.cta{width:100%;border:0;border-radius:16px;padding:17px;font-weight:700;font-size:17px;background:var(--gold);color:var(--ink);display:flex;justify-content:center;align-items:center;gap:10px;text-decoration:none}
+.cta.wa{background:#25D366;color:#fff}.cta.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.fine{font-size:12.5px;color:var(--mute);text-align:center;margin:0}
+/* recibidor */
+#lobby{min-height:calc(100vh - 24px);display:flex;flex-direction:column;justify-content:flex-end;gap:18px;padding:28px 6px 10px;
+ background:linear-gradient(180deg,rgba(10,15,28,.25),rgba(10,15,28,.82) 52%,var(--ink) 82%),url(media/sala-fondo.jpg) center top/cover no-repeat;margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px)))}
+#lobby>*{margin-left:16px;margin-right:16px}
+#lobby h1{font-size:clamp(32px,8vw,48px);line-height:1.04;font-weight:800}
+.host{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(17,26,46,.72);backdrop-filter:blur(6px);max-width:480px}
+.host small{color:var(--mute);display:block;font-size:12px}.host b{font-weight:700}
+.facts{display:flex;gap:18px;color:var(--mute);font-size:14px;flex-wrap:wrap}.facts b{color:var(--fg);font-weight:600}
+#lobby .cta{max-width:480px;width:auto}
+/* sala */
+#room{padding-top:14px;display:flex;flex-direction:column;gap:14px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.top .t{font-family:var(--fd);font-weight:800;font-size:16px}
+.pill{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:99px;background:rgba(245,184,61,.14);color:var(--gold);white-space:nowrap}
+.stage{position:relative;aspect-ratio:16/9;max-width:100%;border-radius:16px;overflow:hidden;background:#000 url(media/sala-fondo.jpg) center/cover;box-shadow:0 30px 60px -20px rgba(42,193,241,.35),0 0 0 1px var(--line)}
+#yt,#yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+#shield{position:absolute;inset:0;z-index:2;display:grid;place-items:center;background:transparent}
+#shield.paused{background:radial-gradient(ellipse at center,rgba(10,15,28,.25),rgba(10,15,28,.7))}
+.play{width:74px;height:74px;border-radius:50%;border:0;background:var(--fg);color:var(--ink);display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.play svg{width:26px;height:26px}
+#shield:not(.paused) .play{opacity:0;pointer-events:none}
+.bar{height:6px;border-radius:9px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--gold));transition:width .4s linear}
+.time{display:flex;justify-content:space-between;font-size:12px;color:var(--mute);font-variant-numeric:tabular-nums;margin-top:6px}
+.chaps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.chap{font-size:12px;color:var(--mute);border-top:2px solid var(--line);padding-top:7px;line-height:1.25}
+.chap.on{color:var(--fg);border-color:var(--gold);font-weight:600}.chap.done{color:var(--fg);border-color:var(--blue)}
+.lock{font-size:12px;color:var(--mute);display:flex;gap:6px;align-items:flex-start}
+.ctrls{display:flex;gap:8px}.ctrls button{flex:1;border:1px solid var(--line);background:transparent;color:var(--fg);border-radius:12px;padding:10px;font-weight:600}
+/* preguntas */
+.q{border:1px solid var(--line);border-radius:18px;padding:16px;background:linear-gradient(180deg,rgba(42,193,241,.10),rgba(17,26,46,.6));display:flex;flex-direction:column;gap:12px;animation:rise .35s ease}
+.q h2{font-size:22px;line-height:1.15}.q p{margin:0;color:var(--mute);font-size:14px}
+.opts{display:flex;flex-direction:column;gap:9px}.opts.g2{display:grid;grid-template-columns:1fr 1fr}
+.ch{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--fg);text-align:left;font-weight:600;font-size:16px}
+.ch .e{font-size:22px;width:28px;text-align:center;flex:none}.ch small{display:block;color:var(--mute);font-weight:500;font-size:13px}
+.ch[aria-pressed="true"]{border-color:var(--gold);background:rgba(245,184,61,.12)}
+.skip{background:none;border:0;color:var(--mute);font-size:13px;text-decoration:underline;align-self:center;padding:4px}
+.trust{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--mute);border-top:1px solid var(--line);padding-top:12px}
+.trust .av{width:34px;height:34px;font-size:12px;border-width:1.5px}
+#end{padding-top:22px;display:flex;flex-direction:column;gap:14px}
+#end h1{font-size:30px;line-height:1.1}
+.thanks{font-size:13px;color:var(--ok);font-weight:600}
+@keyframes rise{from{transform:translateY(8px);opacity:.3}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<div class="wrap">
+
+<section id="lobby">
+  <span class="eyebrow">Presentación privada · 15 min</span>
+  <h1 id="lbH">Su lugar está reservado.</h1>
+  <div class="host" id="lbHost" hidden><div class="av" id="lbAv"></div><div><small>Le invitó</small><b id="lbNm"></b></div></div>
+  <div class="facts"><span>🎬 <b>15 minutos</b></span><span>✈️ Viajes</span><span>💰 Ingresos extra</span></div>
+  <button class="cta" id="enter" type="button">▶ Entrar a la sala</button>
+  <p class="fine">Use audífonos o suba el volumen. Puede pausar y continuar cuando quiera.</p>
+</section>
+
+<section id="room" hidden>
+  <div class="top"><span class="t">Viaje más, gaste menos</span><span class="pill">Sala privada</span></div>
+  <div class="stage"><div id="yt"></div><div id="shield" class="paused"><button class="play" id="pp" type="button" aria-label="Reproducir"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l14 8-14 8z"/></svg></button></div></div>
+  <div><div class="bar"><i id="fill"></i></div><div class="time"><span id="tNow">0:00</span><span id="tDur">15:00</span></div></div>
+  <div class="chaps" id="chaps"></div>
+  <div id="qBox"></div>
+  <div class="ctrls"><button type="button" id="bPause">⏸ Pausar</button><button type="button" id="bBack">↺ Atrás 10 s</button></div>
+  <div class="lock">🔒 Mire la presentación completa: al final le espera una pregunta. Si sale, continúa donde quedó.</div>
+</section>
+
+<section id="end" hidden></section>
+
+</div>
+<script type="module">
+// ===== Configuración del video (Edwin): cambiar VIDEO y los segundos cuando llegue la grabación =====
+const VIDEO="Z0AkntdQXcA";
+// Momentos: número < 1 = fracción del video (para el video de prueba); número ≥ 1 = segundo exacto.
+const CAPS=[["La oportunidad",0],["Cómo funciona",.25],["Genere ingresos",.5],["Cómo empezar",.75]];
+const MOM={inicio:.05,pais:.10,pulso:.45};
+// ======================================================================================================
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,doc,getDoc,setDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});
+const db=getFirestore(app);const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const U=new URLSearchParams(location.search);
+const code=(U.get("de")||"").trim().toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60);
+const pName=(U.get("p")||"").replace(/[<>]/g,"").trim().slice(0,50),first=pName.split(/\s+/)[0]||"";
+const cid=(U.get("c")||"").replace(/[^A-Za-z0-9_-]/g,"").slice(0,40);
+const LSg=k=>{try{return JSON.parse(localStorage.getItem("sala:"+k))}catch(e){return null}},LSs=(k,v)=>{try{localStorage.setItem("sala:"+k,JSON.stringify(v))}catch(e){}};
+let P=null;try{if(code){const d=await getDoc(doc(db,"perfiles",code));if(d.exists())P=d.data()}}catch(e){}
+const host=P&&P.nombre?String(P.nombre):"",hostF=host.split(" ")[0]||"",hostWa=P?String(P.wa||P.waS||"").replace(/\D/g,""):"";
+const ini=n=>n.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+$("lbH").textContent=first?`Hola ${first}, su lugar está reservado.`:"Su lugar está reservado.";
+if(host){$("lbHost").hidden=false;$("lbNm").textContent=host;const av=$("lbAv");if(P.foto&&/^data:image\//.test(P.foto)){av.style.backgroundImage=`url(${P.foto})`}else av.textContent=ini(host)}
+// ----- registro de la visita (un documento por prospecto, se reutiliza si vuelve) -----
+const vKey="v-"+code+"-"+(cid||pName.toLowerCase()||"anon");
+let V=LSg(vKey)||{id:null,pos:0,max:0,sent:{}};
+const D={};const canTrack=!!(P&&P.uid);
+let saveT;async function save(extra,now){Object.assign(D,extra||{});if(!canTrack)return;clearTimeout(saveT);const go=async()=>{try{
+  if(!V.id){V.id=Math.random().toString(36).slice(2,10)+Date.now().toString(36);LSs(vKey,V);D.t0=Date.now();D.n=(pName||"Sin nombre").slice(0,60);if(cid)D.c=cid}
+  D.t=Date.now();await setDoc(doc(db,"users",P.uid,"sala",V.id),D,{merge:true})}catch(e){}};if(now)await go();else saveT=setTimeout(go,800)}
+// ----- capítulos -----
+let dur=0;const at=x=>x<1?x*dur:x;
+$("chaps").innerHTML=CAPS.map(c=>`<div class="chap">${esc(c[0])}</div>`).join("");
+const fmt=s=>{s=Math.max(0,Math.floor(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
+// ----- YouTube sin salidas: sin controles, sin logo clicable, con una capa encima -----
+let YTP=null,ready=false,playing=false,asked=Object.assign({},V.asked||{}),inQ=false,ended=false;
+function loadYT(){return new Promise(ok=>{if(window.YT&&YT.Player)return ok();window.onYouTubeIframeAPIReady=ok;const s=document.createElement("script");s.src="https://www.youtube.com/iframe_api";document.head.appendChild(s)})}
+async function startPlayer(){await loadYT();YTP=new YT.Player("yt",{videoId:VIDEO,host:"https://www.youtube-nocookie.com",playerVars:{controls:0,disablekb:1,modestbranding:1,rel:0,fs:0,iv_load_policy:3,playsinline:1,cc_load_policy:0,showinfo:0,start:Math.floor(V.pos||0)},
+  events:{onReady:()=>{ready=true;dur=YTP.getDuration()||0;$("tDur").textContent=fmt(dur);play()},onStateChange:e=>{playing=e.data===1;$("shield").classList.toggle("paused",!playing);$("bPause").textContent=playing?"⏸ Pausar":"▶ Continuar";if(e.data===0)finish()}}})}
+function play(){if(!YTP||inQ||ended)return;try{YTP.playVideo()}catch(e){}}
+function pause(){try{YTP&&YTP.pauseVideo()}catch(e){}}
+$("shield").onclick=()=>{if(inQ||ended)return;playing?pause():play()};
+$("bPause").onclick=()=>{if(inQ||ended)return;playing?pause():play()};
+$("bBack").onclick=()=>{if(!YTP||inQ)return;try{YTP.seekTo(Math.max(0,YTP.getCurrentTime()-10),true)}catch(e){}};
+setInterval(()=>{if(!ready||!YTP||!YTP.getCurrentTime)return;const t=YTP.getCurrentTime()||0;if(!dur)dur=YTP.getDuration()||0;if(!dur)return;
+  // no adelantar más allá de lo ya visto
+  if(t>V.max+3){try{YTP.seekTo(V.max,true)}catch(e){}return}
+  V.pos=t;V.max=Math.max(V.max,t);LSs(vKey,Object.assign(V,{asked}));
+  const p=Math.min(100,Math.round(V.max*100/dur));$("fill").style.width=p+"%";$("tNow").textContent=fmt(t);
+  const ch=[...document.querySelectorAll(".chap")];let i=0;CAPS.forEach((c,k)=>{if(t>=at(c[1]))i=k});ch.forEach((c,k)=>c.className="chap"+(k<i?" done":k===i?" on":""));
+  for(const m of [25,50,75])if(p>=m&&!V.sent[m]){V.sent[m]=1;save({pct:m,dur:Math.round(dur)})}
+  if(!inQ&&!ended){for(const k of ["inicio","pais","pulso"])if(!asked[k]&&t>=at(MOM[k])&&t<at(MOM[k])+20){ask(k);break}}
+  if(dur&&t>=dur-1.2&&!ended)finish()},500);
+// ----- preguntas dentro del video -----
+const Q={
+ inicio:{h:"¿Qué tendría más valor para usted en este momento?",o:[["viajar","✈️","Viajar más"],["ingresos","💰","Generar ingresos"],["ambas","🚀","Ambas cosas"]],f:"r1"},
+ pais:{h:"¿Qué lugar le gustaría conocer?",p:"Puede elegir varios.",multi:1,o:[["Francia","🇫🇷","Francia"],["España","🇪🇸","España"],["Italia","🇮🇹","Italia"],["Caribe","🏝️","El Caribe"]],f:"pais"},
+ pulso:{h:"¿Le está gustando lo que está viendo?",o:[["si","👍","Sí, mucho"],["dudas","🤔","Tengo dudas"]],f:"pulso",g2:1}};
+function ask(k){const q=Q[k];inQ=true;pause();let sel=[];
+  $("qBox").innerHTML=`<div class="q"><h2>${esc(q.h)}</h2>${q.p?`<p>${esc(q.p)}</p>`:""}<div class="opts${q.g2?" g2":""}">${q.o.map(o=>`<button class="ch" type="button" data-v="${esc(o[0])}" aria-pressed="false"><span class="e">${o[1]}</span><span>${esc(o[2])}</span></button>`).join("")}</div>${q.multi?`<button class="cta" type="button" id="qOk">Continuar ▶</button>`:""}<button class="skip" type="button" id="qSkip">Seguir viendo sin responder</button></div>`;
+  const done=v=>{asked[k]=1;LSs(vKey,Object.assign(V,{asked}));if(v)save({[q.f]:v});$("qBox").innerHTML=v?`<p class="thanks">✓ ¡Gracias${first?", "+esc(first):""}! Sigamos.</p>`:"";setTimeout(()=>{if($("qBox").querySelector(".thanks"))$("qBox").innerHTML=""},2500);inQ=false;play()};
+  $("qBox").querySelectorAll(".ch").forEach(b=>b.onclick=()=>{if(q.multi){const on=b.getAttribute("aria-pressed")!=="true";b.setAttribute("aria-pressed",on);sel=on?sel.concat(b.dataset.v):sel.filter(x=>x!==b.dataset.v);return}done(b.dataset.v)});
+  if(q.multi)$("qOk").onclick=()=>done(sel.join(", "));$("qSkip").onclick=()=>done("");
+  $("qBox").scrollIntoView({behavior:"smooth",block:"nearest"})}
+// ----- cierre -----
+const R={viajar:"Viajar más",ingresos:"Generar ingresos extra",ambas:"Ambas cosas",no:"Por ahora no me interesa"};
+function finish(){if(ended)return;ended=true;pause();V.max=dur;LSs(vKey,V);save({pct:100,dur:Math.round(dur)},true);$("room").hidden=true;const e=$("end");e.hidden=false;window.scrollTo(0,0);
+  const trust=host?`<div class="trust"><div class="av" style="${P&&P.foto&&/^data:image\//.test(P.foto)?`background-image:url(${P.foto})`:""}">${P&&P.foto?"":esc(ini(host))}</div><span>Su respuesta le llegará a <b style="color:var(--fg)">${esc(host)}</b>, quien le invitó, para orientarle según lo que usted busca.</span></div>`:"";
+  e.innerHTML=`<span class="eyebrow">Terminó la presentación 🎉</span><h1>De todo lo que vio, ¿qué es lo que más le llamó la atención?</h1>
+   <div class="opts">${[["viajar","✈️","Viajar más","Conocer el mundo pagando menos"],["ingresos","💰","Generar ingresos extra","Un negocio desde el celular"],["ambas","🚀","Ambas cosas","Viajar y ganar al mismo tiempo"],["no","🙅","Por ahora no me interesa",""]].map(o=>`<button class="ch" type="button" data-r="${o[0]}"><span class="e">${o[1]}</span><span>${o[2]}${o[3]?`<small>${o[3]}</small>`:""}</span></button>`).join("")}</div>${trust}`;
+  e.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{const r=b.dataset.r;save({resp:r},true);paso2(r)})}
+function waLink(t){return hostWa?"https://wa.me/"+hostWa+"?text="+encodeURIComponent(t):""}
+function paso2(r){const e=$("end");window.scrollTo(0,0);
+  if(r==="no"){e.innerHTML=`<h1>Gracias por su tiempo${first?", "+esc(first):""}.</h1><p style="margin:0;color:var(--mute)">Si gusta, cuéntenos qué le detuvo (opcional):</p><div class="opts">${["⏳ No tengo tiempo","💵 La inversión","❓ No entendí algo","🙂 No es para mí"].map(x=>`<button class="ch" type="button" data-m="${esc(x)}"><span>${x}</span></button>`).join("")}</div><button class="skip" type="button" data-m="">Prefiero no decir</button>`;
+    e.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{if(b.dataset.m)save({motivo:b.dataset.m},true);e.innerHTML=`<h1>¡Gracias${first?", "+esc(first):""}! 🙏</h1><p style="margin:0;color:var(--mute)">${host?esc(hostF)+" recibió su respuesta.":"Recibimos su respuesta."} Le deseamos lo mejor.</p>`});return}
+  e.innerHTML=`<h1>¡Excelente! ¿Cómo prefiere que ${host?esc(hostF):"le"} contacte?</h1><div class="opts">
+   <button class="ch" type="button" data-h="whatsapp"><span class="e">💬</span><span>Por WhatsApp ahora</span></button>
+   <button class="ch" type="button" data-h="llamada"><span class="e">📅</span><span>Agendar una llamada<small>Elija día y hora</small></span></button>
+   <button class="ch" type="button" data-h="tarde"><span class="e">🕗</span><span>Que me escriba más tarde</span></button></div>`;
+  e.querySelectorAll("[data-h]").forEach(b=>b.onclick=()=>{const h=b.dataset.h;save({como:h},true);final(r,h)})}
+function final(r,h){const e=$("end");window.scrollTo(0,0);
+  const msg=`Hola ${hostF||""} 😊 Soy ${pName||"la persona que invitó"}. Ya vi la presentación y lo que más me llamó la atención fue: ${R[r]}. Quiero mi link de registro para la cuenta gratis y los $50 de bienvenida.`;
+  const wl=waLink(msg);
+  e.innerHTML=`<span class="eyebrow">Su primer paso comienza aquí</span><h1>¡Listo${first?", "+esc(first):""}! 🙌</h1>
+   <p style="margin:0;color:var(--mute)">${host?esc(hostF)+" recibió su respuesta y le contactará muy pronto.":"Recibimos su respuesta."} Mientras tanto, puede pedir su enlace para crear su cuenta gratis y recibir <b style="color:var(--fg)">$50 de bienvenida</b>.</p>
+   ${wl?`<a class="cta wa" href="${wl}" target="_blank" rel="noopener">🎁 Quiero mi link de registro</a>`:""}
+   ${h==="llamada"&&code?`<a class="cta ghost" href="conoce.html?de=${encodeURIComponent(code)}">📅 Elegir día y hora</a>`:""}
+   <p class="fine">Action Leaders PLUS · comunidad de inCruises</p>`}
+// ----- entrar -----
+$("enter").onclick=async()=>{$("lobby").hidden=true;$("room").hidden=false;window.scrollTo(0,0);save({pct:V.max&&dur?Math.round(V.max*100/dur):0},true);await startPlayer()};
+if(!canTrack&&code){console.warn("perfil no encontrado")}
+</script></body></html>

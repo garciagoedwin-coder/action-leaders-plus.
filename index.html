@@ -865,6 +865,7 @@ nav.tabs button{z-index:0;isolation:isolate}
       </div>
       <div class="card" id="avisoCard" hidden></div>
       <div class="miwa" id="miWaCard" hidden></div>
+      <div class="card" id="salaCard" hidden style="border:1.5px solid #C2410C"></div>
       <div class="actBan" id="actBan" hidden></div>
       <div class="metaStrip" id="metaStrip" hidden></div>
       <div class="card entCard" id="entCard" hidden></div>
@@ -2158,6 +2159,54 @@ function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,
       location.href="https://wa.me/"+tel+"?text="+encodeURIComponent(msg)};
     if(n)upd()})}
 
+// ---------- presentación virtual (sala.html) ----------
+const SALA_R={viajar:"Viajar más",ingresos:"Generar ingresos",ambas:"Ambas cosas",no:"Por ahora no"};
+const SALA_C={whatsapp:"WhatsApp ahora",llamada:"Agendar llamada",tarde:"Más tarde"};
+function salaCache(){return LS.get("salaV")||{}}
+function salaDe(cid){if(!cid)return null;const V=salaCache();let b=null;for(const k in V){const v=V[k];if(v.c===cid&&(!b||(v.t||0)>(b.t||0)))b=v}return b}
+function salaNivel(v){if(v.resp==="ambas")return["🔥 Caliente","c-bad","#C2410C"];if(v.resp==="viajar"||v.resp==="ingresos")return["🟠 Tibio","c-gold","#B45309"];if(v.resp==="no")return["❄️ No por ahora","c-brand","#0369A1"];return[(+v.pct||0)>=75?"👀 Casi termina":(+v.pct||0)>0?"⏳ Viéndola":"👋 Entró",(+v.pct||0)>=75?"c-gold":"c-brand","var(--muted)"]}
+async function loadSala(force){if(!store.db||!store.uid)return;if(!force&&!LS.get("salaOn"))return;const since=+LS.get("salaSync")||0;
+  try{const q=since?await store.db.collection("users/"+store.uid+"/sala").where("t",since,">").get():await store.db.collection("users/"+store.uid+"/sala").get();
+    const V=salaCache();let mx=since;q.docs.forEach(d=>{const x=d.data();V[d.id]=Object.assign({id:d.id},x);mx=Math.max(mx,+x.t||0)});
+    const ks=Object.keys(V).sort((a,b)=>(V[b].t||0)-(V[a].t||0)).slice(0,80),N={};ks.forEach(k=>N[k]=V[k]);LS.set("salaV",N);LS.set("salaSync",mx);
+    renderSalaCard();try{renderCRM()}catch(e){}}catch(e){}}
+function renderSalaCard(){const c=$("#salaCard");if(!c)return;const seen=+LS.get("salaSeen")||0,V=Object.values(salaCache()).filter(v=>(v.t||0)>seen&&(v.resp||(+v.pct||0)>=50)).sort((a,b)=>(b.t||0)-(a.t||0));
+  if(!V.length){c.hidden=true;return}c.hidden=false;
+  c.innerHTML=`<div class="row between"><h3 style="margin:0">🎬 Su presentación virtual</h3><button class="btn sm ghost" id="scVer">Ver todo</button></div>${V.slice(0,3).map(v=>{const n=salaNivel(v);return `<div class="row" style="gap:10px;padding:8px 0;border-top:1px solid var(--line)"><div class="grow" style="min-width:0"><b style="font-weight:600">${esc(v.n||"Prospecto")}</b><div class="small muted">Vio el ${+v.pct||0}%${v.resp?" · Le interesa: "+esc(SALA_R[v.resp]):""}</div></div><span class="chip" style="color:${n[2]};font-weight:800">${esc(n[0])}</span></div>`}).join("")}`;
+  $("#scVer").onclick=()=>abrirSala()}
+function salaUrl(nombre,cid){let u="https://actionleadersplus.com/sala.html?de="+miPCode();if(nombre)u+="&p="+encodeURIComponent(String(nombre).trim().slice(0,50));if(cid)u+="&c="+encodeURIComponent(cid);return u}
+async function salaPrep(){if(!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return false}
+  if(!LS.get("salaPerf")){try{const r=regDoc.registro;let foto=miFotoUrl()||"";if(foto&&/^https?:/.test(foto)){const d=await urlADataUrl(foto,240);foto=d||""}
+    const b={uid:store.uid,nombre:r.nombre||miNombreCorto(),waS:String(r.whatsapp||"").replace(/\D/g,""),t:Date.now()};if(foto&&foto.length<400000)b.foto=foto;
+    await store.db.doc("perfiles/"+miPCode()).set(b,{merge:true});LS.set("salaPerf",1)}catch(e){toast("No se pudo preparar su sala. Revise su conexión.");return false}}
+  LS.set("salaOn",1);return true}
+function salaMsgInv(nombre,u){const f=String(nombre||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"";
+  return `Hola${f?" "+f:""} 😊\n\nLe preparé una *presentación privada de 15 minutos* sobre cómo viajar más pagando menos y generar ingresos extra.\n\n🎬 Véala aquí cuando tenga un momento tranquilo:\n${u}\n\nAl final le hago una pregunta: su respuesta me ayuda a orientarle mejor. 🙌${yo?"\n\n*"+yo+"*":""}`}
+async function enviarSala(c){if(!c)return;if(!(await salaPrep()))return;const t=salaMsgInv(c.name,salaUrl(c.name,c.id)),n=waNum(c.phone,c.cc);
+  if(n){location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t);return}
+  if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
+function salaSeg(v){const f=String(v.n||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"",pa=v.pais?` y vi que le gustaría conocer *${v.pais.split(",")[0].trim()}*`:"";
+  if(v.resp==="no")return `Hola ${f} 😊\n\nGracias por tomarse el tiempo de ver la presentación. Respeto mucho su decisión.\n\nSi más adelante le surge alguna duda o quiere saber más, aquí estoy para ayudarle. 🙌${yo?"\n\n*"+yo+"*":""}`;
+  if(!v.resp)return `Hola ${f}, ¿cómo está? 😊\n\nVi que empezó a ver la presentación${pa}. ¿Qué le ha parecido hasta ahora?\n\nSi le quedó alguna duda, con gusto se la aclaro en unos minutos. 🙌${yo?"\n\n*"+yo+"*":""}`;
+  const que=v.resp==="ambas"?"*viajar más y generar ingresos*":v.resp==="viajar"?"*viajar más*":"*generar ingresos extra*";
+  const l1=v.resp==="viajar"?"✅ Enseñarle cómo viajar más pagando menos":"✅ Enseñarle el plan para construir esos ingresos";
+  return `Hola ${f}, ¿cómo está? 😊\n\nVi que terminó la presentación y que lo que más le llamó la atención fue ${que}${pa}. ${v.resp==="ambas"?"¡Excelente combinación! 🙌":"¡Excelente! 🙌"}\n\nMe gustaría reunirme con usted unos minutos para:\n\n${l1}\n✅ Despejar todas sus dudas\n✅ Mostrarle cómo empezar desde su celular\n\n¿Le queda mejor hoy o mañana?${yo?"\n\n*"+yo+"*":""}`}
+async function abrirSala(){LS.set("salaSeen",Date.now());renderSalaCard();
+  const draw=()=>{const V=Object.values(salaCache()).sort((a,b)=>(b.t||0)-(a.t||0));
+   return V.length?V.map(v=>{const n=salaNivel(v),ct=v.c&&contacts.find(x=>x.id===v.c);return `<div style="padding:12px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px">
+     <div class="row between" style="gap:8px"><b style="font-weight:600;min-width:0">${esc(v.n||"Prospecto")}</b><span class="chip" style="color:${n[2]};font-weight:800;flex:none">${esc(n[0])}</span></div>
+     <div style="height:6px;border-radius:9px;background:var(--line);overflow:hidden"><i style="display:block;height:100%;width:${Math.min(100,+v.pct||0)}%;background:var(--good)"></i></div>
+     <div class="small muted">Vio el ${+v.pct||0}% · ${v.t?haceTxt(v.t):""}</div>
+     <div class="row wrap" style="gap:6px">${v.r1?`<span class="chip c-brand">Al inicio: ${esc(SALA_R[v.r1]||v.r1)}</span>`:""}${v.pais?`<span class="chip c-brand">🌍 ${esc(v.pais)}</span>`:""}${v.pulso?`<span class="chip c-brand">${v.pulso==="si"?"👍 Le gustaba":"🤔 Tenía dudas"}</span>`:""}${v.resp?`<span class="chip c-gold">Al final: ${esc(SALA_R[v.resp])}</span>`:""}${v.como?`<span class="chip c-good">Prefiere: ${esc(SALA_C[v.como]||v.como)}</span>`:""}${v.motivo?`<span class="chip c-brand">${esc(v.motivo)}</span>`:""}</div>
+     <button class="btn sm" data-sseg="${esc(v.id)}" style="background:#25D366;color:#fff;align-self:flex-start">💬 ${v.resp==="no"?"Agradecer":"Darle seguimiento"}${ct?"":" (elegir chat)"}</button></div>`}).join(""):`<p class="small muted" style="margin:0">Aún nadie ha visto su presentación. Envíela desde el CRM (botón «🎬 Presentación») o con el botón de arriba.</p>`};
+  openSheet(`<h2>🎬 Mi presentación virtual</h2><p class="small muted" style="margin:0">Una sala privada de 15 minutos. Aquí ve quién la vio, cuánto vio y qué respondió.</p>
+   <div class="row" style="gap:8px"><input class="inp grow" id="slN" placeholder="Nombre de la persona" maxlength="50" style="min-width:0"><button class="btn sm" id="slSend" style="background:#25D366;color:#fff">Enviar</button></div>
+   <div id="slList">${draw()}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button><span data-nofocus hidden></span>`,()=>{
+    const bind=()=>document.querySelectorAll("#slList [data-sseg]").forEach(b=>b.onclick=async()=>{const v=salaCache()[b.dataset.sseg];if(!v)return;const t=salaSeg(v),ct=v.c&&contacts.find(x=>x.id===v.c),n=ct?waNum(ct.phone,ct.cc):"";
+      if(n){location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t);return}if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)});bind();
+    $("#slSend").onclick=async()=>{const nm=$("#slN").value.trim();if(nm.length<2){toast("Escriba el nombre de la persona");$("#slN").focus();return}if(!(await salaPrep()))return;const t=salaMsgInv(nm,salaUrl(nm,""));
+      if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)};
+    loadSala(true).then(()=>{const l=$("#slList");if(l){l.innerHTML=draw();bind()}})})}
 // ---------- página para prospectos ----------
 const miPCode=()=>{const n=miInv().split("-").slice(0,-1).join("-")||"socio";return n+"-"+String(store.uid||"").slice(4,8).toLowerCase()};
 const miPagina=()=>"https://actionleadersplus.com/conoce.html?de="+miPCode();
@@ -2334,8 +2383,9 @@ function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerC
     <div class="cbody"><div class="info">
     ${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}${c.note?`<span class="note">${esc(c.note)}</span>`:""}
     ${(()=>{const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fecha>=TODAY).sort(citaSort)[0];return ci?`<span class="small" style="color:var(--brand);font-weight:700">📅 Cita: ${esc(citaCuando(ci))}</span>`:""})()}
+    ${(()=>{const v=salaDe(c.id);return v?`<span class="small" style="font-weight:700;color:${salaNivel(v)[2]}">🎬 ${esc(salaNivel(v)[0])} · vio el ${+v.pct||0}%${v.resp?" · "+esc(SALA_R[v.resp]||""):""}</span>`:""})()}
     ${c.next?`<span class="small" style="color:var(--${late?"bad":today?"warn":"muted"});font-weight:600">${late?"Seguimiento atrasado: "+niceDate(c.next):today?"Seguimiento hoy":"Próximo seguimiento: "+niceDate(c.next)}</span>`:""}
-    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}<button class="btn sm ghost" data-cita="${esc(c.id)}">📅 Agendar</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
+    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button><button class="btn sm ghost" data-cita="${esc(c.id)}">📅 Agendar</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
 $("#stageBar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;stageF=b.dataset.s;renderCRM()});
 $("#crmSearch").addEventListener("input",renderCRM);
 $("#bienBtn").onclick=()=>abrirBienvenida();$("#addContact").onclick=()=>editContact();
@@ -2346,6 +2396,7 @@ $("#contactList").addEventListener("click",async e=>{const st=e.target.closest("
     const id=await store.saveContact(Object.assign({},c));if(!id){c.stage=prev;renderCRM();return}if(c.stage==="Socio"){abrirBienvenida(c);return}toast(c.name.split(" ")[0]+": "+c.stage);return}
   const bw=e.target.closest("[data-bien]");if(bw){abrirBienvenida(contacts.find(c=>c.id===bw.dataset.bien));return}
   const ct=e.target.closest("[data-cita]");if(ct){abrirCita(null,contacts.find(c=>c.id===ct.dataset.cita));return}
+  const sl=e.target.closest("[data-sala]");if(sl){enviarSala(contacts.find(c=>c.id===sl.dataset.sala));return}
   const b=e.target.closest("[data-edit]");if(b)editContact(contacts.find(c=>c.id===b.dataset.edit))});
 
 
@@ -2855,6 +2906,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <button class="pf-it" id="pfFoto"><span class="ic">📷</span>Cambiar mi foto</button>
     <button class="pf-it" id="pfNombre"><span class="ic">👤</span>Mis datos <span class="small muted" style="font-weight:500">· nombre y WhatsApp</span></button>
     <button class="pf-it" id="pfPag"><span class="ic">🌐</span>Mi página para prospectos</button>
+    <button class="pf-it" id="pfSala"><span class="ic">🎬</span>Mi presentación virtual</button>
     <button class="pf-it" id="pfInv"><span class="ic">🔗</span>Mi enlace de invitación para socios</button>
     <button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
@@ -2863,7 +2915,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
-    $("#pfNombre").onclick=abrirMisDatos;
+    $("#pfNombre").onclick=abrirMisDatos;$("#pfSala").onclick=()=>{closeSheet();abrirSala()};
     $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;
     $("#pfInv").onclick=()=>{if(!(regDoc&&regDoc.registro)){toast("Completa tu registro primero");return}const u=miEnlace();openSheet(`<h2>🔗 Tu enlace de invitación</h2><p class="small muted">Compártelo solo con tus socios nuevos. Al registrarse, aparecerás como su patrocinador.</p>
       <div class="card" style="word-break:break-all;font-weight:600">${esc(u)}</div><button class="btn" id="invCp" style="width:100%">Copiar enlace</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#invCp").onclick=async()=>{try{await navigator.clipboard.writeText(u);toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})};
@@ -2931,7 +2983,7 @@ async function loadMine(){
   try{const b=bw;if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}catch(e){}
   if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
   welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();
-  contacts=await store.contacts();setTimeout(importarProspectos,1500);loadCitas();
+  contacts=await store.contacts();setTimeout(importarProspectos,1500);setTimeout(()=>loadSala(),2500);loadCitas();
   renderAll()}
 
 let invSponsor=null,invData=null;
@@ -3107,7 +3159,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261026222109";var busy=false,pend=null;
+(function(){var V="20261026224539";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
