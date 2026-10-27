@@ -1412,7 +1412,7 @@ function evResultados(c,E){const L=E.top,yo=miNombreFull()||miNombreCorto(),iy=e
   c.innerHTML=`<div class="row between"><span class="evK">🎟️ Resultados · ${esc(E.titulo||"Evento")}</span><span class="evHoy">Terminó</span></div>
    ${entPub&&entPub.inv?`<div class="evT"><b>${entPub.inv}</b><span style="padding-bottom:4px;font-weight:700">invitados llegaron · de ${E.total} registrados</span></div>`:`<div class="evT"><b>${E.total}</b><span style="padding-bottom:4px;font-weight:700">invitados registrados</span></div>`}
    ${R.length?`<div>${R.slice(0,3).map((x,i)=>`<div class="evRow"><span style="font-size:20px;width:26px;text-align:center">${md[i]}</span>${avHTML(x.s,false,false)}<span class="nm">${esc(x.s)}</span><small>de ${x.r}</small><span class="ct">${x.n}</span></div>`).join("")}</div>`:""}
-   ${me}<div class="row" style="gap:8px">${iy>=0?`<button class="btn sm" id="evSeg" type="button" style="flex:1">📲 Seguimiento del evento</button>`:""}${R.length?`<button class="btn sm" id="evLlg2" type="button" style="flex:1">🏆 Llegadas</button>`:""}</div>+(isAdmin&&TODAY<=ENT.res?`<button class="btn sm" id="evAdm" type="button" style="width:100%;font-size:12.5px;opacity:.85">🔎 Admin: ver quién llegó de cada socio</button>`:"")+'';
+   ${me}<div class="row" style="gap:8px">${iy>=0?`<button class="btn sm" id="evSeg" type="button" style="flex:1">📲 Seguimiento del evento</button>`:""}${R.length?`<button class="btn sm" id="evLlg2" type="button" style="flex:1">🏆 Llegadas</button>`:""}</div>`+(isAdmin&&TODAY<=ENT.res?`<button class="btn sm" id="evAdm" type="button" style="width:100%;font-size:12.5px;opacity:.85">🔎 Admin: ver quién llegó de cada socio</button>`:"");
   const a=$("#evSeg");if(a)a.onclick=()=>evSeguimiento(E,iy);const b=$("#evLlg2");if(b)b.onclick=()=>evLlegadas(L,iy);const ad=$("#evAdm");if(ad)ad.onclick=()=>{abrirEntrada();entTab="r";setTimeout(()=>{try{entRender()}catch(e){}},300)}}
 function evSegMsg(E,n,ok){const f=String(n||"").split(" ")[0],yo=miNombreCorto(),dia=["el domingo","el lunes","el martes","el miércoles","el jueves","el viernes","el sábado"][parseK(E.fecha).getDay()],ev=E.titulo||"evento";
   let pg="";try{if(miPaginaLista())pg=miPagina()}catch(e){}
@@ -3031,7 +3031,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261026185946";var busy=false,pend=null;
+(function(){var V="20261026190903";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
