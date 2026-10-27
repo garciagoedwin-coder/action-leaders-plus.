@@ -2160,17 +2160,19 @@ function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,
     if(n)upd()})}
 
 // ---------- presentación virtual (sala.html) ----------
+// Lanzamiento: por ahora solo admins. Para abrirla a todos: return true
+function salaOk(){return !!isAdmin}
 const SALA_R={viajar:"Viajar más",ingresos:"Generar ingresos",ambas:"Ambas cosas",no:"Por ahora no"};
 const SALA_C={whatsapp:"WhatsApp ahora",llamada:"Agendar llamada",tarde:"Más tarde"};
 function salaCache(){return LS.get("salaV")||{}}
 function salaDe(cid){if(!cid)return null;const V=salaCache();let b=null;for(const k in V){const v=V[k];if(v.c===cid&&(!b||(v.t||0)>(b.t||0)))b=v}return b}
 function salaNivel(v){if(v.resp==="ambas")return["🔥 Caliente","c-bad","#C2410C"];if(v.resp==="viajar"||v.resp==="ingresos")return["🟠 Tibio","c-gold","#B45309"];if(v.resp==="no")return["❄️ No por ahora","c-brand","#0369A1"];return[(+v.pct||0)>=75?"👀 Casi termina":(+v.pct||0)>0?"⏳ Viéndola":"👋 Entró",(+v.pct||0)>=75?"c-gold":"c-brand","var(--muted)"]}
-async function loadSala(force){if(!store.db||!store.uid)return;if(!force&&!LS.get("salaOn"))return;const since=+LS.get("salaSync")||0;
+async function loadSala(force){if(!store.db||!store.uid||!salaOk())return;if(!force&&!LS.get("salaOn"))return;const since=+LS.get("salaSync")||0;
   try{const q=since?await store.db.collection("users/"+store.uid+"/sala").where("t",since,">").get():await store.db.collection("users/"+store.uid+"/sala").get();
     const V=salaCache();let mx=since;q.docs.forEach(d=>{const x=d.data();V[d.id]=Object.assign({id:d.id},x);mx=Math.max(mx,+x.t||0)});
     const ks=Object.keys(V).sort((a,b)=>(V[b].t||0)-(V[a].t||0)).slice(0,80),N={};ks.forEach(k=>N[k]=V[k]);LS.set("salaV",N);LS.set("salaSync",mx);
     renderSalaCard();try{renderCRM()}catch(e){}}catch(e){}}
-function renderSalaCard(){const c=$("#salaCard");if(!c)return;const seen=+LS.get("salaSeen")||0,V=Object.values(salaCache()).filter(v=>(v.t||0)>seen&&(v.resp||(+v.pct||0)>=50)).sort((a,b)=>(b.t||0)-(a.t||0));
+function renderSalaCard(){const c=$("#salaCard");if(!c)return;if(!salaOk()){c.hidden=true;return}const seen=+LS.get("salaSeen")||0,V=Object.values(salaCache()).filter(v=>(v.t||0)>seen&&(v.resp||(+v.pct||0)>=50)).sort((a,b)=>(b.t||0)-(a.t||0));
   if(!V.length){c.hidden=true;return}c.hidden=false;
   c.innerHTML=`<div class="row between"><h3 style="margin:0">🎬 Su presentación virtual</h3><button class="btn sm ghost" id="scVer">Ver todo</button></div>${V.slice(0,3).map(v=>{const n=salaNivel(v);return `<div class="row" style="gap:10px;padding:8px 0;border-top:1px solid var(--line)"><div class="grow" style="min-width:0"><b style="font-weight:600">${esc(v.n||"Prospecto")}</b><div class="small muted">Vio el ${+v.pct||0}%${v.resp?" · Le interesa: "+esc(SALA_R[v.resp]):""}</div></div><span class="chip" style="color:${n[2]};font-weight:800">${esc(n[0])}</span></div>`}).join("")}`;
   $("#scVer").onclick=()=>abrirSala()}
@@ -2383,9 +2385,9 @@ function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerC
     <div class="cbody"><div class="info">
     ${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}${c.note?`<span class="note">${esc(c.note)}</span>`:""}
     ${(()=>{const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fecha>=TODAY).sort(citaSort)[0];return ci?`<span class="small" style="color:var(--brand);font-weight:700">📅 Cita: ${esc(citaCuando(ci))}</span>`:""})()}
-    ${(()=>{const v=salaDe(c.id);return v?`<span class="small" style="font-weight:700;color:${salaNivel(v)[2]}">🎬 ${esc(salaNivel(v)[0])} · vio el ${+v.pct||0}%${v.resp?" · "+esc(SALA_R[v.resp]||""):""}</span>`:""})()}
+    ${(()=>{const v=salaOk()&&salaDe(c.id);return v?`<span class="small" style="font-weight:700;color:${salaNivel(v)[2]}">🎬 ${esc(salaNivel(v)[0])} · vio el ${+v.pct||0}%${v.resp?" · "+esc(SALA_R[v.resp]||""):""}</span>`:""})()}
     ${c.next?`<span class="small" style="color:var(--${late?"bad":today?"warn":"muted"});font-weight:600">${late?"Seguimiento atrasado: "+niceDate(c.next):today?"Seguimiento hoy":"Próximo seguimiento: "+niceDate(c.next)}</span>`:""}
-    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button><button class="btn sm ghost" data-cita="${esc(c.id)}">📅 Agendar</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
+    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost" data-cita="${esc(c.id)}">📅 Agendar</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
 $("#stageBar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;stageF=b.dataset.s;renderCRM()});
 $("#crmSearch").addEventListener("input",renderCRM);
 $("#bienBtn").onclick=()=>abrirBienvenida();$("#addContact").onclick=()=>editContact();
@@ -2906,7 +2908,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <button class="pf-it" id="pfFoto"><span class="ic">📷</span>Cambiar mi foto</button>
     <button class="pf-it" id="pfNombre"><span class="ic">👤</span>Mis datos <span class="small muted" style="font-weight:500">· nombre y WhatsApp</span></button>
     <button class="pf-it" id="pfPag"><span class="ic">🌐</span>Mi página para prospectos</button>
-    <button class="pf-it" id="pfSala"><span class="ic">🎬</span>Mi presentación virtual</button>
+    ${salaOk()?`<button class="pf-it" id="pfSala"><span class="ic">🎬</span>Mi presentación virtual</button>`:""}
     <button class="pf-it" id="pfInv"><span class="ic">🔗</span>Mi enlace de invitación para socios</button>
     <button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
@@ -2915,7 +2917,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
-    $("#pfNombre").onclick=abrirMisDatos;$("#pfSala").onclick=()=>{closeSheet();abrirSala()};
+    $("#pfNombre").onclick=abrirMisDatos;{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
     $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;
     $("#pfInv").onclick=()=>{if(!(regDoc&&regDoc.registro)){toast("Completa tu registro primero");return}const u=miEnlace();openSheet(`<h2>🔗 Tu enlace de invitación</h2><p class="small muted">Compártelo solo con tus socios nuevos. Al registrarse, aparecerás como su patrocinador.</p>
       <div class="card" style="word-break:break-all;font-weight:600">${esc(u)}</div><button class="btn" id="invCp" style="width:100%">Copiar enlace</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#invCp").onclick=async()=>{try{await navigator.clipboard.writeText(u);toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})};
@@ -3159,7 +3161,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261026224539";var busy=false,pend=null;
+(function(){var V="20261026225124";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
