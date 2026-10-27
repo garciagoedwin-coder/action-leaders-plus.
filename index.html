@@ -987,14 +987,14 @@ nav.tabs button{z-index:0;isolation:isolate}
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,onAuthStateChanged,signOut,setPersistence,browserLocalPersistence} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {initializeFirestore,persistentLocalCache,doc,collection,getDoc,setDoc,getDocs,addDoc,deleteDoc,onSnapshot,serverTimestamp,query,where} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {initializeFirestore,persistentLocalCache,doc,collection,getDoc,setDoc,getDocs,getDocsFromCache,addDoc,deleteDoc,onSnapshot,serverTimestamp,query,where} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});
 const auth=getAuth(app);
 let fdb;try{fdb=initializeFirestore(app,{localCache:persistentLocalCache(),ignoreUndefinedProperties:true})}catch(e){fdb=initializeFirestore(app,{ignoreUndefinedProperties:true})}
 const wrapS=q=>({docs:q.docs.map(d=>({id:d.id,data:()=>d.data()}))});
 const D=p=>({get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>setDoc(doc(fdb,p),b,o||{}),delete:()=>deleteDoc(doc(fdb,p)),
   onSnapshot:(cb,er)=>onSnapshot(doc(fdb,p),x=>cb({exists:x.exists(),data:()=>x.data()}),er||(()=>{}))});
-const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),where:(f,v,op)=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v))))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
+const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),getCache:async()=>wrapS(await getDocsFromCache(collection(fdb,p))),where:(f,v,op)=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v))))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
   onSnapshot:(cb,er)=>onSnapshot(collection(fdb,p),q=>cb(wrapS(q)),er||(()=>{}))});
 const db={collection:C,doc:D};
 setPersistence(auth,browserLocalPersistence).catch(()=>{});
@@ -1041,7 +1041,7 @@ function pedirFoto(nombre){if(!store.db){toast("Abre la app con tu cuenta para s
   const mine=nombre===profile.miNombre;if(!mine&&!isAdmin)return;
   const inp=document.createElement("input");inp.type="file";inp.accept="image/*";
   inp.onchange=async()=>{const f=inp.files&&inp.files[0];if(!f)return;try{toast("Subiendo foto…");const img=await fotoReduce(f);
-    const id=mine?store.uid:"n-"+slugN(nombre);await store.db.doc("fotos/"+id).set({nombre,img,t:Date.now()});toast(mine?"¡Tu foto quedó lista!":"Foto guardada para "+nombre.split(" ")[0])}
+    const id=mine?store.uid:"n-"+slugN(nombre);await store.db.doc("fotos/"+id).set({nombre,img,t:Date.now()});try{cargarFotos(true)}catch(e){}toast(mine?"¡Tu foto quedó lista!":"Foto guardada para "+nombre.split(" ")[0])}
     catch(e){toast(e&&e.code==="invalid_argument"?"No tienes permiso para subir fotos. Pide acceso al administrador.":"No se pudo subir la foto. Intenta con otra imagen.")}};
   inp.click()}
 document.addEventListener("click",e=>{const a=e.target.closest("[data-foto]");if(a){e.preventDefault();e.stopPropagation();pedirFoto(a.dataset.foto)}},true);
@@ -1187,7 +1187,7 @@ let resT;function pushResumen(){if(!store.db||!store.uid)return;clearTimeout(res
     presN:presSemana().map(x=>x.n).slice(0,30),historia:!!(profile.historias||{})[TODAY],bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),cons:constStats(),t:Date.now()};
   await store.db.doc("users/"+store.uid).set({actividad:a},{merge:true});
   const nm=(miRegistro().nombre||"").trim(),em=String((fbUser&&fbUser.email)||"").toLowerCase();
-  if(nm&&!SOLO_ADMIN.includes(em))await store.db.doc("constancia/"+store.uid).set(Object.assign({nombre:nm,hoy:a.hoy,fecha:TODAY,acc:Object.values(sum).reduce((x,y)=>x+(+y||0),0),t:Date.now()},a.cons));if(constL)loadConst(true)}catch(e){}},3000)}
+  if(nm&&!SOLO_ADMIN.includes(em))await store.db.doc("constancia/"+store.uid).set(Object.assign({nombre:nm,hoy:a.hoy,fecha:TODAY,acc:Object.values(sum).reduce((x,y)=>x+(+y||0),0),t:Date.now()},a.cons));if(constL){const vq=document.querySelector("#v-equipo");if(vq&&!vq.hidden&&eqTab==="ranking"&&rankMetric==="rutina")loadConst(true);else{const me=constL.find(y=>y.uid===store.uid);if(me){me.hoy=a.hoy;me.fecha=TODAY}}}}catch(e){}},3000)}
 function renderWeek(){const out=[];let streak=0;
   for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));
     out.push(`<div><i class="${s>=1?"full":s>0?"part":""} ${i===0?"today":""}">${d.getDate()}</i>${DAYS[d.getDay()]}</div>`)}
@@ -1740,7 +1740,7 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
 let constL=null,constT=0;
 let constVista="sem";
 const constSort=L=>{const sem=constVista==="sem";L.sort((a,b)=>sem?(b.racha-a.racha||b.semPres-a.semPres||b.semPts-a.semPts):(b.mesMejor-a.mesMejor||b.mesPres-a.mesPres||b.mesPts-a.mesPts)||String(a.nombre).localeCompare(b.nombre,"es"));L.forEach((x,i)=>x.rk=i+1);return L};
-async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now()-constT<120000)return;try{const q=await store.db.collection("constancia").get();constT=Date.now();
+async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now()-constT<600000)return;try{const q=await store.db.collection("constancia").get();constT=Date.now();
   const ay=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()-1)),lun=lunesK(),mes=TODAY.slice(0,7);
   constL=constSort(q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.nombre).map(x=>{const hoy=x.fecha===TODAY?(+x.hoy||0):0,okW=x.wk===lun&&x.fecha>=lun,okM=x.mes===mes;
     return Object.assign(x,{hoy,racha:okW&&x.fecha>=ay?(+x.racha||0):(hoy>=100?1:0),semDias:okW?(+x.semDias||0):(hoy>0?1:0),semComp:okW?(+x.semComp||0):(hoy>=100?1:0),mesDias:okM?(+x.mesDias||0):(hoy>0?1:0),mesComp:okM?(+x.mesComp||0):(hoy>=100?1:0),mesMejor:okM?(+x.mesMejor||0):(hoy>=100?1:0),semPres:okW?(+x.semPres||0):0,mesPres:okM?(+x.mesPres||0):0,semPts:okW?(x.semPts!=null?+x.semPts||0:(+x.semComp||0)*5+Math.max(0,(+x.semDias||0)-(+x.semComp||0))):Math.round(hoy*5/100),mesPts:okM?(x.mesPts!=null?+x.mesPts||0:(+x.mesComp||0)*5+Math.max(0,(+x.mesDias||0)-(+x.mesComp||0))):Math.round(hoy*5/100),sinPres:x.semPres==null})}))}catch(e){constL=constL||[]}
@@ -2841,8 +2841,12 @@ function subscribeTeam(db){
   const docs=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));
   if(!store.db)return;
   loadTeamJSON();setInterval(loadTeamJSON,10*60*1000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)loadTeamJSON()});
-  db.collection("fotos").onSnapshot(s=>{fotosFs=docs(s);T.fotos=fotosRepo.concat(fotosFs);renderWho();renderEquipo();renderHist()},()=>{});
+  cargarFotos(false);
 }
+async function cargarFotos(force){if(!store.db)return;const docs=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));let t=0,s=null;try{t=+localStorage.getItem("alp:fotosT")||0}catch(e){}
+  if(!force&&Date.now()-t<6*36e5){try{s=await store.db.collection("fotos").getCache()}catch(e){s=null}}
+  if(!s||!s.docs.length){try{s=await store.db.collection("fotos").get();try{localStorage.setItem("alp:fotosT",String(Date.now()))}catch(e){}}catch(e){return}}
+  fotosFs=docs(s);T.fotos=fotosRepo.concat(fotosFs);try{renderWho();renderEquipo();renderHist()}catch(e){}}
 async function loadMine(){
   const lun0=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7)),m0=new Date(now.getFullYear(),now.getMonth(),1),st0=lun0<m0?lun0:m0;
   const nk=Math.max(7,Math.round((new Date(now.getFullYear(),now.getMonth(),now.getDate())-st0)/864e5)+1);
@@ -3021,7 +3025,7 @@ async function startApp(u){
   await loadMine();
   if(regDoc&&regDoc.registro){welState.registro=true;publicarInv();if(profile.waPublico)setTimeout(publicarPerfil,4000)}
   renderWel();renderAviso();renderAccesos();
-  renderMeBtn();setTimeout(renderHist,800);setTimeout(renderMiWa,1200);setTimeout(()=>loadConst(true),1800);if(isAdmin)setTimeout(()=>{if(!socios)loadSocios();else syncConst()},2500);
+  renderMeBtn();setTimeout(renderHist,800);setTimeout(renderMiWa,1200);if(isAdmin)setTimeout(()=>{if(!socios)loadSocios();else syncConst()},2500);
   try{renderEquipo();renderCal();renderNext();renderAca()}catch(e){}
 }
 function bootFB(){if(window.FB&&window.FB.__ready!==undefined)return;}
@@ -3031,7 +3035,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261026190903";var busy=false,pend=null;
+(function(){var V="20261026194730";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
