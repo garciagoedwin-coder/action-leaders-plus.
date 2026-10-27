@@ -194,6 +194,10 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .catSel{display:flex;gap:6px;flex-wrap:wrap}.catSel button{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 11px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}.catSel button[aria-pressed=true]{border-color:var(--brand);background:var(--gold-soft);color:var(--gold-ink)}
 .miwa{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--gold-soft);color:var(--gold-ink);font-size:13.5px;line-height:1.3}
 .miwa span{flex:1}.miwa .x{background:none;border:0;color:inherit;font-size:14px;padding:4px;cursor:pointer;opacity:.7}
+.ahCard{border-radius:16px;padding:12px 14px;display:flex;gap:10px;align-items:center;font-size:14px}
+.ahCard.ok{background:var(--good-soft);color:var(--ink);border:1px solid color-mix(in srgb,var(--good) 35%,transparent)}
+.ahCard.pend{flex-direction:column;align-items:stretch;background:var(--bad-soft);border:1.5px solid var(--bad);color:var(--ink)}
+.ahCard.pend b{color:var(--bad)}.ahCard.pend p{margin:4px 0 2px;font-size:14px}.ahCard.pend p b{color:var(--ink)}.ahCard.pend small{color:var(--muted);font-size:12px}
 .metaStrip{border-radius:18px;padding:14px 16px;color:#fff;display:flex;flex-direction:column;gap:6px;cursor:pointer;box-shadow:0 10px 24px -14px rgba(0,0,0,.45);animation:banIn .5s cubic-bezier(.2,.8,.2,1)}
 .metaStrip .mtN{font-size:17px}.metaStrip .mtE{font-size:12.5px;font-weight:700;opacity:.85}.metaStrip .mtV{font-size:13px;opacity:.95}
 .metaStrip .mtBar{height:8px;border-radius:99px;background:rgba(255,255,255,.3);overflow:hidden}.metaStrip .mtBar i{display:block;height:100%;background:#fff;border-radius:99px}
@@ -871,6 +875,7 @@ nav.tabs button{z-index:0;isolation:isolate}
       </div>
       <div class="card" id="avisoCard" hidden></div>
       <div class="miwa" id="miWaCard" hidden></div>
+      <div class="ahCard" id="ahCard" hidden></div>
       <div class="card" id="l3Card" hidden></div>
       <div class="card" id="salaCard" hidden style="border:1.5px solid #C2410C"></div>
       <div class="actBan" id="actBan" hidden></div>
@@ -1137,7 +1142,7 @@ function renderTasks(){
   rutFold(!falta);const rc=$("#rutCard");if(rc)rc.classList.toggle("done",!falta);
 }
 let saveDayT;function saveDay(){clearTimeout(saveDayT);saveDayT=setTimeout(()=>store.set("rutina-"+TODAY,day),600);weekCache[TODAY]=day;renderWeek()}
-$("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.hist){abrirHist();return}
+$("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(ahGate())return;if(b.dataset.hist){abrirHist();return}
   if(b.dataset.k){day[b.dataset.k]=day[b.dataset.k]?0:1}
   else if(b.dataset.inc==="presentaciones"){abrirPres();return}
   else if(b.dataset.dec==="presentaciones"){quitarPres();return}
@@ -1558,8 +1563,62 @@ $("#editRef").onclick=()=>openSheet(`<h2>Tu enlace de referido</h2><p class="sma
 let eqTab="ranking",rankTab="mes",rankMetric="nuevos",leadSort="posicion",leadPos="Todos",leadQ="";
 const POS_ORDER=["presidential","executive","senior marketing","regional","marketing director","team leader","calificado"];
 function posRank(p){p=String(p||"").toLowerCase();const i=POS_ORDER.findIndex(k=>p.includes(k));return i<0?50:i}
+// ---------- Ahorro pendiente (config.ahorro: solo huellas parciales, sin datos legibles) ----------
+const ahF=x=>{let h=0x811c9dc5;for(const b of new TextEncoder().encode("alp|"+x)){h=(h^b)>>>0;h=Math.imul(h,0x01000193)>>>0}return h.toString(16).padStart(8,"0").slice(0,6)};
+const ahKe=e=>{e=String(e||"").trim().toLowerCase();return e.includes("@")?ahF("e:"+e):null};
+const ahKw=w=>{const d=String(w||"").replace(/\D/g,"");return d.length>=8?ahF("w:"+d.slice(-8)):null};
+function ahCfg(){const A=(T.config||{}).ahorro;return A&&A.k?A:null}
+function ahDe(emails,was){const A=ahCfg();if(!A)return null;let g=null;
+  [].concat(emails||[]).map(ahKe).concat([].concat(was||[]).map(ahKw)).forEach(k=>{if(k&&A.k[k]){const t=Date.parse(A.k[k]);g=g==null?t:Math.min(g,t)}});
+  if(g==null)return {pend:false};const lim=Math.max(g,Date.parse(A.ini||0)||0);return {pend:true,lim,bloq:Date.now()>=lim}}
+function ahYo(){try{const r=miRegistro();if(!r.nombre||esSoloAdminYo())return null;return ahDe([fbUser&&fbUser.email,(regDoc||{}).email],[r.whatsapp])}catch(e){return null}}
+function esSoloAdminYo(){return !!(fbUser&&String(fbUser.email||"").toLowerCase()==="garciagoedwin@gmail.com")}
+function ahSoc(x){const r=x.registro||{};return ahDe([x.email,r.correo],[r.whatsapp])}
+function ahLider(l){const A=ahCfg();return !!(A&&(A.li||[]).includes(ahF("i:"+(l.id||""))))}
+const ahFecha=ms=>new Date(ms-1).toLocaleDateString("es-HN",{day:"numeric",month:"long",timeZone:"America/Tegucigalpa"});
+function ahBloqYo(){const a=ahYo();return !!(a&&a.pend&&a.bloq)}
+function ahGate(){if(!ahBloqYo())return false;openSheet(`<h2>🔒 Función en pausa</h2><p>Su ahorro de inCruises está pendiente. Póngase al día para reactivar sus herramientas del equipo.</p><p class="small muted">Cuando inCruises confirme su pago, se reactiva solo.</p><div class="row"><button class="btn grow" id="ahGS" style="background:#25D366;color:#fff">💬 Hablar con mi patrocinador</button><button class="btn ghost" data-close>Cerrar</button></div>`,()=>{$("#ahGS").onclick=ahHablarSp});return true}
+async function ahHablarSp(){const r=miRegistro(),sp=(r.invitadoPor||r.patrocinador||"").split(" ")[0];let w="";
+  try{if(r.patrocinadorUid){const d=await store.db.doc("users/"+r.patrocinadorUid).get();w=String(((d.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}}catch(e){}
+  const t=`Hola${sp?", "+sp:""}. Quiero ponerme al día con mi ahorro de inCruises. ¿Me puede ayudar?`;
+  location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t)}
+function renderAhorro(){const c=$("#ahCard");if(!c)return;const a=ahYo();if(!a){c.hidden=true;return}c.hidden=false;
+  if(!a.pend){c.className="ahCard ok";c.innerHTML=`<span>✅</span><span class="grow"><b>Su ahorro está al día.</b> ¡Siga así!</span>`;return}
+  const dias=Math.ceil((a.lim-Date.now())/864e5);
+  c.className="ahCard pend";c.innerHTML=`<div><b>⚠️ Su ahorro está pendiente</b><p>${a.bloq?"Sus herramientas del equipo están en pausa hasta que se ponga al día.":`Tiene hasta el <b>${esc(ahFecha(a.lim))}</b> para ponerse al día y mantener activas sus herramientas${dias<=5?` (${dias<=1?"último día":"quedan "+dias+" días"})`:""}.`}</p><small>Si ya pagó, este aviso se quita solo cuando inCruises lo confirme.</small></div><button class="btn sm" id="ahSp" style="background:#25D366;color:#fff;align-self:flex-start">💬 Hablar con mi patrocinador</button>`;
+  $("#ahSp").onclick=ahHablarSp}
+async function ahCargarAdm(){if(!entKey){const d=await store.db.doc("evento/"+ENT.id+"/priv/llave").get();entKey=d.exists?d.data().k:null}if(!entKey)throw new Error("sin-llave");
+  const r=await fetch("data/ahorro.enc?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("red");const raw=b64u((await r.text()).trim());
+  const key=await crypto.subtle.importKey("raw",b64u(entKey),"AES-GCM",false,["decrypt"]);
+  return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:raw.slice(0,12)},key,raw.slice(12))))}
+async function ahRevisar(){if(!isAdmin)return;openSheet(`<h2>💰 Ahorro pendiente</h2><p class="small muted" id="ahRv">Cargando…</p>`);
+  try{const D=await ahCargarAdm(),S=(socios||[]).filter(x=>x.registro&&!esSoloAdmin(x));
+    const sk=S.map(x=>({x,k:new Set([ahKe(x.email),ahKe((x.registro||{}).correo),ahKw((x.registro||{}).whatsapp)].filter(Boolean))}));
+    const ok=[],no=[];(D.rows||[]).forEach(r=>{const m=sk.find(o=>(r.k||[]).some(k=>k&&o.k.has(k)));(m?ok:no).push({r,m:m&&m.x})});
+    const fila=(r,extra)=>`<div style="padding:8px 0;border-bottom:1px solid var(--line)"><b class="small">${esc(r.n)}</b>${extra||""}<div class="small muted">Patrocinador: ${esc(r.s||"—")} · ${esc(r.p||"")}${r.lv?" · Nivel "+esc(r.lv):""} · ${(l=>l<=Date.now()?"en pausa":"hasta el "+esc(ahFecha(l)))(Math.max(Date.parse(r.g),Date.parse((ahCfg()||{}).ini||0)||0))}</div></div>`;
+    $("#sheetPanel").innerHTML=`<h2>💰 Ahorro pendiente</h2><p class="small muted">Reporte del ${esc(new Date(D.v).toLocaleDateString("es-HN",{day:"numeric",month:"long"}))}: ${(D.rows||[]).length} socios. Solo usted (admin) ve esta lista.</p>
+     <div class="grid2"><div class="card" style="gap:2px"><b class="num" style="font-size:26px;color:var(--good)">${ok.length}</b><span class="small muted">Enlazados en la app</span></div><div class="card" style="gap:2px"><b class="num" style="font-size:26px;color:var(--bad)">${no.length}</b><span class="small muted">No coinciden</span></div></div>
+     <h3 style="margin:12px 0 2px">🔎 No coinciden (${no.length})</h3><p class="small muted" style="margin:0">No están registrados en la app o usan otro email y otro WhatsApp. A ellos no les aparece el aviso.</p>${no.map(o=>fila(o.r)).join("")}
+     <h3 style="margin:14px 0 2px">✅ Enlazados (${ok.length})</h3>${ok.map(o=>fila(o.r,` <span class="small" style="color:var(--good)">→ ${esc((o.m.registro||{}).nombre||"")}</span>`)).join("")}
+     <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`}
+  catch(e){const t=$("#ahRv");if(t)t.textContent=e.message==="sin-llave"?"Falta la llave del evento (abra una vez el enlace de activación).":"No se pudo cargar la lista. Intente de nuevo."}}
+// ---------- Calificación del sistema de Liderazgo (Líder / Líder Espartano) ----------
+let leadCal="Todos";const CAL_DEF={mes:"",lider:200,esp:500};
+function calCfg(){return Object.assign({},CAL_DEF,(T.config||{}).calificacion||{})}
+const nrmN2=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z ]/g," ").replace(/\s+/g," ").trim();
+function calVer(l){let yo="";try{yo=nrmN2((miRegistro().nombre)||profile.miNombre||"")}catch(e){}return !!(isAdmin||(yo&&(nrmN2(l.nombre)===yo||nrmN2(l.nombreRanking)===yo||nrmN2(l.linea)===yo)))}
+function calLid(l){const C=calCfg(),v=Number(l.volumen)||0,ah=ahLider(l),rg=posRank(l.rango)<=4;
+  if(ah)return {k:"pend",ah:true,v,falta:0};
+  if(rg)return {k:"rango",v};
+  if(v>=C.esp)return {k:"esp",v};
+  if(v>=C.lider)return {k:"lid",v,falta:C.esp-v};
+  return {k:"pend",v,falta:C.lider-v}}
+const CAL_TX={esp:"⚔️ Líder Espartano",lid:"🛡️ Líder",rango:"✅ Califica por rango",pend:"⏳ Pendiente"};
+function calChip(l){const c=calLid(l),C=calCfg();
+  if(c.k==="pend"){const ver=calVer(l);const t=c.ah?(ver?"🔴 No califica: ahorro pendiente":"⏳ No califica aún"):`⏳ Le faltan ${fmt(c.falta)} pts para Líder`;return `<span class="chip ${c.ah&&ver?"c-bad":"c-warn"}" style="font-weight:700">${t}</span>`}
+  return `<span class="chip ${c.k==="esp"?"c-gold":"c-good"}" style="font-weight:700">${CAL_TX[c.k]}</span>${c.k==="lid"?`<span class="small muted">Le faltan ${fmt(c.falta)} pts para Espartano</span>`:""}`}
 function renderLeadList(){const el=$("#leadList");if(!el)return;const q=leadQ.trim().toLowerCase();
-  let L=T.lideres.filter(l=>(leadPos==="Todos"||(l.rango||"Sin posición")===leadPos)&&(!q||((l.nombre||"")+" "+(l.linea||"")).toLowerCase().includes(q)));
+  let L=T.lideres.filter(l=>(leadPos==="Todos"||(l.rango||"Sin posición")===leadPos)&&(leadCal==="Todos"||calLid(l).k===leadCal)&&(!q||((l.nombre||"")+" "+(l.linea||"")).toLowerCase().includes(q)));
   const num=v=>Number(v)||0;
   const byVol=(a,b)=>num(b.volumen)-num(a.volumen)||num(b.presentaciones)-num(a.presentaciones)||num(b.nuevos)-num(a.nuevos)||posRank(a.rango)-posRank(b.rango)||String(a.nombre).localeCompare(b.nombre,"es");
   L.sort(leadSort==="posicion"?byVol:(a,b)=>num(b[leadSort])-num(a[leadSort])||byVol(a,b));
@@ -1567,7 +1626,7 @@ function renderLeadList(){const el=$("#leadList");if(!el)return;const q=leadQ.tr
   el.innerHTML=L.map((l,i)=>{const meta=num(l.meta),vol=l.volumen==null||l.volumen===""?null:num(l.volumen),pct=meta&&vol!=null?Math.min(100,Math.round(vol/meta*100)):0;
     const qbi=l.qbi==null||l.qbi===""?null:Math.round(num(l.qbi));const vv=vol==null?0:vol,vc=vv>=500?"good":vv>=200?"warn":"bad";
     return `<div><div class="lead"><span class="rank-n">${i+1}</span>${avHTML(l.nombre,l.nombre===profile.miNombre,false)}
-     <div style="min-width:0"><b style="font-weight:600">${esc(l.nombre)}</b><div class="row wrap" style="gap:6px;margin-top:3px">${l.rango?`<span class="chip c-brand">${esc(rangoTxt(l.rango))}</span>`:""}${l.linea?`<span class="small muted">Línea: ${esc(l.linea)}</span>`:""}</div></div></div>
+     <div style="min-width:0"><b style="font-weight:600">${esc(l.nombre)}</b><div class="row wrap" style="gap:6px;margin-top:3px">${l.rango?`<span class="chip c-brand">${esc(rangoTxt(l.rango))}</span>`:""}${l.linea?`<span class="small muted">Línea: ${esc(l.linea)}</span>`:""}</div><div class="row wrap" style="gap:6px;margin-top:5px;align-items:center">${calChip(l)}</div></div></div>
      <div class="lead-stats"><div><b>${l.presentaciones==null||l.presentaciones===""?"—":fmt(l.presentaciones)}</b><span>Presentaciones</span></div><div><b>${l.nuevos==null||l.nuevos===""?"—":fmt(l.nuevos)}</b><span>Socios nuevos</span></div>
       <div style="${vc?`background:var(--${vc}-soft)`:""}"><b style="${vc?`color:var(--${vc})`:""}">${vol==null?"—":fmt(vol)}</b><span>${vol==null&&num(l.nuevos)>0?"Volumen: falta el paquete":"Volumen"+(meta?" / "+fmt(meta):"")}</span></div><div><b>${qbi==null?"—":qbi+"%"}</b><span>QBI</span></div></div>
      ${meta?`<div class="bar" style="height:5px;margin-top:8px"><i style="width:${Math.max(pct,vv?3:0)}%;background:var(--${vc})"></i></div>`:""}${l.volumenDetalle?`<div class="small muted" style="margin-top:4px">Socios nuevos: ${esc(l.volumenDetalle)}</div>`:""}</div>`}).join("")}
@@ -1674,7 +1733,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
   const inv=`<div class="card"><h3 style="margin:0">🔗 Tu enlace de invitación</h3><p class="small muted" style="margin:0">Los socios que se registren con tu enlace aparecen aquí con su avance.</p>
     <div class="ref"><code style="word-break:break-all">${esc(miEnlace())}</code><button class="btn sm gold" id="miosCopy">Copiar</button></div></div>`;
   const bind=()=>{b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=waSocio(x);
-    if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});b.querySelectorAll("[data-wnum]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.wnum);if(x)cambiarNumSocio(x)});b.querySelectorAll("[data-ip]").forEach(x=>x.onclick=()=>{idxPer=x.dataset.ip;renderEquipo()});b.querySelectorAll("[data-idxv]").forEach(x=>x.onclick=()=>{idxStk=[""];idxSheet("")});const c=$("#miosCopy");if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(miEnlace());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
+    if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});b.querySelectorAll("[data-wnum]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.wnum);if(x)cambiarNumSocio(x)});b.querySelectorAll("[data-mah]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mah);if(!x)return;const nm=((x.registro||{}).nombre||"").split(" ")[0],ah=ahSoc(x)||{},t=`¡Hola${nm?", "+nm:""}! 🙌 Vi que su ahorro de este mes en inCruises quedó pendiente. Póngase al día${ah.lim&&!ah.bloq?" antes del "+ahFecha(ah.lim):""} para no perder sus beneficios ni sus herramientas del equipo. ¿Le ayudo con algo?`,w=waSocio(x);if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});b.querySelectorAll("[data-ip]").forEach(x=>x.onclick=()=>{idxPer=x.dataset.ip;renderEquipo()});b.querySelectorAll("[data-idxv]").forEach(x=>x.onclick=()=>{idxStk=[""];idxSheet("")});const c=$("#miosCopy");if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(miEnlace());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
   if(miosErr){b.innerHTML=emptyCard("No se pudo cargar tu equipo","Revisa tu conexión e intenta de nuevo. Si sigue igual, avisa al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
   if(!mios.length){b.innerHTML=idxCard()+`<div class="card empty"><h3>Aún no tienes socios en la app</h3><p class="small muted">Cuando firmes a alguien, mándale tu mensaje de bienvenida desde el CRM o comparte tu enlace. Al registrarse aparecerá aquí.</p></div>`+inv;bind();return}
   const lin=true;const V=miosVista==="dir"?mios.filter(x=>x.nivel===1):mios.slice().sort((a,b)=>a.nivel-b.nivel||byAct(a,b));
@@ -1690,6 +1749,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
       <b style="font-weight:600">${esc(nm)}</b><div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.fecha?"Desde "+niceDate(String(r.fecha).slice(0,10)):""}${ua?" · Entró "+haceTxt(ua):""}</div>${(isAdmin||r.patrocinadorUid===store.uid)?[...new Set([x.email,r.correo].map(e=>String(e||"").trim().toLowerCase()).filter(Boolean))].map(e=>`<button type="button" class="emCp" data-cpem="${esc(e)}">✉️ ${esc(e)} <span>Copiar</span></button>`).join(""):""}</div>
       <span class="chip ${a.hoy>=100?"c-good":a.hoy>0?"c-gold":"c-brand"}">Hoy ${a.hoy}%</span></div>
       <div class="row wrap" style="gap:6px;margin-top:8px">
+       ${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<span class="chip c-bad" style="font-weight:700">🔴 Ahorro pendiente · ${ah.bloq?"en pausa":"hasta el "+esc(ahFecha(ah.lim))}</span>`:""})()}
        ${constL?(()=>{const ip=idxPers(x.uid),E=idxDesc(x.uid,idxPool()),e=idxEq(E);return `<span class="chip" style="background:${IDX_C(ip)};color:#fff">⚡ Personal ${ip}%</span>${E.length?`<span class="chip" style="background:${IDX_C(e)};color:#fff">⚡ Equipo de ${esc(nm.split(" ")[0])} ${e}% (${E.length} ${E.length===1?"socio":"socios"})</span>`:""}`})():""}
        <span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"🎬 Bienvenida ✓":"🎬 Bienvenida pendiente"}</span>
        <span class="chip ${a.racha?"c-gold":"c-brand"}">🔥 Racha ${a.racha} ${a.racha===1?"día":"días"}</span>
@@ -1700,7 +1760,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
        ${(()=>{const rk=rankDe(nm);return rk?`<span class="chip ${rk.pPos&&rk.pPos<=10?"c-gold":"c-brand"}">🏆 Registros: ${rk.R}${rk.pPos?" · #"+rk.pPos:""}</span><span class="chip ${rk.aPos&&rk.aPos<=10?"c-gold":"c-brand"}">🚀 Activaciones: ${rk.A} · Vol. ${fmt(rk.V)}${rk.aPos?" · #"+rk.aPos:""}</span>`:`<span class="chip c-brand">🏆 Sin registros en el ranking</span>`})()}
        ${(()=>{const m=x.metas||{},R=proxRango(rangoActualIdx(x.registro,nm)),rg=R?R.n:"";if(!m.act&&!rg&&!m.sueno)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(R?`<span class="chip" style="background:${R.c};color:#fff">🏅 Próximo: ${esc(rg)}</span>`:"")+(m.sueno?`<span class="chip c-good">💰 Sueño: ${usd(m.sueno)}/mes</span>`:"")})()}
        ${cs.length?cs.map(k=>`<span class="chip c-good">🎓 ${esc(cname(k))}</span>`).join(""):`<span class="chip c-brand">🎓 Sin cursos aún</span>`}
-      </div><div class="row" style="gap:8px;margin-top:10px"><button class="btn sm grow" data-mot="${esc(x.uid)}" style="background:#25D366;color:#fff">💬 Motivar por WhatsApp</button><button class="btn sm ghost" data-wnum="${esc(x.uid)}" type="button" aria-label="Cambiar número de WhatsApp de ${esc(nm)}">✏️ Número</button></div></div>`}).join("")}</div>
+      </div><div class="row" style="gap:8px;margin-top:10px">${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<button class="btn sm grow" data-mah="${esc(x.uid)}" style="background:#B42335;color:#fff">💰 Motivar su ahorro</button>`:""})()}<button class="btn sm grow" data-mot="${esc(x.uid)}" style="background:#25D366;color:#fff">💬 Motivar por WhatsApp</button><button class="btn sm ghost" data-wnum="${esc(x.uid)}" type="button" aria-label="Cambiar número de WhatsApp de ${esc(nm)}">✏️ Número</button></div></div>`}).join("")}</div>
    <p class="small muted" style="margin:0">Presentaciones, contactos y días activos son de los últimos 7 días.${bien<n?" "+(n-bien)+" aún no ha"+(n-bien>1?"n":"")+" completado la bienvenida.":""}</p>
    <button class="btn sm ghost" id="miosReload" style="align-self:flex-start">Actualizar lista</button>${inv}`;bind()}
 const SOLO_ADMIN=["garciagoedwin@gmail.com"];const esSoloAdmin=x=>SOLO_ADMIN.includes(String(x.email||"").toLowerCase());
@@ -1763,7 +1823,7 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
   const sinP=socios.filter(x=>x.registro&&!x.registro.patrocinadorUid&&!esSoloAdmin(x)).length;
   const wm={};socios.forEach(x=>{const w=String((x.registro||{}).whatsapp||"").replace(/\D/g,"");if(w.length>=8&&!esSoloAdmin(x))(wm[w]=wm[w]||[]).push(x)});const dups=Object.keys(wm).filter(k=>wm[k].length>1);
   const dupH=dups.length?`<div class="card" style="gap:8px;border:1.5px solid var(--warn)"><h3 style="margin:0">⚠️ WhatsApp repetidos (${dups.length})</h3><p class="small muted" style="margin:0">Estos socios tienen el mismo número. Corrija el que no corresponde con «Número».</p>${dups.map(k=>`<div style="padding:8px 0;border-top:1px solid var(--line)"><b class="small">${esc(waFmt(k))}</b>${wm[k].map(x=>`<div class="row between" style="gap:8px;margin-top:6px"><span class="small" style="min-width:0">${esc((x.registro||{}).nombre||x.email||"Socio")}${(x.registro||{}).waOk?" · ✅ confirmó":""}</span><button class="btn sm ghost" type="button" data-wfix="${esc(x.uid)}">✏️ Número</button></div>`).join("")}</div>`).join("")}</div>`:"";
-  b.innerHTML=`<div class="card" style="gap:6px"><h3 style="margin:0">🌳 Líneas del equipo</h3><p class="small muted" style="margin:0">Arma la línea completa de cada socio para que cada líder vea a todos los que tiene debajo.</p><button class="btn sm ghost" id="socLin" style="align-self:flex-start">Reconstruir líneas</button></div>${sinP?`<div class="card" style="gap:8px"><div class="row between"><div><h3 style="margin:0">🔗 Vincular patrocinadores</h3><p class="small muted" style="margin:2px 0 0">${sinP} ${sinP===1?"socio se registró":"socios se registraron"} sin enlace. Vincúlalos para que su patrocinador los vea en "Mis socios".</p></div></div><button class="btn sm gold" id="socVinc" style="align-self:flex-start">Vincular ahora</button></div>`:""}${dupH}<div class="grid2">${st(reg,"Socios registrados")}${st(sin,"Entraron sin registrarse")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}</div>
+  b.innerHTML=`<div class="card" style="gap:6px"><h3 style="margin:0">🌳 Líneas del equipo</h3><p class="small muted" style="margin:0">Arma la línea completa de cada socio para que cada líder vea a todos los que tiene debajo.</p><button class="btn sm ghost" id="socLin" style="align-self:flex-start">Reconstruir líneas</button></div>${sinP?`<div class="card" style="gap:8px"><div class="row between"><div><h3 style="margin:0">🔗 Vincular patrocinadores</h3><p class="small muted" style="margin:2px 0 0">${sinP} ${sinP===1?"socio se registró":"socios se registraron"} sin enlace. Vincúlalos para que su patrocinador los vea en "Mis socios".</p></div></div><button class="btn sm gold" id="socVinc" style="align-self:flex-start">Vincular ahora</button></div>`:""}${dupH}${ahCfg()?`<div class="card" style="gap:6px"><h3 style="margin:0">💰 Ahorro pendiente</h3><p class="small muted" style="margin:0">${Object.keys(ahCfg().k).length?"Revise quién del reporte está enlazado en la app y quién no coincide (email o WhatsApp).":"Sin socios pendientes."}</p><button class="btn sm ghost" id="ahAdm" style="align-self:flex-start">🔎 Revisar coincidencias</button></div>`:""}<div class="grid2">${st(reg,"Socios registrados")}${st(sin,"Entraron sin registrarse")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}</div>
    <div class="seg" id="socOrd"><button aria-selected="${sociosOrd==="act"}" data-o="act">Más activos</button><button aria-selected="${sociosOrd==="rec"}" data-o="rec">Recientes</button><button aria-selected="${sociosOrd==="inact"}" data-o="inact">Sin actividad</button></div>
    <div class="row"><input class="inp grow" id="socQ" placeholder="Buscar por nombre, patrocinador o plan" value="${esc(sociosQ)}"><button class="btn sm ghost" id="socCsv">Descargar</button></div>
    <div class="card" style="gap:0">${L.length?L.map(x=>{const r=x.registro||{},a=actDe(x),S=a.sem;const nm=r.nombre||x.nombre||x.email||"Sin nombre";const wa=r.whatsapp?`https://wa.me/${r.whatsapp}`:"";
@@ -1786,7 +1846,7 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
     if(!confirm("¿Cambiar a "+(x.registro.nombre||"este socio")+" a "+nv+"?")){sel.value=prev;return}
     try{await store.db.doc("users/"+x.uid).set({registro:{plan:nv,planPor:"admin",planCambio:new Date().toISOString()}},{merge:true});x.registro.plan=nv;toast((x.registro.nombre||"Socio").split(" ")[0]+" ahora es "+nv+" ✓")}catch(e){sel.value=prev;toast("No se pudo cambiar el paquete")}});
   b.querySelectorAll("[data-sedit]").forEach(bt=>bt.onclick=()=>editarSocio(bt.dataset.sedit));
-  b.querySelectorAll("[data-wfix]").forEach(bt=>bt.onclick=()=>{const x=(socios||[]).find(y=>y.uid===bt.dataset.wfix);if(x)cambiarNumSocio(x)});
+  {const ah=$("#ahAdm");if(ah)ah.onclick=ahRevisar}b.querySelectorAll("[data-wfix]").forEach(bt=>bt.onclick=()=>{const x=(socios||[]).find(y=>y.uid===bt.dataset.wfix);if(x)cambiarNumSocio(x)});
   b.querySelectorAll("[data-amot]").forEach(bt=>bt.onclick=()=>{const x=(socios||[]).find(y=>y.uid===bt.dataset.amot);if(!x)return;let t="";try{t=msgMotiva(x)}catch(e){t="Hola "+(((x.registro||{}).nombre||"").split(" ")[0]||"")+" 👋"}const w=waSocio(x);if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});
   $("#socCsv").onclick=sociosCSV;const sv=$("#socVinc");if(sv)sv.onclick=abrirVincular;const sl=$("#socLin");if(sl)sl.onclick=async()=>{sl.disabled=true;sl.textContent="Reconstruyendo…";await reconstruirLineas(false);sl.disabled=false;sl.textContent="Reconstruir líneas"};$("#socReload").onclick=()=>{socios=null;renderEquipo()}}
 let constL=null,constT=0;
@@ -1898,6 +1958,7 @@ function renderEquipo(){const b=$("#eqBody");
     b.innerHTML=`${per?`<p class="eyebrow">Calificados · ${esc(per)}</p>`:""}
      <div class="kpis" style="grid-template-columns:repeat(2,1fr)"><div class="kpi"><b>${L.length}</b><span>Líderes calificados</span></div><div class="kpi"><b>${fmt(tp)}</b><span>Presentaciones</span></div><div class="kpi"><b>${fmt(L.reduce((s,l)=>s+(Number(l.nuevos)||0),0))}</b><span>Socios nuevos</span></div><div class="kpi"><b>${fmt(tv)}</b><span>Volumen total</span></div></div>
      <input class="inp" id="leadQ" type="search" placeholder="Buscar líder o línea ascendente" value="${esc(leadQ)}">
+     ${(()=>{const C=calCfg(),cn={esp:0,lid:0,rango:0,pend:0};L.forEach(l=>cn[calLid(l).k]++);return `<div class="card" style="gap:8px"><h3 style="margin:0">🏅 Calificación del sistema${C.mes?" · "+esc(C.mes):""}</h3><p class="small muted" style="margin:0">Requisitos: ahorro al día y puntos personales del mes (🛡️ Líder ${fmt(C.lider)} · ⚔️ Espartano ${fmt(C.esp)}). De Marketing Director en adelante califican al recalificar su rango.</p><div class="stage-bar" id="leadCal">${[["Todos","Todos",L.length],["esp","⚔️ Espartanos",cn.esp],["lid","🛡️ Líderes",cn.lid],["rango","✅ Por rango",cn.rango],["pend","⏳ Pendientes",cn.pend]].map(([k,t,n])=>`<button aria-pressed="${k===leadCal}" data-c="${k}">${t}<span class="n">${n}</span></button>`).join("")}</div></div>`})()}
      <div class="stage-bar" id="leadPos">${["Todos"].concat(posKeys).map(k=>`<button aria-pressed="${k===leadPos}" data-p="${esc(k)}">${esc(rangoTxt(k))}<span class="n">${k==="Todos"?L.length:pos[k]}</span></button>`).join("")}</div>
      <div class="seg" role="tablist" id="leadSeg"><button aria-selected="${leadSort==="posicion"}" data-k="posicion">Posición</button><button aria-selected="${leadSort==="presentaciones"}" data-k="presentaciones">Registros inCruises</button><button aria-selected="${leadSort==="nuevos"}" data-k="nuevos">Activaciones</button><button aria-selected="${leadSort==="volumen"}" data-k="volumen">Volumen</button></div>
      <div class="row wrap small muted" style="gap:6px">Volumen: <span class="chip c-good">500 o más</span><span class="chip c-warn">200 a 499</span><span class="chip c-bad">menos de 200</span></div>
@@ -1905,6 +1966,7 @@ function renderEquipo(){const b=$("#eqBody");
      <p class="updated">${updatedTxt(T.config&&T.config.liderazgoActualizado)}</p>`;
     renderLeadList();
     $("#leadQ").oninput=e=>{leadQ=e.target.value;renderLeadList()};
+    $("#leadCal").onclick=e=>{const x=e.target.closest("button");if(!x)return;leadCal=x.dataset.c;renderEquipo()};
     $("#leadPos").onclick=e=>{const x=e.target.closest("button");if(!x)return;leadPos=x.dataset.p;renderEquipo()};
     $("#leadSeg").onclick=e=>{const x=e.target.closest("button");if(!x)return;leadSort=x.dataset.k;renderEquipo()};return}
   // red
@@ -2184,7 +2246,7 @@ const l3Col=()=>store.db.collection("llamadas3");
 function l3Cuando(f,h){return citaCuando({fecha:f,hora:h})}
 function miLinea(){const r=miRegistro()||{},L=(Array.isArray(r.linea)?r.linea:[]).slice();if(r.patrocinadorUid&&!L.includes(r.patrocinadorUid))L.unshift(r.patrocinadorUid);
   return L.filter(u=>u&&u!==store.uid).map((u,i)=>{const f=(fotosFs||[]).find(x=>x.id===u);return{uid:u,n:(f&&(f.invNombre||f.nombre))||(i===0&&r.patrocinadorUid===u?r.patrocinador:"")||""}}).filter(x=>x.n)}
-async function pedirL3(c){if(!store.db||!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}
+async function pedirL3(c){if(ahGate())return;if(!store.db||!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}
   if(!(fotosFs||[]).length)try{await cargarFotos()}catch(e){}
   const L=miLinea();if(!L.length){toast("No encontramos a sus líderes. Pida a su patrocinador que abra la app.");return}
   const man=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1));let tipo="zoom";
@@ -2277,7 +2339,7 @@ async function salaPrep(){if(!(regDoc&&regDoc.registro)){toast("Complete su regi
   LS.set("salaOn",1);return true}
 function salaMsgInv(nombre,u){const f=String(nombre||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"";
   return `Hola${f?" "+f:""} 😊\n\nLe preparé una *presentación privada de 15 minutos* sobre cómo viajar más pagando menos y generar ingresos extra.\n\n🎬 Véala aquí cuando tenga un momento tranquilo:\n${u}\n\nAl final le hago una pregunta: su respuesta me ayuda a orientarle mejor. 🙌${yo?"\n\n*"+yo+"*":""}`}
-async function enviarSala(c){if(!c)return;if(!(await salaPrep()))return;const t=salaMsgInv(c.name,salaUrl(c.name,c.id)),n=waNum(c.phone,c.cc);
+async function enviarSala(c){if(!c)return;if(ahGate())return;if(!(await salaPrep()))return;const t=salaMsgInv(c.name,salaUrl(c.name,c.id)),n=waNum(c.phone,c.cc);
   if(n){location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t);return}
   if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
 function salaSeg(v){const f=String(v.n||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"",pa=v.pais?` y vi que le gustaría conocer *${v.pais.split(",")[0].trim()}*`:"";
@@ -2666,7 +2728,7 @@ function bindQuickFill(){const msg=$("#qfMsg"),err=t=>{msg.hidden=false;msg.styl
       const o=[...$("#cCC").options].find(x=>x.value===cc);const nc={name:v.name||("+"+cc+" "+sp.num),cc,ccN:o?o.dataset.n:"",phone:sp.num,stage:"Nuevo",note:"",next:"",updated:Date.now()};
       const id=await store.saveContact(nc);if(id){nc.id=id;contacts.push(nc);n++}}
       renderCRM();closeSheet();toast(n+" contactos agregados")}}}
-function editContact(c,onNew,opts){opts=opts||{};const esNuevo=!c;c=c||{name:"",phone:"",stage:"Nuevo",note:"",next:"",cc:LS.get("lastCC")||"504"};const ccSel=c.cc||(c.phone?"504":LS.get("lastCC")||"504");
+function editContact(c,onNew,opts){opts=opts||{};const esNuevo=!c;if(esNuevo&&ahGate())return;c=c||{name:"",phone:"",stage:"Nuevo",note:"",next:"",cc:LS.get("lastCC")||"504"};const ccSel=c.cc||(c.phone?"504":LS.get("lastCC")||"504");
   openSheet(`<h2>${c.id?"Editar contacto":opts.lista?"📝 Persona nueva a la lista":"Nuevo contacto"}</h2>${opts.lista?`<p class="small muted" style="margin:0">Solo cuentan personas que aún no están en su CRM. Se guarda en su CRM y suma en su rutina.</p>`:""}
   ${c.id?"":`<div class="qf"><p class="small muted" style="margin:0 0 8px">Llénalo rápido, sin escribir:</p><div class="qf-row">
    ${("contacts" in navigator&&navigator.contacts&&navigator.contacts.select)?`<button class="btn sm ghost" id="qfPick" type="button">📇 Mis contactos</button>`:""}
@@ -2715,7 +2777,7 @@ async function bajarPdf(u,n){const f=pdfCache[u+"#f"];
   const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=n;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);toast("Descargando la hoja…")}
 const CURSOS=[{k:"presentacion-impresa",t:"Aprende a dar una Presentación Impresa",d:"Mira el video y descarga la hoja para presentar el plan con tus prospectos.",yt:"VOTHJxJ5eQg",pdf:"media/cursos/presentacion-impresa.pdf",pdfN:"Presentacion-Impresa-Action-Leaders.pdf",pdfT:"Descargar la hoja de presentación"}];
 let cursoOpen={};
-function renderAca(){const b=$("#acaBody");
+function renderAca(){const b=$("#acaBody");if(ahBloqYo()){b.innerHTML=`<div class="card" style="gap:8px;text-align:center"><b style="font-size:17px">🔒 Academia en pausa</b><p class="small muted" style="margin:0">Su ahorro de inCruises está pendiente. Póngase al día para reactivar sus cursos y herramientas.</p><button class="btn" style="background:#25D366;color:#fff" onclick="ahHablarSp()">💬 Hablar con mi patrocinador</button></div>`;return}
   if(ACA_PRONTO){$("#acaSeg").hidden=true;const cv=profile.cursos||{};
     b.innerHTML=`<div><p class="eyebrow" style="margin:0">Cursos</p><p class="small muted" style="margin:2px 0 0">Aprende paso a paso y descarga tu material.</p></div>`+CURSOS.map((c,i)=>{const ok=!!cv[c.k];if(ok&&!cursoOpen[c.k])return `<button type="button" class="card curso cursoMin" data-cabre="${c.k}"><span class="cmOk">${CHECK}</span><span class="grow" style="text-align:left"><span class="chip c-good">Curso ${i+1} · Completado</span><b>${esc(c.t)}</b><small class="muted">Toque para volver a ver el video</small></span><span class="cmGo">›</span></button>`;return `<div class="card curso">
       <div class="row between" style="align-items:flex-start;gap:10px"><div><span class="chip ${ok?"c-good":"c-gold"}">Curso ${i+1}${ok?" · Completado ✓":""}</span><h2 style="margin:8px 0 0">${esc(c.t)}</h2><p class="small muted" style="margin:4px 0 0">${esc(c.d)}</p></div></div>
@@ -3047,7 +3109,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-refr
 async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
-  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();renderMetas();renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
+  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();try{renderAhorro()}catch(e){}renderMetas();renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
 let autoFotoHecho=false;
 function urlADataUrl(u,S){return new Promise(ok=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{S=S||240;const c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);
   c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);ok(c.toDataURL("image/jpeg",.85))}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=u})}
@@ -3232,7 +3294,7 @@ async function startApp(u){
   try{if(u&&localStorage.getItem("alp:welok")===u.uid){profile.bienvenida=true;const w=$("#wel");w.hidden=true;document.body.style.overflow=""}}catch(x){}
   welSigned=!!u;isAdmin=!!(u&&u.emailVerified&&ADMINS.includes((u.email||"").toLowerCase()));
   if(u){store.db=db;store.uid=u.uid;const nm=u.displayName||"";if(nm){welName=nm.split(" ")[0];if(!profile.nombrePila)$("#hello").textContent="Hola, "+welName}
-    try{const r=await db.doc("users/"+u.uid).get();regDoc=r.exists?r.data():null}catch(e){regDoc=null}try{renderMetas()}catch(e){}try{renderMiWa()}catch(e){}try{renderActBan()}catch(e){}setTimeout(()=>entInit().catch(()=>{}),600);
+    try{const r=await db.doc("users/"+u.uid).get();regDoc=r.exists?r.data():null}catch(e){regDoc=null}try{renderMetas()}catch(e){}try{renderMiWa()}catch(e){}try{renderAhorro()}catch(e){}try{renderActBan()}catch(e){}setTimeout(()=>entInit().catch(()=>{}),600);
     if(regDoc&&regDoc.bienvenida){profile.bienvenida=true;try{localStorage.setItem("alp:welok",u.uid)}catch(x){}const w=$("#wel");if(w){w.hidden=true;document.body.style.overflow=""}}
     db.doc("users/"+u.uid).set({email:u.email||"",ultimoAcceso:window.FB.serverTimestamp()},{merge:true}).catch(()=>{})}
   else{store.db=null;store.uid=null}
@@ -3256,7 +3318,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261027125106";var busy=false,pend=null;
+(function(){var V="20261027165206";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
