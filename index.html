@@ -506,6 +506,14 @@ nav.tabs button{z-index:0;isolation:isolate}
 .evCard .btn{background:transparent;color:#E8C547;border:1px solid rgba(212,175,55,.45);white-space:nowrap;font-size:14px;padding-left:8px;padding-right:8px}
 .evCard #evMis{background:linear-gradient(135deg,#C9A227,#E8C547)!important;color:#111!important;border-color:transparent}
 .evLive{background:rgba(212,175,55,.1);color:#F3E7C2}
+.evCard.evRes{background:linear-gradient(150deg,#7C2D12,#9A3412 55%,#C2410C);color:#FFF7ED;border:0;box-shadow:0 12px 26px -12px rgba(194,65,12,.6)}
+.evCard.evRes .evK{color:#FED7AA}.evCard.evRes .evHoy{background:rgba(255,255,255,.18);color:#fff}
+.evCard.evRes .evT b{color:#FDE68A}.evCard.evRes .evRow{border-top-color:rgba(255,255,255,.16)}.evCard.evRes .evRow .nm{color:#FFF7ED}.evCard.evRes .evRow .ct{color:#FDE68A}.evCard.evRes .evRow small{color:#FED7AA}
+.evCard.evRes .av{border-color:rgba(255,255,255,.55)}.evCard.evRes .evMe{background:rgba(0,0,0,.18);color:#FFF7ED;border:1px solid rgba(255,255,255,.18)}
+.evCard.evRes .btn{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35)}
+.evCard.evRes #evSeg{background:linear-gradient(135deg,#FDE68A,#FBBF24)!important;color:#431407!important;border:0;font-weight:800;animation:evPulse 1.8s ease-in-out infinite}
+@keyframes evPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(253,230,138,.7)}50%{transform:scale(1.04);box-shadow:0 0 0 10px rgba(253,230,138,0)}}
+@media (prefers-reduced-motion:reduce){.evCard.evRes #evSeg{animation:none}}
 .entCard{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:4px solid var(--good);box-shadow:var(--shadow)}
 .entCard .muted{color:var(--muted)!important}.entCard #entGo{background:#12805C;color:#fff}
 .actBan{background:var(--hero);color:var(--hero-ink);box-shadow:var(--shadow)}.actBan::after{display:none}
@@ -1427,7 +1435,7 @@ function evSeguimiento(E,iy){const m=evMios(E,iy),A=m.R.filter(x=>x.ok),F=m.R.fi
     $("#evAll").onclick=async()=>{const bt=$("#evAll");bt.disabled=true;let nw=0,up=0;for(const x of A.concat(F)){const r=await evToCRM(E,x.n,x.ok);if(r==="new")nw++;else if(r==="upd")up++}try{renderCRM()}catch(e){}bt.textContent=`✓ ${nw} agregados · ${up} actualizados`;toast("Listo: revise su CRM y complete los WhatsApp que falten");setTimeout(()=>evSeguimiento(E,iy),1200)}})}
 function renderEvento(){const c=$("#evCard");if(!c)return;const E=(T.config&&T.config.evento)||null;
   if(!E||!E.top||!E.top.length||!E.fecha){c.hidden=true;return}
-  if(TODAY>E.fecha){if(TODAY>dkey(new Date(parseK(E.fecha).getTime()+7*864e5))){c.hidden=true;return}c.hidden=false;evResultados(c,E);return}c.hidden=false;
+  if(TODAY>E.fecha){if(TODAY>dkey(new Date(parseK(E.fecha).getTime()+7*864e5))){c.hidden=true;return}c.hidden=false;c.classList.add("evRes");evResultados(c,E);return}c.classList.remove("evRes");c.hidden=false;
   const md=["🥇","🥈","🥉"],L=E.top,yo=miNombreFull()||miNombreCorto(),iy=evMiIdx(L,[yo,miNombreCorto()]);
   const dias=Math.round((parseK(E.fecha)-parseK(TODAY))/864e5),cuando=dias===0?"¡Es hoy!":dias===1?"Mañana":"Faltan "+dias+" días";
   const row=(x,i)=>`<div class="evRow"><span style="font-size:20px;width:26px;text-align:center">${md[i]||"#"+(i+1)}</span>${avHTML(x.nombre,false,false)}<span class="nm">${esc(x.nombre)}</span>${x.hoy?`<small>+${x.hoy} hoy</small>`:""}<span class="ct">${x.n}</span></div>`;
@@ -3023,7 +3031,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261026185053";var busy=false,pend=null;
+(function(){var V="20261026185306";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
