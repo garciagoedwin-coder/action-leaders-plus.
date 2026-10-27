@@ -2187,15 +2187,22 @@ async function pedirL3(c){if(!store.db||!(regDoc&&regDoc.registro)){toast("Compl
   const man=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1));let tipo="zoom";
   openSheet(`<h2>📞 Llamada de 3</h2><span data-nofocus hidden></span><p class="small muted" style="margin:0">Pídale a un líder de su línea que le ayude con su prospecto. Le llega a su app para que la confirme.</p>
    <div class="field"><label for="l3L">Líder</label><select class="inp" id="l3L">${L.map((x,i)=>`<option value="${esc(x.uid)}">${esc(x.n)}${i===0?" (su patrocinador)":""}</option>`).join("")}</select></div>
-   <div class="field"><label for="l3N">Prospecto</label><input class="inp" id="l3N" maxlength="60" value="${esc(c?c.name:"")}" placeholder="Nombre del prospecto"></div>
+   <div class="field"><label for="l3N">Prospecto <span class="muted">(de su CRM)</span></label><input class="inp" id="l3N" maxlength="60" value="${esc(c?c.name:"")}" placeholder="🔍 Busque el nombre en su CRM" autocomplete="off"><div id="l3Sug" style="display:flex;flex-direction:column"></div><span class="small" id="l3Sel" style="color:var(--good);font-weight:700" ${c&&c.id?"":"hidden"}>✓ De su CRM</span></div>
    <div class="grid2"><div class="field"><label for="l3F">Día</label><input class="inp" type="date" id="l3F" value="${man}" min="${TODAY}"></div><div class="field"><label for="l3H">Hora</label><input class="inp" type="time" id="l3H" value="19:00"></div></div>
    <div class="seg" id="l3T"><button type="button" aria-selected="true" data-t="zoom">💻 Zoom</button><button type="button" aria-selected="false" data-t="whatsapp">📱 WhatsApp</button></div>
    <div class="field" id="l3Zw"><label for="l3Z">Enlace de Zoom</label><input class="inp" id="l3Z" value="${esc(profile.zoom||"")}" placeholder="https://zoom.us/j/..."></div>
    <div class="field"><label for="l3Nt">Nota para el líder <span class="muted">(opcional)</span></label><input class="inp" id="l3Nt" maxlength="140" placeholder="Ej.: le interesa viajar, tiene dudas del pago"></div>
    <button class="btn" id="l3Ok" style="width:100%">Enviar solicitud</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
+    let cSel=c&&c.id?c:null;
+    const sug=()=>{const q=nrmN($("#l3N").value.trim());const box=$("#l3Sug");if(cSel&&cSel.name===$("#l3N").value){box.innerHTML="";return}cSel=null;$("#l3Sel").hidden=true;
+      if(q.length<2){box.innerHTML="";return}const M=(contacts||[]).filter(x=>nrmN(x.name).includes(q)).slice(0,6);
+      box.innerHTML=M.map(x=>`<button type="button" class="ep-it" data-l3c="${esc(x.id)}">${avHTML(x.name,false,false)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(x.name)}</b><span class="small muted">${esc(x.stage||"Nuevo")}</span></span></button>`).join("")||`<p class="small muted" style="margin:6px 0">No está en su CRM. Al enviar, lo agregamos.</p>`};
+    $("#l3N").oninput=sug;$("#l3Sug").onclick=e=>{const b=e.target.closest("[data-l3c]");if(!b)return;cSel=contacts.find(x=>x.id===b.dataset.l3c);$("#l3N").value=cSel.name;$("#l3Sug").innerHTML="";$("#l3Sel").hidden=false};
     $("#l3T").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;tipo=b.dataset.t;$("#l3T").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));$("#l3Zw").hidden=tipo!=="zoom"};
     $("#l3Ok").onclick=async()=>{const pros=$("#l3N").value.trim(),f=$("#l3F").value,h=$("#l3H").value,para=$("#l3L").value,ld=L.find(x=>x.uid===para);
-      if(pros.length<2){toast("Escriba el nombre del prospecto");return}if(!f||!h||citaIni({fecha:f,hora:h}).getTime()<Date.now()){toast("Elija un día y hora futuros");return}
+      if(pros.length<2){toast("Busque el prospecto en su CRM");$("#l3N").focus();return}if(!f||!h||citaIni({fecha:f,hora:h}).getTime()<Date.now()){toast("Elija un día y hora futuros");return}
+      if(!cSel){const nc={name:pros.slice(0,80),cc:LS.get("lastCC")||"504",phone:"",stage:"Seguimiento",note:"📞 Llamada de 3 con "+ld.n.split(" ")[0],next:f,updated:Date.now()};const nid=await store.saveContact(nc);if(nid){nc.id=nid;contacts.push(nc);cSel=nc;toast("Agregamos a "+pros.split(" ")[0]+" a su CRM");try{renderCRM()}catch(e){}}}
+      c=cSel;
       const d={de:store.uid,deN:miRegistro().nombre||miNombreCorto(),para,paraN:ld.n,pros:pros.slice(0,60),cid:c?c.id:"",fecha:f,hora:h,tipo,enlace:tipo==="zoom"?safeUrl($("#l3Z").value.trim())||"":"",nota:$("#l3Nt").value.trim().slice(0,140),estado:"pendiente",nP:true,nD:false,t:Date.now()};
       const bt=$("#l3Ok");bt.disabled=true;let id;try{id=(await l3Col().add(d)).id}catch(e){bt.disabled=false;toast("No se pudo enviar. ¿Ya se pegaron las reglas nuevas en Firebase?");return}
       const ci={tipo:"lider",titulo:"📞 Llamada de 3 con "+ld.n.split(" ")[0]+" · "+pros.split(" ")[0]+" (⏳ por confirmar)",fecha:f,hora:h,dur:60,enlace:d.enlace,nota:d.nota,l3:id,cid:d.cid};const cid2=await saveCita(ci);if(cid2){ci.id=cid2;citas.push(ci)}
@@ -3246,7 +3253,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261027120654";var busy=false,pend=null;
+(function(){var V="20261027121157";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
