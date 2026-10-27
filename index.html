@@ -297,8 +297,8 @@ h1.motto{overflow:hidden;height:1.3em;line-height:1.3em;margin-top:2px}
 @keyframes l3Shine{from{background-position:0 0,0 0}to{background-position:0 0,300% 0}}
 @keyframes l3Glow{0%,100%{box-shadow:0 10px 26px -12px rgba(234,88,12,.7),0 0 0 0 rgba(251,146,60,.35)}50%{box-shadow:0 10px 26px -12px rgba(234,88,12,.7),0 0 0 7px rgba(251,146,60,0)}}
 @media (prefers-reduced-motion:reduce){#l3Card{animation:none}}
-.rut-al.rut-nx{background:var(--brand-soft,#E6F4FA);color:var(--ink);animation:none;align-items:center;flex-wrap:nowrap}.rut-al.rut-nx span{opacity:1}
-.rut-al.rut-nx.tarde{background:#FFF1E6;color:#9A3412}
+.rut-al.rut-nx{background:rgba(42,193,241,.14);color:var(--ink);border:1px solid rgba(42,193,241,.35);animation:none;align-items:center;flex-wrap:nowrap}.rut-al.rut-nx span{opacity:1;color:var(--ink)}
+.rut-al.rut-nx.tarde{background:rgba(251,146,60,.16);border-color:rgba(234,88,12,.45)}.rut-al.rut-nx.tarde b{color:#EA580C}
 .rut-al.shake{animation:rutShake .7s cubic-bezier(.36,.07,.19,.97) .3s both,rutPulse 1.8s ease-in-out 1s infinite}
 .rut-al.ok.shake{animation:rutPop .5s ease both}
 @keyframes rutPulse{0%,100%{box-shadow:0 0 0 0 rgba(229,56,59,.55)}50%{box-shadow:0 0 0 8px rgba(229,56,59,0)}}
@@ -3253,7 +3253,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261027121157";var busy=false,pend=null;
+(function(){var V="20261027121512";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
