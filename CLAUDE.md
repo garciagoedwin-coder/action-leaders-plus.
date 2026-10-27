@@ -27,7 +27,7 @@ App web móvil (PWA) del equipo de Edwin García Go (Director Nacional, inCruise
 | `respaldo/firestore.rules` | Copia exacta de las reglas de Firestore (al 2026-10-20). |
 | `respaldo/tareas/` | Instrucciones exactas de las tareas programadas. |
 
-**Publicar un cambio:** `./.publicar.sh && git add -A && git commit -m "…" && git push`. GitHub Pages tarda 1 o 2 minutos. Los socios deben cerrar y abrir la app para ver el cambio.
+**Publicar un cambio:** `./.publicar.sh && git add -A && git commit -m "…" && git push`. `.publicar.sh` corre antes `tools/smoke.js` (abre la app con Firebase simulado como admin y socio); si falla, NO publica. Publicar pocas veces al día: cada publicación hace recargar a todos (lecturas de Firestore). GitHub Pages tarda 1 o 2 minutos. Los socios deben cerrar y abrir la app para ver el cambio.
 
 **Probar:** servidor local en el puerto 8765 más Playwright, con los módulos de Firebase reemplazados por stubs (app, auth y firestore falsos con localStorage). Siempre tomar captura en un teléfono de 430 px antes de publicar.
 
@@ -144,3 +144,10 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Reglas de Firestore: ver `respaldo/firestore.rules` (bloque "Modo entrada").
 - Después del evento (hasta 7 días): la tarjeta del reto pasa a "Resultados" (naranja), con "📲 Seguimiento del evento" (mensajes de WhatsApp para los que llegaron / no llegaron, con la página de prospectos del socio, y "➕ CRM") y "🏆 Llegadas". La tarjeta "Modo entrada" se oculta tras el día del evento; el admin entra al detalle desde "🔎 Admin: ver quién llegó de cada socio" hasta ENT.res.
 - PRÓXIMO EVENTO (reutilizar): 1) cambiar `const ENT={id,tit,fecha,fin,res}` en index.html (id nuevo, p. ej. "tgu27"); 2) config.evento en team.json (titulo, fecha, lugar, lugarTxt, hora, llegar, mapa) y vaciar alias/top; 3) nueva clave AES (`python3 -c "import os,base64;print(base64.urlsafe_b64encode(os.urandom(32)).decode().rstrip('=')")` → /home/claude/.evk) y enlace de activación `?evk=CLAVE` abierto una vez por el admin; 4) hojas de invitados (A/F/C) y socios (A:E) → evento.py + entrada.py; 5) marcar recepción en Admin → Editar socio. Resultados de SPS 2026: 140 registrados, 51 llegaron.
+
+## 8. Rendimiento (plan Spark: 50 000 lecturas/día)
+- Uso normal ~10–15 mil lecturas/día; el día del evento (25 oct) llegó a ~54–61 mil y pasó el límite gratis.
+- Las fotos de team.json son archivos en media/fotos/ (nunca base64 dentro de team.json).
+- Fotos de Firestore: `cargarFotos()` con caché local de 6 h (getDocsFromCache), sin escucha en vivo.
+- `constancia` (Mi Racha / Índice) se lee solo al abrir esas vistas (caché 10 min), no al iniciar la app.
+- Antes de cada cambio, decirle a Edwin si puede afectar el rendimiento o las lecturas.
