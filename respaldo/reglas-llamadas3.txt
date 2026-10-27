@@ -1,0 +1,8 @@
+// ===== Llamada de 3 — pegar DENTRO de "match /databases/{database}/documents { ... }" =====
+    match /llamadas3/{id} {
+      allow create: if request.auth != null && request.resource.data.de == request.auth.uid && request.resource.data.para is string;
+      allow read: if request.auth != null && (resource.data.de == request.auth.uid || resource.data.para == request.auth.uid);
+      allow update: if request.auth != null && (resource.data.de == request.auth.uid || resource.data.para == request.auth.uid)
+        && request.resource.data.de == resource.data.de && request.resource.data.para == resource.data.para;
+      allow delete: if request.auth != null && resource.data.de == request.auth.uid;
+    }

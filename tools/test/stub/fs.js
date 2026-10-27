@@ -3,11 +3,11 @@ export const initializeFirestore=()=>({});export const persistentLocalCache=()=>
 export const doc=(db,...a)=>({p:a.join('/')});export const collection=(db,...a)=>({p:a.join('/')});export const getFirestore=()=>({});
 export const getDoc=async r=>{const d=load();return{exists:()=>r.p in d,data:()=>d[r.p]}};
 export const setDoc=async(r,b,o)=>{const d=load();const dm=(a,c)=>{const z=Object.assign({},a||{});for(const k in c){z[k]=(c[k]&&typeof c[k]==='object'&&!Array.isArray(c[k])&&z[k]&&typeof z[k]==='object'&&!Array.isArray(z[k]))?dm(z[k],c[k]):c[k]}return z};d[r.p]=o&&o.merge?dm(d[r.p],b):b;save(d)};
-export const getDocs=async r=>{const d=load();const docs=Object.keys(d).filter(k=>k.startsWith(r.p+'/')&&k.slice(r.p.length+1).indexOf('/')<0).map(k=>({id:k.slice(r.p.length+1),data:()=>d[k]}));const g=(o,f)=>f.split('.').reduce((a,k)=>a&&a[k],o);return{docs:r.w?docs.filter(x=>r.w.op==='array-contains'?(g(x.data(),r.w.f)||[]).includes(r.w.v):g(x.data(),r.w.f)===r.w.v):docs}};
+export const getDocs=async r=>{const d=load();const docs=Object.keys(d).filter(k=>k.startsWith(r.p+'/')&&k.slice(r.p.length+1).indexOf('/')<0).map(k=>({id:k.slice(r.p.length+1),data:()=>d[k]}));const g=(o,f)=>f.split('.').reduce((a,k)=>a&&a[k],o);const W=r.ws||(r.w?[r.w]:[]);return{docs:docs.filter(x=>W.every(w=>w.op==='array-contains'?(g(x.data(),w.f)||[]).includes(w.v):w.op==='>'?g(x.data(),w.f)>w.v:g(x.data(),w.f)===w.v))}};
 export const addDoc=async(r,b)=>{const id='x'+Date.now();await setDoc({p:r.p+'/'+id},b);return{id}};
 export const deleteDoc=async r=>{const d=load();delete d[r.p];save(d)};
 export const onSnapshot=(r,cb)=>{const d=load();if(r.p in d&&!Object.keys(d).some(k=>k.startsWith(r.p+"/")))cb({exists:()=>true,id:r.p.split("/").pop(),data:()=>d[r.p]});else getDocs(r).then(q=>cb(q));return()=>{}};
 export const serverTimestamp=()=>new Date().toISOString();
-export const where=(f,op,v)=>({f,op,v});export const query=(c,w)=>({p:c.p,w});
+export const where=(f,op,v)=>({f,op,v});export const query=(c,...ws)=>({p:c.p,ws});
 const _gd=getDocs;
 export const getDocsFromCache=async r=>{const q=await getDocs(r);if(!q.docs.length)throw new Error("no-cache");return q};

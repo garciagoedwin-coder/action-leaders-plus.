@@ -867,6 +867,7 @@ nav.tabs button{z-index:0;isolation:isolate}
       </div>
       <div class="card" id="avisoCard" hidden></div>
       <div class="miwa" id="miWaCard" hidden></div>
+      <div class="card" id="l3Card" hidden style="border:1.5px solid var(--brand)"></div>
       <div class="card" id="salaCard" hidden style="border:1.5px solid #C2410C"></div>
       <div class="actBan" id="actBan" hidden></div>
       <div class="metaStrip" id="metaStrip" hidden></div>
@@ -997,7 +998,7 @@ let fdb;try{fdb=initializeFirestore(app,{localCache:persistentLocalCache(),ignor
 const wrapS=q=>({docs:q.docs.map(d=>({id:d.id,data:()=>d.data()}))});
 const D=p=>({get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>setDoc(doc(fdb,p),b,o||{}),delete:()=>deleteDoc(doc(fdb,p)),
   onSnapshot:(cb,er)=>onSnapshot(doc(fdb,p),x=>cb({exists:x.exists(),data:()=>x.data()}),er||(()=>{}))});
-const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),getCache:async()=>wrapS(await getDocsFromCache(collection(fdb,p))),where:(f,v,op)=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v))))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
+const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),getCache:async()=>wrapS(await getDocsFromCache(collection(fdb,p))),where:(f,v,op)=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v))))}),whereAll:L=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1])))))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
   onSnapshot:(cb,er)=>onSnapshot(collection(fdb,p),q=>cb(wrapS(q)),er||(()=>{}))});
 const db={collection:C,doc:D};
 setPersistence(auth,browserLocalPersistence).catch(()=>{});
@@ -2169,6 +2170,74 @@ function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,
       location.href="https://wa.me/"+tel+"?text="+encodeURIComponent(msg)};
     if(n)upd()})}
 
+// ---------- llamada de 3 (socio pide a un líder de su línea; el líder acepta en su app) ----------
+// Firestore llamadas3/{id}: de, deN, para, paraN, pros, cid, fecha, hora, tipo, enlace, nota, estado (pendiente|aceptada|propuesta|rechazada), pFecha, pHora, nP (aviso para el líder), nD (aviso para quien pidió), t
+let l3P=[],l3D=[];
+const l3Col=()=>store.db.collection("llamadas3");
+function l3Cuando(f,h){return citaCuando({fecha:f,hora:h})}
+function miLinea(){const r=miRegistro()||{},L=(Array.isArray(r.linea)?r.linea:[]).slice();if(r.patrocinadorUid&&!L.includes(r.patrocinadorUid))L.unshift(r.patrocinadorUid);
+  return L.filter(u=>u&&u!==store.uid).map((u,i)=>{const f=(fotosFs||[]).find(x=>x.id===u);return{uid:u,n:(f&&(f.invNombre||f.nombre))||(i===0&&r.patrocinadorUid===u?r.patrocinador:"")||""}}).filter(x=>x.n)}
+async function pedirL3(c){if(!store.db||!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}
+  if(!(fotosFs||[]).length)try{await cargarFotos()}catch(e){}
+  const L=miLinea();if(!L.length){toast("No encontramos a sus líderes. Pida a su patrocinador que abra la app.");return}
+  const man=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1));let tipo="zoom";
+  openSheet(`<h2>📞 Llamada de 3</h2><span data-nofocus hidden></span><p class="small muted" style="margin:0">Pídale a un líder de su línea que le ayude con su prospecto. Le llega a su app para que la confirme.</p>
+   <div class="field"><label for="l3L">Líder</label><select class="inp" id="l3L">${L.map((x,i)=>`<option value="${esc(x.uid)}">${esc(x.n)}${i===0?" (su patrocinador)":""}</option>`).join("")}</select></div>
+   <div class="field"><label for="l3N">Prospecto</label><input class="inp" id="l3N" maxlength="60" value="${esc(c?c.name:"")}" placeholder="Nombre del prospecto"></div>
+   <div class="grid2"><div class="field"><label for="l3F">Día</label><input class="inp" type="date" id="l3F" value="${man}" min="${TODAY}"></div><div class="field"><label for="l3H">Hora</label><input class="inp" type="time" id="l3H" value="19:00"></div></div>
+   <div class="seg" id="l3T"><button type="button" aria-selected="true" data-t="zoom">💻 Zoom</button><button type="button" aria-selected="false" data-t="whatsapp">📱 WhatsApp</button></div>
+   <div class="field" id="l3Zw"><label for="l3Z">Enlace de Zoom</label><input class="inp" id="l3Z" value="${esc(profile.zoom||"")}" placeholder="https://zoom.us/j/..."></div>
+   <div class="field"><label for="l3Nt">Nota para el líder <span class="muted">(opcional)</span></label><input class="inp" id="l3Nt" maxlength="140" placeholder="Ej.: le interesa viajar, tiene dudas del pago"></div>
+   <button class="btn" id="l3Ok" style="width:100%">Enviar solicitud</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
+    $("#l3T").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;tipo=b.dataset.t;$("#l3T").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));$("#l3Zw").hidden=tipo!=="zoom"};
+    $("#l3Ok").onclick=async()=>{const pros=$("#l3N").value.trim(),f=$("#l3F").value,h=$("#l3H").value,para=$("#l3L").value,ld=L.find(x=>x.uid===para);
+      if(pros.length<2){toast("Escriba el nombre del prospecto");return}if(!f||!h||citaIni({fecha:f,hora:h}).getTime()<Date.now()){toast("Elija un día y hora futuros");return}
+      const d={de:store.uid,deN:miRegistro().nombre||miNombreCorto(),para,paraN:ld.n,pros:pros.slice(0,60),cid:c?c.id:"",fecha:f,hora:h,tipo,enlace:tipo==="zoom"?safeUrl($("#l3Z").value.trim())||"":"",nota:$("#l3Nt").value.trim().slice(0,140),estado:"pendiente",nP:true,nD:false,t:Date.now()};
+      const bt=$("#l3Ok");bt.disabled=true;let id;try{id=(await l3Col().add(d)).id}catch(e){bt.disabled=false;toast("No se pudo enviar. ¿Ya se pegaron las reglas nuevas en Firebase?");return}
+      const ci={tipo:"lider",titulo:"📞 Llamada de 3 con "+ld.n.split(" ")[0]+" · "+pros.split(" ")[0]+" (⏳ por confirmar)",fecha:f,hora:h,dur:60,enlace:d.enlace,nota:d.nota,l3:id,cid:d.cid};const cid2=await saveCita(ci);if(cid2){ci.id=cid2;citas.push(ci)}
+      LS.set("l3Env",1);renderHoyCitas();renderMiAgenda();
+      const yo=miNombreCorto()||"",msg=`Hola ${ld.n.split(" ")[0]} 🙏\n\nLe envié en la app una solicitud de *llamada de 3* con mi prospecto *${pros}* para ${l3Cuando(f,h).toLowerCase()} (${tipo==="zoom"?"por Zoom":"por WhatsApp"}).\n\n¿Me la confirma en la app? ¡Gracias!${yo?"\n\n*"+yo+"*":""}`;
+      openSheet(`<h2>✅ Solicitud enviada</h2><p style="margin:0">${esc(ld.n)} la verá al abrir su app.</p><p class="small muted" style="margin:0">Avísele por WhatsApp para que la confirme pronto:</p>
+       <button class="btn" id="l3Wa" style="width:100%;background:#25D366;color:#fff">💬 Avisarle por WhatsApp</button><button class="btn ghost" data-close style="width:100%">Listo</button>`,()=>{
+        $("#l3Wa").onclick=async()=>{if(navigator.share){try{await navigator.share({text:msg});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(msg)}})}})}
+async function loadL3(){if(!store.db||!store.uid)return;
+  try{const q=await l3Col().whereAll([["para",store.uid],["nP",true]]).get();l3P=q.docs.map(d=>Object.assign({id:d.id},d.data()))}catch(e){l3P=[]}
+  if(LS.get("l3Env"))try{const q=await l3Col().whereAll([["de",store.uid],["nD",true]]).get();l3D=q.docs.map(d=>Object.assign({id:d.id},d.data()))}catch(e){l3D=[]}
+  // el socio aceptó la hora que propuso el líder: se agenda sola
+  for(const x of l3P.filter(y=>y.estado==="aceptada")){await l3AgendaLider(x);try{await l3Col().doc(x.id).set({nP:false},{merge:true})}catch(e){}toast("✅ "+(x.deN||"").split(" ")[0]+" aceptó la nueva hora de la llamada de 3")}
+  l3P=l3P.filter(y=>y.estado==="pendiente");
+  for(const x of l3D)await l3ActCitaSocio(x);renderL3Card()}
+async function l3AgendaLider(x){if(citas.some(c=>c.l3===x.id))return;const ci={tipo:"lider",titulo:"📞 Llamada de 3 · "+(x.deN||"").split(" ")[0]+" con "+x.pros,fecha:x.fecha,hora:x.hora,dur:60,enlace:x.enlace||"",nota:x.nota||"",l3:x.id};const id=await saveCita(ci);if(id){ci.id=id;citas.push(ci);renderHoyCitas();renderMiAgenda()}}
+async function l3ActCitaSocio(x){const ci=citas.find(c=>c.l3===x.id);if(!ci)return;const ld=(x.paraN||"").split(" ")[0],p=(x.pros||"").split(" ")[0];
+  const est=x.estado==="aceptada"?"✅ confirmada":x.estado==="propuesta"?"🕗 propone otra hora":x.estado==="rechazada"?"✖ no puede":"⏳ por confirmar";
+  const n=Object.assign({},ci,{titulo:"📞 Llamada de 3 con "+ld+" · "+p+" ("+est+")",fecha:x.fecha,hora:x.hora});if(n.titulo!==ci.titulo||n.fecha!==ci.fecha||n.hora!==ci.hora){await saveCita(n);Object.assign(ci,n)}}
+function renderL3Card(){const c=$("#l3Card");if(!c)return;if(!l3P.length&&!l3D.length){c.hidden=true;return}c.hidden=false;
+  c.innerHTML=l3P.map(x=>`<div style="display:flex;flex-direction:column;gap:6px;padding-bottom:10px">
+     <b style="font-size:16px">📞 ${esc((x.deN||"").split(" ")[0])} le pide una llamada de 3</b>
+     <span class="small" style="font-weight:700;color:var(--brand)">${esc(l3Cuando(x.fecha,x.hora))} · ${x.tipo==="zoom"?"💻 Zoom":"📱 WhatsApp"} · Prospecto: ${esc(x.pros)}</span>
+     ${x.nota?`<span class="small muted">"${esc(x.nota)}"</span>`:""}
+     <div class="row wrap" style="gap:6px"><button class="btn sm" data-l3a="${esc(x.id)}">✅ Aceptar</button><button class="btn sm ghost" data-l3p="${esc(x.id)}">🕗 Otra hora</button><button class="btn sm ghost" data-l3r="${esc(x.id)}" style="color:var(--bad)">✖ No puedo</button></div></div>`).join("")
+   +l3D.map(x=>{const ld=esc((x.paraN||"").split(" ")[0]);return `<div style="display:flex;flex-direction:column;gap:6px;padding-bottom:10px">
+     <b style="font-size:16px">${x.estado==="aceptada"?`✅ ${ld} confirmó su llamada de 3`:x.estado==="propuesta"?`🕗 ${ld} propone otra hora`:`✖ ${ld} no puede en ese horario`}</b>
+     <span class="small" style="font-weight:700;color:var(--brand)">${x.estado==="propuesta"?esc(l3Cuando(x.pFecha,x.pHora)):esc(l3Cuando(x.fecha,x.hora))} · Prospecto: ${esc(x.pros)}</span>
+     <div class="row wrap" style="gap:6px">${x.estado==="propuesta"?`<button class="btn sm" data-l3ok="${esc(x.id)}">✅ Aceptar esa hora</button>`:""}${x.estado==="rechazada"?`<button class="btn sm" data-l3new="${esc(x.id)}">📞 Pedir a otro líder</button>`:""}<button class="btn sm ghost" data-l3x="${esc(x.id)}">Entendido</button></div></div>`}).join("");
+  const get=(L,id)=>L.find(y=>y.id===id),upd=async(id,b)=>{try{await l3Col().doc(id).set(b,{merge:true});return true}catch(e){toast("No se pudo guardar. Revise su conexión.");return false}};
+  c.querySelectorAll("[data-l3a]").forEach(b=>b.onclick=async()=>{const x=get(l3P,b.dataset.l3a);if(!x)return;b.disabled=true;if(!(await upd(x.id,{estado:"aceptada",nP:false,nD:true,tR:Date.now()})))return;await l3AgendaLider(x);l3P=l3P.filter(y=>y!==x);renderL3Card();l3Avisar(x,"✅ Listo, le confirmo la *llamada de 3* con "+x.pros+" "+l3Cuando(x.fecha,x.hora).toLowerCase()+". ¡Ahí estaré! 💪")});
+  c.querySelectorAll("[data-l3r]").forEach(b=>b.onclick=async()=>{const x=get(l3P,b.dataset.l3r);if(!x)return;b.disabled=true;if(!(await upd(x.id,{estado:"rechazada",nP:false,nD:true,tR:Date.now()})))return;l3P=l3P.filter(y=>y!==x);renderL3Card();toast("Le avisamos que no puede en ese horario")});
+  c.querySelectorAll("[data-l3p]").forEach(b=>b.onclick=()=>{const x=get(l3P,b.dataset.l3p);if(!x)return;
+    openSheet(`<h2>🕗 Proponer otra hora</h2><span data-nofocus hidden></span><p class="small muted" style="margin:0">Llamada de 3 con ${esc(x.pros)}. Pedida para ${esc(l3Cuando(x.fecha,x.hora))}.</p>
+     <div class="grid2"><div class="field"><label for="l3pF">Día</label><input class="inp" type="date" id="l3pF" value="${esc(x.fecha)}" min="${TODAY}"></div><div class="field"><label for="l3pH">Hora</label><input class="inp" type="time" id="l3pH" value="${esc(x.hora)}"></div></div>
+     <button class="btn" id="l3pOk" style="width:100%">Enviar propuesta</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
+      $("#l3pOk").onclick=async()=>{const f=$("#l3pF").value,h=$("#l3pH").value;if(!f||!h){toast("Elija día y hora");return}if(!(await upd(x.id,{estado:"propuesta",pFecha:f,pHora:h,nP:false,nD:true,tR:Date.now()})))return;
+        l3P=l3P.filter(y=>y!==x);closeSheet();renderL3Card();l3Avisar(x,"🕗 Hola, para la *llamada de 3* con "+x.pros+" no puedo a esa hora. ¿Le parece "+l3Cuando(f,h).toLowerCase()+"? Acéptela en la app 🙏")}})});
+  c.querySelectorAll("[data-l3ok]").forEach(b=>b.onclick=async()=>{const x=get(l3D,b.dataset.l3ok);if(!x)return;b.disabled=true;const n={estado:"aceptada",fecha:x.pFecha,hora:x.pHora,nD:false,nP:true,tR:Date.now()};if(!(await upd(x.id,n)))return;Object.assign(x,n);await l3ActCitaSocio(x);renderHoyCitas();renderMiAgenda();l3D=l3D.filter(y=>y!==x);renderL3Card();toast("✅ Llamada de 3 confirmada")});
+  c.querySelectorAll("[data-l3x]").forEach(b=>b.onclick=async()=>{const x=get(l3D,b.dataset.l3x);if(!x)return;await upd(x.id,{nD:false});l3D=l3D.filter(y=>y!==x);renderL3Card()});
+  c.querySelectorAll("[data-l3new]").forEach(b=>b.onclick=async()=>{const x=get(l3D,b.dataset.l3new);if(!x)return;await upd(x.id,{nD:false});l3D=l3D.filter(y=>y!==x);renderL3Card();pedirL3(x.cid?contacts.find(c=>c.id===x.cid)||{name:x.pros,id:x.cid}:{name:x.pros,id:""})})}
+async function l3Avisar(x,t){const yo=miNombreCorto()||"";t=`Hola ${(x.deN||"").split(" ")[0]} 👋\n\n${t}${yo?"\n\n*"+yo+"*":""}`;let w="";
+  try{const d=await store.db.doc("users/"+x.de).get();if(d.exists)w=String(((d.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}catch(e){}
+  openSheet(`<h2>💬 Avisarle a ${esc((x.deN||"").split(" ")[0])}</h2><p class="small muted" style="margin:0">Ya le aparece en su app. Si quiere, avísele también por WhatsApp.</p>
+   <button class="btn" id="l3aw" style="width:100%;background:#25D366;color:#fff">💬 Enviar por WhatsApp</button><button class="btn ghost" data-close style="width:100%">No hace falta</button>`,()=>{
+    $("#l3aw").onclick=async()=>{if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}})}
 // ---------- presentación virtual (sala.html) ----------
 // Lanzamiento: por ahora solo admins. Para abrirla a todos: return true
 function salaOk(){return !!isAdmin}
@@ -2397,7 +2466,7 @@ function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerC
     ${(()=>{const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fecha>=TODAY).sort(citaSort)[0];return ci?`<span class="small" style="color:var(--brand);font-weight:700">📅 Cita: ${esc(citaCuando(ci))}</span>`:""})()}
     ${(()=>{const v=salaOk()&&salaDe(c.id);return v?`<span class="small" style="font-weight:700;color:${salaNivel(v)[2]}">🎬 ${esc(salaNivel(v)[0])} · vio el ${+v.pct||0}%${v.resp?" · "+esc(SALA_R[v.resp]||""):""}</span>`:""})()}
     ${c.next?`<span class="small" style="color:var(--${late?"bad":today?"warn":"muted"});font-weight:600">${late?"Seguimiento atrasado: "+niceDate(c.next):today?"Seguimiento hoy":"Próximo seguimiento: "+niceDate(c.next)}</span>`:""}
-    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost" data-cita="${esc(c.id)}">📅 Agendar</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
+    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost" data-cita="${esc(c.id)}">📅 Agendar</button><button class="btn sm ghost" data-l3="${esc(c.id)}">📞 Llamada de 3</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
 $("#stageBar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;stageF=b.dataset.s;renderCRM()});
 $("#crmSearch").addEventListener("input",renderCRM);
 $("#bienBtn").onclick=()=>abrirBienvenida();$("#addContact").onclick=()=>editContact();
@@ -2408,6 +2477,7 @@ $("#contactList").addEventListener("click",async e=>{const st=e.target.closest("
     const id=await store.saveContact(Object.assign({},c));if(!id){c.stage=prev;renderCRM();return}if(c.stage==="Socio"){abrirBienvenida(c);return}toast(c.name.split(" ")[0]+": "+c.stage);return}
   const bw=e.target.closest("[data-bien]");if(bw){abrirBienvenida(contacts.find(c=>c.id===bw.dataset.bien));return}
   const ct=e.target.closest("[data-cita]");if(ct){abrirCita(null,contacts.find(c=>c.id===ct.dataset.cita));return}
+  const l3=e.target.closest("[data-l3]");if(l3){pedirL3(contacts.find(c=>c.id===l3.dataset.l3));return}
   const sl=e.target.closest("[data-sala]");if(sl){enviarSala(contacts.find(c=>c.id===sl.dataset.sala));return}
   const b=e.target.closest("[data-edit]");if(b)editContact(contacts.find(c=>c.id===b.dataset.edit))});
 
@@ -2537,13 +2607,14 @@ function renderMiAgenda(){const el=$("#agMia");if(!el||agVista!=="mia")return;if
   const rango=ds[0].getDate()+" "+MONTHS[ds[0].getMonth()].slice(0,3)+" – "+ds[6].getDate()+" "+MONTHS[ds[6].getMonth()].slice(0,3);
   const Hh=miHorario(),dn=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
   el.innerHTML=`<div class="row between"><div><p class="eyebrow">Tus citas y llamadas</p><h1>Mi agenda</h1></div><button class="btn sm gold" id="ciNew">+ Nueva cita</button></div>
+   <button class="btn ghost" id="l3New" style="width:100%">📞 Pedir llamada de 3 a un líder</button>
    <div class="card row between" style="gap:10px"><div style="min-width:0"><b style="font-size:14px">🌐 Agenda desde tu página</b><div class="small muted">${[1,2,3,4,5,6,0].filter(d=>Hh.dias.includes(d)).map(d=>dn[d]).join(", ")} · ${Hh.horas.map(h12).join(", ")}</div></div><button class="btn sm ghost" id="hEdit" style="flex:none">⚙️ Mi horario</button></div>
    <div class="card" style="gap:10px"><div class="cal-head"><button id="wkPrev" aria-label="Semana anterior">‹</button><h3 style="margin:0">${agWk===0?"Esta semana":agWk===1?"Próxima semana":rango}</h3><button id="wkNext" aria-label="Semana siguiente">›</button></div>
     <p class="small muted" style="margin:0;text-align:center">${rango} · <b style="color:var(--ink)">${tot} ${tot===1?"cita":"citas"}</b> · ${hrs%1?hrs.toFixed(1):hrs} h${lleno.length?` · <span style="color:var(--warn);font-weight:700">${lleno.join(", ")} lleno</span>`:""}</p>
     <div class="wkbars">${W.map(x=>{const h=x.L.reduce((b,c)=>b+(c.dur||60),0)/60;return `<div class="${x.k===TODAY?"hoy":""}"><span class="bw"><i style="height:${Math.round(h/mx*100)}%;background:${h>=4?"var(--warn)":"var(--brand)"}"></i></span><b>${x.L.length||""}</b><small>${DAYS[x.d.getDay()]} ${x.d.getDate()}</small></div>`}).join("")}</div></div>
    ${W.map(x=>`<div class="card" style="gap:8px${x.k<TODAY?";opacity:.55":""}"><div class="row between"><h3 style="margin:0">${x.k===TODAY?"Hoy · ":""}${DAYS_L[x.d.getDay()][0].toUpperCase()+DAYS_L[x.d.getDay()].slice(1)} ${x.d.getDate()}</h3>${x.k>=TODAY?`<button class="btn sm ghost" data-cinew="${x.k}">+</button>`:""}</div>
      ${x.L.length?x.L.map(citaCard).join(""):`<p class="small muted" style="margin:0">Libre</p>`}</div>`).join("")}`;
-  $("#ciNew").onclick=()=>abrirCita();$("#hEdit").onclick=abrirHorario;$("#wkPrev").onclick=()=>{agWk--;renderMiAgenda()};$("#wkNext").onclick=()=>{agWk++;renderMiAgenda()};
+  $("#ciNew").onclick=()=>abrirCita();$("#l3New").onclick=()=>pedirL3(null);$("#hEdit").onclick=abrirHorario;$("#wkPrev").onclick=()=>{agWk--;renderMiAgenda()};$("#wkNext").onclick=()=>{agWk++;renderMiAgenda()};
   el.querySelectorAll("[data-cinew]").forEach(b=>b.onclick=()=>abrirCita({fecha:b.dataset.cinew}));bindCitas(el)}
 function renderHoyCitas(){const c=$("#hoyCitas");if(!c)return;const L=citas.filter(x=>x.fecha===TODAY&&(citaIni(x).getTime()+(x.dur||60)*6e4>Date.now()||(x.tipo!=="lider"&&!x.hecha))).sort(citaSort);if(!L.length){c.hidden=true;return}c.hidden=false;
   const pend=L.filter(x=>citaIni(x).getTime()+(x.dur||60)*6e4>Date.now()).length;
@@ -2995,7 +3066,7 @@ async function loadMine(){
   try{const b=bw;if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}catch(e){}
   if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
   welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();
-  contacts=await store.contacts();setTimeout(importarProspectos,1500);setTimeout(()=>loadSala(),2500);loadCitas();
+  contacts=await store.contacts();setTimeout(importarProspectos,1500);setTimeout(()=>loadSala(),2500);setTimeout(()=>loadL3(),1800);loadCitas();
   renderAll()}
 
 let invSponsor=null,invData=null;
@@ -3171,7 +3242,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261027083324";var busy=false,pend=null;
+(function(){var V="20261027115255";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

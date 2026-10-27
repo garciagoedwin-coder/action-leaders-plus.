@@ -168,3 +168,9 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 ## 11. Cambios del 27 oct
 - Tarjeta del evento (reto/resultados) OCULTA en Inicio: `const EV_SHOW=false` en index.html. Los datos (team.json config.evento, Firestore evento/sps26, data/entrada.enc) se conservan; para mostrarla, EV_SHOW=true.
 - Rutina: encabezado "🔥 Su rutina de hoy" + chip de racha + barra "X de 5" y una sola línea "👉 Siguiente paso" con botón (el primer pendiente; de 6 pm en adelante avisa si se pierde la racha; al completar "¡Día completo! … Mañana va por N"). Textos de los 5 puntos en imperativo (campos nx/bt en ROUTINE).
+
+## 12. Llamada de 3 (27 oct)
+- Socio: CRM → "📞 Llamada de 3" o Mi agenda → "Pedir llamada de 3 a un líder" (pedirL3). Elige un líder de su línea (registro.linea + patrocinadorUid; nombres desde fotos/{uid}.invNombre), día, hora, Zoom/WhatsApp, nota. Crea `llamadas3/{id}` y una cita tipo "lider" con l3=id.
+- Líder: tarjeta #l3Card en Inicio (loadL3: where para==yo y nP==true) con Aceptar / Otra hora / No puedo. Al aceptar se agenda solo (l3AgendaLider) y puede avisar por WhatsApp (lee users/{de}.registro.whatsapp).
+- Respuesta al socio: where de==yo y nD==true (solo si LS l3Env); actualiza el título de su cita (✅/🕗/✖). Si el líder propone otra hora, el socio la acepta y al líder se le agenda sola.
+- Reglas: respaldo/reglas-llamadas3.txt (Edwin debe pegarlas). Sin notificación push (requiere Blaze + FCM).
