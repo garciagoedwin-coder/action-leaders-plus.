@@ -1250,28 +1250,31 @@ function renderSuenos(){const b=$("#snBody");if(!b)return;if(!fbUser||!store.db)
   const add=`<button class="snAdd" id="snAdd" type="button" style="${snList.length?"":"grid-column:span 2;grid-row:span 2"}"><span>＋</span>${snList.length?"Agregar sueño":"Agregue su primer sueño"}</button>`;
   const tip=snList.length<4?`<div class="snTip"><span>🏠 Tener</span><span>✈️ Vivir</span><span>🌱 Ser</span><span>❤️ Dar</span></div><p class="small muted" style="margin:-4px 0 0">Agregue al menos 1 sueño de cada tipo. Ideal: entre 6 y 9 sueños, concretos y con fecha.</p>`:"";
   b.innerHTML=why+cru+pills+`<h3 style="margin:6px 0 0">✨ Mis sueños</h3>`+tip+`<div class="snGrid">${tiles}${add}</div><p class="small muted" style="margin:0;text-align:center">🔒 Su mapa es privado. Nadie más del equipo lo ve.</p>`;
-  $("#snWhyBtn").onclick=snEditWhy;$("#snCruBtn").onclick=snEditCru;$("#snAdd").onclick=()=>snEdit(null);
-  b.querySelectorAll("[data-meta]").forEach(x=>x.onclick=abrirMetas);b.querySelectorAll("[data-sn]").forEach(x=>x.onclick=()=>snVer(snList.findIndex(y=>y.id===x.dataset.sn)))}
+  $("#snWhyBtn").onclick=snEditWhy;$("#snCruBtn").onclick=()=>{const C=(snInfo||{}).crucero||{};if(C.dest||C.img)snVer(0);else snEditCru()};$("#snAdd").onclick=()=>snEdit(null);
+  b.querySelectorAll("[data-meta]").forEach(x=>x.onclick=abrirMetas);b.querySelectorAll("[data-sn]").forEach(x=>x.onclick=()=>snVer(snItems().findIndex(y=>y.id===x.dataset.sn)))}
 async function snSaveInfo(){await store.set("suenosInfo",snInfo);renderSuenos();renderMetas()}
 const SN_FR=["Lo va a lograr 💪","No pare, será suyo","Ya es suyo, solo falta el tiempo","Cada presentación lo acerca a esto","Visualícelo. Trabájelo. Vívalo.","Hoy da un paso más hacia aquí","Lo que se ve claro, se logra","Su esfuerzo de hoy paga este sueño","Usted nació para lograr esto","Siga, que ya viene en camino 🚀"];
 let snVT=null;
-function snVer(i){if(i<0||!snList[i])return;document.querySelector(".snV")?.remove();clearInterval(snVT);
-  const x=snList[i],c=SN_CAT.find(z=>z.k===x.cat),v=document.createElement("div");v.className="snV";
+// El visor recorre el crucero (primero, si tiene destino o foto) y luego los sueños
+function snItems(){const C=(snInfo||{}).crucero||{},L=[];if(C.dest||C.img)L.push({id:"__cru",cru:true,img:C.img||"",tit:C.dest||"Mi próximo crucero",fecha:C.fecha||""});return L.concat(snList)}
+function snVer(i){const SL=snItems();if(i<0||!SL[i])return;document.querySelector(".snV")?.remove();clearInterval(snVT);
+  const x=SL[i],c=x.cru?{t:"🚢 Mi próximo crucero"}:SN_CAT.find(z=>z.k===x.cat),v=document.createElement("div");v.className="snV";
+  const dC=x.cru&&x.fecha?Math.ceil((parseK(x.fecha)-parseK(TODAY))/864e5):null;
   let f=Math.floor(Math.random()*SN_FR.length);
   const frase=()=>x.ok?"¡Lo logró! 🎉 Vamos por el siguiente":SN_FR[f];
   v.innerHTML=`<div class="bg" style="background-image:url('${x.img||""}')"></div>
-   <div class="top"><button type="button" data-x>✕</button>${snList.length>1?`<div class="dots">${snList.map((_,k)=>`<i class="${k===i?"on":""}"></i>`).join("")}</div>`:""}<button type="button" data-e>✏️ Editar</button></div>
+   <div class="top"><button type="button" data-x>✕</button>${SL.length>1?`<div class="dots">${SL.map((_,k)=>`<i class="${k===i?"on":""}"></i>`).join("")}</div>`:""}<button type="button" data-e>✏️ Editar</button></div>
    <div class="im">${x.img?`<img src="${x.img}" alt="">`:`<div style="font-size:80px">✨</div>`}</div>
-   <div class="tx">${c?`<span class="c">${c.t}</span>`:""}<h2>${esc(x.tit||"Mi sueño")}</h2>${x.ok?`<small>✅ Cumplido</small>`:x.fecha?`<small>${esc(snMes(x.fecha))} · ${esc(snFalta(x.fecha))}</small>`:""}
+   <div class="tx">${c?`<span class="c">${c.t}</span>`:""}<h2>${esc(x.tit||"Mi sueño")}</h2>${x.cru?(x.fecha?`<small>${esc(niceDate(x.fecha))} de ${x.fecha.slice(0,4)}${dC!=null&&dC>=0?` · ${dC===0?"¡Es hoy! 🎉":"Faltan "+dC+(dC===1?" día":" días")}`:""}</small>`:""):x.ok?`<small>✅ Cumplido</small>`:x.fecha?`<small>${esc(snMes(x.fecha))} · ${esc(snFalta(x.fecha))}</small>`:""}
    <div class="fr"><span>${frase()}</span></div></div>`;
   document.body.appendChild(v);
   const cerrar=()=>{clearInterval(snVT);v.remove()};
   v.querySelector("[data-x]").onclick=cerrar;
-  v.querySelector("[data-e]").onclick=()=>{cerrar();snEdit(x)};
+  v.querySelector("[data-e]").onclick=()=>{cerrar();if(x.cru)snEditCru();else snEdit(x)};
   if(!x.ok)snVT=setInterval(()=>{f=(f+1)%SN_FR.length;const s=v.querySelector(".fr");if(s)s.innerHTML=`<span>${SN_FR[f]}</span>`},3500);
   let x0=null;v.addEventListener("touchstart",e=>{x0=e.touches[0].clientX},{passive:true});
-  v.addEventListener("touchend",e=>{if(x0==null)return;const d=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(d)<50)return;const n=i+(d<0?1:-1);if(snList[n])snVer(n)});
-  v.querySelector(".im").onclick=()=>{if(snList.length>1)snVer((i+1)%snList.length)}}
+  v.addEventListener("touchend",e=>{if(x0==null)return;const d=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(d)<50)return;const n=i+(d<0?1:-1);if(SL[n])snVer(n)});
+  v.querySelector(".im").onclick=()=>{if(SL.length>1)snVer((i+1)%SL.length)}}
 function snEditWhy(){openSheet(`<h2>💭 Mi por qué</h2><p class="small muted" style="margin:0">¿Por qué hace este negocio? Escríbalo con el corazón. Ej.: "Para que mis hijos estudien sin deudas y mis papás descansen".</p>
   <textarea class="inp" id="snWhyT" rows="4" maxlength="180" placeholder="Lo hago para…">${esc((snInfo||{}).porque||"")}</textarea><button class="btn" id="snWhyOk" style="width:100%">Guardar</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`);
   $("#snWhyOk").onclick=async()=>{snInfo=Object.assign({},snInfo,{porque:$("#snWhyT").value.trim().slice(0,180)});closeSheet();await snSaveInfo();toast("Guardado 💙")}}
@@ -3253,7 +3256,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261027121512";var busy=false,pend=null;
+(function(){var V="20261027125106";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
