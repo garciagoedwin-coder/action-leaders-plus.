@@ -2596,10 +2596,10 @@ function abrirHorario(){const H=miHorario();let dias=H.dias.slice(),horas=H.hora
    <b style="font-size:14px">Horas de inicio</b><div class="hor-ch" id="hH">${HS.map(h=>`<button type="button" data-h="${h}" aria-pressed="${horas.includes(h)}">${h12(h)}</button>`).join("")}</div>
    <p class="small muted" style="margin:0" id="hRes"></p>
    <button class="btn" id="hOk" style="width:100%">Guardar horario</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
-    const res=()=>{$("hRes").textContent=dias.length&&horas.length?"Tus prospectos verán "+horas.length*dias.length+" espacios por semana (menos los que ya tengas ocupados).":"Elige al menos un día y una hora."};res();
-    $("hD").onclick=e=>{const b=e.target.closest("[data-d]");if(!b)return;const k=+b.dataset.d;dias=dias.includes(k)?dias.filter(x=>x!==k):dias.concat(k);b.setAttribute("aria-pressed",dias.includes(k));res()};
-    $("hH").onclick=e=>{const b=e.target.closest("[data-h]");if(!b)return;const k=b.dataset.h;horas=horas.includes(k)?horas.filter(x=>x!==k):horas.concat(k).sort();b.setAttribute("aria-pressed",horas.includes(k));res()};
-    $("hOk").onclick=()=>{if(!dias.length||!horas.length){toast("Elige al menos un día y una hora");return}profile.horario={dias,horas};store.set("perfil",profile);publicarSlots();closeSheet();toast("Horario guardado ✓");renderMiAgenda()}})}
+    const res=()=>{$("#hRes").textContent=dias.length&&horas.length?"Tus prospectos verán "+horas.length*dias.length+" espacios por semana (menos los que ya tengas ocupados).":"Elige al menos un día y una hora."};res();
+    $("#hD").onclick=e=>{const b=e.target.closest("[data-d]");if(!b)return;const k=+b.dataset.d;dias=dias.includes(k)?dias.filter(x=>x!==k):dias.concat(k);b.setAttribute("aria-pressed",dias.includes(k));res()};
+    $("#hH").onclick=e=>{const b=e.target.closest("[data-h]");if(!b)return;const k=b.dataset.h;horas=horas.includes(k)?horas.filter(x=>x!==k):horas.concat(k).sort();b.setAttribute("aria-pressed",horas.includes(k));res()};
+    $("#hOk").onclick=()=>{if(!dias.length||!horas.length){toast("Elige al menos un día y una hora");return}profile.horario={dias,horas};store.set("perfil",profile);publicarSlots();closeSheet();toast("Horario guardado ✓");renderMiAgenda()}})}
 function renderMiAgenda(){const el=$("#agMia");if(!el||agVista!=="mia")return;if(!citasOk){el.innerHTML=`<p class="muted small">Cargando tu agenda…</p>`;loadCitas();return}
   const t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7)+agWk*7),ds=Array.from({length:7},(_,i)=>new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+i));
   const W=ds.map(d=>{const k=dkey(d);return{k,d,L:citas.filter(c=>c.fecha===k).sort(citaSort)}}),tot=W.reduce((a,x)=>a+x.L.length,0),hrs=W.reduce((a,x)=>a+x.L.reduce((b,c)=>b+(c.dur||60),0),0)/60;
@@ -3242,7 +3242,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261027115255";var busy=false,pend=null;
+(function(){var V="20261027115618";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
