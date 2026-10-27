@@ -293,6 +293,8 @@ h1.motto{overflow:hidden;height:1.3em;line-height:1.3em;margin-top:2px}
 .rut-al{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:10px 14px;border-radius:14px;background:#e5383b;color:#fff;font-size:15px;margin-bottom:4px;animation:rutPulse 1.8s ease-in-out infinite}
 .rut-al b{font-weight:800}.rut-al span{opacity:.92;font-size:13.5px}
 .rut-al.ok{background:var(--good);animation:none}
+.rut-al.rut-nx{background:var(--brand-soft,#E6F4FA);color:var(--ink);animation:none;align-items:center;flex-wrap:nowrap}.rut-al.rut-nx span{opacity:1}
+.rut-al.rut-nx.tarde{background:#FFF1E6;color:#9A3412}
 .rut-al.shake{animation:rutShake .7s cubic-bezier(.36,.07,.19,.97) .3s both,rutPulse 1.8s ease-in-out 1s infinite}
 .rut-al.ok.shake{animation:rutPop .5s ease both}
 @keyframes rutPulse{0%,100%{box-shadow:0 0 0 0 rgba(229,56,59,.55)}50%{box-shadow:0 0 0 8px rgba(229,56,59,0)}}
@@ -872,9 +874,9 @@ nav.tabs button{z-index:0;isolation:isolate}
       <div class="card evCard" id="evCard" hidden></div>
       <div class="card" id="whoCard" hidden></div>
       <div class="card rutCard" id="rutCard">
-        <div class="row between"><div><h3 style="margin:0">🔥 Así va su día</h3><div class="small" id="rutRacha" style="margin-top:2px;color:var(--muted)"></div></div><span class="num" style="font-size:20px" id="dayPct">0%</span></div>
+        <div class="row between" style="align-items:center"><h3 style="margin:0">🔥 Su rutina de hoy</h3><span class="chip c-gold" id="rutRacha" style="font-weight:800" hidden></span></div>
+        <div class="row" style="gap:10px;align-items:center"><div class="bar grow" style="margin:0"><i id="dayBar" style="width:0%"></i></div><span class="small" style="font-weight:800;white-space:nowrap" id="dayPct">0 de 5</span></div>
         <div id="rutAlert"></div>
-        <div class="bar"><i id="dayBar" style="width:0%"></i></div>
         <div class="list" id="tasks"></div>
         <div class="row" style="gap:8px"><button class="btn sm" id="rutVerRacha" type="button" style="flex:1">🔥 Ver Mi Racha</button><button class="btn sm ghost" id="rutVerIdx" type="button" style="flex:1">⚡ Índice de Duplicación</button></div>
       </div>
@@ -1096,18 +1098,18 @@ const myRow=()=>profile.miNombre?T.ranking.find(r=>r.nombre===profile.miNombre):
 
 // ---------- rutina diaria ----------
 const ROUTINE=[
- {k:"historia",t:"Publicar la historia del día",goal:1,type:"check",desde:"2026-10-19",sub:"Se marca sola al compartirla"},
- {k:"audio",t:"Escuchar, leer o Training",goal:1,type:"check",desde:"2026-10-19",nota:"Audio, libro, desarrollo personal o Training",link:"https://open.spotify.com/show/2rpLxUc9jiXVhB2ItVicbp",linkT:"🎧 Escuchar en Spotify"},
- {k:"contactos",t:"Agregar personas nuevas a la lista",goal:5,type:"count",lk:"conL",ic:"📝",vac:"Toque + y escriba el nombre · se guarda en su CRM"},
- {k:"presentaciones",t:"Presentar el plan",goal:1,type:"count",lk:"presL",ic:"🎯",vac:"Toque + y elija a quién le presentó"},
- {k:"seguimientos",t:"Seguimiento a prospectos",goal:3,type:"count",lk:"segL",ic:"🔁",vac:"Toque + y elija de su CRM a quién le dio seguimiento"}];
+ {k:"historia",t:"📸 Publique su historia del día",goal:1,type:"check",desde:"2026-10-19",sub:"Se marca sola al compartirla",nx:"publique su historia del día",bt:"📤 Compartir"},
+ {k:"audio",t:"🎧 Aliméntese 15 minutos",goal:1,type:"check",desde:"2026-10-19",nota:"Audio, libro o Training",nx:"aliméntese 15 minutos (audio, libro o Training)",bt:"✓ Ya lo hice",link:"https://open.spotify.com/show/2rpLxUc9jiXVhB2ItVicbp",linkT:"🎧 Escuchar en Spotify"},
+ {k:"contactos",t:"📝 Agregue 1 persona nueva a su lista",goal:5,type:"count",lk:"conL",ic:"📝",vac:"Lo ideal son 5 · se guardan en su CRM",nx:"agregue 1 persona nueva a su lista",bt:"+ Agregar"},
+ {k:"presentaciones",t:"🎯 Presente el plan a 1 persona",goal:1,type:"count",lk:"presL",ic:"🎯",vac:"Toque + y elija a quién le presentó",nx:"presente el plan a 1 persona",bt:"+ Registrar"},
+ {k:"seguimientos",t:"🔁 Dé seguimiento a 1 prospecto",goal:3,type:"count",lk:"segL",ic:"🔁",vac:"Lo ideal son 3 · elíjalos de su CRM",nx:"dé seguimiento a 1 prospecto",bt:"+ Registrar"}];
 const ptsDia=(d,key)=>{key=key||TODAY;return ROUTINE.filter(r=>!r.desde||key>=r.desde).reduce((s,r)=>s+Math.min((d&&d[r.k])||0,1),0)};
 const RETO_KEYS=["presentaciones","videos"];
 let day={};
 function dayScore(d,key){key=key||TODAY;const L=ROUTINE.filter(r=>!r.desde||key>=r.desde);let s=0;L.forEach(r=>{s+=Math.min((d&&d[r.k])||0,1)});return s/L.length}
 const okIcon=CHECK;
 let rutOpen=false,rutJust=false,rutFT;
-function rutFold(ok){const t=$("#tasks"),bar=$("#dayBar")&&$("#dayBar").parentElement,tg=$("#rutTg");if(!t)return;
+function rutFold(ok){const t=$("#tasks"),bar=$("#dayBar")&&$("#dayBar").closest(".row"),tg=$("#rutTg");if(!t)return;
   const hide=ok&&!rutOpen;clearTimeout(rutFT);
   const ap=()=>{t.hidden=hide;if(bar)bar.hidden=hide;const g=$("#rutTg");if(g)g.textContent=hide?"Ver mi rutina ▾":"Ocultar ▴"};
   if(hide&&rutJust){rutJust=false;rutFT=setTimeout(ap,1400)}else ap();
@@ -1117,10 +1119,16 @@ function renderTasks(){
     if(r.type==="check")return `<div class="task"><button class="check" aria-pressed="${done}" data-k="${r.k}" aria-label="Marcar ${esc(r.t)}">${done?CHECK:""}</button><span class="grow"><span class="${done?"done-t":""}">${esc(r.t)}</span>${r.k==="historia"?`<br><button type="button" class="chip ${done?"c-brand":"c-good"}" data-hist="1" style="border:0;font:inherit;font-weight:700;margin-top:6px;cursor:pointer">${done?"Ver / compartir otra vez":"📤 Compartir mi historia"}</button>`:r.sub&&!done?`<br><span class="small muted">${esc(r.sub)}</span>`:r.nota?`<br><span class="small muted">${esc(r.nota)}</span>`:""}${r.link?`<br><a class="chip c-good" style="display:inline-flex;margin-top:6px;text-decoration:none;font-weight:700" href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.linkT||"Abrir")}</a>`:""}</span></div>`;
     return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:""}</span><span class="grow ${done?"done-t":""}">${esc(r.t)}<br><span class="small muted">${(day[r.lk]||[]).length?r.ic+" "+day[r.lk].map(x=>esc(String(x.n).split(" ")[0])).join(", "):v?"Mínimo 1"+(r.goal>1?" · ideal "+r.goal:""):esc(r.vac||"")}</span></span>
       <span class="counter"><button data-dec="${r.k}" aria-label="Restar">−</button><span class="num">${v}</span><button data-inc="${r.k}" aria-label="Sumar">+</button></span></div>`}).join("");
-  const p=Math.round(dayScore(day)*100);$("#dayPct").textContent=p+"%";$("#dayBar").style.width=p+"%";
-  const falta=ROUTINE.filter(r=>(!r.desde||TODAY>=r.desde)&&!((day[r.k]||0)>=1)).length,ra=$("#rutAlert");
-  if(ra){const st=falta?"pend":"ok";if(ra.dataset.st!==st||ra.dataset.n!==String(falta)){ra.innerHTML=falta?`<div class="rut-al"><b>¡Mantenga la racha haciendo la rutina del día!</b> <span>Le ${falta===1?"falta 1 acción":"faltan "+falta+" acciones"} · 1 en cada punto</span></div>`:`<div class="rut-al ok">✅ <b>¡Rutina completa!</b> <span>Así se construye. Mañana otra vez.</span><button type="button" class="rutTg" id="rutTg">${rutOpen?"Ocultar ▴":"Ver mi rutina ▾"}</button></div>`;
-    if(ra.dataset.st!==st){ra.firstChild&&ra.firstChild.classList.add("shake");if(st==="ok"&&ra.dataset.st)rutJust=true}ra.dataset.st=st;ra.dataset.n=String(falta)}}
+  const p=Math.round(dayScore(day)*100),RL=ROUTINE.filter(r=>!r.desde||TODAY>=r.desde),hechas=RL.filter(r=>(day[r.k]||0)>=1).length;$("#dayPct").textContent=hechas+" de "+RL.length;$("#dayBar").style.width=p+"%";
+  const pend=RL.filter(r=>!((day[r.k]||0)>=1)),falta=pend.length,ra=$("#rutAlert");
+  const rach=(()=>{let r=0;for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=i===0?dayScore(day):dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)r++;else break}return r})();
+  if(ra){const st=falta?"pend":"ok",hr=new Date().getHours(),nx=pend[0],key=st+"|"+falta+"|"+(hr>=18)+"|"+rach;if(ra.dataset.key!==key){
+    let h;if(!falta)h=`<div class="rut-al ok">✅ <b>¡Día completo!</b> <span>Racha de ${rach} ${rach===1?"día":"días"}. Mañana va por ${rach+1} 🔥</span><button type="button" class="rutTg" id="rutTg">${rutOpen?"Ocultar ▴":"Ver mi rutina ▾"}</button></div>`;
+    else{const tarde=hr>=18&&rach>0,txt=tarde?`⏰ <b>Le ${falta===1?"falta 1 paso":"faltan "+falta+" pasos"} para no perder su racha de ${rach} ${rach===1?"día":"días"}</b>`:hechas===0&&nx.k==="historia"?`👉 <b>Empiece por lo fácil:</b> <span>publique su historia (1 minuto)</span>`:`👉 <b>Siguiente paso:</b> <span>${esc(nx.nx||nx.t)}</span>`;
+      h=`<div class="rut-al rut-nx${tarde?" tarde":""}"><span class="grow" style="min-width:0">${txt}</span><button type="button" class="btn sm" data-rgo="${nx.k}" style="flex:none">${esc(nx.bt||"Hacerlo")}</button></div>`}
+    ra.innerHTML=h;
+    if(ra.dataset.st!==st){ra.firstChild&&ra.firstChild.classList.add("shake");if(st==="ok"&&ra.dataset.st)rutJust=true}ra.dataset.st=st;ra.dataset.key=key;
+    const g=ra.querySelector("[data-rgo]");if(g)g.onclick=()=>{const k=g.dataset.rgo,t=$("#tasks");const el=k==="historia"?t.querySelector("[data-hist]"):t.querySelector(`[data-k="${k}"]`)||t.querySelector(`[data-inc="${k}"]`);if(el)el.click()}}}
   rutFold(!falta);const rc=$("#rutCard");if(rc)rc.classList.toggle("done",!falta);
 }
 let saveDayT;function saveDay(){clearTimeout(saveDayT);saveDayT=setTimeout(()=>store.set("rutina-"+TODAY,day),600);weekCache[TODAY]=day;renderWeek()}
@@ -1203,7 +1211,7 @@ function renderWeek(){const out=[];let streak=0;
   for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));
     out.push(`<div><i class="${s>=1?"full":s>0?"part":""} ${i===0?"today":""}">${d.getDate()}</i>${DAYS[d.getDay()]}</div>`)}
   for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)streak++;else break}
-  {let r=0;for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)r++;else break}const rr=$("#rutRacha");if(rr)rr.innerHTML=r?`Su racha actual: <b style="color:var(--ink)">${r} ${r===1?"día":"días"} seguidos</b>`:"Complete hoy su rutina y empiece su racha"}
+  {let r=0;for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)r++;else break}const rr=$("#rutRacha");if(rr){rr.hidden=!r;rr.textContent="🔥 "+r+(r===1?" día":" días")}}
   pushResumen();$("#week").innerHTML=out.join("");$("#streak").textContent="Racha "+streak+(streak===1?" día":" días")}
 
 
@@ -1449,7 +1457,9 @@ function evSeguimiento(E,iy){const m=evMios(E,iy),A=m.R.filter(x=>x.ok),F=m.R.fi
     P.querySelectorAll("[data-evw]").forEach(b=>b.onclick=()=>{const n=b.dataset.evw,c=evMatchCRM(n),num=c&&String(c.phone||"").replace(/\D/g,"").length>=7?waNum(c.phone,c.cc||"504"):"";if(!num)toast("Elija el contacto de "+n.split(" ")[0]+" en WhatsApp");const t=evSegMsg(E,n,b.dataset.ok==="1");setTimeout(()=>{location.href="https://wa.me/"+(num||"")+"?text="+encodeURIComponent(t)},num?0:600)});
     P.querySelectorAll("[data-evc]").forEach(b=>b.onclick=async()=>{b.disabled=true;const r=await evToCRM(E,b.dataset.evc,b.dataset.ok==="1");if(!r){b.disabled=false;toast("No se pudo guardar");return}b.textContent=r==="new"?"✓ Agregado":"✓ Actualizado";try{renderCRM()}catch(e){}});
     $("#evAll").onclick=async()=>{const bt=$("#evAll");bt.disabled=true;let nw=0,up=0;for(const x of A.concat(F)){const r=await evToCRM(E,x.n,x.ok);if(r==="new")nw++;else if(r==="upd")up++}try{renderCRM()}catch(e){}bt.textContent=`✓ ${nw} agregados · ${up} actualizados`;toast("Listo: revise su CRM y complete los WhatsApp que falten");setTimeout(()=>evSeguimiento(E,iy),1200)}})}
-function renderEvento(){const c=$("#evCard");if(!c)return;const E=(T.config&&T.config.evento)||null;
+// Tarjeta del reto/resultados del evento: oculta por ahora (los datos se conservan). Para mostrarla: EV_SHOW=true
+const EV_SHOW=false;
+function renderEvento(){const c=$("#evCard");if(!c)return;if(!EV_SHOW){c.hidden=true;return}const E=(T.config&&T.config.evento)||null;
   if(!E||!E.top||!E.top.length||!E.fecha){c.hidden=true;return}
   if(TODAY>E.fecha){if(TODAY>dkey(new Date(parseK(E.fecha).getTime()+7*864e5))){c.hidden=true;return}c.hidden=false;c.classList.add("evRes");evResultados(c,E);return}c.classList.remove("evRes");c.hidden=false;
   const md=["🥇","🥈","🥉"],L=E.top,yo=miNombreFull()||miNombreCorto(),iy=evMiIdx(L,[yo,miNombreCorto()]);
@@ -3008,7 +3018,7 @@ async function entInit(){if(!store.db||!store.uid)return;
   try{const k=new URLSearchParams(location.search).get("evk");if(k&&isAdmin){await store.db.doc("evento/"+ENT.id+"/priv/llave").set({k,t:Date.now()});toast("🔑 Modo entrada activado");history.replaceState(null,"",location.pathname)}}catch(e){toast("No se pudo guardar la clave del evento")}
   if(!isAdmin){try{const s=await store.db.doc("eventoStaff/"+store.uid).get();entStaff=!!s.exists}catch(e){entStaff=false}}
   renderEntCard();
-  if(TODAY>=ENT.fecha&&TODAY<=ENT.res)store.db.doc("evento/"+ENT.id).onSnapshot(d=>{entPub=d.exists?(d.data().resumen||null):null;try{renderEvento()}catch(e){}},()=>{})}
+  if(EV_SHOW&&TODAY>=ENT.fecha&&TODAY<=ENT.res)store.db.doc("evento/"+ENT.id).onSnapshot(d=>{entPub=d.exists?(d.data().resumen||null):null;try{renderEvento()}catch(e){}},()=>{})}
 function renderEntCard(){const c=$("#entCard");if(!c)return;if(!entPuede()||TODAY>ENT.fecha){c.hidden=true;return}c.hidden=false;
   c.innerHTML=`<div class="row between" style="gap:10px"><div><b style="font-size:16px">🎟️ Modo entrada</b><div class="small muted">${esc(ENT.tit)} · ${isAdmin?"Administrador":"Recepción"}</div></div><button class="btn" id="entGo">Abrir</button></div>`;$("#entGo").onclick=abrirEntrada}
 const b64u=s=>{s=String(s).replace(/-/g,"+").replace(/_/g,"/");s+="=".repeat((4-s.length%4)%4);return Uint8Array.from(atob(s),c=>c.charCodeAt(0))};
@@ -3161,7 +3171,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261026225124";var busy=false,pend=null;
+(function(){var V="20261027083324";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
