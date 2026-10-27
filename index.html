@@ -1406,7 +1406,9 @@ function evResultados(c,E){const L=E.top,yo=miNombreFull()||miNombreCorto(),iy=e
    ${R.length?`<div>${R.slice(0,3).map((x,i)=>`<div class="evRow"><span style="font-size:20px;width:26px;text-align:center">${md[i]}</span>${avHTML(x.s,false,false)}<span class="nm">${esc(x.s)}</span><small>de ${x.r}</small><span class="ct">${x.n}</span></div>`).join("")}</div>`:""}
    ${me}<div class="row" style="gap:8px">${iy>=0?`<button class="btn sm" id="evSeg" type="button" style="flex:1">📲 Seguimiento del evento</button>`:""}${R.length?`<button class="btn sm" id="evLlg2" type="button" style="flex:1">🏆 Llegadas</button>`:""}</div>`;
   const a=$("#evSeg");if(a)a.onclick=()=>evSeguimiento(E,iy);const b=$("#evLlg2");if(b)b.onclick=()=>evLlegadas(L,iy)}
-function evMsg(E,n,ok){const f=String(n||"").split(" ")[0],yo=miNombreCorto();return ok?`Hola ${f} 👋 ¡Gracias por acompañarnos en el *${E.titulo||"evento"}*! 🙌\n\n¿Qué fue lo que más le gustó? Me encantaría platicar 10 minutos para resolver sus dudas y ver cómo puede empezar.\n\n¿Le queda bien hoy o mañana?${yo?`\n\nAtt. ${yo}`:""}`:`Hola ${f} 👋 Le extrañamos en el *${E.titulo||"evento"}*. ¡Estuvo increíble! 🔥\n\nMe gustaría compartirle en 10 minutos lo más importante que vimos, porque creo que le puede interesar mucho.\n\n¿Le queda bien hoy o mañana?${yo?`\n\nAtt. ${yo}`:""}`}
+function evMsg(E,n,ok){const f=String(n||"").split(" ")[0],yo=miNombreCorto(),dia=["el domingo","el lunes","el martes","el miércoles","el jueves","el viernes","el sábado"][parseK(E.fecha).getDay()],ev=E.titulo||"evento";
+  return ok?`Hola ${f} 👋 ¡Gracias por acompañarnos ${dia} en el *${ev}*! 🙌\n\n¿Qué fue lo que más le gustó? Me encantaría platicar unos minutos para resolver sus dudas y ver cómo puede empezar.\n\n¿Le gustaría que nos reunamos esta semana?${yo?`\n\nAtt. ${yo}`:""}`
+   :`Hola ${f} 👋 ${dia[0].toUpperCase()+dia.slice(1)} le estuvimos esperando en el *${ev}* 🙌 Sé que a veces surgen imprevistos.\n\nFue una tarde increíble y no quiero que se quede sin conocer la información.\n\nMe gustaría invitarle a una reunión corta, por Zoom o en persona, donde le explico lo más importante en pocos minutos.\n\n¿Le interesa que le reserve un espacio esta semana?${yo?`\n\nAtt. ${yo}`:""}`}
 function evMatchCRM(n){const w=String(n||"").trim().split(/\s+/),f=nrmN(w[0]||""),ini=nrmN((w[1]||"").replace(/\./g,""));const C=(contacts||[]).filter(c=>{const v=nrmN(c.name||"").split(" ");return v[0]===f&&(!ini||v.slice(1).some(z=>z.startsWith(ini)))});return C.length===1?C[0]:null}
 async function evToCRM(E,n,ok){const man=dkey(new Date(Date.now()+864e5)),nota=(ok?"Llegó al ":"Se registró y no llegó al ")+(E.titulo||"evento")+".",c=evMatchCRM(n);
   if(c){const nc=Object.assign({},c,{stage:["Nuevo","Contactado"].includes(c.stage)||(!ok&&c.stage==="Presentación")?(ok?"Presentación":"Seguimiento"):c.stage,next:c.next&&c.next>=TODAY?c.next:man,note:(c.note||"").includes(nota)?c.note:((c.note?c.note+"\n":"")+nota),updated:Date.now()});const id=await store.saveContact(nc);if(!id)return false;const i=contacts.findIndex(x=>x.id===c.id);if(i>=0)contacts[i]=nc;return "upd"}
@@ -3020,7 +3022,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261026184341";var busy=false,pend=null;
+(function(){var V="20261026184730";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
