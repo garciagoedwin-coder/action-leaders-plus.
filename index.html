@@ -293,6 +293,9 @@ h1.motto{overflow:hidden;height:1.3em;line-height:1.3em;margin-top:2px}
 .rut-al{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:10px 14px;border-radius:14px;background:#e5383b;color:#fff;font-size:15px;margin-bottom:4px;animation:rutPulse 1.8s ease-in-out infinite}
 .rut-al b{font-weight:800}.rut-al span{opacity:.92;font-size:13.5px}
 .rut-al.ok{background:var(--good);animation:none}
+#l3Card{border:2.5px solid transparent;background:linear-gradient(var(--surface,#fff),var(--surface,#fff)) padding-box,linear-gradient(115deg,#0B2E6B,#1E5BB8,#7FB6FF,#E3F0FF,#7FB6FF,#1E5BB8,#0B2E6B) border-box;background-size:100% 100%,300% 100%;animation:l3Shine 3.5s linear infinite;box-shadow:0 10px 26px -12px rgba(30,91,184,.65),0 0 0 4px rgba(127,182,255,.12)}
+@keyframes l3Shine{from{background-position:0 0,0 0}to{background-position:0 0,300% 0}}
+@media (prefers-reduced-motion:reduce){#l3Card{animation:none}}
 .rut-al.rut-nx{background:var(--brand-soft,#E6F4FA);color:var(--ink);animation:none;align-items:center;flex-wrap:nowrap}.rut-al.rut-nx span{opacity:1}
 .rut-al.rut-nx.tarde{background:#FFF1E6;color:#9A3412}
 .rut-al.shake{animation:rutShake .7s cubic-bezier(.36,.07,.19,.97) .3s both,rutPulse 1.8s ease-in-out 1s infinite}
@@ -867,7 +870,7 @@ nav.tabs button{z-index:0;isolation:isolate}
       </div>
       <div class="card" id="avisoCard" hidden></div>
       <div class="miwa" id="miWaCard" hidden></div>
-      <div class="card" id="l3Card" hidden style="border:1.5px solid var(--brand)"></div>
+      <div class="card" id="l3Card" hidden></div>
       <div class="card" id="salaCard" hidden style="border:1.5px solid #C2410C"></div>
       <div class="actBan" id="actBan" hidden></div>
       <div class="metaStrip" id="metaStrip" hidden></div>
@@ -3242,7 +3245,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261027115618";var busy=false,pend=null;
+(function(){var V="20261027120445";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
