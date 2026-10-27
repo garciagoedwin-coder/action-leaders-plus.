@@ -1961,7 +1961,14 @@ async function abrirCompartir(e){const sp=espDe(e),msg=sp&&sp.msg?sp.msg:evMsg(e
     try{const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));file=new File([b],"Flyer-"+e.fecha+"-"+(e.responsable||"presentacion").replace(/\s+/g,"-")+".jpg",{type:"image/jpeg"});
       if(box){box.innerHTML="";box.style.aspectRatio="auto";box.style.display="block";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:auto;display:block";box.appendChild(im)}}
     catch(x){if(box)box.innerHTML='<span class="small" style="color:#fff">No se pudo crear el flyer</span>'}}}
-document.addEventListener("click",e=>{const b=e.target.closest("[data-share]");if(!b)return;const ev=T.eventos.find(x=>x.id===b.dataset.share);if(ev)abrirCompartir(ev)});
+function esYess(e){return /yes+\s*move/i.test((e&&e.titulo)||"")}
+function abrirYess(e){openSheet(`<h2>🎓 ${esc(e.titulo)}</h2>
+  <p>El enlace de acceso <b>no se comparte por WhatsApp</b>: le llega directamente a su correo.</p>
+  <p>📬 <b>Revise la bandeja de entrada de su Gmail</b>, el mismo correo con el que se registró en <i>yesmovement.org</i>. Ahí encontrará el enlace. Si no lo ve, busque en <i>Spam</i> o <i>Promociones</i>.</p>
+  <p style="margin-bottom:4px">✅ <b>Para recibir el enlace debe tener:</b></p>
+  <ul style="margin:0 0 14px 18px;padding:0;line-height:1.6"><li>Su registro activo en yesmovement.org</li><li>Su tarjeta vigente y su pago en recurrente</li><li>Su ahorro al día</li></ul>
+  <a class="btn" style="width:100%;justify-content:center" href="https://mail.google.com/mail/" target="_blank" rel="noopener">📬 Abrir mi Gmail</a>`)}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-share]");if(!b)return;const ev=T.eventos.find(x=>x.id===b.dataset.share);if(ev)(esYess(ev)?abrirYess:abrirCompartir)(ev)});
 
 // ---------- historia del día (vender sin vender) ----------
 const HIST={
@@ -2209,7 +2216,7 @@ function evHTML(e){const fin=finalizada(e);return `<div class="ev ${fin?"ev-past
   <div class="meta">${e.responsable?`<span>${USER}Presenta: <b style="font-weight:600;color:var(--ink)">${esc(e.responsable)}</b></span>`:pendiente(e)&&!fin?`<span class="chip c-warn">Presentador por asignar</span>`:""}${e.edifica?`<span>${edLbl(e)}: <b style="font-weight:600;color:var(--ink)">${esc(e.edifica)}</b></span>`:""}</div>
   <div class="meta">${zoneTimes(e)?`<span>${esc(zoneTimes(e))}</span>`:""}${e.lugar?`<span>${PIN}${esc(e.lugar)}</span>`:""}</div>
   ${e.notas?`<span class="small muted">${esc(e.notas)}</span>`:""}
-  <div class="row" style="gap:8px;flex-wrap:wrap">${!fin&&e.id?`<button class="btn sm" data-share="${esc(e.id)}" type="button">📤 Compartir${esFlyer(e)?" con flyer":""}</button>`:""}${espDe(e)&&espDe(e).enlace&&!fin?`<a class="btn sm ghost" href="${esc(espDe(e).enlace)}" target="_blank" rel="noopener">${esc(espDe(e).boton||"Abrir enlace")}</a>`:evLink(e)&&!fin?`<a class="btn sm ghost" href="${esc(evLink(e))}" target="_blank" rel="noopener">Entrar al Zoom</a>`:""}</div>
+  <div class="row" style="gap:8px;flex-wrap:wrap">${!fin&&e.id?`<button class="btn sm" data-share="${esc(e.id)}" type="button">${esYess(e)?"📧 ¿Cómo entrar?":"📤 Compartir"+(esFlyer(e)?" con flyer":"")}</button>`:""}${espDe(e)&&espDe(e).enlace&&!fin?`<a class="btn sm ghost" href="${esc(espDe(e).enlace)}" target="_blank" rel="noopener">${esc(espDe(e).boton||"Abrir enlace")}</a>`:evLink(e)&&!fin?`<a class="btn sm ghost" href="${esc(evLink(e))}" target="_blank" rel="noopener">Entrar al Zoom</a>`:""}</div>
   ${false&&isAdmin&&e.id?`<button class="btn sm ${pendiente(e)&&!fin?"gold":"ghost"}" style="align-self:flex-start" data-ev="${esc(e.id)}">${pendiente(e)&&!fin?"Asignar":"Editar"}</button>`:""}</div></div>`}
 function groupDays(keys){return keys.map(k=>{const ev=evOf(k);if(!ev.length)return"";return `<div class="day-h"><h3 style="text-transform:capitalize">${longDate(k)}</h3>${k===TODAY?'<span class="chip c-gold">Hoy</span>':""}</div><div class="list">${ev.map(evHTML).join("")}</div>`}).join("")}
 function weekKeys(off){const s=new Date(now);s.setDate(now.getDate()-((now.getDay()+6)%7)+7*(off||0));return Array.from({length:7},(_,i)=>{const d=new Date(s);d.setDate(s.getDate()+i);return dkey(d)})}
@@ -2233,7 +2240,7 @@ $("#evList").addEventListener("click",e=>{const b=e.target.closest("[data-ev]");
 const WA_IC=`<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>`;
 function renderNext(){const nowHM=pad(now.getHours())+":"+pad(now.getMinutes());const up=T.eventos.filter(e=>e.fecha>=TODAY&&!finalizada(e)).sort((a,b)=>(a.fecha+(a.hora||"")).localeCompare(b.fecha+(b.hora||""))).slice(0,3);
   $("#nextEvents").innerHTML=`<div class="row between" style="align-items:flex-start"><div><h3>📣 Próximas actividades</h3><p class="small muted" style="margin:2px 0 0">Invite hoy: comparta el flyer con sus prospectos.</p></div><button class="btn sm ghost" id="goAgenda">Calendario</button></div>`+
-   (up.length?`<div class="list">${up.map(e=>`<div class="ev"><span class="hr" style="font-size:15px">${e.fecha===TODAY?"Hoy":esc(niceDate(e.fecha).replace(" de "," "))}<br><span class="muted" style="font-size:14px">${esc(h12(e.hora))}</span></span><div class="body"><div class="row between" style="align-items:flex-start"><b>${esc(e.titulo)}</b>${modoChip(e)}</div><div class="meta">${e.lugar?`<span>${PIN}${esc(e.lugar)}</span>`:""}${e.responsable?`<span>${USER}${esc(e.responsable)}</span>`:pendiente(e)?`<span class="chip c-warn">Por asignar</span>`:""}</div>${e.id?`<button type="button" class="nxShare" data-share="${esc(e.id)}">${WA_IC} Compartir${esFlyer(e)?" flyer":""}</button>`:""}</div></div>`).join("")}</div>`
+   (up.length?`<div class="list">${up.map(e=>`<div class="ev"><span class="hr" style="font-size:15px">${e.fecha===TODAY?"Hoy":esc(niceDate(e.fecha).replace(" de "," "))}<br><span class="muted" style="font-size:14px">${esc(h12(e.hora))}</span></span><div class="body"><div class="row between" style="align-items:flex-start"><b>${esc(e.titulo)}</b>${modoChip(e)}</div><div class="meta">${e.lugar?`<span>${PIN}${esc(e.lugar)}</span>`:""}${e.responsable?`<span>${USER}${esc(e.responsable)}</span>`:pendiente(e)?`<span class="chip c-warn">Por asignar</span>`:""}</div>${e.id?`<button type="button" class="nxShare" data-share="${esc(e.id)}">${esYess(e)?"📧 ¿Cómo entrar?":WA_IC+" Compartir"+(esFlyer(e)?" flyer":"")}</button>`:""}</div></div>`).join("")}</div>`
    :welSigned===false&&!T.eventos.length?`<p class="small muted">Crea tu cuenta gratis en <a href="https://claude.ai/login" target="_blank" rel="noopener"><b>Claude</b></a> para ver la agenda del equipo.</p>`:`<p class="small muted">No hay actividades próximas en el calendario.</p>`);
   $("#goAgenda").onclick=()=>go("agenda")}
 const edLbl=e=>/testimonio/i.test((e&&e.titulo)||"")?"Testimonio":"Edifica";
@@ -3035,7 +3042,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261026194730";var busy=false,pend=null;
+(function(){var V="20261026213729";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
