@@ -433,15 +433,15 @@
    "id": "denia-rocha"
   },
   {
-   "actSemana": 0,
-   "activaciones": 0,
+   "actSemana": 1,
+   "activaciones": 1,
    "linea": "Mayckol Turcios",
    "nombre": "Joel Salgado",
    "presSemana": 0,
    "presentaciones": 6,
    "regSemana": 1,
    "registros": 11,
-   "volumen": 0,
+   "volumen": 200,
    "id": "joel-salgado"
   },
   {
@@ -2353,6 +2353,14 @@
    "fecha": "2026-10-27T02:55:04.000Z",
    "fuente": "gmail",
    "id": "munir-rabah-castellar"
+  },
+  {
+   "socio": "Maria Reyes",
+   "paquete": "Classic",
+   "patrocinador": "Joel Enrrique Salgado Moradel",
+   "fecha": "2026-10-28T00:55:05.000Z",
+   "fuente": "gmail",
+   "id": "maria-reyes"
   }
  ],
  "academia": [],
@@ -2370,7 +2378,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-27T02:55:04.000Z",
+  "activacionesCorte": "2026-10-28T00:55:05.000Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2380,7 +2388,7 @@
   "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-27T05:41:00-06:00",
+  "rankingActualizado": "2026-10-27T18:56:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
