@@ -208,3 +208,11 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 ## 18. Academia: cursos desde team.json (27 oct)
 - `config.cursos` en team.json [{k, t, d, yt (id de YouTube), pdf?, pdfN?, pdfT?}] va primero y se suma a `CURSOS` de index.html (cursosL). Agregar un curso nuevo = editar team.json, sin publicar. El botón de PDF solo sale si el curso tiene `pdf`.
 - Curso 1: "Cómo usar la app Action Leaders PLUS" (YouTube myejXMydAv0, entrenamiento por Zoom del 27 oct).
+
+## 19. Eventos y Juntas de negocios (27 oct, noche)
+- Agenda → Agenda del equipo → tarjeta "🎤 Eventos y juntas" (#evAg, renderEvA) con "➕ Crear" (abrirCrearEva). Colección Firestore `agendaEv` (reglas en respaldo/reglas-eventos.txt; Edwin debe pegarlas).
+- 🤝 Junta de negocios: cualquier socio con ahorro al día; 1 a 3 anfitriones. La ven el creador, su línea descendente y su línea ascendente (+ los anfitriones). 🎤 Gran evento: desde Team Leader (miRangoIdx>=1 o admin); 1 invitado especial + 0 a 3 acompañantes; 🔓 Abierto (todos) o 🔒 Cerrado (creador + línea descendente + líderes).
+- Visibilidad por fichas en `ver[]`: "all", "u:UID", "d:UID"; cada socio consulta con array-contains-any ["all","u:yo", "d:"+cada uid de su línea ascendente] (loadEvA, caché 10 min).
+- Doc: {tipo, modo presencial|virtual, ciudad, lugar, lugarSub, maps, zoom, fecha, hora, form (Google Forms), dis 1-3, vis, lid[{uid,n,r,rol esp|acomp|anf}], lidU[], cre, creN, conf{uid:ok|no}, ver[]}.
+- Líderes incluidos: tarjeta #evaInv en Inicio (Confirmar / No puedo / Ver flyer).
+- Flyer en canvas (evaCanvas): fondos prediseñados en media/eventos/{g1,g2,g3,j1,j2,j3}.jpg (sacados de tools/flyer/evento/*.html con lo variable oculto) + textos y fotos encima; fuentes en media/fonts (Outfit y Bricolage, OFL). Script de invitación: evaScript (con link del formulario). Invitar desde el CRM: evaInvitar.

@@ -1,0 +1,8 @@
+// ===== Eventos y Juntas de negocios — pegar DENTRO de "match /databases/{database}/documents { ... }" =====
+    match /agendaEv/{id} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.cre == request.auth.uid;
+      allow update: if request.auth != null && (resource.data.cre == request.auth.uid || request.auth.uid in resource.data.lidU)
+        && request.resource.data.cre == resource.data.cre;
+      allow delete: if request.auth != null && resource.data.cre == request.auth.uid;
+    }
