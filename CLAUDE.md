@@ -235,3 +235,9 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Cancelar (cancelarSheet + motivo): llamadas3 estado "cancelada", mot, canN; nP/nD para el otro → l3Cancelada (aviso + cita tachada c.cancel). Eventos: set cancel{mot,por,t} (ya no se borran); EVA filtra cancelados; aviso a lidU e invitadores.
 - Reprogramar en cita l3: "de" → estado pendiente rep:true nP; "para" → propuesta pFecha/pHora nD. l3AgendaLider actualiza la cita existente.
 - Scripts de evento y lanzamiento: fecha/hora, lugar, mapa, cupo y formulario en bloques separados; links en su propia línea.
+
+## 23. Cuenta solo-admin y confirmación de lectura
+- garciagoedwin@gmail.com nunca es líder/patrocinador: soloAdminFix (admin, al cargar socios) pasa a edwing.go@gmail.com a quien tenga patrocinadorUid de la solo-admin, reconstruye líneas (las líneas excluyen esSoloAdmin) y marca fotos/{uid}.oculto. Al entrar con esa cuenta: fotos oculto y sin código de invitación (publicarInv).
+- fotosFs excluye ocultos (fotosOc); miLinea los excluye: no aparece en buscadores de líderes.
+- llamadas3.visto: lo escribe el líder al recibir la pendiente (l3Vistos). Quien envió consulta sus citas "por confirmar" (l3EstadoEnv, al abrir y al volver a la app): "📨 aún no la abre" / "👀 ya vio".
+- Errores de escucha de llamadas3 → l3Err (toast una vez).

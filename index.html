@@ -1714,7 +1714,13 @@ let constSync=false;async function syncConst(){if(constSync||!isAdmin||!socios)r
     try{await store.db.doc("constancia/"+x.uid).set(Object.assign({nombre:x.registro.nombre,hoy:+a.hoy||0,fecha:a.fecha||"",acc:Object.values(sm).reduce((p,q)=>p+(+q||0),0),t:a.t||0},a.cons||{}));n++}catch(e){break}}
   if(n)loadConst(true)}
 async function loadSocios(){try{const q=await store.db.collection("users").get();socios=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.registro||x.email)
-  .sort((a,b)=>String((b.registro&&b.registro.fecha)||"").localeCompare(String((a.registro&&a.registro.fecha)||"")))}catch(e){socios=[];toast("No se pudo cargar la lista de socios")}renderEquipo();syncConst();setTimeout(async()=>{try{await loadConst();liderResGuardar()}catch(e){}},8000)}
+  .sort((a,b)=>String((b.registro&&b.registro.fecha)||"").localeCompare(String((a.registro&&a.registro.fecha)||"")))}catch(e){socios=[];toast("No se pudo cargar la lista de socios")}renderEquipo();syncConst();setTimeout(async()=>{try{await loadConst();liderResGuardar()}catch(e){}},8000);setTimeout(()=>{soloAdminFix().catch(()=>{})},5000)}
+// La cuenta solo-admin (garciagoedwin) nunca es líder ni patrocinador: sus socios pasan a la cuenta de equipo de Edwin (edwing.go)
+let soloFixHecho=false;
+async function soloAdminFix(){if(soloFixHecho||!isAdmin||!socios)return;soloFixHecho=true;const S=socios.filter(esSoloAdmin).map(x=>x.uid),P=socios.find(x=>String(x.email||"").toLowerCase()==="edwing.go@gmail.com");if(!S.length||!P)return;let n=0;
+  for(const x of socios){if(!x.registro||S.includes(x.uid))continue;if(S.includes(x.registro.patrocinadorUid)){const d={patrocinadorUid:P.uid,patrocinador:(P.registro&&P.registro.nombre)||x.registro.patrocinador||""};try{await store.db.doc("users/"+x.uid).set({registro:d},{merge:true});Object.assign(x.registro,d);n++}catch(e){}}else if((x.registro.linea||[]).some(u=>S.includes(u)))n++}
+  for(const u of S)try{await store.db.doc("fotos/"+u).set({oculto:true},{merge:true})}catch(e){}
+  if(n)await reconstruirLineas(true)}
 function sociosCSV(){const rows=[["Nombre","Correo","WhatsApp","Patrocinador","Plan","Registro","Último acceso","Hoy %","Racha","Días activos (7)","Contactos 7 días","Presentaciones 7 días","Contactos en CRM","Bienvenida"]].concat((socios||[]).map(x=>{const r=x.registro||{};const ua=x.ultimoAcceso&&x.ultimoAcceso.toDate?x.ultimoAcceso.toDate().toISOString():(x.ultimoAcceso||"");
   const a=actDe(x);return [r.nombre||x.nombre||"",x.email||"",r.whatsapp?"+"+r.whatsapp:"",r.patrocinador||"",r.plan||"",r.fecha||"",ua,a.hoy,a.racha,a.d7,a.sem.contactos||0,a.sem.presentaciones||0,a.crm,a.bien?"Sí":"No"]}));
   const csv="\ufeff"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
@@ -1865,6 +1871,7 @@ function editarSocio(uid){const x=(socios||[]).find(y=>y.uid===uid);if(!x)return
 async function reconstruirLineas(silent){if(!socios)return 0;const by={};socios.forEach(x=>by[x.uid]=x);let n=0;
   for(const x of socios){if(!x.registro)continue;const ln=[];let p=x.registro.patrocinadorUid,seen=new Set([x.uid]);while(p&&by[p]&&!seen.has(p)&&ln.length<60){ln.push(p);seen.add(p);p=(by[p].registro||{}).patrocinadorUid}
     if(p&&!by[p]&&!seen.has(p))ln.push(p);
+    for(let i=ln.length-1;i>=0;i--)if(by[ln[i]]&&esSoloAdmin(by[ln[i]]))ln.splice(i,1);
     const old=Array.isArray(x.registro.linea)?x.registro.linea:[];if(old.join()===ln.join())continue;
     try{await store.db.doc("users/"+x.uid).set({registro:{linea:ln}},{merge:true});x.registro.linea=ln;n++;try{await store.db.doc("fotos/"+x.uid).set({linea:ln},{merge:true})}catch(e){}}catch(e){if(!silent){toast("No se pudo guardar. Revisa el permiso de admin.");return n}}}
   if(!silent)toast(n?"Líneas actualizadas: "+n+" socios ✓":"Las líneas ya estaban al día ✓");return n}
@@ -2346,7 +2353,7 @@ let l3P=[],l3D=[];
 const l3Col=()=>store.db.collection("llamadas3");
 function l3Cuando(f,h){return citaCuando({fecha:f,hora:h})}
 function miLinea(){const r=miRegistro()||{},L=(Array.isArray(r.linea)?r.linea:[]).slice();if(r.patrocinadorUid&&!L.includes(r.patrocinadorUid))L.unshift(r.patrocinadorUid);
-  return L.filter(u=>u&&u!==store.uid).map((u,i)=>{const f=(fotosFs||[]).find(x=>x.id===u);return{uid:u,n:(f&&(f.invNombre||f.nombre))||(i===0&&r.patrocinadorUid===u?r.patrocinador:"")||""}}).filter(x=>x.n)}
+  return L.filter(u=>u&&u!==store.uid&&!fotosOc.includes(u)).map((u,i)=>{const f=(fotosFs||[]).find(x=>x.id===u);return{uid:u,n:(f&&(f.invNombre||f.nombre))||(i===0&&r.patrocinadorUid===u?r.patrocinador:"")||""}}).filter(x=>x.n)}
 async function pedirL3(c){if(ahGate())return;if(!store.db||!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}
   if(!(fotosFs||[]).length)try{await cargarFotos()}catch(e){}
   const L=miLinea();if(!L.length){toast("No encontramos a sus líderes. Pida a su patrocinador que abra la app.");return}
@@ -2384,18 +2391,24 @@ function avisosVer(){go("inicio");setTimeout(()=>{const c=[$("#l3Card"),$("#evaI
 function bellPinta(){const b=$("#bellBtn");if(!b)return;const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid).length,n=l3P.length+l3D.length+pe;b.hidden=!n;$("#bellN").textContent=n>9?"9+":n;b.onclick=avisosVer}
 function l3SeenGet(){if(!l3Seen)l3Seen=LS.get("l3Seen")||{};return l3Seen}
 function l3Nuevo(id,t){const S=l3SeenGet(),k=id+"|"+t;if(S[k])return false;S[k]=Date.now();const lim=Date.now()-30*864e5;Object.keys(S).forEach(x=>{if(S[x]<lim)delete S[x]});LS.set("l3Seen",S);return true}
-async function loadL3(){if(!store.db||!store.uid||l3Un.length)return;
+function l3Err(e){try{console.warn("l3",e)}catch(x){}if(l3ErrV)return;l3ErrV=1;toast("⚠️ No pudimos revisar sus invitaciones. Revise su internet y vuelva a abrir la app.")}
+let l3ErrV=0;
+// confirmación de lectura: el líder marca "visto"; quien envió lo consulta para sus citas por confirmar
+function l3Vistos(P){P.filter(x=>!x.visto).forEach(x=>{l3Col().doc(x.id).set({visto:Date.now()},{merge:true}).catch(()=>{})})}
+async function l3EstadoEnv(){const L=(citas||[]).filter(c=>c.l3&&citaRol(c)==="de"&&!c.cancel&&/por confirmar/.test(c.titulo||"")&&citaIni(c).getTime()>Date.now()).slice(0,8);let ch=0;
+  for(const c of L){try{const d=await l3Col().doc(c.l3).get();if(d.exists){const v=!!d.data().visto;if(c._visto!==v){c._visto=v;ch=1}}}catch(e){}}if(ch){renderHoyCitas();renderMiAgenda()}}
+async function loadL3(){if(!store.db||!store.uid||l3Un.length)return;setTimeout(()=>l3EstadoEnv(),2500);document.addEventListener("visibilitychange",()=>{if(!document.hidden)l3EstadoEnv()});
   try{l3Un.push(l3Col().whereAll([["para",store.uid],["nP",true]]).onSnapshot(async q=>{const L=q.docs.map(d=>Object.assign({id:d.id},d.data()));
     for(const x of L.filter(y=>y.estado==="aceptada")){await l3AgendaLider(x);try{await l3Col().doc(x.id).set({nP:false},{merge:true})}catch(e){}toast("✅ "+(x.deN||"").split(" ")[0]+" aceptó la nueva hora"+(x.lz?" del lanzamiento":" de la llamada de 3"))}
     for(const x of L.filter(y=>y.estado==="cancelada")){await l3Cancelada(x,x.deN);try{await l3Col().doc(x.id).set({nP:false},{merge:true})}catch(e){}}
     const P=L.filter(y=>y.estado==="pendiente");
     if(!l3First.p)P.filter(x=>l3Nuevo(x.id,x.t||0)).forEach(x=>avisoTop(x.rep?"🔁 "+(x.deN||"").split(" ")[0]+" reprogramó "+(x.lz?"el lanzamiento":"la llamada de 3")+". ¿Le queda bien?":(x.lz?(x.lzE?"🚀 "+(x.deN||"").split(" ")[0]+" planeó su lanzamiento":"🚀 "+(x.deN||"").split(" ")[0]+" le invitó a su lanzamiento"):"📞 "+(x.deN||"").split(" ")[0]+" le pide una llamada de 3"),l3Cuando(x.fecha,x.hora),avisosVer));
     else P.forEach(x=>l3Nuevo(x.id,x.t||0));
-    l3First.p=false;l3P=P;renderL3Card();bellPinta()},()=>{}))}catch(e){}
+    l3First.p=false;l3P=P;renderL3Card();bellPinta();l3Vistos(P)},l3Err))}catch(e){}
   try{l3Un.push(l3Col().whereAll([["de",store.uid],["nD",true]]).onSnapshot(async q=>{const L=q.docs.map(d=>Object.assign({id:d.id},d.data()));for(const x of L)await l3ActCitaSocio(x);
     if(!l3First.d)L.filter(x=>l3Nuevo(x.id,x.tR||0)).forEach(x=>{const ld=(x.paraN||"").split(" ")[0];if(x.estado==="cancelada")return;avisoTop(x.estado==="aceptada"?"✅ "+ld+" confirmó su "+(x.lz?"lanzamiento":"llamada de 3"):x.estado==="propuesta"?"🕗 "+ld+" propone otra hora":"✖ "+ld+" no puede en ese horario",l3Cuando(x.fecha,x.hora),avisosVer)});
     else L.forEach(x=>l3Nuevo(x.id,x.tR||0));
-    l3First.d=false;l3D=L;renderL3Card();renderHoyCitas();renderMiAgenda();bellPinta()},()=>{}))}catch(e){}}
+    l3First.d=false;l3D=L;renderL3Card();renderHoyCitas();renderMiAgenda();bellPinta()},l3Err))}catch(e){}}
 async function l3AgendaLider(x){const ex=citas.find(c=>c.l3===x.id);if(ex){if(ex.fecha!==x.fecha||ex.hora!==x.hora||ex.cancel){ex.fecha=x.fecha;ex.hora=x.hora;ex.cancel=null;ex.titulo=String(ex.titulo).replace(/\s*\(✖ cancelada\)$/,"");await saveCita(ex);renderHoyCitas();renderMiAgenda()}return}if(x.lz){const d1=(x.deN||"").split(" ")[0],ci=x.lzE?{tipo:"lider",titulo:"🚀 Mi lanzamiento con "+d1,fecha:x.fecha,hora:x.hora,dur:60,enlace:x.enlace||"",nota:"",l3:x.id,lzR3:1,lz:1,lzU:x.de,lzN:x.deN,lzR:lzRango(x.deN),inv:[]}:{tipo:"lider",titulo:"🚀 Lanzamiento de "+d1,fecha:x.fecha,hora:x.hora,dur:60,enlace:x.enlace||"",nota:"",l3:x.id,lzR3:1,lz:1,lzE:1,lzSU:x.de,lzSN:x.deN,inv:[]};const id=await saveCita(ci);if(id){ci.id=id;citas.push(ci);renderHoyCitas();renderMiAgenda()}return}const ci={tipo:"lider",titulo:x.lz?"🚀 Lanzamiento de "+(x.deN||"").split(" ")[0]:"📞 Llamada de 3 · "+(x.deN||"").split(" ")[0]+" con "+x.pros,fecha:x.fecha,hora:x.hora,dur:60,enlace:x.enlace||"",nota:x.nota||"",l3:x.id,l3R:1,ldN:x.deN||""};const id=await saveCita(ci);if(id){ci.id=id;citas.push(ci);renderHoyCitas();renderMiAgenda()}}
 async function l3ActCitaSocio(x){const ci=citas.find(c=>c.l3===x.id);if(!ci)return;const ld=(x.paraN||"").split(" ")[0],p=(x.pros||"").split(" ")[0];
   if(x.estado==="cancelada"){await l3Cancelada(x,x.paraN);return}const est=x.estado==="aceptada"?"✅ confirmada":x.estado==="propuesta"?"🕗 propone otra hora":x.estado==="rechazada"?"✖ no puede":"⏳ por confirmar";
@@ -3016,7 +3029,7 @@ function citaCard(c){const t=CITA_T[c.tipo]||CITA_T.zoom,pas=citaIni(c).getTime(
   if(can)return `<div class="cita ev-past"><div class="ch-h"><b>${esc(h12(c.hora))}</b><span class="small muted">${c.dur>=60?(c.dur/60)+" h":c.dur+" min"}</span></div><div class="grow" style="min-width:0"><b style="font-weight:600;text-decoration:line-through">${esc(nm||"Cita")}</b><div class="small" style="margin-top:4px;color:var(--bad)">✖ Cancelada${c.cancel.por&&c.cancel.por!=="yo"?" por "+esc(c.cancel.por):""}${c.cancel.mot?" · "+esc(c.cancel.mot):""}</div><div class="row wrap" style="gap:6px;margin-top:8px"><button class="btn sm ghost" data-cie="${esc(c.id)}">Editar</button></div></div></div>`;
   const ldF=esc(citaLdN(c).split(" ")[0]),prF=esc(((c.cid&&(contacts.find(x=>x.id===c.cid)||{}).name)||((String(c.titulo||"").match(/· ([^(]+)/)||[])[1])||"prospecto").trim().split(/\s+/)[0]);
   return `<div class="cita ${pas?"ev-past":""}"><div class="ch-h"><b>${esc(h12(c.hora))}</b><span class="small muted">${c.dur>=60?(c.dur/60)+" h":c.dur+" min"}</span></div><div class="grow" style="min-width:0">
-   <b style="font-weight:600">${esc(nm||"Cita")}</b><div class="small muted">${t[0]} ${t[1]}${c.tipo==="persona"&&c.lugar?" · "+esc(c.lugar):""}${c.tipo==="lider"&&c.nota?" · "+esc(c.nota):""}</div>${c.resNota?`<div class="small" style="margin-top:4px">📝 ${esc(c.resNota)}</div>`:""}
+   <b style="font-weight:600">${esc(nm||"Cita")}</b>${c._visto===true?`<div class="small" style="color:var(--good)">👀 ${ldF||"El líder"} ya vio la invitación</div>`:c._visto===false?`<div class="small" style="color:var(--warn)">📨 Enviada · ${ldF||"el líder"} aún no la abre</div>`:""}<div class="small muted">${t[0]} ${t[1]}${c.tipo==="persona"&&c.lugar?" · "+esc(c.lugar):""}${c.tipo==="lider"&&c.nota?" · "+esc(c.nota):""}</div>${c.resNota?`<div class="small" style="margin-top:4px">📝 ${esc(c.resNota)}</div>`:""}
    <div class="row wrap" style="gap:6px;margin-top:8px">${pas&&!c.hecha&&!c.res?`<button class="btn sm" data-cok="${esc(c.id)}">✅ Se realizó</button><button class="btn sm ghost" data-cno="${esc(c.id)}" style="color:var(--bad)">✖ No se realizó</button>`:""}${c.hecha?'<span class="chip c-good">🎯 Presentación registrada</span>':c.res==="ok"?'<span class="chip c-good">✅ Se realizó</span>':""}${c.res==="no"?'<span class="chip c-bad">✖ No se realizó</span>':""}${c.lz?`<button class="btn sm ghost" data-cilz="${esc(c.id)}">🚀 Ver flyer</button>`:""}${!pas&&c.lz?`<button class="btn sm" style="background:#25D366;color:#fff" data-cinv="${esc(c.id)}">📣 Invitar</button>${(c.inv||[]).length?`<button class="btn sm ${c.fecha===TODAY?"gold":"ghost"}" data-crec="${esc(c.id)}">⏰ Recordar (${c.inv.length})</button>`:""}`:""}${!pas&&rol==="de"&&!c.lz&&c.l3?`<button class="btn sm ${c.fecha===TODAY?"gold":""}" style="${c.fecha===TODAY?"":"background:#25D366;color:#fff"}" data-crp="${esc(c.id)}">⏰ Recordar a ${prF}</button>`:""}${!pas&&rol==="de"&&(c.l3||c.lzU||c.lzSU)?`<button class="btn sm ghost" data-ciav="${esc(c.id)}">💬 Avisar a ${ldF}</button>`:""}${c.reprog&&!c.hecha?`<span class="chip c-gold">🔁 Reprogramada${c.reprog>1?" ("+c.reprog+")":""}</span>`:""}${!pas&&c.tipo!=="lider"?`<button class="btn sm" style="background:#25D366;color:#fff" data-ciw="${esc(c.id)}">💬 Invitación</button><button class="btn sm ghost" data-cir="${esc(c.id)}">⏰ Recordatorio</button>`:""}${!pas&&c.enlace&&(c.tipo==="zoom"||c.tipo==="lider")?`<a class="btn sm ghost" href="${esc(safeUrl(c.enlace))}" target="_blank" rel="noopener">Entrar al Zoom</a>`:""}${!pas?`<button class="btn sm ghost" data-cic="${esc(c.id)}">➕ Calendario</button>`:""}${!c.hecha?`<button class="btn sm ${pas?"gold":"ghost"}" data-cip="${esc(c.id)}">🔁 Reprogramar</button>`:""}${!pas&&c.l3&&rol?`<button class="btn sm ghost" data-cican="${esc(c.id)}" style="color:var(--bad)">✖ Cancelar</button>`:""}<button class="btn sm ghost" data-cie="${esc(c.id)}">Editar</button></div></div></div>`}
 function bindCitas(root){root.querySelectorAll("[data-cok]").forEach(b=>b.onclick=()=>citaResultado(citas.find(x=>x.id===b.dataset.cok),"ok"));root.querySelectorAll("[data-cno]").forEach(b=>b.onclick=()=>citaResultado(citas.find(x=>x.id===b.dataset.cno),"no"));root.querySelectorAll("[data-cilz]").forEach(b=>b.onclick=()=>{const c=citas.find(x=>x.id===b.dataset.cilz);if(c)lzVer(c)});root.querySelectorAll("[data-ciav]").forEach(b=>b.onclick=()=>citaAvisar(citas.find(x=>x.id===b.dataset.ciav)));root.querySelectorAll("[data-cid2]").forEach(b=>b.onclick=async()=>{const ci=citas.find(x=>x.id===b.dataset.cid2);if(!ci)return;let ct=ci.cid&&contacts.find(x=>x.id===ci.cid);
     if(!ct){ct={name:ci.nombre||"Prospecto",cc:"504",phone:"",stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(ct);if(!id)return;ct.id=id;contacts.push(ct);ci.cid=id}
@@ -3557,7 +3570,7 @@ function renderAll(){renderTasks();renderWeek();renderRetoMini();renderRef();ren
 renderAll();
 try{const t=localStorage.getItem("alp:tab");if(t&&document.getElementById("v-"+t))go(t)}catch(e){}
 
-let fotosRepo=[],fotosFs=[];
+let fotosRepo=[],fotosFs=[],fotosOc=[];
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-refresh]");if(!b||b.disabled)return;b.disabled=true;const t=b.textContent;b.textContent="Actualizando…";
   if(b.dataset.refresh==="eq"&&eqTab==="mios"){mios=null;renderEquipo()}
   if(b.dataset.refresh==="eq")loadConst(true);
@@ -3587,7 +3600,7 @@ function subscribeTeam(db){
 async function cargarFotos(force){if(!store.db)return;const docs=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));let t=0,s=null;try{t=+localStorage.getItem("alp:fotosT")||0}catch(e){}
   if(!force&&Date.now()-t<6*36e5){try{s=await store.db.collection("fotos").getCache()}catch(e){s=null}}
   if(!s||!s.docs.length){try{s=await store.db.collection("fotos").get();try{localStorage.setItem("alp:fotosT",String(Date.now()))}catch(e){}}catch(e){return}}
-  fotosFs=docs(s);T.fotos=fotosRepo.concat(fotosFs);try{renderWho();renderEquipo();renderHist()}catch(e){}try{renderPremios()}catch(e){}}
+  {const A=docs(s);fotosOc=A.filter(x=>x.oculto).map(x=>x.id);fotosFs=A.filter(x=>!x.oculto)}try{if(esSoloAdminYo()&&store.uid&&!LS.get("ocultoOk"))store.db.doc("fotos/"+store.uid).set({oculto:true},{merge:true}).then(()=>LS.set("ocultoOk",1)).catch(()=>{})}catch(e){}T.fotos=fotosRepo.concat(fotosFs);try{renderWho();renderEquipo();renderHist()}catch(e){}try{renderPremios()}catch(e){}}
 async function loadMine(){
   const lun0=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7)),m0=new Date(now.getFullYear(),now.getMonth(),1),st0=lun0<m0?lun0:m0;
   const nk=Math.max(7,Math.round((new Date(now.getFullYear(),now.getMonth(),now.getDate())-st0)/864e5)+1);
@@ -3611,7 +3624,7 @@ async function invOK(){try{const c=(localStorage.getItem("alp:inv")||"").trim().
   const q=await window.FB.db.collection("fotos").get();const m=q.docs.map(d=>Object.assign({id:d.id},d.data())).find(x=>(x.inv||"")===c);if(m){invSponsor={uid:m.id,nombre:m.invNombre||m.nombre||""};return true}return false}catch(e){return false}}
 const miInv=()=>{const n=(miRegistro().nombre||miNombreCorto()||"socio").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").split("-").slice(0,2).join("-");return (n||"socio")+"-"+String(store.uid||"").slice(0,4).toLowerCase()};
 const miEnlace=()=>"https://actionleadersplus.com/?unirme="+miInv();
-async function publicarInv(){try{if(!store.db||!store.uid||!(regDoc&&regDoc.registro))return;await store.db.doc("fotos/"+store.uid).set({inv:miInv(),invNombre:regDoc.registro.nombre,linea:Array.isArray(regDoc.registro.linea)?regDoc.registro.linea:[]},{merge:true})}catch(e){}}
+async function publicarInv(){try{if(esSoloAdminYo())return;if(!store.db||!store.uid||!(regDoc&&regDoc.registro))return;await store.db.doc("fotos/"+store.uid).set({inv:miInv(),invNombre:regDoc.registro.nombre,linea:Array.isArray(regDoc.registro.linea)?regDoc.registro.linea:[]},{merge:true})}catch(e){}}
 function bloquearSinInvitacion(){const d=document.createElement("div");d.style.cssText="position:fixed;inset:0;z-index:99999;background:#0d0c12;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;gap:14px;font-family:inherit";
   d.innerHTML=`<img src="media/escudo.png" style="width:80px"><h2 style="margin:6px 0 0;font-size:24px">Acceso exclusivo para socios</h2><p style="max-width:340px;opacity:.8;margin:0;line-height:1.5">Para entrar a Action Leaders PLUS necesitas el enlace de invitación que te comparte tu patrocinador al asociarte.</p><button id="bqOut" style="margin-top:10px;background:#fff;color:#111;border:0;border-radius:999px;padding:12px 22px;font:inherit;font-weight:700">Salir</button>`;
   document.body.appendChild(d);d.querySelector("#bqOut").onclick=async()=>{try{await window.FB.logout()}catch(e){}location.reload()}}
@@ -3776,7 +3789,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261028123019";var busy=false,pend=null;
+(function(){var V="20261028125718";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
