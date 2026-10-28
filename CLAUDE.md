@@ -196,3 +196,9 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Octubre 2026: 🏝️ Viaje a Roatán = un solo ganador, el de más volumen personal (mismas activaciones del ranking), mínimo 1,000 pts; si hay empate sigue en noviembre. 📚 Pack de libros de negocios = más registros inCruises (gratis + activados), mismo criterio de empate.
 - Tras el cierre la tarjeta queda 5 días ("Cerrado"). Al cerrar: anotar el ganador en `config.premios.res` y, para el mes siguiente, actualizar mes/fin (sin publicar).
 - (27 oct) Banner de activaciones: la línea ascendente del patrocinador ve "👏 Felicitar a {Nombre}" (banFelicitar): WhatsApp al patrocinador con uno de 8 mensajes distintos (FEL_MSG, elegido por uid del que felicita + activación, así cada líder envía uno diferente), con párrafos y el avance del reto de Roatán si está activo.
+
+## 17. Lanzamiento de negocio (27 oct, noche)
+- Mi agenda → "🚀 Planear mi lanzamiento de negocio" (abrirLanz): elige un líder de su línea ascendente (miLinea), fecha, hora y Zoom. Se guarda como cita tipo "lider" con lz:1, lzU/lzN/lzR (líder) e inv[] (ids del CRM invitados).
+- Flyer 1080×1350 dibujado en el teléfono (lzCanvas, mismo diseño que tools/flyer/lanzamiento.html): fotos del socio (miFotoUrl) y del líder (fotoDe), rango del líder (lzRango), fecha, hora con bandera según la zona del teléfono (lzTz).
+- "📩 Enviar invitación a {líder}": reutiliza la colección `llamadas3` con lz:true (mismas reglas, Aceptar / Otra hora / No puedo en la tarjeta #l3Card del líder; textos de "lanzamiento").
+- "👥 Invitar a mis prospectos" (lzInvitados): lista del CRM con búsqueda y "➕ Agregar persona nueva"; cada envío comparte flyer + mensaje (lzMsg, de usted, en párrafos, con Zoom) o abre WhatsApp; marca el contacto ("🚀 Invitado a mi lanzamiento", next = fecha).

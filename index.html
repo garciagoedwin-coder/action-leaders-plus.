@@ -2366,37 +2366,136 @@ async function loadL3(){if(!store.db||!store.uid)return;
   for(const x of l3P.filter(y=>y.estado==="aceptada")){await l3AgendaLider(x);try{await l3Col().doc(x.id).set({nP:false},{merge:true})}catch(e){}toast("✅ "+(x.deN||"").split(" ")[0]+" aceptó la nueva hora de la llamada de 3")}
   l3P=l3P.filter(y=>y.estado==="pendiente");
   for(const x of l3D)await l3ActCitaSocio(x);renderL3Card()}
-async function l3AgendaLider(x){if(citas.some(c=>c.l3===x.id))return;const ci={tipo:"lider",titulo:"📞 Llamada de 3 · "+(x.deN||"").split(" ")[0]+" con "+x.pros,fecha:x.fecha,hora:x.hora,dur:60,enlace:x.enlace||"",nota:x.nota||"",l3:x.id};const id=await saveCita(ci);if(id){ci.id=id;citas.push(ci);renderHoyCitas();renderMiAgenda()}}
+async function l3AgendaLider(x){if(citas.some(c=>c.l3===x.id))return;const ci={tipo:"lider",titulo:x.lz?"🚀 Lanzamiento de "+(x.deN||"").split(" ")[0]:"📞 Llamada de 3 · "+(x.deN||"").split(" ")[0]+" con "+x.pros,fecha:x.fecha,hora:x.hora,dur:60,enlace:x.enlace||"",nota:x.nota||"",l3:x.id};const id=await saveCita(ci);if(id){ci.id=id;citas.push(ci);renderHoyCitas();renderMiAgenda()}}
 async function l3ActCitaSocio(x){const ci=citas.find(c=>c.l3===x.id);if(!ci)return;const ld=(x.paraN||"").split(" ")[0],p=(x.pros||"").split(" ")[0];
   const est=x.estado==="aceptada"?"✅ confirmada":x.estado==="propuesta"?"🕗 propone otra hora":x.estado==="rechazada"?"✖ no puede":"⏳ por confirmar";
-  const n=Object.assign({},ci,{titulo:"📞 Llamada de 3 con "+ld+" · "+p+" ("+est+")",fecha:x.fecha,hora:x.hora});if(n.titulo!==ci.titulo||n.fecha!==ci.fecha||n.hora!==ci.hora){await saveCita(n);Object.assign(ci,n)}}
+  const n=Object.assign({},ci,{titulo:x.lz?"🚀 Mi lanzamiento con "+ld+" ("+est+")":"📞 Llamada de 3 con "+ld+" · "+p+" ("+est+")",fecha:x.fecha,hora:x.hora});if(n.titulo!==ci.titulo||n.fecha!==ci.fecha||n.hora!==ci.hora){await saveCita(n);Object.assign(ci,n)}}
 function renderL3Card(){const c=$("#l3Card");if(!c)return;if(!l3P.length&&!l3D.length){c.hidden=true;return}c.hidden=false;
   c.innerHTML=l3P.map(x=>`<div style="display:flex;flex-direction:column;gap:6px;padding-bottom:10px">
-     <b style="font-size:16px">📞 ${esc((x.deN||"").split(" ")[0])} le pide una llamada de 3</b>
-     <span class="small" style="font-weight:700;color:var(--brand)">${esc(l3Cuando(x.fecha,x.hora))} · ${x.tipo==="zoom"?"💻 Zoom":"📱 WhatsApp"} · Prospecto: ${esc(x.pros)}</span>
+     <b style="font-size:16px">${x.lz?"🚀 "+esc((x.deN||"").split(" ")[0])+" le invita a su lanzamiento de negocio":"📞 "+esc((x.deN||"").split(" ")[0])+" le pide una llamada de 3"}</b>
+     <span class="small" style="font-weight:700;color:var(--brand)">${esc(l3Cuando(x.fecha,x.hora))} · ${x.tipo==="zoom"?"💻 Zoom":"📱 WhatsApp"}${x.lz?"":" · Prospecto: "+esc(x.pros)}</span>
      ${x.nota?`<span class="small muted">"${esc(x.nota)}"</span>`:""}
      <div class="row wrap" style="gap:6px"><button class="btn sm" data-l3a="${esc(x.id)}">✅ Aceptar</button><button class="btn sm ghost" data-l3p="${esc(x.id)}">🕗 Otra hora</button><button class="btn sm ghost" data-l3r="${esc(x.id)}" style="color:var(--bad)">✖ No puedo</button></div></div>`).join("")
    +l3D.map(x=>{const ld=esc((x.paraN||"").split(" ")[0]);return `<div style="display:flex;flex-direction:column;gap:6px;padding-bottom:10px">
-     <b style="font-size:16px">${x.estado==="aceptada"?`✅ ${ld} confirmó su llamada de 3`:x.estado==="propuesta"?`🕗 ${ld} propone otra hora`:`✖ ${ld} no puede en ese horario`}</b>
+     <b style="font-size:16px">${x.estado==="aceptada"?`✅ ${ld} confirmó su ${x.lz?"lanzamiento":"llamada de 3"}`:x.estado==="propuesta"?`🕗 ${ld} propone otra hora`:`✖ ${ld} no puede en ese horario`}</b>
      <span class="small" style="font-weight:700;color:var(--brand)">${x.estado==="propuesta"?esc(l3Cuando(x.pFecha,x.pHora)):esc(l3Cuando(x.fecha,x.hora))} · Prospecto: ${esc(x.pros)}</span>
      <div class="row wrap" style="gap:6px">${x.estado==="propuesta"?`<button class="btn sm" data-l3ok="${esc(x.id)}">✅ Aceptar esa hora</button>`:""}${x.estado==="rechazada"?`<button class="btn sm" data-l3new="${esc(x.id)}">📞 Pedir a otro líder</button>`:""}<button class="btn sm ghost" data-l3x="${esc(x.id)}">Entendido</button></div></div>`}).join("");
   const get=(L,id)=>L.find(y=>y.id===id),upd=async(id,b)=>{try{await l3Col().doc(id).set(b,{merge:true});return true}catch(e){toast("No se pudo guardar. Revise su conexión.");return false}};
-  c.querySelectorAll("[data-l3a]").forEach(b=>b.onclick=async()=>{const x=get(l3P,b.dataset.l3a);if(!x)return;b.disabled=true;if(!(await upd(x.id,{estado:"aceptada",nP:false,nD:true,tR:Date.now()})))return;await l3AgendaLider(x);l3P=l3P.filter(y=>y!==x);renderL3Card();l3Avisar(x,"✅ Listo, le confirmo la *llamada de 3* con "+x.pros+" "+l3Cuando(x.fecha,x.hora).toLowerCase()+". ¡Ahí estaré! 💪")});
+  c.querySelectorAll("[data-l3a]").forEach(b=>b.onclick=async()=>{const x=get(l3P,b.dataset.l3a);if(!x)return;b.disabled=true;if(!(await upd(x.id,{estado:"aceptada",nP:false,nD:true,tR:Date.now()})))return;await l3AgendaLider(x);l3P=l3P.filter(y=>y!==x);renderL3Card();l3Avisar(x,x.lz?"✅ ¡Con mucho gusto! Le confirmo *su lanzamiento de negocio* "+l3Cuando(x.fecha,x.hora).toLowerCase()+". ¡Vamos a hacerlo en grande! 🚀":"✅ Listo, le confirmo la *llamada de 3* con "+x.pros+" "+l3Cuando(x.fecha,x.hora).toLowerCase()+". ¡Ahí estaré! 💪")});
   c.querySelectorAll("[data-l3r]").forEach(b=>b.onclick=async()=>{const x=get(l3P,b.dataset.l3r);if(!x)return;b.disabled=true;if(!(await upd(x.id,{estado:"rechazada",nP:false,nD:true,tR:Date.now()})))return;l3P=l3P.filter(y=>y!==x);renderL3Card();toast("Le avisamos que no puede en ese horario")});
   c.querySelectorAll("[data-l3p]").forEach(b=>b.onclick=()=>{const x=get(l3P,b.dataset.l3p);if(!x)return;
     openSheet(`<h2>🕗 Proponer otra hora</h2><span data-nofocus hidden></span><p class="small muted" style="margin:0">Llamada de 3 con ${esc(x.pros)}. Pedida para ${esc(l3Cuando(x.fecha,x.hora))}.</p>
      <div class="grid2"><div class="field"><label for="l3pF">Día</label><input class="inp" type="date" id="l3pF" value="${esc(x.fecha)}" min="${TODAY}"></div><div class="field"><label for="l3pH">Hora</label><input class="inp" type="time" id="l3pH" value="${esc(x.hora)}"></div></div>
      <button class="btn" id="l3pOk" style="width:100%">Enviar propuesta</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
       $("#l3pOk").onclick=async()=>{const f=$("#l3pF").value,h=$("#l3pH").value;if(!f||!h){toast("Elija día y hora");return}if(!(await upd(x.id,{estado:"propuesta",pFecha:f,pHora:h,nP:false,nD:true,tR:Date.now()})))return;
-        l3P=l3P.filter(y=>y!==x);closeSheet();renderL3Card();l3Avisar(x,"🕗 Hola, para la *llamada de 3* con "+x.pros+" no puedo a esa hora. ¿Le parece "+l3Cuando(f,h).toLowerCase()+"? Acéptela en la app 🙏")}})});
+        l3P=l3P.filter(y=>y!==x);closeSheet();renderL3Card();l3Avisar(x,"🕗 Hola, para "+(x.lz?"*su lanzamiento*":"la *llamada de 3* con "+x.pros)+" no puedo a esa hora. ¿Le parece "+l3Cuando(f,h).toLowerCase()+"? Acéptela en la app 🙏")}})});
   c.querySelectorAll("[data-l3ok]").forEach(b=>b.onclick=async()=>{const x=get(l3D,b.dataset.l3ok);if(!x)return;b.disabled=true;const n={estado:"aceptada",fecha:x.pFecha,hora:x.pHora,nD:false,nP:true,tR:Date.now()};if(!(await upd(x.id,n)))return;Object.assign(x,n);await l3ActCitaSocio(x);renderHoyCitas();renderMiAgenda();l3D=l3D.filter(y=>y!==x);renderL3Card();toast("✅ Llamada de 3 confirmada")});
   c.querySelectorAll("[data-l3x]").forEach(b=>b.onclick=async()=>{const x=get(l3D,b.dataset.l3x);if(!x)return;await upd(x.id,{nD:false});l3D=l3D.filter(y=>y!==x);renderL3Card()});
-  c.querySelectorAll("[data-l3new]").forEach(b=>b.onclick=async()=>{const x=get(l3D,b.dataset.l3new);if(!x)return;await upd(x.id,{nD:false});l3D=l3D.filter(y=>y!==x);renderL3Card();pedirL3(x.cid?contacts.find(c=>c.id===x.cid)||{name:x.pros,id:x.cid}:{name:x.pros,id:""})})}
+  c.querySelectorAll("[data-l3new]").forEach(b=>b.onclick=async()=>{const x=get(l3D,b.dataset.l3new);if(!x)return;await upd(x.id,{nD:false});l3D=l3D.filter(y=>y!==x);renderL3Card();if(x.lz){abrirLanz();return}pedirL3(x.cid?contacts.find(c=>c.id===x.cid)||{name:x.pros,id:x.cid}:{name:x.pros,id:""})})}
 async function l3Avisar(x,t){const yo=miNombreCorto()||"";t=`Hola ${(x.deN||"").split(" ")[0]} 👋\n\n${t}${yo?"\n\n*"+yo+"*":""}`;let w="";
   try{const d=await store.db.doc("users/"+x.de).get();if(d.exists)w=String(((d.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}catch(e){}
   openSheet(`<h2>💬 Avisarle a ${esc((x.deN||"").split(" ")[0])}</h2><p class="small muted" style="margin:0">Ya le aparece en su app. Si quiere, avísele también por WhatsApp.</p>
    <button class="btn" id="l3aw" style="width:100%;background:#25D366;color:#fff">💬 Enviar por WhatsApp</button><button class="btn ghost" data-close style="width:100%">No hace falta</button>`,()=>{
     $("#l3aw").onclick=async()=>{if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}})}
+// ---------- Lanzamiento de negocio (flyer + invitación al líder + invitados) ----------
+const LZ_TZ={"America/Tegucigalpa":["Honduras","🇭🇳"],"Europe/Madrid":["España","🇪🇸"],"America/New_York":["Nueva York","🇺🇸"],"America/Chicago":["EE. UU. centro","🇺🇸"],"America/Los_Angeles":["EE. UU. Pacífico","🇺🇸"],"America/Guatemala":["Guatemala","🇬🇹"],"America/El_Salvador":["El Salvador","🇸🇻"],"America/Managua":["Nicaragua","🇳🇮"],"America/Costa_Rica":["Costa Rica","🇨🇷"],"America/Mexico_City":["México","🇲🇽"]};
+function lzTz(){let z="";try{z=Intl.DateTimeFormat().resolvedOptions().timeZone}catch(e){}return LZ_TZ[z]||["su país",""]}
+function lzRango(n){try{const i=rangoActualIdx({},n);return i>=0&&RANGOS[i]?RANGOS[i].n:"Líder del equipo"}catch(e){return"Líder del equipo"}}
+function lzFechaTxt(f){const d=parseK(f),w=DAYS_L[d.getDay()];return w[0].toUpperCase()+w.slice(1)+" "+d.getDate()+" de "+MONTHS[d.getMonth()].toLowerCase()}
+async function lzCanvas(o){const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
+  try{await Promise.all(["900 118px 'Bricolage Grotesque'","800 36px Figtree","500 27px Figtree"].map(x=>document.fonts.load(x)))}catch(x){}
+  const HF="'Bricolage Grotesque', Figtree, Arial, sans-serif",BF="Figtree, Arial, sans-serif",GOLD="#F5B700",sp=v=>{try{g.letterSpacing=v}catch(e){}};
+  g.fillStyle="#070B14";g.fillRect(0,0,W,H);
+  const bg=await imgLoad("media/sala-fondo.jpg");if(bg){g.save();g.globalAlpha=.55;const s=Math.max(W/bg.width,760/bg.height),iw=bg.width*s,ih=bg.height*s;g.drawImage(bg,(W-iw)/2,(760-ih)/2,iw,ih);g.restore()}
+  let gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,"rgba(7,11,20,.55)");gr.addColorStop(.22,"rgba(7,11,20,.35)");gr.addColorStop(.52,"rgba(7,11,20,.92)");gr.addColorStop(.62,"#070B14");gr.addColorStop(1,"#070B14");g.fillStyle=gr;g.fillRect(0,0,W,H);
+  gr=g.createRadialGradient(540,540,0,540,540,520);gr.addColorStop(0,"rgba(245,183,0,.16)");gr.addColorStop(1,"rgba(245,183,0,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
+  gr=g.createLinearGradient(0,0,W,0);gr.addColorStop(0,"rgba(245,183,0,0)");gr.addColorStop(.5,"rgba(245,183,0,.7)");gr.addColorStop(1,"rgba(245,183,0,0)");g.fillStyle=gr;g.fillRect(0,689,W,2);
+  g.textAlign="center";
+  // píldora
+  g.font="900 22px "+BF;sp("7px");const pt="INVITACIÓN ESPECIAL",pw=g.measureText(pt).width+56;g.beginPath();g.roundRect(540-pw/2,130,pw,50,25);g.fillStyle="rgba(245,183,0,.08)";g.fill();g.lineWidth=2;g.strokeStyle=GOLD;g.stroke();g.fillStyle=GOLD;g.fillText(pt,540+3,163);sp("0px");
+  // título
+  const fit=(t,font,size,maxW)=>{let z=size;g.font=font.replace("{s}",z);while(g.measureText(t).width>maxW&&z>20){z--;g.font=font.replace("{s}",z)}};
+  fit("LANZAMIENTO","900 {s}px "+HF,118,960);g.fillStyle="#fff";g.fillText("LANZAMIENTO",540,300);
+  fit("DE NEGOCIO","900 {s}px "+HF,84,900);const tw=g.measureText("DE NEGOCIO").width;gr=g.createLinearGradient(540-tw/2,0,540+tw/2,0);gr.addColorStop(0,"#FDE68A");gr.addColorStop(.4,GOLD);gr.addColorStop(.6,"#FFF3C4");gr.addColorStop(1,"#D99A00");g.fillStyle=gr;g.fillText("DE NEGOCIO",540,380);
+  // fotos
+  const circ=async(src,cx,cy,nm)=>{const r=128,im=src?await imgLoad(src,!/^(data|blob):/.test(src)):null;
+    g.save();g.shadowColor="rgba(245,183,0,.55)";g.shadowBlur=50;g.beginPath();g.arc(cx,cy,r+13,0,Math.PI*2);const cg=g.createLinearGradient(cx-r,cy-r,cx+r,cy+r);cg.addColorStop(0,GOLD);cg.addColorStop(.5,"#FFF3C4");cg.addColorStop(1,"#D99A00");g.fillStyle=cg;g.fill();g.restore();
+    g.beginPath();g.arc(cx,cy,r+6,0,Math.PI*2);g.fillStyle="#070B14";g.fill();
+    g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();
+    if(im){const s=Math.max(2*r/im.width,2*r/im.height),iw=im.width*s,ih=im.height*s;g.fillStyle="#e9e9ec";g.fillRect(cx-r,cy-r,2*r,2*r);g.drawImage(im,cx-iw/2,cy-r-Math.max(0,ih-2*r)*.25,iw,ih)}
+    else{g.fillStyle="#141a26";g.fillRect(cx-r,cy-r,2*r,2*r);g.fillStyle=GOLD;g.font="800 96px "+HF;g.fillText(initials(nm),cx,cy+34)}g.restore()};
+  await circ(o.fotoA,320,580,o.nA);await circ(o.fotoB,760,580,o.nB);
+  g.fillStyle=GOLD;g.font="300 64px "+BF;g.fillText("×",540,602);
+  const lab=(cx,k,n,t)=>{g.fillStyle=GOLD;g.font="800 19px "+BF;sp("4px");g.fillText(k,cx+2,756);sp("0px");g.fillStyle="#fff";fit(n,"800 {s}px "+BF,36,360);g.fillText(n,cx,796);g.fillStyle="rgba(255,255,255,.75)";g.font="500 22px "+BF;g.fillText(t,cx,830)};
+  lab(320,"LANZA SU NEGOCIO",o.nA,"Socio emprendedor");lab(760,"JUNTO A SU LÍDER",o.nB,o.rB);
+  // fecha y hora
+  g.font="800 34px "+BF;const fT=o.fecha,hT=o.hora+(o.flag?" "+o.flag:""),w1=Math.max(g.measureText(fT).width,120)+60,w2=Math.max(g.measureText(hT).width,100)+60,x0=540-(w1+16+w2)/2;
+  const box=(x,w,k,t)=>{g.beginPath();g.roundRect(x,900,w,106,24);g.fillStyle="rgba(255,255,255,.06)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.14)";g.stroke();g.textAlign="left";g.fillStyle=GOLD;g.font="800 18px "+BF;sp("3px");g.fillText(k,x+30,940);sp("0px");g.fillStyle="#fff";g.font="800 34px "+BF;g.fillText(t,x+30,984);g.textAlign="center"};
+  box(x0,w1,"FECHA",fT);box(x0+w1+16,w2,"HORA",hT);
+  // mensaje
+  g.font="500 27px "+BF;g.fillStyle="rgba(255,255,255,.88)";g.fillText("Descubra cómo viajar más, gastar menos y generar",540,1078);g.fillText("ingresos desde su celular. ¡Le espero!",540,1116);
+  // pie
+  g.font="800 26px "+BF;const zt=o.zoom===false?"📱 En vivo":"🎥 En vivo por Zoom",zw=g.measureText(zt).width+56;g.beginPath();g.roundRect(70,1228,zw,58,29);g.fillStyle="#2D8CFF";g.fill();g.fillStyle="#fff";g.textAlign="left";g.fillText(zt,98,1266);
+  const lg=await imgLoad("media/logo-blanco.png");g.textAlign="right";if(lg){const h=40,w=lg.width*h/lg.height;g.drawImage(lg,1010-w,1222,w,h)}g.fillStyle="#8FD9F6";g.font="700 22px "+BF;g.fillText("actionleadersplus.com",1010,1290);
+  return cv}
+async function lzFile(o){const cv=await lzCanvas(o);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));return new File([b],"Lanzamiento.jpg",{type:"image/jpeg"})}
+function lzMsg(o,first){const[pais,fl]=lzTz();return [`¡Hola${first?", "+first:""}! 👋`,"",`Quiero invitarle a algo muy especial para mí: *el lanzamiento de mi negocio*, junto a mi líder *${o.nB}*.`,"",`📅 ${o.fecha}`,`🕖 ${o.hora} (hora de ${pais}${fl?" "+fl:""})`].concat(o.enlace?[`🎥 Por Zoom: ${o.enlace}`]:[]).concat(["","Sería muy importante para mí contar con usted. ¿Me confirma? 🙏"]).concat(o.yo?["","*"+o.yo+"*"]:[]).join("\n")}
+function lzDatos(ci){const nB=ci.lzN||"",yo=miRegistro().nombre||miNombreFull()||"";return{nA:yo,nB,rB:ci.lzR||lzRango(nB),fotoA:miFotoUrl(),fotoB:fotoDe(nB),fecha:lzFechaTxt(ci.fecha),hora:h12(ci.hora),flag:lzTz()[1],enlace:ci.enlace||"",yo:miNombreCorto()||""}}
+async function abrirLanz(){if(ahGate())return;if(!store.db||!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}
+  if(!(fotosFs||[]).length)try{await cargarFotos()}catch(e){}
+  const L=miLinea(),mis=citas.filter(c=>c.lz&&c.fecha>=TODAY).sort(citaSort);
+  if(!L.length){toast("No encontramos a sus líderes. Pida a su patrocinador que abra la app.");return}
+  const man=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+2));
+  openSheet(`<h2>🚀 Lanzamiento de negocio</h2><span data-nofocus hidden></span><p class="small muted" style="margin:0">Haga su lanzamiento con un líder de su línea. La app le arma el flyer para invitar a sus prospectos.</p>
+   ${mis.length?`<div class="card" style="gap:6px"><b class="small">Mis lanzamientos</b>${mis.map(c=>`<button type="button" class="ep-op" data-lzo="${esc(c.id)}"><span class="ic">🚀</span><span class="grow"><b>Con ${esc((c.lzN||"").split(" ")[0])}</b><small>${esc(citaCuando(c))}</small></span><span>›</span></button>`).join("")}</div>`:""}
+   ${miFotoUrl()?"":`<div class="card" style="gap:6px;border:1.5px solid var(--warn)"><b class="small">📸 Ponga su foto de perfil</b><span class="small muted">Su flyer se ve mucho mejor con su foto. Póngala en Perfil y vuelva aquí.</span></div>`}
+   <div class="field"><label>¿Con qué líder?</label><div id="lzL" style="display:flex;flex-direction:column;gap:6px">${L.map((x,i)=>`<button type="button" class="ep-it" data-lzl="${esc(x.uid)}" aria-pressed="${i===0}" style="${i===0?"outline:2px solid var(--brand);border-radius:12px":""}">${avHTML(x.n,false,false)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(x.n)}</b><span class="small muted">${esc(lzRango(x.n))}${i===0?" · su patrocinador":""}</span></span></button>`).join("")}</div></div>
+   <div class="grid2"><div class="field"><label for="lzF">Fecha</label><input class="inp" type="date" id="lzF" value="${man}" min="${TODAY}"></div><div class="field"><label for="lzH">Hora</label><input class="inp" type="time" id="lzH" value="19:00"></div></div>
+   <div class="field"><label for="lzZ">Link de Zoom</label><input class="inp" id="lzZ" value="${esc(profile.zoom||"")}" placeholder="https://zoom.us/j/..."></div>
+   <button class="btn" id="lzOk" style="width:100%">Ver mi flyer ›</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
+    let sel=L[0].uid;
+    $("#lzL").onclick=e=>{const b=e.target.closest("[data-lzl]");if(!b)return;sel=b.dataset.lzl;$("#lzL").querySelectorAll("[data-lzl]").forEach(x=>{const on=x===b;x.setAttribute("aria-pressed",on);x.style.outline=on?"2px solid var(--brand)":"";x.style.borderRadius="12px"})};
+    document.querySelectorAll("[data-lzo]").forEach(b=>b.onclick=()=>{const c=citas.find(x=>x.id===b.dataset.lzo);if(c){closeSheet();setTimeout(()=>lzVer(c),250)}});
+    $("#lzOk").onclick=async()=>{const f=$("#lzF").value,h=$("#lzH").value,ld=L.find(x=>x.uid===sel),z=safeUrl($("#lzZ").value.trim())||"";
+      if(!f||!h||citaIni({fecha:f,hora:h}).getTime()<Date.now()){toast("Elija una fecha y hora futuras");return}
+      if(z&&!profile.zoom){profile.zoom=z;store.set("perfil",profile)}
+      const bt=$("#lzOk");bt.disabled=true;
+      const ci={tipo:"lider",titulo:"🚀 Mi lanzamiento con "+ld.n.split(" ")[0]+" (⏳ por confirmar)",fecha:f,hora:h,dur:60,enlace:z,nota:"",lz:1,lzU:ld.uid,lzN:ld.n,lzR:lzRango(ld.n),inv:[]};
+      const id=await saveCita(ci);if(!id){bt.disabled=false;return}ci.id=id;citas.push(ci);renderHoyCitas();renderMiAgenda();closeSheet();setTimeout(()=>lzVer(ci),250)}})}
+async function lzVer(ci){const o=lzDatos(ci);let file=null;
+  openSheet(`<h2>🚀 Su lanzamiento</h2><p class="small muted" style="margin:0">Con ${esc(ci.lzN)} · ${esc(citaCuando(ci))}</p>
+   <div style="aspect-ratio:1080/1350;border-radius:14px;overflow:hidden;background:#070B14;display:grid;place-items:center"><img id="lzImg" alt="Flyer del lanzamiento" style="width:100%;display:block"><span id="lzWait" class="small" style="color:#fff">Creando su flyer…</span></div>
+   ${ci.l3?"":`<button class="btn" id="lzLd" style="width:100%">📩 Enviar invitación a ${esc(ci.lzN.split(" ")[0])}</button>`}
+   <button class="btn" id="lzInv" style="width:100%;background:#25D366;color:#fff">👥 Invitar a mis prospectos${(ci.inv||[]).length?" ("+ci.inv.length+" invitados)":""}</button>
+   <div class="row" style="gap:8px"><button class="btn ghost grow" id="lzDl">⬇️ Guardar flyer</button><button class="btn ghost grow" data-close>Cerrar</button></div>`,()=>{
+    lzFile(o).then(f=>{file=f;const im=$("#lzImg"),w=$("#lzWait");if(im){im.src=URL.createObjectURL(f);if(w)w.remove()}}).catch(()=>toast("No se pudo crear el flyer"));
+    const ld=$("#lzLd");if(ld)ld.onclick=()=>lzInvitarLider(ci);
+    $("#lzInv").onclick=()=>{closeSheet();setTimeout(()=>lzInvitados(ci),250)};
+    $("#lzDl").onclick=async()=>{if(!file){toast("El flyer aún se está creando");return}if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file]});return}catch(x){if(x&&x.name==="AbortError")return}}const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download="Lanzamiento.jpg";a.click()}})}
+async function lzInvitarLider(ci){const bt=$("#lzLd");if(bt)bt.disabled=true;
+  const d={de:store.uid,deN:miRegistro().nombre||miNombreCorto(),para:ci.lzU,paraN:ci.lzN,pros:"Lanzamiento de negocio",cid:"",fecha:ci.fecha,hora:ci.hora,tipo:"zoom",enlace:ci.enlace||"",nota:"",lz:true,estado:"pendiente",nP:true,nD:false,t:Date.now()};
+  let id;try{id=(await l3Col().add(d)).id}catch(e){if(bt)bt.disabled=false;toast("No se pudo enviar. Revise su conexión.");return}
+  ci.l3=id;await saveCita(ci);LS.set("l3Env",1);if(bt)bt.remove();
+  const ld=ci.lzN.split(" ")[0],yo=miNombreCorto()||"",msg=`Hola ${ld} 🙏\n\nLe envié en la app la invitación para hacer *el lanzamiento de mi negocio* con usted: ${citaCuando(ci).toLowerCase()}.\n\n¿Me lo confirma en la app? ¡Gracias por acompañarme!${yo?"\n\n*"+yo+"*":""}`;
+  let w="";try{const r=await store.db.doc("users/"+ci.lzU).get();if(r.exists)w=String(((r.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}catch(e){}
+  openSheet(`<h2>✅ Invitación enviada</h2><p style="margin:0">${esc(ci.lzN)} la verá al abrir su app y podrá aceptarla.</p><p class="small muted" style="margin:0">Avísele por WhatsApp para que la confirme pronto:</p>
+   <button class="btn" id="lzLw" style="width:100%;background:#25D366;color:#fff">💬 Avisarle por WhatsApp</button><button class="btn ghost" id="lzBk" style="width:100%">Volver a mi lanzamiento</button>`,()=>{
+    $("#lzLw").onclick=()=>{location.href="https://wa.me/"+w+"?text="+encodeURIComponent(msg)};$("#lzBk").onclick=()=>{closeSheet();setTimeout(()=>lzVer(ci),250)}})}
+async function lzInvitados(ci){const o=lzDatos(ci);let file=null;lzFile(o).then(f=>file=f).catch(()=>{});ci.inv=ci.inv||[];let q="";
+  const lista=()=>{const Q=nrmN(q),M=(contacts||[]).filter(c=>!Q||nrmN(c.name).includes(Q)).sort((a,b)=>(ci.inv.includes(a.id)?1:0)-(ci.inv.includes(b.id)?1:0)||String(a.name).localeCompare(b.name,"es")).slice(0,60);
+    return M.map(c=>{const ya=ci.inv.includes(c.id);return `<div class="row between" style="gap:8px;padding:8px 0;border-bottom:1px solid var(--line)"><div style="min-width:0"><b class="small">${esc(c.name)}</b><div class="small muted">${ya?"✅ Invitado":esc(c.stage||"Nuevo")}</div></div><button class="btn sm ${ya?"ghost":""}" data-lzi="${esc(c.id)}" style="flex:none;${ya?"":"background:#25D366;color:#fff"}">${ya?"Reenviar":"💬 Enviar"}</button></div>`}).join("")||`<p class="small muted">No hay contactos con ese nombre.</p>`};
+  openSheet(`<h2>👥 Invitar a mi lanzamiento</h2><span data-nofocus hidden></span><p class="small muted" style="margin:0">Elija a quién invitar. Se abre WhatsApp con su flyer y el mensaje listo. ${ci.inv.length?`<b>${ci.inv.length} invitados</b>`:""}</p>
+   <button class="btn ghost" id="lzAdd" style="width:100%">➕ Agregar persona nueva</button>
+   <input class="inp" id="lzQ" type="search" placeholder="🔍 Buscar en mi CRM">
+   <div id="lzLst">${lista()}</div><button class="btn ghost" data-close style="width:100%">Listo</button>`,()=>{
+    const pinta=()=>{$("#lzLst").innerHTML=lista()};$("#lzQ").oninput=e=>{q=e.target.value;pinta()};
+    const enviar=async c=>{const t=lzMsg(o,String(c.name||"").split(" ")[0]),n=waNum(c.phone,c.cc);
+      if(!ci.inv.includes(c.id)){ci.inv.push(c.id);saveCita(ci);c.note=(c.note?c.note+" · ":"")+"🚀 Invitado a mi lanzamiento ("+niceDate(ci.fecha)+")";c.next=ci.fecha;c.updated=Date.now();try{await store.saveContact(c)}catch(e){}}
+      pinta();
+      if(file&&navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(x){if(x&&x.name==="AbortError")return}}
+      location.href="https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t)};
+    $("#lzLst").onclick=e=>{const b=e.target.closest("[data-lzi]");if(!b)return;const c=contacts.find(x=>x.id===b.dataset.lzi);if(c)enviar(c)};
+    $("#lzAdd").onclick=()=>{closeSheet();setTimeout(()=>editContact(null,nc=>{setTimeout(()=>lzInvitados(ci),300)},{}),250)}})}
 // ---------- presentación virtual (sala.html) ----------
 // Lanzamiento: por ahora solo admins. Para abrirla a todos: return true
 function salaOk(){return !!isAdmin}
@@ -2766,6 +2865,7 @@ function renderMiAgenda(){const el=$("#agMia");if(!el||agVista!=="mia")return;if
   const rango=ds[0].getDate()+" "+MONTHS[ds[0].getMonth()].slice(0,3)+" – "+ds[6].getDate()+" "+MONTHS[ds[6].getMonth()].slice(0,3);
   const Hh=miHorario(),dn=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
   el.innerHTML=`<div class="row between"><div><p class="eyebrow">Tus citas y llamadas</p><h1>Mi agenda</h1></div><button class="btn sm gold" id="ciNew">+ Nueva cita</button></div>
+   <button class="btn" id="lzNew" style="width:100%;background:linear-gradient(90deg,#B45309,#F5B700);color:#fff">🚀 Planear mi lanzamiento de negocio</button>
    <button class="btn ghost" id="l3New" style="width:100%">📞 Pedir llamada de 3 a un líder</button>
    <div class="card row between" style="gap:10px"><div style="min-width:0"><b style="font-size:14px">🌐 Agenda desde tu página</b><div class="small muted">${[1,2,3,4,5,6,0].filter(d=>Hh.dias.includes(d)).map(d=>dn[d]).join(", ")} · ${Hh.horas.map(h12).join(", ")}</div></div><button class="btn sm ghost" id="hEdit" style="flex:none">⚙️ Mi horario</button></div>
    <div class="card" style="gap:10px"><div class="cal-head"><button id="wkPrev" aria-label="Semana anterior">‹</button><h3 style="margin:0">${agWk===0?"Esta semana":agWk===1?"Próxima semana":rango}</h3><button id="wkNext" aria-label="Semana siguiente">›</button></div>
@@ -2773,7 +2873,7 @@ function renderMiAgenda(){const el=$("#agMia");if(!el||agVista!=="mia")return;if
     <div class="wkbars">${W.map(x=>{const h=x.L.reduce((b,c)=>b+(c.dur||60),0)/60;return `<div class="${x.k===TODAY?"hoy":""}"><span class="bw"><i style="height:${Math.round(h/mx*100)}%;background:${h>=4?"var(--warn)":"var(--brand)"}"></i></span><b>${x.L.length||""}</b><small>${DAYS[x.d.getDay()]} ${x.d.getDate()}</small></div>`}).join("")}</div></div>
    ${W.map(x=>`<div class="card" style="gap:8px${x.k<TODAY?";opacity:.55":""}"><div class="row between"><h3 style="margin:0">${x.k===TODAY?"Hoy · ":""}${DAYS_L[x.d.getDay()][0].toUpperCase()+DAYS_L[x.d.getDay()].slice(1)} ${x.d.getDate()}</h3>${x.k>=TODAY?`<button class="btn sm ghost" data-cinew="${x.k}">+</button>`:""}</div>
      ${x.L.length?x.L.map(citaCard).join(""):`<p class="small muted" style="margin:0">Libre</p>`}</div>`).join("")}`;
-  $("#ciNew").onclick=()=>abrirCita();$("#l3New").onclick=()=>pedirL3(null);$("#hEdit").onclick=abrirHorario;$("#wkPrev").onclick=()=>{agWk--;renderMiAgenda()};$("#wkNext").onclick=()=>{agWk++;renderMiAgenda()};
+  $("#ciNew").onclick=()=>abrirCita();$("#l3New").onclick=()=>pedirL3(null);$("#lzNew").onclick=abrirLanz;$("#hEdit").onclick=abrirHorario;$("#wkPrev").onclick=()=>{agWk--;renderMiAgenda()};$("#wkNext").onclick=()=>{agWk++;renderMiAgenda()};
   el.querySelectorAll("[data-cinew]").forEach(b=>b.onclick=()=>abrirCita({fecha:b.dataset.cinew}));bindCitas(el)}
 function renderHoyCitas(){const c=$("#hoyCitas");if(!c)return;const L=citas.filter(x=>x.fecha===TODAY&&(citaIni(x).getTime()+(x.dur||60)*6e4>Date.now()||(x.tipo!=="lider"&&!x.hecha))).sort(citaSort);if(!L.length){c.hidden=true;return}c.hidden=false;
   const pend=L.filter(x=>citaIni(x).getTime()+(x.dur||60)*6e4>Date.now()).length;
@@ -3401,7 +3501,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261027185932";var busy=false,pend=null;
+(function(){var V="20261027192832";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
