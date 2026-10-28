@@ -1523,18 +1523,18 @@ function renderActBan(){const c=$("#actBan");if(!c||banDone)return;
   (T.activaciones||[]).forEach(a=>{if(!a.fecha||/starter/i.test(a.paquete||""))return;const f=dkey(new Date(a.fecha));if(f<hace7)return;
     const r=(T.ranking||[]).find(x=>sameN(x.nombre,a.patrocinador)),nom=r?r.nombre:a.patrocinador;
     let g=G0.find(x=>sameN(x.nom,nom));if(!g){g={nom,L:[]};G0.push(g)}g.L.push(Object.assign({_f:f},a))});
-  const G=[];G0.forEach(g=>{const pu=banPuede(g),ok=a=>pu&&!!banWa(a),L=g.L.filter(a=>ok(a)?!bien[banK(a)]:(a._f===hoy&&!vis[banK(a)]));if(L.length)G.push({nom:g.nom,L,W:L.filter(ok)})});
+  const fel=LS.get("banFel")||{},G=[];G0.forEach(g=>{const pu=banPuede(g),ok=a=>pu&&!!banWa(a),sp=pu?banSp(g.nom):null,okF=a=>!!sp&&!fel[banK(a)],L=g.L.filter(a=>ok(a)?!bien[banK(a)]:okF(a)||(a._f===hoy&&!vis[banK(a)]));if(L.length)G.push({nom:g.nom,L,W:L.filter(ok),F:sp?L.filter(okF):[],sp})});
   banMarca("banVisto",G.flatMap(g=>g.L));
   if(!G.length){c.hidden=true;c.innerHTML="";return}
   const corto=n=>{const w=String(n||"").trim().split(/\s+/);return w.length>2?w[0]+" "+w[w.length>3?2:1]:w.join(" ")},cap=t=>String(t||"").toLowerCase().replace(/(^|\s)\S/g,m=>m.toUpperCase());
   const card=g=>{const f=fotoDe(g.nom),ini=corto(g.nom).split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase(),n=g.L.length;
     const det=n===1?`Activó a ${esc(corto(cap(g.L[0].socio)))} · ${esc(g.L[0].paquete)}`:`Activó ${n} socios nuevos`;const tg=g.L.every(a=>a._f===hoy)?"HOY":(([y,m,d])=>d+"/"+m)(g.L[0]._f.split("-"));
-    return `<div class="ab"><span class="av" style="${f?`background-image:url('${f}')`:""}">${f?"":esc(ini)}</span><div><b>🎉 ¡Felicidades, ${esc(corto(g.nom))}!</b><small>${det}</small>${g.W.length?`<button type="button" class="abWa" data-abwa="1">💬 Darle la bienvenida</button>`:""}</div><span class="tag">${tg}</span><span class="x" aria-label="Cerrar">✕</span></div>`};
+    return `<div class="ab"><span class="av" style="${f?`background-image:url('${f}')`:""}">${f?"":esc(ini)}</span><div><b>🎉 ¡Felicidades, ${esc(corto(g.nom))}!</b><small>${det}</small>${g.F&&g.F.length?`<button type="button" class="abWa" data-abfel="1">👏 Felicitar a ${esc(corto(g.nom).split(" ")[0])}</button>`:""}${g.W.length?`<button type="button" class="abWa" data-abwa="1">💬 Darle la bienvenida</button>`:""}</div><span class="tag">${tg}</span><span class="x" aria-label="Cerrar">✕</span></div>`};
   const show=()=>{c.innerHTML=card(G[banI%G.length])+(G.length>1?`<div class="dots">${G.map((_,i)=>`<i class="${i===banI%G.length?"on":""}"></i>`).join("")}</div>`:"")};
   banI=0;banDone=true;show();c.hidden=false;
-  c.onclick=e=>{if(e.target.closest("[data-abwa]")){clearInterval(banT);banBienvenida(G[banI%G.length]);return}cerrarBan()};
+  c.onclick=e=>{if(e.target.closest("[data-abfel]")){clearInterval(banT);banFelicitar(G[banI%G.length]);return}if(e.target.closest("[data-abwa]")){clearInterval(banT);banBienvenida(G[banI%G.length]);return}cerrarBan()};
   if(mios===null&&store.db&&store.uid&&!banMiosT){banMiosT=1;loadMios().then(()=>{if(!c.hidden&&c.innerHTML)show()}).catch(()=>{})}
-  let vistos=1;banT=setInterval(()=>{if(document.hidden)return;if(vistos>=G.length){if(!G.some(g=>g.W.length))cerrarBan();else{clearInterval(banT)}return}banI++;vistos++;show()},4500)}
+  let vistos=1;banT=setInterval(()=>{if(document.hidden)return;if(vistos>=G.length){if(!G.some(g=>g.W.length||(g.F&&g.F.length)))cerrarBan();else{clearInterval(banT)}return}banI++;vistos++;show()},4500)}
 let banMiosT=0,banSocT=0;
 function banWa(a){const x=(mios||[]).concat(socios||[]).find(y=>sameN((y.registro||{}).nombre||"",a.socio));return x?waSocio(x):""}
 function banPuede(g){const yo=miNombreFull();if(!store.uid||sameN(yo,g.nom))return false;if(isAdmin)return true;
@@ -1544,6 +1544,22 @@ function banMsg(a,g){const yo=miNombreFull()||miNombreCorto(),cap=t=>String(t||"
   const ri=(()=>{try{return miRangoIdx()}catch(e){return -1}})(),rg=ri>=0&&RANGOS[ri]?RANGOS[ri].n:"";const soyPat=sameN(yo,g.nom);
   const quien=soyPat?"su patrocinador(a)":"parte de su línea de patrocinio en Action Leaders (equipo de "+cap(String(g.nom).split(/\s+/)[0])+")";
   return [`¡Hola ${first}! 🎉`,``,`*¡Bienvenido(a) a la familia Action Leaders!* Felicidades por su decisión de empezar con inCruises.`,``,`Soy *${yo}*${rg?`, *${rg}*`:""}, ${quien}.`,`Estoy aquí para ayudarle en lo que necesite: dudas, presentaciones, su primer crucero o cómo arrancar con su equipo.`,``,`📲 *Guarde mi número* para que me tenga a mano.`,``,`¡Vamos con todo! 🚀`].join("\n")}
+function banSp(nom){const x=(mios||[]).concat(socios||[]).find(y=>sameN((y.registro||{}).nombre||"",nom));return x||null}
+const FEL_MSG=[
+ (n,s,r)=>`¡Felicidades, ${n}! 🎉\n\nExcelente trabajo con la activación de ${s}. Así se construye un equipo.${r}\n\n¡Vamos por más! 💪`,
+ (n,s,r)=>`${n}, ¡qué orgullo! 👏\n\n${s} ya es parte del equipo gracias a usted.${r}\n\nSiga así, que lo mejor está por venir. 🚀`,
+ (n,s,r,p)=>`¡Bravo, ${n}! 🙌\n\nUna activación más: ${s}${p?" ("+p+")":""}. Su constancia está dando frutos.${r}\n\nCuente conmigo para lo que necesite.`,
+ (n,s,r)=>`¡Eso es liderazgo, ${n}! 🔥\n\nFelicidades por sumar a ${s} al equipo.${r}\n\nAyúdele a arrancar fuerte con su bienvenida y su rutina.`,
+ (n,s,r)=>`${n}, ¡felicidades! 🎊\n\nMe alegra mucho ver a ${s} en el equipo. Usted está demostrando que el sistema funciona.${r}\n\n¡A seguir sumando!`,
+ (n,s,r)=>`¡Qué gran noticia, ${n}! 🌟\n\n${s} se activó con usted. Cada socio nuevo es una familia más que va a viajar.${r}\n\n¡Felicidades y adelante!`,
+ (n,s,r)=>`¡Muy bien, ${n}! 💯\n\nFelicidades por la activación de ${s}. Su esfuerzo se nota.${r}\n\nAhora a duplicar: acompañe a ${s} en su rutina desde el primer día.`,
+ (n,s,r)=>`${n}, ¡felicidades por su nuevo socio! 🥳\n\nLa llegada de ${s} es fruto de su trabajo diario.${r}\n\nMe llena de orgullo su avance. ¡Siga brillando!`];
+function felReto(nom){try{const P=(T.config||{}).premios;if(!P||!P.vol||Date.now()>=Date.parse(P.fin))return"";const rk=rankDe(nom),v=rk?rk.V:0,min=+P.vol.min||1000;if(!v)return"";
+  return v>=min?`\n\n🏝️ Ya lleva ${fmt(v)} pts: ¡va en camino a Roatán!`:`\n\n🏝️ Ya suma ${fmt(v)} pts para el reto de Roatán. Le faltan ${fmt(min-v)} para los ${fmt(min)}.`}catch(e){return""}}
+function felMsg(g,a){const n=(g.nom||"").trim().split(/\s+/)[0],s=String(a.socio||"").trim().split(/\s+/)[0].toLowerCase().replace(/^\S/,c=>c.toUpperCase()),
+  i=parseInt(ahF((store.uid||"")+"|"+banK(a)),16)%FEL_MSG.length;return FEL_MSG[i](n,s,felReto(g.nom),a.paquete||"")}
+function banFelicitar(g){const L=g.F||[];if(!L.length||!g.sp)return;const a=L[L.length-1];banMarca("banFel",L);
+  const t=felMsg(g,a),w=waSocio(g.sp);if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(g.sp,t)}
 function banBienvenida(g){const L=g.W||[];if(!L.length)return;const ir=a=>{banMarca("banBienv",[a]);if(L.every(z=>(LS.get("banBienv")||{})[banK(z)]))setTimeout(cerrarBan,300);const t=banMsg(a,g),w=banWa(a);
     if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}toast("Aún no tenemos su WhatsApp")};
   if(L.length===1){ir(L[0]);return}
@@ -3385,7 +3401,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261027185305";var busy=false,pend=null;
+(function(){var V="20261027185932";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
