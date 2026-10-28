@@ -471,6 +471,11 @@ nav.tabs button{z-index:0;isolation:isolate}
 .inp{border-radius:12px;padding:11px 13px;background:var(--surface)}
 .inp:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
 @media (prefers-reduced-motion:no-preference){section.view:not([hidden]){animation:fadeUp .25s ease both}@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+.bell-btn{flex:none;position:relative;width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);font-size:18px;display:grid;place-items:center;margin-right:8px;animation:bellW 1.2s ease 2}
+.bell-btn i{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:#E11D48;color:#fff;font-style:normal;font-size:11.5px;font-weight:800;display:grid;place-items:center;padding:0 5px;border:2px solid #1b2130}
+@keyframes bellW{0%,100%{transform:rotate(0)}20%{transform:rotate(-14deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(5deg)}}
+.avisoTop{position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:99998;background:#111827;color:#fff;border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 16px 40px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.12);transform:translateY(-140%);transition:transform .35s cubic-bezier(.2,.8,.2,1);max-width:520px;margin:0 auto}
+.avisoTop.on{transform:translateY(0)}.avisoTop b{font-size:14.5px;display:block}.avisoTop small{opacity:.75;font-size:12.5px}.avisoTop button{flex:none;background:#2AC1F1;color:#06101F;border:0;border-radius:10px;padding:8px 12px;font:inherit;font-weight:800}
 .me-btn{flex:none;width:42px;height:42px;border-radius:50%;border:2px solid rgba(42,193,241,.85);background:#2AC1F1 center/cover no-repeat;color:#10222b;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 0 0 3px rgba(42,193,241,.18)}
 .me-btn:active{transform:scale(.95)}
 .pf-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
@@ -877,6 +882,7 @@ nav.tabs button{z-index:0;isolation:isolate}
   <header class="top">
     <div class="top-t"><b>Action Leaders <em>PLUS</em></b><span id="hello">Hola, líder</span></div>
     <div class="pv" id="topPvBox" data-empty><b class="num" id="topPv">—</b><small>Registros<br>inCruises</small></div>
+    <button class="bell-btn" id="bellBtn" aria-label="Avisos" hidden>🔔<i id="bellN">0</i></button>
     <button class="me-btn" id="meBtn" aria-label="Mi perfil" title="Mi perfil"></button>
   </header>
 
@@ -1024,7 +1030,7 @@ let fdb;try{fdb=initializeFirestore(app,{localCache:persistentLocalCache(),ignor
 const wrapS=q=>({docs:q.docs.map(d=>({id:d.id,data:()=>d.data()}))});
 const D=p=>({get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>setDoc(doc(fdb,p),b,o||{}),delete:()=>deleteDoc(doc(fdb,p)),
   onSnapshot:(cb,er)=>onSnapshot(doc(fdb,p),x=>cb({exists:x.exists(),data:()=>x.data()}),er||(()=>{}))});
-const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),getCache:async()=>wrapS(await getDocsFromCache(collection(fdb,p))),where:(f,v,op)=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v))))}),whereAll:L=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1])))))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
+const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),getCache:async()=>wrapS(await getDocsFromCache(collection(fdb,p))),where:(f,v,op)=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v)))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),where(f,op||"==",v)),q=>cb(wrapS(q)),er||(()=>{}))}),whereAll:L=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))),q=>cb(wrapS(q)),er||(()=>{}))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
   onSnapshot:(cb,er)=>onSnapshot(collection(fdb,p),q=>cb(wrapS(q)),er||(()=>{}))});
 const db={collection:C,doc:D};
 setPersistence(auth,browserLocalPersistence).catch(()=>{});
@@ -2370,18 +2376,29 @@ async function pedirL3(c){if(ahGate())return;if(!store.db||!(regDoc&&regDoc.regi
       openSheet(`<h2>✅ Solicitud enviada</h2><p style="margin:0">${esc(ld.n)} la verá al abrir su app.</p><p class="small muted" style="margin:0">Avísele por WhatsApp para que la confirme pronto:</p>
        <button class="btn" id="l3Wa" style="width:100%;background:#25D366;color:#fff">💬 Avisarle por WhatsApp</button><button class="btn ghost" data-close style="width:100%">Listo</button>`,()=>{
         $("#l3Wa").onclick=async()=>{if(navigator.share){try{await navigator.share({text:msg});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(msg)}})}})}
-async function loadL3(){if(!store.db||!store.uid)return;
-  try{const q=await l3Col().whereAll([["para",store.uid],["nP",true]]).get();l3P=q.docs.map(d=>Object.assign({id:d.id},d.data()))}catch(e){l3P=[]}
-  if(LS.get("l3Env"))try{const q=await l3Col().whereAll([["de",store.uid],["nD",true]]).get();l3D=q.docs.map(d=>Object.assign({id:d.id},d.data()))}catch(e){l3D=[]}
-  // el socio aceptó la hora que propuso el líder: se agenda sola
-  for(const x of l3P.filter(y=>y.estado==="aceptada")){await l3AgendaLider(x);try{await l3Col().doc(x.id).set({nP:false},{merge:true})}catch(e){}toast("✅ "+(x.deN||"").split(" ")[0]+" aceptó la nueva hora de la llamada de 3")}
-  l3P=l3P.filter(y=>y.estado==="pendiente");
-  for(const x of l3D)await l3ActCitaSocio(x);renderL3Card()}
+let l3Un=[],l3First={p:true,d:true},l3Seen=null;
+function avisoTop(t,sub,fn){try{if(navigator.vibrate)navigator.vibrate([60,40,60])}catch(e){}const d=document.createElement("div");d.className="avisoTop";d.innerHTML=`<span style="font-size:22px">🔔</span><span class="grow" style="min-width:0"><b>${esc(t)}</b>${sub?`<small>${esc(sub)}</small>`:""}</span><button type="button">Ver</button>`;
+  document.body.appendChild(d);requestAnimationFrame(()=>d.classList.add("on"));const bye=()=>{d.classList.remove("on");setTimeout(()=>d.remove(),400)};d.querySelector("button").onclick=e=>{e.stopPropagation();bye();if(fn)fn()};d.onclick=bye;setTimeout(bye,8000)}
+function avisosVer(){go("inicio");setTimeout(()=>{const c=[$("#l3Card"),$("#evaInv")].find(x=>x&&!x.hidden);if(c)c.scrollIntoView({behavior:"smooth",block:"center"})},250)}
+function bellPinta(){const b=$("#bellBtn");if(!b)return;const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid).length,n=l3P.length+l3D.length+pe;b.hidden=!n;$("#bellN").textContent=n>9?"9+":n;b.onclick=avisosVer}
+function l3SeenGet(){if(!l3Seen)l3Seen=LS.get("l3Seen")||{};return l3Seen}
+function l3Nuevo(id,t){const S=l3SeenGet(),k=id+"|"+t;if(S[k])return false;S[k]=Date.now();const lim=Date.now()-30*864e5;Object.keys(S).forEach(x=>{if(S[x]<lim)delete S[x]});LS.set("l3Seen",S);return true}
+async function loadL3(){if(!store.db||!store.uid||l3Un.length)return;
+  try{l3Un.push(l3Col().whereAll([["para",store.uid],["nP",true]]).onSnapshot(async q=>{const L=q.docs.map(d=>Object.assign({id:d.id},d.data()));
+    for(const x of L.filter(y=>y.estado==="aceptada")){await l3AgendaLider(x);try{await l3Col().doc(x.id).set({nP:false},{merge:true})}catch(e){}toast("✅ "+(x.deN||"").split(" ")[0]+" aceptó la nueva hora"+(x.lz?" del lanzamiento":" de la llamada de 3"))}
+    const P=L.filter(y=>y.estado==="pendiente");
+    if(!l3First.p)P.filter(x=>l3Nuevo(x.id,x.t||0)).forEach(x=>avisoTop((x.lz?(x.lzE?"🚀 "+(x.deN||"").split(" ")[0]+" planeó su lanzamiento":"🚀 "+(x.deN||"").split(" ")[0]+" le invitó a su lanzamiento"):"📞 "+(x.deN||"").split(" ")[0]+" le pide una llamada de 3"),l3Cuando(x.fecha,x.hora),avisosVer));
+    else P.forEach(x=>l3Nuevo(x.id,x.t||0));
+    l3First.p=false;l3P=P;renderL3Card();bellPinta()},()=>{}))}catch(e){}
+  try{l3Un.push(l3Col().whereAll([["de",store.uid],["nD",true]]).onSnapshot(async q=>{const L=q.docs.map(d=>Object.assign({id:d.id},d.data()));for(const x of L)await l3ActCitaSocio(x);
+    if(!l3First.d)L.filter(x=>l3Nuevo(x.id,x.tR||0)).forEach(x=>{const ld=(x.paraN||"").split(" ")[0];avisoTop(x.estado==="aceptada"?"✅ "+ld+" confirmó su "+(x.lz?"lanzamiento":"llamada de 3"):x.estado==="propuesta"?"🕗 "+ld+" propone otra hora":"✖ "+ld+" no puede en ese horario",l3Cuando(x.fecha,x.hora),avisosVer)});
+    else L.forEach(x=>l3Nuevo(x.id,x.tR||0));
+    l3First.d=false;l3D=L;renderL3Card();renderHoyCitas();renderMiAgenda();bellPinta()},()=>{}))}catch(e){}}
 async function l3AgendaLider(x){if(citas.some(c=>c.l3===x.id))return;if(x.lz){const d1=(x.deN||"").split(" ")[0],ci=x.lzE?{tipo:"lider",titulo:"🚀 Mi lanzamiento con "+d1,fecha:x.fecha,hora:x.hora,dur:60,enlace:x.enlace||"",nota:"",l3:x.id,lzR3:1,lz:1,lzU:x.de,lzN:x.deN,lzR:lzRango(x.deN),inv:[]}:{tipo:"lider",titulo:"🚀 Lanzamiento de "+d1,fecha:x.fecha,hora:x.hora,dur:60,enlace:x.enlace||"",nota:"",l3:x.id,lzR3:1,lz:1,lzE:1,lzSU:x.de,lzSN:x.deN,inv:[]};const id=await saveCita(ci);if(id){ci.id=id;citas.push(ci);renderHoyCitas();renderMiAgenda()}return}const ci={tipo:"lider",titulo:x.lz?"🚀 Lanzamiento de "+(x.deN||"").split(" ")[0]:"📞 Llamada de 3 · "+(x.deN||"").split(" ")[0]+" con "+x.pros,fecha:x.fecha,hora:x.hora,dur:60,enlace:x.enlace||"",nota:x.nota||"",l3:x.id};const id=await saveCita(ci);if(id){ci.id=id;citas.push(ci);renderHoyCitas();renderMiAgenda()}}
 async function l3ActCitaSocio(x){const ci=citas.find(c=>c.l3===x.id);if(!ci)return;const ld=(x.paraN||"").split(" ")[0],p=(x.pros||"").split(" ")[0];
   const est=x.estado==="aceptada"?"✅ confirmada":x.estado==="propuesta"?"🕗 propone otra hora":x.estado==="rechazada"?"✖ no puede":"⏳ por confirmar";
   const n=Object.assign({},ci,{titulo:x.lz?(x.lzE?"🚀 Lanzamiento de "+ld+" ("+est+")":"🚀 Mi lanzamiento con "+ld+" ("+est+")"):"📞 Llamada de 3 con "+ld+" · "+p+" ("+est+")",fecha:x.fecha,hora:x.hora});if(n.titulo!==ci.titulo||n.fecha!==ci.fecha||n.hora!==ci.hora){await saveCita(n);Object.assign(ci,n)}}
-function renderL3Card(){const c=$("#l3Card");if(!c)return;if(!l3P.length&&!l3D.length){c.hidden=true;return}c.hidden=false;
+function renderL3Card(){try{bellPinta()}catch(e){}const c=$("#l3Card");if(!c)return;if(!l3P.length&&!l3D.length){c.hidden=true;return}c.hidden=false;
   c.innerHTML=l3P.map(x=>`<div style="display:flex;flex-direction:column;gap:6px;padding-bottom:10px">
      <b style="font-size:16px">${x.lz?(x.lzE?"🚀 "+esc((x.deN||"").split(" ")[0])+" planeó el lanzamiento de su negocio":"🚀 "+esc((x.deN||"").split(" ")[0])+" le invita a su lanzamiento de negocio"):"📞 "+esc((x.deN||"").split(" ")[0])+" le pide una llamada de 3"}</b>
      <span class="small" style="font-weight:700;color:var(--brand)">${esc(l3Cuando(x.fecha,x.hora))} · ${x.tipo==="zoom"?"💻 Zoom":"📱 WhatsApp"}${x.lz?"":" · Prospecto: "+esc(x.pros)}</span>
@@ -2524,7 +2541,12 @@ const evCol=()=>store.db.collection("agendaEv");
 let EVA=null,EVAt=0,evaFont=null;
 function evaFonts(){if(!evaFont){evaFont=Promise.all([["ALO","media/fonts/Outfit-Bold.ttf"],["ALOR","media/fonts/Outfit-Regular.ttf"],["ALBG","media/fonts/BricolageGrotesque-Bold.ttf"]].map(([n,u])=>{try{const f=new FontFace(n,"url("+u+")");return f.load().then(x=>document.fonts.add(x)).catch(()=>{})}catch(e){return null}}))}return evaFont}
 function evaFichas(){const r=miRegistro()||{},L=(Array.isArray(r.linea)?r.linea:[]).slice();if(r.patrocinadorUid&&!L.includes(r.patrocinadorUid))L.push(r.patrocinadorUid);return ["all","u:"+store.uid].concat(L.filter(Boolean).map(u=>"d:"+u)).concat(isAdmin?["adm"]:[]).slice(0,30)}
-async function loadEvA(force){if(!store.db||!store.uid)return;if(!force&&EVA&&Date.now()-EVAt<6e5){renderEvA();return}
+let evaUn=null,evaFirst=true;
+function evaListen(){if(evaUn||!store.db||!store.uid)return;try{evaUn=evCol().where("ver",evaFichas(),"array-contains-any").onSnapshot(q=>{EVAt=Date.now();EVA=q.docs.map(d=>Object.assign({id:d.id},d.data())).filter(e=>e.fecha>=dkey(new Date(Date.now()-864e5)));
+  const P=EVA.filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid);
+  if(!evaFirst)P.filter(e=>l3Nuevo("ev"+e.id,e.t||0)).forEach(e=>avisoTop((e.tipo==="gran"?"🎤 ":"🤝 ")+(e.creN||"").split(" ")[0]+" le incluyó en "+(e.tipo==="gran"?"un Gran evento":"una Junta"),(e.ciudad||"En línea")+" · "+evaCuando(e),avisosVer));else P.forEach(e=>l3Nuevo("ev"+e.id,e.t||0));
+  evaFirst=false;renderEvA();bellPinta()},()=>{})}catch(e){evaUn=null}}
+async function loadEvA(force){if(!store.db||!store.uid)return;evaListen();if(evaUn&&EVA){renderEvA();return}if(!force&&EVA&&Date.now()-EVAt<6e5){renderEvA();return}
   try{const q=await evCol().where("ver",evaFichas(),"array-contains-any").get();EVAt=Date.now();EVA=q.docs.map(d=>Object.assign({id:d.id},d.data())).filter(e=>e.fecha>=dkey(new Date(Date.now()-864e5)))}catch(e){EVA=EVA||[]}
   renderEvA()}
 const EVA_TIPO={gran:"🎤 Gran evento de negocios",junta:"🤝 Junta de negocios"};
@@ -2539,7 +2561,7 @@ function renderEvA(){const L=(EVA||[]).slice().sort((a,b)=>(a.fecha+a.hora).loca
   const c=$("#evaInv");if(!c)return;const P=L.filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid);
   if(!P.length){c.hidden=true;return}c.hidden=false;
   c.innerHTML=P.map(e=>{const yo=(e.lid||[]).find(x=>x.uid===store.uid)||{};return `<div style="display:flex;flex-direction:column;gap:6px;padding-bottom:10px"><b style="font-size:16px">${e.tipo==="gran"?"🎤":"🤝"} ${esc((e.creN||"").split(" ")[0])} le incluyó ${yo.rol==="esp"?"como invitado especial":yo.rol==="anf"?"como anfitrión":"como acompañante"}</b><span class="small" style="font-weight:700;color:var(--brand)">${esc(EVA_TIPO[e.tipo])} · ${esc(e.ciudad||"En línea")} · ${esc(evaCuando(e))}</span><div class="row wrap" style="gap:6px"><button class="btn sm" data-evok="${esc(e.id)}">✅ Confirmar</button><button class="btn sm ghost" data-evno="${esc(e.id)}" style="color:var(--bad)">✖ No puedo</button><button class="btn sm ghost" data-evver="${esc(e.id)}">Ver flyer</button></div></div>`}).join("");
-  const set=async(id,v)=>{const e=P.find(x=>x.id===id);if(!e)return;try{await evCol().doc(id).set({conf:Object.assign({},e.conf||{},{[store.uid]:v})},{merge:true});e.conf=Object.assign({},e.conf||{},{[store.uid]:v});toast(v==="ok"?"✅ Confirmado. Ya está en su agenda.":"Le avisamos que no puede");renderEvA()}catch(x){toast("No se pudo guardar. Revise su conexión.")}};
+  const set=async(id,v)=>{const e=P.find(x=>x.id===id);if(!e)return;try{await evCol().doc(id).set({conf:Object.assign({},e.conf||{},{[store.uid]:v})},{merge:true});e.conf=Object.assign({},e.conf||{},{[store.uid]:v});toast(v==="ok"?"✅ Confirmado. Ya está en su agenda.":"Le avisamos que no puede");renderEvA();bellPinta()}catch(x){toast("No se pudo guardar. Revise su conexión.")}};
   c.querySelectorAll("[data-evok]").forEach(b=>b.onclick=()=>set(b.dataset.evok,"ok"));c.querySelectorAll("[data-evno]").forEach(b=>b.onclick=()=>set(b.dataset.evno,"no"));
   c.querySelectorAll("[data-evver]").forEach(b=>b.onclick=()=>{const e=P.find(x=>x.id===b.dataset.evver);if(e)evaVer(e)})}
 // ---- flyer en canvas (fondos prediseñados en media/eventos) ----
@@ -3696,7 +3718,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261027223823";var busy=false,pend=null;
+(function(){var V="20261028121412";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

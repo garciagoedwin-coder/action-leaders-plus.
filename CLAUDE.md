@@ -221,3 +221,9 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Citas pasadas (cualquier tipo, sin resultado): "✅ Se realizó" / "✖ No se realizó" (citaResultado) con notas opcionales; guarda c.res y c.resNota, agrega la nota al contacto del CRM; si es prospecto y se realizó, suma la presentación (sumarPres → c.hecha). "No se realizó" ofrece "🔁 Guardar y reprogramar" (reprogramar limpia res).
 - Citas de Llamada de 3 / Lanzamiento: botón fijo "💬 Avisar por WhatsApp" (citaAvisar: lee llamadas3/{l3} y el WhatsApp de la otra persona) y "🚀 Ver flyer" en lanzamientos. En lzVer, si ya se envió la invitación, sale "💬 Avisar a … por WhatsApp".
 - Botón "📞 Pedir llamada de 3" en azul de marca.
+
+## 21. Avisos en vivo (app abierta)
+- loadL3 usa onSnapshot (l3Un): para==yo&nP (solicitudes nuevas) y de==yo&nD (respuestas). evaListen escucha agendaEv con ver array-contains-any de evaFichas.
+- avisoTop(t,sub,fn): banner arriba + vibración 8 s. Campanita #bellBtn/#bellN (bellPinta) cuenta l3P + eventos sin confirmar; avisosVer lleva a Inicio.
+- Dedupe con LS "l3Seen"; el primer snapshot no dispara banner. Con la app cerrada NO hay aviso (requeriría Blaze + FCM).
+- Stub de pruebas: onSnapshot de consultas re-consulta cada 1 s.
