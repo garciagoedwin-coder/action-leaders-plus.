@@ -3466,6 +3466,20 @@
    "mes": "Octubre 2026",
    "lider": 200,
    "esp": 500
+  },
+  "premios": {
+   "mes": "2026-10",
+   "fin": "2026-11-01T00:00:00Z",
+   "vol": {
+    "t": "Viaje a Roatán",
+    "ic": "🏝️",
+    "min": 1000
+   },
+   "reg": {
+    "t": "Pack de libros de negocios",
+    "ic": "📚"
+   },
+   "res": null
   }
  },
  "fotos": [
