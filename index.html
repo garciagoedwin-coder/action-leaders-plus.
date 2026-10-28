@@ -3196,7 +3196,7 @@ function subscribeTeam(db){
 async function cargarFotos(force){if(!store.db)return;const docs=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));let t=0,s=null;try{t=+localStorage.getItem("alp:fotosT")||0}catch(e){}
   if(!force&&Date.now()-t<6*36e5){try{s=await store.db.collection("fotos").getCache()}catch(e){s=null}}
   if(!s||!s.docs.length){try{s=await store.db.collection("fotos").get();try{localStorage.setItem("alp:fotosT",String(Date.now()))}catch(e){}}catch(e){return}}
-  fotosFs=docs(s);T.fotos=fotosRepo.concat(fotosFs);try{renderWho();renderEquipo();renderHist()}catch(e){}}
+  fotosFs=docs(s);T.fotos=fotosRepo.concat(fotosFs);try{renderWho();renderEquipo();renderHist()}catch(e){}try{renderPremios()}catch(e){}}
 async function loadMine(){
   const lun0=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7)),m0=new Date(now.getFullYear(),now.getMonth(),1),st0=lun0<m0?lun0:m0;
   const nk=Math.max(7,Math.round((new Date(now.getFullYear(),now.getMonth(),now.getDate())-st0)/864e5)+1);
@@ -3385,7 +3385,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261027184452";var busy=false,pend=null;
+(function(){var V="20261027185305";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
