@@ -216,3 +216,8 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Doc: {tipo, modo presencial|virtual, ciudad, lugar, lugarSub, maps, zoom, fecha, hora, form (Google Forms), dis 1-3, vis, lid[{uid,n,r,rol esp|acomp|anf}], lidU[], cre, creN, conf{uid:ok|no}, ver[]}.
 - Líderes incluidos: tarjeta #evaInv en Inicio (Confirmar / No puedo / Ver flyer).
 - Flyer en canvas (evaCanvas): fondos prediseñados en media/eventos/{g1,g2,g3,j1,j2,j3}.jpg (sacados de tools/flyer/evento/*.html con lo variable oculto) + textos y fotos encima; fuentes en media/fonts (Outfit y Bricolage, OFL). Script de invitación: evaScript (con link del formulario). Invitar desde el CRM: evaInvitar.
+
+## 20. Resultado de citas y avisos (27 oct, noche)
+- Citas pasadas (cualquier tipo, sin resultado): "✅ Se realizó" / "✖ No se realizó" (citaResultado) con notas opcionales; guarda c.res y c.resNota, agrega la nota al contacto del CRM; si es prospecto y se realizó, suma la presentación (sumarPres → c.hecha). "No se realizó" ofrece "🔁 Guardar y reprogramar" (reprogramar limpia res).
+- Citas de Llamada de 3 / Lanzamiento: botón fijo "💬 Avisar por WhatsApp" (citaAvisar: lee llamadas3/{l3} y el WhatsApp de la otra persona) y "🚀 Ver flyer" en lanzamientos. En lzVer, si ya se envió la invitación, sale "💬 Avisar a … por WhatsApp".
+- Botón "📞 Pedir llamada de 3" en azul de marca.

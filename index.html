@@ -2486,11 +2486,11 @@ async function abrirLanz(){if(ahGate())return;if(!store.db||!(regDoc&&regDoc.reg
 async function lzVer(ci){const o=lzDatos(ci);let file=null;
   openSheet(`<h2>🚀 ${ci.lzE?"Lanzamiento de "+esc((ci.lzSN||"").split(" ")[0]):"Su lanzamiento"}</h2><p class="small muted" style="margin:0">${ci.lzE?"Usted es el líder":"Con "+esc(ci.lzN)} · ${esc(citaCuando(ci))}</p>
    <div style="aspect-ratio:1080/1350;border-radius:14px;overflow:hidden;background:#070B14;display:grid;place-items:center"><img id="lzImg" alt="Flyer del lanzamiento" style="width:100%;display:block"><span id="lzWait" class="small" style="color:#fff">Creando su flyer…</span></div>
-   ${ci.l3||ci.lzR3?"":`<button class="btn" id="lzLd" style="width:100%">📩 Enviar invitación a ${esc(((ci.lzE?ci.lzSN:ci.lzN)||"").split(" ")[0])}</button>`}
+   ${ci.l3||ci.lzR3?`<button class="btn" id="lzAv" style="width:100%;background:#25D366;color:#fff">💬 Avisar a ${esc(((ci.lzE?ci.lzSN:ci.lzN)||"").split(" ")[0])} por WhatsApp</button>`:`<button class="btn" id="lzLd" style="width:100%">📩 Enviar invitación a ${esc(((ci.lzE?ci.lzSN:ci.lzN)||"").split(" ")[0])}</button>`}
    <button class="btn" id="lzInv" style="width:100%;background:#25D366;color:#fff">👥 Invitar a mis prospectos${(ci.inv||[]).length?" ("+ci.inv.length+" invitados)":""}</button>
    <div class="row" style="gap:8px"><button class="btn ghost grow" id="lzDl">⬇️ Guardar flyer</button><button class="btn ghost grow" data-close>Cerrar</button></div>`,()=>{
     lzFile(o).then(f=>{file=f;const im=$("#lzImg"),w=$("#lzWait");if(im){im.src=URL.createObjectURL(f);if(w)w.remove()}}).catch(()=>toast("No se pudo crear el flyer"));
-    const ld=$("#lzLd");if(ld)ld.onclick=()=>lzInvitarLider(ci);
+    const ld=$("#lzLd");if(ld)ld.onclick=()=>lzInvitarLider(ci);const av=$("#lzAv");if(av)av.onclick=()=>citaAvisar(ci);
     $("#lzInv").onclick=()=>{closeSheet();setTimeout(()=>lzInvitados(ci),250)};
     $("#lzDl").onclick=async()=>{if(!file){toast("El flyer aún se está creando");return}if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file]});return}catch(x){if(x&&x.name==="AbortError")return}}const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download="Lanzamiento.jpg";a.click()}})}
 async function lzInvitarLider(ci){const bt=$("#lzLd");if(bt)bt.disabled=true;
@@ -2989,12 +2989,35 @@ function citaListo(c){openSheet(`<h2>✅ Cita agendada</h2><p style="margin:0"><
    <button class="btn ghost" data-close style="width:100%">Listo</button>`,()=>{$("#clWa").onclick=()=>citaWa(c,false);$("#clCal").onclick=()=>citaIcs(c)})}
 function citaCard(c){const t=CITA_T[c.tipo]||CITA_T.zoom,pas=citaIni(c).getTime()+(c.dur||60)*6e4<Date.now(),nm=c.tipo==="lider"?c.titulo:c.nombre;
   return `<div class="cita ${pas?"ev-past":""}"><div class="ch-h"><b>${esc(h12(c.hora))}</b><span class="small muted">${c.dur>=60?(c.dur/60)+" h":c.dur+" min"}</span></div><div class="grow" style="min-width:0">
-   <b style="font-weight:600">${esc(nm||"Cita")}</b><div class="small muted">${t[0]} ${t[1]}${c.tipo==="persona"&&c.lugar?" · "+esc(c.lugar):""}${c.tipo==="lider"&&c.nota?" · "+esc(c.nota):""}</div>
-   <div class="row wrap" style="gap:6px;margin-top:8px">${pas&&c.fecha===TODAY&&c.tipo!=="lider"&&!c.hecha?`<button class="btn sm" data-cid2="${esc(c.id)}">✅ Sí, se dio la reunión</button>`:""}${c.hecha?'<span class="chip c-good">🎯 Presentación registrada</span>':""}${c.reprog&&!c.hecha?`<span class="chip c-gold">🔁 Reprogramada${c.reprog>1?" ("+c.reprog+")":""}</span>`:""}${!pas&&c.tipo!=="lider"?`<button class="btn sm" style="background:#25D366;color:#fff" data-ciw="${esc(c.id)}">💬 Invitación</button><button class="btn sm ghost" data-cir="${esc(c.id)}">⏰ Recordatorio</button>`:""}${!pas&&c.enlace&&(c.tipo==="zoom"||c.tipo==="lider")?`<a class="btn sm ghost" href="${esc(safeUrl(c.enlace))}" target="_blank" rel="noopener">Entrar al Zoom</a>`:""}${!pas?`<button class="btn sm ghost" data-cic="${esc(c.id)}">➕ Calendario</button>`:""}${!c.hecha?`<button class="btn sm ${pas?"gold":"ghost"}" data-cip="${esc(c.id)}">🔁 Reprogramar</button>`:""}<button class="btn sm ghost" data-cie="${esc(c.id)}">Editar</button></div></div></div>`}
-function bindCitas(root){root.querySelectorAll("[data-cid2]").forEach(b=>b.onclick=async()=>{const ci=citas.find(x=>x.id===b.dataset.cid2);if(!ci)return;let ct=ci.cid&&contacts.find(x=>x.id===ci.cid);
+   <b style="font-weight:600">${esc(nm||"Cita")}</b><div class="small muted">${t[0]} ${t[1]}${c.tipo==="persona"&&c.lugar?" · "+esc(c.lugar):""}${c.tipo==="lider"&&c.nota?" · "+esc(c.nota):""}</div>${c.resNota?`<div class="small" style="margin-top:4px">📝 ${esc(c.resNota)}</div>`:""}
+   <div class="row wrap" style="gap:6px;margin-top:8px">${pas&&!c.hecha&&!c.res?`<button class="btn sm" data-cok="${esc(c.id)}">✅ Se realizó</button><button class="btn sm ghost" data-cno="${esc(c.id)}" style="color:var(--bad)">✖ No se realizó</button>`:""}${c.hecha?'<span class="chip c-good">🎯 Presentación registrada</span>':c.res==="ok"?'<span class="chip c-good">✅ Se realizó</span>':""}${c.res==="no"?'<span class="chip c-bad">✖ No se realizó</span>':""}${c.lz?`<button class="btn sm ghost" data-cilz="${esc(c.id)}">🚀 Ver flyer</button>`:""}${c.tipo==="lider"&&(c.l3||c.lzU||c.lzSU)?`<button class="btn sm" style="background:#25D366;color:#fff" data-ciav="${esc(c.id)}">💬 Avisar por WhatsApp</button>`:""}${c.reprog&&!c.hecha?`<span class="chip c-gold">🔁 Reprogramada${c.reprog>1?" ("+c.reprog+")":""}</span>`:""}${!pas&&c.tipo!=="lider"?`<button class="btn sm" style="background:#25D366;color:#fff" data-ciw="${esc(c.id)}">💬 Invitación</button><button class="btn sm ghost" data-cir="${esc(c.id)}">⏰ Recordatorio</button>`:""}${!pas&&c.enlace&&(c.tipo==="zoom"||c.tipo==="lider")?`<a class="btn sm ghost" href="${esc(safeUrl(c.enlace))}" target="_blank" rel="noopener">Entrar al Zoom</a>`:""}${!pas?`<button class="btn sm ghost" data-cic="${esc(c.id)}">➕ Calendario</button>`:""}${!c.hecha?`<button class="btn sm ${pas?"gold":"ghost"}" data-cip="${esc(c.id)}">🔁 Reprogramar</button>`:""}<button class="btn sm ghost" data-cie="${esc(c.id)}">Editar</button></div></div></div>`}
+function bindCitas(root){root.querySelectorAll("[data-cok]").forEach(b=>b.onclick=()=>citaResultado(citas.find(x=>x.id===b.dataset.cok),"ok"));root.querySelectorAll("[data-cno]").forEach(b=>b.onclick=()=>citaResultado(citas.find(x=>x.id===b.dataset.cno),"no"));root.querySelectorAll("[data-cilz]").forEach(b=>b.onclick=()=>{const c=citas.find(x=>x.id===b.dataset.cilz);if(c)lzVer(c)});root.querySelectorAll("[data-ciav]").forEach(b=>b.onclick=()=>citaAvisar(citas.find(x=>x.id===b.dataset.ciav)));root.querySelectorAll("[data-cid2]").forEach(b=>b.onclick=async()=>{const ci=citas.find(x=>x.id===b.dataset.cid2);if(!ci)return;let ct=ci.cid&&contacts.find(x=>x.id===ci.cid);
     if(!ct){ct={name:ci.nombre||"Prospecto",cc:"504",phone:"",stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(ct);if(!id)return;ct.id=id;contacts.push(ct);ci.cid=id}
     if(!(await sumarPres(ct,ci))){ci.hecha=true;await saveCita(ci);renderHoyCitas();renderMiAgenda()}});root.querySelectorAll("[data-ciw]").forEach(b=>b.onclick=()=>citaWa(citas.find(x=>x.id===b.dataset.ciw),false));root.querySelectorAll("[data-cir]").forEach(b=>b.onclick=()=>citaWa(citas.find(x=>x.id===b.dataset.cir),true));
   root.querySelectorAll("[data-cic]").forEach(b=>b.onclick=()=>citaIcs(citas.find(x=>x.id===b.dataset.cic)));root.querySelectorAll("[data-cie]").forEach(b=>b.onclick=()=>abrirCita(citas.find(x=>x.id===b.dataset.cie)));root.querySelectorAll("[data-cip]").forEach(b=>b.onclick=()=>abrirReprog(citas.find(x=>x.id===b.dataset.cip)))}
+function citaResultado(ci,r){if(!ci)return;const nm=ci.tipo==="lider"?ci.titulo:ci.nombre;
+  openSheet(`<h2>${r==="ok"?"✅ Se realizó":"✖ No se realizó"}</h2><span data-nofocus hidden></span><p class="small muted" style="margin:0">${esc(nm||"Cita")} · ${esc(citaCuando(ci))}</p>
+   <div class="field"><label for="crN">Notas <span class="muted">(opcional)</span></label><textarea class="inp" id="crN" rows="3" maxlength="300" placeholder="${r==="ok"?"Ej.: le interesó, quiere Premium; le escribo el viernes":"Ej.: no se conectó, reagendar el jueves"}"></textarea></div>
+   <button class="btn" id="crOk" style="width:100%">Guardar</button>${r==="no"?`<button class="btn gold" id="crRp" style="width:100%">🔁 Guardar y reprogramar</button>`:""}<button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
+    const guardar=async()=>{const nota=$("#crN").value.trim().slice(0,300);ci.res=r;ci.resNota=nota;
+      let ct=ci.cid&&contacts.find(x=>x.id===ci.cid);
+      if(r==="ok"&&ci.tipo!=="lider"){if(!ct){ct={name:ci.nombre||"Prospecto",cc:"504",phone:"",stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(ct);if(id){ct.id=id;contacts.push(ct);ci.cid=id}}
+        if(ct)try{if(!(await sumarPres(ct,ci)))ci.hecha=true}catch(e){ci.hecha=true}}
+      if(ct&&nota){ct.note=(ct.note?ct.note+" · ":"")+"📝 "+niceDate(ci.fecha)+" "+(r==="ok"?"se realizó":"no se realizó")+": "+nota;ct.updated=Date.now();try{await store.saveContact(ct)}catch(e){}}
+      await saveCita(ci);renderHoyCitas();renderMiAgenda();try{renderCRM()}catch(e){}};
+    $("#crOk").onclick=async()=>{$("#crOk").disabled=true;await guardar();closeSheet();toast(r==="ok"?"✅ Guardado":"Guardado")};
+    const rp=$("#crRp");if(rp)rp.onclick=async()=>{rp.disabled=true;await guardar();closeSheet();setTimeout(()=>abrirReprog(ci),250)}})}
+async function citaAvisar(c){if(!c)return;let other="",nm="",x=null;
+  if(c.l3){try{const d=await l3Col().doc(c.l3).get();if(d.exists){x=d.data();other=x.de===store.uid?x.para:x.de;nm=x.de===store.uid?x.paraN:x.deN}}catch(e){}}
+  if(!other&&c.lzU){other=c.lzU;nm=c.lzN}if(!other&&c.lzSU){other=c.lzSU;nm=c.lzSN}
+  if(!other){toast("No encontramos a la otra persona de esta cita");return}
+  let w="";try{const d=await store.db.doc("users/"+other).get();if(d.exists)w=String(((d.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}catch(e){}
+  const f=(nm||"").split(" ")[0],yo=miNombreCorto()||"",cu=citaCuando(c).toLowerCase(),lz=c.lz||(x&&x.lz);
+  const t=lz?(c.lzE?`Hola ${f} 🚀\n\nLe recuerdo *el lanzamiento de su negocio* para ${cu}. Yo le acompaño como su líder.\n\nAbra la app para confirmarlo y para invitar a sus prospectos con su flyer.`:`Hola ${f} 🙏\n\nLe recuerdo *el lanzamiento de mi negocio* con usted para ${cu}.\n\n¿Me lo confirma en la app? ¡Gracias por acompañarme!`)
+    :`Hola ${f} 👋\n\nLe escribo por la *llamada de 3*${x&&x.pros?" con *"+x.pros+"*":""} para ${cu}${c.enlace?"\n\n🎥 Zoom: "+c.enlace:""}.\n\n¿Me la confirma en la app? ¡Gracias!`;
+  const msg=t+(yo?"\n\n*"+yo+"*":"");
+  if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(msg);return}
+  if(navigator.share){try{await navigator.share({text:msg});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(msg)}
 function abrirReprog(c){if(!c)return;const pas=citaIni(c).getTime()<Date.now(),nm=c.tipo==="lider"?c.titulo:c.nombre,f0=pas||c.fecha<TODAY?dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1)):c.fecha;
   openSheet(`<h2>🔁 Reprogramar cita</h2><span data-nofocus hidden></span><p class="small muted" style="margin:0">${esc(nm||"Cita")} · antes: ${esc(citaCuando(c))}${c.reprog?` · reprogramada ${c.reprog} ${c.reprog===1?"vez":"veces"}`:""}</p>
    <div class="grid2"><div class="field"><label for="rpF">Nuevo día</label><input class="inp" type="date" id="rpF" value="${esc(f0)}" min="${TODAY}"></div><div class="field"><label for="rpH">Nueva hora</label><input class="inp" type="time" id="rpH" value="${esc(c.hora||"19:00")}"></div></div>
@@ -3005,7 +3028,7 @@ function abrirReprog(c){if(!c)return;const pas=citaIni(c).getTime()<Date.now(),n
       w.hidden=!(ch||a<Date.now());w.textContent=a<Date.now()?"⚠️ Esa hora ya pasó. Elija una fecha y hora futuras.":ch?"⚠️ Ya tiene una cita a esa hora: "+(ch.tipo==="lider"?ch.titulo:ch.nombre||"Cita")+" ("+h12(ch.hora)+")":""};
     $("#rpF").oninput=chk;$("#rpH").oninput=chk;chk();
     $("#rpOk").onclick=async()=>{const f=$("#rpF").value,h=$("#rpH").value;if(!f||!h){toast("Elija día y hora");return}if(citaIni({fecha:f,hora:h}).getTime()<Date.now()){toast("Elija una fecha y hora futuras");return}
-      const n=Object.assign({},c,{fecha:f,hora:h,reprog:(+c.reprog||0)+1,hecha:false});const bt=$("#rpOk");bt.disabled=true;const id=await saveCita(n);bt.disabled=false;if(!id)return;
+      const n=Object.assign({},c,{fecha:f,hora:h,reprog:(+c.reprog||0)+1,hecha:false,res:""});const bt=$("#rpOk");bt.disabled=true;const id=await saveCita(n);bt.disabled=false;if(!id)return;
       const i=citas.findIndex(x=>x.id===c.id);if(i>=0)citas[i]=n;renderHoyCitas();renderMiAgenda();publicarSlots();try{renderCRM()}catch(e){}
       if(n.tipo==="lider"){closeSheet();toast("🔁 Cita reprogramada");return}
       openSheet(`<h2>✅ Cita reprogramada</h2><p style="margin:0"><b>${esc(nm||"Cita")}</b><br><span class="muted">Nuevo horario: ${esc(citaCuando(n))}</span></p><p class="small muted" style="margin:0">Avísele el nuevo horario con un clic:</p>
@@ -3037,7 +3060,7 @@ function renderMiAgenda(){const el=$("#agMia");if(!el||agVista!=="mia")return;if
   const Hh=miHorario(),dn=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
   el.innerHTML=`<div class="row between"><div><p class="eyebrow">Tus citas y llamadas</p><h1>Mi agenda</h1></div><button class="btn sm gold" id="ciNew">+ Nueva cita</button></div>
    <button class="btn" id="lzNew" style="width:100%;background:linear-gradient(90deg,#B45309,#F5B700);color:#fff">🚀 Planear mi lanzamiento de negocio</button>
-   <button class="btn ghost" id="l3New" style="width:100%">📞 Pedir llamada de 3 a un líder</button>
+   <button class="btn" id="l3New" style="width:100%;background:linear-gradient(90deg,#0A7DAD,#2AC1F1);color:#fff;box-shadow:0 8px 20px -12px rgba(10,125,173,.8)">📞 Pedir llamada de 3 a un líder</button>
    <div class="card row between" style="gap:10px"><div style="min-width:0"><b style="font-size:14px">🌐 Agenda desde tu página</b><div class="small muted">${[1,2,3,4,5,6,0].filter(d=>Hh.dias.includes(d)).map(d=>dn[d]).join(", ")} · ${Hh.horas.map(h12).join(", ")}</div></div><button class="btn sm ghost" id="hEdit" style="flex:none">⚙️ Mi horario</button></div>
    <div class="card" style="gap:10px"><div class="cal-head"><button id="wkPrev" aria-label="Semana anterior">‹</button><h3 style="margin:0">${agWk===0?"Esta semana":agWk===1?"Próxima semana":rango}</h3><button id="wkNext" aria-label="Semana siguiente">›</button></div>
     <p class="small muted" style="margin:0;text-align:center">${rango} · <b style="color:var(--ink)">${tot} ${tot===1?"cita":"citas"}</b> · ${hrs%1?hrs.toFixed(1):hrs} h${lleno.length?` · <span style="color:var(--warn);font-weight:700">${lleno.join(", ")} lleno</span>`:""}</p>
@@ -3673,7 +3696,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261027221851";var busy=false,pend=null;
+(function(){var V="20261027223823";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
