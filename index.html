@@ -1803,7 +1803,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
   const seg=lin?`<div class="seg" id="miosSeg"><button aria-selected="${miosVista==="dir"}" data-mv="dir">Directos (${mios.filter(x=>x.nivel===1).length})</button><button aria-selected="${miosVista==="todo"}" data-mv="todo">Toda mi línea (${mios.length})</button></div>`:"";
   const A=V.map(x=>actDe(x)),n=V.length,hoy=A.filter(a=>a.hoy>0).length,sem=A.filter(a=>a.d7>0).length,bien=A.filter(a=>a.bien).length,pres=A.reduce((t,a)=>t+(a.sem.presentaciones||0),0);
   const st=(v,t,c)=>`<div class="card" style="gap:2px"><b class="num" style="font-size:28px${c?";color:"+c:""}">${v}</b><span class="small muted">${t}</span></div>`;
-  const cname=k=>{const c=CURSOS.find(x=>x.k===k);return c?c.t:k};
+  const cname=k=>{const c=cursosL().find(x=>x.k===k);return c?c.t:k};
   let lvl=0;
   b.innerHTML=`${idxCard()}${seg}<div class="grid2">${st(n,miosVista==="todo"?"Socios en toda tu línea":n===1?"Socio directo":"Socios directos")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}${st(pres,"Presentaciones esta semana")}</div>
    <div class="card" style="gap:0">${V.map(x=>{const r=x.registro||{},a=actDe(x),S=a.sem,nm=r.nombre||"Socio",ua=tsMs(x.ultimoAcceso),cs=((x.actividad||{}).cursos||[]);
@@ -2979,12 +2979,13 @@ async function bajarPdf(u,n){const f=pdfCache[u+"#f"];
   const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=n;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);toast("Descargando la hoja…")}
 const CURSOS=[{k:"presentacion-impresa",t:"Aprende a dar una Presentación Impresa",d:"Mira el video y descarga la hoja para presentar el plan con tus prospectos.",yt:"VOTHJxJ5eQg",pdf:"media/cursos/presentacion-impresa.pdf",pdfN:"Presentacion-Impresa-Action-Leaders.pdf",pdfT:"Descargar la hoja de presentación"}];
 let cursoOpen={};
+function cursosL(){const X=((T.config||{}).cursos||[]).filter(c=>c&&c.k&&c.yt);return X.concat(CURSOS.filter(c=>!X.some(x=>x.k===c.k)))}
 function renderAca(){const b=$("#acaBody");if(ahBloqYo()){b.innerHTML=`<div class="card" style="gap:8px;text-align:center"><b style="font-size:17px">🔒 Academia en pausa</b><p class="small muted" style="margin:0">Su ahorro de inCruises está pendiente. Póngase al día para reactivar sus cursos y herramientas.</p><button class="btn" style="background:#25D366;color:#fff" onclick="ahHablarSp()">💬 Hablar con mi patrocinador</button></div>`;return}
   if(ACA_PRONTO){$("#acaSeg").hidden=true;const cv=profile.cursos||{};
-    b.innerHTML=`<div><p class="eyebrow" style="margin:0">Cursos</p><p class="small muted" style="margin:2px 0 0">Aprende paso a paso y descarga tu material.</p></div>`+CURSOS.map((c,i)=>{const ok=!!cv[c.k];if(ok&&!cursoOpen[c.k])return `<button type="button" class="card curso cursoMin" data-cabre="${c.k}"><span class="cmOk">${CHECK}</span><span class="grow" style="text-align:left"><span class="chip c-good">Curso ${i+1} · Completado</span><b>${esc(c.t)}</b><small class="muted">Toque para volver a ver el video</small></span><span class="cmGo">›</span></button>`;return `<div class="card curso">
+    b.innerHTML=`<div><p class="eyebrow" style="margin:0">Cursos</p><p class="small muted" style="margin:2px 0 0">Aprenda paso a paso y descargue su material.</p></div>`+cursosL().map((c,i)=>{const ok=!!cv[c.k];if(ok&&!cursoOpen[c.k])return `<button type="button" class="card curso cursoMin" data-cabre="${c.k}"><span class="cmOk">${CHECK}</span><span class="grow" style="text-align:left"><span class="chip c-good">Curso ${i+1} · Completado</span><b>${esc(c.t)}</b><small class="muted">Toque para volver a ver el video</small></span><span class="cmGo">›</span></button>`;return `<div class="card curso">
       <div class="row between" style="align-items:flex-start;gap:10px"><div><span class="chip ${ok?"c-good":"c-gold"}">Curso ${i+1}${ok?" · Completado ✓":""}</span><h2 style="margin:8px 0 0">${esc(c.t)}</h2><p class="small muted" style="margin:4px 0 0">${esc(c.d)}</p></div></div>
       <div class="yt"><iframe src="https://www.youtube.com/embed/${c.yt}?rel=0&playsinline=1" referrerpolicy="strict-origin-when-cross-origin" title="${esc(c.t)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
-      <button class="btn" data-pdf="${c.pdf}" data-pdfn="${esc(c.pdfN||"material.pdf")}" style="width:100%;justify-content:center">📄 ${esc(c.pdfT)}</button>
+      ${c.pdf?`<button class="btn" data-pdf="${c.pdf}" data-pdfn="${esc(c.pdfN||"material.pdf")}" style="width:100%;justify-content:center">📄 ${esc(c.pdfT||"Descargar material")}</button>`:""}
       ${ok?`<button class="btn ghost" data-ccierra="${c.k}" style="width:100%">Cerrar</button>`:`<button class="btn dark" data-curso="${c.k}" style="width:100%">Marcar como visto</button>`}</div>`}).join("")+
      `<div class="card empty" style="text-align:center;padding:20px"><div style="font-size:28px;line-height:1">🎓</div><p class="small muted" style="margin:6px 0 0">Más cursos muy pronto.</p></div>`;
     b.querySelectorAll("[data-pdf]").forEach(x=>{const u=x.dataset.pdf,n=x.dataset.pdfn;pdfFile(u,n);x.onclick=()=>bajarPdf(u,n)});
@@ -3520,7 +3521,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261027195321";var busy=false,pend=null;
+(function(){var V="20261027212645";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
