@@ -227,3 +227,11 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - avisoTop(t,sub,fn): banner arriba + vibración 8 s. Campanita #bellBtn/#bellN (bellPinta) cuenta l3P + eventos sin confirmar; avisosVer lleva a Inicio.
 - Dedupe con LS "l3Seen"; el primer snapshot no dispara banner. Con la app cerrada NO hay aviso (requeriría Blaze + FCM).
 - Stub de pruebas: onSnapshot de consultas re-consulta cada 1 s.
+
+## 22. Citas compartidas: rol, recordar, cancelar, reprogramar
+- citaRol(c): "para" (invitado: l3R / lzR3 / l3 sin cid) o "de" (quien pidió). El invitado NO ve WhatsApp al otro; solo Reprogramar y Cancelar.
+- Quien pidió: "⏰ Recordar a {prospecto}" (recL3, cid del CRM) y "💬 Avisar a {líder}". Lanzamiento: 📣 Invitar + ⏰ Recordar (ci.inv). Eventos: ⏰ Recordar (LS evInv:id) en evaVer.
+- recMsg: 3 variantes (ahF), separadas por párrafos; hoy/mañana. LS recH marca recordados. #recCard en Inicio para hoy/mañana.
+- Cancelar (cancelarSheet + motivo): llamadas3 estado "cancelada", mot, canN; nP/nD para el otro → l3Cancelada (aviso + cita tachada c.cancel). Eventos: set cancel{mot,por,t} (ya no se borran); EVA filtra cancelados; aviso a lidU e invitadores.
+- Reprogramar en cita l3: "de" → estado pendiente rep:true nP; "para" → propuesta pFecha/pHora nD. l3AgendaLider actualiza la cita existente.
+- Scripts de evento y lanzamiento: fecha/hora, lugar, mapa, cupo y formulario en bloques separados; links en su propia línea.
