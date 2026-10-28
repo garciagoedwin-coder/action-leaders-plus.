@@ -1,0 +1,54 @@
+<!doctype html><html><head><meta charset="utf-8"><style>@font-face{font-family:BS;src:url(f/BigShoulders-Bold.ttf)}@font-face{font-family:IS;src:url(f/InstrumentSerif-Italic.ttf)}@font-face{font-family:ISR;src:url(f/InstrumentSerif-Regular.ttf)}
+@font-face{font-family:OB;src:url(f/Outfit-Bold.ttf)}@font-face{font-family:OR;src:url(f/Outfit-Regular.ttf)}@font-face{font-family:BG;src:url(f/BricolageGrotesque-Bold.ttf)}
+@font-face{font-family:GL;src:url(f/Gloock-Regular.ttf)}@font-face{font-family:WS;src:url(f/WorkSans-Regular.ttf)}@font-face{font-family:WSB;src:url(f/WorkSans-Bold.ttf)}@font-face{font-family:YS;src:url(f/YoungSerif-Regular.ttf)}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1350px;font-family:Inter,Arial,sans-serif;color:#fff;background:#07101F;overflow:hidden;position:relative}
+.ph{position:absolute;inset:0;background:
+ radial-gradient(2px 2px at 12% 18%,rgba(255,255,255,.7),transparent),radial-gradient(3px 3px at 82% 12%,rgba(245,183,0,.8),transparent),radial-gradient(2px 2px at 70% 30%,rgba(255,255,255,.5),transparent),radial-gradient(3px 3px at 25% 40%,rgba(245,183,0,.6),transparent),radial-gradient(2px 2px at 90% 45%,rgba(255,255,255,.6),transparent),radial-gradient(4px 4px at 8% 62%,rgba(245,183,0,.5),transparent),radial-gradient(2px 2px at 55% 8%,rgba(255,255,255,.6),transparent),
+ conic-gradient(from 200deg at 50% -10%,transparent 0deg,rgba(42,193,241,.18) 8deg,transparent 16deg,transparent 30deg,rgba(42,193,241,.12) 36deg,transparent 44deg,transparent 60deg,rgba(245,183,0,.10) 66deg,transparent 72deg),
+ radial-gradient(900px 600px at 50% 0%,#12305A,transparent 70%),linear-gradient(180deg,#0A1A33,#07101F 60%)}
+.sh{position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,transparent 50%,rgba(7,16,31,.7) 70%,rgba(7,16,31,.9) 100%),radial-gradient(800px 500px at 50% 42%,rgba(42,193,241,.22),transparent 70%)}
+.wrap{position:relative;height:100%;padding:64px 64px 52px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.k{display:flex;gap:10px}.k span{border:2px solid #2AC1F1;color:#2AC1F1;font-weight:900;letter-spacing:.24em;font-size:20px;padding:9px 20px;border-radius:999px;background:rgba(42,193,241,.08)}
+.k span.p{background:#F5B700;border-color:#F5B700;color:#07101F}
+h1{margin-top:22px;font-size:58px;font-weight:900;letter-spacing:.02em;text-transform:uppercase;line-height:1}
+.city{font-size:124px;font-weight:900;line-height:.95;letter-spacing:-.02em;text-transform:uppercase;background:linear-gradient(90deg,#8FE3FF,#2AC1F1 45%,#FFFFFF 60%,#2AC1F1);-webkit-background-clip:text;color:transparent;margin-top:6px}
+.vip{margin-top:22px;display:flex;flex-direction:column;align-items:center}
+.ring{width:250px;height:250px;border-radius:50%;padding:7px;background:conic-gradient(from 200deg,#F5B700,#FFF3C4,#D99A00,#F5B700);box-shadow:0 0 0 12px rgba(245,183,0,.1),0 30px 70px -20px rgba(245,183,0,.6)}
+.ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:6px solid #07101F}
+.vip .r{margin-top:-24px;background:#F5B700;color:#07101F;font-weight:900;letter-spacing:.18em;font-size:18px;padding:8px 18px;border-radius:999px;position:relative}
+.vip .n{margin-top:12px;font-size:40px;font-weight:900}.vip .t{font-size:22px;opacity:.75}
+.trio{margin-top:22px;display:flex;gap:44px;justify-content:center}
+.s{display:flex;flex-direction:column;align-items:center;width:200px}
+.s img{width:116px;height:116px;border-radius:50%;object-fit:cover;border:4px solid #2AC1F1;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.s b{margin-top:10px;font-size:23px;font-weight:800;line-height:1.1}.s small{font-size:16px;opacity:.7;letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.info{margin-top:28px;display:flex;gap:14px}
+.c{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:22px;padding:16px 24px;text-align:left}
+.c small{display:block;font-size:16px;letter-spacing:.18em;color:#2AC1F1;font-weight:800}.c b{display:block;font-size:30px;font-weight:800;margin-top:3px}
+.lug{margin-top:16px;font-size:25px;opacity:.9}.lug b{color:#FDE68A}
+.foot{margin-top:auto;width:100%;display:flex;justify-content:space-between;align-items:center}
+.reg{background:#25D366;border-radius:18px;padding:14px 24px;font-size:26px;font-weight:900;text-align:left;line-height:1.15}.reg small{display:block;font-size:17px;font-weight:700;opacity:.9}
+.brand{display:flex;flex-direction:column;align-items:flex-end;gap:6px}.brand img{height:38px}.brand span{font-size:20px;font-weight:700;color:#8FD9F6}
+.sub{margin-top:14px;font-size:25px;line-height:1.3;max-width:700px;opacity:.85;text-wrap:balance}.url{font-size:24px;font-weight:700;color:#8FD9F6}.s small{display:none}
+h1{font-family:OB;font-size:76px;line-height:1;letter-spacing:-.01em;font-weight:400;margin-top:24px}
+.city{font-family:OB;font-size:54px;font-weight:400;letter-spacing:.32em;line-height:1;margin-top:14px;background:linear-gradient(90deg,#8FE3FF,#2AC1F1 50%,#FFFFFF);-webkit-background-clip:text;color:transparent;padding-left:.32em}
+.sub{font-family:OR}.vip .n,.s b,.c b{font-family:BG;font-weight:400}.c small,.vip .r,.k span{font-family:OB}.rf{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
+background:
+ radial-gradient(520px 300px at 92% 6%,rgba(236,72,153,.32),transparent 70%),
+ radial-gradient(420px 260px at 4% 58%,rgba(217,70,239,.20),transparent 70%),
+ linear-gradient(115deg,transparent 58%,rgba(236,72,153,.16) 63%,transparent 66%),
+ linear-gradient(115deg,transparent 68%,rgba(217,70,239,.12) 71%,transparent 73%),
+ linear-gradient(245deg,transparent 74%,rgba(236,72,153,.10) 77%,transparent 79%)}
+.reg2{display:flex;align-items:center;gap:12px;border:1.5px solid rgba(255,255,255,.35);border-radius:999px;padding:12px 24px 12px 18px;font-size:22px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-family:OB}
+.reg2 i{width:10px;height:10px;border-radius:50%;background:#EC4899;box-shadow:0 0 0 5px rgba(236,72,153,.22)}
+.s em{font-style:normal;font-size:17px;color:#7DD3F5;letter-spacing:.06em;margin-top:4px;font-family:OR}</style></head><body><div class="ph"></div><div class="sh"></div><div class="rf"></div><div class="wrap">
+<div class="k"><span class="p">PRESENCIAL</span></div>
+<h1>Gran evento<br>de negocios</h1><div class="city">San Pedro Sula</div>
+<p class="sub">Descubra cómo viajar más, gastar menos y generar ingresos desde su celular</p>
+<div class="vip"><div class="ring"><img src="n-mayckol-turcios.jpg"></div><div class="r">INVITADO ESPECIAL</div><div class="n">Mayckol Turcios</div><div class="t">Regional Director</div></div>
+<div class="trio"><div class="s"><img src="n-josue-delgado.jpg"><b>Josué Delgado</b><em>Marketing Director</em></div><div class="s"><img src="n-flor-reyes.jpg"><b>Flor Reyes</b><em>Marketing Director</em></div><div class="s"><img src="n-zamir-fuentes.jpg"><b>Zamir Fuentes</b><em>Marketing Director</em></div></div>
+<div class="info"><div class="c"><small>FECHA</small><b>Sábado 7 de noviembre</b></div><div class="c"><small>HORA</small><b>3:00 pm 🇭🇳</b></div></div>
+<div class="lug">📍 <b>Hotel Copantl</b> · Salón Ejecutivo</div>
+<div class="foot"><div class="reg2"><i></i>Cupo limitado</div><span class="url">actionleadersplus.com</span></div>
+</div></body></html>
