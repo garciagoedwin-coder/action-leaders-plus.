@@ -241,3 +241,9 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - fotosFs excluye ocultos (fotosOc); miLinea los excluye: no aparece en buscadores de líderes.
 - llamadas3.visto: lo escribe el líder al recibir la pendiente (l3Vistos). Quien envió consulta sus citas "por confirmar" (l3EstadoEnv, al abrir y al volver a la app): "📨 aún no la abre" / "👀 ya vio".
 - Errores de escucha de llamadas3 → l3Err (toast una vez).
+
+## 24. My Dream Team ("Camino a mi libertad")
+- Tarjeta #dtCard en Inicio (renderDT). Meta 30 directos ACTIVOS = registrados en la app con su enlace (registro.patrocinadorUid) y ahorro al día (ahSoc). Pendientes salen con ⚠️ y no cuentan. Solo lo ve el propio socio; la cuenta solo-admin no lo ve.
+- Datos: dtArmar() desde mios (loadMios); resumen en LS "dtSum:uid" (se refresca cada 3 h o al abrir el cuadro). Bajo cada foto: activos en toda su línea.
+- Pantallas: dtCuadro (30 casillas, "+" → dtInvitar con miEnlace), dtFicha (felicitar / motivar ahorro por WhatsApp, 3 variantes), dtNumeros (team/dreamteam, lo calcula el admin con dtStatsGuardar cada 6 h al cargar socios), dtSimular (solo cuentas en el teléfono; aviso "no es promesa de resultados ni ingresos"), dtHito (celebración 5/10/20/30 una vez; la primera vez solo guarda el nivel, sin celebrar).
+- Nunca prometer ingresos ni "garantiza": usar "Su camino a Marketing Director".
