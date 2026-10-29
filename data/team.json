@@ -421,15 +421,15 @@
    "id": "andrea-jackeline-padilla-cuellar"
   },
   {
-   "actSemana": 0,
-   "activaciones": 1,
+   "actSemana": 1,
+   "activaciones": 2,
    "linea": "Glenda Álvarez",
    "nombre": "Denia Rocha",
    "presSemana": 1,
    "presentaciones": 10,
    "regSemana": 1,
    "registros": 10,
-   "volumen": 200,
+   "volumen": 400,
    "id": "denia-rocha"
   },
   {
@@ -2397,6 +2397,16 @@
    "wk": "747f64",
    "fuente": "gmail",
    "id": "julio-osorio"
+  },
+  {
+   "socio": "Melda Patricia Gonzalez Valentin",
+   "paquete": "Classic",
+   "patrocinador": "Denia V Rivas Rocha",
+   "fecha": "2026-10-29T01:55:08.000Z",
+   "ek": "beb9a8",
+   "wk": "6cc82d",
+   "fuente": "gmail",
+   "id": "melda-patricia-gonzalez-valentin"
   }
  ],
  "academia": [],
@@ -2414,7 +2424,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-29T00:55:11.000Z",
+  "activacionesCorte": "2026-10-29T01:55:08.000Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2424,7 +2434,7 @@
   "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-29T00:43:00-06:00",
+  "rankingActualizado": "2026-10-29T09:57:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -3300,7 +3310,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-10-29T00:56:35Z",
+   "v": "2026-10-29T15:57:29Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "021321": "2026-11-01T05:26:06Z",
@@ -3367,11 +3377,10 @@
     "4a0eb8": "2026-11-01T00:36:17Z",
     "4b6100": "2026-10-16T00:07:48Z",
     "4cb87e": "2026-10-31T17:34:26Z",
-    "4d01d2": "2026-10-04T00:09:42Z",
+    "4d01d2": "2026-11-02T23:35:09Z",
     "4d78ba": "2026-10-30T04:52:33Z",
     "4f2a6b": "2026-10-27T17:08:49Z",
     "4ffbaf": "2026-10-30T04:09:04Z",
-    "526aaf": "2026-11-02T05:07:56Z",
     "537d8f": "2026-10-19T17:34:09Z",
     "5a377d": "2026-10-31T01:09:41Z",
     "5e165e": "2026-10-21T19:10:36Z",
@@ -3412,7 +3421,7 @@
     "83a83d": "2026-10-31T22:45:55Z",
     "83f6c3": "2026-11-01T21:53:13Z",
     "8495fe": "2026-10-30T06:38:51Z",
-    "84d7a1": "2026-10-04T00:09:42Z",
+    "84d7a1": "2026-11-02T23:35:09Z",
     "866efb": "2026-10-26T21:08:59Z",
     "8a0a91": "2026-10-31T19:49:16Z",
     "8b06d6": "2026-10-10T23:08:50Z",
