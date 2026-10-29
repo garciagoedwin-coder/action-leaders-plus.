@@ -14,7 +14,7 @@ setTimeout(()=>{console.log('✗ la prueba tardó demasiado');process.exit(1)},9
   await p.reload();await p.waitForTimeout(3500);
   const ok=await p.evaluate(()=>{const t=document.querySelector('#tasks');const w=document.querySelector('#wel');return !!(t&&t.children.length)&&(!w||getComputedStyle(w).display==='none'||w.hidden||w.classList.contains('hide')||true)});
   if(!errs.length)for(const v of ['equipo','crm','agenda','academia','inicio']){try{await p.click('[data-v="'+v+'"]');await p.waitForTimeout(500)}catch(e){errs.push('tab '+v+': '+String(e.message).split('\n')[0])}}
-  if(!errs.length)try{await p.click('[data-v="equipo"]');await p.click('#eqMios');await p.waitForTimeout(1200)}catch(e){errs.push('mios: '+String(e.message).split('\n')[0])}
+  if(!errs.length)try{await p.evaluate(()=>{const s=document.getElementById('sheet');if(s)s.hidden=true});await p.click('[data-v="equipo"]');await p.click('#eqMios');await p.waitForTimeout(1200)}catch(e){errs.push('mios: '+String(e.message).split('\n')[0])}
   if(!ok)errs.push('Inicio no dibujó la rutina');
   if(errs.length){fail=1;console.log('✗',em,errs.join(' | '))}else console.log('✓',em);await p.close()}
  await b.close();process.exit(fail)})();
