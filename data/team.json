@@ -685,15 +685,15 @@
    "id": "jorge-turcios"
   },
   {
-   "actSemana": 0,
-   "activaciones": 1,
+   "actSemana": 1,
+   "activaciones": 2,
    "linea": "Glenda Álvarez",
    "nombre": "Milton Núñez",
    "presSemana": 0,
    "presentaciones": 1,
    "regSemana": 0,
    "registros": 0,
-   "volumen": 200,
+   "volumen": 700,
    "id": "milton-nunez"
   },
   {
@@ -2363,6 +2363,16 @@
    "id": "maria-reyes",
    "ek": "2ec533",
    "wk": "4e405d"
+  },
+  {
+   "socio": "Julio Osorio",
+   "paquete": "Premium",
+   "patrocinador": "Milton Nunez",
+   "fecha": "2026-10-29T00:55:11.000Z",
+   "ek": "85443c",
+   "wk": "747f64",
+   "fuente": "gmail",
+   "id": "julio-osorio"
   }
  ],
  "academia": [],
@@ -2380,7 +2390,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-28T00:55:05.000Z",
+  "activacionesCorte": "2026-10-29T00:55:11.000Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2390,7 +2400,7 @@
   "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-27T18:56:00-06:00",
+  "rankingActualizado": "2026-10-28T18:56:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -3266,7 +3276,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-10-28T21:55:56Z",
+   "v": "2026-10-29T00:56:35Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "021321": "2026-11-01T05:26:06Z",
@@ -3297,6 +3307,7 @@
     "1ec7e9": "2026-10-31T21:06:45Z",
     "1f0c95": "2026-10-24T16:09:12Z",
     "202cbf": "2026-10-30T19:40:38Z",
+    "2051ad": "2026-11-03T00:09:30Z",
     "214d63": "2026-10-21T19:10:36Z",
     "22983b": "2026-10-30T19:40:38Z",
     "23ab00": "2026-10-31T23:15:42Z",
@@ -3316,6 +3327,7 @@
     "3012c5": "2026-10-31T07:09:44Z",
     "30e18a": "2026-11-01T23:00:51Z",
     "334994": "2026-10-29T15:20:32Z",
+    "33998d": "2026-11-02T21:10:08Z",
     "347e0b": "2026-10-31T19:56:22Z",
     "35e4bf": "2026-10-24T04:09:14Z",
     "365b62": "2026-10-12T15:50:42Z",
