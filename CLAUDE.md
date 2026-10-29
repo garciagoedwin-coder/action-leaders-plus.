@@ -253,3 +253,5 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - lcRevisar (6 s tras abrir, solo en Inicio y sin hoja abierta; reintenta): ventana con confeti para TODOS los socios, una vez por calificado+nivel+mes (LS "lcSeen:uid"). Varios = una ventana con Siguiente.
 - Botón "💬 Felicitarlo por calificar como …" solo para su línea ascendente (fotos.linea incluye mi uid) o admin; el propio calificado ve "Usted calificó" + su flyer. "📣 Compartir flyer" (lcCanvas, diseño A azul/dorado, 1080x1350) con texto para el grupo de la comunidad.
 - Equipo → Liderazgo: botón "🎉 Calificados del sistema · mes" (lcLista) con flyer de cada uno. Dream Team: insignia 🏅/⚔️ en el cuadro y estado del mes en la ficha.
+- Insignia en el cuadro del Dream Team: si tiene rango (registro.rango o hoja Calificados, desde Marketing Director) → punto de color del rango (RANGOS; Board en dos tonos naranja oscuro) y la ficha muestra el rango; si no, 🏅/⚔️ por puntos del mes. Team Leader y Action Leader no cuentan como rango aquí. Leyenda bajo el cuadro.
+- OJO al publicar: no encadenar `./.publicar.sh | tail` con && (tail oculta el fallo). Guardar el código de salida.
