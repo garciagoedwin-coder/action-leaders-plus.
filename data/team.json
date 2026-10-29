@@ -680,9 +680,9 @@
    "registros": 2,
    "regSemana": 2,
    "id": "karla-patricia-calderon-fajardo",
-   "activaciones": 0,
-   "volumen": 0,
-   "actSemana": 0
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
   },
   {
    "nombre": "Maria Victoria Lopez Sauceda",
@@ -2407,6 +2407,16 @@
    "wk": "6cc82d",
    "fuente": "gmail",
    "id": "melda-patricia-gonzalez-valentin"
+  },
+  {
+   "socio": "Martin Fernando Castejon Martinez",
+   "paquete": "Premium",
+   "patrocinador": "Karla Patricia Calderon Fajardo",
+   "fecha": "2026-10-29T21:55:07.000Z",
+   "ek": "1e9ddb",
+   "wk": "208d8c",
+   "fuente": "gmail",
+   "id": "martin-fernando-castejon-martinez"
   }
  ],
  "academia": [],
@@ -2424,7 +2434,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-29T01:55:08.000Z",
+  "activacionesCorte": "2026-10-29T21:55:07.000Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2434,7 +2444,7 @@
   "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-29T09:57:00-06:00",
+  "rankingActualizado": "2026-10-29T15:55:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -3310,7 +3320,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-10-29T18:56:09Z",
+   "v": "2026-10-29T21:55:49Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "021321": "2026-11-01T05:26:06Z",
@@ -3395,7 +3405,7 @@
     "648bac": "2026-10-18T05:10:30Z",
     "64ffb6": "2026-10-31T22:50:35Z",
     "65745f": "2026-10-19T08:10:20Z",
-    "65a791": "2026-10-31T22:35:57Z",
+    "65a791": "2026-11-03T21:07:26Z",
     "660994": "2026-10-31T03:14:08Z",
     "66814f": "2026-10-31T23:58:44Z",
     "680411": "2026-11-01T02:08:16Z",
@@ -3473,7 +3483,7 @@
     "d264dd": "2026-10-31T03:09:09Z",
     "d411aa": "2026-10-19T17:34:09Z",
     "d4ee88": "2026-11-01T17:47:42Z",
-    "d54833": "2026-10-31T22:35:57Z",
+    "d54833": "2026-11-03T21:07:26Z",
     "d7a912": "2026-10-31T19:10:06Z",
     "d8c27f": "2026-10-30T01:44:23Z",
     "d8c53a": "2026-10-30T03:08:24Z",
