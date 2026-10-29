@@ -247,3 +247,9 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Datos: dtArmar() desde mios (loadMios); resumen en LS "dtSum:uid" (se refresca cada 3 h o al abrir el cuadro). Bajo cada foto: activos en toda su línea.
 - Pantallas: dtCuadro (30 casillas, "+" → dtInvitar con miEnlace), dtFicha (felicitar / motivar ahorro por WhatsApp, 3 variantes), dtNumeros (team/dreamteam, lo calcula el admin con dtStatsGuardar cada 6 h al cargar socios), dtSimular (solo cuentas en el teléfono; aviso "no es promesa de resultados ni ingresos"), dtHito (celebración 5/10/20/30 una vez; la primera vez solo guarda el nivel, sin celebrar).
 - Nunca prometer ingresos ni "garantiza": usar "Su camino a Marketing Director".
+
+## 25. Calificados del sistema de liderazgo (Líder / Líder Espartano)
+- Solo dos niveles por mes con los puntos del ranking (T.ranking.volumen, sin membresía propia): ≥calCfg().lider (200) = 🏅 Líder; ≥esp (500) = ⚔️ Líder Espartano (= Team Leader, solo dicho en el flyer). Los rangos de la hoja NO se celebran.
+- lcRevisar (6 s tras abrir, solo en Inicio y sin hoja abierta; reintenta): ventana con confeti para TODOS los socios, una vez por calificado+nivel+mes (LS "lcSeen:uid"). Varios = una ventana con Siguiente.
+- Botón "💬 Felicitarlo por calificar como …" solo para su línea ascendente (fotos.linea incluye mi uid) o admin; el propio calificado ve "Usted calificó" + su flyer. "📣 Compartir flyer" (lcCanvas, diseño A azul/dorado, 1080x1350) con texto para el grupo de la comunidad.
+- Equipo → Liderazgo: botón "🎉 Calificados del sistema · mes" (lcLista) con flyer de cada uno. Dream Team: insignia 🏅/⚔️ en el cuadro y estado del mes en la ficha.

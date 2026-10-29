@@ -572,6 +572,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 .dt-av i{position:absolute;right:-3px;bottom:-3px;width:19px;height:19px;border-radius:50%;background:#16A34A;color:#fff;font-style:normal;font-size:11px;font-weight:900;display:grid;place-items:center;border:2px solid var(--card,#fff)}
 .dt-c.pd .dt-av{background:#E5B35A}.dt-c.pd .dt-av i{background:#D97706}.dt-c.pd s{filter:grayscale(.6)}
 .dt-c b{display:block;font-size:11.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dt-c small{display:block;font-size:10px;color:var(--brand);font-weight:700}.dt-c.pd small{color:#B45309}
+.dt-lv{position:absolute;left:-4px;top:-4px;width:21px;height:21px;border-radius:50%;background:#0A7DAD;font-style:normal;font-size:11px;display:grid;place-items:center;border:2px solid var(--card,#fff)}.dt-lv.esp{background:#F5B700}
 .dt-c.e .dt-av{background:none;border:2px dashed #B9D7E6;display:grid;place-items:center;color:#7FB8D2;font-size:24px;font-weight:300}
 .dt-st{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.dt-st div{background:var(--soft,#F1F6F9);border-radius:12px;padding:10px 4px;text-align:center}.dt-st b{display:block;font-size:19px;color:var(--brand)}.dt-st small{font-size:11px;opacity:.75}
 .dt-br{display:grid;grid-template-columns:80px 1fr 34px;align-items:center;gap:8px;font-size:13px;margin-top:8px}.dt-br .t{height:18px;border-radius:7px;background:var(--soft,#EAF3F8);overflow:hidden}.dt-br .t i{display:block;height:100%;border-radius:7px;background:linear-gradient(90deg,#2AC1F1,#0A7DAD)}.dt-br b{text-align:right}
@@ -1754,6 +1755,65 @@ function sociosCSV(){const rows=[["Nombre","Correo","WhatsApp","Patrocinador","P
   const csv="\ufeff"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="socios-action-leaders-"+TODAY+".csv";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
 let mios=null,miosErr=false;
+// ---------- Calificados del sistema de liderazgo (200 = Líder, 500 = Líder Espartano) ----------
+function lcMes(){const C=calCfg();return C.mes||(MONTHS[new Date().getMonth()][0].toUpperCase()+MONTHS[new Date().getMonth()].slice(1)+" "+new Date().getFullYear())}
+function lcMesCorto(){return lcMes().split(" ")[0].toLowerCase()}
+function lcNivel(v){const C=calCfg();v=Number(v)||0;return v>=C.esp?"esp":v>=C.lider?"lid":""}
+function lcLista0(){return (T.ranking||[]).map(r=>({n:r.nombre,v:Number(r.volumen)||0})).filter(r=>lcNivel(r.v)).map(r=>Object.assign(r,{k:lcNivel(r.v)})).sort((a,b)=>b.v-a.v||String(a.n).localeCompare(b.n,"es"))}
+function lcFicha(n){const f=(fotosFs||[]).find(x=>sameN(x.invNombre||x.nombre,n)||(x.alias&&sameN(x.alias,n)))||(fotosFs||[]).find(x=>parecidoN(x.invNombre||x.nombre,n));return f||null}
+function lcRelacion(n){const f=lcFicha(n);if(f&&f.id===store.uid)return"yo";if(f&&Array.isArray(f.linea)&&f.linea.includes(store.uid))return"arriba";try{if(!f&&sameN(miRegistro().nombre||"",n))return"yo"}catch(e){}return""}
+function lcNivelDe(n){const r=(T.ranking||[]).find(x=>sameN(x.nombre,n))||(T.ranking||[]).find(x=>parecidoN(x.nombre,n));if(!r)return{k:"",v:0};const v=Number(r.volumen)||0;return{k:lcNivel(v),v}}
+const LC_TX={lid:"🏅 Líder",esp:"⚔️ Líder Espartano"};
+async function lcCanvas(q){await evaFonts();const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d"),esp=q.k==="esp",c1=esp?"#F5B700":"#2AC1F1",c2=esp?"#FFF3C4":"#BFF0FF";
+  const OB="ALO, Figtree, sans-serif",OR="ALOR, Figtree, sans-serif",BG="ALBG, 'Bricolage Grotesque', sans-serif";
+  let gr=g.createLinearGradient(0,0,0,H);esp?(gr.addColorStop(0,"#120C00"),gr.addColorStop(.55,"#0B0B10"),gr.addColorStop(1,"#05060A")):(gr.addColorStop(0,"#04223A"),gr.addColorStop(.55,"#06121F"),gr.addColorStop(1,"#03070D"));g.fillStyle=gr;g.fillRect(0,0,W,H);
+  gr=g.createRadialGradient(540,520,0,540,520,700);gr.addColorStop(0,esp?"rgba(245,183,0,.32)":"rgba(42,193,241,.34)");gr.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
+  g.save();g.translate(540,650);for(let i=0;i<30;i++){g.rotate(Math.PI*2/30);g.beginPath();g.moveTo(0,0);g.lineTo(-38,-900);g.lineTo(38,-900);g.closePath();g.fillStyle="rgba(255,255,255,.035)";g.fill()}g.restore();
+  const sp=(t,x,y,ls,al)=>evaSp(g,t,x,y,ls,al);
+  g.font="700 24px "+OB;const kt="SISTEMA DE LIDERAZGO",kw=evaSpW(g,kt,7.7)+56;evaRR(g,540-kw/2,72,kw,52,26);g.lineWidth=2.5;g.strokeStyle=c1;g.stroke();g.fillStyle=c1;sp(kt,540,107,7.7,"center");
+  g.textAlign="center";g.fillStyle="#fff";let z=evaFit(g,"¡CALIFICADO COMO","700 {s}px "+BG,104,960);g.font="700 "+z+"px "+BG;g.fillText("¡CALIFICADO COMO",540,222);
+  const t2=esp?"LÍDER ESPARTANO!":"LÍDER!";z=evaFit(g,t2,"700 {s}px "+BG,esp?96:110,960);g.font="700 "+z+"px "+BG;const w2=g.measureText(t2).width;gr=g.createLinearGradient(540-w2/2,0,540+w2/2,0);gr.addColorStop(0,c2);gr.addColorStop(.45,c1);gr.addColorStop(.6,"#fff");gr.addColorStop(1,c1);g.fillStyle=gr;g.fillText(t2,540,348);
+  g.save();g.shadowColor=c1;g.shadowBlur=70;g.beginPath();g.arc(540,660,200,0,Math.PI*2);g.fillStyle=c1;g.fill();g.restore();
+  gr=g.createLinearGradient(340,460,740,860);gr.addColorStop(0,c2);gr.addColorStop(.5,c1);gr.addColorStop(1,"#fff");g.beginPath();g.arc(540,660,200,0,Math.PI*2);g.fillStyle=gr;g.fill();
+  await evaCirc(g,q.foto,540,660,182,0,"",8,q.n);
+  g.font="700 30px "+OB;const bt=(esp?"⚔️ LÍDER ESPARTANO":"🏅 LÍDER")+" · "+q.mes.toUpperCase(),bw=evaSpW(g,bt,3.6)+70;evaRR(g,540-bw/2,830,bw,62,31);g.fillStyle=c1;g.fill();g.fillStyle="#07090F";sp(bt,540,872,3.6,"center");
+  g.textAlign="center";g.fillStyle="#fff";z=evaFit(g,q.n,"700 {s}px "+BG,72,960);g.font="700 "+z+"px "+BG;g.fillText(q.n,540,985);
+  let y=1050;if(esp){g.font="700 40px "+OB;const tl="⭐ TEAM LEADER ⭐",tw=evaSpW(g,tl,8);gr=g.createLinearGradient(540-tw/2,0,540+tw/2,0);gr.addColorStop(0,c2);gr.addColorStop(.5,c1);gr.addColorStop(1,c2);g.fillStyle=gr;sp(tl,540,1052,8,"center");y=1120}
+  g.textAlign="center";g.font="700 32px "+OB;const a=(esp?"500+":"200+")+" puntos",b=esp?" este mes · ¡Imparable!":" este mes · ¡Ya es parte del sistema!";g.font="700 32px "+OB;const aw=g.measureText(a).width;g.font="400 32px "+OR;const bw2=g.measureText(b).width;let x=540-(aw+bw2)/2;g.textAlign="left";g.font="700 32px "+OB;g.fillStyle=c1;g.fillText(a,x,y);g.font="400 32px "+OR;g.fillStyle="rgba(255,255,255,.88)";g.fillText(b,x+aw,y);
+  const lg=await imgLoad("media/logo-blanco.png");if(lg){const h=46,w=lg.width*h/lg.height;g.drawImage(lg,70,H-60-h,w,h)}
+  g.textAlign="right";g.font="700 24px "+OB;g.fillStyle=c2;g.fillText("Camino a mi libertad ✨",W-70,H-74);return cv}
+async function lcFile(q){const cv=await lcCanvas(q);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));return new File([b],(q.k==="esp"?"Lider-Espartano-":"Lider-")+String(q.n).split(" ")[0]+".jpg",{type:"image/jpeg"})}
+function lcQ(r){return{n:r.n,k:r.k,v:r.v,mes:lcMes(),foto:fotoDe(r.n)}}
+function lcTextoGrupo(q){const f=String(q.n).split(" ")[0],m=lcMesCorto();return q.k==="esp"?`🎉 ¡Felicitemos a *${q.n}*!\n\nCalificó como *⚔️ Líder Espartano de ${m}* en el sistema de liderazgo de Action Leaders.\n\n⭐ ¡Ya es Team Leader!\n\n¡Felicidades, ${f}! Su ejemplo nos inspira 🔥`:`🎉 ¡Felicitemos a *${q.n}*!\n\nCalificó como *🏅 Líder de ${m}* en el sistema de liderazgo de Action Leaders.\n\n¡Felicidades, ${f}! ¡Bienvenido al sistema! 💪`}
+function lcTextoFelicitar(q){const f=String(q.n).split(" ")[0],m=lcMesCorto(),yo=miNombreCorto()||"",v=parseInt(ahF(q.n+m),16)%3;
+  const t=q.k==="esp"?[`¡Felicidades, ${f}! ⚔️\n\nCalificó como *Líder Espartano de ${m}*. ¡Ya es Team Leader! ⭐\n\nMe llena de orgullo ver su compromiso. ¡Vamos por más! 🚀`,`${f}, ¡qué mes el suyo! 🔥\n\n*Líder Espartano de ${m}*: 500 puntos o más.\n\nGracias por dar el ejemplo en el equipo. ¡A seguir construyendo! 💪`,`¡${f}, lo logró! 🏆\n\nYa es *Líder Espartano* y Team Leader de ${m}.\n\nSu esfuerzo se nota. ¡Sigamos camino a nuestra libertad! ✨`]
+    :[`¡Felicidades, ${f}! 🏅\n\nCalificó como *Líder de ${m}* en el sistema de liderazgo.\n\nAhora vamos por los 500 puntos y ser Líder Espartano. ¡Usted puede! 💪`,`${f}, ¡ya es parte del sistema de liderazgo! 🎉\n\n*Líder de ${m}* con 200 puntos o más.\n\nGracias por su compromiso. ¡Vamos por más! 🚀`,`¡Lo logró, ${f}! 🙌\n\nYa es *Líder de ${m}*.\n\nMe llena de orgullo su avance. ¡Siga así, que el siguiente paso es Espartano! 🔥`];
+  return t[v]+(yo?"\n\n*"+yo+"*":"")}
+async function lcCompartir(q,bt){let file=null;if(bt){bt.disabled=true;bt.textContent="Creando flyer…"}try{file=await lcFile(q)}catch(e){}if(bt){bt.disabled=false;bt.textContent="📣 Compartir flyer"}
+  const t=lcTextoGrupo(q);if(file&&navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(e){if(e&&e.name==="AbortError")return}}
+  if(file){const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click()}location.href="https://wa.me/?text="+encodeURIComponent(t)}
+async function lcFelicitar(q){const f=lcFicha(q.n);let w="";if(f)w=await dtWa(f.id);location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(lcTextoFelicitar(q))}
+// ventana con confeti: una sola vez por calificado y por nivel, para todos los socios
+function lcSeen(){return LS.get("lcSeen:"+store.uid)||{}}
+function lcPendientes(){const S=lcSeen(),m=lcMes();return lcLista0().filter(r=>!S[m+"|"+nrmN(r.n)+"|"+r.k])}
+function lcMarcar(L){const S=lcSeen(),m=lcMes();L.forEach(r=>S[m+"|"+nrmN(r.n)+"|"+r.k]=1);LS.set("lcSeen:"+store.uid,S)}
+function lcVentana(L,titulo){if(!L.length)return;let i=0;
+  const pinta=()=>{const r=L[i],q=lcQ(r),rel=lcRelacion(r.n),esp=r.k==="esp",img=q.foto,f=String(r.n).split(" ")[0];
+    openSheet(`<div class="dt-cel" id="lcCel" style="padding-top:4px">${titulo?`<p class="eyebrow" style="margin:0">${esc(titulo)}</p>`:""}<div style="font-size:34px">${esp?"⚔️🎉✨":"🏅🎉✨"}</div>
+      <div class="dt-av" style="width:110px;height:110px;margin:8px auto;${esp?"background:conic-gradient(#F5B700,#FFF3C4,#F5B700)":""}">${img?`<s style="background-image:url('${esc(img)}')"></s>`:`<s style="font-size:30px">${esc(initials(r.n))}</s>`}</div>
+      <div class="big" style="font-size:20px">${rel==="yo"?`¡Felicidades, ${esc(f)}! Usted calificó como ${esp?"Líder Espartano":"Líder"}`:`¡${esc(r.n)} calificó como ${esp?"Líder Espartano":"Líder"}!`}</div>
+      <p class="muted" style="margin:0">Sistema de liderazgo · ${esc(lcMes())}${esp?" · ⭐ Team Leader":""}</p></div>
+      ${rel==="arriba"||(isAdmin&&rel!=="yo")?`<button class="btn" id="lcFel" style="width:100%;background:#25D366;color:#fff">💬 Felicitarlo por calificar como ${esp?"Líder Espartano":"Líder"} de ${esc(lcMesCorto())}</button>`:""}
+      ${rel?`<button class="btn ghost" id="lcSh" style="width:100%">📣 Compartir flyer</button>`:(isAdmin?`<button class="btn ghost" id="lcSh" style="width:100%">📣 Compartir flyer</button>`:"")}
+      <div class="row" style="gap:8px">${L.length>1?`<button class="btn ghost grow" id="lcPrev" ${i?"":"disabled"}>‹</button><span class="small muted" style="align-self:center">${i+1} de ${L.length}</span><button class="btn grow" id="lcNext">${i<L.length-1?"Siguiente ›":"Listo"}</button>`:`<button class="btn grow" data-close>¡Felicidades!</button>`}</div>`,()=>{
+      confeti($("#lcCel"),esp?60:40);const fe=$("#lcFel");if(fe)fe.onclick=()=>lcFelicitar(q);const sh=$("#lcSh");if(sh)sh.onclick=()=>lcCompartir(q,sh);
+      const p=$("#lcPrev");if(p)p.onclick=()=>{i--;pinta()};const n=$("#lcNext");if(n)n.onclick=()=>{if(i<L.length-1){i++;pinta()}else closeSheet()}})};
+  pinta()}
+let lcTry=0;function lcRevisar(){try{if(!store.uid||!(regDoc&&regDoc.registro||isAdmin))return;const vi=$("#v-inicio");if(!$("#sheet").hidden||(vi&&vi.hidden)){if(++lcTry<8)setTimeout(lcRevisar,20000);return}const L=lcPendientes();if(!L.length)return;lcMarcar(L);lcVentana(L,"🎉 Nuevos calificados del sistema de liderazgo")}catch(e){}}
+function lcLista(){const L=lcLista0();
+  openSheet(`<h2>🎉 Calificados · ${esc(lcMes())}</h2><p class="small muted" style="margin:0">Sistema de liderazgo: 🏅 Líder 200+ pts · ⚔️ Líder Espartano 500+ pts</p><span data-nofocus hidden></span>
+   <div id="lcL">${L.map((r,i)=>{const rel=lcRelacion(r.n),img=fotoDe(r.n);return `<div class="row between" style="gap:8px;padding:8px 0;border-bottom:1px solid var(--line)"><div class="row" style="gap:10px;min-width:0"><div class="dt-av" style="width:42px;height:42px;margin:0;flex:none;${r.k==="esp"?"background:conic-gradient(#F5B700,#FFF3C4,#F5B700)":""}">${img?`<s style="background-image:url('${esc(img)}')"></s>`:`<s style="font-size:12px">${esc(initials(r.n))}</s>`}</div><div style="min-width:0"><b class="small">${esc(r.n)}</b><div class="small muted">${LC_TX[r.k]} · ${fmt(r.v)} pts</div></div></div><button class="btn sm ${rel?"":"ghost"}" data-lci="${i}" style="flex:none">🎉 Flyer</button></div>`}).join("")||`<p class="small muted">Aún no hay calificados este mes.</p>`}</div>
+   <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#lcL").onclick=e=>{const b=e.target.closest("[data-lci]");if(!b)return;const r=L[+b.dataset.lci];if(r)lcVentana([r],"")}})}
 // ---------- My Dream Team: 30 directos activos (ahorro al día). Solo lo ve el propio socio ----------
 const DT_META=30,DT_HITOS=[5,10,20,30];let dtSum=null,dtStats=null,dtCargando=false;
 function dtFoto(u,n){const f=(fotosFs||[]).find(x=>x.id===u&&x.img);return f?f.img:(n?fotoDe(n):"")}
@@ -1774,7 +1834,7 @@ function renderDT(){const c=$("#dtCard");if(!c)return;if(!dtSum){try{dtSum=LS.ge
    <div class="dt-bar"><i style="width:${Math.min(100,n/DT_META*100).toFixed(0)}%"></i></div>
    ${D.length?`<div class="dt-row">${ok.slice(0,5).map(x=>{const img=dtFoto(x.u,x.n);return `<span class="a" style="${img?`background-image:url('${esc(img)}')`:""}">${img?"":esc(initials(x.n))}</span>`}).join("")}${ok.length>5?`<span class="x">+${ok.length-5}</span>`:""}<span class="t">Equipo activo: <b>${eq}</b><br>${done?`<b>+${n-DT_META}</b> extra`:`Le faltan <b>${DT_META-n}</b>`}</span></div>`
      :`<p style="margin:10px 0 0;font-size:13px;line-height:1.4">🌱 Su Dream Team empieza con su <b>primer socio</b>. Comparta su enlace de invitación y llene su primera casilla.</p>`}
-   <div class="dt-go"><span>${done?"🏆 Su camino a Marketing Director":prox?"🔥 Próxima meta: "+prox:""}</span><span>${D.length?"Ver mi cuadro ›":"➕ Invitar ›"}</span></div>`;
+   <div class="dt-go"><span>${done?"🏆 Camino a mi libertad":prox?"🔥 Próxima meta: "+prox:""}</span><span>${D.length?"Ver mi cuadro ›":"➕ Invitar ›"}</span></div>`;
   c.onclick=()=>{if(!D.length){dtInvitar();return}dtCuadro()};
   dtHito(n)}
 function dtHito(n){if(!dtSum)return;const K="dtHito:"+store.uid,h=[...DT_HITOS].reverse().find(x=>n>=x)||0;let last=LS.get(K);
@@ -1785,9 +1845,9 @@ function dtHito(n){if(!dtSum)return;const K="dtHito:"+store.uid,h=[...DT_HITOS].
     <button class="btn" id="dtShare" style="width:100%;background:#25D366;color:#fff">💬 Compartir mi logro</button><button class="btn ghost" data-close style="width:100%">${h===30?"¡Lo logré!":"¡Vamos por más!"}</button>`,()=>{confeti($("#dtCel"),50);
     $("#dtShare").onclick=()=>{const yo=miNombreCorto()||"",m=h===30?`🏆 ¡Completé mi Dream Team!\n\n30 directos activos en Action Leaders PLUS.\n\nCamino a mi libertad ✨`:`🔥 ¡Ya tengo ${h} directos activos en mi Dream Team!\n\nVoy por mis 30.\n\nCamino a mi libertad ✨`;location.href="https://wa.me/?text="+encodeURIComponent(m+(yo?"\n\n*"+yo+"*":""))}})},900)}
 function dtCuadro(){const D=(dtSum&&dtSum.d)||[],n=dtAct(),pd=D.filter(x=>!x.ok).length,cells=Math.max(DT_META,D.length);
-  const g=D.map((x,i)=>`<button type="button" class="dt-c ${x.ok?"":"pd"}" data-dti="${i}"><div class="dt-av">${dtAvS(x)}<i>${x.ok?"✓":"!"}</i></div><b>${esc(dtFirst(x.n))}</b><small>${x.ok?"👥 "+x.a:"⚠️ Ahorro"}</small></button>`).join("")
+  const g=D.map((x,i)=>`<button type="button" class="dt-c ${x.ok?"":"pd"}" data-dti="${i}"><div class="dt-av">${dtAvS(x)}<i>${x.ok?"✓":"!"}</i>${(()=>{const l=lcNivelDe(x.n);return l.k?`<em class="dt-lv ${l.k}">${l.k==="esp"?"⚔️":"🏅"}</em>`:""})()}</div><b>${esc(dtFirst(x.n))}</b><small>${x.ok?"👥 "+x.a:"⚠️ Ahorro"}</small></button>`).join("")
     +Array.from({length:Math.max(0,DT_META-D.length)},()=>`<button type="button" class="dt-c e" data-dte="1"><div class="dt-av">+</div><b>&nbsp;</b><small>&nbsp;</small></button>`).join("");
-  openSheet(`<div class="dt-hd"><div class="dt-k">CAMINO A MI LIBERTAD</div><div class="dt-tr"><h3>${n>=DT_META?"🏆 ¡Dream Team completado!":"✨ My Dream Team"}</h3><div class="dt-n">${n}<span> / ${DT_META}</span></div></div><div class="dt-bar"><i style="width:${Math.min(100,n/DT_META*100).toFixed(0)}%"></i></div><div class="dt-ms"><span>5 🎉</span><span>10 🔥</span><span>20 🚀</span><span>30 🏆 Su camino a Marketing Director</span></div></div>
+  openSheet(`<div class="dt-hd"><div class="dt-k">CAMINO A MI LIBERTAD</div><div class="dt-tr"><h3>${n>=DT_META?"🏆 ¡Dream Team completado!":"✨ My Dream Team"}</h3><div class="dt-n">${n}<span> / ${DT_META}</span></div></div><div class="dt-bar"><i style="width:${Math.min(100,n/DT_META*100).toFixed(0)}%"></i></div><div class="dt-ms"><span>5 🎉</span><span>10 🔥</span><span>20 🚀</span><span>30 🏆 Camino a mi libertad</span></div></div>
    <span data-nofocus hidden></span><div class="dt-g" id="dtG">${g}</div>
    <p class="small muted" style="margin:0">${n>=DT_META?"🏆 ¡Completó sus 30! Cada directo extra fortalece su equipo.":`💭 Cada casilla vacía es un sueño esperando a su próximo socio. Le faltan <b>${DT_META-n}</b> directos activos.`} Equipo activo total: <b>${(dtSum&&dtSum.eq)||0}</b>.</p>
    <div class="row" style="gap:8px"><button class="btn grow" id="dtInv" style="background:#25D366;color:#fff">➕ Invitar</button>${pd?`<button class="btn ghost grow" id="dtMot">💰 Motivar ahorro (${pd})</button>`:""}</div>
@@ -1799,9 +1859,10 @@ function dtCuadro(){const D=(dtSum&&dtSum.d)||[],n=dtAct(),pd=D.filter(x=>!x.ok)
 async function dtWa(u){try{const d=await store.db.doc("users/"+u).get();return String(((d.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}catch(e){return""}}
 function dtFicha(x){const img=dtFoto(x.u,x.n),f=dtFirst(x.n),mes=x.f?MONTHS[new Date(x.f).getMonth()].slice(0,3):"—";
   openSheet(`<div style="display:flex;gap:14px;align-items:center;justify-content:flex-start"><div class="dt-av" style="width:72px;height:72px;flex:none;margin:0;${x.ok?"":"background:#E5B35A"}">${img?`<s style="background-image:url('${esc(img)}')"></s>`:`<s>${esc(initials(x.n))}</s>`}<i style="${x.ok?"":"background:#D97706"}">${x.ok?"✓":"!"}</i></div><div style="min-width:0;flex:1;text-align:left"><h2 style="margin:0">${esc(x.n)}</h2><span class="chip ${x.ok?"c-good":"c-gold"}">${x.ok?"✅ Ahorro al día":"⚠️ Ahorro pendiente"}</span></div></div>
+   ${(()=>{const l=lcNivelDe(x.n),C=calCfg();return l.k?`<div class="dt-q" style="${l.k==="esp"?"":"background:#E0F5FD;color:#06384F"}">${l.k==="esp"?"⚔️ <b>Líder Espartano</b> de "+esc(lcMesCorto())+" · ⭐ Team Leader":"🏅 <b>Líder</b> de "+esc(lcMesCorto())} · ${fmt(l.v)} pts${l.k==="lid"?`<br><span class="small">Le faltan ${fmt(C.esp-l.v)} pts para Líder Espartano</span>`:""}</div>`:`<div class="dt-q" style="background:var(--soft,#F1F6F9);color:inherit">📈 ${fmt(l.v)} pts este mes · le faltan <b>${fmt(C.lider-l.v)}</b> para ser Líder</div>`})()}
    ${x.ok?`<div class="dt-st"><div><b>${x.a}</b><small>activos en su equipo</small></div><div><b>${x.dp}</b><small>directos propios</small></div><div><b>${esc(mes)}</b><small>se unió</small></div></div>`:`<p class="small muted" style="margin:0">Mientras su ahorro esté pendiente, no cuenta para sus 30. Anímelo con cariño 💙</p>`}
-   <button class="btn" id="dtFw" style="width:100%;background:#25D366;color:#fff">${x.ok?"💬 Felicitar por WhatsApp":"💰 Motivar su ahorro"}</button><button class="btn ghost" id="dtBk" style="width:100%">‹ Volver a mi cuadro</button>`,()=>{
-    $("#dtBk").onclick=dtCuadro;$("#dtFw").onclick=async()=>{const w=await dtWa(x.u),yo=miNombreCorto()||"",v=parseInt(ahF(x.u),16)%3;
+   ${(()=>{const l=lcNivelDe(x.n);return l.k?`<button class="btn" id="dtLcF" style="width:100%;background:#25D366;color:#fff">💬 Felicitarlo por calificar como ${l.k==="esp"?"Líder Espartano":"Líder"} de ${esc(lcMesCorto())}</button><button class="btn ghost" id="dtLcS" style="width:100%">📣 Compartir su flyer</button>`:""})()}<button class="btn ${lcNivelDe(x.n).k?"ghost":""}" id="dtFw" style="width:100%;${lcNivelDe(x.n).k?"":"background:#25D366;color:#fff"}">${x.ok?"💬 Felicitar por WhatsApp":"💰 Motivar su ahorro"}</button><button class="btn ghost" id="dtBk" style="width:100%">‹ Volver a mi cuadro</button>`,()=>{
+    $("#dtBk").onclick=dtCuadro;{const l=lcNivelDe(x.n);if(l.k){const q=lcQ({n:x.n,k:l.k,v:l.v});q.foto=dtFoto(x.u,x.n)||q.foto;$("#dtLcF").onclick=()=>{const w0=dtWa(x.u);w0.then(w=>{location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(lcTextoFelicitar(q))})};$("#dtLcS").onclick=()=>lcCompartir(q,$("#dtLcS"))}}$("#dtFw").onclick=async()=>{const w=await dtWa(x.u),yo=miNombreCorto()||"",v=parseInt(ahF(x.u),16)%3;
       const t=x.ok?[`¡Hola, ${f}! 👏\n\nQuería felicitarle: es parte de mi Dream Team y ya tiene *${x.a}* socios activos en su equipo.\n\n¡Siga así, vamos juntos camino a la libertad! 🚀`,`${f}, ¡qué orgullo tenerle en mi equipo! 🙌\n\nGracias por su compromiso. Cada paso que da inspira a los demás.\n\n¡Vamos por más! 💪`,`¡Hola, ${f}! ✨\n\nSolo quería decirle que valoro mucho su trabajo en el equipo.\n\n¡Sigamos construyendo nuestra libertad juntos! 🚢`][v]
         :[`Hola, ${f} 👋\n\nVi que su ahorro de inCruises quedó pendiente. Póngase al día para no perder sus beneficios ni sus herramientas del equipo.\n\nSi necesita ayuda, aquí estoy 💙`,`¡Hola, ${f}! 🙌\n\nUn recordatorio con cariño: su ahorro de este mes está pendiente.\n\nAl ponerse al día sigue sumando en el equipo y no pierde su avance.\n\n¡Cuento con usted! 💪`,`Hola, ${f} 😊\n\nNo quiero que pierda lo que ha construido: su ahorro de inCruises está pendiente.\n\n¿Le ayudo con algo para ponerse al día?`][v];
       location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t+(yo?"\n\n*"+yo+"*":""))}})}
@@ -2181,6 +2242,7 @@ function renderEquipo(){const b=$("#eqBody");
     const per=T.config&&T.config.liderazgoPeriodo;
     b.innerHTML=`${per?`<p class="eyebrow">Calificados · ${esc(per)}</p>`:""}
      <div class="kpis" style="grid-template-columns:repeat(2,1fr)"><div class="kpi"><b>${L.length}</b><span>Líderes calificados</span></div><div class="kpi"><b>${fmt(tp)}</b><span>Presentaciones</span></div><div class="kpi"><b>${fmt(L.reduce((s,l)=>s+(Number(l.nuevos)||0),0))}</b><span>Socios nuevos</span></div><div class="kpi"><b>${fmt(tv)}</b><span>Volumen total</span></div></div>
+     ${lcLista0().length?`<button class="btn gold" id="lcBtn" style="width:100%">🎉 Calificados del sistema · ${esc(lcMes())} (${lcLista0().length}) · Ver flyers</button>`:""}
      <input class="inp" id="leadQ" type="search" placeholder="Buscar líder o línea ascendente" value="${esc(leadQ)}">
      ${(()=>{const C=calCfg(),cn={esp:0,lid:0,rango:0,pend:0};L.forEach(l=>cn[calLid(l).k]++);return `<div class="card" style="gap:8px"><h3 style="margin:0">🏅 Calificación del sistema${C.mes?" · "+esc(C.mes):""}</h3><p class="small muted" style="margin:0">Requisitos: ahorro al día y puntos personales del mes (🛡️ Líder ${fmt(C.lider)} · ⚔️ Espartano ${fmt(C.esp)}). De Marketing Director en adelante califican al recalificar su rango.</p><div class="stage-bar" id="leadCal">${[["Todos","Todos",L.length],["esp","⚔️ Espartanos",cn.esp],["lid","🛡️ Líderes",cn.lid],["rango","✅ Por rango",cn.rango],["pend","⏳ Pendientes",cn.pend]].map(([k,t,n])=>`<button aria-pressed="${k===leadCal}" data-c="${k}">${t}<span class="n">${n}</span></button>`).join("")}</div></div>`})()}
      <div class="stage-bar" id="leadPos">${["Todos"].concat(posKeys).map(k=>`<button aria-pressed="${k===leadPos}" data-p="${esc(k)}">${esc(rangoTxt(k))}<span class="n">${k==="Todos"?L.length:pos[k]}</span></button>`).join("")}</div>
@@ -2188,7 +2250,7 @@ function renderEquipo(){const b=$("#eqBody");
      <div class="row wrap small muted" style="gap:6px">Volumen: <span class="chip c-good">500 o más</span><span class="chip c-warn">200 a 499</span><span class="chip c-bad">menos de 200</span></div>
      <div class="card"><div class="list" id="leadList"></div></div>
      <p class="updated">${updatedTxt(T.config&&T.config.liderazgoActualizado)}</p>`;
-    renderLeadList();liderResCargar();
+    renderLeadList();liderResCargar();{const lb=$("#lcBtn");if(lb)lb.onclick=lcLista}
     $("#leadQ").oninput=e=>{leadQ=e.target.value;renderLeadList()};
     $("#leadCal").onclick=e=>{const x=e.target.closest("button");if(!x)return;leadCal=x.dataset.c;renderEquipo()};
     $("#leadPos").onclick=e=>{const x=e.target.closest("button");if(!x)return;leadPos=x.dataset.p;renderEquipo()};
@@ -3729,7 +3791,7 @@ async function loadMine(){
   try{const b=bw;if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}catch(e){}
   if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
   welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();
-  contacts=await store.contacts();setTimeout(importarProspectos,1500);setTimeout(()=>loadSala(),2500);setTimeout(()=>loadL3(),1800);setTimeout(()=>{try{renderDT();dtCargar(false)}catch(e){}},2600);setTimeout(()=>loadEvA(),2200);loadCitas();
+  contacts=await store.contacts();setTimeout(importarProspectos,1500);setTimeout(()=>loadSala(),2500);setTimeout(()=>loadL3(),1800);setTimeout(()=>{try{renderDT();dtCargar(false)}catch(e){}},2600);setTimeout(lcRevisar,6000);setTimeout(()=>loadEvA(),2200);loadCitas();
   renderAll()}
 
 let invSponsor=null,invData=null;
