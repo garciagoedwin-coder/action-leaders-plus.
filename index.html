@@ -1361,8 +1361,10 @@ function snPick(){return new Promise(ok=>{const i=document.createElement("input"
     if(!d)toast("No se pudo abrir esa foto. Pruebe con otra o tómele captura de pantalla y suba la captura.");ok(d)};i.click()})}
 function snFalta(f){if(!f)return"";const d=Math.ceil((new Date(f+(f.length===7?"-01":"")+"T12:00:00")-new Date())/864e5);if(d<0)return"";if(d<=60)return"Faltan "+d+" días";const m=Math.round(d/30.4);return m<24?"Faltan "+m+" meses":"Faltan "+(m/12).toFixed(1).replace(".0","")+" años"}
 function snMes(f){if(!f)return"";const [y,m]=f.split("-");return MONTHS[+m-1]+" "+y}
-async function loadSuenos(){if(!store.db||!store.uid||snBusy)return;snBusy=true;try{const [q,inf]=await Promise.all([snCol().get(),store.get("suenosInfo").catch(()=>null)]);snList=q.docs.map(d=>Object.assign({id:d.id},d.data())).sort((a,b)=>(a.t||0)-(b.t||0));snInfo=inf||{}}catch(e){snList=snList||[];snInfo=snInfo||{}}snBusy=false;renderSuenos();renderMetas()}
+async function loadSuenos(){if(!store.db||!store.uid||snBusy)return;snBusy=true;try{const [q,inf]=await Promise.all([snCol().get(),store.get("suenosInfo").catch(()=>null)]);if(q.empty&&q.metadata&&q.metadata.fromCache)throw new Error("offline");snList=q.docs.map(d=>Object.assign({id:d.id},d.data())).sort((a,b)=>(a.t||0)-(b.t||0));snInfo=inf||{};snErr=0}catch(e){console.error("loadSuenos",e);snErr=1;snInfo=snInfo||{}}snBusy=false;renderSuenos();renderMetas()}
+let snErr=0;
 function renderSuenos(){const b=$("#snBody");if(!b)return;if(!fbUser||!store.db){b.innerHTML=emptyCard("Inicie sesión","Entre con su cuenta para crear su mapa de sueños.");return}
+  if(snList===null&&snErr){b.innerHTML=emptyCard("No se pudieron cargar sus sueños","Sus fotos siguen guardadas. Puede ser la señal de internet. Toque para intentar de nuevo.")+`<button class="btn" id="snRetry" style="width:100%">🔄 Cargar de nuevo</button>`;$("#snRetry").onclick=()=>{snErr=0;renderSuenos()};return}
   if(snList===null){b.innerHTML=`<p class="muted small">Cargando sus sueños…</p>`;loadSuenos();return}
   const I=snInfo||{},C=I.crucero||{},M=misMetas(),r=proxRango(miRangoIdx());
   const why=`<div class="snWhy" id="snWhyBtn"><div class="q">“</div><p>${I.porque?esc(I.porque):"Toque aquí y escriba su por qué: la razón que le hace levantarse cada día."}</p><small>Mi por qué ${I.porque?"· editar":""}</small></div>`;
@@ -4281,7 +4283,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261030173948";var busy=false,pend=null;
+(function(){var V="20261030174213";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
