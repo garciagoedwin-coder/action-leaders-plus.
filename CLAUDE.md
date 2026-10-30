@@ -305,3 +305,4 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - pipeOk() = isAdmin: % en cada contacto, resumen (🔥/🔁/🎤, tocables para filtrar) y aviso de fríos en el CRM; pestaña "🎯 Prospectos" en Equipo › Mi equipo (pipeLider/pipeBind).
 - Datos para el líder SIN lecturas nuevas: pushResumen guarda users/{uid}.actividad.emb {c: conteo por etapa, top: hasta 25 {n "Nombre I.", s etapa, d stT, p n/10} de Presentación+}. El líder ya lee esos users en loadMios. Nunca teléfonos ni notas.
 - Botones del líder: "📞 Ofrecer llamada de 3" y "💬 Motivar" → WhatsApp al socio (dtWa).
+- (30 oct, tarde) emb.top ahora guarda hasta 80 prospectos de TODAS las etapas activas (Nuevo→Por cerrar) con NOMBRE COMPLETO (Edwin lo pidió). Vista del líder: selector #pipeSel por socio (pipeU), filas del embudo tocables (data-pst) → hoja con los nombres de esa etapa (pipeFila). Teléfonos y notas nunca.

@@ -230,7 +230,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .stpct{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none}.stpct b{font-size:17px;line-height:1}.stpct em{font-style:normal;font-size:10.5px;font-weight:700;color:#B45309}
 .c-hot{background:#FFEDD5;color:#C2410C}
 .stsum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}.stsum button{border:0;border-radius:12px;padding:8px 4px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}.stsum b{display:block;font-size:20px}
-.pl-f{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700}.pl-f span{width:118px;flex:none}.pl-f i{flex:1;height:16px;border-radius:6px;background:var(--surface-2);overflow:hidden}.pl-f s{display:block;height:100%;border-radius:6px;text-decoration:none}.pl-f b{width:30px;text-align:right}
+.pl-f{display:flex;align-items:center;gap:8px;font:inherit;font-size:12.5px;font-weight:700;border:0;background:none;color:inherit;padding:3px 0;width:100%;text-align:left;cursor:pointer}.pl-f em{font-style:normal;color:var(--muted)}.pl-f span{width:118px;flex:none}.pl-f i{flex:1;height:16px;border-radius:6px;background:var(--surface-2);overflow:hidden}.pl-f s{display:block;height:100%;border-radius:6px;text-decoration:none}.pl-f b{width:30px;text-align:right}
 .pl-r{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}.pl-r:last-child{border:0}.pl-p{font-size:17px;flex:none}
 .retoStrip{display:flex;align-items:center;gap:10px;border-radius:14px;padding:11px 13px;font-size:13.5px;cursor:pointer;color:#fff;background:linear-gradient(120deg,#06B6D4,#0A7DAD 60%,#0B4F7A)}
 .pban{position:relative;overflow:hidden;border-radius:22px;padding:16px;color:#fff;display:flex;flex-direction:column;gap:10px}
@@ -1332,7 +1332,7 @@ let resT;function pushResumen(){if(!store.db||!store.uid)return;clearTimeout(res
   const et={};(contacts||[]).forEach(c=>{et[c.stage||"Nuevo"]=(et[c.stage||"Nuevo"]||0)+1});
   const a={fecha:TODAY,hoy:Math.round(dayScore(day)*100),racha,dias7:dias,semana:sum,crm:(contacts||[]).length,etapas:Object.keys(et).map(k=>k+":"+et[k]),
     presN:presSemana().map(x=>x.n).slice(0,30),emb:(()=>{const cnt={};(contacts||[]).forEach(c=>{const k=c.stage||"Nuevo";cnt[k]=(cnt[k]||0)+1});
-      const top=(contacts||[]).filter(c=>["Presentación","Seguimiento","Por cerrar"].includes(c.stage)).map(c=>({n:stCorto(c.name),s:c.stage,d:c.stT||c.updated||0,p:(c.pres&&c.pres.n)||0})).sort((a,b)=>(ST_PCT[b.s]-ST_PCT[a.s])||(a.d-b.d)).slice(0,25);return{c:cnt,top}})(),historia:!!(profile.historias||{})[TODAY],bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),cons:constStats(),t:Date.now()};
+      const top=(contacts||[]).filter(c=>["Nuevo","Contactado","Presentación","Seguimiento","Por cerrar"].includes(c.stage||"Nuevo")).map(c=>({n:String(c.name||"").trim().slice(0,60),s:c.stage||"Nuevo",d:c.stT||c.updated||0,p:(c.pres&&c.pres.n)||0})).sort((a,b)=>(ST_PCT[b.s]-ST_PCT[a.s])||(a.d-b.d)).slice(0,80);return{c:cnt,top}})(),historia:!!(profile.historias||{})[TODAY],bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),cons:constStats(),t:Date.now()};
   await store.db.doc("users/"+store.uid).set({actividad:a},{merge:true});
   const nm=(miRegistro().nombre||"").trim(),em=String((fbUser&&fbUser.email)||"").toLowerCase();
   if(nm&&!SOLO_ADMIN.includes(em))await store.db.doc("constancia/"+store.uid).set(Object.assign({nombre:nm,hoy:a.hoy,fecha:TODAY,acc:Object.values(sum).reduce((x,y)=>x+(+y||0),0),t:Date.now()},a.cons));if(constL){const vq=document.querySelector("#v-equipo");if(vq&&!vq.hidden&&eqTab==="ranking"&&rankMetric==="rutina")loadConst(true);else{const me=constL.find(y=>y.uid===store.uid);if(me){me.hoy=a.hoy;me.fecha=TODAY}}}}catch(e){}},3000)}
@@ -2127,21 +2127,29 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
   if(DTP.bind0)DTP.bind0();
   const ml=$("#miosLin");if(ml)ml.onclick=e=>{const x=e.target.closest("button");if(!x)return;miosLin=x.dataset.ml;renderEquipo()};
   b.querySelectorAll("details[data-pi]").forEach(d=>d.ontoggle=()=>{const c=d.querySelector(".pi-b");if(d.open&&!c.dataset.ok){c.dataset.ok=1;c.innerHTML=mios.filter(y=>y.pierna===d.dataset.pi).sort((p,q)=>p.nivel-q.nivel||byAct(p,q)).map(y=>fila(y,1)).join("");bind()}})}
-function pipeLider(){const S=["Por cerrar","Seguimiento","Presentación","Contactado","Nuevo"],tot={},L=[];let n=0;
-  (mios||[]).forEach(x=>{const e=(x.actividad||{}).emb;if(!e)return;const nm=(x.registro||{}).nombre||"Socio";Object.entries(e.c||{}).forEach(([k,v])=>{tot[k]=(tot[k]||0)+(+v||0)});(e.top||[]).forEach(p=>L.push(Object.assign({u:x.uid,sn:nm},p)))});
-  S.forEach(k=>n+=tot[k]||0);const mx=Math.max(1,...S.map(k=>tot[k]||0)),con=(mios||[]).filter(x=>(x.actividad||{}).emb).length;
-  const dias=d=>d?Math.floor((Date.now()-d)/864e5):0,cuando=d=>{const k=dias(d);return k<=0?"hoy":k===1?"ayer":"hace "+k+" días"};
-  const C=L.filter(p=>p.s==="Por cerrar"||p.s==="Seguimiento").sort((a,b)=>(ST_PCT[b.s]-ST_PCT[a.s])||(dias(b.d)-dias(a.d)));
-  const fila=p=>{const f=["Seguimiento","Por cerrar"].includes(p.s)&&dias(p.d)>7,col=STAGE_COL[p.s];return `<div class="pl-r">${avHTML(p.sn,false,true)}<div class="grow" style="min-width:0"><b>${esc(p.n)} <span class="small muted" style="font-weight:600">· de ${esc(String(p.sn).split(" ")[0])}</span></b>
-    <div class="small ${f?"":"muted"}" style="${f?"color:#B45309;font-weight:700":""}">${f?"⚠️ "+dias(p.d)+" días sin avanzar":esc(p.s)+" "+cuando(p.d)}${p.p?" · "+p.p+"/10":""}</div>
-    <div class="row" style="gap:6px;margin-top:6px"><button type="button" class="btn sm grow" style="background:var(--brand);color:#fff" data-pl3="${esc(p.u)}" data-pn="${esc(p.n)}" data-pp="${ST_PCT[p.s]}">📞 Ofrecer llamada de 3</button><button type="button" class="btn sm grow" style="background:#25D366;color:#fff" data-pmo="${esc(p.u)}" data-pn="${esc(p.n)}" data-pp="${ST_PCT[p.s]}">💬 Motivar</button></div></div>
-    <b class="pl-p" style="color:${col}">${ST_PCT[p.s]}%</b></div>`};
-  return `<div class="card" style="gap:8px"><div class="row between"><b style="font-size:15px">Embudo de mi equipo · ${fmt(n)} prospectos</b></div>
-    ${S.map(k=>`<div class="pl-f"><span>${ST_IC[k]} ${k==="Presentación"?"Presentados":k==="Contactado"?"Contactados":k==="Nuevo"?"Nuevos":k}</span><i><s style="width:${((tot[k]||0)/mx*100).toFixed(0)}%;background:${STAGE_COL[k]}"></s></i><b>${tot[k]||0}</b></div>`).join("")}
-    <div class="row wrap small muted" style="gap:10px">${tot["Socio"]||tot["Cliente"]?`<span>✅ ${(tot["Socio"]||0)+(tot["Cliente"]||0)} ya activaron</span>`:""}<span>📱 Datos de ${con} ${con===1?"socio":"socios"} que usan su CRM</span></div></div>
-   <div class="card" style="gap:0;padding:10px 14px"><b style="font-size:15px;margin-bottom:4px">🔥 Para cerrar</b>${C.length?C.slice(0,40).map(fila).join(""):`<p class="small muted">Aún no hay prospectos en Seguimiento o Por cerrar en su equipo.</p>`}</div>
-   <p class="small muted" style="margin:0;text-align:center">🔒 Solo nombre e inicial. Teléfonos y notas son privados de cada socio.</p>`}
-function pipeBind(b){b.querySelectorAll("[data-pl3],[data-pmo]").forEach(bt=>bt.onclick=async()=>{const u=bt.dataset.pl3||bt.dataset.pmo,x=(mios||[]).find(y=>y.uid===u);if(!x)return;
+let pipeU="";
+function pipeDatos(){const tot={},L=[],SO=[];(mios||[]).forEach(x=>{const e=(x.actividad||{}).emb;if(!e)return;const nm=(x.registro||{}).nombre||"Socio";let k0=0;
+    Object.values(e.c||{}).forEach(v=>k0+=+v||0);SO.push({u:x.uid,n:nm,k:k0});if(pipeU&&x.uid!==pipeU)return;
+    Object.entries(e.c||{}).forEach(([k,v])=>{tot[k]=(tot[k]||0)+(+v||0)});(e.top||[]).forEach(p=>L.push(Object.assign({u:x.uid,sn:nm},p)))});
+  SO.sort((a,b)=>String(a.n).localeCompare(b.n,"es"));return{tot,L,SO}}
+const pDias=d=>d?Math.floor((Date.now()-d)/864e5):0,pCuando=d=>{const k=pDias(d);return k<=0?"hoy":k===1?"ayer":"hace "+k+" días"};
+function pipeFila(p,btn){const f=["Seguimiento","Por cerrar"].includes(p.s)&&pDias(p.d)>7,col=STAGE_COL[p.s];return `<div class="pl-r">${avHTML(p.sn,false,true)}<div class="grow" style="min-width:0"><b>${esc(p.n)} <span class="small muted" style="font-weight:600">· de ${esc(String(p.sn).split(" ")[0])}</span></b>
+    <div class="small ${f?"":"muted"}" style="${f?"color:#B45309;font-weight:700":""}">${f?"⚠️ "+pDias(p.d)+" días sin avanzar":ST_IC[p.s]+" "+esc(p.s)+" · "+pCuando(p.d)}${p.p?" · "+p.p+"/10":""}</div>
+    ${btn?`<div class="row" style="gap:6px;margin-top:6px"><button type="button" class="btn sm grow" style="background:var(--brand);color:#fff" data-pl3="${esc(p.u)}" data-pn="${esc(p.n)}" data-pp="${ST_PCT[p.s]}">📞 Ofrecer llamada de 3</button><button type="button" class="btn sm grow" style="background:#25D366;color:#fff" data-pmo="${esc(p.u)}" data-pn="${esc(p.n)}" data-pp="${ST_PCT[p.s]}">💬 Motivar</button></div>`:""}</div>
+    <b class="pl-p" style="color:${col}">${ST_PCT[p.s]}%</b></div>`}
+function pipeLider(){const S=["Por cerrar","Seguimiento","Presentación","Contactado","Nuevo"],{tot,L,SO}=pipeDatos();let n=0;S.forEach(k=>n+=tot[k]||0);
+  const mx=Math.max(1,...S.map(k=>tot[k]||0)),sel=SO.find(x=>x.u===pipeU);
+  const C=L.filter(p=>p.s==="Por cerrar"||p.s==="Seguimiento").sort((a,b)=>(ST_PCT[b.s]-ST_PCT[a.s])||(pDias(b.d)-pDias(a.d)));
+  return `<div class="card" style="gap:8px"><select class="inp" id="pipeSel" aria-label="Ver prospectos de"><option value="">👥 Todo mi equipo (${SO.length} ${SO.length===1?"socio":"socios"} con datos)</option>${SO.map(x=>`<option value="${esc(x.u)}" ${x.u===pipeU?"selected":""}>${esc(x.n)} · ${x.k}</option>`).join("")}</select>
+    <b style="font-size:15px">${sel?"Embudo de "+esc(String(sel.n).split(" ")[0]):"Embudo de mi equipo"} · ${fmt(n)} prospectos</b>
+    ${S.map(k=>`<button type="button" class="pl-f" data-pst="${esc(k)}"><span>${ST_IC[k]} ${k==="Presentación"?"Presentados":k==="Contactado"?"Contactados":k==="Nuevo"?"Nuevos":k}</span><i><s style="width:${((tot[k]||0)/mx*100).toFixed(0)}%;background:${STAGE_COL[k]}"></s></i><b>${tot[k]||0}</b><em>›</em></button>`).join("")}
+    <div class="row wrap small muted" style="gap:10px">${tot["Socio"]||tot["Cliente"]?`<span>✅ ${(tot["Socio"]||0)+(tot["Cliente"]||0)} ya activaron</span>`:""}<span>Toque una etapa para ver los nombres</span></div></div>
+   <div class="card" style="gap:0;padding:10px 14px"><b style="font-size:15px;margin-bottom:4px">🔥 Para cerrar</b>${C.length?C.slice(0,40).map(p=>pipeFila(p,1)).join(""):`<p class="small muted">${SO.length?"No hay prospectos en Seguimiento o Por cerrar.":"Aún no hay datos: se llenan cuando cada socio abre la app con la versión nueva."}</p>`}</div>
+   <p class="small muted" style="margin:0;text-align:center">🔒 Teléfonos y notas son privados de cada socio.</p>`}
+function pipeBind(b){const ps=b.querySelector("#pipeSel");if(ps)ps.onchange=()=>{pipeU=ps.value;renderEquipo()};
+  b.querySelectorAll("[data-pst]").forEach(bt=>bt.onclick=()=>{const k=bt.dataset.pst,{L}=pipeDatos(),P=L.filter(p=>p.s===k).sort((a,b)=>pDias(b.d)-pDias(a.d)||String(a.sn).localeCompare(b.sn,"es"));
+    openSheet(`<h2>${ST_IC[k]} ${esc(k)} · ${P.length}</h2><p class="small muted" style="margin:0">${pipeU?"":"De todo su equipo. "}Los más antiguos primero.</p><div id="pstL">${P.map(p=>pipeFila(p,["Seguimiento","Por cerrar","Presentación"].includes(k))).join("")||`<p class="small muted">No hay prospectos en esta etapa.</p>`}</div>${P.length>=80?`<p class="small muted">Se muestran hasta 80 por socio.</p>`:""}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>pipeBind($("#pstL")))});
+  b.querySelectorAll("[data-pl3],[data-pmo]").forEach(bt=>bt.onclick=async()=>{const u=bt.dataset.pl3||bt.dataset.pmo,x=(mios||[]).find(y=>y.uid===u);if(!x)return;
   const f=String((x.registro||{}).nombre||"").split(" ")[0],pn=bt.dataset.pn,pp=bt.dataset.pp,yo=miNombreCorto()||"",w=await dtWa(u);
   const t=bt.dataset.pl3?`Hola, ${f} 👋\n\nVi que ${pn} va en ${pp}% en su CRM.\n\n¿Le ayudo con una llamada de 3 para cerrarlo?\n\nDígame qué día y hora le quedan bien. 💪`
     :`¡Hola, ${f}! 🙌\n\nVi que tiene a ${pn} en ${pp}%. ¡Está muy cerca!\n\nSi necesita apoyo para el cierre, aquí estoy.\n\n¡Vamos por esa activación! 🚀`;
@@ -4273,7 +4281,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261030171148";var busy=false,pend=null;
+(function(){var V="20261030172714";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
