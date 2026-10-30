@@ -208,6 +208,25 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .lz-v{flex:none;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:3px;min-width:64px}.lz-v b{font-size:17px}.lz-v .chip{font-size:10.5px;padding:2px 7px;font-weight:800}
 .lz-mini{display:block;width:60px;height:4px;border-radius:99px;background:var(--line);overflow:hidden}.lz-mini i{display:block;height:100%}
 .lz-pend summary{list-style:none;cursor:pointer;font-weight:800;color:var(--muted);display:flex;justify-content:space-between}.lz-pend summary::-webkit-details-marker{display:none}.lz-pend[open] summary span{transform:rotate(90deg)}
+#presOv{position:fixed;inset:0;z-index:9000;background:#0E2A4F;color:#fff;display:flex;flex-direction:column;overflow:auto;-webkit-overflow-scrolling:touch}#presOv[hidden]{display:none}
+#presOv .pv-top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:max(14px,env(safe-area-inset-top)) 14px 8px;font-size:12.5px;color:#C9D8EA}#presOv .pv-top b{color:#fff}
+#presOv .pv-x{width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+#presOv .pv-prog{height:4px;background:rgba(255,255,255,.15);margin:0 14px 10px;border-radius:9px;overflow:hidden;flex:none}#presOv .pv-prog i{display:block;height:100%;background:#ECA948;transition:width .25s}
+#presOv .pv-sl{margin:0 10px;border-radius:12px;overflow:hidden;box-shadow:0 10px 24px -10px rgba(0,0,0,.6);flex:none;background:#13447A;aspect-ratio:16/9}#presOv .pv-sl img{display:block;width:100%;height:100%;object-fit:contain}
+#presOv .pv-body{flex:1;padding:14px;display:flex;flex-direction:column;gap:10px;max-width:640px;width:100%;margin:0 auto}
+#presOv .pv-q{font-weight:800;font-size:16.5px;line-height:1.3}#presOv .pv-h{font-size:12.5px;color:#C9D8EA;margin-top:-6px}
+#presOv .pv-opts{display:flex;flex-direction:column;gap:8px}#presOv .pv-opts.g2{display:grid;grid-template-columns:1fr 1fr}
+#presOv .pv-o{border:1.5px solid rgba(255,255,255,.28);background:transparent;color:#fff;border-radius:14px;padding:12px 13px;font:inherit;font-weight:700;font-size:15px;text-align:left;cursor:pointer}#presOv .pv-o.on{background:#ECA948;border-color:#ECA948;color:#0B2E57}
+#presOv .pv-nums{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}#presOv .pv-nums button{height:48px;border-radius:12px;border:1.5px solid rgba(255,255,255,.32);background:transparent;color:#fff;font:inherit;font-weight:800;font-size:18px;cursor:pointer}
+#presOv .pv-nums .m{border-color:#ECA948;color:#ECA948}#presOv .pv-nums .h{background:#EF8A1F;border-color:#EF8A1F}#presOv .pv-nums .sel{background:#fff;color:#0B2E57;border-color:#fff;box-shadow:0 0 0 3px #ECA948}
+#presOv .pv-res{border-radius:16px;padding:13px;display:flex;flex-direction:column;gap:8px}#presOv .pv-res b{font-size:15.5px}#presOv .pv-res p{margin:0;font-size:13px;line-height:1.45}
+#presOv .pv-res.ok{background:linear-gradient(160deg,#16A34A,#0F7A36)}#presOv .pv-res.mid{background:linear-gradient(160deg,#B45309,#92400E)}#presOv .pv-res.low{background:linear-gradient(160deg,#1E5A9E,#13447A);border:1px solid rgba(255,255,255,.2)}
+#presOv .pv-wa{background:#25D366;color:#fff;border:0;width:100%}#presOv .pv-res.ok .pv-wa{background:#fff;color:#0F7A36}#presOv .pv-l3{width:100%;color:#fff!important;background:rgba(255,255,255,.14)!important;border:1px solid rgba(255,255,255,.4)!important}
+#presOv .pv-d{background:rgba(0,0,0,.18);border-radius:10px;padding:8px 10px}#presOv .pv-d summary{font-weight:700;font-size:13px;cursor:pointer}#presOv .pv-d p{margin-top:6px}
+#presOv .pv-note{background:rgba(236,169,72,.12);border:1px dashed rgba(236,169,72,.6);border-radius:12px;padding:10px 12px;font:inherit;font-size:12.5px;color:#F6DDB3;line-height:1.45;text-align:left;cursor:pointer}#presOv .pv-note b{color:#ECA948}#presOv .pv-note span{display:block;opacity:.7;font-size:11px;margin-top:4px}
+#presOv .pv-gs{align-self:flex-start;background:transparent;border:1px dashed rgba(236,169,72,.6);color:#ECA948;border-radius:99px;padding:6px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+#presOv .pv-nav{display:flex;gap:10px;padding:10px 14px max(16px,env(safe-area-inset-bottom));position:sticky;bottom:0;background:linear-gradient(transparent,#0E2A4F 30%)}#presOv .pv-nav button{flex:1;border:0;border-radius:14px;padding:14px;font:inherit;font-weight:800;font-size:15px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}#presOv .pv-nav button:disabled{opacity:.4}#presOv .pv-nav .go{background:#ECA948;color:#0B2E57}
+@media (orientation:landscape) and (max-height:560px){#presOv .pv-sl{height:calc(100vh - 150px);aspect-ratio:auto;margin:0 auto;width:auto;max-width:calc(100vw - 20px)}#presOv .pv-sl img{width:auto;height:100%}}
 .retoStrip{display:flex;align-items:center;gap:10px;border-radius:14px;padding:11px 13px;font-size:13.5px;cursor:pointer;color:#fff;background:linear-gradient(120deg,#06B6D4,#0A7DAD 60%,#0B4F7A)}
 .pban{position:relative;overflow:hidden;border-radius:22px;padding:16px;color:#fff;display:flex;flex-direction:column;gap:10px}
 .pb-rt{background:radial-gradient(120% 80% at 100% 0%,#FDE68A 0 14%,transparent 15%),linear-gradient(165deg,#22D3EE 0%,#0891B2 45%,#075985 100%)}
@@ -3225,9 +3244,10 @@ function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerC
     <div class="cbody"><div class="info">
     ${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}${c.note?`<span class="note">${esc(c.note)}</span>`:""}
     ${(()=>{const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fecha>=TODAY).sort(citaSort)[0];return ci?`<span class="small" style="color:var(--brand);font-weight:700">📅 Cita: ${esc(citaCuando(ci))}</span>`:""})()}
+    ${c.pres&&c.pres.t?`<span class="small" style="font-weight:700;color:${c.pres.n>=8?"var(--good)":c.pres.n>=6?"#B45309":"var(--brand)"}">🎤 Presentado ${esc(niceDate(new Date(c.pres.t-216e5).toISOString().slice(0,10)))}${c.pres.n?" · "+c.pres.n+"/10"+(c.pres.n>=8?" 🔥":""):""}</span>`:""}
     ${(()=>{const v=salaOk()&&salaDe(c.id);return v?`<span class="small" style="font-weight:700;color:${salaNivel(v)[2]}">🎬 ${esc(salaNivel(v)[0])} · vio el ${+v.pct||0}%${v.resp?" · "+esc(SALA_R[v.resp]||""):""}</span>`:""})()}
     ${c.next?`<span class="small" style="color:var(--${late?"bad":today?"warn":"muted"});font-weight:600">${late?"Seguimiento atrasado: "+niceDate(c.next):today?"Seguimiento hoy":"Próximo seguimiento: "+niceDate(c.next)}</span>`:""}
-    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost" data-cita="${esc(c.id)}">📅 Agendar</button><button class="btn sm ghost" data-l3="${esc(c.id)}">📞 Llamada de 3</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
+    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${presOk()?`<button class="btn sm gold" data-pres="${esc(c.id)}">🎤 Presentar</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost" data-cita="${esc(c.id)}">📅 Agendar</button><button class="btn sm ghost" data-l3="${esc(c.id)}">📞 Llamada de 3</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
 $("#stageBar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;stageF=b.dataset.s;renderCRM()});
 $("#crmSearch").addEventListener("input",renderCRM);
 $("#bienBtn").onclick=()=>abrirBienvenida();$("#addContact").onclick=()=>editContact();
@@ -3239,6 +3259,7 @@ $("#contactList").addEventListener("click",async e=>{const st=e.target.closest("
   const bw=e.target.closest("[data-bien]");if(bw){abrirBienvenida(contacts.find(c=>c.id===bw.dataset.bien));return}
   const ct=e.target.closest("[data-cita]");if(ct){abrirCita(null,contacts.find(c=>c.id===ct.dataset.cita));return}
   const l3=e.target.closest("[data-l3]");if(l3){pedirL3(contacts.find(c=>c.id===l3.dataset.l3));return}
+  const pr=e.target.closest("[data-pres]");if(pr){presAbrir(contacts.find(c=>c.id===pr.dataset.pres));return}
   const sl=e.target.closest("[data-sala]");if(sl){enviarSala(contacts.find(c=>c.id===sl.dataset.sala));return}
   const b=e.target.closest("[data-edit]");if(b)editContact(contacts.find(c=>c.id===b.dataset.edit))});
 
@@ -3571,6 +3592,102 @@ function tourPinta(st,e){let o=$("#tourOv");if(!o){o=document.createElement("div
 function tourCard(){const D=LS.get("tourOk")||{},K=Object.keys(TOURS),h=K.filter(k=>D[k]).length;
   return `<div class="card" style="gap:8px;background:linear-gradient(135deg,#0A7DAD,#2AC1F1);color:#fff;border:0"><b style="font-size:17px">🧭 Descubra su app</b><p class="small" style="margin:0;opacity:.92">Guías paso a paso dentro de la app. Toque una y la app le enseña dónde tocar.</p><p class="small" style="margin:0;font-weight:800">${h} de ${K.length} completadas</p></div>`
    +K.map(k=>{const t=TOURS[k],ok=!!D[k];return `<button type="button" class="card row between" data-tour="${k}" style="gap:10px;text-align:left;cursor:pointer"><span class="grow"><b>${esc(t.t)}</b><small class="muted" style="display:block">${esc(t.d)} · ${t.min} min</small></span><span class="chip ${ok?"c-good":"c-gold"}">${ok?"✓ Visto":"Ver ›"}</span></button>`}).join("")}
+// ---------- Presentación interactiva (31 oct): el socio presenta desde la app ----------
+const PRES={n:21,img:i=>"media/pres/s"+String(i).padStart(2,"0")+".jpg",
+  q:{2:{k:"r1",t:"¿Qué tendría más valor para ti en este momento?",o:["✈️ Viajar más","💰 Generar ingresos","⭐ Ambas cosas"]},
+     3:{k:"dest",multi:1,t:"¿Qué destino te gustaría conocer?",h:"Puede elegir varios",o:["🌴 Caribe","🏛️ Europa","🏯 Asia","⛰️ Sudamérica"]},
+     20:{k:"r2",t:"¿Qué fue lo que más conectó contigo?",o:["✈️ Viajar más","💰 Generar ingresos","⭐ Ambas cosas"]},
+     21:{k:"n",num:1,t:"Del 1 al 10, ¿qué tan listo estás para comenzar hoy?"}},
+  g:{1:"Preséntese en 20 segundos y diga: \"Te voy a mostrar cómo viajar más y cómo esto puede convertirse en un negocio.\"",
+     2:"Deje que responda y toque su respuesta. La va a usar en el cierre.",
+     3:"Pregúntele cuál elige y por qué. Toque los destinos que diga: salen en su mensaje final.",
+     4:"inCruises es un club de membresía de viajes: hoteles, tours y cruceros en más de 190 países.",
+     5:"Pregúntele: \"¿Alguna vez te has ido de crucero?\" y escuche.",
+     6:"Solo nombre los 5 pasos. Así sabe a dónde va la presentación.",
+     7:"La idea clave: \"Tu dinero rinde el doble para viajar. $100 se convierten en 200 puntos.\"",
+     8:"Muestre cómo crecen los puntos mes a mes, sin apurarse.",
+     9:"Dos formas de reservar: mitad puntos y mitad efectivo, o todo con puntos (precio × 1.5).",
+     10:"Momento clave. Pregúntele: \"¿Cuál opción usarías para ese destino que elegiste?\"",
+     11:"Pagar a tiempo protege sus puntos y su viaje.",
+     12:"\"Ahora te muestro cómo esto también genera ingresos.\"",
+     13:"Refiriendo 5 Classic o 2 Premium, su membresía le sale con $100 de descuento.",
+     14:"Bonos en efectivo por cada activación y un bono extra al mes.",
+     15:"Son rangos que se logran construyendo un equipo. No prometa montos: dependen del trabajo de cada uno.",
+     16:"La Black Card permite reservar con el 100% de los puntos, uno a uno.",
+     17:"\"No estás solo: tienes formación, mentorías, comunidad y esta app.\"",
+     18:"\"Todo comienza con una decisión.\"",
+     19:"Presente los dos paquetes con calma y deje que pregunte.",
+     20:"Compare con lo que respondió al inicio: \"Al principio me dijiste ___. ¿Sigue siendo así?\"",
+     21:"Que toque su número. La app le dice qué hacer según lo que elija."},
+  val:["viajar más","generar ingresos","viajar y generar ingresos"],dest:["el Caribe","Europa","Asia","Sudamérica"],
+  dudas:[["¿Cuánto cuesta empezar?","Classic $200 o Premium $500 de inicio. Luego, desde $100 al mes, que se convierten en 200 puntos para viajar."],
+    ["¿Y si un mes no puedo pagar?","Tiene hasta 60 días desde su último pago para mantener la cuenta activa. Pagando a tiempo duplica sus puntos."],
+    ["¿Tengo que vender?","No. Puede solo viajar. Si recomienda el club, recibe bonos y descuentos."],
+    ["¿Cuándo puedo viajar?","Con la opción mitad puntos y mitad efectivo puede reservar desde 90 días antes."]]};
+function presOk(){return !!isAdmin}
+let PS=null;
+function presEl(){let o=$("#presOv");if(!o){o=document.createElement("div");o.id="presOv";o.setAttribute("role","dialog");o.setAttribute("aria-label","Presentación");document.body.appendChild(o);
+  o.addEventListener("click",presClick);
+  let x0=null;o.addEventListener("touchstart",e=>{if(e.target.closest(".pv-sl"))x0=e.touches[0].clientX},{passive:true});
+  o.addEventListener("touchend",e=>{if(x0==null)return;const d=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(d)>60)presIr(d<0?1:-1)},{passive:true});
+  document.addEventListener("keydown",e=>{if(!PS||o.hidden)return;if(e.key==="ArrowRight")presIr(1);else if(e.key==="ArrowLeft")presIr(-1)})}
+  return o}
+function presElegir(){if(!presOk())return;let q="";
+  const pinta=()=>{const L=(contacts||[]).filter(c=>c.stage!=="Socio"&&(!q||String(c.name||"").toLowerCase().includes(q))).sort((a,b)=>(b.updated||0)-(a.updated||0)).slice(0,40);
+    $("#prL").innerHTML=L.map(c=>`<button type="button" class="pf-it" data-prc="${esc(c.id)}"><span class="ic">👤</span>${esc(c.name)}<span class="small muted" style="margin-left:auto">${esc(c.stage||"")}</span></button>`).join("")||`<p class="small muted">No hay contactos con ese nombre.</p>`};
+  openSheet(`<h2>🎤 ¿A quién le va a presentar?</h2><input class="inp" id="prQ" type="search" placeholder="Buscar en mi CRM"><div id="prL" style="display:flex;flex-direction:column;max-height:46vh;overflow:auto"></div>
+   <div class="card" style="gap:8px"><b>➕ Persona nueva</b><input class="inp" id="prN" placeholder="Nombre y apellido"><input class="inp" id="prW" type="tel" inputmode="tel" placeholder="WhatsApp (opcional)"><button class="btn" id="prOk" style="width:100%">Empezar presentación</button></div>
+   <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{pinta();
+    $("#prQ").oninput=e=>{q=e.target.value.trim().toLowerCase();pinta()};
+    $("#prL").onclick=e=>{const b=e.target.closest("[data-prc]");if(!b)return;const c=contacts.find(x=>x.id===b.dataset.prc);if(c){closeSheet();presAbrir(c)}};
+    $("#prOk").onclick=async()=>{const n=$("#prN").value.trim();if(!n){toast("Escriba el nombre");return}const t=$("#prW").value.replace(/[^\d+]/g,"");
+      const c={name:n.slice(0,80),cc:"504",phone:t.slice(0,15),stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(c);if(!id)return;c.id=id;contacts.push(c);try{renderCRM()}catch(e){}closeSheet();presAbrir(c)}})}
+function presAbrir(c){if(!presOk())return;if(typeof ahGate==="function"&&ahGate())return;if(!c){presElegir();return}
+  PS={c,i:1,a:{},t0:Date.now(),g:LS.get("presG")!=="0",ok:false,xArm:0};const o=presEl();o.hidden=false;document.body.style.overflow="hidden";presPinta()}
+function presCerrar(){const o=$("#presOv");if(o)o.hidden=true;document.body.style.overflow="";PS=null}
+function presIr(d){if(!PS)return;const i=Math.min(PRES.n,Math.max(1,PS.i+d));if(i===PS.i)return;PS.i=i;presPinta()}
+function presFirst(){return String((PS&&PS.c.name)||"").trim().split(/\s+/)[0]||""}
+function presPinta(){const o=presEl(),i=PS.i,q=PRES.q[i],A=PS.a,g=PRES.g[i];
+  const opt=(t,j,on)=>`<button type="button" class="pv-o${on?" on":""}" data-pv="o" data-v="${j}">${esc(t)}</button>`;
+  let qh="";if(q){if(q.num){qh=`<div class="pv-q">${esc(q.t)}</div><div class="pv-nums">${Array.from({length:10},(_,j)=>{const n=j+1;return `<button type="button" class="${n>=8?"h":n>=6?"m":""}${A.n===n?" sel":""}" data-pv="num" data-v="${n}">${n}</button>`}).join("")}</div>`+(A.n?presCierre():"")}
+    else{const v=A[q.k];qh=`<div class="pv-q">${esc(q.t)}</div>${q.h?`<div class="pv-h">${esc(q.h)}</div>`:""}<div class="pv-opts${q.o.length===4?" g2":""}">${q.o.map((t,j)=>opt(t,j,q.multi?(v||[]).includes(j):v===j)).join("")}</div>`}}
+  o.innerHTML=`<div class="pv-top"><button type="button" class="pv-x" data-pv="x" aria-label="Salir">✕</button><span>Presentando a <b>${esc(presFirst())}</b></span><span>${i} / ${PRES.n}</span></div>
+   <div class="pv-prog"><i style="width:${(i/PRES.n*100).toFixed(1)}%"></i></div>
+   <div class="pv-sl"><img src="${PRES.img(i)}" alt="Diapositiva ${i} de ${PRES.n}" decoding="async"></div>
+   <div class="pv-body">${qh}${g?(PS.g?`<button type="button" class="pv-note" data-pv="g"><b>🎙️ Su guion:</b> ${esc(g)}<span>Toque para ocultar</span></button>`:`<button type="button" class="pv-gs" data-pv="g">🎙️ Ver guion</button>`):""}</div>
+   <div class="pv-nav"><button type="button" data-pv="p" ${i===1?"disabled":""}>‹ Anterior</button>${i<PRES.n?`<button type="button" class="go" data-pv="n">Siguiente ›</button>`:`<button type="button" class="go" data-pv="fin">${PS.ok?"Cerrar":"Terminar y guardar"}</button>`}</div>`;
+  if(i<PRES.n){const im=new Image();im.src=PRES.img(i+1)}o.scrollTop=0}
+function presCierre(){const n=PS.a.n,f=esc(presFirst()),wa=`<button type="button" class="btn pv-wa" data-pv="wa">📲 ${n>=8?"Enviar link + resumen":"Enviar resumen"} por WhatsApp</button>`,l3=`<button type="button" class="btn ghost pv-l3" data-pv="l3">📞 Agendar llamada de 3 con un líder</button>`;
+  if(n>=8)return `<div class="pv-res ok"><b>🔥 ¡${f} está listo! (${n}/10)</b><p>Envíele su link ahora y creen la cuenta juntos en este momento.</p>${wa}</div>`;
+  if(n>=6)return `<div class="pv-res mid"><b>🤔 ${f} está cerca (${n}/10)</b><p>Pregúntele: <b>"¿Qué te falta para llegar a 10?"</b> Estas son las dudas más comunes:</p>${PRES.dudas.map(([a,b])=>`<details class="pv-d"><summary>${esc(a)}</summary><p>${esc(b)}</p></details>`).join("")}${wa}${l3}</div>`;
+  return `<div class="pv-res low"><b>💭 ${f} lo está pensando (${n}/10)</b><p>No lo presione. Pregúntele qué le gustaría aclarar y agenden una llamada de 3 con un líder.</p>${l3}${wa}</div>`}
+function presMsg(){const A=PS.a,f=presFirst(),n=A.n||0,w=A.r2!=null?A.r2:A.r1,d=(A.dest||[]).map(j=>PRES.dest[j]),yo=miNombreCorto()||"",ref=safeUrl(profile.ref||"");
+  const lista=d.length>1?d.slice(0,-1).join(", ")+" y "+d[d.length-1]:d[0]||"";
+  const P=[`¡Hola, ${f}! 🙌`,"Gracias por su tiempo hoy."];
+  if(w!=null||lista)P.push(`Me quedé con lo que me dijo: quiere *${w!=null?PRES.val[w]:"viajar más"}*${lista?" y conocer *"+lista+"* 🚢":""}.`);
+  P.push("Con su membresía, sus ahorros rinden el doble en puntos para viajar.");
+  const lk=ref?"👉 "+ref:"En un momento le envío su link de registro.";
+  if(n>=8)P.push("Su primer paso es crear su cuenta gratis y recibir *50 puntos para viajes*:\n"+lk,"¡Hoy empieza su camino! ✨");
+  else if(n>=6)P.push("Si le queda alguna duda, con gusto se la aclaro.","Cuando esté listo, su primer paso es crear su cuenta gratis y recibir *50 puntos para viajes*:\n"+lk,"¡Quedo pendiente! ✨");
+  else P.push("Tómese su tiempo. Si quiere, le presento a un líder del equipo para resolver sus dudas en una llamada corta.","¡Quedo pendiente! ✨");
+  return P.join("\n\n")+(yo?"\n\n*"+yo+"*":"")}
+async function presGuardar(){if(!PS||PS.ok)return;PS.ok=true;const c=PS.c,A=PS.a;
+  c.pres={t:Date.now(),n:A.n||0,r1:A.r1!=null?A.r1:null,r2:A.r2!=null?A.r2:null,dest:A.dest||[],min:Math.max(1,Math.round((Date.now()-PS.t0)/6e4))};
+  const res=(A.n?"🎤 Presentación "+A.n+"/10":"🎤 Presentación")+((A.dest||[]).length?" · "+(A.dest||[]).map(j=>PRES.dest[j]).join(", "):"");
+  c.note=(String(c.note||"").trim()?String(c.note).trim()+"\n":"")+TODAY+": "+res;c.updated=Date.now();
+  if(A.n>=8||A.n<=5)c.next=c.next&&c.next>TODAY?c.next:addD(TODAY,A.n>=8?1:3);
+  try{if(c.id)await store.saveContact(Object.assign({},c));try{renderCRM()}catch(e){}}catch(e){}
+  try{await sumarPres(c)}catch(e){}}
+function addD(d,n){const x=new Date(d+"T12:00:00");x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)}
+async function presClick(e){const b=e.target.closest("[data-pv]");if(!b||!PS)return;const k=b.dataset.pv,q=PRES.q[PS.i];
+  if(k==="x"){if(PS.ok||PS.i<=2||Date.now()-PS.xArm<4000){presCerrar();return}PS.xArm=Date.now();toast("Toque ✕ otra vez para salir sin guardar");return}
+  if(k==="n")return presIr(1);if(k==="p")return presIr(-1);
+  if(k==="g"){PS.g=!PS.g;LS.set("presG",PS.g?"1":"0");presPinta();return}
+  if(k==="o"&&q){const v=+b.dataset.v;if(q.multi){const a=PS.a[q.k]||[];PS.a[q.k]=a.includes(v)?a.filter(x=>x!==v):a.concat(v)}else PS.a[q.k]=v;presPinta();return}
+  if(k==="num"){PS.a.n=+b.dataset.v;presPinta();const r=$("#presOv .pv-res");if(r)r.scrollIntoView({behavior:"smooth",block:"nearest"});return}
+  if(k==="wa"){if(!profile.ref)toast("Tip: agregue su enlace de inCruises en Mi página para que salga en el mensaje");const m=presMsg(),w=waNum(PS.c.phone,PS.c.cc);await presGuardar();location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(m);return}
+  if(k==="l3"){await presGuardar();const c=PS.c;presCerrar();pedirL3(c);return}
+  if(k==="fin"){if(!PS.ok)await presGuardar();toast("✅ Presentación guardada en el CRM");presCerrar()}}
 function renderAca(){const b=$("#acaBody");if(ahBloqYo()){b.innerHTML=`<div class="card" style="gap:8px;text-align:center"><b style="font-size:17px">🔒 Academia en pausa</b><p class="small muted" style="margin:0">Su ahorro de inCruises está pendiente. Póngase al día para reactivar sus cursos y herramientas.</p><button class="btn" style="background:#25D366;color:#fff" onclick="ahHablarSp()">💬 Hablar con mi patrocinador</button></div>`;return}
   if(ACA_PRONTO){$("#acaSeg").hidden=true;const cv=profile.cursos||{};
     b.innerHTML=tourCard()+`<div><p class="eyebrow" style="margin:0">Cursos</p><p class="small muted" style="margin:2px 0 0">Aprenda paso a paso y descargue su material.</p></div>`+cursosL().map((c,i)=>{const ok=!!cv[c.k];if(ok&&!cursoOpen[c.k])return `<button type="button" class="card curso cursoMin" data-cabre="${c.k}"><span class="cmOk">${CHECK}</span><span class="grow" style="text-align:left"><span class="chip c-good">Curso ${i+1} · Completado</span><b>${esc(c.t)}</b><small class="muted">Toque para volver a ver el video</small></span><span class="cmGo">›</span></button>`;return `<div class="card curso">
@@ -4114,7 +4231,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261030104650";var busy=false,pend=null;
+(function(){var V="20261030164640";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

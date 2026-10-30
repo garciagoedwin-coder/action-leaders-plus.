@@ -288,3 +288,12 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - renderLiderazgo: tarjeta .lz-hero "⭐ Calificados al sistema de liderazgo" (conteos esp/lid/rango con calLid, botón #lcBtn de flyers, requisitos), filtros #leadCal (cal/esp/lid/rango; leadCal por defecto "cal"), buscador #leadQ, lista #leadList y <details id="leadPend"> "⏳ Aún no califican" (se pinta al abrir).
 - Siempre ordenado por volumen (leadOrden). leadFila: puesto, foto con punto de rango, insignia (⚔️ Espartano / 🛡️ Líder / chip del rango), ⚡ índice (liderDe(l).idx) y volumen con chip 500+/200–499/−200 y barrita. Se quitaron los filtros por posición (leadPos) y la barra de orden (leadSort).
 - Tocar una fila (data-li = índice en T.lideres) → leadFicha(l): la ficha completa de antes + 💬 Felicitar y 📣 Compartir flyer si lcNivel(volumen) es lid/esp.
+
+## 31. Presentación interactiva (30 oct) — por ahora solo admins
+- Diapositivas en media/pres/s01..s21.jpg (1280×720, del PDF "NOVIEMBRE PPT" de Edwin, ~2.4 MB en total; se cargan solo al presentar, con precarga de la siguiente).
+- PRES {n, img, q (preguntas por diapositiva: 2 r1, 3 dest múltiple, 20 r2, 21 n del 1 al 10), g (guion del socio por diapositiva), val, dest, dudas}. presOk() = isAdmin; para abrir a todos: return true y publicar.
+- Entrada: CRM → "🎤 Presentar" (data-pres) → presAbrir(c). presElegir() existe para elegir contacto o crear persona nueva.
+- Overlay #presOv (presPinta): barra de avance, diapositiva, pregunta con botones, guion ocultable (LS presG), Anterior/Siguiente, deslizar y flechas del teclado. ✕ pide doble toque si ya avanzó.
+- Cierre (presCierre): 8–10 verde "está listo" + WhatsApp con link; 6–7 naranja "¿Qué te falta para llegar a 10?" + dudas comunes + WhatsApp + llamada de 3; ≤5 azul + llamada de 3 (pedirL3) + WhatsApp.
+- presMsg: mensaje de USTED con lo que respondió, destinos y profile.ref (enlace de inCruises; si falta, avisa).
+- presGuardar: c.pres {t,n,r1,r2,dest,min}, nota en el contacto, próximo seguimiento y sumarPres (rutina/ranking, etapa Presentación). En el CRM sale "🎤 Presentado {fecha} · n/10".
