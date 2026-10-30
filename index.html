@@ -1209,7 +1209,7 @@ const store={db:null,uid:null,
   async set(k,v){if(k==="perfil"&&this.db&&!mineReady)return;if(this.db){try{await this.mine().doc(k).set(v);return}catch(e){toast("No se pudo guardar. Revisa tu conexión.")}}LS.set(k,v)},
   crm(){return this.db.collection("users/"+this.uid+"/crm")},
   async contacts(){if(this.db){for(let i=0;i<3;i++){try{const q=await this.crm().get();return q.docs.map(d=>Object.assign({id:d.id},d.data()))}catch(e){await new Promise(r=>setTimeout(r,1500))}}toast("No se pudieron cargar tus contactos. Revisa tu conexión y vuelve a abrir la app.");return []}return LS.get("crm")||[]},
-  async saveContact(c){const{id,...body}=c;if(this.db){try{if(id){await this.crm().doc(id).set(body);return id}const r=await this.crm().add(body);return r.id}catch(e){toast("No se pudo guardar el contacto.");return null}}
+  async saveContact(c){const{id,...b0}=c;const body=JSON.parse(JSON.stringify(b0));if(this.db){try{if(id){await this.crm().doc(id).set(body);return id}const r=await this.crm().add(body);return r.id}catch(e){console.error("saveContact",e);toast("No se pudo guardar el contacto ("+((e&&(e.code||e.message))||"error").toString().slice(0,60)+"). Revise su internet e intente de nuevo.");return null}}
     const all=LS.get("crm")||[];if(!id){c.id="c"+Date.now();all.push(c)}else{const i=all.findIndex(x=>x.id===id);all[i]=c}LS.set("crm",all);return c.id},
   async delContact(id){if(this.db){try{await this.crm().doc(id).delete()}catch(e){toast("No se pudo eliminar.")}return}
     LS.set("crm",(LS.get("crm")||[]).filter(x=>x.id!==id))}
@@ -3259,7 +3259,7 @@ async function stAvanza(c,s,por){if(!c||!c.id)return false;const cur=c.stage||"N
 function stCorto(n){const w=String(n||"").trim().split(/\s+/);return (w[0]||"")+(w[1]?" "+w[1][0].toUpperCase()+".":"")}
 function stepsHTML(c){const i=FLOW.indexOf(c.stage);
   const b=(s,cls,lbl)=>`<button class="${cls}" data-st="${esc(s)}" data-cid="${esc(c.id)}" aria-pressed="${c.stage===s}">${lbl||s}</button>`;
-  return `<div class="stp">${FLOW.map((s,k)=>b(s,c.stage===s?"cur":(i>k?"done":""),(i>k?"✓ ":"")+s)).join("")}${b("Cliente",c.stage==="Cliente"?"cur":"")}${b("No interesado","no "+(c.stage==="No interesado"?"cur":""),"✕ No")}</div>`}
+  return `<div class="stp">${FLOW.map((s,k)=>b(s,c.stage===s?"cur":(i>k?"done":""),(i>k?"✓ ":"")+s+" "+ST_PCT[s]+"%")).join("")}${b("Cliente",c.stage==="Cliente"?"cur":"","Cliente 100%")}${b("No interesado","no "+(c.stage==="No interesado"?"cur":""),"✕ No 0%")}</div>`}
 const STAGE_C={"Nuevo":"c-brand","Contactado":"c-brand","Presentación":"c-gold","Seguimiento":"c-warn","Por cerrar":"c-hot","Socio":"c-good","Cliente":"c-good","No interesado":"c-bad"};
 let contacts=[],stageF="Todos",openC=null;
 const STAGE_COL={"Nuevo":"#2AC1F1","Contactado":"#2AC1F1","Presentación":"#d4a017","Seguimiento":"#e8862a","Por cerrar":"#EA580C","Socio":"#22a35a","Cliente":"#22a35a","No interesado":"#d64545"};
@@ -4281,7 +4281,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261030172714";var busy=false,pend=null;
+(function(){var V="20261030173948";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
