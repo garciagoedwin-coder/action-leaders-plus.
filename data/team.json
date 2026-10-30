@@ -668,9 +668,9 @@
    "registros": 2,
    "regSemana": 2,
    "id": "eli-vallejo",
-   "activaciones": 0,
-   "volumen": 0,
-   "actSemana": 0
+   "activaciones": 1,
+   "volumen": 50,
+   "actSemana": 1
   },
   {
    "nombre": "Karla Patricia Calderon Fajardo",
@@ -2427,6 +2427,16 @@
    "wk": "593289",
    "fuente": "gmail",
    "id": "josey-humberto-giron-murillo"
+  },
+  {
+   "socio": "Jonathan josue Orellana escobar",
+   "paquete": "Starter",
+   "patrocinador": "Osman eli Vallejo martinez",
+   "fecha": "2026-10-30T19:55:05Z",
+   "ek": "5934f1",
+   "wk": "c1f5d5",
+   "fuente": "gmail",
+   "id": "jonathan-josue-orellana-escobar"
   }
  ],
  "academia": [],
@@ -2444,7 +2454,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-30T18:55:07Z",
+  "activacionesCorte": "2026-10-30T19:55:05Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2454,7 +2464,7 @@
   "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-30T12:55:00-06:00",
+  "rankingActualizado": "2026-10-30T15:56:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -3330,7 +3340,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-10-30T18:55:53Z",
+   "v": "2026-10-30T21:56:25Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "021321": "2026-11-01T05:26:06Z",
@@ -3392,7 +3402,7 @@
     "455bf3": "2026-10-03T03:15:59Z",
     "456cad": "2026-10-30T07:09:37Z",
     "45d2fa": "2026-10-14T03:37:34Z",
-    "48e66f": "2026-11-01T21:22:12Z",
+    "48e66f": "2026-11-04T20:07:27Z",
     "4a0eb8": "2026-11-01T00:36:17Z",
     "4b6100": "2026-10-16T00:07:48Z",
     "4cb87e": "2026-10-31T17:34:26Z",
@@ -3407,7 +3417,7 @@
     "5e978c": "2026-10-02T22:48:44Z",
     "5ebdc0": "2026-10-19T17:47:27Z",
     "5fc7fb": "2026-10-31T23:58:44Z",
-    "602cc8": "2026-11-01T21:22:12Z",
+    "602cc8": "2026-11-04T20:07:27Z",
     "6130d4": "2026-10-12T00:18:30Z",
     "6168c1": "2026-10-30T03:05:26Z",
     "6296a5": "2026-10-24T04:09:05Z",
