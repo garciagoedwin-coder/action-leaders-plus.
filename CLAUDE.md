@@ -277,3 +277,9 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - #dtCard ya no está en Inicio. renderDT() sigue llamando dtHito() (celebraciones 5/10/20/30) y repinta Equipo si está en Directos.
 - registro.linea va del patrocinador hacia arriba: [patrocinador, abuelo, …]. Los datos de prueba deben respetar ese orden.
 - Guía guiada (TOURS en Academia, tourCard en renderAca): por ahora solo "agenda" (8 pasos). LS "tourOk".
+
+## 29. Reto del mes en el ranking (30 oct)
+- #premCard y #topAct ya no se muestran en Inicio. En Inicio queda #retoStrip (franja turquesa, después de #pendStrip): "Reto del mes: X va para Roatán · Quedan N días" → lleva a Ranking › Activaciones. Si config.premios.res.vol tiene nombre, dice "🎉 Ganador de …"; cerrado sin res: "Reto cerrado".
+- premDatos() calcula todo desde config.premios + T.ranking. premBanner("vol"|"reg") es la tarjeta grande (turquesa Roatán / morada libros) arriba del podio de Activaciones y de Registros (solo en "mes"). Si no hay reto vigente, vuelve la tarjeta simple de "Premios del mes".
+- Confeti: premConfeti(k), una vez al día por pestaña (LS "premConf:k:fecha").
+- Etiqueta del 1.er lugar en el podio: "🏝️ Roatán" (solo si llega al mínimo) y "📚 Libros".
