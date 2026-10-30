@@ -261,3 +261,8 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - dtClis(): contactos Cliente con email; ahorro por ahDe(email, teléfono). Cuentan para los 30 (activos), con el contador separado "N socios + M clientes". Ficha dtCliFicha: escribirle / recordar ahorro, "🚀 Invitarlo a hacer el negocio" (miEnlace), quitar (stage → Seguimiento).
 - Si el cliente se registra como socio con el mismo correo: dtSum.d guarda ek (huella del email del socio), el cliente se oculta (no cuenta doble) y dtConvertir pasa el contacto a "Socio".
 - Fase 2 pendiente (cuando Edwin tenga contenido): enlace exclusivo de clientes con vista de cliente.
+
+## 27. Agenda como centro (30 oct)
+- Arriba de Agenda (fuera de Mi agenda/Del equipo): 4 botones grandes #agBig (📞 Llamada de 3 → pedirL3(null), 🚀 Lanzamiento → abrirLanz, 🤝 Junta/Evento → abrirCrearEva, ➕ Cita → abrirCita). Mi agenda ya no repite esos botones.
+- #l3Card ("📬 Por responder"), #evaInv ("🎤 Invitaciones a eventos") y #recCard ("⏰ Recuerde a sus invitados") viven en Agenda. En Inicio solo queda la franja naranja #pendStrip (pendPinta, desde bellPinta) cuando hay algo por responder; avisosVer lleva a Agenda.
+- Pendiente aprobado en diseño (no programado aún): Inicio = saludo → ahorro → accesos → franja → rutina; Dream Team a Equipo (1.ª pestaña); rango/metas/Mi semana a "Sueños y metas"; quitar reto y top de Inicio; Ranking con período en menú.

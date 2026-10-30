@@ -554,6 +554,8 @@ nav.tabs button{z-index:0;isolation:isolate}
 .miwa{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
 .entH,.entTabs{background:var(--hero)}.entTabs button[aria-pressed="true"]{color:var(--hero)}
 /* My Dream Team */
+.pendStrip{display:flex;align-items:center;gap:10px;border:1.5px solid #F97316;background:#FFF7ED;color:#7C2D12;border-radius:14px;padding:10px 12px;font-size:13px;cursor:pointer}.pendStrip .btn{flex:none;background:#F97316;color:#fff;border:0}
+.ag-big{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ag-big button{border:0;border-radius:18px;padding:14px;color:#fff;font:inherit;font-weight:800;font-size:15px;text-align:left;min-height:84px;cursor:pointer;box-shadow:0 8px 20px -14px rgba(0,0,0,.5)}.ag-big small{display:block;font-weight:500;font-size:12px;opacity:.9;margin-top:4px}
 .dtc{position:relative;overflow:hidden;border-radius:20px;color:#fff;padding:14px 14px 12px;background:radial-gradient(320px 170px at 92% -25%,rgba(42,193,241,.55),transparent 70%),linear-gradient(135deg,#06263A,#0A4E70);cursor:pointer;box-shadow:0 10px 26px -14px rgba(10,60,90,.6)}
 .dtc.gold{background:radial-gradient(320px 170px at 92% -25%,rgba(255,240,180,.6),transparent 70%),linear-gradient(135deg,#3A2A00,#B07D00 60%,#F5B700)}
 .dt-k{font-size:10px;letter-spacing:.18em;font-weight:800;color:#8FE3FF}.dtc.gold .dt-k{color:#FFF3C4}
@@ -927,9 +929,7 @@ nav.tabs button{z-index:0;isolation:isolate}
       <div class="card" id="avisoCard" hidden></div>
       <div class="miwa" id="miWaCard" hidden></div>
       <div class="ahCard" id="ahCard" hidden></div>
-      <div class="card" id="l3Card" hidden></div>
-      <div class="card" id="recCard" hidden></div>
-      <div class="card" id="evaInv" hidden style="border:1.5px solid #7C3AED"></div>
+      <div class="pendStrip" id="pendStrip" hidden></div>
       <div class="card" id="salaCard" hidden style="border:1.5px solid #C2410C"></div>
       <div class="dtc" id="dtCard" hidden></div>
       <div class="actBan" id="actBan" hidden></div>
@@ -992,6 +992,11 @@ nav.tabs button{z-index:0;isolation:isolate}
 
     <!-- AGENDA -->
     <section class="view" id="v-agenda" hidden>
+      <div><p class="eyebrow">Planee y dé seguimiento</p><h1>Agenda</h1></div>
+      <div class="ag-big" id="agBig"><button type="button" data-ab="l3" style="background:linear-gradient(135deg,#0A7DAD,#2AC1F1)">📞 Llamada de 3<small>Pídala a un líder</small></button><button type="button" data-ab="lz" style="background:linear-gradient(135deg,#B07D00,#F5B700)">🚀 Lanzamiento<small>Planee con su líder</small></button><button type="button" data-ab="ev" style="background:linear-gradient(135deg,#6D28D9,#A855F7)">🤝 Junta / Evento<small>Con flyer y script</small></button><button type="button" data-ab="ci" style="background:linear-gradient(135deg,#15803D,#22C55E)">➕ Cita<small>Con un prospecto</small></button></div>
+      <div class="card" id="l3Card" hidden></div>
+      <div class="card" id="evaInv" hidden style="border:1.5px solid #7C3AED"></div>
+      <div class="card" id="recCard" hidden></div>
       <div class="seg" role="tablist" id="agView"><button aria-selected="true" data-k="equipo">👥 Agenda del equipo</button><button aria-selected="false" data-k="mia">📅 Mi agenda</button></div>
       <div id="agMia" hidden style="display:flex;flex-direction:column;gap:12px"></div>
       <div id="agEquipo" style="display:flex;flex-direction:column;gap:12px">
@@ -2602,8 +2607,11 @@ async function pedirL3(c){if(ahGate())return;if(!store.db||!(regDoc&&regDoc.regi
 let l3Un=[],l3First={p:true,d:true},l3Seen=null;
 function avisoTop(t,sub,fn){try{if(navigator.vibrate)navigator.vibrate([60,40,60])}catch(e){}const d=document.createElement("div");d.className="avisoTop";d.innerHTML=`<span style="font-size:22px">🔔</span><span class="grow" style="min-width:0"><b>${esc(t)}</b>${sub?`<small>${esc(sub)}</small>`:""}</span><button type="button">Ver</button>`;
   document.body.appendChild(d);requestAnimationFrame(()=>d.classList.add("on"));const bye=()=>{d.classList.remove("on");setTimeout(()=>d.remove(),400)};d.querySelector("button").onclick=e=>{e.stopPropagation();bye();if(fn)fn()};d.onclick=bye;setTimeout(bye,8000)}
-function avisosVer(){go("inicio");setTimeout(()=>{const c=[$("#l3Card"),$("#evaInv")].find(x=>x&&!x.hidden);if(c)c.scrollIntoView({behavior:"smooth",block:"center"})},250)}
-function bellPinta(){const b=$("#bellBtn");if(!b)return;const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid).length,n=l3P.length+l3D.length+pe;b.hidden=!n;$("#bellN").textContent=n>9?"9+":n;b.onclick=avisosVer}
+function avisosVer(){go("agenda");setTimeout(()=>{const c=[$("#l3Card"),$("#evaInv")].find(x=>x&&!x.hidden);if(c)c.scrollIntoView({behavior:"smooth",block:"center"})},250)}
+function pendPinta(){const el=$("#pendStrip");if(!el)return;const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid),n=l3P.length+l3D.length+pe.length;if(!n){el.hidden=true;return}el.hidden=false;
+  const x=l3P[0],y=l3D[0],e=pe[0],t=x?(x.lz?"🚀 "+(x.deN||"").split(" ")[0]+" le invita a un lanzamiento":"📞 "+(x.deN||"").split(" ")[0]+" le pide una llamada de 3")+" · "+l3Cuando(x.fecha,x.hora).toLowerCase():y?"💬 "+(y.paraN||"").split(" ")[0]+" respondió su "+(y.lz?"lanzamiento":"llamada de 3"):e?"🎤 "+(e.creN||"").split(" ")[0]+" le incluyó en "+(e.tipo==="gran"?"un evento":"una junta"):"";
+  el.innerHTML=`<span class="grow" style="min-width:0">${n>1?`<b>📬 ${n} por responder</b> · `:""}${esc(t)}</span><button type="button" class="btn sm">Responder</button>`;el.onclick=avisosVer}
+function bellPinta(){try{pendPinta()}catch(e){}const b=$("#bellBtn");if(!b)return;const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid).length,n=l3P.length+l3D.length+pe;b.hidden=!n;$("#bellN").textContent=n>9?"9+":n;b.onclick=avisosVer}
 function l3SeenGet(){if(!l3Seen)l3Seen=LS.get("l3Seen")||{};return l3Seen}
 function l3Nuevo(id,t){const S=l3SeenGet(),k=id+"|"+t;if(S[k])return false;S[k]=Date.now();const lim=Date.now()-30*864e5;Object.keys(S).forEach(x=>{if(S[x]<lim)delete S[x]});LS.set("l3Seen",S);return true}
 function l3Err(e){try{console.warn("l3",e)}catch(x){}if(l3ErrV)return;l3ErrV=1;toast("⚠️ No pudimos revisar sus invitaciones. Revise su internet y vuelva a abrir la app.")}
@@ -2629,7 +2637,7 @@ async function l3ActCitaSocio(x){const ci=citas.find(c=>c.l3===x.id);if(!ci)retu
   if(x.estado==="cancelada"){await l3Cancelada(x,x.paraN);return}const est=x.estado==="aceptada"?"✅ confirmada":x.estado==="propuesta"?"🕗 propone otra hora":x.estado==="rechazada"?"✖ no puede":"⏳ por confirmar";
   const n=Object.assign({},ci,{titulo:x.lz?(x.lzE?"🚀 Lanzamiento de "+ld+" ("+est+")":"🚀 Mi lanzamiento con "+ld+" ("+est+")"):"📞 Llamada de 3 con "+ld+" · "+p+" ("+est+")",fecha:x.fecha,hora:x.hora,ldN:x.paraN||ci.ldN||"",cancel:null});if(n.titulo!==ci.titulo||n.fecha!==ci.fecha||n.hora!==ci.hora||ci.cancel||!ci.ldN){await saveCita(n);Object.assign(ci,n)}}
 function renderL3Card(){try{bellPinta()}catch(e){}const c=$("#l3Card");if(!c)return;if(!l3P.length&&!l3D.length){c.hidden=true;return}c.hidden=false;
-  c.innerHTML=l3P.map(x=>`<div style="display:flex;flex-direction:column;gap:6px;padding-bottom:10px">
+  c.innerHTML=`<h3 style="margin:0 0 4px">📬 Por responder</h3>`+l3P.map(x=>`<div style="display:flex;flex-direction:column;gap:6px;padding-bottom:10px">
      <b style="font-size:16px">${x.rep?"🔁 "+esc((x.deN||"").split(" ")[0])+" reprogramó "+(x.lz?"el lanzamiento":"la llamada de 3")+". ¿Le queda bien la nueva hora?":x.lz?(x.lzE?"🚀 "+esc((x.deN||"").split(" ")[0])+" planeó el lanzamiento de su negocio":"🚀 "+esc((x.deN||"").split(" ")[0])+" le invita a su lanzamiento de negocio"):"📞 "+esc((x.deN||"").split(" ")[0])+" le pide una llamada de 3"}</b>
      <span class="small" style="font-weight:700;color:var(--brand)">${esc(l3Cuando(x.fecha,x.hora))} · ${x.tipo==="zoom"?"💻 Zoom":"📱 WhatsApp"}${x.lz?"":" · Prospecto: "+esc(x.pros)}</span>
      ${x.nota?`<span class="small muted">"${esc(x.nota)}"</span>`:""}
@@ -2791,7 +2799,7 @@ function renderEvA(){try{renderRecCard()}catch(e){}const L=(EVA||[]).slice().sor
   // invitaciones pendientes para los líderes involucrados (Inicio)
   const c=$("#evaInv");if(!c)return;const P=L.filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid);
   if(!P.length){c.hidden=true;return}c.hidden=false;
-  c.innerHTML=P.map(e=>{const yo=(e.lid||[]).find(x=>x.uid===store.uid)||{};return `<div style="display:flex;flex-direction:column;gap:6px;padding-bottom:10px"><b style="font-size:16px">${e.tipo==="gran"?"🎤":"🤝"} ${esc((e.creN||"").split(" ")[0])} le incluyó ${yo.rol==="esp"?"como invitado especial":yo.rol==="anf"?"como anfitrión":"como acompañante"}</b><span class="small" style="font-weight:700;color:var(--brand)">${esc(EVA_TIPO[e.tipo])} · ${esc(e.ciudad||"En línea")} · ${esc(evaCuando(e))}</span><div class="row wrap" style="gap:6px"><button class="btn sm" data-evok="${esc(e.id)}">✅ Confirmar</button><button class="btn sm ghost" data-evno="${esc(e.id)}" style="color:var(--bad)">✖ No puedo</button><button class="btn sm ghost" data-evver="${esc(e.id)}">Ver flyer</button></div></div>`}).join("");
+  c.innerHTML=`<h3 style="margin:0 0 4px">🎤 Invitaciones a eventos</h3>`+P.map(e=>{const yo=(e.lid||[]).find(x=>x.uid===store.uid)||{};return `<div style="display:flex;flex-direction:column;gap:6px;padding-bottom:10px"><b style="font-size:16px">${e.tipo==="gran"?"🎤":"🤝"} ${esc((e.creN||"").split(" ")[0])} le incluyó ${yo.rol==="esp"?"como invitado especial":yo.rol==="anf"?"como anfitrión":"como acompañante"}</b><span class="small" style="font-weight:700;color:var(--brand)">${esc(EVA_TIPO[e.tipo])} · ${esc(e.ciudad||"En línea")} · ${esc(evaCuando(e))}</span><div class="row wrap" style="gap:6px"><button class="btn sm" data-evok="${esc(e.id)}">✅ Confirmar</button><button class="btn sm ghost" data-evno="${esc(e.id)}" style="color:var(--bad)">✖ No puedo</button><button class="btn sm ghost" data-evver="${esc(e.id)}">Ver flyer</button></div></div>`}).join("");
   const set=async(id,v)=>{const e=P.find(x=>x.id===id);if(!e)return;try{await evCol().doc(id).set({conf:Object.assign({},e.conf||{},{[store.uid]:v})},{merge:true});e.conf=Object.assign({},e.conf||{},{[store.uid]:v});toast(v==="ok"?"✅ Confirmado. Ya está en su agenda.":"Le avisamos que no puede");renderEvA();bellPinta()}catch(x){toast("No se pudo guardar. Revise su conexión.")}};
   c.querySelectorAll("[data-evok]").forEach(b=>b.onclick=()=>set(b.dataset.evok,"ok"));c.querySelectorAll("[data-evno]").forEach(b=>b.onclick=()=>set(b.dataset.evno,"no"));
   c.querySelectorAll("[data-evver]").forEach(b=>b.onclick=()=>{const e=P.find(x=>x.id===b.dataset.evver);if(e)evaVer(e)})}
@@ -3366,16 +3374,13 @@ function renderMiAgenda(){const el=$("#agMia");if(!el||agVista!=="mia")return;if
   const mx=Math.max(4,...W.map(x=>x.L.reduce((b,c)=>b+(c.dur||60),0)/60));const lleno=W.filter(x=>x.L.reduce((b,c)=>b+(c.dur||60),0)>=240).map(x=>DAYS[x.d.getDay()]);
   const rango=ds[0].getDate()+" "+MONTHS[ds[0].getMonth()].slice(0,3)+" – "+ds[6].getDate()+" "+MONTHS[ds[6].getMonth()].slice(0,3);
   const Hh=miHorario(),dn=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
-  el.innerHTML=`<div class="row between"><div><p class="eyebrow">Tus citas y llamadas</p><h1>Mi agenda</h1></div><button class="btn sm gold" id="ciNew">+ Nueva cita</button></div>
-   <button class="btn" id="lzNew" style="width:100%;background:linear-gradient(90deg,#B45309,#F5B700);color:#fff">🚀 Planear mi lanzamiento de negocio</button>
-   <button class="btn" id="l3New" style="width:100%;background:linear-gradient(90deg,#0A7DAD,#2AC1F1);color:#fff;box-shadow:0 8px 20px -12px rgba(10,125,173,.8)">📞 Pedir llamada de 3 a un líder</button>
-   <div class="card row between" style="gap:10px"><div style="min-width:0"><b style="font-size:14px">🌐 Agenda desde tu página</b><div class="small muted">${[1,2,3,4,5,6,0].filter(d=>Hh.dias.includes(d)).map(d=>dn[d]).join(", ")} · ${Hh.horas.map(h12).join(", ")}</div></div><button class="btn sm ghost" id="hEdit" style="flex:none">⚙️ Mi horario</button></div>
+  el.innerHTML=`   <div class="card row between" style="gap:10px"><div style="min-width:0"><b style="font-size:14px">🌐 Agenda desde tu página</b><div class="small muted">${[1,2,3,4,5,6,0].filter(d=>Hh.dias.includes(d)).map(d=>dn[d]).join(", ")} · ${Hh.horas.map(h12).join(", ")}</div></div><button class="btn sm ghost" id="hEdit" style="flex:none">⚙️ Mi horario</button></div>
    <div class="card" style="gap:10px"><div class="cal-head"><button id="wkPrev" aria-label="Semana anterior">‹</button><h3 style="margin:0">${agWk===0?"Esta semana":agWk===1?"Próxima semana":rango}</h3><button id="wkNext" aria-label="Semana siguiente">›</button></div>
     <p class="small muted" style="margin:0;text-align:center">${rango} · <b style="color:var(--ink)">${tot} ${tot===1?"cita":"citas"}</b> · ${hrs%1?hrs.toFixed(1):hrs} h${lleno.length?` · <span style="color:var(--warn);font-weight:700">${lleno.join(", ")} lleno</span>`:""}</p>
     <div class="wkbars">${W.map(x=>{const h=x.L.reduce((b,c)=>b+(c.dur||60),0)/60;return `<div class="${x.k===TODAY?"hoy":""}"><span class="bw"><i style="height:${Math.round(h/mx*100)}%;background:${h>=4?"var(--warn)":"var(--brand)"}"></i></span><b>${x.L.length||""}</b><small>${DAYS[x.d.getDay()]} ${x.d.getDate()}</small></div>`}).join("")}</div></div>
    ${W.map(x=>`<div class="card" style="gap:8px${x.k<TODAY?";opacity:.55":""}"><div class="row between"><h3 style="margin:0">${x.k===TODAY?"Hoy · ":""}${DAYS_L[x.d.getDay()][0].toUpperCase()+DAYS_L[x.d.getDay()].slice(1)} ${x.d.getDate()}</h3>${x.k>=TODAY?`<button class="btn sm ghost" data-cinew="${x.k}">+</button>`:""}</div>
      ${x.L.length?x.L.map(citaCard).join(""):`<p class="small muted" style="margin:0">Libre</p>`}</div>`).join("")}`;
-  $("#ciNew").onclick=()=>abrirCita();$("#l3New").onclick=()=>pedirL3(null);$("#lzNew").onclick=abrirLanz;$("#hEdit").onclick=abrirHorario;$("#wkPrev").onclick=()=>{agWk--;renderMiAgenda()};$("#wkNext").onclick=()=>{agWk++;renderMiAgenda()};
+  $("#hEdit").onclick=abrirHorario;$("#wkPrev").onclick=()=>{agWk--;renderMiAgenda()};$("#wkNext").onclick=()=>{agWk++;renderMiAgenda()};
   el.querySelectorAll("[data-cinew]").forEach(b=>b.onclick=()=>abrirCita({fecha:b.dataset.cinew}));bindCitas(el)}
 function renderHoyCitas(){try{renderRecCard()}catch(e){}const c=$("#hoyCitas");if(!c)return;const L=citas.filter(x=>x.fecha===TODAY&&(citaIni(x).getTime()+(x.dur||60)*6e4>Date.now()||(x.tipo!=="lider"&&!x.hecha))).sort(citaSort);if(!L.length){c.hidden=true;return}c.hidden=false;
   const pend=L.filter(x=>citaIni(x).getTime()+(x.dur||60)*6e4>Date.now()).length;
@@ -3383,6 +3388,7 @@ function renderHoyCitas(){try{renderRecCard()}catch(e){}const c=$("#hoyCitas");i
   $("#hcVer").onclick=()=>{go("agenda");setAgVista("mia")};bindCitas(c)}
 function setAgVista(v){agVista=v;setSeg("agView",v);$("#agMia").hidden=v!=="mia";$("#agEquipo").hidden=v==="mia";if(v==="mia")renderMiAgenda()}
 $("#agView").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setAgVista(b.dataset.k)});
+$("#agBig").addEventListener("click",e=>{const b=e.target.closest("[data-ab]");if(!b)return;const k=b.dataset.ab;if(k==="l3")pedirL3(null);else if(k==="lz")abrirLanz();else if(k==="ev")abrirCrearEva();else abrirCita()});
 
 // ---------- llenado rápido de contactos ----------
 function splitPhone(raw){let t=String(raw||"").trim();const intl=/^\s*(\+|00)/.test(t);let d=t.replace(/\D/g,"");if(/^00/.test(t))d=d.replace(/^00/,"");
@@ -4004,7 +4010,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261029194857";var busy=false,pend=null;
+(function(){var V="20261030014339";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
