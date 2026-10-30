@@ -1823,23 +1823,54 @@ const DT_RGTX={"SM Director":"Senior Marketing Director","Board of Director":"Bo
 function dtFoto(u,n){const f=(fotosFs||[]).find(x=>x.id===u&&x.img);return f?f.img:(n?fotoDe(n):"")}
 function dtArmar(){if(!Array.isArray(mios))return null;const L=mios.filter(x=>x.registro&&!esSoloAdmin(x)),ok=x=>{const a=ahSoc(x);return !(a&&a.pend)};
   const D=L.filter(x=>x.registro.patrocinadorUid===store.uid).map(x=>{const r=x.registro,E=L.filter(y=>y.uid!==x.uid&&((Array.isArray(y.registro.linea)&&y.registro.linea.includes(x.uid))||y.registro.patrocinadorUid===x.uid));
-    return{u:x.uid,n:r.nombre||"",rg:r.rango||"",ok:ok(x),a:E.filter(ok).length,dp:E.filter(y=>y.registro.patrocinadorUid===x.uid).length,f:r.fecha||""}});
+    return{u:x.uid,n:r.nombre||"",ek:ahKe(x.email),rg:r.rango||"",ok:ok(x),a:E.filter(ok).length,dp:E.filter(y=>y.registro.patrocinadorUid===x.uid).length,f:r.fecha||""}});
   D.sort((a,b)=>(b.ok-a.ok)||String(b.f).localeCompare(String(a.f)));return{t:Date.now(),d:D,eq:L.filter(ok).length}}
 async function dtCargar(force){if(dtCargando||!store.db||!store.uid)return;if(!force&&dtSum&&Date.now()-dtSum.t<3*36e5)return;dtCargando=true;
-  try{if(force||mios===null)await loadMios();const s=dtArmar();if(s){dtSum=s;LS.set("dtSum:"+store.uid,s)}}catch(e){}dtCargando=false;renderDT()}
-function dtAct(){return dtSum?dtSum.d.filter(x=>x.ok).length:0}
+  try{if(force||mios===null)await loadMios();const s=dtArmar();if(s){dtSum=s;LS.set("dtSum:"+store.uid,s);await dtConvertir()}}catch(e){}dtCargando=false;renderDT()}
+// clientes del Dream Team: contactos del CRM en etapa "Cliente" con correo de inCruises (privados del socio)
+function dtEks(){return new Set(((dtSum&&dtSum.d)||[]).map(x=>x.ek).filter(Boolean))}
+function dtClis(){const S=dtEks();return (contacts||[]).filter(c=>c.stage==="Cliente"&&c.email&&!S.has(ahKe(c.email))).map(c=>{const a=ahDe([c.email],[c.phone?waNum(c.phone,c.cc):""]);return{cli:1,id:c.id,n:c.name||"Cliente",ok:!(a&&a.pend),c}})}
+function dtTodos(){const D=(dtSum&&dtSum.d)||[],C=dtClis();return D.filter(x=>x.ok).concat(C.filter(x=>x.ok),D.filter(x=>!x.ok),C.filter(x=>!x.ok))}
+async function dtConvertir(){const S=dtEks();if(!S.size)return;for(const c of (contacts||[])){if(c.stage==="Cliente"&&c.email&&S.has(ahKe(c.email))){c.stage="Socio";c.note=(c.note?c.note+" · ":"")+"🚀 Pasó de cliente a socio ("+niceDate(TODAY)+")";c.updated=Date.now();try{await store.saveContact(c)}catch(e){}}}}
+function dtMas(){openSheet(`<h2>➕ Sume a su Dream Team</h2><p class="small muted" style="margin:0">💭 Cada casilla vacía es un sueño esperando a su próximo socio.</p>
+   <button class="btn" id="dtMs" style="width:100%;background:#25D366;color:#fff">📲 Invitar a un socio a la app</button><button class="btn ghost" id="dtMc" style="width:100%">🛳️ Agregar un cliente</button>
+   <p class="small muted" style="margin:0">Clientes: personas de inCruises que no hacen el negocio pero suman volumen a su red. Se guardan solo en su CRM.</p><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#dtMs").onclick=dtInvitar;$("#dtMc").onclick=dtCliForm})}
+function dtCliForm(){if(ahGate())return;
+  openSheet(`<h2>🛳️ Agregar un cliente</h2><p class="small muted" style="margin:0">Solo clientes de inCruises (no socios). Con su correo de inCruises la app revisa sola si su ahorro está al día.</p>
+   <div class="field"><label for="clN">Nombre</label><input class="inp" id="clN" maxlength="80" placeholder="Nombre y apellido"></div>
+   <div class="field"><label for="clE">Correo de inCruises</label><input class="inp" id="clE" type="email" inputmode="email" autocapitalize="off" maxlength="120" placeholder="correo@ejemplo.com"></div>
+   <div class="field"><label for="clW">WhatsApp <span class="muted">(opcional)</span></label><input class="inp" id="clW" type="tel" inputmode="tel" maxlength="20" placeholder="+504 9999 9999"></div>
+   <button class="btn" id="clOk" style="width:100%">Agregar a mi Dream Team</button><button class="btn ghost" id="clBk" style="width:100%">‹ Volver</button>`,()=>{
+    $("#clBk").onclick=dtCuadro;$("#clOk").onclick=async()=>{const n=$("#clN").value.trim().replace(/\s+/g," "),e=$("#clE").value.trim().toLowerCase(),w=$("#clW").value.trim();
+      if(n.length<3){toast("Escriba el nombre");$("#clN").focus();return}if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)){toast("Escriba un correo válido");$("#clE").focus();return}
+      if(dtEks().has(ahKe(e))){toast("Esa persona ya está en su Dream Team como socio");return}
+      const ya=(contacts||[]).find(c=>String(c.email||"").toLowerCase()===e);if(ya&&ya.stage==="Cliente"){toast("Ese cliente ya está en su Dream Team");return}
+      const sp=splitPhone(w),cc=sp.cc||LS.get("lastCC")||"504",ph=String(sp.num||"").slice(0,15),bt=$("#clOk");bt.disabled=true;
+      const c=ya||{name:n.slice(0,80),cc,phone:ph,stage:"Cliente",note:"",next:TODAY,updated:Date.now()};Object.assign(c,{name:n.slice(0,80),email:e,stage:"Cliente",dtc:1,updated:Date.now()});if(ph){c.phone=ph;c.cc=cc}c.note=(c.note?c.note+" · ":"")+"🛳️ Cliente de mi Dream Team";
+      const id=await store.saveContact(c);if(!id){bt.disabled=false;return}if(!ya){c.id=id;contacts.push(c)}try{renderCRM()}catch(x){}renderDT();toast("🛳️ "+n.split(" ")[0]+" ya está en su Dream Team");dtCuadro()}})}
+function dtCliFicha(x){const c=x.c,f=dtFirst(x.n),w=c.phone?waNum(c.phone,c.cc):"",yo=miNombreCorto()||"",fm=t=>t+(yo?"\n\n*"+yo+"*":"");
+  openSheet(`<div style="display:flex;gap:14px;align-items:center"><div class="dt-av" style="width:72px;height:72px;flex:none;margin:0;${x.ok?"":"background:#E5B35A"}"><s style="font-size:22px">${esc(initials(x.n))}</s><i style="${x.ok?"":"background:#D97706"}">${x.ok?"✓":"!"}</i></div><div style="min-width:0;flex:1"><h2 style="margin:0">${esc(x.n)}</h2><span class="chip">🛳️ Cliente</span> <span class="chip ${x.ok?"c-good":"c-gold"}">${x.ok?"✅ Ahorro al día":"⚠️ Ahorro pendiente"}</span></div></div>
+   <p class="small muted" style="margin:0">${x.ok?"Suma a su red y cuenta para sus 30.":"Mientras su ahorro esté pendiente, no cuenta para sus 30."}</p>
+   <button class="btn" id="clW1" style="width:100%;background:#25D366;color:#fff">${x.ok?"💬 Escribirle":"💰 Recordarle su ahorro"}</button>
+   <button class="btn ghost" id="clW2" style="width:100%">🚀 Invitarlo a hacer el negocio</button>
+   <button class="btn ghost" id="clDel" style="width:100%;color:var(--bad)">Quitar de mi Dream Team</button><button class="btn ghost" id="dtBk" style="width:100%">‹ Volver a mi cuadro</button>`,()=>{
+    const go=t=>{location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(fm(t))};$("#dtBk").onclick=dtCuadro;
+    $("#clW1").onclick=()=>go(x.ok?`¡Hola, ${f}! 👋\n\nPaso a saludarle y a agradecerle por ser parte de nuestra familia inCruises 🛳️\n\nSi necesita ayuda para planear su próximo viaje, aquí estoy.`:`Hola, ${f} 👋\n\nLe aviso con cariño que su ahorro de inCruises quedó pendiente.\n\nPóngase al día para no perder sus beneficios de viaje 🛳️\n\nSi necesita ayuda, aquí estoy.`);
+    $("#clW2").onclick=()=>go(`¡Hola, ${f}! 👋\n\nUsted ya disfruta los beneficios de inCruises como cliente 🛳️\n\n¿Sabía que también puede generar ingresos compartiéndolo? Me encantaría mostrarle cómo.\n\nSi le interesa, regístrese en la app de nuestro equipo con mi enlace:\n${miEnlace()}`);
+    const dl=$("#clDel");dl.onclick=async()=>{if(!confirmar2(dl))return;c.stage="Seguimiento";c.dtc=0;c.updated=Date.now();await store.saveContact(c);try{renderCRM()}catch(e){}renderDT();toast("Quitado de su Dream Team");dtCuadro()}})}
+function dtAct(){return (dtSum?dtSum.d.filter(x=>x.ok).length:0)+dtClis().filter(x=>x.ok).length}
 function dtFirst(n){return String(n||"").trim().split(/\s+/)[0]||""}
 function dtAvS(x){const img=dtFoto(x.u,x.n);return img?`<s style="background-image:url('${esc(img)}')"></s>`:`<s>${esc(initials(x.n||"?"))}</s>`}
 function renderDT(){const c=$("#dtCard");if(!c)return;if(!dtSum){try{dtSum=LS.get("dtSum:"+store.uid)}catch(e){}}
   if(!fbUser||!(regDoc&&regDoc.registro)||esSoloAdminYo()){c.hidden=true;return}c.hidden=false;
-  const n=dtAct(),D=(dtSum&&dtSum.d)||[],ok=D.filter(x=>x.ok),eq=(dtSum&&dtSum.eq)||0,prox=DT_HITOS.find(h=>h>n),done=n>=DT_META;
+  const n=dtAct(),D=dtTodos(),ok=D.filter(x=>x.ok&&!x.cli),nc=D.filter(x=>x.ok&&x.cli).length,eq=((dtSum&&dtSum.eq)||0)+nc,prox=DT_HITOS.find(h=>h>n),done=n>=DT_META;
   c.className="dtc"+(done?" gold":"");
   c.innerHTML=`<div class="dt-k">CAMINO A MI LIBERTAD</div><div class="dt-tr"><h3>${done?"🏆 ¡Dream Team completado!":"✨ My Dream Team"}</h3><div class="dt-n">${n}<span> / ${DT_META}</span></div></div>
    <div class="dt-bar"><i style="width:${Math.min(100,n/DT_META*100).toFixed(0)}%"></i></div>
-   ${D.length?`<div class="dt-row">${ok.slice(0,5).map(x=>{const img=dtFoto(x.u,x.n);return `<span class="a" style="${img?`background-image:url('${esc(img)}')`:""}">${img?"":esc(initials(x.n))}</span>`}).join("")}${ok.length>5?`<span class="x">+${ok.length-5}</span>`:""}<span class="t">Equipo activo: <b>${eq}</b><br>${done?`<b>+${n-DT_META}</b> extra`:`Le faltan <b>${DT_META-n}</b>`}</span></div>`
+   ${D.length?`<div class="dt-row">${ok.concat(D.filter(x=>x.ok&&x.cli)).slice(0,5).map(x=>{const img=x.cli?"":dtFoto(x.u,x.n);return `<span class="a" style="${img?`background-image:url('${esc(img)}')`:""}">${img?"":esc(initials(x.n))}</span>`}).join("")}${ok.length+nc>5?`<span class="x">+${ok.length+nc-5}</span>`:""}<span class="t">${nc?`<b>${n-nc}</b> socios + <b>${nc}</b> ${nc===1?"cliente":"clientes"}<br>`:`Equipo activo: <b>${eq}</b><br>`}${done?`<b>+${n-DT_META}</b> extra`:`Le faltan <b>${DT_META-n}</b>`}</span></div>`
      :`<p style="margin:10px 0 0;font-size:13px;line-height:1.4">🌱 Su Dream Team empieza con su <b>primer socio</b>. Comparta su enlace de invitación y llene su primera casilla.</p>`}
    <div class="dt-go"><span>${done?"🏆 Camino a mi libertad":prox?"🔥 Próxima meta: "+prox:""}</span><span>${D.length?"Ver mi cuadro ›":"➕ Invitar ›"}</span></div>`;
-  c.onclick=()=>{if(!D.length){dtInvitar();return}dtCuadro()};
+  c.onclick=()=>{if(!D.length){dtMas();return}dtCuadro()};
   dtHito(n)}
 function dtHito(n){if(!dtSum)return;const K="dtHito:"+store.uid,h=[...DT_HITOS].reverse().find(x=>n>=x)||0;let last=LS.get(K);
   if(last==null){LS.set(K,h);return}last=+last||0;if(h<=last){if(h<last)LS.set(K,h);return}LS.set(K,h);
@@ -1848,18 +1879,18 @@ function dtHito(n){if(!dtSum)return;const K="dtHito:"+store.uid,h=[...DT_HITOS].
   setTimeout(()=>{openSheet(`<div class="dt-cel" id="dtCel"><div style="font-size:40px">${h===30?"🏆🎉🚀":"🎉✨🎊"}</div><div class="big">${t}</div><p class="muted" style="margin:0">${esc(s)}</p></div>
     <button class="btn" id="dtShare" style="width:100%;background:#25D366;color:#fff">💬 Compartir mi logro</button><button class="btn ghost" data-close style="width:100%">${h===30?"¡Lo logré!":"¡Vamos por más!"}</button>`,()=>{confeti($("#dtCel"),50);
     $("#dtShare").onclick=()=>{const yo=miNombreCorto()||"",m=h===30?`🏆 ¡Completé mi Dream Team!\n\n30 directos activos en Action Leaders PLUS.\n\nCamino a mi libertad ✨`:`🔥 ¡Ya tengo ${h} directos activos en mi Dream Team!\n\nVoy por mis 30.\n\nCamino a mi libertad ✨`;location.href="https://wa.me/?text="+encodeURIComponent(m+(yo?"\n\n*"+yo+"*":""))}})},900)}
-function dtCuadro(){const D=(dtSum&&dtSum.d)||[],n=dtAct(),pd=D.filter(x=>!x.ok).length,cells=Math.max(DT_META,D.length);
-  const g=D.map((x,i)=>`<button type="button" class="dt-c ${x.ok?"":"pd"}" data-dti="${i}"><div class="dt-av">${dtAvS(x)}<i>${x.ok?"✓":"!"}</i>${(()=>{const g=dtRg(x);if(g)return `<em class="dt-rg" style="background:${g.c}" title="${esc(DT_RGTX[g.n]||g.n)}"></em>`;const l=lcNivelDe(x.n);return l.k?`<em class="dt-lv ${l.k}">${l.k==="esp"?"⚔️":"🏅"}</em>`:""})()}</div><b>${esc(dtFirst(x.n))}</b><small>${x.ok?"👥 "+x.a:"⚠️ Ahorro"}</small></button>`).join("")
+function dtCuadro(){const D=dtTodos(),n=dtAct(),nc=D.filter(x=>x.ok&&x.cli).length,pd=D.filter(x=>!x.ok).length,cells=Math.max(DT_META,D.length);
+  const g=D.map((x,i)=>`<button type="button" class="dt-c ${x.ok?"":"pd"}" data-dti="${i}"><div class="dt-av">${x.cli?`<s>${esc(initials(x.n))}</s>`:dtAvS(x)}<i>${x.ok?"✓":"!"}</i>${(()=>{if(x.cli)return `<em class="dt-lv" style="background:#E0F2FE">🛳️</em>`;const g=dtRg(x);if(g)return `<em class="dt-rg" style="background:${g.c}" title="${esc(DT_RGTX[g.n]||g.n)}"></em>`;const l=lcNivelDe(x.n);return l.k?`<em class="dt-lv ${l.k}">${l.k==="esp"?"⚔️":"🏅"}</em>`:""})()}</div><b>${esc(dtFirst(x.n))}</b><small>${!x.ok?"⚠️ Ahorro":x.cli?"🛳️ Cliente":"👥 "+x.a}</small></button>`).join("")
     +Array.from({length:Math.max(0,DT_META-D.length)},()=>`<button type="button" class="dt-c e" data-dte="1"><div class="dt-av">+</div><b>&nbsp;</b><small>&nbsp;</small></button>`).join("");
   openSheet(`<div class="dt-hd"><div class="dt-k">CAMINO A MI LIBERTAD</div><div class="dt-tr"><h3>${n>=DT_META?"🏆 ¡Dream Team completado!":"✨ My Dream Team"}</h3><div class="dt-n">${n}<span> / ${DT_META}</span></div></div><div class="dt-bar"><i style="width:${Math.min(100,n/DT_META*100).toFixed(0)}%"></i></div><div class="dt-ms"><span>5 🎉</span><span>10 🔥</span><span>20 🚀</span><span>30 🏆 Camino a mi libertad</span></div></div>
    <span data-nofocus hidden></span><div class="dt-g" id="dtG">${g}</div>
-   <div class="dt-leg">${RANGOS.slice(2).map(r=>`<span><i style="background:${r.n==="Board of Director"?"linear-gradient(120deg,#EA580C 50%,#7C2D12 50%)":r.c}"></i>${esc({"Marketing Director":"Marketing Director","SM Director":"Senior MD","Regional Director":"Regional","National Director":"National","International Director":"International","Executive Director":"Executive","Board of Director":"Board"}[r.n]||r.n)}</span>`).join("")}<span>🏅 Líder</span><span>⚔️ Espartano</span></div>
-   <p class="small muted" style="margin:0">${n>=DT_META?"🏆 ¡Completó sus 30! Cada directo extra fortalece su equipo.":`💭 Cada casilla vacía es un sueño esperando a su próximo socio. Le faltan <b>${DT_META-n}</b> directos activos.`} Equipo activo total: <b>${(dtSum&&dtSum.eq)||0}</b>.</p>
+   <div class="dt-leg">${RANGOS.slice(2).map(r=>`<span><i style="background:${r.n==="Board of Director"?"linear-gradient(120deg,#EA580C 50%,#7C2D12 50%)":r.c}"></i>${esc({"Marketing Director":"Marketing Director","SM Director":"Senior MD","Regional Director":"Regional","National Director":"National","International Director":"International","Executive Director":"Executive","Board of Director":"Board"}[r.n]||r.n)}</span>`).join("")}<span>🏅 Líder</span><span>⚔️ Espartano</span><span>🛳️ Cliente</span></div>
+   <p class="small muted" style="margin:0">${n>=DT_META?"🏆 ¡Completó sus 30! Cada directo extra fortalece su equipo.":`💭 Cada casilla vacía es un sueño esperando a su próximo socio. Le faltan <b>${DT_META-n}</b> directos activos.`}${nc?` Tiene <b>${n-nc}</b> socios y <b>${nc}</b> ${nc===1?"cliente":"clientes"} activos.`:""} Equipo activo total: <b>${((dtSum&&dtSum.eq)||0)+nc}</b>.</p>
    <div class="row" style="gap:8px"><button class="btn grow" id="dtInv" style="background:#25D366;color:#fff">➕ Invitar</button>${pd?`<button class="btn ghost grow" id="dtMot">💰 Motivar ahorro (${pd})</button>`:""}</div>
    <div class="row" style="gap:8px"><button class="btn ghost grow" id="dtNum">📊 Nuestros números</button><button class="btn ghost grow" id="dtSim">🔮 Simular</button></div>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
-    $("#dtG").onclick=e=>{const b=e.target.closest("[data-dti],[data-dte]");if(!b)return;if(b.dataset.dte){dtInvitar();return}const x=D[+b.dataset.dti];if(x)dtFicha(x)};
-    $("#dtInv").onclick=dtInvitar;const m=$("#dtMot");if(m)m.onclick=()=>{const x=D.find(y=>!y.ok);if(x)dtFicha(x)};$("#dtNum").onclick=dtNumeros;$("#dtSim").onclick=dtSimular});
+    $("#dtG").onclick=e=>{const b=e.target.closest("[data-dti],[data-dte]");if(!b)return;if(b.dataset.dte){dtMas();return}const x=D[+b.dataset.dti];if(x)(x.cli?dtCliFicha(x):dtFicha(x))};
+    $("#dtInv").onclick=dtMas;const m=$("#dtMot");if(m)m.onclick=()=>{const x=D.find(y=>!y.ok);if(x)(x.cli?dtCliFicha(x):dtFicha(x))};$("#dtNum").onclick=dtNumeros;$("#dtSim").onclick=dtSimular});
   if(!dtSum||Date.now()-dtSum.t>10*6e4)dtCargar(true).then(()=>{if($("#dtG")&&!$("#sheet").hidden)dtCuadro()})}
 async function dtWa(u){try{const d=await store.db.doc("users/"+u).get();return String(((d.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}catch(e){return""}}
 function dtFicha(x){const img=dtFoto(x.u,x.n),f=dtFirst(x.n),mes=x.f?MONTHS[new Date(x.f).getMonth()].slice(0,3):"—";
@@ -1952,7 +1983,7 @@ async function loadMios(){miosErr=false;const me=store.uid,M={};if(telSoc===null
   const L=Object.values(M).filter(x=>x.registro&&x.uid!==me);
   L.forEach(x=>{const r=x.registro,ln=Array.isArray(r.linea)?r.linea:[];if(r.patrocinadorUid===me){x.nivel=1;x.pierna=x.uid;return}const i=ln.indexOf(me);x.nivel=i>=0?i+1:1;x.pierna=i>0?ln[i-1]:x.uid});
   L.forEach(x=>{const p=M[x.pierna],q=M[x.registro.patrocinadorUid];x.piernaNom=p&&p.registro?p.registro.nombre:"";x.patNom=q&&q.registro?q.registro.nombre:""});
-  if(miosErr&&L.length)miosErr=false;mios=L.sort(byAct);renderEquipo();try{const s=dtArmar();if(s){dtSum=s;LS.set("dtSum:"+store.uid,s)}renderDT()}catch(e){}}
+  if(miosErr&&L.length)miosErr=false;mios=L.sort(byAct);renderEquipo();try{const s=dtArmar();if(s){dtSum=s;LS.set("dtSum:"+store.uid,s);dtConvertir().catch(()=>{})}renderDT()}catch(e){}}
 const IDX_C=p=>p>=70?"#16A34A":p>=40?"#D97706":"#DC2626";
 let idxPer="sem",idxStk=[];
 function idxPool(){return isAdmin?(socios||[]).filter(x=>x.registro&&x.registro.nombre&&!esSoloAdmin(x)):(mios||[])}
@@ -3972,7 +4003,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261029165719";var busy=false,pend=null;
+(function(){var V="20261029181849";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

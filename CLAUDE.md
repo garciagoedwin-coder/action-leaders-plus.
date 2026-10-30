@@ -255,3 +255,9 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Equipo → Liderazgo: botón "🎉 Calificados del sistema · mes" (lcLista) con flyer de cada uno. Dream Team: insignia 🏅/⚔️ en el cuadro y estado del mes en la ficha.
 - Insignia en el cuadro del Dream Team: si tiene rango (registro.rango o hoja Calificados, desde Marketing Director) → punto de color del rango (RANGOS; Board en dos tonos naranja oscuro) y la ficha muestra el rango; si no, 🏅/⚔️ por puntos del mes. Team Leader y Action Leader no cuentan como rango aquí. Leyenda bajo el cuadro.
 - OJO al publicar: no encadenar `./.publicar.sh | tail` con && (tail oculta el fallo). Guardar el código de salida.
+
+## 26. Clientes en el Dream Team (29 oct)
+- "+" del cuadro → dtMas: "📲 Invitar a un socio a la app" o "🛳️ Agregar un cliente" (dtCliForm: nombre, correo de inCruises obligatorio, WhatsApp opcional). Se guarda SOLO en el CRM privado del socio (users/{uid}/crm) con stage "Cliente", email, dtc:1. Nunca en team.json.
+- dtClis(): contactos Cliente con email; ahorro por ahDe(email, teléfono). Cuentan para los 30 (activos), con el contador separado "N socios + M clientes". Ficha dtCliFicha: escribirle / recordar ahorro, "🚀 Invitarlo a hacer el negocio" (miEnlace), quitar (stage → Seguimiento).
+- Si el cliente se registra como socio con el mismo correo: dtSum.d guarda ek (huella del email del socio), el cliente se oculta (no cuenta doble) y dtConvertir pasa el contacto a "Socio".
+- Fase 2 pendiente (cuando Edwin tenga contenido): enlace exclusivo de clientes con vista de cliente.
