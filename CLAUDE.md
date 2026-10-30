@@ -283,3 +283,8 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - premDatos() calcula todo desde config.premios + T.ranking. premBanner("vol"|"reg") es la tarjeta grande (turquesa Roatán / morada libros) arriba del podio de Activaciones y de Registros (solo en "mes"). Si no hay reto vigente, vuelve la tarjeta simple de "Premios del mes".
 - Confeti: premConfeti(k), una vez al día por pestaña (LS "premConf:k:fecha").
 - Etiqueta del 1.er lugar en el podio: "🏝️ Roatán" (solo si llega al mínimo) y "📚 Libros".
+
+## 30. Liderazgo en lista (30 oct)
+- renderLiderazgo: tarjeta .lz-hero "⭐ Calificados al sistema de liderazgo" (conteos esp/lid/rango con calLid, botón #lcBtn de flyers, requisitos), filtros #leadCal (cal/esp/lid/rango; leadCal por defecto "cal"), buscador #leadQ, lista #leadList y <details id="leadPend"> "⏳ Aún no califican" (se pinta al abrir).
+- Siempre ordenado por volumen (leadOrden). leadFila: puesto, foto con punto de rango, insignia (⚔️ Espartano / 🛡️ Líder / chip del rango), ⚡ índice (liderDe(l).idx) y volumen con chip 500+/200–499/−200 y barrita. Se quitaron los filtros por posición (leadPos) y la barra de orden (leadSort).
+- Tocar una fila (data-li = índice en T.lideres) → leadFicha(l): la ficha completa de antes + 💬 Felicitar y 📣 Compartir flyer si lcNivel(volumen) es lid/esp.

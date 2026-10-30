@@ -195,6 +195,19 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .catSel{display:flex;gap:6px;flex-wrap:wrap}.catSel button{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 11px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}.catSel button[aria-pressed=true]{border-color:var(--brand);background:var(--gold-soft);color:var(--gold-ink)}
 .miwa{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--gold-soft);color:var(--gold-ink);font-size:13.5px;line-height:1.3}
 .miwa span{flex:1}.miwa .x{background:none;border:0;color:inherit;font-size:14px;padding:4px;cursor:pointer;opacity:.7}
+.lz-hero{border-radius:22px;padding:16px;color:#fff;background:radial-gradient(90% 70% at 100% 0%,rgba(253,224,71,.35),transparent 60%),linear-gradient(160deg,#0B3A5B,#0A7DAD);display:flex;flex-direction:column;gap:10px}
+.lz-hero h2{margin:0;font-size:22px;line-height:1.1;color:#fff}.lz-k{font-size:10.5px;font-weight:800;letter-spacing:.14em;opacity:.85}
+.lz-cnt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.lz-cnt div{background:rgba(255,255,255,.14);border-radius:12px;padding:8px 4px;text-align:center}.lz-cnt b{display:block;font-size:22px}.lz-cnt small{font-size:11.5px;opacity:.9}
+.lz-fly{border:0;background:#FDE047;color:#0B3A5B;border-radius:12px;padding:11px;font:inherit;font-weight:800;font-size:14px;cursor:pointer}
+.lz-req{margin:0;font-size:12px;opacity:.85}
+.lz-r{display:flex;align-items:center;gap:10px;padding:11px 0;border:0;border-bottom:1px solid var(--line);background:none;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}.lz-r:last-child{border-bottom:0}
+.lz-n{width:20px;text-align:center;font-weight:800;color:var(--muted);flex:none}.lz-n.g{color:#D97706}
+.lz-av{position:relative;flex:none}.lz-av em{position:absolute;right:-2px;bottom:-2px;width:14px;height:14px;border-radius:50%;border:2px solid var(--surface,#fff)}
+.lz-g{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.lz-g b{font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lz-t{display:flex;gap:4px;flex-wrap:wrap}.lz-t .chip{font-size:11px;padding:2px 7px}.lz-esp{background:#FEF3C7;color:#92400E}.lz-lid{background:#E0F2FE;color:#075985}.lz-ix{background:var(--surface-2,#F1F5F9)}
+.lz-v{flex:none;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:3px;min-width:64px}.lz-v b{font-size:17px}.lz-v .chip{font-size:10.5px;padding:2px 7px;font-weight:800}
+.lz-mini{display:block;width:60px;height:4px;border-radius:99px;background:var(--line);overflow:hidden}.lz-mini i{display:block;height:100%}
+.lz-pend summary{list-style:none;cursor:pointer;font-weight:800;color:var(--muted);display:flex;justify-content:space-between}.lz-pend summary::-webkit-details-marker{display:none}.lz-pend[open] summary span{transform:rotate(90deg)}
 .retoStrip{display:flex;align-items:center;gap:10px;border-radius:14px;padding:11px 13px;font-size:13.5px;cursor:pointer;color:#fff;background:linear-gradient(120deg,#06B6D4,#0A7DAD 60%,#0B4F7A)}
 .pban{position:relative;overflow:hidden;border-radius:22px;padding:16px;color:#fff;display:flex;flex-direction:column;gap:10px}
 .pb-rt{background:radial-gradient(120% 80% at 100% 0%,#FDE68A 0 14%,transparent 15%),linear-gradient(165deg,#22D3EE 0%,#0891B2 45%,#075985 100%)}
@@ -1726,7 +1739,7 @@ async function liderResGuardar(){if(!isAdmin||!socios||!constL||!T.lideres.lengt
 async function liderResCargar(){if(liderRes&&Date.now()-liderResT<6e5)return;liderResT=Date.now();try{const d=await store.db.doc("team/liderazgo").get();if(d.exists){liderRes=d.data();if(eqTab==="ranking"&&rankMetric==="liderazgo")renderLeadList()}}catch(e){}}
 function liderDe(l){const r=liderRes&&liderRes.mes===TODAY.slice(0,7)&&liderRes.L?liderRes.L[l.id]:null;return r||null}
 // ---------- Calificación del sistema de Liderazgo (Líder / Líder Espartano) ----------
-let leadCal="Todos";const CAL_DEF={mes:"",lider:200,esp:500};
+let leadCal="cal";const CAL_DEF={mes:"",lider:200,esp:500};
 function calCfg(){return Object.assign({},CAL_DEF,(T.config||{}).calificacion||{})}
 const nrmN2=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z ]/g," ").replace(/\s+/g," ").trim();
 function calVer(l){let yo="";try{yo=nrmN2((miRegistro().nombre)||profile.miNombre||"")}catch(e){}return !!(isAdmin||(yo&&(nrmN2(l.nombre)===yo||nrmN2(l.nombreRanking)===yo||nrmN2(l.linea)===yo)))}
@@ -1740,20 +1753,26 @@ const CAL_TX={esp:"⚔️ Líder Espartano",lid:"🛡️ Líder",rango:"✅ Cali
 function calChip(l){const c=calLid(l),C=calCfg();
   if(c.k==="pend"){const ver=calVer(l);const t=c.ah?(ver?"🔴 No califica: ahorro pendiente":"⏳ No califica aún"):`⏳ Le faltan ${fmt(c.falta)} pts para Líder`;return `<span class="chip ${c.ah&&ver?"c-bad":"c-warn"}" style="font-weight:700">${t}</span>`}
   return `<span class="chip ${c.k==="esp"?"c-gold":"c-good"}" style="font-weight:700">${CAL_TX[c.k]}</span>${c.k==="lid"?`<span class="small muted">Le faltan ${fmt(c.falta)} pts para Espartano</span>`:""}`}
-function renderLeadList(){const el=$("#leadList");if(!el)return;const q=leadQ.trim().toLowerCase();
-  let L=T.lideres.filter(l=>(leadPos==="Todos"||(l.rango||"Sin posición")===leadPos)&&(leadCal==="Todos"||calLid(l).k===leadCal)&&(!q||((l.nombre||"")+" "+(l.linea||"")).toLowerCase().includes(q)));
-  const num=v=>Number(v)||0;
-  const byVol=(a,b)=>num(b.volumen)-num(a.volumen)||num(b.presentaciones)-num(a.presentaciones)||num(b.nuevos)-num(a.nuevos)||posRank(a.rango)-posRank(b.rango)||String(a.nombre).localeCompare(b.nombre,"es");
-  L.sort(leadSort==="posicion"?byVol:(a,b)=>num(b[leadSort])-num(a[leadSort])||byVol(a,b));
-  if(!L.length){el.innerHTML=`<p class="small muted">Ningún líder coincide con la búsqueda.</p>`;return}
-  el.innerHTML=L.map((l,i)=>{const meta=num(l.meta),vol=l.volumen==null||l.volumen===""?null:num(l.volumen),pct=meta&&vol!=null?Math.min(100,Math.round(vol/meta*100)):0;
-    const qbi=l.qbi==null||l.qbi===""?null:Math.round(num(l.qbi));const vv=vol==null?0:vol,vc=vv>=500?"good":vv>=200?"warn":"bad";
-    return `<div><div class="lead"><span class="rank-n">${i+1}</span>${avHTML(l.nombre,l.nombre===profile.miNombre,false)}
-     <div style="min-width:0"><b style="font-weight:600">${esc(l.nombre)}</b><div class="row wrap" style="gap:6px;margin-top:3px">${l.rango?`<span class="chip c-brand">${esc(rangoTxt(l.rango))}</span>`:""}${l.linea?`<span class="small muted">Línea: ${esc(l.linea)}</span>`:""}</div><div class="row wrap" style="gap:6px;margin-top:5px;align-items:center">${calChip(l)}${calVer(l)&&ahCfg()&&!ahLider(l)?`<span class="chip c-good" style="font-weight:700">🚢 Ahorro al día</span>`:""}${qbi!=null?`<span class="chip c-brand">QBI ${qbi}%</span>`:""}</div></div></div>
-     ${(()=>{const R=liderDe(l),rk=rankDe(l.nombreRanking||l.nombre),gr=rk?Math.max(0,rk.R-rk.A):null,pr=R?R.p:(l.presentaciones===""||l.presentaciones==null?null:num(l.presentaciones)),pc=v=>v==null?"":`color:${IDX_C(v)}`;
+function leadOrden(L){const num=v=>Number(v)||0;return L.slice().sort((a,b)=>num(b.volumen)-num(a.volumen)||num(b.presentaciones)-num(a.presentaciones)||num(b.nuevos)-num(a.nuevos)||posRank(a.rango)-posRank(b.rango)||String(a.nombre).localeCompare(b.nombre,"es"))}
+function leadFila(l,i){const num=v=>Number(v)||0,vol=l.volumen==null||l.volumen===""?null:num(l.volumen),vv=vol||0,vc=vv>=500?"good":vv>=200?"warn":"bad",c=calLid(l),R=liderDe(l),rg=RANGOS.find(g=>g.n===l.rango);
+  const ins=c.k==="esp"?`<span class="chip lz-esp">⚔️ Espartano</span>`:c.k==="lid"?`<span class="chip lz-lid">🛡️ Líder</span>`:c.k==="rango"?`<span class="chip" style="background:${rg?rg.c:"var(--brand)"};color:#fff">${esc(rangoTxt(l.rango))}</span>`:(c.ah?`<span class="chip c-bad">💰 Ahorro pendiente</span>`:`<span class="chip c-brand">Le faltan ${fmt(c.falta)} pts</span>`);
+  return `<button type="button" class="lz-r${l.nombre===profile.miNombre?" rank-me":""}" data-li="${T.lideres.indexOf(l)}"><span class="lz-n${i<3?" g":""}">${i+1}</span><span class="lz-av">${avHTML(l.nombre,l.nombre===profile.miNombre,true)}${rg?`<em style="background:${rg.n==="Board of Director"?"linear-gradient(120deg,#EA580C 50%,#7C2D12 50%)":rg.c}"></em>`:""}</span>
+   <span class="lz-g"><b>${esc(l.nombre)}</b><span class="lz-t">${ins}<span class="chip lz-ix"${R&&R.idx!=null?` style="color:${IDX_C(R.idx)}"`:""}>⚡ ${R&&R.idx!=null?R.idx+"%":"—"}</span></span></span>
+   <span class="lz-v"><b>${vol==null?"—":fmt(vol)}</b><span class="chip c-${vc}">${vv>=500?"500+":vv>=200?"200–499":"−200"}</span><i class="lz-mini"><i style="width:${Math.max(vv?3:0,Math.min(100,vv/10))}%;background:var(--${vc})"></i></i></span></button>`}
+function renderLeadList(){const el=$("#leadList");if(!el)return;const q=leadQ.trim().toLowerCase(),okQ=l=>!q||((l.nombre||"")+" "+(l.linea||"")).toLowerCase().includes(q);
+  const A=leadOrden(T.lideres.filter(l=>{const k=calLid(l).k;return k!=="pend"&&(leadCal==="cal"||k===leadCal)&&okQ(l)}));
+  el.innerHTML=A.length?A.map(leadFila).join(""):`<p class="small muted" style="padding:10px 0">Ningún líder coincide.</p>`;
+  const pd=$("#leadPend"),pl=$("#leadPendList");if(pd&&pl&&pd.open){const P=leadOrden(T.lideres.filter(l=>calLid(l).k==="pend"&&okQ(l)));pl.innerHTML=P.map(leadFila).join("")||`<p class="small muted">Nadie coincide.</p>`}}
+function leadFicha(l){const num=v=>Number(v)||0,meta=num(l.meta),vol=l.volumen==null||l.volumen===""?null:num(l.volumen),pct=meta&&vol!=null?Math.min(100,Math.round(vol/meta*100)):0,vv=vol==null?0:vol,vc=vv>=500?"good":vv>=200?"warn":"bad",qbi=l.qbi==null||l.qbi===""?null:Math.round(num(l.qbi));
+  const nv=lcNivel(vv),q=nv?Object.assign(lcQ({n:l.nombre,k:nv,v:vv}),{}):null,f=String(l.nombre||"").split(" ")[0];
+  openSheet(`<div class="row" style="gap:12px;align-items:center">${avHTML(l.nombre,l.nombre===profile.miNombre,false)}<div style="min-width:0"><h2 style="margin:0">${esc(l.nombre)}</h2>${l.linea?`<div class="small muted">Línea: ${esc(l.linea)}</div>`:""}</div></div>
+   <div class="row wrap" style="gap:6px">${l.rango?`<span class="chip c-brand">${esc(rangoTxt(l.rango))}</span>`:""}${calChip(l)}${calVer(l)&&ahCfg()&&!ahLider(l)?`<span class="chip c-good" style="font-weight:700">🚢 Ahorro al día</span>`:""}${qbi!=null?`<span class="chip c-brand">QBI ${qbi}%</span>`:""}</div>
+   ${(()=>{const R=liderDe(l),rk=rankDe(l.nombreRanking||l.nombre),gr=rk?Math.max(0,rk.R-rk.A):null,pr=R?R.p:(l.presentaciones===""||l.presentaciones==null?null:num(l.presentaciones)),pc=v=>v==null?"":`color:${IDX_C(v)}`;
       return `<div class="lead-stats ls3"><div><b>${pr==null?"—":fmt(pr)}</b><span>🎯 Presentaciones</span></div><div><b>${l.nuevos==null||l.nuevos===""?"—":fmt(l.nuevos)}</b><span>🚀 Socios nuevos</span></div><div><b>${gr==null?"—":fmt(gr)}</b><span>📝 Registros sin activar</span></div>
       <div style="${vc?`background:var(--${vc}-soft)`:""}"><b style="${vc?`color:var(--${vc})`:""}">${vol==null?"—":fmt(vol)}</b><span>${vol==null&&num(l.nuevos)>0?"Falta el paquete":"💼 Volumen"+(meta?" / "+fmt(meta):"")}</span></div><div><b style="${pc(R&&R.idx)}">${R&&R.idx!=null?R.idx+"%":"—"}</b><span>⚡ Índice equipo${R&&R.n?` · ${R.a}/${R.n} activos`:""}</span></div><div><b style="${pc(R&&R.prod)}">${R?R.prod+"%":"—"}</b><span>📈 Productividad</span></div></div>`})()}
-     ${meta?`<div class="bar" style="height:5px;margin-top:8px"><i style="width:${Math.max(pct,vv?3:0)}%;background:var(--${vc})"></i></div>`:""}${l.volumenDetalle?`<div class="small muted" style="margin-top:4px">Socios nuevos: ${esc(l.volumenDetalle)}</div>`:""}</div>`}).join("")}
+     ${meta?`<div class="bar" style="height:5px;margin-top:8px"><i style="width:${Math.max(pct,vv?3:0)}%;background:var(--${vc})"></i></div>`:""}${l.volumenDetalle?`<div class="small muted" style="margin-top:4px">Socios nuevos: ${esc(l.volumenDetalle)}</div>`:""}
+   ${q?`<button class="btn" id="lzF" style="width:100%;background:#25D366;color:#fff">💬 Felicitar a ${esc(f)} por calificar</button><button class="btn ghost" id="lzS" style="width:100%">📣 Compartir su flyer</button>`:""}
+   <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{if(!q)return;$("#lzF").onclick=()=>{location.href="https://wa.me/?text="+encodeURIComponent(lcTextoFelicitar(q))};$("#lzS").onclick=()=>lcCompartir(q,$("#lzS"))})}
 function bindRank(){$("#rankSeg").onclick=e=>{const x=e.target.closest("button");if(!x)return;rankTab=x.dataset.k;renderEquipo()};$("#rankMetric").onclick=e=>{const x=e.target.closest("button");if(!x)return;rankMetric=x.dataset.k;renderEquipo()}}
 let mineReady=false,welSigned=null,welGate=null,welPreview=false;const APP_URL="https://claude.ai/artifact/AaCA7EDcuCw3d8tJmkionG";
 const signCard=what=>`<div class="card empty"><h3>Crea tu cuenta gratis en Claude</h3><p class="small muted">Para ver ${what} del equipo necesitas una cuenta de Claude. Es gratis y toma 1 minuto con tu correo de Google.</p>
@@ -2332,25 +2351,23 @@ function renderEquipo(){const b=$("#eqBody");
 function rankSegsL(){return `<div class="seg" role="tablist" id="rankMetric"><button aria-selected="false" data-k="nuevos">Activaciones</button><button aria-selected="false" data-k="presentaciones">Registros inCruises</button><button aria-selected="false" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button><button aria-selected="true" data-k="liderazgo">⭐ Liderazgo</button></div><div class="seg" id="rankSeg" hidden></div>`}
 function renderLiderazgo(b){{
     if(!T.lideres.length){b.innerHTML=rankSegsL()+emptyCard("Aún no hay líderes cargados","Aquí verás a todos los líderes calificados con sus presentaciones y su volumen del mes.");bindRank();return}
-    const L=T.lideres,tp=L.reduce((s,l)=>s+(Number(l.presentaciones)||0),0),tv=L.reduce((s,l)=>s+(Number(l.volumen)||0),0);
-    const pos={};L.forEach(l=>{const k=l.rango||"Sin posición";pos[k]=(pos[k]||0)+1});
-    const posKeys=Object.keys(pos).sort((a,b)=>posRank(a)-posRank(b));
-    const per=T.config&&T.config.liderazgoPeriodo;
-    b.innerHTML=rankSegsL()+`<p class="eyebrow" style="margin:0">⭐ Sistema de liderazgo</p>${per?`<p class="eyebrow">Calificados · ${esc(per)}</p>`:""}
-     <div class="kpis" style="grid-template-columns:repeat(2,1fr)"><div class="kpi"><b>${L.length}</b><span>Líderes calificados</span></div><div class="kpi"><b>${fmt(tp)}</b><span>Presentaciones</span></div><div class="kpi"><b>${fmt(L.reduce((s,l)=>s+(Number(l.nuevos)||0),0))}</b><span>Socios nuevos</span></div><div class="kpi"><b>${fmt(tv)}</b><span>Volumen total</span></div></div>
-     ${lcLista0().length?`<button class="btn gold" id="lcBtn" style="width:100%">🎉 Calificados del sistema · ${esc(lcMes())} (${lcLista0().length}) · Ver flyers</button>`:""}
+    const L=T.lideres,C=calCfg(),cn={esp:0,lid:0,rango:0,pend:0};L.forEach(l=>cn[calLid(l).k]++);const nCal=cn.esp+cn.lid+cn.rango;if(!["cal","esp","lid","rango"].includes(leadCal))leadCal="cal";
+    const per=(T.config&&T.config.liderazgoPeriodo)||C.mes||lcMes();
+    b.innerHTML=rankSegsL()+`<div class="lz-hero"><div class="lz-k">${esc(String(per).toUpperCase())}</div><h2>⭐ Calificados al sistema de liderazgo</h2>
+      <div class="lz-cnt"><div><b>${cn.esp}</b><small>⚔️ Espartanos</small></div><div><b>${cn.lid}</b><small>🛡️ Líderes</small></div><div><b>${cn.rango}</b><small>✅ Por rango</small></div></div>
+      ${lcLista0().length?`<button class="lz-fly" id="lcBtn" type="button">🎉 Ver flyers de los calificados (${lcLista0().length})</button>`:""}
+      <p class="lz-req">Requisitos: ahorro al día y puntos personales del mes (🛡️ Líder ${fmt(C.lider)} · ⚔️ Espartano ${fmt(C.esp)}). De Marketing Director en adelante califican al recalificar su rango.</p></div>
+     <div class="stage-bar" id="leadCal">${[["cal","Calificados",nCal],["esp","⚔️ Espartanos",cn.esp],["lid","🛡️ Líderes",cn.lid],["rango","✅ Por rango",cn.rango]].map(([k,t,n])=>`<button aria-pressed="${k===leadCal}" data-c="${k}">${t}<span class="n">${n}</span></button>`).join("")}</div>
      <input class="inp" id="leadQ" type="search" placeholder="Buscar líder o línea ascendente" value="${esc(leadQ)}">
-     ${(()=>{const C=calCfg(),cn={esp:0,lid:0,rango:0,pend:0};L.forEach(l=>cn[calLid(l).k]++);return `<div class="card" style="gap:8px"><h3 style="margin:0">🏅 Calificación del sistema${C.mes?" · "+esc(C.mes):""}</h3><p class="small muted" style="margin:0">Requisitos: ahorro al día y puntos personales del mes (🛡️ Líder ${fmt(C.lider)} · ⚔️ Espartano ${fmt(C.esp)}). De Marketing Director en adelante califican al recalificar su rango.</p><div class="stage-bar" id="leadCal">${[["Todos","Todos",L.length],["esp","⚔️ Espartanos",cn.esp],["lid","🛡️ Líderes",cn.lid],["rango","✅ Por rango",cn.rango],["pend","⏳ Pendientes",cn.pend]].map(([k,t,n])=>`<button aria-pressed="${k===leadCal}" data-c="${k}">${t}<span class="n">${n}</span></button>`).join("")}</div></div>`})()}
-     <div class="stage-bar" id="leadPos">${["Todos"].concat(posKeys).map(k=>`<button aria-pressed="${k===leadPos}" data-p="${esc(k)}">${esc(rangoTxt(k))}<span class="n">${k==="Todos"?L.length:pos[k]}</span></button>`).join("")}</div>
-     <div class="seg" role="tablist" id="leadSeg"><button aria-selected="${leadSort==="posicion"}" data-k="posicion">Posición</button><button aria-selected="${leadSort==="presentaciones"}" data-k="presentaciones">Registros inCruises</button><button aria-selected="${leadSort==="nuevos"}" data-k="nuevos">Activaciones</button><button aria-selected="${leadSort==="volumen"}" data-k="volumen">Volumen</button></div>
-     <div class="row wrap small muted" style="gap:6px">Volumen: <span class="chip c-good">500 o más</span><span class="chip c-warn">200 a 499</span><span class="chip c-bad">menos de 200</span></div>
-     <div class="card"><div class="list" id="leadList"></div></div>
+     <div class="card" style="padding:4px 14px"><div id="leadList"></div></div>
+     ${cn.pend?`<details class="card lz-pend" id="leadPend"><summary>⏳ Aún no califican (${cn.pend}) <span>›</span></summary><div id="leadPendList"></div></details>`:""}
+     <p class="small muted" style="margin:0">Ordenados por volumen, del más alto al más bajo. Toque a un líder para ver su ficha.</p>
      <p class="updated">${updatedTxt(T.config&&T.config.liderazgoActualizado)}</p>`;
     bindRank();renderLeadList();liderResCargar();{const lb=$("#lcBtn");if(lb)lb.onclick=lcLista}
     $("#leadQ").oninput=e=>{leadQ=e.target.value;renderLeadList()};
     $("#leadCal").onclick=e=>{const x=e.target.closest("button");if(!x)return;leadCal=x.dataset.c;renderEquipo()};
-    $("#leadPos").onclick=e=>{const x=e.target.closest("button");if(!x)return;leadPos=x.dataset.p;renderEquipo()};
-    $("#leadSeg").onclick=e=>{const x=e.target.closest("button");if(!x)return;leadSort=x.dataset.k;renderEquipo()};return}
+    {const pd=$("#leadPend");if(pd)pd.ontoggle=()=>{if(pd.open)renderLeadList()}}
+    b.onclick=e=>{const r=e.target.closest("[data-li]");if(!r||!b.contains(r))return;const l=T.lideres[+r.dataset.li];if(l)leadFicha(l)};return}
   // red
   const R=T.red;
   if(!R||(!(R.niveles||[]).length&&!(R.directos||[]).length)){b.innerHTML=emptyCard("La red aún no tiene datos","Aquí verás los socios directos y la productividad de los 10 niveles de la organización en cuanto se cargue el reporte.");return}
@@ -4097,7 +4114,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261030100600";var busy=false,pend=null;
+(function(){var V="20261030104650";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
