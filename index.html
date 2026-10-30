@@ -570,6 +570,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 .dt-av{position:relative;width:52px;height:52px;margin:0 auto;border-radius:50%;padding:3px;background:conic-gradient(#2AC1F1,#F5B700,#2AC1F1)}
 .dt-av s{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;border:2px solid var(--card,#fff);background:#E2E8EE center/cover;text-decoration:none;color:#5B7383;font-weight:800;font-size:15px}
 .dt-av i{position:absolute;right:-3px;bottom:-3px;width:19px;height:19px;border-radius:50%;background:#16A34A;color:#fff;font-style:normal;font-size:11px;font-weight:900;display:grid;place-items:center;border:2px solid var(--card,#fff)}
+.dt-c.cl .dt-av{background:#F97316}.dt-c.cl small{color:#C2410C}
 .dt-c.pd .dt-av{background:#E5B35A}.dt-c.pd .dt-av i{background:#D97706}.dt-c.pd s{filter:grayscale(.6)}
 .dt-c b{display:block;font-size:11.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dt-c small{display:block;font-size:10px;color:var(--brand);font-weight:700}.dt-c.pd small{color:#B45309}
 .dt-rg{position:absolute;left:-2px;top:-2px;width:19px;height:19px;border-radius:50%;border:3px solid var(--card,#fff);box-shadow:0 1px 3px rgba(0,0,0,.3)}.dt-rgb{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px}
@@ -1849,7 +1850,7 @@ function dtCliForm(){if(ahGate())return;
       const c=ya||{name:n.slice(0,80),cc,phone:ph,stage:"Cliente",note:"",next:TODAY,updated:Date.now()};Object.assign(c,{name:n.slice(0,80),email:e,stage:"Cliente",dtc:1,updated:Date.now()});if(ph){c.phone=ph;c.cc=cc}c.note=(c.note?c.note+" · ":"")+"🛳️ Cliente de mi Dream Team";
       const id=await store.saveContact(c);if(!id){bt.disabled=false;return}if(!ya){c.id=id;contacts.push(c)}try{renderCRM()}catch(x){}renderDT();toast("🛳️ "+n.split(" ")[0]+" ya está en su Dream Team");dtCuadro()}})}
 function dtCliFicha(x){const c=x.c,f=dtFirst(x.n),w=c.phone?waNum(c.phone,c.cc):"",yo=miNombreCorto()||"",fm=t=>t+(yo?"\n\n*"+yo+"*":"");
-  openSheet(`<div style="display:flex;gap:14px;align-items:center"><div class="dt-av" style="width:72px;height:72px;flex:none;margin:0;${x.ok?"":"background:#E5B35A"}"><s style="font-size:22px">${esc(initials(x.n))}</s><i style="${x.ok?"":"background:#D97706"}">${x.ok?"✓":"!"}</i></div><div style="min-width:0;flex:1"><h2 style="margin:0">${esc(x.n)}</h2><span class="chip">🛳️ Cliente</span> <span class="chip ${x.ok?"c-good":"c-gold"}">${x.ok?"✅ Ahorro al día":"⚠️ Ahorro pendiente"}</span></div></div>
+  openSheet(`<div style="display:flex;gap:14px;align-items:center"><div class="dt-av" style="width:72px;height:72px;flex:none;margin:0;background:${x.ok?"#F97316":"#E5B35A"}"><s style="font-size:22px">${esc(initials(x.n))}</s><i style="${x.ok?"":"background:#D97706"}">${x.ok?"✓":"!"}</i></div><div style="min-width:0;flex:1"><h2 style="margin:0">${esc(x.n)}</h2><span class="chip">🛳️ Cliente</span> <span class="chip ${x.ok?"c-good":"c-gold"}">${x.ok?"✅ Ahorro al día":"⚠️ Ahorro pendiente"}</span></div></div>
    <p class="small muted" style="margin:0">${x.ok?"Suma a su red y cuenta para sus 30.":"Mientras su ahorro esté pendiente, no cuenta para sus 30."}</p>
    <button class="btn" id="clW1" style="width:100%;background:#25D366;color:#fff">${x.ok?"💬 Escribirle":"💰 Recordarle su ahorro"}</button>
    <button class="btn ghost" id="clW2" style="width:100%">🚀 Invitarlo a hacer el negocio</button>
@@ -1880,7 +1881,7 @@ function dtHito(n){if(!dtSum)return;const K="dtHito:"+store.uid,h=[...DT_HITOS].
     <button class="btn" id="dtShare" style="width:100%;background:#25D366;color:#fff">💬 Compartir mi logro</button><button class="btn ghost" data-close style="width:100%">${h===30?"¡Lo logré!":"¡Vamos por más!"}</button>`,()=>{confeti($("#dtCel"),50);
     $("#dtShare").onclick=()=>{const yo=miNombreCorto()||"",m=h===30?`🏆 ¡Completé mi Dream Team!\n\n30 directos activos en Action Leaders PLUS.\n\nCamino a mi libertad ✨`:`🔥 ¡Ya tengo ${h} directos activos en mi Dream Team!\n\nVoy por mis 30.\n\nCamino a mi libertad ✨`;location.href="https://wa.me/?text="+encodeURIComponent(m+(yo?"\n\n*"+yo+"*":""))}})},900)}
 function dtCuadro(){const D=dtTodos(),n=dtAct(),nc=D.filter(x=>x.ok&&x.cli).length,pd=D.filter(x=>!x.ok).length,cells=Math.max(DT_META,D.length);
-  const g=D.map((x,i)=>`<button type="button" class="dt-c ${x.ok?"":"pd"}" data-dti="${i}"><div class="dt-av">${x.cli?`<s>${esc(initials(x.n))}</s>`:dtAvS(x)}<i>${x.ok?"✓":"!"}</i>${(()=>{if(x.cli)return `<em class="dt-lv" style="background:#E0F2FE">🛳️</em>`;const g=dtRg(x);if(g)return `<em class="dt-rg" style="background:${g.c}" title="${esc(DT_RGTX[g.n]||g.n)}"></em>`;const l=lcNivelDe(x.n);return l.k?`<em class="dt-lv ${l.k}">${l.k==="esp"?"⚔️":"🏅"}</em>`:""})()}</div><b>${esc(dtFirst(x.n))}</b><small>${!x.ok?"⚠️ Ahorro":x.cli?"🛳️ Cliente":"👥 "+x.a}</small></button>`).join("")
+  const g=D.map((x,i)=>`<button type="button" class="dt-c ${x.cli?"cl":""} ${x.ok?"":"pd"}" data-dti="${i}"><div class="dt-av">${x.cli?`<s>${esc(initials(x.n))}</s>`:dtAvS(x)}<i>${x.ok?"✓":"!"}</i>${(()=>{if(x.cli)return `<em class="dt-lv" style="background:#E0F2FE">🛳️</em>`;const g=dtRg(x);if(g)return `<em class="dt-rg" style="background:${g.c}" title="${esc(DT_RGTX[g.n]||g.n)}"></em>`;const l=lcNivelDe(x.n);return l.k?`<em class="dt-lv ${l.k}">${l.k==="esp"?"⚔️":"🏅"}</em>`:""})()}</div><b>${esc(dtFirst(x.n))}</b><small>${!x.ok?"⚠️ Ahorro":x.cli?"🛳️ Cliente":"👥 "+x.a}</small></button>`).join("")
     +Array.from({length:Math.max(0,DT_META-D.length)},()=>`<button type="button" class="dt-c e" data-dte="1"><div class="dt-av">+</div><b>&nbsp;</b><small>&nbsp;</small></button>`).join("");
   openSheet(`<div class="dt-hd"><div class="dt-k">CAMINO A MI LIBERTAD</div><div class="dt-tr"><h3>${n>=DT_META?"🏆 ¡Dream Team completado!":"✨ My Dream Team"}</h3><div class="dt-n">${n}<span> / ${DT_META}</span></div></div><div class="dt-bar"><i style="width:${Math.min(100,n/DT_META*100).toFixed(0)}%"></i></div><div class="dt-ms"><span>5 🎉</span><span>10 🔥</span><span>20 🚀</span><span>30 🏆 Camino a mi libertad</span></div></div>
    <span data-nofocus hidden></span><div class="dt-g" id="dtG">${g}</div>
@@ -4003,7 +4004,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261029181849";var busy=false,pend=null;
+(function(){var V="20261029194857";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
