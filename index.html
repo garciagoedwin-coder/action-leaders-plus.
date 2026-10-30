@@ -85,6 +85,7 @@ p{margin:0}
 .seg{display:flex;background:var(--surface-2);border-radius:11px;padding:3px;gap:3px;overflow-x:auto}
 .seg button{flex:1;border:0;background:transparent;padding:8px 10px;border-radius:9px;font-weight:600;font-size:13.5px;color:var(--muted);white-space:nowrap}
 #rankMetric button{white-space:normal;line-height:1.15;padding:8px 6px}
+details.pi>summary::-webkit-details-marker{display:none}details.pi[open] summary>span.small{display:none}
 .seg button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
 .field{display:flex;flex-direction:column;gap:5px;min-width:0}
 .field label{font-size:12.5px;font-weight:600;color:var(--muted)}
@@ -554,6 +555,8 @@ nav.tabs button{z-index:0;isolation:isolate}
 .miwa{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
 .entH,.entTabs{background:var(--hero)}.entTabs button[aria-pressed="true"]{color:var(--hero)}
 /* My Dream Team */
+#tourOv{position:fixed;inset:0;z-index:9000}.tour-hole{position:fixed;border-radius:16px;box-shadow:0 0 0 9999px rgba(6,20,30,.72);transition:all .25s;pointer-events:none;outline:3px solid #2AC1F1}
+.tour-tip{position:fixed;left:14px;right:14px;max-width:460px;margin:0 auto;background:var(--card,#fff);color:var(--ink,#2B2A2D);border-radius:18px;padding:14px;box-shadow:0 20px 40px -10px rgba(0,0,0,.5)}.tour-tip p{margin:6px 0 10px;font-size:15px;line-height:1.4}.tour-n{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--brand)}
 .pendStrip{display:flex;align-items:center;gap:10px;border:1.5px solid #F97316;background:#FFF7ED;color:#7C2D12;border-radius:14px;padding:10px 12px;font-size:13px;cursor:pointer}.pendStrip .btn{flex:none;background:#F97316;color:#fff;border:0}
 .ag-big{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ag-big button{border:0;border-radius:18px;padding:14px;color:#fff;font:inherit;font-weight:800;font-size:15px;text-align:left;min-height:84px;cursor:pointer;box-shadow:0 8px 20px -14px rgba(0,0,0,.5)}.ag-big small{display:block;font-weight:500;font-size:12px;opacity:.9;margin-top:4px}
 .dtc{position:relative;overflow:hidden;border-radius:20px;color:#fff;padding:14px 14px 12px;background:radial-gradient(320px 170px at 92% -25%,rgba(42,193,241,.55),transparent 70%),linear-gradient(135deg,#06263A,#0A4E70);cursor:pointer;box-shadow:0 10px 26px -14px rgba(10,60,90,.6)}
@@ -931,7 +934,7 @@ nav.tabs button{z-index:0;isolation:isolate}
       <div class="ahCard" id="ahCard" hidden></div>
       <div class="pendStrip" id="pendStrip" hidden></div>
       <div class="card" id="salaCard" hidden style="border:1.5px solid #C2410C"></div>
-      <div class="dtc" id="dtCard" hidden></div>
+      
       <div class="actBan" id="actBan" hidden></div>
       <div class="metaStrip" id="metaStrip" hidden></div>
       <div class="card entCard" id="entCard" hidden></div>
@@ -970,10 +973,8 @@ nav.tabs button{z-index:0;isolation:isolate}
     <section class="view" id="v-equipo" hidden>
       <div class="row between"><div><p class="eyebrow">Volumen y resultados</p><h1>Mi equipo</h1></div><button class="btn sm ghost" data-refresh="eq" type="button">↻ Actualizar</button></div>
       <div class="seg" role="tablist" id="eqSeg">
-        <button aria-selected="true" data-k="ranking">Ranking</button>
-        <button aria-selected="false" data-k="liderazgo">Liderazgo</button>
-        <button aria-selected="false" data-k="mios" id="eqMios">Mis socios</button>
-        <button aria-selected="false" data-k="socios" id="eqSocios" hidden>Admin</button>
+      <button aria-selected="true" data-k="ranking">🏆 Ranking</button>
+      <button aria-selected="false" data-k="mios" id="eqMios">👥 Mi equipo</button>
 
       </div>
       <div id="eqBody" style="display:flex;flex-direction:column;gap:16px"></div>
@@ -1703,7 +1704,7 @@ async function liderResGuardar(){if(!isAdmin||!socios||!constL||!T.lideres.lengt
   try{T.lideres.forEach(l=>{const x=liderMatch(l,S);if(!x)return;const c=idxC(x.uid)||{},E=idxDesc(x.uid,S),EA=E.filter(idxCuenta);
     L[l.id]={p:c.mes===TODAY.slice(0,7)?(+c.mesPres||0):0,prod:idxPersX(x),idx:E.length?idxEq(E):null,a:E.filter(idxActivo).length,n:E.length}})}finally{idxPer=prev}
   try{await store.db.doc("team/liderazgo").set({t:Date.now(),mes:TODAY.slice(0,7),L});LS.set("lidResT",Date.now());liderRes={t:Date.now(),mes:TODAY.slice(0,7),L}}catch(e){}}
-async function liderResCargar(){if(liderRes&&Date.now()-liderResT<6e5)return;liderResT=Date.now();try{const d=await store.db.doc("team/liderazgo").get();if(d.exists){liderRes=d.data();if(eqTab==="liderazgo")renderLeadList()}}catch(e){}}
+async function liderResCargar(){if(liderRes&&Date.now()-liderResT<6e5)return;liderResT=Date.now();try{const d=await store.db.doc("team/liderazgo").get();if(d.exists){liderRes=d.data();if(eqTab==="ranking"&&rankMetric==="liderazgo")renderLeadList()}}catch(e){}}
 function liderDe(l){const r=liderRes&&liderRes.mes===TODAY.slice(0,7)&&liderRes.L?liderRes.L[l.id]:null;return r||null}
 // ---------- Calificación del sistema de Liderazgo (Líder / Líder Espartano) ----------
 let leadCal="Todos";const CAL_DEF={mes:"",lider:200,esp:500};
@@ -1847,27 +1848,29 @@ function dtCliForm(){if(ahGate())return;
    <div class="field"><label for="clE">Correo de inCruises</label><input class="inp" id="clE" type="email" inputmode="email" autocapitalize="off" maxlength="120" placeholder="correo@ejemplo.com"></div>
    <div class="field"><label for="clW">WhatsApp <span class="muted">(opcional)</span></label><input class="inp" id="clW" type="tel" inputmode="tel" maxlength="20" placeholder="+504 9999 9999"></div>
    <button class="btn" id="clOk" style="width:100%">Agregar a mi Dream Team</button><button class="btn ghost" id="clBk" style="width:100%">‹ Volver</button>`,()=>{
-    $("#clBk").onclick=dtCuadro;$("#clOk").onclick=async()=>{const n=$("#clN").value.trim().replace(/\s+/g," "),e=$("#clE").value.trim().toLowerCase(),w=$("#clW").value.trim();
+    $("#clBk").onclick=dtVolver;$("#clOk").onclick=async()=>{const n=$("#clN").value.trim().replace(/\s+/g," "),e=$("#clE").value.trim().toLowerCase(),w=$("#clW").value.trim();
       if(n.length<3){toast("Escriba el nombre");$("#clN").focus();return}if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)){toast("Escriba un correo válido");$("#clE").focus();return}
       if(dtEks().has(ahKe(e))){toast("Esa persona ya está en su Dream Team como socio");return}
       const ya=(contacts||[]).find(c=>String(c.email||"").toLowerCase()===e);if(ya&&ya.stage==="Cliente"){toast("Ese cliente ya está en su Dream Team");return}
       const sp=splitPhone(w),cc=sp.cc||LS.get("lastCC")||"504",ph=String(sp.num||"").slice(0,15),bt=$("#clOk");bt.disabled=true;
       const c=ya||{name:n.slice(0,80),cc,phone:ph,stage:"Cliente",note:"",next:TODAY,updated:Date.now()};Object.assign(c,{name:n.slice(0,80),email:e,stage:"Cliente",dtc:1,updated:Date.now()});if(ph){c.phone=ph;c.cc=cc}c.note=(c.note?c.note+" · ":"")+"🛳️ Cliente de mi Dream Team";
-      const id=await store.saveContact(c);if(!id){bt.disabled=false;return}if(!ya){c.id=id;contacts.push(c)}try{renderCRM()}catch(x){}renderDT();toast("🛳️ "+n.split(" ")[0]+" ya está en su Dream Team");dtCuadro()}})}
+      const id=await store.saveContact(c);if(!id){bt.disabled=false;return}if(!ya){c.id=id;contacts.push(c)}try{renderCRM()}catch(x){}renderDT();toast("🛳️ "+n.split(" ")[0]+" ya está en su Dream Team");dtTras()}})}
 function dtCliFicha(x){const c=x.c,f=dtFirst(x.n),w=c.phone?waNum(c.phone,c.cc):"",yo=miNombreCorto()||"",fm=t=>t+(yo?"\n\n*"+yo+"*":"");
   openSheet(`<div style="display:flex;gap:14px;align-items:center"><div class="dt-av" style="width:72px;height:72px;flex:none;margin:0;background:${x.ok?"#F97316":"#E5B35A"}"><s style="font-size:22px">${esc(initials(x.n))}</s><i style="${x.ok?"":"background:#D97706"}">${x.ok?"✓":"!"}</i></div><div style="min-width:0;flex:1"><h2 style="margin:0">${esc(x.n)}</h2><span class="chip">🛳️ Cliente</span> <span class="chip ${x.ok?"c-good":"c-gold"}">${x.ok?"✅ Ahorro al día":"⚠️ Ahorro pendiente"}</span></div></div>
    <p class="small muted" style="margin:0">${x.ok?"Suma a su red y cuenta para sus 30.":"Mientras su ahorro esté pendiente, no cuenta para sus 30."}</p>
    <button class="btn" id="clW1" style="width:100%;background:#25D366;color:#fff">${x.ok?"💬 Escribirle":"💰 Recordarle su ahorro"}</button>
    <button class="btn ghost" id="clW2" style="width:100%">🚀 Invitarlo a hacer el negocio</button>
    <button class="btn ghost" id="clDel" style="width:100%;color:var(--bad)">Quitar de mi Dream Team</button><button class="btn ghost" id="dtBk" style="width:100%">‹ Volver a mi cuadro</button>`,()=>{
-    const go=t=>{location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(fm(t))};$("#dtBk").onclick=dtCuadro;
+    const go=t=>{location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(fm(t))};$("#dtBk").onclick=dtVolver;
     $("#clW1").onclick=()=>go(x.ok?`¡Hola, ${f}! 👋\n\nPaso a saludarle y a agradecerle por ser parte de nuestra familia inCruises 🛳️\n\nSi necesita ayuda para planear su próximo viaje, aquí estoy.`:`Hola, ${f} 👋\n\nLe aviso con cariño que su ahorro de inCruises quedó pendiente.\n\nPóngase al día para no perder sus beneficios de viaje 🛳️\n\nSi necesita ayuda, aquí estoy.`);
     $("#clW2").onclick=()=>go(`¡Hola, ${f}! 👋\n\nUsted ya disfruta los beneficios de inCruises como cliente 🛳️\n\n¿Sabía que también puede generar ingresos compartiéndolo? Me encantaría mostrarle cómo.\n\nSi le interesa, regístrese en la app de nuestro equipo con mi enlace:\n${miEnlace()}`);
-    const dl=$("#clDel");dl.onclick=async()=>{if(!confirmar2(dl))return;c.stage="Seguimiento";c.dtc=0;c.updated=Date.now();await store.saveContact(c);try{renderCRM()}catch(e){}renderDT();toast("Quitado de su Dream Team");dtCuadro()}})}
+    const dl=$("#clDel");dl.onclick=async()=>{if(!confirmar2(dl))return;c.stage="Seguimiento";c.dtc=0;c.updated=Date.now();await store.saveContact(c);try{renderCRM()}catch(e){}renderDT();toast("Quitado de su Dream Team");dtTras()}})}
 function dtAct(){return (dtSum?dtSum.d.filter(x=>x.ok).length:0)+dtClis().filter(x=>x.ok).length}
 function dtFirst(n){return String(n||"").trim().split(/\s+/)[0]||""}
 function dtAvS(x){const img=dtFoto(x.u,x.n);return img?`<s style="background-image:url('${esc(img)}')"></s>`:`<s>${esc(initials(x.n||"?"))}</s>`}
-function renderDT(){const c=$("#dtCard");if(!c)return;if(!dtSum){try{dtSum=LS.get("dtSum:"+store.uid)}catch(e){}}
+function renderDT(){if(!dtSum){try{dtSum=LS.get("dtSum:"+store.uid)}catch(e){}}
+  if(fbUser&&regDoc&&regDoc.registro&&!esSoloAdminYo()&&dtSum){dtHito(dtAct());const v=$("#v-equipo");if(eqTab==="mios"&&miosVista==="dir"&&v&&!v.hidden&&!$("#dtqG"))renderEquipo()}
+  const c=$("#dtCard");if(!c)return;
   if(!fbUser||!(regDoc&&regDoc.registro)||esSoloAdminYo()){c.hidden=true;return}c.hidden=false;
   const n=dtAct(),D=dtTodos(),ok=D.filter(x=>x.ok&&!x.cli),nc=D.filter(x=>x.ok&&x.cli).length,eq=((dtSum&&dtSum.eq)||0)+nc,prox=DT_HITOS.find(h=>h>n),done=n>=DT_META;
   c.className="dtc"+(done?" gold":"");
@@ -1885,18 +1888,25 @@ function dtHito(n){if(!dtSum)return;const K="dtHito:"+store.uid,h=[...DT_HITOS].
   setTimeout(()=>{openSheet(`<div class="dt-cel" id="dtCel"><div style="font-size:40px">${h===30?"🏆🎉🚀":"🎉✨🎊"}</div><div class="big">${t}</div><p class="muted" style="margin:0">${esc(s)}</p></div>
     <button class="btn" id="dtShare" style="width:100%;background:#25D366;color:#fff">💬 Compartir mi logro</button><button class="btn ghost" data-close style="width:100%">${h===30?"¡Lo logré!":"¡Vamos por más!"}</button>`,()=>{confeti($("#dtCel"),50);
     $("#dtShare").onclick=()=>{const yo=miNombreCorto()||"",m=h===30?`🏆 ¡Completé mi Dream Team!\n\n30 directos activos en Action Leaders PLUS.\n\nCamino a mi libertad ✨`:`🔥 ¡Ya tengo ${h} directos activos en mi Dream Team!\n\nVoy por mis 30.\n\nCamino a mi libertad ✨`;location.href="https://wa.me/?text="+encodeURIComponent(m+(yo?"\n\n*"+yo+"*":""))}})},900)}
-function dtCuadro(){const D=dtTodos(),n=dtAct(),nc=D.filter(x=>x.ok&&x.cli).length,pd=D.filter(x=>!x.ok).length,cells=Math.max(DT_META,D.length);
+let dtDesde="sheet";
+function dtPanel(P){const D=dtTodos(),n=dtAct(),nc=D.filter(x=>x.ok&&x.cli).length,pd=D.filter(x=>!x.ok).length;
   const g=D.map((x,i)=>`<button type="button" class="dt-c ${x.cli?"cl":""} ${x.ok?"":"pd"}" data-dti="${i}"><div class="dt-av">${x.cli?`<s>${esc(initials(x.n))}</s>`:dtAvS(x)}<i>${x.ok?"✓":"!"}</i>${(()=>{if(x.cli)return `<em class="dt-lv" style="background:#E0F2FE">🛳️</em>`;const g=dtRg(x);if(g)return `<em class="dt-rg" style="background:${g.c}" title="${esc(DT_RGTX[g.n]||g.n)}"></em>`;const l=lcNivelDe(x.n);return l.k?`<em class="dt-lv ${l.k}">${l.k==="esp"?"⚔️":"🏅"}</em>`:""})()}</div><b>${esc(dtFirst(x.n))}</b><small>${!x.ok?"⚠️ Ahorro":x.cli?"🛳️ Cliente":"👥 "+x.a}</small></button>`).join("")
     +Array.from({length:Math.max(0,DT_META-D.length)},()=>`<button type="button" class="dt-c e" data-dte="1"><div class="dt-av">+</div><b>&nbsp;</b><small>&nbsp;</small></button>`).join("");
-  openSheet(`<div class="dt-hd"><div class="dt-k">CAMINO A MI LIBERTAD</div><div class="dt-tr"><h3>${n>=DT_META?"🏆 ¡Dream Team completado!":"✨ My Dream Team"}</h3><div class="dt-n">${n}<span> / ${DT_META}</span></div></div><div class="dt-bar"><i style="width:${Math.min(100,n/DT_META*100).toFixed(0)}%"></i></div><div class="dt-ms"><span>5 🎉</span><span>10 🔥</span><span>20 🚀</span><span>30 🏆 Camino a mi libertad</span></div></div>
-   <span data-nofocus hidden></span><div class="dt-g" id="dtG">${g}</div>
+  const h=`<div class="dt-hd"><div class="dt-k">CAMINO A MI LIBERTAD</div><div class="dt-tr"><h3>${n>=DT_META?"🏆 ¡Dream Team completado!":"✨ My Dream Team"}</h3><div class="dt-n">${n}<span> / ${DT_META}</span></div></div><div class="dt-bar"><i style="width:${Math.min(100,n/DT_META*100).toFixed(0)}%"></i></div><div class="dt-ms"><span>5 🎉</span><span>10 🔥</span><span>20 🚀</span><span>30 🏆 Camino a mi libertad</span></div></div>
+   <div class="dt-g" id="${P}G">${g}</div>
    <div class="dt-leg">${RANGOS.slice(2).map(r=>`<span><i style="background:${r.n==="Board of Director"?"linear-gradient(120deg,#EA580C 50%,#7C2D12 50%)":r.c}"></i>${esc({"Marketing Director":"Marketing Director","SM Director":"Senior MD","Regional Director":"Regional","National Director":"National","International Director":"International","Executive Director":"Executive","Board of Director":"Board"}[r.n]||r.n)}</span>`).join("")}<span>🏅 Líder</span><span>⚔️ Espartano</span><span>🛳️ Cliente</span></div>
    <p class="small muted" style="margin:0">${n>=DT_META?"🏆 ¡Completó sus 30! Cada directo extra fortalece su equipo.":`💭 Cada casilla vacía es un sueño esperando a su próximo socio. Le faltan <b>${DT_META-n}</b> directos activos.`}${nc?` Tiene <b>${n-nc}</b> socios y <b>${nc}</b> ${nc===1?"cliente":"clientes"} activos.`:""} Equipo activo total: <b>${((dtSum&&dtSum.eq)||0)+nc}</b>.</p>
-   <div class="row" style="gap:8px"><button class="btn grow" id="dtInv" style="background:#25D366;color:#fff">➕ Invitar</button>${pd?`<button class="btn ghost grow" id="dtMot">💰 Motivar ahorro (${pd})</button>`:""}</div>
-   <div class="row" style="gap:8px"><button class="btn ghost grow" id="dtNum">📊 Nuestros números</button><button class="btn ghost grow" id="dtSim">🔮 Simular</button></div>
-   <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
-    $("#dtG").onclick=e=>{const b=e.target.closest("[data-dti],[data-dte]");if(!b)return;if(b.dataset.dte){dtMas();return}const x=D[+b.dataset.dti];if(x)(x.cli?dtCliFicha(x):dtFicha(x))};
-    $("#dtInv").onclick=dtMas;const m=$("#dtMot");if(m)m.onclick=()=>{const x=D.find(y=>!y.ok);if(x)(x.cli?dtCliFicha(x):dtFicha(x))};$("#dtNum").onclick=dtNumeros;$("#dtSim").onclick=dtSimular});
+   <div class="row" style="gap:8px"><button class="btn grow" id="${P}Inv" style="background:#25D366;color:#fff">➕ Invitar</button>${pd?`<button class="btn ghost grow" id="${P}Mot">💰 Motivar ahorro (${pd})</button>`:""}</div>
+   <div class="row" style="gap:8px"><button class="btn ghost grow" id="${P}Num">📊 Nuestros números</button><button class="btn ghost grow" id="${P}Sim">🔮 Simular</button></div>`;
+  const bind=()=>{dtDesde=P==="dt"?"sheet":"inline";
+    $("#"+P+"G").onclick=e=>{const b=e.target.closest("[data-dti],[data-dte]");if(!b)return;dtDesde=P==="dt"?"sheet":"inline";if(b.dataset.dte){dtMas();return}const x=D[+b.dataset.dti];if(x)(x.cli?dtCliFicha(x):dtFicha(x))};
+    $("#"+P+"Inv").onclick=dtMas;const m=$("#"+P+"Mot");if(m)m.onclick=()=>{const x=D.find(y=>!y.ok);if(x)(x.cli?dtCliFicha(x):dtFicha(x))};$("#"+P+"Num").onclick=()=>{dtDesde=P==="dt"?"sheet":"inline";dtNumeros()};$("#"+P+"Sim").onclick=dtSimular};
+  return{h,bind}}
+function dtTras(){if(dtDesde==="inline"){closeSheet();try{if(eqTab==="mios")renderEquipo()}catch(e){}return}dtCuadro()}
+function dtVolver(){if(dtDesde==="inline"){closeSheet();return}dtCuadro()}
+function dtCuadro(){const X=dtPanel("dt");
+  openSheet(`<span data-nofocus hidden></span>${X.h}
+   <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,X.bind);
   if(!dtSum||Date.now()-dtSum.t>10*6e4)dtCargar(true).then(()=>{if($("#dtG")&&!$("#sheet").hidden)dtCuadro()})}
 async function dtWa(u){try{const d=await store.db.doc("users/"+u).get();return String(((d.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}catch(e){return""}}
 function dtFicha(x){const img=dtFoto(x.u,x.n),f=dtFirst(x.n),mes=x.f?MONTHS[new Date(x.f).getMonth()].slice(0,3):"—";
@@ -1904,7 +1914,7 @@ function dtFicha(x){const img=dtFoto(x.u,x.n),f=dtFirst(x.n),mes=x.f?MONTHS[new 
    ${(()=>{const g=dtRg(x);if(g)return `<div class="dt-q" style="background:var(--soft,#F1F6F9);color:inherit"><span class="dt-rgb" style="background:${g.c}"></span> <b>${esc(DT_RGTX[g.n]||g.n)}</b></div>`;const l=lcNivelDe(x.n),C=calCfg();return l.k?`<div class="dt-q" style="${l.k==="esp"?"":"background:#E0F5FD;color:#06384F"}">${l.k==="esp"?"⚔️ <b>Líder Espartano</b> de "+esc(lcMesCorto())+" · ⭐ Team Leader":"🏅 <b>Líder</b> de "+esc(lcMesCorto())} · ${fmt(l.v)} pts${l.k==="lid"?`<br><span class="small">Le faltan ${fmt(C.esp-l.v)} pts para Líder Espartano</span>`:""}</div>`:`<div class="dt-q" style="background:var(--soft,#F1F6F9);color:inherit">📈 ${fmt(l.v)} pts este mes · le faltan <b>${fmt(C.lider-l.v)}</b> para ser Líder</div>`})()}
    ${x.ok?`<div class="dt-st"><div><b>${x.a}</b><small>activos en su equipo</small></div><div><b>${x.dp}</b><small>directos propios</small></div><div><b>${esc(mes)}</b><small>se unió</small></div></div>`:`<p class="small muted" style="margin:0">Mientras su ahorro esté pendiente, no cuenta para sus 30. Anímelo con cariño 💙</p>`}
    ${(()=>{const l=lcNivelDe(x.n);return l.k?`<button class="btn" id="dtLcF" style="width:100%;background:#25D366;color:#fff">💬 Felicitarlo por calificar como ${l.k==="esp"?"Líder Espartano":"Líder"} de ${esc(lcMesCorto())}</button><button class="btn ghost" id="dtLcS" style="width:100%">📣 Compartir su flyer</button>`:""})()}<button class="btn ${lcNivelDe(x.n).k?"ghost":""}" id="dtFw" style="width:100%;${lcNivelDe(x.n).k?"":"background:#25D366;color:#fff"}">${x.ok?"💬 Felicitar por WhatsApp":"💰 Motivar su ahorro"}</button><button class="btn ghost" id="dtBk" style="width:100%">‹ Volver a mi cuadro</button>`,()=>{
-    $("#dtBk").onclick=dtCuadro;{const l=lcNivelDe(x.n);if(l.k){const q=lcQ({n:x.n,k:l.k,v:l.v});q.foto=dtFoto(x.u,x.n)||q.foto;$("#dtLcF").onclick=()=>{const w0=dtWa(x.u);w0.then(w=>{location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(lcTextoFelicitar(q))})};$("#dtLcS").onclick=()=>lcCompartir(q,$("#dtLcS"))}}$("#dtFw").onclick=async()=>{const w=await dtWa(x.u),yo=miNombreCorto()||"",v=parseInt(ahF(x.u),16)%3;
+    $("#dtBk").onclick=dtVolver;{const l=lcNivelDe(x.n);if(l.k){const q=lcQ({n:x.n,k:l.k,v:l.v});q.foto=dtFoto(x.u,x.n)||q.foto;$("#dtLcF").onclick=()=>{const w0=dtWa(x.u);w0.then(w=>{location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(lcTextoFelicitar(q))})};$("#dtLcS").onclick=()=>lcCompartir(q,$("#dtLcS"))}}$("#dtFw").onclick=async()=>{const w=await dtWa(x.u),yo=miNombreCorto()||"",v=parseInt(ahF(x.u),16)%3;
       const t=x.ok?[`¡Hola, ${f}! 👏\n\nQuería felicitarle: es parte de mi Dream Team y ya tiene *${x.a}* socios activos en su equipo.\n\n¡Siga así, vamos juntos camino a la libertad! 🚀`,`${f}, ¡qué orgullo tenerle en mi equipo! 🙌\n\nGracias por su compromiso. Cada paso que da inspira a los demás.\n\n¡Vamos por más! 💪`,`¡Hola, ${f}! ✨\n\nSolo quería decirle que valoro mucho su trabajo en el equipo.\n\n¡Sigamos construyendo nuestra libertad juntos! 🚢`][v]
         :[`Hola, ${f} 👋\n\nVi que su ahorro de inCruises quedó pendiente. Póngase al día para no perder sus beneficios ni sus herramientas del equipo.\n\nSi necesita ayuda, aquí estoy 💙`,`¡Hola, ${f}! 🙌\n\nUn recordatorio con cariño: su ahorro de este mes está pendiente.\n\nAl ponerse al día sigue sumando en el equipo y no pierde su avance.\n\n¡Cuento con usted! 💪`,`Hola, ${f} 😊\n\nNo quiero que pierda lo que ha construido: su ahorro de inCruises está pendiente.\n\n¿Le ayudo con algo para ponerse al día?`][v];
       location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t+(yo?"\n\n*"+yo+"*":""))}})}
@@ -1922,7 +1932,7 @@ async function dtNumeros(){openSheet(`<span data-nofocus hidden></span><p class=
    ${veces>1?`<div class="dt-q">💡 En nuestro equipo, quien tiene <b>${esc(hi.l)} directos</b> tiene en promedio <b>${veces} veces más socios activos</b> que quien tiene ${esc(lo.l)}.</div>`:""}
    ${mio?`<div class="dt-q" style="background:#E8F7EE;color:#14532D">Usted tiene <b>${n} directos activos</b> → está en el grupo de ${esc(mio.l)} 💪</div>`:n?"":`<div class="dt-q" style="background:#E8F7EE;color:#14532D">🌱 Su primer directo lo pone en el primer grupo. ¡Empiece hoy!</div>`}
    <p class="small muted" style="margin:0">Datos reales de los socios registrados en la app${S.fecha?" · actualizado el "+esc(niceDate(S.fecha)):""}.</p>`:`<p>Estamos preparando los números del equipo. Vuelva a intentarlo más tarde.</p>`}
-   <button class="btn ghost" id="dtBk" style="width:100%">‹ Volver a mi cuadro</button>`,()=>{$("#dtBk").onclick=dtCuadro})}
+   <button class="btn ghost" id="dtBk" style="width:100%">‹ Volver a mi cuadro</button>`,()=>{$("#dtBk").onclick=dtVolver})}
 function dtSimular(){let d=30,l=10,k=3;
   const pinta=()=>{l=Math.min(l,d);const n2=l*k,n3=n2*k,n4=n3*k,tot=d+n2+n3+n4,x=d?Math.round(tot/d):0;
     $("#dtSd").textContent=d;$("#dtSl").textContent=l;$("#dtSk").textContent=k+(k===1?" líder":" líderes");$("#dtSlR").max=d;
@@ -1936,7 +1946,7 @@ function dtSimular(){let d=30,l=10,k=3;
    <div class="dt-lv" id="dtLv"></div><div class="dt-tot" id="dtTot"></div><div class="dt-q" id="dtCmp" style="background:var(--soft,#F1F6F9);color:inherit"></div>
    <p class="small muted" style="margin:0;font-size:11px">Es una simulación con los números que usted elige. No es una promesa de resultados ni de ingresos.</p>
    <button class="btn ghost" id="dtBk" style="width:100%">‹ Volver a mi cuadro</button>`,()=>{
-    $("#dtSdR").oninput=e=>{d=+e.target.value;pinta()};$("#dtSlR").oninput=e=>{l=+e.target.value;pinta()};$("#dtSkR").oninput=e=>{k=+e.target.value;pinta()};$("#dtBk").onclick=dtCuadro;pinta()})}
+    $("#dtSdR").oninput=e=>{d=+e.target.value;pinta()};$("#dtSlR").oninput=e=>{l=+e.target.value;pinta()};$("#dtSkR").oninput=e=>{k=+e.target.value;pinta()};$("#dtBk").onclick=dtVolver;pinta()})}
 // admin: promedio de activos en el equipo según cantidad de directos (para "Nuestros números")
 async function dtStatsGuardar(){if(!isAdmin||!socios)return;try{if(Date.now()-(+LS.get("dtStT")||0)<6*36e5)return}catch(e){}
   const S=socios.filter(x=>x.registro&&x.registro.nombre&&!esSoloAdmin(x)),ok=x=>{const a=ahSoc(x);return !(a&&a.pend)};
@@ -1963,7 +1973,7 @@ function msgMotiva(x){const r=x.registro||{},a=actDe(x),S=a.sem,first=(r.nombre|
   else if(rk&&rk.pPos&&rk.pNext)L.push(`🎯 *Su reto:* con *${rk.pNext} ${rk.pNext===1?"registro":"registros"} más* sube al lugar *#${rk.pPos-1}*.`,"");
   else L.push(`🎯 *Su reto:* con *1 registro* ya entra al ranking.`,"");
   L.push(`Cuente conmigo, aquí estoy para apoyarle.`,`*¡Hasta que funcione!* 🚀`);if(yo)L.push("",`— ${yo}`);return L.join("\n")}
-let miosVista="dir",telSoc=null;
+let miosVista="dir",miosLin="pi",telSoc=null;
 function waSocio(x){const r=x.registro||{},w=String(r.whatsapp||"").replace(/\D/g,""),t=(telSoc||{})[x.uid];if(t&&typeof t==="object"&&t.n&&t.b===w)return t.n;if(w.length>=8)return w;if(t)return typeof t==="string"?t:t.n;
   const c=(contacts||[]).find(c=>sameN(c.name,r.nombre||"")&&waNum(c.phone,c.cc));return c?waNum(c.phone,c.cc):""}
 function cambiarNumSocio(x){const r=x.registro||{},nm=(r.nombre||"este socio").split(" ")[0],cur=waSocio(x),sp=cur?splitPhone("+"+cur):{cc:null,num:""},cc0=sp.cc||LS.get("lastCC")||"504";
@@ -2034,15 +2044,28 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
   if(miosErr){b.innerHTML=emptyCard("No se pudo cargar tu equipo","Revisa tu conexión e intenta de nuevo. Si sigue igual, avisa al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
   if(!mios.length){b.innerHTML=idxCard()+`<div class="card empty"><h3>Aún no tienes socios en la app</h3><p class="small muted">Cuando firmes a alguien, mándale tu mensaje de bienvenida desde el CRM o comparte tu enlace. Al registrarse aparecerá aquí.</p></div>`+inv;bind();return}
   const lin=true;const V=miosVista==="dir"?mios.filter(x=>x.nivel===1):mios.slice().sort((a,b)=>a.nivel-b.nivel||byAct(a,b));
-  const seg=lin?`<div class="seg" id="miosSeg"><button aria-selected="${miosVista==="dir"}" data-mv="dir">Directos (${mios.filter(x=>x.nivel===1).length})</button><button aria-selected="${miosVista==="todo"}" data-mv="todo">Toda mi línea (${mios.length})</button></div>`:"";
+  const seg=lin?`<div class="seg" id="miosSeg"><button aria-selected="${miosVista==="dir"}" data-mv="dir">⭐ Directos · ${mios.filter(x=>x.nivel===1).length}</button><button aria-selected="${miosVista==="todo"}" data-mv="todo">🌳 Toda mi línea · ${mios.length}</button></div>`:"";
   const A=V.map(x=>actDe(x)),n=V.length,hoy=A.filter(a=>a.hoy>0).length,sem=A.filter(a=>a.d7>0).length,bien=A.filter(a=>a.bien).length,pres=A.reduce((t,a)=>t+(a.sem.presentaciones||0),0);
   const st=(v,t,c)=>`<div class="card" style="gap:2px"><b class="num" style="font-size:28px${c?";color:"+c:""}">${v}</b><span class="small muted">${t}</span></div>`;
   const cname=k=>{const c=cursosL().find(x=>x.k===k);return c?c.t:k};
-  let lvl=0;
-  b.innerHTML=`${idxCard()}${seg}<div class="grid2">${st(n,miosVista==="todo"?"Socios en toda tu línea":n===1?"Socio directo":"Socios directos")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}${st(pres,"Presentaciones esta semana")}</div>
-   <div class="card" style="gap:0">${V.map(x=>{const r=x.registro||{},a=actDe(x),S=a.sem,nm=r.nombre||"Socio",ua=tsMs(x.ultimoAcceso),cs=((x.actividad||{}).cursos||[]);
-     const hd=miosVista==="todo"&&x.nivel!==lvl?(lvl=x.nivel,`<div class="lvl-h">Nivel ${x.nivel} <span>${(c=>c+(c===1?" socio":" socios"))(V.filter(y=>y.nivel===x.nivel).length)}</span></div>`):"";
-     return `${hd}<div style="padding:12px 0;border-bottom:1px solid var(--line)">${miosVista==="todo"&&x.nivel>1?`<div class="small" style="color:var(--brand);font-weight:700;margin-bottom:6px">Línea de ${esc(x.piernaNom||"tu equipo")} · Patrocinador: ${esc(x.patNom||r.invitadoPor||r.patrocinador||"—")}</div>`:""}<div class="row" style="align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0">
+  const fila=miosFila(V,0);
+  const DTP=(()=>{if(miosVista!=="dir"||isAdmin&&!mios.some(x=>x.nivel===1&&(x.registro||{}).patrocinadorUid===store.uid))return{h:""};try{const z=dtArmar();if(z){dtSum=Object.assign(z,{t:(dtSum&&dtSum.t)||z.t});LS.set("dtSum:"+store.uid,dtSum)}}catch(e){}const X=dtPanel("dtq");return{h:X.h,bind0:X.bind}})();
+  const piernas=()=>{const Dr=mios.filter(x=>x.nivel===1).map(d=>{const M=mios.filter(y=>y.pierna===d.uid),ac=M.filter(y=>actDe(y).d7>0).length,nv=Math.max(1,...M.map(y=>y.nivel));return{d,M,ac,nv}}).sort((p,q)=>q.M.length-p.M.length||q.ac-p.ac);
+    return Dr.map(({d,M,ac,nv})=>{const r=d.registro||{},nm=r.nombre||"Socio",g=dtRg({u:d.uid,n:nm,rg:r.rango||""}),pc=M.length?Math.round(ac/M.length*100):0;
+      return `<details class="card pi" data-pi="${esc(d.uid)}" style="gap:8px"><summary style="list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:8px"><div class="row" style="gap:10px;align-items:center">${avHTML(nm,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:700">Línea de ${esc(nm)}</b><div class="small muted">⭐ Directo${g?` · <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${g.c};vertical-align:middle"></span> ${esc(DT_RGTX[g.n]||g.n)}`:""} · ${M.length} ${M.length===1?"socio":"socios"} · ${nv} ${nv===1?"nivel":"niveles"}</div></div><span class="chip ${pc>=50?"c-good":pc>0?"c-gold":"c-brand"}">${ac} de ${M.length} activos</span></div>
+       <div class="bar" style="height:6px"><i style="width:${pc}%"></i></div><span class="small" style="color:var(--brand);font-weight:700">Ver su línea ›</span></summary><div class="pi-b"></div></details>`}).join("")||emptyCard("Aún no tiene directos","Cuando un socio se registre con su enlace, aquí verá su línea.")};
+  b.innerHTML=`${idxCard()}${seg}${miosVista==="dir"&&DTP.h?`<div class="card dtin" style="gap:10px">${DTP.h}</div>`:""}<div class="grid2">${st(n,miosVista==="todo"?"Socios en toda tu línea":n===1?"Socio directo":"Socios directos")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}${st(pres,"Presentaciones esta semana")}</div>
+   ${miosVista==="dir"?`<p class="eyebrow" style="margin:6px 0 0">Detalle de mis directos</p>`:""}
+   ${miosVista==="todo"?`<div class="seg" id="miosLin" style="width:auto;align-self:flex-start"><button aria-selected="${miosLin==="pi"}" data-ml="pi">🌳 Por piernas</button><button aria-selected="${miosLin==="li"}" data-ml="li">☰ Lista por nivel</button></div>`:""}
+   ${miosVista==="todo"&&miosLin==="pi"?piernas():`<div class="card" style="gap:0">${V.map(x=>fila(x)).join("")}</div>`}
+   <p class="small muted" style="margin:0">Presentaciones, contactos y días activos son de los últimos 7 días.${bien<n?" "+(n-bien)+" aún no ha"+(n-bien>1?"n":"")+" completado la bienvenida.":""}</p>
+   <button class="btn sm ghost" id="miosReload" style="align-self:flex-start">Actualizar lista</button>${inv}`;bind();
+  if(DTP.bind0)DTP.bind0();
+  const ml=$("#miosLin");if(ml)ml.onclick=e=>{const x=e.target.closest("button");if(!x)return;miosLin=x.dataset.ml;renderEquipo()};
+  b.querySelectorAll("details[data-pi]").forEach(d=>d.ontoggle=()=>{const c=d.querySelector(".pi-b");if(d.open&&!c.dataset.ok){c.dataset.ok=1;c.innerHTML=mios.filter(y=>y.pierna===d.dataset.pi).sort((p,q)=>p.nivel-q.nivel||byAct(p,q)).map(y=>fila(y,1)).join("");bind()}})}
+function miosFila(V,lvl0){let lvl=lvl0;const cname=k=>{const c=cursosL().find(x=>x.k===k);return c?c.t:k};return (x,enPi)=>{const r=x.registro||{},a=actDe(x),S=a.sem,nm=r.nombre||"Socio",ua=tsMs(x.ultimoAcceso),cs=((x.actividad||{}).cursos||[]);
+     const hd=!enPi&&miosVista==="todo"&&x.nivel!==lvl?(lvl=x.nivel,`<div class="lvl-h">Nivel ${x.nivel} <span>${(c=>c+(c===1?" socio":" socios"))(V.filter(y=>y.nivel===x.nivel).length)}</span></div>`):"";
+     return `${hd}<div style="padding:12px 0;border-bottom:1px solid var(--line)">${enPi?`<div class="small" style="margin-bottom:6px"><span class="chip ${x.nivel===1?"c-gold":"c-brand"}" style="font-weight:700">${x.nivel===1?"⭐ Directo":"Nivel "+x.nivel+" · de "+esc(dtFirst(x.patNom||r.invitadoPor||r.patrocinador||"—"))}</span></div>`:miosVista==="todo"&&x.nivel>1?`<div class="small" style="color:var(--brand);font-weight:700;margin-bottom:6px">Línea de ${esc(x.piernaNom||"tu equipo")} · Patrocinador: ${esc(x.patNom||r.invitadoPor||r.patrocinador||"—")}</div>`:""}<div class="row" style="align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0">
       <b style="font-weight:600">${esc(nm)}</b><div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.fecha?"Desde "+niceDate(String(r.fecha).slice(0,10)):""}${ua?" · Entró "+haceTxt(ua):""}</div>${(isAdmin||r.patrocinadorUid===store.uid)?[...new Set([x.email,r.correo].map(e=>String(e||"").trim().toLowerCase()).filter(Boolean))].map(e=>`<button type="button" class="emCp" data-cpem="${esc(e)}">✉️ ${esc(e)} <span>Copiar</span></button>`).join(""):""}</div>
       <span class="chip ${a.hoy>=100?"c-good":a.hoy>0?"c-gold":"c-brand"}">Hoy ${a.hoy}%</span></div>
       <div class="row wrap" style="gap:6px;margin-top:8px">
@@ -2057,9 +2080,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
        ${(()=>{const rk=rankDe(nm);return rk?`<span class="chip ${rk.pPos&&rk.pPos<=10?"c-gold":"c-brand"}">🏆 Registros: ${rk.R}${rk.pPos?" · #"+rk.pPos:""}</span><span class="chip ${rk.aPos&&rk.aPos<=10?"c-gold":"c-brand"}">🚀 Activaciones: ${rk.A} · Vol. ${fmt(rk.V)}${rk.aPos?" · #"+rk.aPos:""}</span>`:`<span class="chip c-brand">🏆 Sin registros en el ranking</span>`})()}
        ${(()=>{const m=x.metas||{},R=proxRango(rangoActualIdx(x.registro,nm)),rg=R?R.n:"";if(!m.act&&!rg&&!m.sueno)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(R?`<span class="chip" style="background:${R.c};color:#fff">🏅 Próximo: ${esc(rg)}</span>`:"")+(m.sueno?`<span class="chip c-good">💰 Sueño: ${usd(m.sueno)}/mes</span>`:"")})()}
        ${cs.length?cs.map(k=>`<span class="chip c-good">🎓 ${esc(cname(k))}</span>`).join(""):`<span class="chip c-brand">🎓 Sin cursos aún</span>`}
-      </div><div class="row" style="gap:8px;margin-top:10px">${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<button class="btn sm grow" data-mah="${esc(x.uid)}" style="background:#B42335;color:#fff">💰 Motivar su ahorro</button>`:""})()}<button class="btn sm grow" data-mot="${esc(x.uid)}" style="background:#25D366;color:#fff">💬 Motivar por WhatsApp</button><button class="btn sm ghost" data-wnum="${esc(x.uid)}" type="button" aria-label="Cambiar número de WhatsApp de ${esc(nm)}">✏️ Número</button></div></div>`}).join("")}</div>
-   <p class="small muted" style="margin:0">Presentaciones, contactos y días activos son de los últimos 7 días.${bien<n?" "+(n-bien)+" aún no ha"+(n-bien>1?"n":"")+" completado la bienvenida.":""}</p>
-   <button class="btn sm ghost" id="miosReload" style="align-self:flex-start">Actualizar lista</button>${inv}`;bind()}
+      </div><div class="row" style="gap:8px;margin-top:10px">${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<button class="btn sm grow" data-mah="${esc(x.uid)}" style="background:#B42335;color:#fff">💰 Motivar su ahorro</button>`:""})()}<button class="btn sm grow" data-mot="${esc(x.uid)}" style="background:#25D366;color:#fff">💬 Motivar por WhatsApp</button><button class="btn sm ghost" data-wnum="${esc(x.uid)}" type="button" aria-label="Cambiar número de WhatsApp de ${esc(nm)}">✏️ Número</button></div></div>`}}
 const SOLO_ADMIN=["garciagoedwin@gmail.com"];const esSoloAdmin=x=>SOLO_ADMIN.includes(String(x.email||"").toLowerCase());
 function editarSocio(uid){const x=(socios||[]).find(y=>y.uid===uid);if(!x)return;const r=x.registro||{},nm=r.nombre||x.email||"Socio";
   const opts=(socios||[]).filter(y=>y.uid!==uid&&y.registro&&y.registro.nombre&&!esSoloAdmin(y)).sort((a,b)=>a.registro.nombre.localeCompare(b.registro.nombre,"es"));
@@ -2121,7 +2142,7 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
   const sinP=socios.filter(x=>x.registro&&!x.registro.patrocinadorUid&&!esSoloAdmin(x)).length;
   const wm={};socios.forEach(x=>{const w=String((x.registro||{}).whatsapp||"").replace(/\D/g,"");if(w.length>=8&&!esSoloAdmin(x))(wm[w]=wm[w]||[]).push(x)});const dups=Object.keys(wm).filter(k=>wm[k].length>1);
   const dupH=dups.length?`<div class="card" style="gap:8px;border:1.5px solid var(--warn)"><h3 style="margin:0">⚠️ WhatsApp repetidos (${dups.length})</h3><p class="small muted" style="margin:0">Estos socios tienen el mismo número. Corrija el que no corresponde con «Número».</p>${dups.map(k=>`<div style="padding:8px 0;border-top:1px solid var(--line)"><b class="small">${esc(waFmt(k))}</b>${wm[k].map(x=>`<div class="row between" style="gap:8px;margin-top:6px"><span class="small" style="min-width:0">${esc((x.registro||{}).nombre||x.email||"Socio")}${(x.registro||{}).waOk?" · ✅ confirmó":""}</span><button class="btn sm ghost" type="button" data-wfix="${esc(x.uid)}">✏️ Número</button></div>`).join("")}</div>`).join("")}</div>`:"";
-  b.innerHTML=`<div class="card" style="gap:6px"><h3 style="margin:0">🌳 Líneas del equipo</h3><p class="small muted" style="margin:0">Arma la línea completa de cada socio para que cada líder vea a todos los que tiene debajo.</p><button class="btn sm ghost" id="socLin" style="align-self:flex-start">Reconstruir líneas</button></div>${sinP?`<div class="card" style="gap:8px"><div class="row between"><div><h3 style="margin:0">🔗 Vincular patrocinadores</h3><p class="small muted" style="margin:2px 0 0">${sinP} ${sinP===1?"socio se registró":"socios se registraron"} sin enlace. Vincúlalos para que su patrocinador los vea en "Mis socios".</p></div></div><button class="btn sm gold" id="socVinc" style="align-self:flex-start">Vincular ahora</button></div>`:""}${dupH}${ahCfg()?`<div class="card" style="gap:6px"><h3 style="margin:0">💰 Ahorro pendiente</h3><p class="small muted" style="margin:0">${Object.keys(ahCfg().k).length?"Revise quién del reporte está enlazado en la app y quién no coincide (email o WhatsApp).":"Sin socios pendientes."}</p><button class="btn sm ghost" id="ahAdm" style="align-self:flex-start">🔎 Revisar coincidencias</button></div>`:""}<div class="grid2">${st(reg,"Socios registrados")}${st(sin,"Entraron sin registrarse")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}</div>
+  b.innerHTML=`<div class="card" style="gap:6px"><h3 style="margin:0">🌳 Líneas del equipo</h3><p class="small muted" style="margin:0">Arma la línea completa de cada socio para que cada líder vea a todos los que tiene debajo.</p><button class="btn sm ghost" id="socLin" style="align-self:flex-start">Reconstruir líneas</button></div>${sinP?`<div class="card" style="gap:8px"><div class="row between"><div><h3 style="margin:0">🔗 Vincular patrocinadores</h3><p class="small muted" style="margin:2px 0 0">${sinP} ${sinP===1?"socio se registró":"socios se registraron"} sin enlace. Vincúlalos para que su patrocinador los vea en "Mi equipo".</p></div></div><button class="btn sm gold" id="socVinc" style="align-self:flex-start">Vincular ahora</button></div>`:""}${dupH}${ahCfg()?`<div class="card" style="gap:6px"><h3 style="margin:0">💰 Ahorro pendiente</h3><p class="small muted" style="margin:0">${Object.keys(ahCfg().k).length?"Revise quién del reporte está enlazado en la app y quién no coincide (email o WhatsApp).":"Sin socios pendientes."}</p><button class="btn sm ghost" id="ahAdm" style="align-self:flex-start">🔎 Revisar coincidencias</button></div>`:""}<div class="grid2">${st(reg,"Socios registrados")}${st(sin,"Entraron sin registrarse")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}</div>
    <div class="seg" id="socOrd"><button aria-selected="${sociosOrd==="act"}" data-o="act">Más activos</button><button aria-selected="${sociosOrd==="rec"}" data-o="rec">Recientes</button><button aria-selected="${sociosOrd==="inact"}" data-o="inact">Sin actividad</button></div>
    <div class="row"><input class="inp grow" id="socQ" placeholder="Buscar por nombre, patrocinador o plan" value="${esc(sociosQ)}"><button class="btn sm ghost" id="socCsv">Descargar</button></div>
    <div class="card" style="gap:0">${L.length?L.map(x=>{const r=x.registro||{},a=actDe(x),S=a.sem;const nm=r.nombre||x.nombre||x.email||"Sin nombre";const wa=r.whatsapp?`https://wa.me/${r.whatsapp}`:"";
@@ -2216,7 +2237,7 @@ function renderTopRut(){const c=$("#topRut");if(!c)return;c.hidden=true;return;i
   $("#topRutVer").onclick=()=>{eqTab="ranking";rankMetric="rutina";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()}}
 const CONST_INI="2026-10-19";const constDia=()=>Math.floor((parseK(TODAY)-parseK(CONST_INI))/864e5)+1;
 const constBanner=()=>{const d=constDia();if(d<1||d>7)return"";return `<div class="card" style="background:linear-gradient(135deg,#2AC1F1,#6b4dff);color:#fff;gap:4px"><b style="font-size:17px">🚀 ${d===1?"¡Hoy empezamos! Día 1":"Día "+d+" del ranking"}</b><span style="font-size:14px;opacity:.95">${d===1?"El ranking de consistencia arrancó hoy, todos parten de cero. Completa tu rutina hoy al 100% y mañana empiezas tu racha 🔥":"El ranking arrancó el lunes 19 de octubre. Cada día que completas tu rutina suma a tu racha 🔥"}</span></div>`};
-function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="false" data-k="nuevos">Activaciones</button><button aria-selected="false" data-k="presentaciones">Registros inCruises</button><button aria-selected="true" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button></div><div class="seg" id="rankSeg" hidden></div>
+function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="false" data-k="nuevos">Activaciones</button><button aria-selected="false" data-k="presentaciones">Registros inCruises</button><button aria-selected="true" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button><button aria-selected="false" data-k="liderazgo">⭐ Liderazgo</button></div><div class="seg" id="rankSeg" hidden></div>
    <div class="seg" id="consV"><button aria-selected="${constVista==="sem"}" data-cv="sem">Esta semana</button><button aria-selected="${constVista==="mes"}" data-cv="mes">Este mes</button></div>
    <p class="small muted">Cada acción de la rutina da 1 punto al día (máximo 5). Orden: 1) ${constVista==="sem"?"racha actual (días seguidos con la rutina completa; si falla un día, vuelve a cero)":"mejor racha del mes"}, 2) presentaciones del plan, 3) puntos.${constVista==="sem"?" La semana va de lunes a domingo y se reinicia cada lunes.":""}</p>`;
   if(constL===null){b.innerHTML=segs+`<p class="muted small">Cargando…</p>`;bindRank();loadConst(true);return}
@@ -2237,7 +2258,9 @@ function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetr
 function renderEquipo(){const b=$("#eqBody");
   if(eqTab==="socios"){renderSocios(b);return}
   if(eqTab==="mios"){renderMios(b);return}
+  if(eqTab==="liderazgo"){eqTab="ranking";rankMetric="liderazgo";setSeg("eqSeg",eqTab)}
   if(eqTab==="ranking"&&rankMetric==="rutina"){renderConst(b);return}
+  if(eqTab==="ranking"&&rankMetric==="liderazgo"){renderLiderazgo(b);return}
   if(eqTab==="ranking"){
     if(!T.ranking.length){b.innerHTML=emptyCard("El ranking aún no tiene datos","Aquí aparecerán las presentaciones registradas gratis en inCruises y los socios nuevos de cada miembro del equipo.");return}
     const sem=rankTab==="semana",kR=sem?"regSemana":"registros",kA=sem?"actSemana":"activaciones",kP=sem?"presSemana":"presentaciones";
@@ -2263,7 +2286,7 @@ function renderEquipo(){const b=$("#eqBody");
     const unit=rankMetric==="nuevos"?["socio nuevo","socios nuevos"]:["registro","registros"];
     const u=v=>v===1?unit[0]:unit[1];
     const per=T.config&&T.config.rankingSemanaLabel;
-    const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="${rankMetric==="nuevos"}" data-k="nuevos">Activaciones</button><button aria-selected="${rankMetric==="presentaciones"}" data-k="presentaciones">Registros inCruises</button><button aria-selected="false" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button></div>
+    const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="${rankMetric==="nuevos"}" data-k="nuevos">Activaciones</button><button aria-selected="${rankMetric==="presentaciones"}" data-k="presentaciones">Registros inCruises</button><button aria-selected="false" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button><button aria-selected="false" data-k="liderazgo">⭐ Liderazgo</button></div>
      <div class="seg" role="tablist" id="rankSeg" hidden><button aria-selected="true" data-k="mes">Este mes</button></div>
      <p class="small muted">${rankMetric==="nuevos"?"Ordenado por volumen (Starter 50 · Classic 200 · Premium 500).":"Solo cuentan los prospectos registrados gratis en inCruises."}</p>`;
     if(!d.length){b.innerHTML=segs+emptyCard(rankMetric==="nuevos"?"Aún no hay socios nuevos en este periodo":"Aún no hay registros en este periodo","El primero en sumar toma el primer lugar.");bindRank();return}
@@ -2276,13 +2299,15 @@ function renderEquipo(){const b=$("#eqBody");
       <div class="row between small muted"><span>${esc(p.linea?"Línea: "+p.linea:"")}</span><span>${rankMetric==="nuevos"?"":(p.A?fmt(p.A)+" "+(p.A===1?"socio nuevo":"socios nuevos"):"")}</span></div>${tags(p).replace("justify-content:center","")}<div class="bar" style="height:5px;margin-top:4px"><i style="width:${Math.round(p.v/max*100)}%"></i></div></div></div>`).join("")}</div></div>`:""}
      <p class="updated">${updatedTxt(T.config&&T.config.rankingActualizado)}</p>`;
     bindRank();return}
-  if(eqTab==="liderazgo"){
-    if(!T.lideres.length){b.innerHTML=emptyCard("Aún no hay líderes cargados","Aquí verás a todos los líderes calificados con sus presentaciones y su volumen del mes.");return}
+  }
+function rankSegsL(){return `<div class="seg" role="tablist" id="rankMetric"><button aria-selected="false" data-k="nuevos">Activaciones</button><button aria-selected="false" data-k="presentaciones">Registros inCruises</button><button aria-selected="false" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button><button aria-selected="true" data-k="liderazgo">⭐ Liderazgo</button></div><div class="seg" id="rankSeg" hidden></div>`}
+function renderLiderazgo(b){{
+    if(!T.lideres.length){b.innerHTML=rankSegsL()+emptyCard("Aún no hay líderes cargados","Aquí verás a todos los líderes calificados con sus presentaciones y su volumen del mes.");bindRank();return}
     const L=T.lideres,tp=L.reduce((s,l)=>s+(Number(l.presentaciones)||0),0),tv=L.reduce((s,l)=>s+(Number(l.volumen)||0),0);
     const pos={};L.forEach(l=>{const k=l.rango||"Sin posición";pos[k]=(pos[k]||0)+1});
     const posKeys=Object.keys(pos).sort((a,b)=>posRank(a)-posRank(b));
     const per=T.config&&T.config.liderazgoPeriodo;
-    b.innerHTML=`${per?`<p class="eyebrow">Calificados · ${esc(per)}</p>`:""}
+    b.innerHTML=rankSegsL()+`<p class="eyebrow" style="margin:0">⭐ Sistema de liderazgo</p>${per?`<p class="eyebrow">Calificados · ${esc(per)}</p>`:""}
      <div class="kpis" style="grid-template-columns:repeat(2,1fr)"><div class="kpi"><b>${L.length}</b><span>Líderes calificados</span></div><div class="kpi"><b>${fmt(tp)}</b><span>Presentaciones</span></div><div class="kpi"><b>${fmt(L.reduce((s,l)=>s+(Number(l.nuevos)||0),0))}</b><span>Socios nuevos</span></div><div class="kpi"><b>${fmt(tv)}</b><span>Volumen total</span></div></div>
      ${lcLista0().length?`<button class="btn gold" id="lcBtn" style="width:100%">🎉 Calificados del sistema · ${esc(lcMes())} (${lcLista0().length}) · Ver flyers</button>`:""}
      <input class="inp" id="leadQ" type="search" placeholder="Buscar líder o línea ascendente" value="${esc(leadQ)}">
@@ -2292,7 +2317,7 @@ function renderEquipo(){const b=$("#eqBody");
      <div class="row wrap small muted" style="gap:6px">Volumen: <span class="chip c-good">500 o más</span><span class="chip c-warn">200 a 499</span><span class="chip c-bad">menos de 200</span></div>
      <div class="card"><div class="list" id="leadList"></div></div>
      <p class="updated">${updatedTxt(T.config&&T.config.liderazgoActualizado)}</p>`;
-    renderLeadList();liderResCargar();{const lb=$("#lcBtn");if(lb)lb.onclick=lcLista}
+    bindRank();renderLeadList();liderResCargar();{const lb=$("#lcBtn");if(lb)lb.onclick=lcLista}
     $("#leadQ").oninput=e=>{leadQ=e.target.value;renderLeadList()};
     $("#leadCal").onclick=e=>{const x=e.target.closest("button");if(!x)return;leadCal=x.dataset.c;renderEquipo()};
     $("#leadPos").onclick=e=>{const x=e.target.closest("button");if(!x)return;leadPos=x.dataset.p;renderEquipo()};
@@ -3469,9 +3494,40 @@ async function bajarPdf(u,n){const f=pdfCache[u+"#f"];
 const CURSOS=[{k:"presentacion-impresa",t:"Aprende a dar una Presentación Impresa",d:"Mira el video y descarga la hoja para presentar el plan con tus prospectos.",yt:"VOTHJxJ5eQg",pdf:"media/cursos/presentacion-impresa.pdf",pdfN:"Presentacion-Impresa-Action-Leaders.pdf",pdfT:"Descargar la hoja de presentación"}];
 let cursoOpen={};
 function cursosL(){const X=((T.config||{}).cursos||[]).filter(c=>c&&c.k&&c.yt);return X.concat(CURSOS.filter(c=>!X.some(x=>x.k===c.k)))}
+// ---------- Guía paso a paso dentro de la app ("Descubra su app") ----------
+const TOURS={agenda:{t:"📅 Su Agenda",d:"Llamadas de 3, lanzamientos, juntas y citas",min:1,steps:[
+  {go:"agenda",sel:"#agBig",tx:"Aquí nace todo lo que usted agenda. Son 4 botones, uno para cada cosa."},
+  {sel:'[data-ab="l3"]',tx:"📞 <b>Llamada de 3</b>: elija a su prospecto del CRM y a un líder de su línea. Al líder le llega a su app para confirmar."},
+  {sel:'[data-ab="lz"]',tx:"🚀 <b>Lanzamiento</b>: planee el lanzamiento de su negocio con su líder. La app le crea su flyer para invitar."},
+  {sel:'[data-ab="ev"]',tx:"🤝 <b>Junta o evento</b>: con flyer y script listos para invitar a sus prospectos por WhatsApp."},
+  {sel:'[data-ab="ci"]',tx:"➕ <b>Cita</b> con un prospecto: por Zoom, WhatsApp o en persona. Después puede recordarle con un toque."},
+  {sel:"#l3Card",si:1,tx:"📬 <b>Por responder</b>: cuando un socio le invita a una llamada de 3 o a un lanzamiento, aparece aquí. Acepte, proponga otra hora o diga que no puede."},
+  {sel:"#recCard",si:1,tx:"⏰ <b>Recuerde a sus invitados</b>: el día antes y el mismo día, toque “Recordar” y se abre WhatsApp con el mensaje listo."},
+  {sel:"#agView",tx:"Aquí cambia entre la <b>Agenda del equipo</b> (presentaciones, píldoras, eventos) y <b>Mi agenda</b> (sus citas)."},
+  {act:()=>{try{setAgVista("mia")}catch(e){}},sel:"#agMia",tx:"En <b>Mi agenda</b> ve sus citas de la semana. En cada cita puede recordar, reprogramar o cancelar.",fin:"¡Listo! Ya domina su Agenda 💪"}]}};
+let tourSt=null;
+function tourEl(s){const e=$(s);if(!e)return null;const r=e.getBoundingClientRect();return e.hidden||(!r.width&&!r.height)?null:e}
+function tourCerrar(ok){const o=$("#tourOv");if(o)o.remove();if(ok&&tourSt){const D=LS.get("tourOk")||{};D[tourSt.k]=Date.now();LS.set("tourOk",D);try{renderAca()}catch(e){}}tourSt=null}
+function tourIr(k){const T0=TOURS[k];if(!T0)return;closeSheet&&closeSheet();tourSt={k,i:0};tourPaso()}
+function tourPaso(){if(!tourSt)return;const T0=TOURS[tourSt.k],L=T0.steps;let st=L[tourSt.i];
+  while(st&&st.si&&(!st.go&&!tourEl(st.sel))){tourSt.i++;st=L[tourSt.i]}if(!st){tourCerrar(true);return}
+  if(st.go)go(st.go);if(st.act)st.act();
+  setTimeout(()=>{const e=tourEl(st.sel);if(e)e.scrollIntoView({block:"center",behavior:"instant"});setTimeout(()=>tourPinta(st,e),120)},st.go||st.act?260:40)}
+function tourPinta(st,e){let o=$("#tourOv");if(!o){o=document.createElement("div");o.id="tourOv";document.body.appendChild(o)}
+  const L=TOURS[tourSt.k].steps,vis=L.filter(s=>!s.si||tourEl(s.sel)),n=vis.indexOf(st)+1,tot=vis.length,ult=tourSt.i>=L.length-1||!L.slice(tourSt.i+1).some(s=>!s.si||tourEl(s.sel));
+  const r=e?e.getBoundingClientRect():{top:innerHeight/2,left:innerWidth/2,width:0,height:0,bottom:innerHeight/2},pad=6,abajo=r.top+r.height/2<innerHeight*.55;
+  o.innerHTML=`<div class="tour-hole" style="top:${r.top-pad}px;left:${r.left-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px"></div>
+   <div class="tour-tip" style="${abajo?`top:${Math.min(innerHeight-220,r.bottom+14)}px`:`bottom:${Math.min(innerHeight-220,innerHeight-r.top+14)}px`}">
+    <div class="tour-n">${esc(TOURS[tourSt.k].t)} · ${n} de ${tot}</div><p>${st.tx}</p>${ult&&st.fin?`<p style="font-weight:800;color:var(--brand)">${esc(st.fin)}</p>`:""}
+    <div class="row" style="gap:8px"><button type="button" class="btn ghost sm" id="tourX">Salir</button><span class="grow"></span>${tourSt.i?`<button type="button" class="btn ghost sm" id="tourB">‹ Atrás</button>`:""}<button type="button" class="btn sm" id="tourN">${ult?"¡Entendido!":"Siguiente ›"}</button></div></div>`;
+  $("#tourX").onclick=()=>tourCerrar(false);const b=$("#tourB");if(b)b.onclick=()=>{do{tourSt.i--}while(tourSt.i>0&&L[tourSt.i].si&&!tourEl(L[tourSt.i].sel));tourPaso()};
+  $("#tourN").onclick=()=>{if(ult){tourCerrar(true);return}tourSt.i++;tourPaso()}}
+function tourCard(){const D=LS.get("tourOk")||{},K=Object.keys(TOURS),h=K.filter(k=>D[k]).length;
+  return `<div class="card" style="gap:8px;background:linear-gradient(135deg,#0A7DAD,#2AC1F1);color:#fff;border:0"><b style="font-size:17px">🧭 Descubra su app</b><p class="small" style="margin:0;opacity:.92">Guías paso a paso dentro de la app. Toque una y la app le enseña dónde tocar.</p><p class="small" style="margin:0;font-weight:800">${h} de ${K.length} completadas</p></div>`
+   +K.map(k=>{const t=TOURS[k],ok=!!D[k];return `<button type="button" class="card row between" data-tour="${k}" style="gap:10px;text-align:left;cursor:pointer"><span class="grow"><b>${esc(t.t)}</b><small class="muted" style="display:block">${esc(t.d)} · ${t.min} min</small></span><span class="chip ${ok?"c-good":"c-gold"}">${ok?"✓ Visto":"Ver ›"}</span></button>`}).join("")}
 function renderAca(){const b=$("#acaBody");if(ahBloqYo()){b.innerHTML=`<div class="card" style="gap:8px;text-align:center"><b style="font-size:17px">🔒 Academia en pausa</b><p class="small muted" style="margin:0">Su ahorro de inCruises está pendiente. Póngase al día para reactivar sus cursos y herramientas.</p><button class="btn" style="background:#25D366;color:#fff" onclick="ahHablarSp()">💬 Hablar con mi patrocinador</button></div>`;return}
   if(ACA_PRONTO){$("#acaSeg").hidden=true;const cv=profile.cursos||{};
-    b.innerHTML=`<div><p class="eyebrow" style="margin:0">Cursos</p><p class="small muted" style="margin:2px 0 0">Aprenda paso a paso y descargue su material.</p></div>`+cursosL().map((c,i)=>{const ok=!!cv[c.k];if(ok&&!cursoOpen[c.k])return `<button type="button" class="card curso cursoMin" data-cabre="${c.k}"><span class="cmOk">${CHECK}</span><span class="grow" style="text-align:left"><span class="chip c-good">Curso ${i+1} · Completado</span><b>${esc(c.t)}</b><small class="muted">Toque para volver a ver el video</small></span><span class="cmGo">›</span></button>`;return `<div class="card curso">
+    b.innerHTML=tourCard()+`<div><p class="eyebrow" style="margin:0">Cursos</p><p class="small muted" style="margin:2px 0 0">Aprenda paso a paso y descargue su material.</p></div>`+cursosL().map((c,i)=>{const ok=!!cv[c.k];if(ok&&!cursoOpen[c.k])return `<button type="button" class="card curso cursoMin" data-cabre="${c.k}"><span class="cmOk">${CHECK}</span><span class="grow" style="text-align:left"><span class="chip c-good">Curso ${i+1} · Completado</span><b>${esc(c.t)}</b><small class="muted">Toque para volver a ver el video</small></span><span class="cmGo">›</span></button>`;return `<div class="card curso">
       <div class="row between" style="align-items:flex-start;gap:10px"><div><span class="chip ${ok?"c-good":"c-gold"}">Curso ${i+1}${ok?" · Completado ✓":""}</span><h2 style="margin:8px 0 0">${esc(c.t)}</h2><p class="small muted" style="margin:4px 0 0">${esc(c.d)}</p></div></div>
       <div class="yt"><iframe src="https://www.youtube.com/embed/${c.yt}?rel=0&playsinline=1" referrerpolicy="strict-origin-when-cross-origin" title="${esc(c.t)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
       ${c.pdf?`<button class="btn" data-pdf="${c.pdf}" data-pdfn="${esc(c.pdfN||"material.pdf")}" style="width:100%;justify-content:center">📄 ${esc(c.pdfT||"Descargar material")}</button>`:""}
@@ -3479,6 +3535,7 @@ function renderAca(){const b=$("#acaBody");if(ahBloqYo()){b.innerHTML=`<div clas
      `<div class="card empty" style="text-align:center;padding:20px"><div style="font-size:28px;line-height:1">🎓</div><p class="small muted" style="margin:6px 0 0">Más cursos muy pronto.</p></div>`;
     b.querySelectorAll("[data-pdf]").forEach(x=>{const u=x.dataset.pdf,n=x.dataset.pdfn;pdfFile(u,n);x.onclick=()=>bajarPdf(u,n)});
     b.querySelectorAll("[data-cabre]").forEach(x=>x.onclick=()=>{cursoOpen[x.dataset.cabre]=1;renderAca()});
+    b.querySelectorAll("[data-tour]").forEach(x=>x.onclick=()=>tourIr(x.dataset.tour));
     b.querySelectorAll("[data-ccierra]").forEach(x=>x.onclick=()=>{delete cursoOpen[x.dataset.ccierra];renderAca()});
     b.querySelectorAll("[data-curso]").forEach(x=>x.onclick=()=>{delete cursoOpen[x.dataset.curso];profile.cursos=Object.assign({},profile.cursos||{});profile.cursos[x.dataset.curso]=!profile.cursos[x.dataset.curso];store.set("perfil",profile);pushResumen();renderAca();if(profile.cursos[x.dataset.curso])toast("¡Curso completado!")});
     return}
@@ -3762,7 +3819,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
     <button class="pf-it" id="pfFront"><span class="ic">🏠</span>Ver la portada de la app</button>
-    ${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
+    ${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
@@ -3775,6 +3832,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
       <p><b>Android (Chrome):</b> toca los <b>tres puntos</b> → <b>Instalar app</b> o <b>Agregar a la pantalla principal</b>.</p>
       <button class="btn" data-close style="width:100%">Listo</button>`);
     const pfr=$("#pfFront");if(pfr)pfr.onclick=()=>{closeSheet();if(window.verPortada)verPortada();else toast("Vuelva a abrir la app e intente de nuevo")};
+    {const pa=$("#pfAdm");if(pa)pa.onclick=()=>{closeSheet();eqTab="socios";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()}}
     const pv=$("#pfPrev");if(pv)pv.onclick=()=>{closeSheet();welPreview=true;welSigned=false;$("#welC").dataset.v="";renderWel()};
     $("#pfOut").onclick=async()=>{const b=$("#pfOut");if(b.dataset.ok!=="1"){b.dataset.ok="1";b.innerHTML='<span class="ic">🚪</span>Toca otra vez para confirmar';return}closeSheet();try{await window.FB.logout()}catch(e){}setTimeout(()=>location.reload(),300)};
   })}
@@ -3990,7 +4048,7 @@ async function startApp(u){
     if(regDoc&&regDoc.bienvenida){profile.bienvenida=true;try{localStorage.setItem("alp:welok",u.uid)}catch(x){}const w=$("#wel");if(w){w.hidden=true;document.body.style.overflow=""}}
     db.doc("users/"+u.uid).set({email:u.email||"",ultimoAcceso:window.FB.serverTimestamp()},{merge:true}).catch(()=>{})}
   else{store.db=null;store.uid=null}
-  $("#addEvent").hidden=true;$("#eqSocios").hidden=!isAdmin;
+  $("#addEvent").hidden=true;
   $("#crmNote").textContent="Tus contactos se guardan en tu cuenta y solo tú puedes verlos.";
   subscribeTeam(db);
   const regValido=r=>!!(r&&(r.inv||r.patrocinadorUid||String(r.fecha||"")<"2026-10-19T06:45"));
@@ -4010,7 +4068,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261030014339";var busy=false,pend=null;
+(function(){var V="20261030094329";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

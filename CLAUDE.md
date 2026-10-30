@@ -266,3 +266,14 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Arriba de Agenda (fuera de Mi agenda/Del equipo): 4 botones grandes #agBig (📞 Llamada de 3 → pedirL3(null), 🚀 Lanzamiento → abrirLanz, 🤝 Junta/Evento → abrirCrearEva, ➕ Cita → abrirCita). Mi agenda ya no repite esos botones.
 - #l3Card ("📬 Por responder"), #evaInv ("🎤 Invitaciones a eventos") y #recCard ("⏰ Recuerde a sus invitados") viven en Agenda. En Inicio solo queda la franja naranja #pendStrip (pendPinta, desde bellPinta) cuando hay algo por responder; avisosVer lleva a Agenda.
 - Pendiente aprobado en diseño (no programado aún): Inicio = saludo → ahorro → accesos → franja → rutina; Dream Team a Equipo (1.ª pestaña); rango/metas/Mi semana a "Sueños y metas"; quitar reto y top de Inicio; Ranking con período en menú.
+
+## 28. Equipo reordenado + guía guiada (30 oct)
+- #eqSeg solo tiene 2 pestañas: 🏆 Ranking (data-k="ranking") y 👥 Mi equipo (data-k="mios", id eqMios, lo usa tools/smoke.js). Admin salió de la barra: ahora es "🛠️ Admin del equipo" (#pfAdm) en el perfil, que pone eqTab="socios".
+- Ranking: #rankMetric tiene 4 botones: Activaciones, Registros inCruises, 🔥 Mi Racha y ⭐ Liderazgo. rankMetric==="liderazgo" → renderLiderazgo(b) (el sistema de liderazgo de antes, con rankSegsL() arriba y bindRank()). Si algo pone eqTab="liderazgo", renderEquipo lo convierte en ranking+liderazgo.
+- Mi equipo (renderMios): Índice de Duplicación (con "Por reactivar") arriba; #miosSeg "⭐ Directos · N" / "🌳 Toda mi línea · N".
+  - Directos: el cuadro My Dream Team en línea (dtPanel("dtq") → ids #dtqG/#dtqInv/#dtqMot/#dtqNum/#dtqSim) y debajo "Detalle de mis directos" (fichas de siempre). dtCuadro() usa dtPanel("dt") en hoja. dtDesde="inline"|"sheet": dtVolver/dtTras cierran la hoja y refrescan Equipo cuando se abrió desde la vista en línea.
+  - Toda mi línea: #miosLin "🌳 Por piernas" (miosLin="pi": <details data-pi=uid> por cada directo, con rango, socios, niveles, activos 7 días y barra; las fichas se pintan al abrir, con etiqueta "⭐ Directo" o "Nivel N · de X") o "☰ Lista por nivel" (vista anterior).
+  - Las fichas salen de miosFila(V,lvl) (fuera de renderMios).
+- #dtCard ya no está en Inicio. renderDT() sigue llamando dtHito() (celebraciones 5/10/20/30) y repinta Equipo si está en Directos.
+- registro.linea va del patrocinador hacia arriba: [patrocinador, abuelo, …]. Los datos de prueba deben respetar ese orden.
+- Guía guiada (TOURS en Academia, tourCard en renderAca): por ahora solo "agenda" (8 pasos). LS "tourOk".
