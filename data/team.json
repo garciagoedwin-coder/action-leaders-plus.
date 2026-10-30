@@ -85,15 +85,15 @@
    "id": "alejandra-maria-perez-ponce"
   },
   {
-   "actSemana": 0,
-   "activaciones": 0,
+   "actSemana": 1,
+   "activaciones": 1,
    "linea": "Jorge Turcios",
    "nombre": "Lidia Sosa",
    "presSemana": 0,
    "presentaciones": 1,
    "regSemana": 0,
    "registros": 3,
-   "volumen": 0,
+   "volumen": 200,
    "id": "lidia-sosa"
   },
   {
@@ -2417,6 +2417,16 @@
    "wk": "208d8c",
    "fuente": "gmail",
    "id": "martin-fernando-castejon-martinez"
+  },
+  {
+   "socio": "Josey humberto Giron murillo",
+   "paquete": "Classic",
+   "patrocinador": "Lidia de Jesus Sosa vallecillo",
+   "fecha": "2026-10-30T18:55:07Z",
+   "ek": "6e59b4",
+   "wk": "593289",
+   "fuente": "gmail",
+   "id": "josey-humberto-giron-murillo"
   }
  ],
  "academia": [],
@@ -2434,7 +2444,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-29T21:55:07.000Z",
+  "activacionesCorte": "2026-10-30T18:55:07Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2444,7 +2454,7 @@
   "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-29T15:55:00-06:00",
+  "rankingActualizado": "2026-10-30T12:55:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -3320,7 +3330,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-10-30T16:06:57Z",
+   "v": "2026-10-30T18:55:53Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "021321": "2026-11-01T05:26:06Z",
@@ -3438,7 +3448,7 @@
     "8dae9e": "2026-10-25T06:45:37Z",
     "8ff3c1": "2026-10-31T23:15:42Z",
     "902197": "2026-11-01T19:26:47Z",
-    "9109f7": "2026-11-01T17:34:35Z",
+    "9109f7": "2026-11-04T16:09:19Z",
     "951a9a": "2026-10-28T11:41:24Z",
     "95bd32": "2026-10-10T23:08:50Z",
     "9845f5": "2026-10-31T17:34:26Z",
@@ -3506,7 +3516,7 @@
     "f48b18": "2026-10-30T08:11:59Z",
     "f54d15": "2026-11-03T17:07:58Z",
     "f5d073": "2026-11-01T22:08:55Z",
-    "f6df46": "2026-11-01T17:34:35Z",
+    "f6df46": "2026-11-04T16:09:19Z",
     "f74afb": "2026-10-03T03:15:59Z",
     "fae12c": "2026-11-01T18:39:50Z",
     "fc7ff2": "2026-10-30T01:44:23Z",
