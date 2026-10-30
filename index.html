@@ -227,6 +227,11 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 #presOv .pv-gs{align-self:flex-start;background:transparent;border:1px dashed rgba(236,169,72,.6);color:#ECA948;border-radius:99px;padding:6px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
 #presOv .pv-nav{display:flex;gap:10px;padding:10px 14px max(16px,env(safe-area-inset-bottom));position:sticky;bottom:0;background:linear-gradient(transparent,#0E2A4F 30%)}#presOv .pv-nav button{flex:1;border:0;border-radius:14px;padding:14px;font:inherit;font-weight:800;font-size:15px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}#presOv .pv-nav button:disabled{opacity:.4}#presOv .pv-nav .go{background:#ECA948;color:#0B2E57}
 @media (orientation:landscape) and (max-height:560px){#presOv .pv-sl{height:calc(100vh - 150px);aspect-ratio:auto;margin:0 auto;width:auto;max-width:calc(100vw - 20px)}#presOv .pv-sl img{width:auto;height:100%}}
+.stpct{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none}.stpct b{font-size:17px;line-height:1}.stpct em{font-style:normal;font-size:10.5px;font-weight:700;color:#B45309}
+.c-hot{background:#FFEDD5;color:#C2410C}
+.stsum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}.stsum button{border:0;border-radius:12px;padding:8px 4px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}.stsum b{display:block;font-size:20px}
+.pl-f{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700}.pl-f span{width:118px;flex:none}.pl-f i{flex:1;height:16px;border-radius:6px;background:var(--surface-2);overflow:hidden}.pl-f s{display:block;height:100%;border-radius:6px;text-decoration:none}.pl-f b{width:30px;text-align:right}
+.pl-r{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}.pl-r:last-child{border:0}.pl-p{font-size:17px;flex:none}
 .retoStrip{display:flex;align-items:center;gap:10px;border-radius:14px;padding:11px 13px;font-size:13.5px;cursor:pointer;color:#fff;background:linear-gradient(120deg,#06B6D4,#0A7DAD 60%,#0B4F7A)}
 .pban{position:relative;overflow:hidden;border-radius:22px;padding:16px;color:#fff;display:flex;flex-direction:column;gap:10px}
 .pb-rt{background:radial-gradient(120% 80% at 100% 0%,#FDE68A 0 14%,transparent 15%),linear-gradient(165deg,#22D3EE 0%,#0891B2 45%,#075985 100%)}
@@ -1270,11 +1275,11 @@ function conNuevo(c){if(!c)return;day.conL=(day.conL||[]).concat([{cid:c.id||"",
 const yaEnCRM=(name,phone,id)=>{const k=nrmN(name),ph=String(phone||"").replace(/\D/g,"");return contacts.find(x=>x.id!==id&&((k&&nrmN(x.name)===k)||(ph.length>=7&&String(x.phone||"").replace(/\D/g,"").slice(-8)===ph.slice(-8))))};
 async function sumarSeg(c){if(!c)return false;if((day.segL||[]).some(x=>x.cid===c.id)){toast(c.name.split(" ")[0]+" ya cuenta como seguimiento hoy");return false}
   day.segL=(day.segL||[]).concat([{cid:c.id,n:String(c.name||"").slice(0,60)}]);day.seguimientos=Math.max((day.seguimientos||0)+1,day.segL.length);renderTasks();saveDay();
-  c.ultSeg=TODAY;c.updated=Date.now();if(FLOW.indexOf(c.stage||"Nuevo")>=0&&FLOW.indexOf(c.stage||"Nuevo")<FLOW.indexOf("Seguimiento"))c.stage="Seguimiento";
+  c.ultSeg=TODAY;c.updated=Date.now();if(FLOW.indexOf(c.stage||"Nuevo")>=0&&FLOW.indexOf(c.stage||"Nuevo")<FLOW.indexOf("Seguimiento")){c.stage="Seguimiento";c.stT=Date.now();c.stAuto="le dio seguimiento en la rutina"}
   try{await store.saveContact(Object.assign({},c));renderCRM()}catch(e){}
   toast("🔁 Seguimiento a "+c.name.split(" ")[0]+" registrado");return true}
 function abrirSeg(){let q="";const hoy=new Set((day.segL||[]).map(x=>x.cid));
-  const pr=c=>({"Seguimiento":1,"Presentación":2,"Contactado":3,"Nuevo":4}[c.stage||"Nuevo"]||5);
+  const pr=c=>({"Por cerrar":0,"Seguimiento":1,"Presentación":2,"Contactado":3,"Nuevo":4}[c.stage||"Nuevo"]||5);
   const L=()=>contacts.filter(c=>!hoy.has(c.id)&&c.stage!=="No interesado"&&(!q||nrmN(c.name).includes(nrmN(q)))).sort((a,b)=>pr(a)-pr(b)||(a.ultSeg||"").localeCompare(b.ultSeg||"")||(b.updated||0)-(a.updated||0)).slice(0,40);
   openSheet(`<div data-nofocus></div><h2>🔁 ¿A quién le dio seguimiento?</h2><p class="small muted" style="margin:0">Elíjalo de su CRM. Cada persona cuenta una vez al día.</p>
    <input class="inp" id="sgQ" placeholder="🔍 Buscar por nombre" autocomplete="off"><div id="sgL" style="display:flex;flex-direction:column"></div>
@@ -1286,7 +1291,7 @@ function abrirSeg(){let q="";const hoy=new Set((day.segL||[]).map(x=>x.cid));
 const presSemana=()=>{const l=lunesK(),o=[];for(let d=parseK(l);dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=k===TODAY?day:weekCache[k];((v&&v.presL)||[]).forEach(x=>o.push(Object.assign({f:k},x)))}return o};
 async function sumarPres(c,ci){const ya=presSemana();if(c.id&&ya.some(x=>x.cid===c.id)){toast(c.name.split(" ")[0]+" ya cuenta como presentación esta semana");return false}
   day.presL=(day.presL||[]).concat([{cid:c.id||"",n:String(c.name||"").slice(0,60)}]);day.presentaciones=Math.max((day.presentaciones||0)+1,day.presL.length);bumpReto("presentaciones",1);renderTasks();saveDay();
-  if(c.id&&FLOW.indexOf(c.stage||"Nuevo")<FLOW.indexOf("Presentación")&&c.stage!=="Cliente"&&c.stage!=="No interesado"){c.stage="Presentación";c.updated=Date.now();await store.saveContact(Object.assign({},c));try{renderCRM()}catch(e){}}
+  if(c.id&&FLOW.indexOf(c.stage||"Nuevo")<FLOW.indexOf("Presentación")&&c.stage!=="Cliente"&&c.stage!=="No interesado"){c.stage="Presentación";c.stT=Date.now();c.stAuto="le presentó el plan";c.updated=Date.now();await store.saveContact(Object.assign({},c));try{renderCRM()}catch(e){}}
   const cc=ci||citas.find(x=>x.fecha===TODAY&&x.cid&&x.cid===c.id&&!x.hecha);if(cc){cc.hecha=true;await saveCita(cc);renderHoyCitas();renderMiAgenda()}
   toast("🎯 Presentación a "+c.name.split(" ")[0]+" registrada");return true}
 function quitarPres(){if(!(day.presentaciones>0))return;const L=day.presL||[];if(L.length){const x=L[L.length-1];day.presL=L.slice(0,-1);const cc=citas.find(y=>y.fecha===TODAY&&y.cid&&y.cid===x.cid&&y.hecha);if(cc){cc.hecha=false;saveCita(cc)}toast("Quitada: "+x.n.split(" ")[0])}
@@ -1326,7 +1331,8 @@ let resT;function pushResumen(){if(!store.db||!store.uid)return;clearTimeout(res
   for(let i=0;i<30;i++){const d=new Date(now);d.setDate(d.getDate()-i);const sc=dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&sc<1)continue;if(sc>=1)racha++;else break}
   const et={};(contacts||[]).forEach(c=>{et[c.stage||"Nuevo"]=(et[c.stage||"Nuevo"]||0)+1});
   const a={fecha:TODAY,hoy:Math.round(dayScore(day)*100),racha,dias7:dias,semana:sum,crm:(contacts||[]).length,etapas:Object.keys(et).map(k=>k+":"+et[k]),
-    presN:presSemana().map(x=>x.n).slice(0,30),historia:!!(profile.historias||{})[TODAY],bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),cons:constStats(),t:Date.now()};
+    presN:presSemana().map(x=>x.n).slice(0,30),emb:(()=>{const cnt={};(contacts||[]).forEach(c=>{const k=c.stage||"Nuevo";cnt[k]=(cnt[k]||0)+1});
+      const top=(contacts||[]).filter(c=>["Presentación","Seguimiento","Por cerrar"].includes(c.stage)).map(c=>({n:stCorto(c.name),s:c.stage,d:c.stT||c.updated||0,p:(c.pres&&c.pres.n)||0})).sort((a,b)=>(ST_PCT[b.s]-ST_PCT[a.s])||(a.d-b.d)).slice(0,25);return{c:cnt,top}})(),historia:!!(profile.historias||{})[TODAY],bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),cons:constStats(),t:Date.now()};
   await store.db.doc("users/"+store.uid).set({actividad:a},{merge:true});
   const nm=(miRegistro().nombre||"").trim(),em=String((fbUser&&fbUser.email)||"").toLowerCase();
   if(nm&&!SOLO_ADMIN.includes(em))await store.db.doc("constancia/"+store.uid).set(Object.assign({nombre:nm,hoy:a.hoy,fecha:TODAY,acc:Object.values(sum).reduce((x,y)=>x+(+y||0),0),t:Date.now()},a.cons));if(constL){const vq=document.querySelector("#v-equipo");if(vq&&!vq.hidden&&eqTab==="ranking"&&rankMetric==="rutina")loadConst(true);else{const me=constL.find(y=>y.uid===store.uid);if(me){me.hoy=a.hoy;me.fecha=TODAY}}}}catch(e){}},3000)}
@@ -2101,7 +2107,8 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
   if(miosErr){b.innerHTML=emptyCard("No se pudo cargar tu equipo","Revisa tu conexión e intenta de nuevo. Si sigue igual, avisa al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
   if(!mios.length){b.innerHTML=idxCard()+`<div class="card empty"><h3>Aún no tienes socios en la app</h3><p class="small muted">Cuando firmes a alguien, mándale tu mensaje de bienvenida desde el CRM o comparte tu enlace. Al registrarse aparecerá aquí.</p></div>`+inv;bind();return}
   const lin=true;const V=miosVista==="dir"?mios.filter(x=>x.nivel===1):mios.slice().sort((a,b)=>a.nivel-b.nivel||byAct(a,b));
-  const seg=lin?`<div class="seg" id="miosSeg"><button aria-selected="${miosVista==="dir"}" data-mv="dir">⭐ Directos · ${mios.filter(x=>x.nivel===1).length}</button><button aria-selected="${miosVista==="todo"}" data-mv="todo">🌳 Toda mi línea · ${mios.length}</button></div>`:"";
+  const seg=lin?`<div class="seg" id="miosSeg"><button aria-selected="${miosVista==="dir"}" data-mv="dir">⭐ Directos · ${mios.filter(x=>x.nivel===1).length}</button><button aria-selected="${miosVista==="todo"}" data-mv="todo">🌳 Mi línea · ${mios.length}</button>${pipeOk()?`<button aria-selected="${miosVista==="pros"}" data-mv="pros">🎯 Prospectos</button>`:""}</div>`:"";
+  if(miosVista==="pros"&&pipeOk()){b.innerHTML=idxCard()+seg+pipeLider()+inv;bind();pipeBind(b);return}
   const A=V.map(x=>actDe(x)),n=V.length,hoy=A.filter(a=>a.hoy>0).length,sem=A.filter(a=>a.d7>0).length,bien=A.filter(a=>a.bien).length,pres=A.reduce((t,a)=>t+(a.sem.presentaciones||0),0);
   const st=(v,t,c)=>`<div class="card" style="gap:2px"><b class="num" style="font-size:28px${c?";color:"+c:""}">${v}</b><span class="small muted">${t}</span></div>`;
   const cname=k=>{const c=cursosL().find(x=>x.k===k);return c?c.t:k};
@@ -2120,6 +2127,25 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
   if(DTP.bind0)DTP.bind0();
   const ml=$("#miosLin");if(ml)ml.onclick=e=>{const x=e.target.closest("button");if(!x)return;miosLin=x.dataset.ml;renderEquipo()};
   b.querySelectorAll("details[data-pi]").forEach(d=>d.ontoggle=()=>{const c=d.querySelector(".pi-b");if(d.open&&!c.dataset.ok){c.dataset.ok=1;c.innerHTML=mios.filter(y=>y.pierna===d.dataset.pi).sort((p,q)=>p.nivel-q.nivel||byAct(p,q)).map(y=>fila(y,1)).join("");bind()}})}
+function pipeLider(){const S=["Por cerrar","Seguimiento","Presentación","Contactado","Nuevo"],tot={},L=[];let n=0;
+  (mios||[]).forEach(x=>{const e=(x.actividad||{}).emb;if(!e)return;const nm=(x.registro||{}).nombre||"Socio";Object.entries(e.c||{}).forEach(([k,v])=>{tot[k]=(tot[k]||0)+(+v||0)});(e.top||[]).forEach(p=>L.push(Object.assign({u:x.uid,sn:nm},p)))});
+  S.forEach(k=>n+=tot[k]||0);const mx=Math.max(1,...S.map(k=>tot[k]||0)),con=(mios||[]).filter(x=>(x.actividad||{}).emb).length;
+  const dias=d=>d?Math.floor((Date.now()-d)/864e5):0,cuando=d=>{const k=dias(d);return k<=0?"hoy":k===1?"ayer":"hace "+k+" días"};
+  const C=L.filter(p=>p.s==="Por cerrar"||p.s==="Seguimiento").sort((a,b)=>(ST_PCT[b.s]-ST_PCT[a.s])||(dias(b.d)-dias(a.d)));
+  const fila=p=>{const f=["Seguimiento","Por cerrar"].includes(p.s)&&dias(p.d)>7,col=STAGE_COL[p.s];return `<div class="pl-r">${avHTML(p.sn,false,true)}<div class="grow" style="min-width:0"><b>${esc(p.n)} <span class="small muted" style="font-weight:600">· de ${esc(String(p.sn).split(" ")[0])}</span></b>
+    <div class="small ${f?"":"muted"}" style="${f?"color:#B45309;font-weight:700":""}">${f?"⚠️ "+dias(p.d)+" días sin avanzar":esc(p.s)+" "+cuando(p.d)}${p.p?" · "+p.p+"/10":""}</div>
+    <div class="row" style="gap:6px;margin-top:6px"><button type="button" class="btn sm grow" style="background:var(--brand);color:#fff" data-pl3="${esc(p.u)}" data-pn="${esc(p.n)}" data-pp="${ST_PCT[p.s]}">📞 Ofrecer llamada de 3</button><button type="button" class="btn sm grow" style="background:#25D366;color:#fff" data-pmo="${esc(p.u)}" data-pn="${esc(p.n)}" data-pp="${ST_PCT[p.s]}">💬 Motivar</button></div></div>
+    <b class="pl-p" style="color:${col}">${ST_PCT[p.s]}%</b></div>`};
+  return `<div class="card" style="gap:8px"><div class="row between"><b style="font-size:15px">Embudo de mi equipo · ${fmt(n)} prospectos</b></div>
+    ${S.map(k=>`<div class="pl-f"><span>${ST_IC[k]} ${k==="Presentación"?"Presentados":k==="Contactado"?"Contactados":k==="Nuevo"?"Nuevos":k}</span><i><s style="width:${((tot[k]||0)/mx*100).toFixed(0)}%;background:${STAGE_COL[k]}"></s></i><b>${tot[k]||0}</b></div>`).join("")}
+    <div class="row wrap small muted" style="gap:10px">${tot["Socio"]||tot["Cliente"]?`<span>✅ ${(tot["Socio"]||0)+(tot["Cliente"]||0)} ya activaron</span>`:""}<span>📱 Datos de ${con} ${con===1?"socio":"socios"} que usan su CRM</span></div></div>
+   <div class="card" style="gap:0;padding:10px 14px"><b style="font-size:15px;margin-bottom:4px">🔥 Para cerrar</b>${C.length?C.slice(0,40).map(fila).join(""):`<p class="small muted">Aún no hay prospectos en Seguimiento o Por cerrar en su equipo.</p>`}</div>
+   <p class="small muted" style="margin:0;text-align:center">🔒 Solo nombre e inicial. Teléfonos y notas son privados de cada socio.</p>`}
+function pipeBind(b){b.querySelectorAll("[data-pl3],[data-pmo]").forEach(bt=>bt.onclick=async()=>{const u=bt.dataset.pl3||bt.dataset.pmo,x=(mios||[]).find(y=>y.uid===u);if(!x)return;
+  const f=String((x.registro||{}).nombre||"").split(" ")[0],pn=bt.dataset.pn,pp=bt.dataset.pp,yo=miNombreCorto()||"",w=await dtWa(u);
+  const t=bt.dataset.pl3?`Hola, ${f} 👋\n\nVi que ${pn} va en ${pp}% en su CRM.\n\n¿Le ayudo con una llamada de 3 para cerrarlo?\n\nDígame qué día y hora le quedan bien. 💪`
+    :`¡Hola, ${f}! 🙌\n\nVi que tiene a ${pn} en ${pp}%. ¡Está muy cerca!\n\nSi necesita apoyo para el cierre, aquí estoy.\n\n¡Vamos por esa activación! 🚀`;
+  location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t+(yo?"\n\n*"+yo+"*":""))})}
 function miosFila(V,lvl0){let lvl=lvl0;const cname=k=>{const c=cursosL().find(x=>x.k===k);return c?c.t:k};return (x,enPi)=>{const r=x.registro||{},a=actDe(x),S=a.sem,nm=r.nombre||"Socio",ua=tsMs(x.ultimoAcceso),cs=((x.actividad||{}).cursos||[]);
      const hd=!enPi&&miosVista==="todo"&&x.nivel!==lvl?(lvl=x.nivel,`<div class="lvl-h">Nivel ${x.nivel} <span>${(c=>c+(c===1?" socio":" socios"))(V.filter(y=>y.nivel===x.nivel).length)}</span></div>`):"";
      return `${hd}<div style="padding:12px 0;border-bottom:1px solid var(--line)">${enPi?`<div class="small" style="margin-bottom:6px"><span class="chip ${x.nivel===1?"c-gold":"c-brand"}" style="font-weight:700">${x.nivel===1?"⭐ Directo":"Nivel "+x.nivel+" · de "+esc(dtFirst(x.patNom||r.invitadoPor||r.patrocinador||"—"))}</span></div>`:miosVista==="todo"&&x.nivel>1?`<div class="small" style="color:var(--brand);font-weight:700;margin-bottom:6px">Línea de ${esc(x.piernaNom||"tu equipo")} · Patrocinador: ${esc(x.patNom||r.invitadoPor||r.patrocinador||"—")}</div>`:""}<div class="row" style="align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0">
@@ -3043,7 +3069,7 @@ async function salaPrep(){if(!(regDoc&&regDoc.registro)){toast("Complete su regi
   LS.set("salaOn",1);return true}
 function salaMsgInv(nombre,u){const f=String(nombre||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"";
   return `Hola${f?" "+f:""} 😊\n\nLe preparé una *presentación privada de 15 minutos* sobre cómo viajar más pagando menos y generar ingresos extra.\n\n🎬 Véala aquí cuando tenga un momento tranquilo:\n${u}\n\nAl final le hago una pregunta: su respuesta me ayuda a orientarle mejor. 🙌${yo?"\n\n*"+yo+"*":""}`}
-async function enviarSala(c){if(!c)return;if(ahGate())return;if(!(await salaPrep()))return;const t=salaMsgInv(c.name,salaUrl(c.name,c.id)),n=waNum(c.phone,c.cc);
+async function enviarSala(c){if(!c)return;if(ahGate())return;if(!(await salaPrep()))return;stAvanza(c,"Contactado","le envió la presentación virtual");const t=salaMsgInv(c.name,salaUrl(c.name,c.id)),n=waNum(c.phone,c.cc);
   if(n){location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t);return}
   if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
 function salaSeg(v){const f=String(v.n||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"",pa=v.pais?` y vi que le gustaría conocer *${v.pais.split(",")[0].trim()}*`:"";
@@ -3210,21 +3236,32 @@ function editEvent(ev){ev=ev||{titulo:"",fecha:selDay||TODAY,hora:"19:00",lugar:
      $("#eDelOk").onclick=async()=>{try{await store.db.collection("team/calendario/items").doc(ev.id).delete();closeSheet();toast("Actividad eliminada")}catch(e){toast("No se pudo eliminar.")}}}})}
 
 // ---------- CRM ----------
-const STAGES=["Nuevo","Contactado","Presentación","Seguimiento","Socio","Cliente","No interesado"];
-const FLOW=["Nuevo","Contactado","Presentación","Seguimiento","Socio"];
+const STAGES=["Nuevo","Contactado","Presentación","Seguimiento","Por cerrar","Socio","Cliente","No interesado"];
+const FLOW=["Nuevo","Contactado","Presentación","Seguimiento","Por cerrar","Socio"];
+// ---------- Embudo de prospectos (30 oct): % por etapa, avance automático y vista del líder ----------
+const ST_PCT={"Nuevo":10,"Contactado":25,"Presentación":50,"Seguimiento":70,"Por cerrar":90,"Socio":100,"Cliente":100,"No interesado":0};
+const ST_IC={"Nuevo":"🆕","Contactado":"💬","Presentación":"🎤","Seguimiento":"🔁","Por cerrar":"🔥","Socio":"✅","Cliente":"✅","No interesado":"✖"};
+function pipeOk(){return !!isAdmin}
+function stPct(c){return ST_PCT[(c&&c.stage)||"Nuevo"]??10}
+function stDias(c){const t=(c&&(c.stT||c.updated))||0;return t?Math.floor((Date.now()-t)/864e5):0}
+function stFrio(c){return ["Seguimiento","Por cerrar"].includes(c.stage)&&stDias(c)>7}
+async function stAvanza(c,s,por){if(!c||!c.id)return false;const cur=c.stage||"Nuevo";if(["Socio","Cliente","No interesado"].includes(cur))return false;
+  if(FLOW.indexOf(s)<=FLOW.indexOf(cur))return false;c.stage=s;c.stT=Date.now();c.stAuto=por||"";c.updated=Date.now();
+  try{await store.saveContact(Object.assign({},c));renderCRM()}catch(e){}return true}
+function stCorto(n){const w=String(n||"").trim().split(/\s+/);return (w[0]||"")+(w[1]?" "+w[1][0].toUpperCase()+".":"")}
 function stepsHTML(c){const i=FLOW.indexOf(c.stage);
   const b=(s,cls,lbl)=>`<button class="${cls}" data-st="${esc(s)}" data-cid="${esc(c.id)}" aria-pressed="${c.stage===s}">${lbl||s}</button>`;
   return `<div class="stp">${FLOW.map((s,k)=>b(s,c.stage===s?"cur":(i>k?"done":""),(i>k?"✓ ":"")+s)).join("")}${b("Cliente",c.stage==="Cliente"?"cur":"")}${b("No interesado","no "+(c.stage==="No interesado"?"cur":""),"✕ No")}</div>`}
-const STAGE_C={"Nuevo":"c-brand","Contactado":"c-brand","Presentación":"c-gold","Seguimiento":"c-warn","Socio":"c-good","Cliente":"c-good","No interesado":"c-bad"};
+const STAGE_C={"Nuevo":"c-brand","Contactado":"c-brand","Presentación":"c-gold","Seguimiento":"c-warn","Por cerrar":"c-hot","Socio":"c-good","Cliente":"c-good","No interesado":"c-bad"};
 let contacts=[],stageF="Todos",openC=null;
-const STAGE_COL={"Nuevo":"#2AC1F1","Contactado":"#2AC1F1","Presentación":"#d4a017","Seguimiento":"#e8862a","Socio":"#22a35a","Cliente":"#22a35a","No interesado":"#d64545"};
+const STAGE_COL={"Nuevo":"#2AC1F1","Contactado":"#2AC1F1","Presentación":"#d4a017","Seguimiento":"#e8862a","Por cerrar":"#EA580C","Socio":"#22a35a","Cliente":"#22a35a","No interesado":"#d64545"};
 const PAISES=[["Honduras","504"],["Estados Unidos","1"],["España","34"],["Reino Unido","44"],["Guatemala","502"],["El Salvador","503"],["Nicaragua","505"],["Costa Rica","506"],["Panamá","507"],["México","52"],["Colombia","57"],["Venezuela","58"],["Perú","51"],["Ecuador","593"],["Chile","56"],["Argentina","54"],["República Dominicana","1"],["Canadá","1"],["Italia","39"],["Francia","33"],["Alemania","49"]];
 const waNum=(t,cc)=>{const raw=String(t||"").trim();let d=raw.replace(/\D/g,"");if(!d)return"";if(raw.startsWith("+")||raw.startsWith("00"))return d.replace(/^00/,"");cc=cc||"504";if(d.startsWith(cc)&&d.length>cc.length+6)return d;return cc+d.replace(/^0+/,"")};
 function msgPara(c,first){const nt=c.note||"";if((c.stage||"Nuevo")==="Nuevo"&&nt.includes("Desde tu página")){const yo=miNombreCorto().split(" ")[0]||"yo";
   const i=/Viajar/i.test(nt)?["que le interesa viajar ✈️","cómo estamos viajando más gastando menos"]:/Ingresos/i.test(nt)?["que le interesa generar un ingreso extra 💰","cómo lo estamos haciendo desde el celular"]:["que le interesa viajar y generar ingresos ✈️💰","cómo funciona"];
   return `Hola ${first}, ¿cómo está? 😊\n\nSoy ${yo}, de Action Leaders.\n\nVi que dejó sus datos en mi página y ${i[0]}\n\n¿Le parece si hoy le muestro en 10 minutos ${i[1]}?`}
   return (WA_MSG[c.stage]||WA_MSG.Nuevo).replace("{n}",first)}
-const WA_MSG={"Nuevo":"Hola {n}, ¿cómo está? Quería saludarle y contarle algo que estoy haciendo y creo que le puede interesar.","Contactado":"Hola {n}, ¿cómo está? ¿Tiene unos minutos esta semana para mostrarle lo que le comenté?","Presentación":"Hola {n}, ¡gracias por su tiempo en la presentación! ¿Qué fue lo que más le gustó?","Seguimiento":"Hola {n}, ¿cómo está? Le escribo para saber si pudo revisar la información y si tiene alguna pregunta.","Socio":"Hola {n}, ¿cómo va todo? Aquí estoy para apoyarle en lo que necesite.","Cliente":"Hola {n}, ¿cómo está? Quería saber cómo le ha ido.","No interesado":"Hola {n}, ¿cómo está? Solo quería saludarle."};
+const WA_MSG={"Nuevo":"Hola {n}, ¿cómo está? Quería saludarle y contarle algo que estoy haciendo y creo que le puede interesar.","Contactado":"Hola {n}, ¿cómo está? ¿Tiene unos minutos esta semana para mostrarle lo que le comenté?","Presentación":"Hola {n}, ¡gracias por su tiempo en la presentación! ¿Qué fue lo que más le gustó?","Seguimiento":"Hola {n}, ¿cómo está? Le escribo para saber si pudo revisar la información y si tiene alguna pregunta.","Por cerrar":"Hola {n}, ¿cómo está? 😊 Le escribo para ayudarle a crear su cuenta. ¿Le parece si lo hacemos hoy juntos? Solo toma unos minutos.","Socio":"Hola {n}, ¿cómo va todo? Aquí estoy para apoyarle en lo que necesite.","Cliente":"Hola {n}, ¿cómo está? Quería saber cómo le ha ido.","No interesado":"Hola {n}, ¿cómo está? Solo quería saludarle."};
 const waLink=c=>{const n=waNum(c.phone,c.cc);if(!n)return"";const first=String(c.name||"").trim().split(/\s+/)[0]||"";return "https://wa.me/"+n+"?text="+encodeURIComponent(msgPara(c,first))};
 function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerCase();
   const counts={Todos:contacts.length};STAGES.forEach(s=>counts[s]=contacts.filter(c=>c.stage===s).length);
@@ -3234,27 +3271,31 @@ function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerC
     <p class="small muted">Agrega a las personas con las que quieres compartir el negocio o el producto. Registra la etapa, una nota y la fecha del próximo seguimiento.</p>
     <button class="btn gold sm" id="addFirst">Agregar mi primer contacto</button></div>`;$("#addFirst").onclick=()=>editContact();return}
   if(!list.length){$("#contactList").innerHTML=`<p class="muted small">No hay contactos en esta vista.</p>`;return}
-  $("#contactList").innerHTML=list.map(c=>{const late=c.next&&c.next<TODAY,today=c.next===TODAY,op=openC===c.id;
-    const k=c.stage==="Cliente"?5:c.stage==="No interesado"?0:FLOW.indexOf(c.stage)+1,pc=STAGE_COL[c.stage]||"var(--brand)";
+  const pipeSum=pipeOk()?(()=>{const n=s=>contacts.filter(c=>c.stage===s).length,fr=contacts.filter(stFrio).length;return `<div class="stsum"><button type="button" data-sf="Por cerrar" style="background:#FFEDD5;color:#C2410C"><b>${n("Por cerrar")}</b>🔥 Por cerrar</button><button type="button" data-sf="Seguimiento" style="background:#FEF3C7;color:#B45309"><b>${n("Seguimiento")}</b>🔁 Seguimiento</button><button type="button" data-sf="Presentación" style="background:#E0F2FE;color:#0369A1"><b>${n("Presentación")}</b>🎤 Presentados</button></div>${fr?`<p class="small" style="margin:0 0 6px;color:#B45309;font-weight:700">⚠️ ${fr} ${fr===1?"prospecto lleva":"prospectos llevan"} más de 7 días sin avanzar</p>`:""}`})():"";
+  $("#contactList").innerHTML=pipeSum+list.map(c=>{const late=c.next&&c.next<TODAY,today=c.next===TODAY,op=openC===c.id;
+    const k=c.stage==="Cliente"?FLOW.length:c.stage==="No interesado"?0:FLOW.indexOf(c.stage)+1,pc=STAGE_COL[c.stage]||"var(--brand)";
     return `<div class="contact ${op?"open":""}" style="--pc:${pc}"><div class="ch" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}">
     <div class="av" style="box-shadow:0 0 0 2px ${pc}">${c.stage==="Socio"||c.stage==="Cliente"?"✓":esc(initials(c.name))}</div>
     <div class="mid"><span class="nm">${esc(c.name)}${late?'<span class="fdot" style="background:var(--bad)" title="Seguimiento atrasado"></span>':today?'<span class="fdot" style="background:var(--warn)" title="Seguimiento hoy"></span>':""}</span>
-    <div class="pbar" aria-label="Avance: ${esc(c.stage)}">${[0,1,2,3,4].map(i=>`<i class="${i<k?"on":""}"></i>`).join("")}</div></div>
-    <span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage==="No interesado"?"No":c.stage)}</span><span class="chev">›</span></div>
+    <div class="pbar" aria-label="Avance: ${esc(c.stage)}">${FLOW.map((_,i)=>`<i class="${i<k?"on":""}"></i>`).join("")}</div></div>
+    ${pipeOk()?`<span class="stpct"><b style="color:${pc}">${stPct(c)}%</b><span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage==="No interesado"?"No":c.stage)}</span>${stFrio(c)?`<em>⚠️ ${stDias(c)} días</em>`:""}</span>`:`<span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage==="No interesado"?"No":c.stage)}</span>`}<span class="chev">›</span></div>
     <div class="cbody"><div class="info">
     ${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}${c.note?`<span class="note">${esc(c.note)}</span>`:""}
     ${(()=>{const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fecha>=TODAY).sort(citaSort)[0];return ci?`<span class="small" style="color:var(--brand);font-weight:700">📅 Cita: ${esc(citaCuando(ci))}</span>`:""})()}
+    ${pipeOk()&&c.stAuto&&c.stT&&Date.now()-c.stT<14*864e5?`<span class="small" style="background:var(--surface-2);border-radius:10px;padding:6px 9px">🤖 Pasó solo a <b>${esc(c.stage)}</b> (${stPct(c)}%): ${esc(c.stAuto)}. Si no es así, toque otra etapa.</span>`:""}
     ${c.pres&&c.pres.t?`<span class="small" style="font-weight:700;color:${c.pres.n>=8?"var(--good)":c.pres.n>=6?"#B45309":"var(--brand)"}">🎤 Presentado ${esc(niceDate(new Date(c.pres.t-216e5).toISOString().slice(0,10)))}${c.pres.n?" · "+c.pres.n+"/10"+(c.pres.n>=8?" 🔥":""):""}</span>`:""}
     ${(()=>{const v=salaOk()&&salaDe(c.id);return v?`<span class="small" style="font-weight:700;color:${salaNivel(v)[2]}">🎬 ${esc(salaNivel(v)[0])} · vio el ${+v.pct||0}%${v.resp?" · "+esc(SALA_R[v.resp]||""):""}</span>`:""})()}
     ${c.next?`<span class="small" style="color:var(--${late?"bad":today?"warn":"muted"});font-weight:600">${late?"Seguimiento atrasado: "+niceDate(c.next):today?"Seguimiento hoy":"Próximo seguimiento: "+niceDate(c.next)}</span>`:""}
-    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${presOk()?`<button class="btn sm gold" data-pres="${esc(c.id)}">🎤 Presentar</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost" data-cita="${esc(c.id)}">📅 Agendar</button><button class="btn sm ghost" data-l3="${esc(c.id)}">📞 Llamada de 3</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
+    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${presOk()?`<button class="btn sm gold" data-pres="${esc(c.id)}">🎤 Presentar</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost" data-cita="${esc(c.id)}">📅 Agendar</button><button class="btn sm ghost" data-l3="${esc(c.id)}">📞 Llamada de 3</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
 $("#stageBar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;stageF=b.dataset.s;renderCRM()});
 $("#crmSearch").addEventListener("input",renderCRM);
 $("#bienBtn").onclick=()=>abrirBienvenida();$("#addContact").onclick=()=>editContact();
 $("#contactList").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-tog]")){e.preventDefault();e.target.click()}});
 $("#contactList").addEventListener("click",async e=>{const st=e.target.closest("[data-st]");
   const tg=e.target.closest("[data-tog]");if(tg){openC=openC===tg.dataset.tog?null:tg.dataset.tog;renderCRM();return}
-  if(st){const c=contacts.find(x=>x.id===st.dataset.cid);if(!c||c.stage===st.dataset.st)return;const prev=c.stage;c.stage=st.dataset.st;c.updated=Date.now();renderCRM();
+  const sf=e.target.closest("[data-sf]");if(sf){stageF=stageF===sf.dataset.sf?"Todos":sf.dataset.sf;renderCRM();return}
+  const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c)setTimeout(()=>stAvanza(c,"Contactado","le escribió por WhatsApp"),300)}
+  if(st){const c=contacts.find(x=>x.id===st.dataset.cid);if(!c||c.stage===st.dataset.st)return;const prev=c.stage;c.stage=st.dataset.st;c.stT=Date.now();c.stAuto="";c.updated=Date.now();renderCRM();
     const id=await store.saveContact(Object.assign({},c));if(!id){c.stage=prev;renderCRM();return}if(c.stage==="Socio"){abrirBienvenida(c);return}toast(c.name.split(" ")[0]+": "+c.stage);return}
   const bw=e.target.closest("[data-bien]");if(bw){abrirBienvenida(contacts.find(c=>c.id===bw.dataset.bien));return}
   const ct=e.target.closest("[data-cita]");if(ct){abrirCita(null,contacts.find(c=>c.id===ct.dataset.cita));return}
@@ -3331,7 +3372,7 @@ function abrirCita(c,ct){const ed=!!(c&&c.id);c=Object.assign({tipo:"zoom",fecha
       if(!ed)delete n.id;const bt=$("#ciOk");bt.disabled=true;const id=await saveCita(n);bt.disabled=false;if(!id)return;n.id=id;const i=citas.findIndex(x=>x.id===id);if(i>=0)citas[i]=n;else citas.push(n);
       let pc=false;if(n.enlace&&tipo==="zoom"&&n.enlace!==profile.zoom){profile.zoom=n.enlace;pc=true}
       if(tipo!=="lider"&&n.nota!==notaDef(tipo)){profile.notaCita=Object.assign({},profile.notaCita||{},{[tipo]:n.nota});pc=true}if(pc)store.set("perfil",profile);
-      if(cc&&FLOW.indexOf(cc.stage||"Nuevo")<FLOW.indexOf("Presentación")&&cc.stage!=="Cliente"&&cc.stage!=="No interesado"){cc.stage="Presentación";cc.next=n.fecha;cc.updated=Date.now();await store.saveContact(Object.assign({},cc))}else if(cc&&(!cc.next||cc.next<n.fecha)){cc.next=n.fecha;await store.saveContact(Object.assign({},cc))}
+      if(cc&&FLOW.indexOf(cc.stage||"Nuevo")<FLOW.indexOf("Presentación")&&cc.stage!=="Cliente"&&cc.stage!=="No interesado"){cc.stage="Presentación";cc.stT=Date.now();cc.stAuto="le agendó una cita";cc.next=n.fecha;cc.updated=Date.now();await store.saveContact(Object.assign({},cc))}else if(cc&&(!cc.next||cc.next<n.fecha)){cc.next=n.fecha;await store.saveContact(Object.assign({},cc))}
       closeSheet();renderHoyCitas();renderMiAgenda();publicarSlots();try{renderCRM()}catch(e){}
       if(tipo!=="lider"&&!ed)citaListo(n);else toast("Cita guardada ✓")};
     const dl=$("#ciDel");if(dl){let arm=0;dl.onclick=async()=>{if(Date.now()-arm>5000){arm=Date.now();dl.textContent="Toca otra vez para eliminar";return}if(await delCita(c.id)){closeSheet();toast("Cita eliminada");publicarSlots();renderHoyCitas();renderMiAgenda();try{renderCRM()}catch(e){}}}}})}
@@ -3677,7 +3718,8 @@ async function presGuardar(){if(!PS||PS.ok)return;PS.ok=true;const c=PS.c,A=PS.a
   c.note=(String(c.note||"").trim()?String(c.note).trim()+"\n":"")+TODAY+": "+res;c.updated=Date.now();
   if(A.n>=8||A.n<=5)c.next=c.next&&c.next>TODAY?c.next:addD(TODAY,A.n>=8?1:3);
   try{if(c.id)await store.saveContact(Object.assign({},c));try{renderCRM()}catch(e){}}catch(e){}
-  try{await sumarPres(c)}catch(e){}}
+  try{await sumarPres(c)}catch(e){}
+  try{if(A.n>=8)await stAvanza(c,"Por cerrar","marcó "+A.n+"/10 en la presentación");else if(A.n>=1)await stAvanza(c,"Seguimiento","marcó "+A.n+"/10 en la presentación")}catch(e){}}
 function addD(d,n){const x=new Date(d+"T12:00:00");x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)}
 async function presClick(e){const b=e.target.closest("[data-pv]");if(!b||!PS)return;const k=b.dataset.pv,q=PRES.q[PS.i];
   if(k==="x"){if(PS.ok||PS.i<=2||Date.now()-PS.xArm<4000){presCerrar();return}PS.xArm=Date.now();toast("Toque ✕ otra vez para salir sin guardar");return}
@@ -4231,7 +4273,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261030164640";var busy=false,pend=null;
+(function(){var V="20261030171148";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

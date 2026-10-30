@@ -297,3 +297,11 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Cierre (presCierre): 8–10 verde "está listo" + WhatsApp con link; 6–7 naranja "¿Qué te falta para llegar a 10?" + dudas comunes + WhatsApp + llamada de 3; ≤5 azul + llamada de 3 (pedirL3) + WhatsApp.
 - presMsg: mensaje de USTED con lo que respondió, destinos y profile.ref (enlace de inCruises; si falta, avisa).
 - presGuardar: c.pres {t,n,r1,r2,dest,min}, nota en el contacto, próximo seguimiento y sumarPres (rutina/ranking, etapa Presentación). En el CRM sale "🎤 Presentado {fecha} · n/10".
+
+## 32. Embudo de prospectos (30 oct) — vista con % y del líder solo admins por ahora
+- Etapas (STAGES/FLOW) con nueva "Por cerrar" entre Seguimiento y Socio. ST_PCT: Nuevo 10, Contactado 25, Presentación 50, Seguimiento 70, Por cerrar 90, Socio/Cliente 100, No interesado 0.
+- Avance automático SOLO HACIA ARRIBA (stAvanza(c, etapa, motivo); no toca Socio/Cliente/No interesado): WhatsApp desde el CRM (data-wac) y presentación virtual → Contactado; sumarPres/cita → Presentación; sumarSeg → Seguimiento; presentación interactiva 1–7 → Seguimiento, 8–10 → Por cerrar. Guarda c.stT (fecha de cambio de etapa) y c.stAuto (motivo, se muestra 14 días). El cambio manual también pone stT y limpia stAuto.
+- Frío: Seguimiento/Por cerrar con más de 7 días sin cambio de etapa (stFrio).
+- pipeOk() = isAdmin: % en cada contacto, resumen (🔥/🔁/🎤, tocables para filtrar) y aviso de fríos en el CRM; pestaña "🎯 Prospectos" en Equipo › Mi equipo (pipeLider/pipeBind).
+- Datos para el líder SIN lecturas nuevas: pushResumen guarda users/{uid}.actividad.emb {c: conteo por etapa, top: hasta 25 {n "Nombre I.", s etapa, d stT, p n/10} de Presentación+}. El líder ya lee esos users en loadMios. Nunca teléfonos ni notas.
+- Botones del líder: "📞 Ofrecer llamada de 3" y "💬 Motivar" → WhatsApp al socio (dtWa).
