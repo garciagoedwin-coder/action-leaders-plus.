@@ -241,15 +241,15 @@
    "id": "zamir-fuentes"
   },
   {
-   "actSemana": 1,
-   "activaciones": 1,
+   "actSemana": 2,
+   "activaciones": 2,
    "linea": "Glenda Álvarez",
    "nombre": "Olga Lizzette Meléndez Norales",
    "presSemana": 0,
    "presentaciones": 1,
    "regSemana": 0,
    "registros": 4,
-   "volumen": 500,
+   "volumen": 700,
    "id": "olga-lizzette-melendez-norales"
   },
   {
@@ -2447,6 +2447,16 @@
    "wk": "85f187",
    "fuente": "gmail",
    "id": "emma-carolina-pacheco-paz"
+  },
+  {
+   "socio": "Maxine marinett Torres johnson",
+   "paquete": "Classic",
+   "patrocinador": "Olga lizzette Melendez norales",
+   "fecha": "2026-10-31T01:55:12Z",
+   "ek": "8bedce",
+   "wk": "3e2f56",
+   "fuente": "gmail",
+   "id": "maxine-marinett-torres-johnson"
   }
  ],
  "academia": [],
@@ -2464,7 +2474,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-30T21:55:12Z",
+  "activacionesCorte": "2026-10-31T01:55:12Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2474,7 +2484,7 @@
   "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-30T18:56:00-06:00",
+  "rankingActualizado": "2026-10-30T21:56:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
