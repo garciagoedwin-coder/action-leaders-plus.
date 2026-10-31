@@ -229,15 +229,15 @@
    "id": "jose-raul-hernandez"
   },
   {
-   "actSemana": 0,
-   "activaciones": 0,
+   "actSemana": 1,
+   "activaciones": 1,
    "linea": "Zamir Fuentes",
    "nombre": "Zamir Fuentes",
    "presSemana": 0,
    "presentaciones": 1,
    "regSemana": 0,
    "registros": 4,
-   "volumen": 0,
+   "volumen": 500,
    "id": "zamir-fuentes"
   },
   {
@@ -2437,6 +2437,16 @@
    "wk": "c1f5d5",
    "fuente": "gmail",
    "id": "jonathan-josue-orellana-escobar"
+  },
+  {
+   "socio": "Emma carolina Pacheco paz",
+   "paquete": "Premium",
+   "patrocinador": "Zamir Ely Fuentes Trochez",
+   "fecha": "2026-10-30T21:55:12Z",
+   "ek": "e843a3",
+   "wk": "85f187",
+   "fuente": "gmail",
+   "id": "emma-carolina-pacheco-paz"
   }
  ],
  "academia": [],
@@ -2454,7 +2464,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-30T19:55:05Z",
+  "activacionesCorte": "2026-10-30T21:55:12Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2464,7 +2474,7 @@
   "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-30T15:56:00-06:00",
+  "rankingActualizado": "2026-10-30T18:56:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -3340,7 +3350,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-10-30T21:56:25Z",
+   "v": "2026-10-31T00:56:34Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "021321": "2026-11-01T05:26:06Z",
@@ -3413,7 +3423,6 @@
     "537d8f": "2026-10-19T17:34:09Z",
     "5a377d": "2026-10-31T01:09:41Z",
     "5e165e": "2026-10-21T19:10:36Z",
-    "5e30b9": "2026-10-30T04:07:32Z",
     "5e978c": "2026-10-02T22:48:44Z",
     "5ebdc0": "2026-10-19T17:47:27Z",
     "5fc7fb": "2026-10-31T23:58:44Z",
@@ -3429,6 +3438,7 @@
     "66814f": "2026-10-31T23:58:44Z",
     "680411": "2026-11-04T01:07:23Z",
     "68795e": "2026-10-22T16:04:03Z",
+    "6b31c0": "2026-11-04T23:07:54Z",
     "6bc08f": "2026-10-31T19:10:06Z",
     "6ea1a0": "2026-11-01T20:10:16Z",
     "6fb82c": "2026-10-19T17:47:27Z",
@@ -3468,7 +3478,6 @@
     "9d8e3e": "2026-11-01T03:28:09Z",
     "a0a429": "2026-10-31T21:06:45Z",
     "a2dbe8": "2026-10-30T05:09:03Z",
-    "a308cd": "2026-10-30T04:07:32Z",
     "a3c985": "2026-10-06T05:41:28Z",
     "a4913c": "2026-10-09T03:34:20Z",
     "a780d8": "2026-11-04T15:07:54Z",
@@ -3534,7 +3543,9 @@
     "fd41f3": "2026-10-31T06:10:02Z",
     "fd7b00": "2026-10-12T15:50:42Z"
    },
-   "li": []
+   "li": [
+    "88ddf7"
+   ]
   },
   "calificacion": {
    "mes": "Octubre 2026",
