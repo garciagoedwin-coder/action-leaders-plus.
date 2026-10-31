@@ -200,9 +200,9 @@
    "registros": 1,
    "regSemana": 0,
    "id": "erick-miranda",
-   "activaciones": 0,
-   "volumen": 0,
-   "actSemana": 0
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
   },
   {
    "actSemana": 0,
@@ -373,15 +373,15 @@
    "id": "silian-gissel-castillo-murillo"
   },
   {
-   "actSemana": 0,
-   "activaciones": 0,
+   "actSemana": 1,
+   "activaciones": 1,
    "linea": "Nuvia Martínez",
    "nombre": "Nuvia Martínez Hernández",
    "presSemana": 0,
    "presentaciones": 9,
    "regSemana": 0,
    "registros": 2,
-   "volumen": 0,
+   "volumen": 500,
    "id": "nuvia-martinez-hernandez"
   },
   {
@@ -433,15 +433,15 @@
    "id": "dilcia"
   },
   {
-   "actSemana": 1,
-   "activaciones": 2,
+   "actSemana": 2,
+   "activaciones": 3,
    "linea": "Glenda Álvarez",
    "nombre": "Denia Rocha",
    "presSemana": 1,
    "presentaciones": 10,
    "regSemana": 1,
    "registros": 10,
-   "volumen": 400,
+   "volumen": 900,
    "id": "denia-rocha"
   },
   {
@@ -469,27 +469,27 @@
    "id": "andrea-jackeline-padilla-cuellar"
   },
   {
-   "actSemana": 0,
-   "activaciones": 0,
+   "actSemana": 1,
+   "activaciones": 1,
    "linea": "Lorena Velásquez",
    "nombre": "José Pablo Meza Paz",
    "presSemana": 0,
    "presentaciones": 4,
    "regSemana": 0,
    "registros": 4,
-   "volumen": 0,
+   "volumen": 50,
    "id": "jose-pablo-meza-paz"
   },
   {
-   "actSemana": 0,
-   "activaciones": 0,
+   "actSemana": 1,
+   "activaciones": 1,
    "linea": "José Luis Rodríguez",
    "nombre": "Pamela Rivas",
    "presSemana": 0,
    "presentaciones": 0,
    "regSemana": 1,
    "registros": 2,
-   "volumen": 0,
+   "volumen": 50,
    "id": "pamela-rivas"
   },
   {
@@ -656,9 +656,9 @@
    "registros": 1,
    "regSemana": 1,
    "id": "karla-patricia-calderon-fajardo",
-   "activaciones": 5,
-   "volumen": 2500,
-   "actSemana": 5
+   "activaciones": 6,
+   "volumen": 3000,
+   "actSemana": 6
   },
   {
    "nombre": "Josefina Pacheco",
@@ -803,6 +803,30 @@
    "activaciones": 1,
    "volumen": 200,
    "actSemana": 1
+  },
+  {
+   "nombre": "Nancy patricia Diaz ruiz",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "nancy-patricia-diaz-ruiz",
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
+  },
+  {
+   "nombre": "Yeny mariela Ramos canelas",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "yeny-mariela-ramos-canelas",
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -893,7 +917,7 @@
    "nuevos": 1,
    "presentaciones": 10,
    "rango": "Team Leader",
-   "volumen": 400,
+   "volumen": 900,
    "volumenDetalle": "1 Classic",
    "id": "denia-rocha",
    "volumenHoja": 200
@@ -932,7 +956,7 @@
    "nuevos": 0,
    "presentaciones": 1,
    "rango": "Team Leader",
-   "volumen": 0,
+   "volumen": 500,
    "volumenDetalle": "",
    "id": "erick-miranda",
    "volumenHoja": 0
@@ -1147,7 +1171,7 @@
    "nuevos": 0,
    "presentaciones": 1,
    "rango": "Team Leader",
-   "volumen": 2500,
+   "volumen": 3000,
    "volumenDetalle": "",
    "id": "karla-patricia-calderon-fajardo",
    "volumenHoja": 0
@@ -1267,7 +1291,7 @@
    "presentaciones": 0,
    "qbi": 67,
    "rango": "Marketing Director",
-   "volumen": 0,
+   "volumen": 500,
    "volumenDetalle": "",
    "id": "nancy-diaz",
    "volumenHoja": 0
@@ -1294,7 +1318,7 @@
    "presentaciones": 2,
    "qbi": 100,
    "rango": "Marketing Director",
-   "volumen": 0,
+   "volumen": 500,
    "volumenDetalle": "",
    "id": "nuvia-martinez",
    "volumenHoja": 0
@@ -2664,6 +2688,86 @@
    "wk": "84b1b8",
    "fuente": "gmail",
    "id": "reinaldo-sauceda-calix"
+  },
+  {
+   "socio": "Dazni Mendez",
+   "paquete": "Premium",
+   "patrocinador": "Erick Rolando Miranda Dominguez",
+   "fecha": "2026-10-31T23:55:12Z",
+   "ek": "0c96dd",
+   "wk": "f84371",
+   "fuente": "gmail",
+   "id": "dazni-mendez"
+  },
+  {
+   "socio": "Jose ernesto Chinchilla",
+   "paquete": "Premium",
+   "patrocinador": "Nancy patricia Diaz ruiz",
+   "fecha": "2026-10-31T23:55:50Z",
+   "ek": "b19cf4",
+   "wk": "699013",
+   "fuente": "gmail",
+   "id": "jose-ernesto-chinchilla"
+  },
+  {
+   "socio": "Rodolfo dionisio Bardas baca",
+   "paquete": "Premium",
+   "patrocinador": "Karla patricia Calderon fajardo",
+   "fecha": "2026-10-31T23:56:07Z",
+   "ek": "bbba9b",
+   "wk": "229ee8",
+   "fuente": "gmail",
+   "id": "rodolfo-dionisio-bardas-baca"
+  },
+  {
+   "socio": "Jose Cantor",
+   "paquete": "Starter",
+   "patrocinador": "Pamela Rivas",
+   "fecha": "2026-10-31T23:56:41Z",
+   "ek": "181af7",
+   "wk": "a3aa69",
+   "fuente": "gmail",
+   "id": "jose-cantor"
+  },
+  {
+   "socio": "Yeny mariela Ramos canelas",
+   "paquete": "Premium",
+   "patrocinador": "Nuvia Martinez hernandez",
+   "fecha": "2026-10-31T23:55:22Z",
+   "ek": "898965",
+   "wk": "2e9890",
+   "fuente": "gmail",
+   "id": "yeny-mariela-ramos-canelas"
+  },
+  {
+   "socio": "Hada emelina Caballero velasquez",
+   "paquete": "Starter",
+   "patrocinador": "Jose pablo Meza paz",
+   "fecha": "2026-10-31T23:55:41Z",
+   "ek": "ad6d64",
+   "wk": "0c109a",
+   "fuente": "gmail",
+   "id": "hada-emelina-caballero-velasquez"
+  },
+  {
+   "socio": "Sergio ismael Guillen cacho",
+   "paquete": "Premium",
+   "patrocinador": "Denia v Rivas rocha",
+   "fecha": "2026-10-31T23:56:20Z",
+   "ek": "d25b1e",
+   "wk": "29a37f",
+   "fuente": "gmail",
+   "id": "sergio-ismael-guillen-cacho"
+  },
+  {
+   "socio": "Kirian melina Norales gutierrez",
+   "paquete": "Premium",
+   "patrocinador": "Yeny mariela Ramos canelas",
+   "fecha": "2026-10-31T23:56:27Z",
+   "ek": "b88240",
+   "wk": "55c9c3",
+   "fuente": "gmail",
+   "id": "kirian-melina-norales-gutierrez"
   }
  ],
  "academia": [],
@@ -2681,7 +2785,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-31T22:56:01Z",
+  "activacionesCorte": "2026-10-31T23:56:41Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2691,7 +2795,7 @@
   "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-31T17:10:00-06:00",
+  "rankingActualizado": "2026-10-31T17:57:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
