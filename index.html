@@ -400,6 +400,14 @@ h1.motto{overflow:hidden;height:1.3em;line-height:1.3em;margin-top:2px}
 .stage-bar .n{font-family:var(--f-num);margin-left:4px}
 .contact{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
 .contact .stp{flex-basis:100%;margin-top:2px}
+.fl{flex-basis:calc(100% + 46px);box-sizing:border-box;background:linear-gradient(135deg,color-mix(in srgb,var(--brand) 8%,transparent),transparent);border:1px solid color-mix(in srgb,var(--brand) 25%,transparent);border-radius:16px;padding:10px 12px;margin:2px 0 4px -46px;width:calc(100% + 46px)}
+.fl-hd{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--brand)}
+.fl-tu{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:4px 9px;font-size:12px;color:var(--ink)}
+.fl-l{display:flex;flex-wrap:wrap;gap:4px 10px;margin:8px 0;font-size:12px;color:var(--muted);font-weight:600}.fl-l .ok{color:var(--good);font-weight:800}
+.fl-go{width:100%;border:0;border-radius:14px;padding:13px;font-weight:800;font-size:15.5px;color:#fff;background:linear-gradient(90deg,#16A34A,#22C55E);box-shadow:0 6px 16px rgba(22,163,74,.3)}
+.fl-q b{display:block;font-size:14px;margin-bottom:6px}.fl-q div{display:flex;flex-wrap:wrap;gap:6px}.fl-q button{border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:9px 11px;font-weight:700;font-size:13.5px;color:var(--ink)}
+.btn.fl-done{background:color-mix(in srgb,var(--good) 14%,transparent)!important;color:var(--good)!important}
+.fl-txt{font-size:13.5px;font-weight:700;color:var(--muted);margin:2px 0}.fl-mini{margin-top:6px;border:0;background:none;color:var(--brand);font-weight:800;font-size:13.5px;padding:0}
 .contact .info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
 .contact .info b{font-weight:600}
 .acc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
@@ -3685,6 +3693,75 @@ const WA_MSG={"Nuevo":"Hola {n}, ¿cómo está? Quería saludarle y contarle alg
 const waLink=c=>{const n=waNum(c.phone,c.cc);if(!n)return"";const first=String(c.name||"").trim().split(/\s+/)[0]||"";return "https://wa.me/"+n+"?text="+encodeURIComponent(msgPara(c,first))};
 function crmIng(c){return +(c.creado||c.updated||0)||0}
 function crmCmp(){const o=pipeOk()?crmOrd:"seg";if(o==="rec")return(a,b)=>crmIng(b)-crmIng(a);if(o==="pct"){const g=c=>c.stage==="No interesado"?2:(c.stage==="Socio"||c.stage==="Cliente")?1:0;return(a,b)=>(g(a)-g(b))||(stPct(b)-stPct(a))||(crmIng(b)-crmIng(a))}return(a,b)=>(a.next||"9999").localeCompare(b.next||"9999")}
+// ---------- camino guiado del prospecto (31 oct) ----------
+const FL_PASOS=[["sal","Saludo"],["inv","Invitación"],["agd","Cita"],["pres","Presentación"],["seg","Seguimiento"],["socio","Socio"]];
+function flH(c){return (c.fl&&c.fl.h)||{}}
+function flCita(c){return (citas||[]).some(x=>x.cid===c.id)}
+function flHecho(c,k){const h=flH(c);return k==="agd"?!!(h.agd||flCita(c)||(c.pres&&c.pres.t)):k==="pres"?!!(c.pres&&c.pres.t):k==="socio"?(c.stage==="Socio"||c.stage==="Cliente"):!!h[k]}
+function flPaso(c){const h=flH(c),r=(c.fl&&c.fl.r)||"",D=864e5,ya=t=>Date.now()-(t||0);
+  if(c.stage==="Socio"||c.stage==="Cliente")return h.bien?null:{k:"bien"};
+  if(c.stage==="No interesado")return h.no&&ya(h.no)>60*D&&!h.re?{k:"re"}:{k:"nada",txt:"🔕 No le interesa por ahora"+(h.no?` · le recordamos escribirle en ${Math.max(1,Math.ceil((60*D-ya(h.no))/D))} días`:"")};
+  if(c.pres&&c.pres.t){if(!h.seg)return{k:"seg"};return{k:"preg",q:"seg"}}
+  if(h.agd||flCita(c))return{k:"pres"};
+  if(h.inv){if(r==="si")return{k:"agd"};if(r==="pen")return ya(h.rinv||h.inv)>2*D?{k:"rinv"}:{k:"espera",txt:"🤔 Lo va a pensar · escribirle de nuevo "+(ya(h.rinv||h.inv)>D?"mañana":"en 2 días")};return{k:"preg",q:"inv"}}
+  if(h.sal){if(r==="si")return{k:"inv"};if(r==="nr")return ya(h.resal||h.sal)>2*D?{k:"resal"}:{k:"espera",txt:"⏳ Esperando respuesta · volver a saludar en "+(ya(h.resal||h.sal)>D?"1 día":"2 días")};return{k:"preg",q:"sal"}}
+  return{k:"sal"}}
+const FL_TIT={sal:"👋 Saludar",resal:"👋 Volver a saludar",inv:"💬 Invitar",rinv:"💬 Retomar la invitación",agd:"📅 Agendar",pres:"🎤 Presentar",seg:"🔁 Seguimiento",bien:"🎉 Darle la bienvenida",re:"👋 Volver a contactar",no:"🙏 Cerrar con amabilidad"};
+function flMsg(c,k,v){const n=String(c.name||"").trim().split(/\s+/)[0]||"",U=!c.tu,x=(u,t)=>U?u:t,pr=(c.pres&&c.pres.n)||0,ref=safeUrl(profile.ref||"");
+  const M={
+   sal:[x(`Hola ${n}, ¿cómo está? 😊 ¿Tiene un minutito?`,`Hola ${n}, ¿cómo estás? 😊 ¿Tienes un minutito?`),
+        x(`¡Hola ${n}! 👋 ¿Cómo le va? ¿Tiene un momento para platicar?`,`¡Hola ${n}! 👋 ¿Cómo te va? ¿Tienes un momento para platicar?`),
+        x(`Hola ${n}, ¡qué gusto saludarle! 😊 ¿Cómo ha estado? ¿Tiene un minuto?`,`Hola ${n}, ¡qué gusto saludarte! 😊 ¿Cómo has estado? ¿Tienes un minuto?`)],
+   resal:[x(`Hola ${n} 👋 Le escribí hace unos días. ¿Cómo ha estado?\n\nCuando tenga un minutito, me avisa. 😊`,`Hola ${n} 👋 Te escribí hace unos días. ¿Cómo has estado?\n\nCuando tengas un minutito, me avisas. 😊`),
+        x(`¡Hola ${n}! Solo pasaba a saludarle. ¿Todo bien por allá? 😊`,`¡Hola ${n}! Solo pasaba a saludarte. ¿Todo bien por allá? 😊`)],
+   inv:[x(`¡Qué bueno! Me alegra saludarle.\n\nLe cuento: estoy empezando un proyecto de negocio aquí en la ciudad, en la industria de los viajes, con un gran potencial de crecimiento.\n\nPensé en usted porque creo que le puede interesar.\n\n¿Estaría abierto a escuchar la información?`,
+          `¡Qué bueno! Me alegra saludarte.\n\nTe cuento: estoy empezando un proyecto de negocio aquí en la ciudad, en la industria de los viajes, con un gran potencial de crecimiento.\n\nPensé en ti porque creo que te puede interesar.\n\n¿Estarías abierto a escuchar la información?`),
+        x(`¡Me alegra mucho! 🙌\n\nFíjese que estoy trabajando en un proyecto nuevo en la industria de los viajes, y está creciendo bastante.\n\nMe acordé de usted porque es una persona con visión.\n\n¿Le gustaría que le cuente de qué se trata?`,
+          `¡Me alegra mucho! 🙌\n\nFíjate que estoy trabajando en un proyecto nuevo en la industria de los viajes, y está creciendo bastante.\n\nMe acordé de ti porque eres una persona con visión.\n\n¿Te gustaría que te cuente de qué se trata?`),
+        x(`¡Qué bien! 😊\n\nLe escribo porque arranqué un negocio en el mundo de los viajes y estoy muy emocionado con lo que estoy aprendiendo.\n\nCreo que a usted le podría interesar.\n\n¿Tendría unos minutos para escuchar la información?`,
+          `¡Qué bien! 😊\n\nTe escribo porque arranqué un negocio en el mundo de los viajes y estoy muy emocionado con lo que estoy aprendiendo.\n\nCreo que a ti te podría interesar.\n\n¿Tendrías unos minutos para escuchar la información?`)],
+   rinv:[x(`Hola ${n} 😊 ¿Pudo pensarlo?\n\nSon solo 20 minutos y sin compromiso. ¿Le queda bien hoy en la noche o mañana?`,`Hola ${n} 😊 ¿Pudiste pensarlo?\n\nSon solo 20 minutos y sin compromiso. ¿Te queda bien hoy en la noche o mañana?`),
+        x(`¡Hola ${n}! 👋 Le escribo para saber si le quedó tiempo de pensarlo.\n\nMe encantaría explicarle en 20 minutitos. ¿Qué día le queda mejor?`,`¡Hola ${n}! 👋 Te escribo para saber si te quedó tiempo de pensarlo.\n\nMe encantaría explicarte en 20 minutitos. ¿Qué día te queda mejor?`)],
+   agd:[x(`¡Excelente! Son unos 20 minutos.\n\n¿Qué le queda mejor, hoy en la noche o mañana?`,`¡Excelente! Son unos 20 minutos.\n\n¿Qué te queda mejor, hoy en la noche o mañana?`),
+        x(`¡Perfecto! 🙌 Se lo explico en unos 20 minutos.\n\n¿Le parece hoy en la noche o prefiere mañana?`,`¡Perfecto! 🙌 Te lo explico en unos 20 minutos.\n\n¿Te parece hoy en la noche o prefieres mañana?`),
+        x(`¡Qué bueno! 😊 Busquemos un momento de 20 minutitos.\n\n¿Hoy en la noche o mañana le queda mejor?`,`¡Qué bueno! 😊 Busquemos un momento de 20 minutitos.\n\n¿Hoy en la noche o mañana te queda mejor?`)],
+   seg:pr>=8?[x(`¡Qué emoción, ${n}! 🎉\n\n${ref?`Aquí está su enlace para registrarse:\n${ref}\n\n`:""}Si quiere, lo hacemos juntos ahora mismo. 🙌`,`¡Qué emoción, ${n}! 🎉\n\n${ref?`Aquí está tu enlace para registrarte:\n${ref}\n\n`:""}Si quieres, lo hacemos juntos ahora mismo. 🙌`)]
+      :pr>=6?[x(`Hola ${n} 😊 ¿Qué le pareció la información?\n\n¿Qué le falta para llegar a un 10?\n\nLe dejo esta página con un simulador para que vea cómo funciona la membresía:\n${memUrl(c.name,c.id)}`,`Hola ${n} 😊 ¿Qué te pareció la información?\n\n¿Qué te falta para llegar a un 10?\n\nTe dejo esta página con un simulador para que veas cómo funciona la membresía:\n${memUrl(c.name,c.id)}`)]
+      :[x(`Hola ${n}, ¿qué le pareció la información? 😊\n\nSi le quedó alguna duda, me gustaría que hablemos unos 10 minutos con un líder de mi equipo. ¿Le parece?`,`Hola ${n}, ¿qué te pareció la información? 😊\n\nSi te quedó alguna duda, me gustaría que hablemos unos 10 minutos con un líder de mi equipo. ¿Te parece?`)],
+   no:[x(`Le entiendo perfectamente, ${n}, gracias por su sinceridad. 🙏\n\nSi más adelante cambia de opinión, aquí estoy.`,`Te entiendo perfectamente, ${n}, gracias por tu sinceridad. 🙏\n\nSi más adelante cambias de opinión, aquí estoy.`)],
+   re:[x(`Hola ${n}, ¿cómo ha estado? 😊 Hace tiempo no hablábamos. ¿Cómo va todo por allá?`,`Hola ${n}, ¿cómo has estado? 😊 Hace tiempo no hablábamos. ¿Cómo va todo por allá?`)]};
+  const L=M[k]||[""];let hh=0;for(const ch of String(c.id||""))hh=(hh*31+ch.charCodeAt(0))>>>0;return L[(hh+(v||0))%L.length]}
+function flHTML(c){const P=flPaso(c),h=flH(c);
+  const linea=`<div class="fl-l">${FL_PASOS.map(([k,t])=>`<span class="${flHecho(c,k)?"ok":""}">${flHecho(c,k)?"✓":"○"} ${t}</span>`).join("")}</div>`;
+  let body="";
+  if(!P)body=`<div class="fl-txt">🎉 Camino completo</div>`;
+  else if(P.k==="nada"||P.k==="espera")body=`<div class="fl-txt">${esc(P.txt)}</div>${P.k==="espera"?`<button class="fl-mini" data-flgo="${esc(c.id)}|${h.inv?"rinv":"resal"}">Escribirle ya</button>`:""}`;
+  else if(P.k==="preg"){const Q=P.q==="sal"?["¿Le contestó?",[["si","✅ Sí"],["nr","⏳ Todavía no"],["no","✖ No le interesa"]]]:P.q==="inv"?["¿Qué respondió?",[["si","✅ Sí, quiere escuchar"],["pen","🤔 Lo va a pensar"],["no","✖ No"]]]:["¿Cómo va?",[["socio","🎉 Ya se registró"],["re2","🔁 Volver a escribirle"],["no","✖ No por ahora"]]];
+    body=`<div class="fl-q"><b>${Q[0]}</b><div>${Q[1].map(([v,t])=>`<button data-flr="${esc(c.id)}|${v}">${t}</button>`).join("")}</div></div>`}
+  else body=`<button class="fl-go" data-flgo="${esc(c.id)}|${P.k}">👉 Siguiente paso: ${FL_TIT[P.k]||P.k}</button>`;
+  return `<div class="fl"><div class="fl-hd"><span>🧭 Camino de ${esc(String(c.name||"").split(" ")[0])}</span><button class="fl-tu" data-fltu="${esc(c.id)}">Le hablo de: <b>${c.tu?"Tú":"Usted"}</b> ⇄</button></div>${linea}${body}</div>`}
+async function flGuardar(c){c.updated=Date.now();try{await store.saveContact(Object.assign({},c))}catch(e){}renderCRM()}
+function flMarca(c,k,r){c.fl=Object.assign({h:{},r:""},c.fl||{});c.fl.h=Object.assign({},c.fl.h||{});c.fl.h[k]=Date.now();if(r!==undefined)c.fl.r=r}
+function flEnviar(c,k){if(k==="pres"){presAbrir(c);return}if(k==="bien"){flMarca(c,"bien");flGuardar(c);abrirBienvenida(c);return}
+  let v=0;const pinta=()=>{$("#flT").value=flMsg(c,k==="re2"?"seg":k,v)};
+  const extra=k==="agd"?`<p class="small muted" style="margin:10px 0 6px">Cuando le diga el día, póngalo aquí:</p><div style="display:grid;gap:8px"><button class="btn ghost" data-fla="cita">📅 Poner la cita</button>${presOk()?`<button class="btn ghost" data-fla="pres">🎤 Presentarle ahora mismo</button>`:""}<button class="btn ghost" data-fla="l3">📞 Llamada de 3 con mi líder</button>${salaOk()?`<button class="btn ghost" data-fla="sala">🎬 Enviarle la presentación virtual</button>`:""}</div>`
+    :k==="seg"&&((c.pres&&c.pres.n)||0)<6?`<button class="btn ghost" data-fla="l3" style="width:100%;margin-top:10px">📞 Pedir llamada de 3 con mi líder</button>`:"";
+  openSheet(`<h2>${FL_TIT[k==="re2"?"seg":k]||"Mensaje"} · ${esc(c.name)}</h2><p class="small muted" style="margin:0 0 8px">Puede cambiar el mensaje antes de enviarlo. Le hablo de: <b>${c.tu?"tú":"usted"}</b></p>
+   <textarea class="inp" id="flT" rows="8" style="width:100%;font-size:15px;line-height:1.45"></textarea>
+   <div class="row" style="gap:8px;margin-top:8px"><button class="btn" id="flW" style="flex:1;background:#25D366;color:#fff">📲 Enviar por WhatsApp</button><button class="btn ghost" id="flV" style="flex:none">🔄 Otra</button></div>${extra}
+   <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{pinta();
+   $("#flV").onclick=()=>{v++;pinta()};
+   $("#flW").onclick=()=>{const t=$("#flT").value.trim();if(!t)return;const kk=k==="re2"?"seg":k;flMarca(c,kk,["sal","resal","inv","rinv","re"].includes(k)?(k==="resal"?"nr":k==="rinv"?"pen":""):undefined);
+     if(k==="resal")c.fl.h.sal=c.fl.h.sal||Date.now();if(k==="re"){c.stage="Contactado";c.stT=Date.now();c.fl.h={re:Date.now(),sal:Date.now()};c.fl.r=""}
+     if(k==="sal"||k==="resal")stAvanza(c,"Contactado","le escribió el saludo");if(k==="seg")stAvanza(c,"Seguimiento","le dio seguimiento");
+     flGuardar(c);const n=waNum(c.phone,c.cc);closeSheet();location.href="https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t)};
+   document.querySelectorAll("#sheetPanel [data-fla]").forEach(b=>b.onclick=()=>{const a=b.dataset.fla;if(k==="agd"){flMarca(c,"agd");flGuardar(c)}closeSheet();
+     if(a==="cita")abrirCita(null,c);else if(a==="pres")presAbrir(c);else if(a==="l3")pedirL3(c);else if(a==="sala")enviarSala(c)})})}
+async function flResp(c,v){c.fl=Object.assign({h:{},r:""},c.fl||{});
+  if(v==="no"){c.stage="No interesado";c.stT=Date.now();c.stAuto="";c.fl.h=Object.assign({},c.fl.h,{no:Date.now()});c.fl.r="no";await flGuardar(c);flEnviar(c,"no");return}
+  if(v==="socio"){c.stage="Socio";c.stT=Date.now();await flGuardar(c);toast("¡Felicidades! 🎉");return}
+  if(v==="re2"){flEnviar(c,"re2");return}
+  c.fl.r=v;if(v==="nr")c.fl.h=Object.assign({},c.fl.h,{resal:Date.now()});if(v==="pen")c.fl.h=Object.assign({},c.fl.h,{rinv:Date.now()});await flGuardar(c)}
 function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerCase();
   const counts={Todos:contacts.length};STAGES.forEach(s=>counts[s]=contacts.filter(c=>c.stage===s).length);
   $("#stageBar").innerHTML=["Todos"].concat(STAGES).map(s=>`<button aria-pressed="${s===stageF}" data-s="${s}">${s}<span class="n">${counts[s]}</span></button>`).join("");
@@ -3702,7 +3779,7 @@ function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerC
     <div class="mid"><span class="nm">${esc(c.name)}${late?'<span class="fdot" style="background:var(--bad)" title="Seguimiento atrasado"></span>':today?'<span class="fdot" style="background:var(--warn)" title="Seguimiento hoy"></span>':""}</span>
     <div class="pbar" aria-label="Avance: ${esc(c.stage)}">${FLOW.map((_,i)=>`<i class="${i<k?"on":""}"></i>`).join("")}</div></div>
     ${pipeOk()?`<span class="stpct"><b style="color:${pc}">${stPct(c)}%</b><span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage==="No interesado"?"No":c.stage)}</span>${stFrio(c)?`<em>⚠️ ${stDias(c)} días</em>`:""}</span>`:`<span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage==="No interesado"?"No":c.stage)}</span>`}<span class="chev">›</span></div>
-    <div class="cbody"><div class="info">
+    <div class="cbody">${flHTML(c)}<div class="info">
     ${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}${c.note?`<span class="note">${esc(c.note)}</span>`:""}
     ${(()=>{const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fecha>=TODAY).sort(citaSort)[0];return ci?`<span class="small" style="color:var(--brand);font-weight:700">📅 Cita: ${esc(citaCuando(ci))}</span>`:""})()}
     ${pipeOk()&&c.stAuto&&c.stT&&Date.now()-c.stT<14*864e5?`<span class="small" style="background:var(--surface-2);border-radius:10px;padding:6px 9px">🤖 Pasó solo a <b>${esc(c.stage)}</b> (${stPct(c)}%): ${esc(c.stAuto)}. Si no es así, toque otra etapa.</span>`:""}
@@ -3710,7 +3787,7 @@ function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerC
     ${(()=>{const v=salaOk()&&salaDe(c.id);return v?`<span class="small" style="font-weight:700;color:${salaNivel(v)[2]}">🎬 ${esc(salaNivel(v)[0])} · vio el ${+v.pct||0}%${v.resp?" · "+esc(SALA_R[v.resp]||""):""}</span>`:""})()}
     ${(()=>{const m=memDe(c.id),e=(LS.get("memEnv")||{})[c.id];return m?`<span class="small" style="font-weight:700;color:#0E7490">🛳️ Vio la membresía ${memHace(m.t)} · ${+m.pct||0}%${m.resp==="sim"?" · 🧮 usó el simulador":""}${m.como?" · 📲 tocó \"Quiero\"":""}</span>`:e?`<span class="small" style="color:var(--muted);font-weight:600">🛳️ Membresía enviada ${memHace(e)} · aún no la abre</span>`:""})()}
     ${c.next?`<span class="small" style="color:var(--${late?"bad":today?"warn":"muted"});font-weight:600">${late?"Seguimiento atrasado: "+niceDate(c.next):today?"Seguimiento hoy":"Próximo seguimiento: "+niceDate(c.next)}</span>`:""}
-    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${presOk()?`<button class="btn sm gold" data-pres="${esc(c.id)}">🎤 Presentar</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost" data-mem="${esc(c.id)}">🛳️ Membresía</button><button class="btn sm ghost" data-cita="${esc(c.id)}">📅 Agendar</button><button class="btn sm ghost" data-l3="${esc(c.id)}">📞 Llamada de 3</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
+    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${presOk()?`<button class="btn sm gold" data-pres="${esc(c.id)}">${c.pres&&c.pres.t?"✓ Presentado":"🎤 Presentar"}</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost${(LS.get("memEnv")||{})[c.id]||memDe(c.id)?" fl-done":""}" data-mem="${esc(c.id)}">${(LS.get("memEnv")||{})[c.id]||memDe(c.id)?"✓ Membresía":"🛳️ Membresía"}</button><button class="btn sm ghost${flCita(c)?" fl-done":""}" data-cita="${esc(c.id)}">${flCita(c)?"✓ Cita":"📅 Agendar"}</button><button class="btn sm ghost" data-l3="${esc(c.id)}">📞 Llamada de 3</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
 $("#stageBar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;stageF=b.dataset.s;renderCRM()});
 $("#crmSearch").addEventListener("input",renderCRM);
 $("#bienBtn").onclick=()=>abrirBienvenida();$("#addContact").onclick=()=>editContact();
@@ -3727,6 +3804,9 @@ $("#contactList").addEventListener("click",async e=>{const st=e.target.closest("
   const pr=e.target.closest("[data-pres]");if(pr){presAbrir(contacts.find(c=>c.id===pr.dataset.pres));return}
   const sl=e.target.closest("[data-sala]");if(sl){enviarSala(contacts.find(c=>c.id===sl.dataset.sala));return}
   const mb=e.target.closest("[data-mem]");if(mb){enviarMem(contacts.find(c=>c.id===mb.dataset.mem));return}
+  const fg=e.target.closest("[data-flgo]");if(fg){const [id,k]=fg.dataset.flgo.split("|");const c=contacts.find(x=>x.id===id);if(c)flEnviar(c,k);return}
+  const fr=e.target.closest("[data-flr]");if(fr){const [id,v]=fr.dataset.flr.split("|");const c=contacts.find(x=>x.id===id);if(c)flResp(c,v);return}
+  const ft=e.target.closest("[data-fltu]");if(ft){const c=contacts.find(x=>x.id===ft.dataset.fltu);if(c){c.tu=!c.tu;flGuardar(c)}return}
   const b=e.target.closest("[data-edit]");if(b)editContact(contacts.find(c=>c.id===b.dataset.edit))});
 
 
@@ -4700,7 +4780,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261031132904";var busy=false,pend=null;
+(function(){var V="20261031142559";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
