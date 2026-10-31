@@ -3418,12 +3418,22 @@ async function abrirCrearEva(){if(!store.db||!(regDoc&&regDoc.registro)){toast("
 function salaOk(){return !!isAdmin}
 const SALA_R={viajar:"Viajar más",ingresos:"Generar ingresos",ambas:"Ambas cosas",no:"Por ahora no"};
 const SALA_C={whatsapp:"WhatsApp ahora",llamada:"Agendar llamada",tarde:"Más tarde"};
-function salaCache(){return LS.get("salaV")||{}}
+function salaCache(){const V=LS.get("salaV")||{},o={};for(const k in V)if(!k.startsWith("m_"))o[k]=V[k];return o}
+function memDe(cid){if(!cid)return null;const V=LS.get("salaV")||{};let b=null;for(const k in V){const v=V[k];if(k.startsWith("m_")&&v.c===cid&&(!b||(v.t||0)>(b.t||0)))b=v}return b}
+function memHace(t){const m=Math.round((Date.now()-t)/6e4);return m<2?"ahora":m<60?"hace "+m+" min":m<1440?"hace "+Math.round(m/60)+" h":"hace "+Math.round(m/1440)+" d"}
+function memAviso(x){try{avisoTop("👀 "+(String(x.n||"Un prospecto").split(/\s+/)[0])+" está viendo su página de membresía",x.como?"📲 Tocó el botón para escribirle":x.resp==="sim"?"🧮 Usó el simulador de cruceros":"Es buen momento para escribirle",()=>{try{go("crm")}catch(e){}})}catch(e){}}
+function memUrl(nombre,cid){let u="https://actionleadersplus.com/membresia.html?de="+miPCode();if(nombre)u+="&p="+encodeURIComponent(String(nombre).trim().slice(0,50));if(cid)u+="&c="+encodeURIComponent(cid);return u}
+function memMsg(nombre,u){const f=String(nombre||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"";
+  return `Hola${f?" "+f:""} 😊\n\nLe preparé esta página para que vea, de forma sencilla, *cómo funciona la membresía de viajes*: cómo su dinero se convierte en el doble de puntos y cómo se reserva un crucero.\n\nTiene un *simulador* para calcular su próximo crucero:\n${u}\n\nCuando la vea, me cuenta qué le pareció. 🚢${yo?"\n\n*"+yo+"*":""}`}
+async function enviarMem(c){if(!c)return;if(!(await salaPrep()))return;LS.set("memOn",1);const E=LS.get("memEnv")||{};E[c.id]=Date.now();LS.set("memEnv",E);stAvanza(c,"Contactado","le envió la página de la membresía");
+  const t=memMsg(c.name,memUrl(c.name,c.id)),n=waNum(c.phone,c.cc);if(n){location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t);return}
+  if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
+let memVT=0;document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&LS.get("memOn")&&Date.now()-memVT>120000){memVT=Date.now();loadSala()}});
 function salaDe(cid){if(!cid)return null;const V=salaCache();let b=null;for(const k in V){const v=V[k];if(v.c===cid&&(!b||(v.t||0)>(b.t||0)))b=v}return b}
 function salaNivel(v){if(v.resp==="ambas")return["🔥 Caliente","c-bad","#C2410C"];if(v.resp==="viajar"||v.resp==="ingresos")return["🟠 Tibio","c-gold","#B45309"];if(v.resp==="no")return["❄️ No por ahora","c-brand","#0369A1"];return[(+v.pct||0)>=75?"👀 Casi termina":(+v.pct||0)>0?"⏳ Viéndola":"👋 Entró",(+v.pct||0)>=75?"c-gold":"c-brand","var(--muted)"]}
-async function loadSala(force){if(!store.db||!store.uid||!salaOk())return;if(!force&&!LS.get("salaOn"))return;const since=+LS.get("salaSync")||0;
+async function loadSala(force){if(!store.db||!store.uid||!(salaOk()||LS.get("memOn")))return;if(!force&&!LS.get("salaOn")&&!LS.get("memOn"))return;const since=+LS.get("salaSync")||0;
   try{const q=since?await store.db.collection("users/"+store.uid+"/sala").where("t",since,">").get():await store.db.collection("users/"+store.uid+"/sala").get();
-    const V=salaCache();let mx=since;q.docs.forEach(d=>{const x=d.data();V[d.id]=Object.assign({id:d.id},x);mx=Math.max(mx,+x.t||0)});
+    const V=LS.get("salaV")||{};let mx=since;q.docs.forEach(d=>{const x=d.data(),nv=!V[d.id];V[d.id]=Object.assign({id:d.id},x);mx=Math.max(mx,+x.t||0);if(since&&nv&&d.id.startsWith("m_"))memAviso(x)});
     const ks=Object.keys(V).sort((a,b)=>(V[b].t||0)-(V[a].t||0)).slice(0,80),N={};ks.forEach(k=>N[k]=V[k]);LS.set("salaV",N);LS.set("salaSync",mx);
     renderSalaCard();try{renderCRM()}catch(e){}}catch(e){}}
 function renderSalaCard(){const c=$("#salaCard");if(!c)return;if(!salaOk()){c.hidden=true;return}const seen=+LS.get("salaSeen")||0,V=Object.values(salaCache()).filter(v=>(v.t||0)>seen&&(v.resp||(+v.pct||0)>=50)).sort((a,b)=>(b.t||0)-(a.t||0));
@@ -3657,8 +3667,9 @@ function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerC
     ${pipeOk()&&c.stAuto&&c.stT&&Date.now()-c.stT<14*864e5?`<span class="small" style="background:var(--surface-2);border-radius:10px;padding:6px 9px">🤖 Pasó solo a <b>${esc(c.stage)}</b> (${stPct(c)}%): ${esc(c.stAuto)}. Si no es así, toque otra etapa.</span>`:""}
     ${c.pres&&c.pres.t?`<span class="small" style="font-weight:700;color:${c.pres.n>=8?"var(--good)":c.pres.n>=6?"#B45309":"var(--brand)"}">🎤 Presentado ${esc(niceDate(new Date(c.pres.t-216e5).toISOString().slice(0,10)))}${c.pres.n?" · "+c.pres.n+"/10"+(c.pres.n>=8?" 🔥":""):""}</span>`:""}
     ${(()=>{const v=salaOk()&&salaDe(c.id);return v?`<span class="small" style="font-weight:700;color:${salaNivel(v)[2]}">🎬 ${esc(salaNivel(v)[0])} · vio el ${+v.pct||0}%${v.resp?" · "+esc(SALA_R[v.resp]||""):""}</span>`:""})()}
+    ${(()=>{const m=memDe(c.id),e=(LS.get("memEnv")||{})[c.id];return m?`<span class="small" style="font-weight:700;color:#0E7490">🛳️ Vio la membresía ${memHace(m.t)} · ${+m.pct||0}%${m.resp==="sim"?" · 🧮 usó el simulador":""}${m.como?" · 📲 tocó \"Quiero\"":""}</span>`:e?`<span class="small" style="color:var(--muted);font-weight:600">🛳️ Membresía enviada ${memHace(e)} · aún no la abre</span>`:""})()}
     ${c.next?`<span class="small" style="color:var(--${late?"bad":today?"warn":"muted"});font-weight:600">${late?"Seguimiento atrasado: "+niceDate(c.next):today?"Seguimiento hoy":"Próximo seguimiento: "+niceDate(c.next)}</span>`:""}
-    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${presOk()?`<button class="btn sm gold" data-pres="${esc(c.id)}">🎤 Presentar</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost" data-cita="${esc(c.id)}">📅 Agendar</button><button class="btn sm ghost" data-l3="${esc(c.id)}">📞 Llamada de 3</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
+    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${presOk()?`<button class="btn sm gold" data-pres="${esc(c.id)}">🎤 Presentar</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost" data-mem="${esc(c.id)}">🛳️ Membresía</button><button class="btn sm ghost" data-cita="${esc(c.id)}">📅 Agendar</button><button class="btn sm ghost" data-l3="${esc(c.id)}">📞 Llamada de 3</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
 $("#stageBar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;stageF=b.dataset.s;renderCRM()});
 $("#crmSearch").addEventListener("input",renderCRM);
 $("#bienBtn").onclick=()=>abrirBienvenida();$("#addContact").onclick=()=>editContact();
@@ -3674,6 +3685,7 @@ $("#contactList").addEventListener("click",async e=>{const st=e.target.closest("
   const l3=e.target.closest("[data-l3]");if(l3){pedirL3(contacts.find(c=>c.id===l3.dataset.l3));return}
   const pr=e.target.closest("[data-pres]");if(pr){presAbrir(contacts.find(c=>c.id===pr.dataset.pres));return}
   const sl=e.target.closest("[data-sala]");if(sl){enviarSala(contacts.find(c=>c.id===sl.dataset.sala));return}
+  const mb=e.target.closest("[data-mem]");if(mb){enviarMem(contacts.find(c=>c.id===mb.dataset.mem));return}
   const b=e.target.closest("[data-edit]");if(b)editContact(contacts.find(c=>c.id===b.dataset.edit))});
 
 
@@ -4645,7 +4657,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261031121954";var busy=false,pend=null;
+(function(){var V="20261031123708";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Así funciona su membresía de viajes · Action Leaders PLUS</title>
+<meta name="description" content="Viaje más con el mismo dinero: cómo funciona la membresía de viajes, cómo se reserva un crucero y con cuánto se empieza.">
+<meta property="og:title" content="Viaje más con el mismo dinero 🚢">
+<meta property="og:description" content="Así funciona la membresía de viajes: ahorre, duplique en puntos y reserve su crucero. Simulador incluido.">
+<meta property="og:image" content="https://actionleadersplus.com/media/mem/hero.jpg">
+<meta name="theme-color" content="#0B1B33">
+<link rel="icon" href="media/icono-1024.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0B1B33;--navy:#0E2A52;--sea:#0A7DAD;--sky:#2AC1F1;--gold:#F5B700;--gold2:#FDE68A;--org:#F97316;--bg:#F3F6F9;--card:#fff;--line:#E2E8F0;--muted:#5B6B80;--good:#16A34A}
+*{box-sizing:border-box}button,input{font-family:inherit}html{scroll-behavior:smooth}
+body{margin:0;font-family:Figtree,system-ui,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;padding-bottom:84px}
+img{max-width:100%;display:block}
+.w{max-width:620px;margin:0 auto;padding:0 18px}
+h2{font-family:"Bebas Neue",sans-serif;font-weight:400;font-size:42px;line-height:1;letter-spacing:.5px;margin:0 0 10px}
+h2 em{font-style:normal;color:var(--sea)}
+.k{font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--sea);margin:0 0 6px}
+p{line-height:1.55;margin:0 0 12px}
+section{padding:44px 0 8px}
+/* hero */
+.hero{position:relative;min-height:92vh;display:flex;align-items:flex-end;color:#fff;background:#071526 url(media/mem/hero.jpg) center/cover;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,21,38,.35) 0%,rgba(7,21,38,.15) 35%,rgba(7,21,38,.92) 78%,#071526 100%)}
+.hero .w{position:relative;padding-bottom:34px;width:100%}
+.logo{position:absolute;top:22px;left:50%;transform:translateX(-50%);height:34px;z-index:2}
+.hi{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(8px);padding:7px 13px;border-radius:30px;font-size:13.5px;font-weight:700;margin-bottom:14px}
+.hero h1{font-family:"Bebas Neue",sans-serif;font-weight:400;font-size:64px;line-height:.92;margin:0 0 12px}
+.hero h1 span{background:linear-gradient(90deg,var(--gold2),var(--gold),var(--org));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:17px;color:#E2E8F0;max-width:460px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:16px;padding:16px;font:800 17px Figtree,sans-serif;cursor:pointer;text-decoration:none}
+.bg{background:linear-gradient(90deg,#F59E0B,#FDE047);color:#1C1917;box-shadow:0 10px 30px rgba(245,158,11,.35)}
+.bw{background:#25D366;color:#fff;box-shadow:0 10px 26px rgba(37,211,102,.35)}
+.bo{background:transparent;border:2px solid rgba(255,255,255,.5);color:#fff}
+.scroll{display:block;text-align:center;margin-top:14px;font-size:13px;color:#CBD5E1;text-decoration:none}
+.host{display:flex;align-items:center;gap:10px;margin:0 0 16px;font-size:14px;color:#E2E8F0}
+.host i{width:42px;height:42px;border-radius:50%;background:#1E3A5F center/cover;border:2px solid var(--gold);flex:none;display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800}
+.host b{color:#fff}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:-6px}
+.st{background:var(--card);border-radius:18px;padding:14px 8px;text-align:center;box-shadow:0 6px 20px rgba(11,27,51,.07)}
+.st b{display:block;font-family:"Bebas Neue";font-size:38px;line-height:1;color:var(--navy)}.st span{font-size:12.5px;color:var(--muted);font-weight:600}
+.imgc{border-radius:22px;overflow:hidden;margin:14px 0;box-shadow:0 12px 30px rgba(11,27,51,.15)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}.chips span{background:#E0F2FE;color:#075985;border-radius:20px;padding:7px 12px;font-size:13.5px;font-weight:700}
+/* pasos */
+.step{display:flex;gap:14px;background:var(--card);border-radius:20px;padding:18px;margin:12px 0;box-shadow:0 6px 20px rgba(11,27,51,.06)}
+.step .n{flex:none;width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--sea),var(--sky));color:#fff;font:400 26px "Bebas Neue";display:flex;align-items:center;justify-content:center}
+.step h3{margin:2px 0 6px;font-size:19px}.step p{margin:0;color:#334155;font-size:15px}
+.dup{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.dup div{border-radius:16px;padding:12px;text-align:center}.dup .c{background:#F1F5F9}.dup .p{background:linear-gradient(135deg,#1C1917,#3F2A06);color:#fff}
+.dup small{display:block;font-size:11px;font-weight:800;letter-spacing:2px;opacity:.8}.dup b{display:block;font-family:"Bebas Neue";font-size:30px;line-height:1.1}.dup .p b{color:var(--gold2)}
+.bars{display:flex;align-items:flex-end;gap:7px;height:150px;margin:14px 0 4px;padding:0 4px}
+.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;height:100%}
+.bars i{display:block;width:100%;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,var(--gold),#D97706);transform-origin:bottom;transform:scaleY(0);transition:transform 1s cubic-bezier(.2,.8,.2,1)}
+.bars.on i{transform:scaleY(1)}.bars small{font-size:11px;color:var(--muted);font-weight:700}.bars em{font-style:normal;font-size:11px;font-weight:800;color:var(--navy)}
+.opt{border-radius:18px;padding:14px;margin-top:10px;border:2px solid var(--line);background:#fff}
+.opt b{font-size:16px}.opt .row{display:flex;gap:8px;margin-top:8px}.opt .row span{flex:1;background:#F1F5F9;border-radius:12px;padding:8px 6px;text-align:center;font-size:12px;color:var(--muted);font-weight:600}
+.opt .row span strong{display:block;font:400 24px "Bebas Neue";color:var(--navy)}
+/* ejemplo */
+.ej{background:linear-gradient(160deg,var(--navy),#071526);color:#fff;border-radius:24px;padding:22px;margin-top:14px;position:relative;overflow:hidden}
+.ej .pr{font-family:"Bebas Neue";font-size:56px;color:var(--gold2);line-height:1}
+.ej .g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.ej .g div{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:12px}
+.ej .g div.best{border-color:var(--gold);background:rgba(245,183,0,.12)}
+.ej small{display:block;font-size:11px;letter-spacing:1.5px;font-weight:800;color:#93C5FD;margin-bottom:4px}
+.ej .g b{font:400 28px "Bebas Neue";display:block;line-height:1.1}.ej .nt{font-size:12px;color:#94A3B8;margin:12px 0 0}
+/* proteccion */
+.pt{display:grid;gap:10px}.pt>div{display:flex;gap:12px;align-items:flex-start;background:#fff;border-radius:16px;padding:14px;box-shadow:0 4px 14px rgba(11,27,51,.05)}
+.pt>div>span{font-size:24px}.pt b{display:block;margin-bottom:2px}.pt p{margin:0;font-size:14.5px;color:#475569}
+/* planes */
+.planes{display:grid;gap:12px}
+.plan{border-radius:24px;padding:22px;position:relative;overflow:hidden}
+.plan.c{background:#fff;border:2px solid #BFDBFE}
+.plan.p{background:linear-gradient(150deg,#1C1917,#0B0F19);color:#fff;border:2px solid var(--gold)}
+.plan .tag{position:absolute;top:16px;right:16px;background:var(--gold);color:#1C1917;font-size:11px;font-weight:800;letter-spacing:1px;padding:5px 10px;border-radius:20px}
+.plan small{font-size:12px;font-weight:800;letter-spacing:3px;color:var(--sea)}.plan.p small{color:var(--gold)}
+.plan .pz{font:400 64px/1 "Bebas Neue";margin:6px 0 2px}.plan .pz span{font-size:22px;letter-spacing:1px;color:var(--muted)}.plan.p .pz span{color:#A8A29E}
+.plan ul{margin:12px 0 0;padding:0;list-style:none}.plan li{padding:7px 0;border-top:1px solid rgba(148,163,184,.25);font-size:15px}.plan li b{color:var(--sea)}.plan.p li b{color:var(--gold2)}
+/* faq */
+details{background:#fff;border-radius:16px;margin:10px 0;box-shadow:0 4px 14px rgba(11,27,51,.05)}
+summary{list-style:none;padding:16px 44px 16px 16px;font-weight:700;cursor:pointer;position:relative}summary::-webkit-details-marker{display:none}
+summary::after{content:"+";position:absolute;right:16px;top:12px;font-size:24px;color:var(--sea)}details[open] summary::after{content:"–"}
+details p{padding:0 16px 14px;margin:0;color:#475569}
+/* crucero */
+.cru{background:linear-gradient(180deg,#071526,#0E2A52);color:#fff;padding:46px 0 30px;margin-top:40px}
+.cru h2{color:#fff}.cru h2 em{color:var(--gold2)}.cru .k{color:var(--gold)}
+.vid{position:relative;padding-top:56.25%;border-radius:20px;overflow:hidden;margin:14px 0;background:#000;box-shadow:0 14px 40px rgba(0,0,0,.4)}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.prob{background:rgba(245,183,0,.12);border:1px solid rgba(245,183,0,.45);border-radius:16px;padding:14px;font-size:15px;color:#FEF3C7;margin:14px 0}
+.ruta{position:relative;margin:18px 0 6px;padding-left:28px}
+.ruta::before{content:"";position:absolute;left:10px;top:8px;bottom:8px;width:2px;background:linear-gradient(var(--gold),var(--sky))}
+.pa{position:relative;padding:10px 0 14px}.pa::before{content:"";position:absolute;left:-24px;top:16px;width:14px;height:14px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(245,183,0,.25)}
+.pa.mar::before{background:var(--sky);box-shadow:0 0 0 4px rgba(42,193,241,.25)}
+.pa small{font-size:12px;color:#93C5FD;font-weight:700;letter-spacing:1px}.pa b{display:block;font-size:17px}.pa a{font-size:13.5px;color:var(--gold2);font-weight:700;text-decoration:none}
+/* simulador */
+.sim{background:#fff;color:var(--ink);border-radius:24px;padding:20px;margin:22px 0;box-shadow:0 14px 40px rgba(0,0,0,.3)}
+.sim h3{margin:0 0 4px;font-size:22px}.sim .sb{font-size:14px;color:var(--muted);margin-bottom:14px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#F1F5F9;border-radius:14px;padding:4px;margin:6px 0 14px}
+.seg button{border:0;background:transparent;border-radius:11px;padding:11px;font:800 15px Figtree;color:var(--muted);cursor:pointer}.seg button.on{background:#fff;color:var(--navy);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.lab{font-size:13px;font-weight:800;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin:8px 0 6px}
+.pv{font:400 46px/1 "Bebas Neue";color:var(--navy)}
+input[type=range]{width:100%;accent-color:var(--sea);margin:8px 0}
+.pch{display:flex;gap:6px;flex-wrap:wrap}.pch button{border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:7px 12px;font:700 14px Figtree;color:var(--navy);cursor:pointer}.pch button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+input[type=date]{width:100%;font:600 16px Figtree;padding:12px;border:1.5px solid var(--line);border-radius:12px;color:var(--ink);background:#fff}
+.res{display:grid;gap:12px;margin-top:16px}
+.ro{border-radius:18px;padding:16px;border:2px solid var(--line)}
+.ro.ok{border-color:#86EFAC;background:#F0FDF4}.ro.no{border-color:#FDBA74;background:#FFF7ED}
+.ro h4{margin:0 0 8px;font-size:17px}.ro .g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ro .g div{background:#fff;border-radius:12px;padding:9px;text-align:center}.ro .g small{display:block;font-size:11px;color:var(--muted);font-weight:700}.ro .g b{font:400 26px "Bebas Neue";color:var(--navy)}
+.ro p{margin:10px 0 0;font-size:14.5px}.ro .fl{font-weight:800}
+.nt2{font-size:12px;color:var(--muted);margin-top:12px}
+.libre{background:rgba(42,193,241,.12);border:1px solid rgba(42,193,241,.4);border-radius:16px;padding:14px;color:#E0F2FE;font-size:15px}
+.fin{text-align:center;padding:30px 0 10px}.fin h2{font-size:48px}
+.foot{text-align:center;font-size:12px;color:#94A3B8;padding:18px 0 4px}
+/* barra fija */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .35s}
+.bar.on{transform:none}.bar .btn{max-width:620px;margin:0 auto;padding:14px}
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s,transform .7s}.rv.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.bars i{transform:none}}
+</style></head>
+<body>
+<header class="hero">
+ <img class="logo" src="media/logo-plus.png" alt="Action Leaders PLUS">
+ <div class="w">
+  <div class="host" id="host" hidden><i id="hAv"></i><span>Le comparte esta información<br><b id="hNm"></b></span></div>
+  <div class="hi" id="hiN">🚢 Membresía de viajes</div>
+  <h1>Viaje más<br><span>con el mismo dinero</span></h1>
+  <p>Así funciona la membresía de viajes: usted ahorra cada mes, su dinero se convierte en el <b>doble de puntos</b> y con ellos reserva hoteles, tours y cruceros.</p>
+  <a class="btn bg" href="#como">Ver cómo funciona ↓</a>
+  <a class="scroll" href="#sim">o vaya directo al simulador 🧮</a>
+ </div>
+</header>
+
+<main>
+<div class="w">
+ <section class="rv" style="padding-top:22px">
+  <div class="stats"><div class="st"><b>+190</b><span>países</span></div><div class="st"><b>+10</b><span>años</span></div><div class="st"><b>×2</b><span>su dinero en puntos</span></div></div>
+ </section>
+
+ <section class="rv">
+  <p class="k">¿Qué es inCruises?</p>
+  <h2>Un club de viajes <em>con presencia global</em></h2>
+  <p>Es una membresía de viajes. Cada mes usted aparta un monto para su próximo viaje y recibe el doble en puntos para usarlos en:</p>
+  <div class="chips"><span>🏨 Hoteles y resorts</span><span>🎈 Tours y experiencias</span><span>🚢 Cruceros de lujo</span></div>
+  <div class="imgc"><img src="media/mem/club.jpg" alt="Hoteles, tours y cruceros" loading="lazy"></div>
+ </section>
+
+ <section class="rv" id="como">
+  <p class="k">Cómo funciona</p>
+  <h2>3 pasos para <em>viajar</em></h2>
+  <div class="step"><div class="n">1</div><div><h3>Ahorre y duplique</h3><p>Su aporte mensual se convierte en el <b>doble de puntos</b> para viajar.</p>
+   <div class="dup"><div class="c"><small>CLASSIC</small><b>$100 → 200</b><span style="font-size:12px;color:#64748B">puntos al mes</span></div><div class="p"><small>PREMIUM</small><b>$250 → 500</b><span style="font-size:12px;opacity:.8">puntos al mes</span></div></div></div></div>
+  <div class="step"><div class="n">2</div><div style="flex:1"><h3>Acumule para su crucero</h3><p>Mes a mes sus puntos crecen. Así se ven en 6 meses con Premium:</p>
+   <div class="bars" id="bars">
+    <div><em>500</em><i style="height:16%"></i><small>Mes 1</small></div><div><em>1,000</em><i style="height:33%"></i><small>Mes 2</small></div><div><em>1,500</em><i style="height:50%"></i><small>Mes 3</small></div><div><em>2,000</em><i style="height:66%"></i><small>Mes 4</small></div><div><em>2,500</em><i style="height:83%"></i><small>Mes 5</small></div><div><em>3,000</em><i style="height:100%"></i><small>Mes 6</small></div>
+   </div><p style="font-size:13px;color:var(--muted)">Con Classic: 1,200 puntos en 6 meses. Además recibe puntos de bienvenida al unirse.</p></div></div>
+  <div class="step"><div class="n">3</div><div style="flex:1"><h3>Reserve a su manera</h3><p>Con sus puntos reserva de dos formas:</p>
+   <div class="opt"><b>Opción 1 · Mitad y mitad</b><div class="row"><span><strong>50%</strong>puntos</span><span><strong>50%</strong>efectivo</span><span><strong>90</strong>días antes</span></div></div>
+   <div class="opt"><b>Opción 2 · Todo con puntos</b><div class="row"><span><strong>100%</strong>puntos</span><span><strong>×1.5</strong>del precio</span><span><strong>270</strong>días antes</span></div></div></div></div>
+ </section>
+
+ <section class="rv">
+  <p class="k">Ejemplo real</p>
+  <h2>Así se reserva <em>un crucero</em></h2>
+  <div class="ej">
+   <div style="font-size:14px;color:#CBD5E1">🛏️ 7 noches · 👥 2 personas · 🍽️ Todo incluido</div>
+   <div style="margin-top:8px;font-size:13px;color:#93C5FD;font-weight:700;letter-spacing:1px">PRECIO DE EJEMPLO</div>
+   <div class="pr">$1,600 USD</div>
+   <div class="g"><div><small>OPCIÓN 1 · MITAD Y MITAD</small><b>800 pts + $800</b><span style="font-size:12px;color:#CBD5E1">Reserva 90 días antes</span></div>
+    <div class="best"><small style="color:var(--gold)">OPCIÓN 2 · TODO CON PUNTOS</small><b>2,400 pts</b><span style="font-size:12px;color:#FEF3C7">$0 de su bolsillo</span></div></div>
+   <p class="nt">$1,600 × 1.5 = 2,400 puntos. Precio ilustrativo: varía según el crucero y la fecha.</p>
+  </div>
+ </section>
+
+ <section class="rv">
+  <p class="k">Tranquilidad</p>
+  <h2>Su dinero <em>protegido</em></h2>
+  <div class="pt">
+   <div><span>✅</span><div><b>Pago puntual</b><p>Pague en su fecha o dentro de los 5 días siguientes para duplicar sus puntos.</p></div></div>
+   <div><span>🛡️</span><div><b>Cuenta activa</b><p>Tiene hasta 60 días desde su último pago para mantener su cuenta activa.</p></div></div>
+   <div><span>🔒</span><div><b>Pagos protegidos</b><p>Repayd protege sus pagos y garantiza el 100% de su viaje al mantener sus pagos al día.</p></div></div>
+  </div>
+ </section>
+
+ <section class="rv" id="planes">
+  <p class="k">Su inversión</p>
+  <h2>¿Con cuánto <em>empieza?</em></h2>
+  <div class="planes">
+   <div class="plan c"><small>CLASSIC</small><div class="pz">$200 <span>de inicio</span></div>
+    <ul><li>🎁 <b>350 puntos</b> de bienvenida</li><li>💰 Luego <b>$100 al mes</b> = 200 puntos</li><li>🚢 Ideal para empezar a viajar</li></ul></div>
+   <div class="plan p"><span class="tag">VIAJA MÁS RÁPIDO</span><small>PREMIUM</small><div class="pz">$500 <span>de inicio</span></div>
+    <ul><li>🎁 <b>800 puntos</b> de bienvenida</li><li>💰 Luego <b>$250 al mes</b> = 500 puntos</li><li>🚀 Junta sus puntos en menos tiempo</li></ul></div>
+  </div>
+  <a class="btn bw" style="margin-top:16px" data-wa="plan" href="#">📲 Quiero mi membresía</a>
+ </section>
+
+ <section class="rv">
+  <p class="k">Preguntas frecuentes</p>
+  <h2>Sus <em>dudas</em></h2>
+  <details><summary>¿Tengo que vender algo?</summary><p>No. Puede usar la membresía solo para viajar. Si un día la recomienda, el club tiene beneficios para usted, pero no es obligatorio.</p></details>
+  <details><summary>¿Y si un mes no puedo pagar?</summary><p>Tiene hasta 60 días desde su último pago para mantener su cuenta activa. Pagando a tiempo, duplica sus puntos.</p></details>
+  <details><summary>¿Cuándo puedo viajar?</summary><p>Cuando junte los puntos que necesita. Con la opción mitad y mitad puede reservar desde 90 días antes; con todo en puntos, desde 270 días antes.</p></details>
+  <details><summary>¿Puedo elegir cualquier destino?</summary><p>Sí. Tiene acceso a miles de cruceros, hoteles y tours en más de 190 países. Usted decide a dónde, cuándo y con quién.</p></details>
+ </section>
+</div>
+
+<section class="cru" id="crucero">
+ <div class="w">
+  <p class="k">Nuestro próximo crucero en equipo</p>
+  <h2>🚢 MSC Opera · <em>Caribe Sur</em></h2>
+  <p style="color:#CBD5E1">7 noches · del 30 de agosto al 6 de septiembre de 2027</p>
+  <div class="vid"><iframe src="https://www.youtube-nocookie.com/embed/e8wi6lQuHW8?rel=0&playsinline=1" title="Video del crucero" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+  <div class="prob">⭐ Este es <b>uno de los cruceros probables</b> que tomaremos juntos en equipo el próximo año.</div>
+  <div class="ruta">
+   <div class="pa"><small>30 AGO · SALIDA</small><b>La Romana, República Dominicana</b><a href="https://es.wikipedia.org/wiki/La_Romana_(Rep%C3%BAblica_Dominicana)" target="_blank" rel="noopener">Conocer La Romana ›</a></div>
+   <div class="pa"><small>31 AGO</small><b>Isla Catalina, República Dominicana</b><a href="https://es.wikipedia.org/wiki/Isla_Catalina_(Rep%C3%BAblica_Dominicana)" target="_blank" rel="noopener">Conocer Isla Catalina ›</a></div>
+   <div class="pa mar"><small>1 SEP</small><b>🌊 Día en altamar</b><span style="font-size:13.5px;color:#CBD5E1">Piscinas, shows y descanso a bordo</span></div>
+   <div class="pa"><small>2 SEP</small><b>Bridgetown, Barbados</b><a href="https://es.wikipedia.org/wiki/Bridgetown" target="_blank" rel="noopener">Conocer Bridgetown ›</a></div>
+   <div class="pa"><small>3 SEP</small><b>Fort-de-France, Martinica</b><a href="https://es.wikipedia.org/wiki/Fort-de-France" target="_blank" rel="noopener">Conocer Fort-de-France ›</a></div>
+   <div class="pa"><small>4 SEP</small><b>Pointe-à-Pitre, Guadalupe</b><a href="https://es.wikipedia.org/wiki/Pointe-%C3%A0-Pitre" target="_blank" rel="noopener">Conocer Pointe-à-Pitre ›</a></div>
+   <div class="pa"><small>5 SEP</small><b>Road Town, Islas Vírgenes Británicas</b><a href="https://es.wikipedia.org/wiki/Road_Town" target="_blank" rel="noopener">Conocer Road Town ›</a></div>
+   <div class="pa"><small>6 SEP · REGRESO</small><b>La Romana, República Dominicana</b></div>
+  </div>
+  <div class="libre">🌎 <b>Usted puede elegir el crucero, el destino y la fecha que quiera.</b> Este es solo un ejemplo: con su membresía tiene acceso a miles de cruceros, hoteles y tours en más de 190 países.</div>
+
+  <div class="sim" id="sim">
+   <h3>🧮 ¿Cuánto le costaría su crucero?</h3>
+   <div class="sb">Use el precio del crucero que usted quiera. Aquí le ponemos de ejemplo el MSC Opera.</div>
+   <div class="lab">Su membresía</div>
+   <div class="seg" id="sPlan"><button data-p="c">Classic</button><button data-p="p" class="on">Premium</button></div>
+   <div class="lab">Precio del crucero (ejemplo)</div>
+   <div class="pv" id="sPv">$1,600</div>
+   <input type="range" id="sPr" min="500" max="6000" step="50" value="1600" aria-label="Precio del crucero">
+   <div class="pch" id="sCh"><button data-v="1200">$1,200</button><button data-v="1600" class="on">$1,600</button><button data-v="2000">$2,000</button><button data-v="2500">$2,500</button><button data-v="3500">$3,500</button></div>
+   <div class="lab" style="margin-top:14px">Fecha del crucero</div>
+   <input type="date" id="sFe" value="2027-08-30">
+   <div class="res" id="sRes"></div>
+   <p class="nt2">Cálculo de ejemplo con los puntos de bienvenida (Classic 350 · Premium 800) y su ahorro mensual (Classic 200 · Premium 500 puntos), pagando a tiempo. El precio real varía según el crucero y la fecha. No es una cotización.</p>
+  </div>
+
+  <div class="fin">
+   <h2 style="color:#fff">¿Nos vamos <em>juntos?</em></h2>
+   <p style="color:#CBD5E1">Dé el primer paso hoy y empiece a juntar los puntos para su próximo viaje.</p>
+   <a class="btn bg" data-wa="crucero" href="#">🙋 Quiero ir en este crucero</a>
+   <a class="btn bw" style="margin-top:10px" data-wa="plan" href="#">📲 Quiero mi membresía</a>
+   <div class="foot">Action Leaders PLUS · #HastaQueFuncione<br>Información de referencia de inCruises. Precios y reglas pueden cambiar.</div>
+  </div>
+ </div>
+</section>
+</main>
+
+<div class="bar" id="bar"><a class="btn bw" data-wa="plan" href="#">📲 Quiero mi membresía</a></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,doc,getDoc,setDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const $=id=>document.getElementById(id),fm=n=>Math.round(n).toLocaleString("en-US");
+const U=new URLSearchParams(location.search);
+const code=(U.get("de")||"").trim().toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60);
+const pName=(U.get("p")||"").replace(/[<>]/g,"").trim().slice(0,50),first=pName.split(/\s+/)[0]||"";
+const cid=(U.get("c")||"").replace(/[^A-Za-z0-9_-]/g,"").slice(0,40);
+if(first){$("hiN").textContent="🚢 "+first+", esto es para usted"}
+// animaciones al bajar
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("on");if(e.target.querySelector("#bars"))$("bars").classList.add("on")}}),{threshold:.15});
+document.querySelectorAll(".rv").forEach(x=>io.observe(x));
+addEventListener("scroll",()=>{$("bar").classList.toggle("on",scrollY>innerHeight*.8&&!nearEnd())},{passive:true});
+function nearEnd(){return innerHeight+scrollY>document.body.scrollHeight-260}
+// ----- simulador -----
+let plan="p";const PL={c:{n:"Classic",m:200,w:350,u:100},p:{n:"Premium",m:500,w:800,u:250}};
+const MES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const fd=d=>d.getDate()+" de "+["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"][d.getMonth()]+" de "+d.getFullYear();
+let used=false;
+function sim(touch){const P=PL[plan],pr=+$("sPr").value,fe=new Date(($("sFe").value||"2027-08-30")+"T12:00:00"),hoy=new Date();
+ $("sPv").textContent="$"+fm(pr);
+ const meses=pts=>Math.max(0,Math.ceil((pts-P.w)/P.m));
+ const mHasta=d=>Math.max(0,(d.getFullYear()-hoy.getFullYear())*12+(d.getMonth()-hoy.getMonth())-(d.getDate()<hoy.getDate()?1:0));
+ const card=(t,pts,cash,dias)=>{const lim=new Date(fe);lim.setDate(lim.getDate()-dias);const nec=meses(pts),hay=mHasta(lim),pas=lim<hoy,ok=!pas&&nec<=hay;
+  return `<div class="ro ${ok?"ok":"no"}"><h4>${t}</h4><div class="g"><div><small>PUNTOS</small><b>${fm(pts)}</b></div><div><small>DE SU BOLSILLO</small><b>$${fm(cash)}</b></div></div>
+   <p>⏱️ ${nec===0?`<span class="fl">¡Con sus ${fm(P.w)} puntos de bienvenida ya le alcanza!</span>`:`Junta los puntos en unos <span class="fl">${nec} ${nec===1?"mes":"meses"}</span> con ${P.n} (bienvenida + $${P.u} al mes).`}</p>
+   <p>📅 Reserve a más tardar el <b>${fd(lim)}</b> (${dias} días antes).</p>
+   <p>${pas?"⚠️ Para esta fecha ya pasó el plazo. Elija un crucero más adelante.":ok?`✅ <b>Le alcanza el tiempo</b> si se une hoy${hay?` (tiene unos ${hay} meses)`:""}.`:`⚠️ Le faltarían unos ${nec-hay} meses. Para esta fecha conviene la otra opción o un crucero más adelante.`}</p></div>`};
+ $("sRes").innerHTML=card("Opción 1 · Mitad y mitad",pr/2,pr/2,90)+card("Opción 2 · Todo con puntos",pr*1.5,0,270);
+ if(touch&&!used){used=true;save({resp:"sim"})}}
+$("sPlan").onclick=e=>{const b=e.target.closest("button");if(!b)return;plan=b.dataset.p;[...$("sPlan").children].forEach(x=>x.classList.toggle("on",x===b));sim(1)};
+$("sPr").oninput=()=>{[...$("sCh").children].forEach(x=>x.classList.toggle("on",+x.dataset.v===+$("sPr").value));sim(1)};
+$("sCh").onclick=e=>{const b=e.target.closest("button");if(!b)return;$("sPr").value=b.dataset.v;$("sPr").oninput()};
+$("sFe").onchange=()=>sim(1);sim(0);
+// ----- socio que comparte + registro de la visita -----
+let P=null,db=null;
+try{const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});
+ db=getFirestore(app);if(code){const d=await getDoc(doc(db,"perfiles",code));if(d.exists())P=d.data()}}catch(e){}
+const host=P&&P.nombre?String(P.nombre):"",hostF=host.split(" ")[0]||"",hostWa=P?String(P.wa||P.waS||"").replace(/\D/g,""):"";
+if(host){$("host").hidden=false;$("hNm").textContent=host;const av=$("hAv");if(P.foto&&/^data:image\//.test(P.foto))av.style.backgroundImage=`url(${P.foto})`;else av.textContent=host.split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase()}
+const LSg=k=>{try{return JSON.parse(localStorage.getItem("mem:"+k))}catch(e){return null}},LSs=(k,v)=>{try{localStorage.setItem("mem:"+k,JSON.stringify(v))}catch(e){}};
+const vKey="v-"+code+"-"+(cid||pName.toLowerCase()||"anon");let V=LSg(vKey)||{id:null};const D={},t0=Date.now();let maxP=0,saveT;
+async function save(extra,now){Object.assign(D,extra||{});if(!(db&&P&&P.uid))return;clearTimeout(saveT);const go=async()=>{try{
+  if(!V.id){V.id="m_"+Math.random().toString(36).slice(2,10)+Date.now().toString(36);LSs(vKey,V);D.t0=Date.now();D.n=(pName||"Sin nombre").slice(0,60);if(cid)D.c=cid}
+  D.pct=maxP;D.dur=Math.round((Date.now()-t0)/1000);D.t=Date.now();await setDoc(doc(db,"users",P.uid,"sala",V.id),D,{merge:true})}catch(e){}};if(now)await go();else saveT=setTimeout(go,1200)}
+save({},true);
+let lastP=0;addEventListener("scroll",()=>{const p=Math.min(100,Math.round((scrollY+innerHeight)/document.body.scrollHeight*100));if(p>maxP){maxP=p;if(maxP-lastP>=20||maxP>=95){lastP=maxP;save()}}},{passive:true});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")save({},true)});
+// ----- WhatsApp -----
+function waTxt(k){const pl=PL[plan].n,hola=hostF?`Hola ${hostF}`:"Hola",yo=first?`Soy ${first}. `:"";
+ return k==="crucero"?`${hola} 😊\n\n${yo}Vi la página de la membresía y me encantó el crucero MSC Opera por el Caribe Sur. 🚢\n\nQuiero ir en ese crucero. ¿Cómo empiezo?`
+  :`${hola} 😊\n\n${yo}Vi la página de cómo funciona la membresía de viajes.\n\nMe interesa la membresía ${pl}. ¿Me ayuda a empezar?`}
+document.addEventListener("click",e=>{const a=e.target.closest("[data-wa]");if(!a)return;e.preventDefault();save({como:a.dataset.wa==="crucero"?"crucero":"whatsapp"},true);
+ const t=encodeURIComponent(waTxt(a.dataset.wa));location.href=hostWa.length>=8?`https://wa.me/${hostWa}?text=${t}`:`https://wa.me/?text=${t}`});
+</script>
+</body></html>
