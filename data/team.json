@@ -157,15 +157,15 @@
    "id": "karen-lizeth-paz-escober"
   },
   {
-   "actSemana": 0,
-   "activaciones": 2,
+   "actSemana": 1,
+   "activaciones": 3,
    "linea": "Cecilia Hernández",
    "nombre": "Yeny Mildred Castellanos",
    "presSemana": 0,
    "presentaciones": 5,
    "regSemana": 1,
    "registros": 4,
-   "volumen": 400,
+   "volumen": 900,
    "id": "yeny-mildred-castellanos"
   },
   {
@@ -1387,7 +1387,7 @@
    "nuevos": 2,
    "presentaciones": 4,
    "rango": "Team Leader",
-   "volumen": 400,
+   "volumen": 900,
    "volumenDetalle": "2 Classic",
    "id": "yeni-castellanos",
    "volumenHoja": 400
@@ -2592,6 +2592,16 @@
    "wk": "a0a429",
    "fuente": "gmail",
    "id": "ricardo-josue-ponce-cruz"
+  },
+  {
+   "socio": "Jose francisco Cartagena alverto",
+   "paquete": "Premium",
+   "patrocinador": "Yeny mildred Castellanos castellanos",
+   "fecha": "2026-10-31T18:55:32Z",
+   "ek": "578604",
+   "wk": "4bbd0c",
+   "fuente": "gmail",
+   "id": "jose-francisco-cartagena-alverto"
   }
  ],
  "academia": [],
@@ -2609,7 +2619,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-31T18:55:22Z",
+  "activacionesCorte": "2026-10-31T18:55:32Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2619,7 +2629,7 @@
   "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-31T12:56:00-06:00",
+  "rankingActualizado": "2026-10-31T13:56:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
