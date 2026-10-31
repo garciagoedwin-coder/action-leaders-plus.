@@ -227,7 +227,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 #presOv .pv-gs{align-self:flex-start;background:transparent;border:1px dashed rgba(236,169,72,.6);color:#ECA948;border-radius:99px;padding:6px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
 #presOv .pv-nav{display:flex;gap:10px;padding:10px 14px max(16px,env(safe-area-inset-bottom));position:sticky;bottom:0;background:linear-gradient(transparent,#0E2A4F 30%)}#presOv .pv-nav button{flex:1;border:0;border-radius:14px;padding:14px;font:inherit;font-weight:800;font-size:15px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}#presOv .pv-nav button:disabled{opacity:.4}#presOv .pv-nav .go{background:#ECA948;color:#0B2E57}
 @media (orientation:landscape) and (max-height:560px){#presOv .pv-sl{height:calc(100vh - 150px);aspect-ratio:auto;margin:0 auto;width:auto;max-width:calc(100vw - 20px)}#presOv .pv-sl img{width:auto;height:100%}}
-.stpct{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none}.seg.rd-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px}.seg.rd-seg button{white-space:nowrap}.rd-f{padding:12px 0;border-bottom:1px solid var(--line,#e2e8f0)}.rd-f:last-child{border-bottom:0}.rd-f.ok{opacity:.65}.rd-hero{background:linear-gradient(135deg,#0A7DAD,#13447A);color:#fff;border:0}.crmord.rd-fl{flex-wrap:wrap}.crmord.rd-fl button{flex:none;padding:6px 10px}[data-rh][aria-pressed="true"]{background:#DCFCE7;color:#15803D;border-color:#86EFAC}.crmord{display:flex;align-items:center;gap:5px;margin:0 0 10px}.crmord button{border:1px solid var(--line,#e2e8f0);background:#fff;border-radius:999px;padding:6px 4px;flex:1;white-space:nowrap;font:inherit;font-size:12px;font-weight:600;color:#334155;cursor:pointer}.crmord button[aria-pressed="true"]{background:var(--brand,#0E7490);border-color:transparent;color:#fff}.stpct b{font-size:17px;line-height:1}.stpct em{font-style:normal;font-size:10.5px;font-weight:700;color:#B45309}
+.stpct{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none}.seg.rd-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px}.seg.rd-seg button{white-space:nowrap}.rd-h{display:flex;justify-content:space-between;align-items:center;margin:14px 0 2px;padding:6px 10px;border-radius:10px;background:#E0F2FE;color:#075985;font-weight:800;font-size:13px}.rd-h:first-child{margin-top:0}.rd-h span{background:#fff;border-radius:999px;padding:1px 8px;font-size:12px}.rd-ya{color:#15803D!important;border-color:#86EFAC!important;background:#F0FDF4!important;font-size:12.5px}.rd-f{padding:12px 0;border-bottom:1px solid var(--line,#e2e8f0)}.rd-f:last-child{border-bottom:0}.rd-f.ok{opacity:.65}.rd-hero{background:linear-gradient(135deg,#0A7DAD,#13447A);color:#fff;border:0}.crmord.rd-fl{flex-wrap:wrap}.crmord.rd-fl button{flex:none;padding:6px 10px}[data-rh][aria-pressed="true"]{background:#DCFCE7;color:#15803D;border-color:#86EFAC}.crmord{display:flex;align-items:center;gap:5px;margin:0 0 10px}.crmord button{border:1px solid var(--line,#e2e8f0);background:#fff;border-radius:999px;padding:6px 4px;flex:1;white-space:nowrap;font:inherit;font-size:12px;font-weight:600;color:#334155;cursor:pointer}.crmord button[aria-pressed="true"]{background:var(--brand,#0E7490);border-color:transparent;color:#fff}.stpct b{font-size:17px;line-height:1}.stpct em{font-style:normal;font-size:10.5px;font-weight:700;color:#B45309}
 .c-hot{background:#FFEDD5;color:#C2410C}
 .stsum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}.stsum button{border:0;border-radius:12px;padding:8px 4px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}.stsum b{display:block;font-size:20px}
 .pl-f{display:flex;align-items:center;gap:8px;font:inherit;font-size:12.5px;font-weight:700;border:0;background:none;color:inherit;padding:3px 0;width:100%;text-align:left;cursor:pointer}.pl-f em{font-style:normal;color:var(--muted)}.pl-f span{width:118px;flex:none}.pl-f i{flex:1;height:16px;border-radius:6px;background:var(--surface-2);overflow:hidden}.pl-f s{display:block;height:100%;border-radius:6px;text-decoration:none}.pl-f b{width:30px;text-align:right}
@@ -2393,15 +2393,21 @@ function redMsgS(r){const yo=miNombreCorto(),u="https://actionleadersplus.com/?u
 function redMsgX(r){const yo=miNombreCorto();return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`Usted ya tiene su código de socio y su red en inCruises. 🙌\n\nSi activa su membresía, empieza a ahorrar puntos con el doble punto para viajar en los cruceros del 2027.\n\n¿Le gustaría que le explique cómo hacerlo?`}
 function redMsgC(r){const yo=miNombreCorto();return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`¿Cómo va con su membresía? Si tiene alguna duda sobre sus puntos o cómo reservar su próximo viaje, con gusto le ayudo.`}
 function redHace(t){const m=Math.round((Date.now()-t)/6e4);return m<60?(m<=1?"ahora":"hace "+m+" min"):m<1440?"hace "+Math.round(m/60)+" h":"hace "+Math.round(m/1440)+" d"}
-function redStTxt(r){const s=r.st||{},o=[];if(s.h)o.push(`👍 Paga hoy · ${esc(redFirst(s.h.by))} ${redHace(s.h.t)}`);if(s.c)o.push(`📩 Le escribió ${esc(redFirst(s.c.by))} · ${redHace(s.c.t)}`);return o.join(" · ")}
+function redStTxt(r){const s=r.st||{},o=[];if(s.h)o.push(`👍 Paga hoy · ${esc(redFirst(s.h.by))} ${redHace(s.h.t)}`);return o.join(" · ")}
 async function redMarca(id,k){const r=(redL||[]).find(x=>x.id===id);if(!r)return;const st=Object.assign({},r.st||{});
   if(k==="h"&&st.h){delete st.h}else st[k]={t:Date.now(),by:miNombreCorto()||"Líder",u:store.uid};
   r.st=st;try{await store.db.doc("red/"+id).update({st})}catch(e){toast("No se pudo guardar ("+((e&&e.code)||"error")+")")}}
+let redPi="todo";
+function redPiDe(r){const me=store.uid,au=r.au||[],an=r.an||[],ap=r.ap||[],i=au.indexOf(me);
+  if(i===0)return "⭐ Mis directos";if(i>0)return an[i-1]||"Sin línea identificada";
+  if(r.lv===1)return "⭐ Mis directos";const j=ap.indexOf(1);return j>=0?an[j]:"Sin línea identificada"}
+function redBtnW(r,txt,css){const c=r.st&&r.st.c;if(!c)return `<button class="btn sm" data-rw="${esc(r.id)}" style="flex:1;${css}">${txt}</button>`;
+  const yo=c.u===store.uid;return `<button class="btn sm ghost rd-ya" data-rw="${esc(r.id)}" style="flex:1">✅ ${yo?"Recordado":esc(redFirst(c.by))+" ya le escribió"} · ${redHace(c.t)} · Reenviar</button>`}
 function redFila(r){const e=r.t==="p"?redEst(r):null,st=r.t==="p"?redStTxt(r):"";
-  const btn=r.t==="p"?(e.k==="ok"?"":`<div class="row" style="gap:6px;margin-top:8px"><button class="btn sm" data-rw="${esc(r.id)}" style="flex:1;background:#16A34A;color:#fff">💬 Recordarle</button><button class="btn sm ghost" data-rh="${esc(r.id)}" style="flex:none" aria-pressed="${!!(r.st&&r.st.h)}">👍 Paga hoy</button></div>`)
-    :r.t==="s"?`<div class="row" style="gap:6px;margin-top:8px"><button class="btn sm" data-rw="${esc(r.id)}" style="flex:1">📲 Invitar a la app</button></div>`
-    :r.t==="x"?`<div class="row" style="gap:6px;margin-top:8px"><button class="btn sm" data-rw="${esc(r.id)}" style="flex:1;background:#EA580C;color:#fff">💬 Invitarlo a activar su membresía</button></div>`
-    :`<div class="row" style="gap:6px;margin-top:8px"><button class="btn sm ghost" data-rw="${esc(r.id)}" style="flex:1">💬 Escribirle</button></div>`;
+  const btn=r.t==="p"?(e.k==="ok"?"":`<div class="row" style="gap:6px;margin-top:8px">${redBtnW(r,"💬 Recordarle","background:#16A34A;color:#fff")}<button class="btn sm ghost" data-rh="${esc(r.id)}" style="flex:none" aria-pressed="${!!(r.st&&r.st.h)}">👍 Paga hoy</button></div>`)
+    :r.t==="s"?`<div class="row" style="gap:6px;margin-top:8px">${redBtnW(r,"📲 Invitar a la app","")}</div>`
+    :r.t==="x"?`<div class="row" style="gap:6px;margin-top:8px">${redBtnW(r,"💬 Invitarlo a activar su membresía","background:#EA580C;color:#fff")}</div>`
+    :`<div class="row" style="gap:6px;margin-top:8px">${redBtnW(r,"💬 Escribirle","")}</div>`;
   return `<div class="rd-f${e&&e.k==="ok"?" ok":""}"><b>${esc(r.n)}</b><div class="small muted">${r.t==="p"?(r.ps?"<b style='color:#0A7DAD'>Socio</b> ":"Cliente "):""}${esc(r.t==="x"?"Solo código de socio":(r.pl||""))}${r.sp?` · Patrocina: ${esc(r.sp)}`:""}</div>${e?`<span class="chip ${e.cls}" style="margin-top:6px">${e.txt}</span>`:""}
    ${st?`<div class="small" style="margin-top:6px;color:#0A7DAD;font-weight:600">${st}</div>`:""}${btn}</div>`}
 function renderCierre(b){if(!redOk()){b.innerHTML=emptyCard("Cierre de mes","Aquí verá los ahorros pendientes de su red.");return}
@@ -2412,7 +2418,12 @@ function renderCierre(b){if(!redOk()){b.innerHTML=emptyCard("Cierre de mes","Aqu
     inc=E.filter(x=>x[1].k==="in").length,con=P.filter(r=>r.st&&r.st.c).length,falt=P.length-pag;
   let L=redSeg==="p"?E.filter(([r,e])=>redF==="todo"||(redF==="dp"&&e.k==="dp")||(redF==="in"&&e.k==="in")||(redF==="sin"&&e.k!=="ok"&&!(r.st&&r.st.c))||(redF==="ok"&&e.k==="ok")).sort((a,c)=>(a[1].o-c[1].o)||(Date.parse(a[0].dp||0)-Date.parse(c[0].dp||0))).map(x=>x[0])
     :redSeg==="s"?S.slice().sort((a,c)=>a.n.localeCompare(c.n)):redSeg==="x"?X.slice().sort((a,c)=>a.n.localeCompare(c.n)):C.slice().sort((a,c)=>a.n.localeCompare(c.n));
+  const PI={};L.forEach(r=>{const k=redPiDe(r);r._pi=k;PI[k]=(PI[k]||0)+1});const piL=Object.keys(PI).sort((a,c)=>(a.startsWith("⭐")?-1:c.startsWith("⭐")?1:0)||(PI[c]-PI[a])||a.localeCompare(c));
+  if(redPi!=="todo"&&!PI[redPi])redPi="todo";if(redPi!=="todo")L=L.filter(r=>r._pi===redPi);
   const q=redQ.trim().toLowerCase();if(q)L=L.filter(r=>(r.n+" "+(r.sp||"")).toLowerCase().includes(q));
+  if(redPi==="todo"){const ord={};piL.forEach((k,i)=>ord[k]=i);L=L.map((r,i)=>[r,i]).sort((a,c)=>(ord[a[0]._pi]-ord[c[0]._pi])||(a[1]-c[1])).map(x=>x[0])}
+  const piSel=piL.length>1?`<select class="inp" id="rdPi" style="padding:10px 12px"><option value="todo">📂 Todas mis líneas · ${piL.reduce((a,k)=>a+PI[k],0)}</option>${piL.map(k=>`<option value="${esc(k)}" ${redPi===k?"selected":""}>${esc(k)} · ${PI[k]}</option>`).join("")}</select>`:"";
+  const filas=()=>{let h="",last=null;L.slice(0,200).forEach(r=>{if(redPi==="todo"&&piL.length>1&&r._pi!==last){last=r._pi;h+=`<div class="rd-h">${esc(r._pi)}<span>${PI[r._pi]}</span></div>`}h+=redFila(r)});return h};
   const fb=(k,t)=>`<button type="button" data-rf="${k}" aria-pressed="${redF===k}">${t}</button>`;
   b.innerHTML=`<div class="card rd-hero"><div class="small" style="font-weight:800;letter-spacing:.08em;opacity:.85">💰 CIERRE DE MES</div>
     <div style="display:flex;align-items:baseline;gap:8px;margin:4px 0 2px"><b style="font-size:40px;line-height:1;font-family:'Barlow Condensed',Figtree,sans-serif">${falt}</b><span style="font-weight:700">ahorros pendientes en su red</span></div>
@@ -2423,16 +2434,17 @@ function renderCierre(b){if(!redOk()){b.innerHTML=emptyCard("Cierre de mes","Aqu
      :redSeg==="s"?`<p class="small muted" style="margin:0">Socios de su red en inCruises que aún no se registran en la app. No cuentan en su Índice de Duplicación hasta que se registren. Ya en la app: ${SA.length}.</p>`
      :`<p class="small muted" style="margin:0">Miembros de su red que no son socios: quedan como clientes.</p>`}
    <input class="inp" id="rdQ" type="search" placeholder="Buscar por nombre o patrocinador" value="${esc(redQ)}">
-   <div class="card"><div class="list" id="rdList">${L.length?L.slice(0,150).map(redFila).join(""):`<p class="muted small">No hay personas en esta vista.</p>`}${L.length>150?`<p class="small muted">Mostrando 150 de ${L.length}. Use el buscador.</p>`:""}</div></div>
+   ${piSel}<div class="card"><div class="list" id="rdList">${L.length?filas():`<p class="muted small">No hay personas en esta vista.</p>`}${L.length>200?`<p class="small muted">Mostrando 200 de ${L.length}. Use el buscador o elija una línea.</p>`:""}</div></div>
    ${isAdmin?`<div class="card">${redAdmHTML()}</div>`:""}
    <p class="small muted">Datos del reporte de inCruises. "Ya pagó" se actualiza con los correos de pago, varias veces al día.</p>`;
   redBind(b)}
 function redBind(b){const sg=$("#rdSeg");if(sg)sg.onclick=e=>{const x=e.target.closest("[data-rs]");if(!x)return;redSeg=x.dataset.rs;renderEquipo()};
   b.querySelectorAll("[data-rf]").forEach(x=>x.onclick=()=>{redF=redF===x.dataset.rf?"todo":x.dataset.rf;renderEquipo()});
+  const ps=$("#rdPi");if(ps)ps.onchange=()=>{redPi=ps.value;renderEquipo()};
   const qi=$("#rdQ");if(qi)qi.oninput=()=>{redQ=qi.value;const L=$("#rdList");clearTimeout(qi._t);qi._t=setTimeout(()=>{renderEquipo();const n=$("#rdQ");if(n){n.focus();n.setSelectionRange(n.value.length,n.value.length)}},350)};
   const li=$("#rdList");if(li)li.onclick=e=>{const w=e.target.closest("[data-rw]"),h=e.target.closest("[data-rh]");
     if(w){const r=redL.find(x=>x.id===w.dataset.rw);if(!r)return;const t=r.t==="p"?redMsgP(r):r.t==="s"?redMsgS(r):r.t==="x"?redMsgX(r):redMsgC(r);
-      if(r.t==="p")redMarca(r.id,"c");location.href="https://wa.me/"+(r.w||"")+"?text="+encodeURIComponent(t);setTimeout(()=>{if(eqTab==="cierre")renderEquipo()},800);return}
+      redMarca(r.id,"c");location.href="https://wa.me/"+(r.w||"")+"?text="+encodeURIComponent(t);setTimeout(()=>{if(eqTab==="cierre")renderEquipo()},800);return}
     if(h){redMarca(h.dataset.rh,"h").then(()=>renderEquipo())}};
   redBindAdm()}
 function redAdmHTML(){return `<b>🛠️ Admin: base de la red</b><p class="small muted" style="margin:4px 0 8px">Sube a Firebase el último reporte cifrado (data/red.enc) y calcula quién ve a cada persona: su patrocinador y los líderes desde Marketing Director de su línea.</p><button class="btn sm" id="rdUp" style="width:100%">⬆️ Cargar reporte a la app</button><p class="small" id="rdUpMsg" style="margin:6px 0 0"></p>`}
@@ -2454,7 +2466,8 @@ async function redSubir(btn){if(!isAdmin)return;const m=$("#rdUpMsg"),say=t=>{if
     D.rows.forEach(r=>{const me=uOf(r.k);if(me)enApp++;const ve=new Set();let iv="";
       (r.anc||[]).forEach((k,j)=>{const x=uOf(k);if(!x)return;if(!iv)iv=redInvDe(x);if(j===0||rangoActualIdx(x.registro,x.registro.nombre)>=RED_MD)ve.add(x.uid)});
       if(root){ve.add(root.uid);if(!iv)iv=redInvDe(root)}if(me)ve.delete(me.uid);if(ve.size>1||!root)conVe++;
-      const o={ps:r.ps?1:0,n:r.n,t:r.t,pl:r.pl||"",lv:r.lv||0,sp:r.sp||"",w:r.w||"",ek:r.ek||"",wk:r.wk||"",ve:[...ve],u:me?me.uid:"",iv,v:D.v};
+      const an=(r.anc||[]).map(k=>(P[k]||{}).n||""),ap=(r.anc||[]).map(k=>(P[k]||{}).lv||0),au=(r.anc||[]).map(k=>{const x=uOf(k);return x?x.uid:""});
+      const o={an,ap,au,ps:r.ps?1:0,n:r.n,t:r.t,pl:r.pl||"",lv:r.lv||0,sp:r.sp||"",w:r.w||"",ek:r.ek||"",wk:r.wk||"",ve:[...ve],u:me?me.uid:"",iv,v:D.v};
       if(r.t==="p"){o.dp=r.dp;o.in=r.in}docs[r.k]=o});
     say("Leyendo la base anterior…");let old={};try{(await store.db.collection("red").get()).docs.forEach(d=>old[d.id]=d.data())}catch(e){}
     const ops=[];Object.entries(docs).forEach(([k,o])=>{const a=old[k];o.st=a&&a.t===o.t&&a.st?a.st:{};ops.push(["set",k,o])});
@@ -4396,7 +4409,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261030224737";var busy=false,pend=null;
+(function(){var V="20261030230104";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
