@@ -1,15 +1,15 @@
 {
  "ranking": [
   {
-   "actSemana": 1,
-   "activaciones": 1,
+   "actSemana": 2,
+   "activaciones": 2,
    "linea": "Zamir Fuentes",
    "nombre": "Zamir Fuentes",
    "presSemana": 0,
    "presentaciones": 1,
    "regSemana": 2,
    "registros": 6,
-   "volumen": 500,
+   "volumen": 550,
    "id": "zamir-fuentes"
   },
   {
@@ -1414,7 +1414,7 @@
    "presentaciones": 6,
    "qbi": 33,
    "rango": "Marketing Director",
-   "volumen": 500,
+   "volumen": 550,
    "volumenDetalle": "",
    "id": "zamir-fuentes",
    "volumenHoja": 0
@@ -2582,6 +2582,16 @@
    "wk": "ce39c0",
    "fuente": "gmail",
    "id": "leida-patricia-morales"
+  },
+  {
+   "socio": "Ricardo josue Ponce cruz",
+   "paquete": "Starter",
+   "patrocinador": "Zamir Ely Fuentes Trochez",
+   "fecha": "2026-10-31T18:55:22Z",
+   "ek": "1ec7e9",
+   "wk": "a0a429",
+   "fuente": "gmail",
+   "id": "ricardo-josue-ponce-cruz"
   }
  ],
  "academia": [],
@@ -2599,7 +2609,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-31T17:55:29Z",
+  "activacionesCorte": "2026-10-31T18:55:22Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2609,7 +2619,7 @@
   "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-31T12:25:00-06:00",
+  "rankingActualizado": "2026-10-31T12:56:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -3485,7 +3495,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-10-31T18:25:28Z",
+   "v": "2026-10-31T18:56:12Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "0225a9": "2026-10-27T10:09:44Z",
@@ -3504,7 +3514,6 @@
     "178cdd": "2026-11-02T03:05:23Z",
     "17e6f8": "2026-10-21T05:08:35Z",
     "19567c": "2026-11-01T00:44:04Z",
-    "1d325a": "2026-10-31T19:37:33Z",
     "1ec7e9": "2026-10-31T21:06:45Z",
     "1f0c95": "2026-10-24T16:09:12Z",
     "202cbf": "2026-10-30T19:40:38Z",
@@ -3653,7 +3662,6 @@
     "ea3668": "2026-11-02T03:05:23Z",
     "eed4c5": "2026-10-24T16:09:12Z",
     "eeecba": "2026-11-01T23:11:17Z",
-    "efc7a7": "2026-10-31T19:37:33Z",
     "f205e6": "2026-10-31T07:09:44Z",
     "f3f790": "2026-11-01T20:58:39Z",
     "f54d15": "2026-10-30T18:07:33Z",
