@@ -227,7 +227,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 #presOv .pv-gs{align-self:flex-start;background:transparent;border:1px dashed rgba(236,169,72,.6);color:#ECA948;border-radius:99px;padding:6px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
 #presOv .pv-nav{display:flex;gap:10px;padding:10px 14px max(16px,env(safe-area-inset-bottom));position:sticky;bottom:0;background:linear-gradient(transparent,#0E2A4F 30%)}#presOv .pv-nav button{flex:1;border:0;border-radius:14px;padding:14px;font:inherit;font-weight:800;font-size:15px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}#presOv .pv-nav button:disabled{opacity:.4}#presOv .pv-nav .go{background:#ECA948;color:#0B2E57}
 @media (orientation:landscape) and (max-height:560px){#presOv .pv-sl{height:calc(100vh - 150px);aspect-ratio:auto;margin:0 auto;width:auto;max-width:calc(100vw - 20px)}#presOv .pv-sl img{width:auto;height:100%}}
-.stpct{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none}.crmord{display:flex;align-items:center;gap:5px;margin:0 0 10px}.crmord button{border:1px solid var(--line,#e2e8f0);background:#fff;border-radius:999px;padding:6px 4px;flex:1;white-space:nowrap;font:inherit;font-size:12px;font-weight:600;color:#334155;cursor:pointer}.crmord button[aria-pressed="true"]{background:var(--brand,#0E7490);border-color:transparent;color:#fff}.stpct b{font-size:17px;line-height:1}.stpct em{font-style:normal;font-size:10.5px;font-weight:700;color:#B45309}
+.stpct{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none}.rd-f{padding:12px 0;border-bottom:1px solid var(--line,#e2e8f0)}.rd-f:last-child{border-bottom:0}.rd-f.ok{opacity:.65}.rd-hero{background:linear-gradient(135deg,#0A7DAD,#13447A);color:#fff;border:0}.crmord.rd-fl{flex-wrap:wrap}.crmord.rd-fl button{flex:none;padding:6px 10px}[data-rh][aria-pressed="true"]{background:#DCFCE7;color:#15803D;border-color:#86EFAC}.crmord{display:flex;align-items:center;gap:5px;margin:0 0 10px}.crmord button{border:1px solid var(--line,#e2e8f0);background:#fff;border-radius:999px;padding:6px 4px;flex:1;white-space:nowrap;font:inherit;font-size:12px;font-weight:600;color:#334155;cursor:pointer}.crmord button[aria-pressed="true"]{background:var(--brand,#0E7490);border-color:transparent;color:#fff}.stpct b{font-size:17px;line-height:1}.stpct em{font-style:normal;font-size:10.5px;font-weight:700;color:#B45309}
 .c-hot{background:#FFEDD5;color:#C2410C}
 .stsum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}.stsum button{border:0;border-radius:12px;padding:8px 4px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}.stsum b{display:block;font-size:20px}
 .pl-f{display:flex;align-items:center;gap:8px;font:inherit;font-size:12.5px;font-weight:700;border:0;background:none;color:inherit;padding:3px 0;width:100%;text-align:left;cursor:pointer}.pl-f em{font-style:normal;color:var(--muted)}.pl-f span{width:118px;flex:none}.pl-f i{flex:1;height:16px;border-radius:6px;background:var(--surface-2);overflow:hidden}.pl-f s{display:block;height:100%;border-radius:6px;text-decoration:none}.pl-f b{width:30px;text-align:right}
@@ -1031,6 +1031,7 @@ nav.tabs button{z-index:0;isolation:isolate}
       <div class="seg" role="tablist" id="eqSeg">
       <button aria-selected="true" data-k="ranking">🏆 Ranking</button>
       <button aria-selected="false" data-k="mios" id="eqMios">👥 Mi equipo</button>
+      <button aria-selected="false" data-k="cierre" id="eqCierre" hidden>💰 Cierre</button>
 
       </div>
       <div id="eqBody" style="display:flex;flex-direction:column;gap:16px"></div>
@@ -1118,16 +1119,16 @@ nav.tabs button{z-index:0;isolation:isolate}
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,onAuthStateChanged,signOut,setPersistence,browserLocalPersistence} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {initializeFirestore,persistentLocalCache,doc,collection,getDoc,setDoc,getDocs,getDocsFromCache,addDoc,deleteDoc,onSnapshot,serverTimestamp,query,where} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {initializeFirestore,persistentLocalCache,doc,collection,getDoc,setDoc,getDocs,getDocsFromCache,addDoc,deleteDoc,onSnapshot,serverTimestamp,query,where,limit,writeBatch,updateDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});
 const auth=getAuth(app);
 let fdb;try{fdb=initializeFirestore(app,{localCache:persistentLocalCache(),ignoreUndefinedProperties:true})}catch(e){fdb=initializeFirestore(app,{ignoreUndefinedProperties:true})}
 const wrapS=q=>({docs:q.docs.map(d=>({id:d.id,data:()=>d.data()}))});
-const D=p=>({get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>setDoc(doc(fdb,p),b,o||{}),delete:()=>deleteDoc(doc(fdb,p)),
+const D=p=>({_p:p,update:b=>updateDoc(doc(fdb,p),b),get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>setDoc(doc(fdb,p),b,o||{}),delete:()=>deleteDoc(doc(fdb,p)),
   onSnapshot:(cb,er)=>onSnapshot(doc(fdb,p),x=>cb({exists:x.exists(),data:()=>x.data()}),er||(()=>{}))});
-const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),getCache:async()=>wrapS(await getDocsFromCache(collection(fdb,p))),where:(f,v,op)=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v)))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),where(f,op||"==",v)),q=>cb(wrapS(q)),er||(()=>{}))}),whereAll:L=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))),q=>cb(wrapS(q)),er||(()=>{}))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
+const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),getCache:async()=>wrapS(await getDocsFromCache(collection(fdb,p))),where:(f,v,op)=>({limit:n=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v),limit(n))))}),get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v)))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),where(f,op||"==",v)),q=>cb(wrapS(q)),er||(()=>{}))}),whereAll:L=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))),q=>cb(wrapS(q)),er||(()=>{}))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
   onSnapshot:(cb,er)=>onSnapshot(collection(fdb,p),q=>cb(wrapS(q)),er||(()=>{}))});
-const db={collection:C,doc:D};
+const db={collection:C,doc:D,batch:()=>{const b=writeBatch(fdb);return{set:(r,o)=>b.set(doc(fdb,r._p),o),delete:r=>b.delete(doc(fdb,r._p)),commit:()=>b.commit()}}};
 setPersistence(auth,browserLocalPersistence).catch(()=>{});
 getRedirectResult(auth).catch(()=>{});
 window.FB={auth,db,serverTimestamp,
@@ -2357,7 +2358,113 @@ function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetr
   cwaNube();if(mios===null&&store.db&&store.uid&&!constMiosT){constMiosT=1;loadMios().catch(()=>{})}
   if(isAdmin&&socios===null&&store.db&&!constSocT){constSocT=1;Promise.resolve(loadSocios()).catch(()=>{}).finally(()=>{if(eqTab==="ranking"&&rankMetric==="rutina")renderEquipo()})}
   bindRank();loadConst()}
-function renderEquipo(){const b=$("#eqBody");
+// ---------- Cierre de mes: red de inCruises (31 oct) ----------
+// Colección Firestore red/{k}: personas de los reportes de inCruises (socios, clientes y ahorros pendientes).
+// La sube el admin desde data/red.enc (cifrado). Cada doc lleva ve[] = uids que lo pueden ver
+// (patrocinador directo + líderes desde Marketing Director de esa línea + cuenta del equipo).
+let redL=null,redT=0,redHay=null,redSeg="p",redF="todo",redErrTxt="",redQ="";
+const RED_MD=2;
+const redTZ={timeZone:"America/Tegucigalpa"};
+const redFC=iso=>new Date(iso).toLocaleDateString("es-HN",Object.assign({weekday:"short",day:"numeric",month:"short"},redTZ)).replace(/[.,]/g,"");
+const redFL=iso=>new Date(iso).toLocaleDateString("es-HN",Object.assign({weekday:"long",day:"numeric",month:"long"},redTZ)).replace(",","");
+const redFirst=n=>String(n||"").trim().split(/\s+/)[0]||"";
+function redOk(){return !!(isAdmin||redHay)}
+async function redProbe(){if(redHay!==null||!store.db||!store.uid)return;redHay=false;
+  try{const q=await store.db.collection("red").where("ve",store.uid,"array-contains").limit(1).get();redHay=q.docs.length>0}catch(e){redHay=false}
+  redBtn()}
+function redBtn(){const b=$("#eqCierre");if(b)b.hidden=!redOk()}
+async function redCargar(f){if(!f&&redL&&Date.now()-redT<6e5)return redL;
+  const q=isAdmin?await store.db.collection("red").get():await store.db.collection("red").where("ve",store.uid,"array-contains").get();
+  redL=q.docs.map(d=>Object.assign({id:d.id},d.data()));redT=Date.now();return redL}
+function redPago(r){const A=ahCfg();if(!A||r.t!=="p")return false;return !((r.ek&&A.k[r.ek])||(r.wk&&A.k[r.wk]))}
+function redEst(r){const n=Date.now(),dp=Date.parse(r.dp||0),fi=Date.parse(r.in||0);
+  if(redPago(r))return{k:"ok",o:9,txt:"✅ Ya pagó",cls:"c-good"};
+  if(n<dp){const d=Math.ceil((dp-n)/864e5);return{k:"dp",o:d<=2?0:1,txt:`🔥 Doble punto hasta el ${redFC(r.dp)}`,cls:d<=2?"c-bad":"c-hot",d}}
+  if(n<fi){const d=Math.ceil((fi-n)/864e5);return{k:"in",o:d<=10?2:3,txt:`⚠️ Doble punto vencido · Inactiva el ${redFC(r.in)}`,cls:"c-gold",d}}
+  return{k:"x",o:4,txt:"⛔ Cuenta inactiva",cls:"c-bad"}}
+function redMsgP(r){const e=redEst(r),yo=miNombreCorto(),cr=((T.config||{}).cierre||{}).cruceros||[];
+  let t=`Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"");
+  t+=e.k==="dp"?`Su ahorro de este mes está pendiente. Si lo hace a más tardar el *${redFL(r.dp)}*, no pierde su doble punto. 🚢`
+    :`Su ahorro de este mes está pendiente. La fecha del doble punto ya pasó, pero todavía está a tiempo: si lo hace a más tardar el *${redFL(r.in)}*, su cuenta no queda inactiva.`;
+  if(cr.length)t+=`\n\nYa vienen cruceros para el 2027, por ejemplo:\n\n`+cr.map(c=>`🛳️ ${c.t}\n${c.f} · desde $${Number(c.p).toLocaleString("en-US")}`).join("\n\n");
+  t+=`\n\nCon los puntos de su ahorro es como usted reserva su crucero.\n\n¿Lo puede hacer ahora mismo, o le queda mejor antes de la tarde?`;return t}
+function redMsgS(r){const yo=miNombreCorto(),u="https://actionleadersplus.com/?unirme="+(r.iv||miInv());
+  return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`Nuestro equipo tiene su propia app, *Action Leaders PLUS*. Ahí tiene su agenda, su CRM, la academia y todo para crecer en el negocio.\n\nRegístrese aquí, ya queda en su línea:\n${u}`}
+function redMsgC(r){const yo=miNombreCorto();return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`¿Cómo va con su membresía? Si tiene alguna duda sobre sus puntos o cómo reservar su próximo viaje, con gusto le ayudo.`}
+function redHace(t){const m=Math.round((Date.now()-t)/6e4);return m<60?(m<=1?"ahora":"hace "+m+" min"):m<1440?"hace "+Math.round(m/60)+" h":"hace "+Math.round(m/1440)+" d"}
+function redStTxt(r){const s=r.st||{},o=[];if(s.h)o.push(`👍 Paga hoy · ${esc(redFirst(s.h.by))} ${redHace(s.h.t)}`);if(s.c)o.push(`📩 Le escribió ${esc(redFirst(s.c.by))} · ${redHace(s.c.t)}`);return o.join(" · ")}
+async function redMarca(id,k){const r=(redL||[]).find(x=>x.id===id);if(!r)return;const st=Object.assign({},r.st||{});
+  if(k==="h"&&st.h){delete st.h}else st[k]={t:Date.now(),by:miNombreCorto()||"Líder",u:store.uid};
+  r.st=st;try{await store.db.doc("red/"+id).update({st})}catch(e){toast("No se pudo guardar ("+((e&&e.code)||"error")+")")}}
+function redFila(r){const e=r.t==="p"?redEst(r):null,st=r.t==="p"?redStTxt(r):"";
+  const btn=r.t==="p"?(e.k==="ok"?"":`<div class="row" style="gap:6px;margin-top:8px"><button class="btn sm" data-rw="${esc(r.id)}" style="flex:1;background:#16A34A;color:#fff">💬 Recordarle</button><button class="btn sm ghost" data-rh="${esc(r.id)}" style="flex:none" aria-pressed="${!!(r.st&&r.st.h)}">👍 Paga hoy</button></div>`)
+    :r.t==="s"?`<div class="row" style="gap:6px;margin-top:8px"><button class="btn sm" data-rw="${esc(r.id)}" style="flex:1">📲 Invitar a la app</button></div>`
+    :`<div class="row" style="gap:6px;margin-top:8px"><button class="btn sm ghost" data-rw="${esc(r.id)}" style="flex:1">💬 Escribirle</button></div>`;
+  return `<div class="rd-f${e&&e.k==="ok"?" ok":""}"><b>${esc(r.n)}</b><div class="small muted">${esc(r.pl||"")}${r.sp?` · Patrocina: ${esc(r.sp)}`:""}</div>${e?`<span class="chip ${e.cls}" style="margin-top:6px">${e.txt}</span>`:""}
+   ${st?`<div class="small" style="margin-top:6px;color:#0A7DAD;font-weight:600">${st}</div>`:""}${btn}</div>`}
+function renderCierre(b){if(!redOk()){b.innerHTML=emptyCard("Cierre de mes","Aquí verá los ahorros pendientes de su red.");return}
+  if(!redL){b.innerHTML=`<div class="card"><p class="muted small">${redErrTxt?esc(redErrTxt):"Cargando su red…"}</p>${isAdmin?redAdmHTML():""}</div>`;redBindAdm();
+    if(!redErrTxt)redCargar().then(()=>{if(eqTab==="cierre")renderEquipo()}).catch(e=>{redErrTxt=(e&&e.code)==="permission-denied"?"Falta pegar las reglas de la red en Firebase.":"No se pudo cargar la red. Revise su internet.";if(eqTab==="cierre")renderEquipo()});return}
+  const P=redL.filter(r=>r.t==="p"),S=redL.filter(r=>r.t==="s"&&!r.u),SA=redL.filter(r=>r.t==="s"&&r.u),C=redL.filter(r=>r.t==="c");
+  const E=P.map(r=>[r,redEst(r)]),pag=E.filter(x=>x[1].k==="ok").length,dp=E.filter(x=>x[1].k==="dp").length,urg=E.filter(x=>x[1].k==="dp"&&x[1].d<=2).length,
+    inc=E.filter(x=>x[1].k==="in").length,con=P.filter(r=>r.st&&r.st.c).length,falt=P.length-pag;
+  let L=redSeg==="p"?E.filter(([r,e])=>redF==="todo"||(redF==="dp"&&e.k==="dp")||(redF==="in"&&e.k==="in")||(redF==="sin"&&e.k!=="ok"&&!(r.st&&r.st.c))||(redF==="ok"&&e.k==="ok")).sort((a,c)=>(a[1].o-c[1].o)||(Date.parse(a[0].dp||0)-Date.parse(c[0].dp||0))).map(x=>x[0])
+    :redSeg==="s"?S.slice().sort((a,c)=>a.n.localeCompare(c.n)):C.slice().sort((a,c)=>a.n.localeCompare(c.n));
+  const q=redQ.trim().toLowerCase();if(q)L=L.filter(r=>(r.n+" "+(r.sp||"")).toLowerCase().includes(q));
+  const fb=(k,t)=>`<button type="button" data-rf="${k}" aria-pressed="${redF===k}">${t}</button>`;
+  b.innerHTML=`<div class="card rd-hero"><div class="small" style="font-weight:800;letter-spacing:.08em;opacity:.85">💰 CIERRE DE MES</div>
+    <div style="display:flex;align-items:baseline;gap:8px;margin:4px 0 2px"><b style="font-size:40px;line-height:1;font-family:'Barlow Condensed',Figtree,sans-serif">${falt}</b><span style="font-weight:700">ahorros pendientes en su red</span></div>
+    <div class="small" style="opacity:.9">${urg?`🔥 <b>${urg}</b> pierden el doble punto en 2 días o menos · `:""}📩 ${con} contactados · ✅ ${pag} ya pagaron</div></div>
+   <div class="seg" id="rdSeg"><button data-rs="p" aria-selected="${redSeg==="p"}">💰 Ahorros · ${falt}</button><button data-rs="s" aria-selected="${redSeg==="s"}">⏳ Sin app · ${S.length}</button><button data-rs="c" aria-selected="${redSeg==="c"}">🛍️ Clientes · ${C.length}</button></div>
+   ${redSeg==="p"?`<div class="crmord rd-fl">${fb("todo","Todos")}${fb("dp","🔥 Doble punto · "+dp)}${fb("in","⚠️ Inactivar · "+inc)}${fb("sin","Sin escribir")}${fb("ok","✅ Pagaron · "+pag)}</div>`
+     :redSeg==="s"?`<p class="small muted" style="margin:0">Socios de su red en inCruises que aún no se registran en la app. No cuentan en su Índice de Duplicación hasta que se registren. Ya en la app: ${SA.length}.</p>`
+     :`<p class="small muted" style="margin:0">Miembros de su red que no son socios: quedan como clientes.</p>`}
+   <input class="inp" id="rdQ" type="search" placeholder="Buscar por nombre o patrocinador" value="${esc(redQ)}">
+   <div class="card"><div class="list" id="rdList">${L.length?L.slice(0,150).map(redFila).join(""):`<p class="muted small">No hay personas en esta vista.</p>`}${L.length>150?`<p class="small muted">Mostrando 150 de ${L.length}. Use el buscador.</p>`:""}</div></div>
+   ${isAdmin?`<div class="card">${redAdmHTML()}</div>`:""}
+   <p class="small muted">Datos del reporte de inCruises. "Ya pagó" se actualiza con los correos de pago, varias veces al día.</p>`;
+  redBind(b)}
+function redBind(b){const sg=$("#rdSeg");if(sg)sg.onclick=e=>{const x=e.target.closest("[data-rs]");if(!x)return;redSeg=x.dataset.rs;renderEquipo()};
+  b.querySelectorAll("[data-rf]").forEach(x=>x.onclick=()=>{redF=redF===x.dataset.rf?"todo":x.dataset.rf;renderEquipo()});
+  const qi=$("#rdQ");if(qi)qi.oninput=()=>{redQ=qi.value;const L=$("#rdList");clearTimeout(qi._t);qi._t=setTimeout(()=>{renderEquipo();const n=$("#rdQ");if(n){n.focus();n.setSelectionRange(n.value.length,n.value.length)}},350)};
+  const li=$("#rdList");if(li)li.onclick=e=>{const w=e.target.closest("[data-rw]"),h=e.target.closest("[data-rh]");
+    if(w){const r=redL.find(x=>x.id===w.dataset.rw);if(!r)return;const t=r.t==="p"?redMsgP(r):r.t==="s"?redMsgS(r):redMsgC(r);
+      if(r.t==="p")redMarca(r.id,"c");location.href="https://wa.me/"+(r.w||"")+"?text="+encodeURIComponent(t);setTimeout(()=>{if(eqTab==="cierre")renderEquipo()},800);return}
+    if(h){redMarca(h.dataset.rh,"h").then(()=>renderEquipo())}};
+  redBindAdm()}
+function redAdmHTML(){return `<b>🛠️ Admin: base de la red</b><p class="small muted" style="margin:4px 0 8px">Sube a Firebase el último reporte cifrado (data/red.enc) y calcula quién ve a cada persona: su patrocinador y los líderes desde Marketing Director de su línea.</p><button class="btn sm" id="rdUp" style="width:100%">⬆️ Cargar reporte a la app</button><p class="small" id="rdUpMsg" style="margin:6px 0 0"></p>`}
+function redBindAdm(){const u=$("#rdUp");if(u)u.onclick=()=>redSubir(u)}
+async function redDescifrar(){if(!entKey){const d=await store.db.doc("evento/"+ENT.id+"/priv/llave").get();entKey=d.exists?d.data().k:null}if(!entKey)throw new Error("sin-llave");
+  const r=await fetch("data/red.enc?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("red");const raw=b64u((await r.text()).trim());
+  const key=await crypto.subtle.importKey("raw",b64u(entKey),"AES-GCM",false,["decrypt"]);
+  return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:raw.slice(0,12)},key,raw.slice(12))))}
+function redInvDe(x){const n=String(((x||{}).registro||{}).nombre||"socio").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").split("-").slice(0,2).join("-");return (n||"socio")+"-"+String(x.uid||"").slice(0,4).toLowerCase()}
+async function redSubir(btn){if(!isAdmin)return;const m=$("#rdUpMsg"),say=t=>{if(m)m.textContent=t};btn.disabled=true;
+  try{say("Descifrando el reporte…");const D=await redDescifrar();say("Cargando socios de la app…");
+    if(!socios)await loadSocios();const S=(socios||[]).filter(x=>x.registro&&!esSoloAdmin(x));
+    const H={};S.forEach(x=>{const r=x.registro||{};[ahKe(x.email),ahKe(r.correo),ahKw(r.whatsapp)].forEach(k=>{if(k&&!H[k])H[k]=x})});
+    const P={};D.rows.forEach(r=>P[r.k]=r);
+    const uOf=k=>{const r=P[k];if(!r)return null;if(r._u!==undefined)return r._u;let x=(r.ek&&H[r.ek])||(r.wk&&H[r.wk])||null;
+      if(!x){const c=S.filter(s=>sameN(s.registro.nombre,r.n));if(c.length===1)x=c[0]}r._u=x;return x};
+    const root=S.find(x=>String(x.email||"").toLowerCase()==="edwing.go@gmail.com");
+    const docs={};let enApp=0,conVe=0;
+    D.rows.forEach(r=>{const me=uOf(r.k);if(me)enApp++;const ve=new Set();let iv="";
+      (r.anc||[]).forEach((k,j)=>{const x=uOf(k);if(!x)return;if(!iv)iv=redInvDe(x);if(j===0||rangoActualIdx(x.registro,x.registro.nombre)>=RED_MD)ve.add(x.uid)});
+      if(root){ve.add(root.uid);if(!iv)iv=redInvDe(root)}if(me)ve.delete(me.uid);if(ve.size>1||!root)conVe++;
+      const o={n:r.n,t:r.t,pl:r.pl||"",lv:r.lv||0,sp:r.sp||"",w:r.w||"",ek:r.ek||"",wk:r.wk||"",ve:[...ve],u:me?me.uid:"",iv,v:D.v};
+      if(r.t==="p"){o.dp=r.dp;o.in=r.in}docs[r.k]=o});
+    say("Leyendo la base anterior…");let old={};try{(await store.db.collection("red").get()).docs.forEach(d=>old[d.id]=d.data())}catch(e){}
+    const ops=[];Object.entries(docs).forEach(([k,o])=>{const a=old[k];o.st=a&&a.t===o.t&&a.st?a.st:{};ops.push(["set",k,o])});
+    Object.keys(old).forEach(k=>{if(!docs[k])ops.push(["del",k])});
+    for(let i=0;i<ops.length;i+=400){say(`Guardando ${Math.min(i+400,ops.length)} de ${ops.length}…`);const bt=store.db.batch();
+      ops.slice(i,i+400).forEach(([t,k,o])=>{const ref=store.db.doc("red/"+k);t==="set"?bt.set(ref,o):bt.delete(ref)});await bt.commit()}
+    const c={s:0,c:0,p:0};D.rows.forEach(r=>c[r.t]++);
+    say(`✅ Listo: ${D.rows.length} personas (${c.s} socios, ${c.c} clientes, ${c.p} ahorros pendientes). ${enApp} ya están en la app. ${(D.dud||[]).length} patrocinadores sin enlazar (esa gente la ve solo la cuenta del equipo).`);
+    redL=null;redHay=true;redBtn();setTimeout(()=>{if(eqTab==="cierre")renderEquipo()},2500)}
+  catch(e){console.error("redSubir",e);say("❌ No se pudo: "+((e&&e.code)==="permission-denied"?"faltan las reglas de la red en Firebase.":((e&&(e.code||e.message))||"error")))}
+  btn.disabled=false}
+function renderEquipo(){const b=$("#eqBody");redProbe();redBtn();
+  if(eqTab==="cierre"){renderCierre(b);return}
   if(eqTab==="socios"){renderSocios(b);return}
   if(eqTab==="mios"){renderMios(b);return}
   if(eqTab==="liderazgo"){eqTab="ranking";rankMetric="liderazgo";setSeg("eqSeg",eqTab)}
@@ -4286,7 +4393,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261030200732";var busy=false,pend=null;
+(function(){var V="20261030223127";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

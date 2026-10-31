@@ -1,0 +1,8 @@
+    // ---- Red de inCruises: cierre de mes (agregado 31/10/2026) ----
+    // Pegar DENTRO de "match /databases/{database}/documents { ... }", junto a los demás bloques.
+    match /red/{id} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid in resource.data.ve);
+      allow update: if isAdmin() || (signedIn() && request.auth.uid in resource.data.ve
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['st']));
+      allow create, delete: if isAdmin();
+    }
