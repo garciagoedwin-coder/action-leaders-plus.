@@ -779,6 +779,18 @@
    "activaciones": 1,
    "volumen": 200,
    "actSemana": 0
+  },
+  {
+   "nombre": "Waleska osiris Sevilla bran",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "waleska-osiris-sevilla-bran",
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -2550,6 +2562,16 @@
    "wk": "ceab9a",
    "fuente": "gmail",
    "id": "javier-morales-osorio"
+  },
+  {
+   "socio": "Luis arturo Castellanos",
+   "paquete": "Premium",
+   "patrocinador": "Waleska osiris Sevilla bran",
+   "fecha": "2026-10-31T15:55:29Z",
+   "ek": "f4b0b9",
+   "wk": "502ed4",
+   "fuente": "gmail",
+   "id": "luis-arturo-castellanos"
   }
  ],
  "academia": [],
@@ -2567,7 +2589,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-31T03:55:03Z",
+  "activacionesCorte": "2026-10-31T15:55:29Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2577,7 +2599,7 @@
   "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-30T22:49:00-06:00",
+  "rankingActualizado": "2026-10-31T09:56:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
