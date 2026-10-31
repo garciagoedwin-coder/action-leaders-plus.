@@ -2382,15 +2382,17 @@ function redEst(r){const n=Date.now(),dp=Date.parse(r.dp||0),fi=Date.parse(r.in|
   if(n<dp){const d=Math.ceil((dp-n)/864e5);return{k:"dp",o:d<=2?0:1,txt:`🔥 Doble punto hasta el ${redFC(r.dp)}`,cls:d<=2?"c-bad":"c-hot",d}}
   if(n<fi){const d=Math.ceil((fi-n)/864e5);return{k:"in",o:d<=10?2:3,txt:`⚠️ Doble punto vencido · Inactiva el ${redFC(r.in)}`,cls:"c-gold",d}}
   return{k:"x",o:4,txt:"⛔ Cuenta inactiva",cls:"c-bad"}}
-function redMsgP(r){const e=redEst(r),yo=miNombreCorto(),cr=((T.config||{}).cierre||{}).cruceros||[];
-  let t=`Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"");
-  t+=e.k==="dp"?`Su ahorro de este mes está pendiente. Si lo hace a más tardar el *${redFL(r.dp)}*, no pierde su doble punto. 🚢`
-    :`Su ahorro de este mes está pendiente. La fecha del doble punto ya pasó, pero todavía está a tiempo: si lo hace a más tardar el *${redFL(r.in)}*, su cuenta no queda inactiva.`;
-  if(cr.length)t+=`\n\nYa vienen cruceros para el 2027, por ejemplo:\n\n`+cr.map(c=>`🛳️ ${c.t}\n${c.f} · desde $${Number(c.p).toLocaleString("en-US")}`).join("\n\n");
-  t+=`\n\nCon los puntos de su ahorro es como usted reserva su crucero.\n\n¿Lo puede hacer ahora mismo, o le queda mejor antes de la tarde?`;return t}
+function redCierreTxt(){const n=Date.now(),d=new Date(n),fin=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1),
+    hn=t=>new Date(t-6*36e5).toISOString().slice(0,10),hoy=hn(n),ult=hn(fin-1),man=hn(n+864e5),
+    dia=new Date(fin-1).toLocaleDateString("es-HN",Object.assign({weekday:"long",day:"numeric"},redTZ)).replace(",","");
+  if(ult===hoy)return "hoy mismo, antes de las 6:00 p.m. hora de Honduras";
+  if(ult===man)return `mañana ${dia}, antes de las 6:00 p.m. hora de Honduras`;
+  return `antes del ${dia} a las 6:00 p.m. hora de Honduras`}
+function redMsgP(r){const yo=miNombreCorto();
+  return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`Le escribo porque su ahorro de este mes aparece pendiente. Es muy importante tener su cuenta al día para seguir acumulando sus puntos y no perder los beneficios de su membresía.\n\n¿Lo puede hacer ${redCierreTxt()}? Así cierra el mes con todo su puntaje acumulado. 🙌\n\nSi necesita ayuda para hacerlo, con gusto le acompaño.`}
 function redMsgS(r){const yo=miNombreCorto(),u="https://actionleadersplus.com/?unirme="+(r.iv||miInv());
   return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`Nuestro equipo tiene su propia app, *Action Leaders PLUS*. Ahí tiene su agenda, su CRM, la academia y todo para crecer en el negocio.\n\nRegístrese aquí, ya queda en su línea:\n${u}`}
-function redMsgX(r){const yo=miNombreCorto();return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`Usted ya tiene su código de socio y su red en inCruises. 🙌\n\nSi activa su membresía, empieza a ahorrar puntos con el doble punto para viajar en los cruceros del 2027.\n\n¿Le gustaría que le explique cómo hacerlo?`}
+function redMsgX(r){const yo=miNombreCorto();return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`Usted ya tiene su código de socio y su red en inCruises. 🙌\n\nSi activa su membresía, empieza a acumular sus puntos cada mes y a disfrutar todos los beneficios.\n\n¿Le gustaría que le explique cómo hacerlo?`}
 function redMsgC(r){const yo=miNombreCorto();return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`¿Cómo va con su membresía? Si tiene alguna duda sobre sus puntos o cómo reservar su próximo viaje, con gusto le ayudo.`}
 function redHace(t){const m=Math.round((Date.now()-t)/6e4);return m<60?(m<=1?"ahora":"hace "+m+" min"):m<1440?"hace "+Math.round(m/60)+" h":"hace "+Math.round(m/1440)+" d"}
 function redStTxt(r){const s=r.st||{},o=[];if(s.h)o.push(`👍 Paga hoy · ${esc(redFirst(s.h.by))} ${redHace(s.h.t)}`);return o.join(" · ")}
@@ -4409,7 +4411,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261030230104";var busy=false,pend=null;
+(function(){var V="20261030231105";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
