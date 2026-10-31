@@ -1841,30 +1841,59 @@ function lcFicha(n){const f=(fotosFs||[]).find(x=>sameN(x.invNombre||x.nombre,n)
 function lcRelacion(n){const f=lcFicha(n);if(f&&f.id===store.uid)return"yo";if(f&&Array.isArray(f.linea)&&f.linea.includes(store.uid))return"arriba";try{if(!f&&sameN(miRegistro().nombre||"",n))return"yo"}catch(e){}return""}
 function lcNivelDe(n){const r=(T.ranking||[]).find(x=>sameN(x.nombre,n))||(T.ranking||[]).find(x=>parecidoN(x.nombre,n));if(!r)return{k:"",v:0};const v=Number(r.volumen)||0;return{k:lcNivel(v),v}}
 const LC_TX={lid:"🏅 Líder",esp:"⚔️ Líder Espartano"};
-async function lcCanvas(q){await evaFonts();const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d"),esp=q.k==="esp",c1=esp?"#F5B700":"#2AC1F1",c2=esp?"#FFF3C4":"#BFF0FF";
-  const OB="ALO, Figtree, sans-serif",OR="ALOR, Figtree, sans-serif",BG="ALBG, 'Bricolage Grotesque', sans-serif";
-  let gr=g.createLinearGradient(0,0,0,H);esp?(gr.addColorStop(0,"#120C00"),gr.addColorStop(.55,"#0B0B10"),gr.addColorStop(1,"#05060A")):(gr.addColorStop(0,"#04223A"),gr.addColorStop(.55,"#06121F"),gr.addColorStop(1,"#03070D"));g.fillStyle=gr;g.fillRect(0,0,W,H);
-  gr=g.createRadialGradient(540,520,0,540,520,700);gr.addColorStop(0,esp?"rgba(245,183,0,.32)":"rgba(42,193,241,.34)");gr.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
-  g.save();g.translate(540,650);for(let i=0;i<30;i++){g.rotate(Math.PI*2/30);g.beginPath();g.moveTo(0,0);g.lineTo(-38,-900);g.lineTo(38,-900);g.closePath();g.fillStyle="rgba(255,255,255,.035)";g.fill()}g.restore();
-  const sp=(t,x,y,ls,al)=>evaSp(g,t,x,y,ls,al);
-  g.font="700 24px "+OB;const kt="SISTEMA DE LIDERAZGO",kw=evaSpW(g,kt,7.7)+56;evaRR(g,540-kw/2,72,kw,52,26);g.lineWidth=2.5;g.strokeStyle=c1;g.stroke();g.fillStyle=c1;sp(kt,540,107,7.7,"center");
-  g.textAlign="center";g.fillStyle="#fff";let z=evaFit(g,"¡CALIFICADO COMO","700 {s}px "+BG,104,960);g.font="700 "+z+"px "+BG;g.fillText("¡CALIFICADO COMO",540,222);
-  const t2=esp?"LÍDER ESPARTANO!":"LÍDER!";z=evaFit(g,t2,"700 {s}px "+BG,esp?96:110,960);g.font="700 "+z+"px "+BG;const w2=g.measureText(t2).width;gr=g.createLinearGradient(540-w2/2,0,540+w2/2,0);gr.addColorStop(0,c2);gr.addColorStop(.45,c1);gr.addColorStop(.6,"#fff");gr.addColorStop(1,c1);g.fillStyle=gr;g.fillText(t2,540,348);
-  g.save();g.shadowColor=c1;g.shadowBlur=70;g.beginPath();g.arc(540,660,200,0,Math.PI*2);g.fillStyle=c1;g.fill();g.restore();
-  gr=g.createLinearGradient(340,460,740,860);gr.addColorStop(0,c2);gr.addColorStop(.5,c1);gr.addColorStop(1,"#fff");g.beginPath();g.arc(540,660,200,0,Math.PI*2);g.fillStyle=gr;g.fill();
-  await evaCirc(g,q.foto,540,660,182,0,"",8,q.n);
-  g.font="700 30px "+OB;const bt=(esp?"⚔️ LÍDER ESPARTANO":"🏅 LÍDER")+" · "+q.mes.toUpperCase(),bw=evaSpW(g,bt,3.6)+70;evaRR(g,540-bw/2,830,bw,62,31);g.fillStyle=c1;g.fill();g.fillStyle="#07090F";sp(bt,540,872,3.6,"center");
-  g.textAlign="center";g.fillStyle="#fff";z=evaFit(g,q.n,"700 {s}px "+BG,72,960);g.font="700 "+z+"px "+BG;g.fillText(q.n,540,985);
-  let y=1050;if(esp){g.font="700 40px "+OB;const tl=lcTL(q.n)?"⭐ TEAM LEADER ⭐":"⭐ "+lcRgTx(q.n).toUpperCase()+" ⭐",tw=evaSpW(g,tl,8);gr=g.createLinearGradient(540-tw/2,0,540+tw/2,0);gr.addColorStop(0,c2);gr.addColorStop(.5,c1);gr.addColorStop(1,c2);g.fillStyle=gr;sp(tl,540,1052,8,"center");y=1120}
-  g.textAlign="center";g.font="700 32px "+OB;const a=(esp?"500+":"200+")+" puntos",b=esp?" este mes · ¡Imparable!":" este mes · ¡Ya es parte del sistema!";g.font="700 32px "+OB;const aw=g.measureText(a).width;g.font="400 32px "+OR;const bw2=g.measureText(b).width;let x=540-(aw+bw2)/2;g.textAlign="left";g.font="700 32px "+OB;g.fillStyle=c1;g.fillText(a,x,y);g.font="400 32px "+OR;g.fillStyle="rgba(255,255,255,.88)";g.fillText(b,x+aw,y);
-  const lg=await imgLoad("media/logo-blanco.png");if(lg){const h=46,w=lg.width*h/lg.height;g.drawImage(lg,70,H-60-h,w,h)}
-  g.textAlign="right";g.font="700 24px "+OB;g.fillStyle=c2;g.fillText("Camino a mi libertad ✨",W-70,H-74);return cv}
+const LC_FR={esp:["La disciplina de hoy es la libertad de mañana. Gracias por ser ejemplo para todo el equipo.","Los grandes líderes no esperan el momento: lo crean. ¡Felicidades por este logro!","Su esfuerzo inspira a todo el equipo. Así se construye el camino a la libertad.","Disciplina, enfoque y acción: eso es ser Espartano. ¡Gracias por marcar el paso!"],
+  lid:["Liderar es dar el ejemplo. Este mes, usted lo hizo. ¡Gracias por su compromiso con el equipo!","Su constancia inspira a todo el equipo. ¡Felicidades por este logro!","Los grandes resultados se construyen con decisiones diarias. Hoy celebramos las suyas.","Cada mes que cumple, su camino a la libertad se hace más firme. ¡Siga así!"]};
+const LC_RG_ABR={"Marketing Director":"MD","SM Director":"SMD","Regional Director":"RD","National Director":"ND","International Director":"ID","Executive Director":"ED","Board of Director":"BOD","Team Leader":"TL"};
+async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d"),esp=q.k==="esp";
+  await bienFonts();try{await Promise.all(["700 30px Figtree","600 30px Figtree","500 30px Figtree","400 30px Figtree","italic 700 40px 'Libre Baskerville'","400 60px 'Bebas Neue'"].map(x=>document.fonts.load(x)))}catch(x){}
+  const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', 'Bricolage Grotesque', Arial, sans-serif",LB="'Libre Baskerville', Georgia, serif";
+  const C=esp?{a:"#E8C766",g:["#FBEFC0","#D4AF37","#8C6A12"],t:["#FFF6D6","#E8C766","#A57F1C"],glow:"rgba(212,175,55,.38)",img:"media/flyers/lc-espartano.jpg?v=1",sello:"⚔️",tit:"LÍDER ESPARTANO"}
+    :{a:"#D9DEE7",g:["#FFFFFF","#C0C7D2","#6B7280"],t:["#FFFFFF","#D9DEE7","#8A93A3"],glow:"rgba(200,210,225,.32)",img:"media/flyers/lc-lider.jpg?v=1",sello:"🛡️",tit:"LÍDER DEL MES"};
+  g.fillStyle="#04060d";g.fillRect(0,0,W,H);const bg=await imgLoad(C.img);if(bg)g.drawImage(bg,0,0,W,H);
+  let gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,"rgba(4,6,13,.45)");gr.addColorStop(.25,"rgba(4,6,13,.15)");gr.addColorStop(.5,"rgba(4,6,13,.5)");gr.addColorStop(.8,"rgba(4,6,13,.9)");gr.addColorStop(1,"#04060d");g.fillStyle=gr;g.fillRect(0,0,W,H);
+  const grad=(x0,x1,c)=>{const z=g.createLinearGradient(x0,0,x1,0);z.addColorStop(0,c[0]);z.addColorStop(.5,c[1]);z.addColorStop(1,c[2]);return z};
+  const sp=(t,x,y,ls,al)=>{let w=0;for(const ch of t)w+=g.measureText(ch).width+ls;w-=ls;let cx=al==="right"?x-w:al==="center"?x-w/2:x;g.textAlign="left";for(const ch of t){g.fillText(ch,cx,y);cx+=g.measureText(ch).width+ls}return w};
+  const wrap=(t,mw)=>{const L=[];let c="";String(t).split(/\s+/).forEach(w=>{const z=c?c+" "+w:w;if(c&&g.measureText(z).width>mw){L.push(c);c=w}else c=z});if(c)L.push(c);return L};
+  // encabezado
+  g.font="600 19px "+BF;g.fillStyle=C.a;const kw=sp("SISTEMA DE LIDERAZGO",540,172,8,"center");
+  const ln=(x0,x1)=>{const z=g.createLinearGradient(x0,0,x1,0);z.addColorStop(0,"rgba(0,0,0,0)");z.addColorStop(1,C.a);g.fillStyle=z;g.fillRect(Math.min(x0,x1),165,Math.abs(x1-x0),1.5)};
+  ln(540-kw/2-90,540-kw/2-24);{const z=g.createLinearGradient(540+kw/2+24,0,540+kw/2+90,0);z.addColorStop(0,C.a);z.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=z;g.fillRect(540+kw/2+24,165,66,1.5)}
+  const f1=String(q.n).trim().split(/\s+/)[0];g.textAlign="center";g.fillStyle="#fff";let fz=44;g.font="italic 700 "+fz+"px "+LB;while(g.measureText("¡Felicidades, "+f1+"!").width>900&&fz>28){fz--;g.font="italic 700 "+fz+"px "+LB}g.fillText("¡Felicidades, "+f1+"!",540,300);
+  // foto
+  const cx=540,cy=640,R=222;g.save();g.shadowColor=C.glow;g.shadowBlur=110;g.beginPath();g.arc(cx,cy,R+16,0,Math.PI*2);g.fillStyle="rgba(4,6,13,.7)";g.fill();g.restore();
+  g.beginPath();g.arc(cx,cy,R+16,0,Math.PI*2);g.lineWidth=1.5;g.strokeStyle=esp?"rgba(232,199,102,.45)":"rgba(217,222,231,.45)";g.stroke();
+  g.beginPath();g.arc(cx,cy,R,0,Math.PI*2);g.fillStyle=grad(cx-R,cx+R,C.g);g.fill();g.beginPath();g.arc(cx,cy,R-5,0,Math.PI*2);g.fillStyle="#04060d";g.fill();
+  await circFoto(g,q.foto,cx,cy,R-10,q.n,()=>{g.fillStyle="#141a26";g.fillRect(cx-R,cy-R,2*R,2*R);g.fillStyle=C.a;g.font="800 130px "+BF;g.textAlign="center";g.fillText(initials(q.n),cx,cy+46)});
+  g.beginPath();g.arc(cx,cy+R,34,0,Math.PI*2);g.fillStyle=grad(cx-34,cx+34,C.g);g.fill();g.lineWidth=4;g.strokeStyle="#070a14";g.stroke();
+  g.font="32px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";g.textAlign="center";g.fillText(C.sello,cx,cy+R+11);
+  // título
+  g.fillStyle="rgba(255,255,255,.8)";g.font="500 20px "+BF;sp("CALIFICÓ COMO",540,962,10,"center");
+  let tz=122;g.font="400 "+tz+"px "+BB;let tw=0;const tws=()=>{tw=0;for(const ch of C.tit)tw+=g.measureText(ch).width+tz*.07;return tw-tz*.07};while(tws()>940&&tz>80){tz-=4;g.font="400 "+tz+"px "+BB}
+  {const z=g.createLinearGradient(0,1080-tz,0,1080);z.addColorStop(.1,C.t[0]);z.addColorStop(.5,C.t[1]);z.addColorStop(.95,C.t[2]);g.fillStyle=z;sp(C.tit,540,1086,tz*.07,"center")}
+  {const z=g.createLinearGradient(470,0,610,0);z.addColorStop(0,"rgba(0,0,0,0)");z.addColorStop(.5,C.a);z.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=z;g.fillRect(470,1126,140,1.5)}
+  let nz=56;g.font="600 "+nz+"px "+BF;while(g.measureText(q.n).width>920&&nz>32){nz--;g.font="600 "+nz+"px "+BF}g.fillStyle="#fff";g.textAlign="center";g.fillText(q.n,540,1210);
+  // tarjetas
+  const rgN=lcRgTx(q.n)||(()=>{try{const i=rangoActualIdx({},q.n);return i===1?"Team Leader":""}catch(e){return ""}})();
+  const c3=esp?(lcTL(q.n)?["TL","TEAM LEADER"]:[LC_RG_ABR[rgN]||"⭐",(rgN||"").toUpperCase().replace("MARKETING DIRECTOR","MARKETING DIR.").replace("INTERNATIONAL DIRECTOR","INTERNAT. DIR.")])
+    :(rgN?[LC_RG_ABR[rgN]||"⭐",rgN.toUpperCase().replace("MARKETING DIRECTOR","MARKETING DIR.")]:["LÍDER","DEL SISTEMA"]);
+  const mp=String(q.mes||lcMes()).split(" "),cards=[[esp?"500+":"200+","PUNTOS"],[(mp[0]||"").toUpperCase(),mp[1]||""],c3],cw=(920-32)/3;
+  cards.forEach(([b,s2],i)=>{const x=80+i*(cw+16);g.beginPath();g.roundRect(x,1262,cw,124,20);g.fillStyle="rgba(255,255,255,.06)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.14)";g.stroke();
+    let bz=52;g.font="400 "+bz+"px "+BB;while(g.measureText(b).width>cw-24&&bz>30){bz-=2;g.font="400 "+bz+"px "+BB}g.fillStyle=C.a;g.textAlign="center";g.fillText(b,x+cw/2,1330);
+    g.font="600 15px "+BF;let ls=3.3;while(ls>.5){let w=0;for(const ch of s2)w+=g.measureText(ch).width+ls;if(w<cw-20)break;ls-=.5}g.fillStyle="rgba(255,255,255,.75)";sp(s2,x+cw/2,1364,ls,"center")});
+  // frase
+  const L=LC_FR[esp?"esp":"lid"],fr=L[parseInt(ahF(q.n+(q.mes||"")),16)%L.length];g.font="italic 400 31px "+BF;const FL=wrap(fr,800).slice(0,3);g.fillStyle="rgba(255,255,255,.88)";g.textAlign="center";
+  const y0=1490-((FL.length-1)*45)/2;FL.forEach((t,i)=>g.fillText(t,540,y0+i*45));const w0=g.measureText(FL[0]).width,wl=g.measureText(FL[FL.length-1]).width;g.fillStyle=C.a;g.font="700 64px Georgia, serif";g.fillText("“",540-w0/2-30,y0+14);g.fillText("”",540+wl/2+30,y0+(FL.length-1)*45+14);
+  // hashtag y pie
+  g.font="400 42px "+BB;g.fillStyle="rgba(255,255,255,.92)";sp("#HASTAQUEFUNCIONE",540,1690,7,"center");
+  const lg=await imgLoad("media/logo-plus.png");if(lg){const h=38,w=lg.width*h/lg.height;g.drawImage(lg,80,1770,w,h)}
+  g.font="600 15px "+BF;g.fillStyle=C.a;sp("CAMINO A MI LIBERTAD",1000,1796,4.5,"right");
+  return cv}
 async function lcFile(q){const cv=await lcCanvas(q);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));return new File([b],(q.k==="esp"?"Lider-Espartano-":"Lider-")+String(q.n).split(" ")[0]+".jpg",{type:"image/jpeg"})}
-function lcQ(r){return{n:r.n,k:r.k,v:r.v,mes:lcMes(),foto:fotoDe(r.n)}}
-function lcTextoGrupo(q){const f=String(q.n).split(" ")[0],m=lcMesCorto();return q.k==="esp"?`🎉 ¡Felicitemos a *${q.n}*!\n\nCalificó como *⚔️ Líder Espartano de ${m}* en el sistema de liderazgo de Action Leaders.\n\n${lcTL(q.n)?"⭐ ¡Ya es Team Leader!\n\n":""}¡Felicidades, ${f}! Su ejemplo nos inspira 🔥`:`🎉 ¡Felicitemos a *${q.n}*!\n\nCalificó como *🏅 Líder de ${m}* en el sistema de liderazgo de Action Leaders.\n\n¡Felicidades, ${f}! ¡Bienvenido al sistema! 💪`}
-function lcTextoFelicitar(q){const f=String(q.n).split(" ")[0],m=lcMesCorto(),yo=miNombreCorto()||"",v=parseInt(ahF(q.n+m),16)%3;
+function lcQ(r){return{n:r.n,k:r.k,v:r.v,mes:r.mes||lcMes(),foto:fotoDe(r.n)}}
+function lcTextoGrupo(q){const f=String(q.n).split(" ")[0],m=String(q.mes||lcMes()).split(" ")[0].toLowerCase();return q.k==="esp"?`🎉 ¡Felicitemos a *${q.n}*!\n\nCalificó como *⚔️ Líder Espartano de ${m}* en el sistema de liderazgo de Action Leaders.\n\n${lcTL(q.n)?"⭐ ¡Ya es Team Leader!\n\n":""}¡Felicidades, ${f}! Su ejemplo nos inspira 🔥`:`🎉 ¡Felicitemos a *${q.n}*!\n\nCalificó como *🏅 Líder de ${m}* en el sistema de liderazgo de Action Leaders.\n\n¡Felicidades, ${f}! ¡Bienvenido al sistema! 💪`}
+function lcTextoFelicitar(q){const f=String(q.n).split(" ")[0],m=String(q.mes||lcMes()).split(" ")[0].toLowerCase(),yo=miNombreCorto()||"",v=parseInt(ahF(q.n+m),16)%3;
   const t=q.k==="esp"?[`¡Felicidades, ${f}! ⚔️\n\nCalificó como *Líder Espartano de ${m}*.${lcTL(q.n)?" ¡Ya es Team Leader! ⭐":" ⚔️"}\n\nMe llena de orgullo ver su compromiso. ¡Vamos por más! 🚀`,`${f}, ¡qué mes el suyo! 🔥\n\n*Líder Espartano de ${m}*: 500 puntos o más.\n\nGracias por dar el ejemplo en el equipo. ¡A seguir construyendo! 💪`,`¡${f}, lo logró! 🏆\n\nYa es *Líder Espartano* ${lcTL(q.n)?"y Team Leader ":""}de ${m}.\n\nSu esfuerzo se nota. ¡Sigamos camino a nuestra libertad! ✨`]
-    :[`¡Felicidades, ${f}! 🏅\n\nCalificó como *Líder de ${m}* en el sistema de liderazgo.\n\nAhora vamos por los 500 puntos y ser Líder Espartano. ¡Usted puede! 💪`,`${f}, ¡ya es parte del sistema de liderazgo! 🎉\n\n*Líder de ${m}* con 200 puntos o más.\n\nGracias por su compromiso. ¡Vamos por más! 🚀`,`¡Lo logró, ${f}! 🙌\n\nYa es *Líder de ${m}*.\n\nMe llena de orgullo su avance. ¡Siga así, que el siguiente paso es Espartano! 🔥`];
+    :[`¡Felicidades, ${f}! 🏅\n\nCalificó como *Líder de ${m}* en el sistema de liderazgo.\n\nSu compromiso marca la diferencia en el equipo. ¡Felicidades! 💪`,`${f}, ¡ya es parte del sistema de liderazgo! 🎉\n\n*Líder de ${m}* con 200 puntos o más.\n\nGracias por su compromiso. ¡Vamos por más! 🚀`,`¡Lo logró, ${f}! 🙌\n\nYa es *Líder de ${m}*.\n\nMe llena de orgullo su avance. ¡Siga así! 🔥`];
   return t[v]+(yo?"\n\n*"+yo+"*":"")}
 async function lcCompartir(q,bt){let file=null;if(bt){bt.disabled=true;bt.textContent="Creando flyer…"}try{file=await lcFile(q)}catch(e){}if(bt){bt.disabled=false;bt.textContent="📣 Compartir flyer"}
   const t=lcTextoGrupo(q);if(file&&navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(e){if(e&&e.name==="AbortError")return}}
@@ -1872,21 +1901,24 @@ async function lcCompartir(q,bt){let file=null;if(bt){bt.disabled=true;bt.textCo
 async function lcFelicitar(q){const f=lcFicha(q.n);let w="";if(f)w=await dtWa(f.id);location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(lcTextoFelicitar(q))}
 // ventana con confeti: una sola vez por calificado y por nivel, para todos los socios
 function lcSeen(){return LS.get("lcSeen:"+store.uid)||{}}
-function lcPendientes(){const S=lcSeen(),m=lcMes();return lcLista0().filter(r=>!S[m+"|"+nrmN(r.n)+"|"+r.k])}
-function lcMarcar(L){const S=lcSeen(),m=lcMes();L.forEach(r=>S[m+"|"+nrmN(r.n)+"|"+r.k]=1);LS.set("lcSeen:"+store.uid,S)}
+function lcPendientes(){const S=lcSeen(),m=lcMes();const A=lcLista0().filter(r=>r.k==="esp"&&!S[m+"|"+nrmN(r.n)+"|esp"]);
+  const Cc=(T.config||{}).lcCierre;if(Cc&&Cc.mes&&Cc.mes!==m&&Date.now()<Date.parse(Cc.hasta||0))(Cc.lista||[]).forEach(r=>{if(lcNivel(r.v)==="lid"&&!S[Cc.mes+"|"+nrmN(r.n)+"|lidm"])A.push({n:r.n,v:Number(r.v)||0,k:"lid",mes:Cc.mes,cie:1})});return A}
+function lcMarcar(L){const S=lcSeen(),m=lcMes();L.forEach(r=>S[(r.mes||m)+"|"+nrmN(r.n)+"|"+(r.cie?"lidm":r.k)]=1);LS.set("lcSeen:"+store.uid,S)}
 function lcVentana(L,titulo){if(!L.length)return;let i=0;
   const pinta=()=>{const r=L[i],q=lcQ(r),rel=lcRelacion(r.n),esp=r.k==="esp",img=q.foto,f=String(r.n).split(" ")[0];
     openSheet(`<div class="dt-cel" id="lcCel" style="padding-top:4px">${titulo?`<p class="eyebrow" style="margin:0">${esc(titulo)}</p>`:""}<div style="font-size:34px">${esp?"⚔️🎉✨":"🏅🎉✨"}</div>
       <div class="dt-av" style="width:110px;height:110px;margin:8px auto;${esp?"background:conic-gradient(#F5B700,#FFF3C4,#F5B700)":""}">${img?`<s style="background-image:url('${esc(img)}')"></s>`:`<s style="font-size:30px">${esc(initials(r.n))}</s>`}</div>
-      <div class="big" style="font-size:20px">${rel==="yo"?`¡Felicidades, ${esc(f)}! Usted calificó como ${esp?"Líder Espartano":"Líder"}`:`¡${esc(r.n)} calificó como ${esp?"Líder Espartano":"Líder"}!`}</div>
-      <p class="muted" style="margin:0">Sistema de liderazgo · ${esc(lcMes())}${esp&&lcTL(r.n)?" · ⭐ Team Leader":""}</p></div>
-      ${rel==="arriba"||(isAdmin&&rel!=="yo")?`<button class="btn" id="lcFel" style="width:100%;background:#25D366;color:#fff">💬 Felicitarlo por calificar como ${esp?"Líder Espartano":"Líder"} de ${esc(lcMesCorto())}</button>`:""}
+      <div class="big" style="font-size:20px">${rel==="yo"?`¡Felicidades, ${esc(f)}! Usted calificó como ${esp?"Líder Espartano":r.cie?"Líder del mes":"Líder"}`:`¡${esc(r.n)} calificó como ${esp?"Líder Espartano":r.cie?"Líder del mes":"Líder"}!`}</div>
+      <p class="muted" style="margin:0">Sistema de liderazgo · ${esc(q.mes)}${esp&&lcTL(r.n)?" · ⭐ Team Leader":""}</p></div>
+      ${rel==="arriba"||(isAdmin&&rel!=="yo")?`<button class="btn" id="lcFel" style="width:100%;background:#25D366;color:#fff">💬 Felicitarlo por calificar como ${esp?"Líder Espartano":"Líder"} de ${esc(String(q.mes).split(" ")[0].toLowerCase())}</button>`:""}
       ${rel?`<button class="btn ghost" id="lcSh" style="width:100%">📣 Compartir flyer</button>`:(isAdmin?`<button class="btn ghost" id="lcSh" style="width:100%">📣 Compartir flyer</button>`:"")}
       <div class="row" style="gap:8px">${L.length>1?`<button class="btn ghost grow" id="lcPrev" ${i?"":"disabled"}>‹</button><span class="small muted" style="align-self:center">${i+1} de ${L.length}</span><button class="btn grow" id="lcNext">${i<L.length-1?"Siguiente ›":"Listo"}</button>`:`<button class="btn grow" data-close>¡Felicidades!</button>`}</div>`,()=>{
       confeti($("#lcCel"),esp?60:40);const fe=$("#lcFel");if(fe)fe.onclick=()=>lcFelicitar(q);const sh=$("#lcSh");if(sh)sh.onclick=()=>lcCompartir(q,sh);
       const p=$("#lcPrev");if(p)p.onclick=()=>{i--;pinta()};const n=$("#lcNext");if(n)n.onclick=()=>{if(i<L.length-1){i++;pinta()}else closeSheet()}})};
   pinta()}
-let lcTry=0;function lcRevisar(){try{if(!store.uid||!(regDoc&&regDoc.registro||isAdmin))return;const vi=$("#v-inicio");if(!$("#sheet").hidden||(vi&&vi.hidden)){if(++lcTry<8)setTimeout(lcRevisar,20000);return}const L=lcPendientes();if(!L.length)return;lcMarcar(L);lcVentana(L,"🎉 Nuevos calificados del sistema de liderazgo")}catch(e){}}
+let lcTry=0;function lcRevisar(){try{if(!store.uid||!(regDoc&&regDoc.registro||isAdmin))return;const vi=$("#v-inicio");if(!$("#sheet").hidden||(vi&&vi.hidden)){if(++lcTry<8)setTimeout(lcRevisar,20000);return}lcAvisoYo();const L=lcPendientes();if(!L.length)return;lcMarcar(L);lcVentana(L,L.every(r=>r.cie)?"🛡️ Líderes del mes de "+L[0].mes.split(" ")[0].toLowerCase():"🎉 Nuevos calificados del sistema de liderazgo")}catch(e){}}
+function lcAvisoYo(){try{const yo=miRegistro().nombre||miNombreFull();if(!yo)return;const r=lcLista0().find(x=>sameN(x.n,yo));if(!r||r.k!=="lid")return;const k="lcAviso:"+store.uid+":"+lcMes();if(LS.get(k))return;LS.set(k,1);
+  avisoTop("🛡️ ¡Ya es Líder del sistema!","Le faltan "+fmt(calCfg().esp-r.v)+" pts para Líder Espartano. ¡Vamos!",()=>{eqTab="ranking";rankMetric="liderazgo";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()})}catch(e){}}
 function lcLista(){const L=lcLista0();
   openSheet(`<h2>🎉 Calificados · ${esc(lcMes())}</h2><p class="small muted" style="margin:0">Sistema de liderazgo: 🏅 Líder 200+ pts · ⚔️ Líder Espartano 500+ pts</p><span data-nofocus hidden></span>
    <div id="lcL">${L.map((r,i)=>{const rel=lcRelacion(r.n),img=fotoDe(r.n);return `<div class="row between" style="gap:8px;padding:8px 0;border-bottom:1px solid var(--line)"><div class="row" style="gap:10px;min-width:0"><div class="dt-av" style="width:42px;height:42px;margin:0;flex:none;${r.k==="esp"?"background:conic-gradient(#F5B700,#FFF3C4,#F5B700)":""}">${img?`<s style="background-image:url('${esc(img)}')"></s>`:`<s style="font-size:12px">${esc(initials(r.n))}</s>`}</div><div style="min-width:0"><b class="small">${esc(r.n)}</b><div class="small muted">${LC_TX[r.k]} · ${fmt(r.v)} pts</div></div></div><button class="btn sm ${rel?"":"ghost"}" data-lci="${i}" style="flex:none">🎉 Flyer</button></div>`}).join("")||`<p class="small muted">Aún no hay calificados este mes.</p>`}</div>
@@ -2760,48 +2792,63 @@ Entre con Google, complete su registro y vea su video de bienvenida.
 ${pat}`;
 const PAIS_ISO={"Honduras":"HN","Estados Unidos":"US","España":"ES","Reino Unido":"GB","Guatemala":"GT","El Salvador":"SV","Nicaragua":"NI","Costa Rica":"CR","Panamá":"PA","México":"MX","Colombia":"CO","Venezuela":"VE","Perú":"PE","Ecuador":"EC","Chile":"CL","Argentina":"AR","República Dominicana":"DO","Canadá":"CA","Italia":"IT","Francia":"FR","Alemania":"DE"};
 const bandera=p=>{const c=PAIS_ISO[p];return c?String.fromCodePoint(...[...c].map(x=>127397+x.charCodeAt(0))):""};
-const BIEN_TH={classic:{img:"media/flyers/bienvenida-classic.jpg?v=6",a:"#5FD3F7",g:["#D7F4FE","#2AC1F1","#0A7DAD"],glow:"rgba(42,193,241,.55)",lab:"SOCIO CLASSIC",top:"CLASSIC",pill:0},
-  premium:{img:"media/flyers/bienvenida-premium.jpg?v=6",a:"#E8C766",g:["#FBEFC0","#D4AF37","#8C6A12"],glow:"rgba(212,175,55,.5)",lab:"SOCIO PREMIUM",top:"PREMIUM",pill:1}};
+const BIEN_TH={classic:{img:"media/flyers/bienvenida-classic.jpg?v=7",a:"#5FD3F7",g:["#D7F4FE","#2AC1F1","#0A7DAD"],glow:"rgba(42,193,241,.55)",lab:"SOCIO CLASSIC",top:"CLASSIC",pill:0},
+  premium:{img:"media/flyers/bienvenida-premium.jpg?v=7",a:"#E8C766",g:["#FBEFC0","#D4AF37","#8C6A12"],glow:"rgba(212,175,55,.5)",lab:"SOCIO PREMIUM",top:"PREMIUM",pill:1}};
 let bienFont=null;function bienFonts(){if(!bienFont)bienFont=Promise.all([["Bebas Neue","media/fonts/BebasNeue-Regular.ttf"]].map(([n,u])=>{try{const f=new FontFace(n,"url("+u+")");return f.load().then(x=>document.fonts.add(x)).catch(()=>{})}catch(e){return null}}));return bienFont}
 async function bienFotoPat(){try{if(fotosFs===null||fotosFs===undefined)await cargarFotos()}catch(e){}
   const mine=(fotosFs||[]).find(x=>x.id===store.uid&&x.img);const C=[fotoDe(miNombreFull()),fotoDe(miRegistro().nombre||""),fotoDe(miNombreCorto()),mine&&mine.img,fbUser&&fbUser.photoURL].filter(Boolean);
   for(const u of [...new Set(C)]){const im=await imgLoad(u,!/^(data|blob):/.test(u));if(im)return u}return ""}
-async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto){const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");const T=BIEN_TH[plan]||BIEN_TH.classic;
+// ---------- Foto dentro de un círculo sin cortar la cabeza (busca la cara por tono de piel) ----------
+function fotoFoco(im){try{const S=72,c=document.createElement("canvas");c.width=S;c.height=S;const x=c.getContext("2d",{willReadFrequently:true});x.drawImage(im,0,0,S,S);const d=x.getImageData(0,0,S,S).data;let n=0,sx=0,sy=0;const fil=new Array(S).fill(0);
+  for(let y=0;y<Math.round(S*.85);y++)for(let k=0;k<S;k++){const i=(y*S+k)*4,r=d[i],gg=d[i+1],b=d[i+2],Y=.299*r+.587*gg+.114*b,cb=128-.168736*r-.331264*gg+.5*b,cr=128+.5*r-.418688*gg-.081312*b;
+    if(Y>45&&cr>=134&&cr<=180&&cb>=80&&cb<=132&&r>gg&&r>b){n++;sx+=k;sy+=y;fil[y]++}}
+  if(n<S*S*.012)return null;const fy=sy/n;let top=Math.round(fy);while(top>0&&fil[top-1]>=2)top--;
+  return{fx:sx/n/S,fy:fy/S,top:top/S}}catch(e){return null}}
+async function circFoto(g,src,cx,cy,r,ph,vacio){const im=src?await imgLoad(src,!/^(data|blob):/.test(src)):null;
+  g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();
+  if(!im){if(vacio)vacio();g.restore();return}
+  const w=im.width,h=im.height,f=fotoFoco(im),s=Math.max(2*r/w,2*r/h),iw=w*s,ih=h*s,cl=(v,a,b)=>Math.min(Math.max(v,a),b);
+  // la foto siempre cubre el círculo; se mueve para que la cara quede centrada y con aire arriba de la cabeza
+  let dx=f?cx-f.fx*iw:cx-iw/2,dy=f?(cy-.80*r)-Math.max(0,f.top-.08)*ih:cy-r;
+  dx=cl(dx,cx+r-iw,cx-r);dy=cl(dy,cy+r-ih,cy-r);
+  g.drawImage(im,dx,dy,iw,ih);g.restore()}
+async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto){const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");const T=BIEN_TH[plan]||BIEN_TH.classic;
   await bienFonts();try{await Promise.all(["800 30px Figtree","600 30px Figtree","500 30px Figtree","400 60px 'Bebas Neue'"].map(x=>document.fonts.load(x)))}catch(x){}
   const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', 'Bricolage Grotesque', Arial, sans-serif";
   g.fillStyle="#05070c";g.fillRect(0,0,W,H);const bg=await imgLoad(T.img);if(bg)g.drawImage(bg,0,0,W,H);
-  let gr=g.createLinearGradient(0,0,W,0);gr.addColorStop(0,"rgba(0,0,0,.72)");gr.addColorStop(.45,"rgba(0,0,0,.35)");gr.addColorStop(.7,"rgba(0,0,0,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
-  gr=g.createLinearGradient(0,H,0,H*.7);gr.addColorStop(0,"rgba(0,0,0,.75)");gr.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
+  let gr=g.createLinearGradient(0,0,W,0);gr.addColorStop(0,"rgba(0,0,0,.7)");gr.addColorStop(.5,"rgba(0,0,0,.3)");gr.addColorStop(.75,"rgba(0,0,0,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
+  gr=g.createLinearGradient(0,H,0,H*.6);gr.addColorStop(0,"rgba(0,0,0,.85)");gr.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
   const grad=(x0,x1)=>{const q=g.createLinearGradient(x0,0,x1,0);q.addColorStop(0,T.g[0]);q.addColorStop(.5,T.g[1]);q.addColorStop(1,T.g[2]);return q};
-  const sp=(t,x,y,ls,al)=>{let w=0;for(const ch of t)w+=g.measureText(ch).width+ls;w-=ls;let cx=al==="right"?x-w:x;g.textAlign="left";for(const ch of t){g.fillText(ch,cx,y);cx+=g.measureText(ch).width+ls}return w};
-  const lg=await imgLoad("media/logo-blanco.png");if(lg){const h=58,w=lg.width*h/lg.height;g.drawImage(lg,80,70,w,h)}
-  g.font="700 20px "+BF;g.fillStyle=T.a;g.globalAlpha=.9;sp(T.top,1000,108,6.4,"right");g.globalAlpha=1;
-  g.fillStyle=grad(80,150);g.fillRect(80,216,70,3);g.font="700 24px "+BF;g.fillStyle=T.a;sp(f?"BIENVENIDA A LA FAMILIA":"BIENVENIDO A LA FAMILIA",168,227,7.2);
-  const ring=async(src,cx,cy,r,b,glow,ph,pad)=>{const im=src?await imgLoad(src,!/^(data|blob):/.test(src)):null;
-    g.save();if(glow){g.shadowColor=T.glow;g.shadowBlur=70}g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.fillStyle=grad(cx-r,cx+r);g.fill();g.restore();
+  const sp=(t,x,y,ls,al)=>{let w=0;for(const ch of t)w+=g.measureText(ch).width+ls;w-=ls;let cx=al==="right"?x-w:al==="center"?x-w/2:x;g.textAlign="left";for(const ch of t){g.fillText(ch,cx,y);cx+=g.measureText(ch).width+ls}return w};
+  const wrap=(t,mw)=>{const L=[];let c="";String(t).split(/\s+/).forEach(w=>{const z=c?c+" "+w:w;if(c&&g.measureText(z).width>mw){L.push(c);c=w}else c=z});if(c)L.push(c);return L};
+  const lg=await imgLoad("media/logo-plus.png");if(lg){const h=44,w=lg.width*h/lg.height;g.drawImage(lg,80,110,w,h)}
+  g.font="700 19px "+BF;g.fillStyle=T.a;sp(T.top,1000,142,6,"right");
+  g.fillStyle=grad(80,150);g.fillRect(80,255,70,3);g.font="700 24px "+BF;g.fillStyle=T.a;sp(f?"BIENVENIDA A LA FAMILIA":"BIENVENIDO A LA FAMILIA",168,266,7.2);
+  const ring=async(src,cx,cy,r,b,glow,ph,pad)=>{g.save();if(glow){g.shadowColor=T.glow;g.shadowBlur=80}g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.fillStyle=grad(cx-r,cx+r);g.fill();g.restore();
     g.beginPath();g.arc(cx,cy,r-pad,0,Math.PI*2);g.fillStyle="#05070c";g.fill();const ri=r-pad-b;
-    g.save();g.beginPath();g.arc(cx,cy,ri,0,Math.PI*2);g.clip();
-    if(im){const s=Math.max(2*ri/im.width,2*ri/im.height),iw=im.width*s,ih=im.height*s;g.drawImage(im,cx-iw/2,cy-ri-Math.max(0,ih-2*ri)*0.25,iw,ih)}
-    else{g.fillStyle=grad(cx-ri,cx+ri);g.fillRect(cx-ri,cy-ri,2*ri,2*ri);g.fillStyle=T.pill?"#111":"#05253a";g.font="800 "+Math.round(ri*.62)+"px "+BF;g.textAlign="center";g.fillText(initials(ph||"AL"),cx,cy+ri*.22)}
-    g.restore()};
-  await ring(fotoSrc,245,440,165,6,true,n,7);
+    await circFoto(g,src,cx,cy,ri,ph,()=>{g.fillStyle=grad(cx-ri,cx+ri);g.fillRect(cx-ri,cy-ri,2*ri,2*ri);g.fillStyle=T.pill?"#111":"#05253a";g.font="800 "+Math.round(ri*.62)+"px "+BF;g.textAlign="center";g.fillText(initials(ph||"AL"),cx,cy+ri*.22)})};
+  await ring(fotoSrc,270,550,190,6,true,n,7);
   const P=String(n||"").trim().toUpperCase().split(/\s+/),l1=P[0]||"",R=P.slice(1);
-  const wrap=(z,mw)=>{g.font="400 "+z+"px "+BB;const L=[];let cur="";R.forEach(w=>{const t=cur?cur+" "+w:w;if(cur&&g.measureText(t).width>mw){L.push(cur);cur=w}else cur=t});if(cur)L.push(cur);return L};
-  let z=168,RL=wrap(z,640);const ZS=[168,156,144,132,120,108,96,84];
-  pick:for(const mx of [2,3,9])for(const zz of ZS){const L=wrap(zz,640);g.font="400 "+zz+"px "+BB;if(1+L.length<=mx&&g.measureText(l1).width<=900&&L.every(x=>g.measureText(x).width<=900)){z=zz;RL=L;break pick}}
-  g.font="400 "+z+"px "+BB;const lh=z*.86;let yy=650+lh;g.textAlign="left";g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=6;g.fillStyle="#fff";g.fillText(l1,76,yy);
+  const wr=(z,mw)=>{g.font="400 "+z+"px "+BB;const L=[];let cur="";R.forEach(w=>{const t=cur?cur+" "+w:w;if(cur&&g.measureText(t).width>mw){L.push(cur);cur=w}else cur=t});if(cur)L.push(cur);return L};
+  let z=180,RL=wr(z,700);const ZS=[180,168,156,144,132,120,108,96];
+  pick:for(const mx of [2,3,9])for(const zz of ZS){const L=wr(zz,700);g.font="400 "+zz+"px "+BB;if(1+L.length<=mx&&g.measureText(l1).width<=920&&L.every(x=>g.measureText(x).width<=920)){z=zz;RL=L;break pick}}
+  g.font="400 "+z+"px "+BB;const lh=z*.86;let yy=800+lh;g.textAlign="left";g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=6;g.fillStyle="#fff";g.fillText(l1,76,yy);
   RL.forEach(t=>{yy+=lh;const w2=g.measureText(t).width;g.fillStyle=grad(76,76+w2);g.fillText(t,76,yy)});g.restore();
-  let yb=Math.min(yy+70,1060);g.font="800 22px "+BF;const lw=(()=>{let w=0;for(const ch of T.lab)w+=g.measureText(ch).width+4.4;return w-4.4})()+52;
+  let yb=yy+76;g.font="800 22px "+BF;const lw=(()=>{let w=0;for(const ch of T.lab)w+=g.measureText(ch).width+4.4;return w-4.4})()+52;
   g.beginPath();g.roundRect(80,yb-34,lw,50,25);if(T.pill){g.fillStyle=grad(80,80+lw);g.fill()}else{g.fillStyle="rgba(42,193,241,.14)";g.fill();g.lineWidth=2;g.strokeStyle=T.a;g.stroke()}
   g.fillStyle=T.pill?"#111":"#fff";sp(T.lab,106,yb-1,4.4);
   if(pais){let x=80+lw+18;const fl=bandera(pais);if(fl){g.font="30px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";g.fillText(fl,x,yb);x+=g.measureText(fl).width+12}g.font="600 24px "+BF;g.fillStyle="#E5E7EB";sp(pais.toUpperCase(),x,yb-2,3.4)}
-  g.font="500 30px "+BF;g.fillStyle="rgba(255,255,255,.88)";g.textAlign="left";g.fillText("Hoy empieza su nueva historia.",80,yb+74);
-  // patrocinador (abajo a la izquierda)
-  let ps=28;g.font="700 "+ps+"px "+BF;while(g.measureText(pat).width>380&&ps>18){ps--;g.font="700 "+ps+"px "+BF}const pw=Math.max(g.measureText(pat).width,200)+130;
-  g.beginPath();g.roundRect(80,1178,pw,92,46);g.fillStyle="rgba(255,255,255,.07)";g.fill();g.lineWidth=1.5;g.strokeStyle=T.a;g.stroke();
-  await ring(patFoto,126,1224,32,0,false,pat,2.5);
-  g.textAlign="left";g.fillStyle=T.a;g.font="700 15px "+BF;sp("SU PATROCINADOR",176,1212,3.3);g.fillStyle="#fff";g.font="700 "+ps+"px "+BF;g.fillText(pat,176,1246);
-  g.font="400 52px "+BB;g.fillStyle="#fff";sp("HASTA QUE FUNCIONE",1000,1230,3,"right");g.font="600 20px "+BF;g.fillStyle=T.a;sp("actionleadersplus.com",1000,1258,1.2,"right");
+  let yq=Math.min(yb+110,1400);g.font="500 34px "+BF;g.textAlign="left";g.fillStyle="rgba(255,255,255,.9)";g.fillText("Hoy empieza su nueva historia.",80,yq);
+  g.font="700 34px "+BF;g.fillStyle=T.a;wrap((f?"Bienvenida":"Bienvenido")+" al equipo donde los sueños se trabajan juntos.",760).slice(0,3).forEach((t,i)=>g.fillText(t,80,yq+48*(i+1)));
+  // tarjetas
+  const card=(x,w,b,s)=>{g.beginPath();g.roundRect(x,1530,w,104,20);g.fillStyle="rgba(255,255,255,.07)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.15)";g.stroke();g.textAlign="left";g.fillStyle="#fff";g.font="700 30px "+BF;g.fillText(b,x+20,1576);g.fillStyle=T.a;g.font="700 14px "+BF;sp(s,x+20,1608,2.8)};
+  const now=new Date(),mm=MONTHS[now.getMonth()].toUpperCase()+" "+now.getFullYear();card(80,453,mm,"SE UNIÓ");card(547,453,"Action Leaders","SU EQUIPO");
+  // patrocinador y cierre
+  let ps=30;g.font="700 "+ps+"px "+BF;while(g.measureText(pat).width>360&&ps>18){ps--;g.font="700 "+ps+"px "+BF}const pw=Math.max(g.measureText(pat).width,210)+138;
+  g.beginPath();g.roundRect(80,1700,pw,100,50);g.fillStyle="rgba(255,255,255,.07)";g.fill();g.lineWidth=1.5;g.strokeStyle=T.a;g.stroke();
+  await ring(patFoto,130,1750,36,0,false,pat,3);
+  g.textAlign="left";g.fillStyle=T.a;g.font="700 15px "+BF;sp("SU PATROCINADOR",184,1738,3.3);g.fillStyle="#fff";g.font="700 "+ps+"px "+BF;g.fillText(pat,184,1774);
+  g.font="400 56px "+BB;g.fillStyle="#fff";sp("HASTA QUE FUNCIONE",1000,1762,3,"right");g.font="600 20px "+BF;g.fillStyle=T.a;sp("actionleadersplus.com",1000,1792,1.2,"right");
   return cv}
 function fotoReduce400(file){return new Promise((ok,ko)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const S=480,c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);c.getContext("2d").drawImage(im,(im.width-m)/2,Math.max(0,(im.height-m)/2.6),m,m,0,0,S,S);URL.revokeObjectURL(u);ok(c.toDataURL("image/jpeg",.88))};im.onerror=()=>{URL.revokeObjectURL(u);ko(new Error("img"))};im.src=u})}
 let bienPatP=null;const bienPat=()=>bienPatP||(bienPatP=bienFotoPat());
@@ -2815,7 +2862,7 @@ function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,
    <div class="seg" id="bnG"><button aria-selected="true" data-g="m" type="button">Bienvenido</button><button aria-selected="false" data-g="f" type="button">Bienvenida</button></div>
    <div class="seg" id="bnP"><button aria-selected="true" data-p="classic" type="button">Classic</button><button aria-selected="false" data-p="premium" type="button">Premium</button></div>
    <label class="btn ghost" style="width:100%;justify-content:center;cursor:pointer">📷 Foto del socio nuevo<input type="file" id="bnFoto" accept="image/*" hidden></label>
-   <div id="bnBox" style="aspect-ratio:4/5;width:100%;max-width:340px;margin:0 auto;border-radius:14px;background:#0b0b10;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Escribe el nombre…</span></div>
+   <div id="bnBox" style="aspect-ratio:9/16;width:100%;max-width:300px;margin:0 auto;border-radius:14px;background:#0b0b10;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Escribe el nombre…</span></div>
    <button class="btn" id="bnGo" style="width:100%">📤 Enviar flyer y mensaje${tel?" por WhatsApp":""}</button>
    <div class="row" style="gap:8px"><button class="btn ghost grow" id="bnCopy">Copiar mensaje</button><button class="btn ghost grow" id="bnDl">Descargar flyer</button></div>
    <a class="btn ghost" id="bnWa" style="width:100%;justify-content:center${tel?"":";display:none"}" target="_blank" rel="noopener">Abrir chat de WhatsApp</a>
@@ -2957,9 +3004,9 @@ async function lzCanvas(o){const W=1080,H=1350,cv=document.createElement("canvas
   const circ=async(src,cx,cy,nm)=>{const r=128,im=src?await imgLoad(src,!/^(data|blob):/.test(src)):null;
     g.save();g.shadowColor="rgba(245,183,0,.55)";g.shadowBlur=50;g.beginPath();g.arc(cx,cy,r+13,0,Math.PI*2);const cg=g.createLinearGradient(cx-r,cy-r,cx+r,cy+r);cg.addColorStop(0,GOLD);cg.addColorStop(.5,"#FFF3C4");cg.addColorStop(1,"#D99A00");g.fillStyle=cg;g.fill();g.restore();
     g.beginPath();g.arc(cx,cy,r+6,0,Math.PI*2);g.fillStyle="#070B14";g.fill();
+    if(im){await circFoto(g,src,cx,cy,r,nm);return}
     g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();
-    if(im){const s=Math.max(2*r/im.width,2*r/im.height),iw=im.width*s,ih=im.height*s;g.fillStyle="#e9e9ec";g.fillRect(cx-r,cy-r,2*r,2*r);g.drawImage(im,cx-iw/2,cy-r-Math.max(0,ih-2*r)*.25,iw,ih)}
-    else{g.fillStyle="#141a26";g.fillRect(cx-r,cy-r,2*r,2*r);g.fillStyle=GOLD;g.font="800 96px "+HF;g.fillText(initials(nm),cx,cy+34)}g.restore()};
+    {g.fillStyle="#141a26";g.fillRect(cx-r,cy-r,2*r,2*r);g.fillStyle=GOLD;g.font="800 96px "+HF;g.fillText(initials(nm),cx,cy+34)}g.restore()};
   await circ(o.fotoA,320,580,o.nA);await circ(o.fotoB,760,580,o.nB);
   g.fillStyle=GOLD;g.font="300 64px "+BF;g.fillText("×",540,602);
   const lab=(cx,k,n,t)=>{g.fillStyle=GOLD;g.font="800 19px "+BF;sp("4px");g.fillText(k,cx+2,756);sp("0px");g.fillStyle="#fff";fit(n,"800 {s}px "+BF,36,360);g.fillText(n,cx,796);g.fillStyle="rgba(255,255,255,.75)";g.font="500 22px "+BF;g.fillText(t,cx,830)};
@@ -3079,8 +3126,8 @@ function evaSpW(g,t,ls){let w=0;for(const ch of String(t))w+=g.measureText(ch).w
 function evaFit(g,t,font,size,maxW,ls){let z=size;const f=()=>{g.font=font.replace("{s}",z);return ls?evaSpW(g,t,ls*z/size):g.measureText(t).width};while(f()>maxW&&z>12)z--;return z}
 async function evaCirc(g,src,cx,cy,r,ring,rc,dark,nm){const im=src?await imgLoad(src,!/^(data|blob):/.test(src)):null;
   if(ring){g.beginPath();g.arc(cx,cy,r+ring,0,Math.PI*2);g.fillStyle=rc;g.fill()}if(dark){g.beginPath();g.arc(cx,cy,r+dark,0,Math.PI*2);g.fillStyle="#07101F";g.fill()}
-  g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();if(im){const s=Math.max(2*r/im.width,2*r/im.height),iw=im.width*s,ih=im.height*s;g.fillStyle="#e9e9ec";g.fillRect(cx-r,cy-r,2*r,2*r);g.drawImage(im,cx-iw/2,cy-r-Math.max(0,ih-2*r)*.22,iw,ih)}
-  else{g.fillStyle="#13233d";g.fillRect(cx-r,cy-r,2*r,2*r);g.fillStyle="#2AC1F1";g.font="700 "+Math.round(r*.7)+"px ALO, sans-serif";g.textAlign="center";g.fillText(initials(nm||"AL"),cx,cy+r*.25)}g.restore()}
+  if(im){await circFoto(g,src,cx,cy,r,nm);return}
+  g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();{g.fillStyle="#13233d";g.fillRect(cx-r,cy-r,2*r,2*r);g.fillStyle="#2AC1F1";g.font="700 "+Math.round(r*.7)+"px ALO, sans-serif";g.textAlign="center";g.fillText(initials(nm||"AL"),cx,cy+r*.25)}g.restore()}
 function evaRR(g,x,y,w,h,r){g.beginPath();g.roundRect(x,y,w,h,r)}
 async function evaCanvas(o){await evaFonts();const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
   const bg=await imgLoad("media/eventos/"+(o.tipo==="gran"?"g":"j")+(o.dis||1)+".jpg");if(bg)g.drawImage(bg,0,0,W,H);else{g.fillStyle="#07101F";g.fillRect(0,0,W,H)}
@@ -4430,7 +4477,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261031000124";var busy=false,pend=null;
+(function(){var V="20261031005622";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

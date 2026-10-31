@@ -57,6 +57,18 @@ for ln in open(reg_file, encoding='utf-8'):
     if P(f) >= wk0: g['w'] += 1
 
 old = d['ranking']; new = []; used = set()
+
+# Cambio de mes: guarda los calificados del mes que cerró (200+ pts) para el flyer "Líder del mes"
+# y actualiza las etiquetas del mes (calificacion.mes y rankingMes).
+MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
+lab = lambda k: MESES[int(k[5:7]) - 1].capitalize() + ' ' + k[:4]
+mesK = mes0[:7]
+if cfg.get('lcMesClave') and cfg['lcMesClave'] != mesK:
+    cfg['lcCierre'] = {'mes': lab(cfg['lcMesClave']), 'hasta': (now + datetime.timedelta(days=7)).strftime('%Y-%m-%dT%H:%M:%SZ'),
+                       'lista': [{'n': e['nombre'], 'v': e.get('volumen', 0)} for e in old if e.get('volumen', 0) >= 200]}
+    cfg['rankingMes'] = lab(mesK)
+    cfg.setdefault('calificacion', {})['mes'] = lab(mesK)
+cfg['lcMesClave'] = mesK
 def put(e):
     sid = slug(e['nombre'])
     while sid in used: sid += '-2'
