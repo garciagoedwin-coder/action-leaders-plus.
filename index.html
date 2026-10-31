@@ -227,7 +227,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 #presOv .pv-gs{align-self:flex-start;background:transparent;border:1px dashed rgba(236,169,72,.6);color:#ECA948;border-radius:99px;padding:6px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
 #presOv .pv-nav{display:flex;gap:10px;padding:10px 14px max(16px,env(safe-area-inset-bottom));position:sticky;bottom:0;background:linear-gradient(transparent,#0E2A4F 30%)}#presOv .pv-nav button{flex:1;border:0;border-radius:14px;padding:14px;font:inherit;font-weight:800;font-size:15px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}#presOv .pv-nav button:disabled{opacity:.4}#presOv .pv-nav .go{background:#ECA948;color:#0B2E57}
 @media (orientation:landscape) and (max-height:560px){#presOv .pv-sl{height:calc(100vh - 150px);aspect-ratio:auto;margin:0 auto;width:auto;max-width:calc(100vw - 20px)}#presOv .pv-sl img{width:auto;height:100%}}
-.stpct{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none}.stpct b{font-size:17px;line-height:1}.stpct em{font-style:normal;font-size:10.5px;font-weight:700;color:#B45309}
+.stpct{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none}.crmord{display:flex;align-items:center;gap:5px;margin:0 0 10px}.crmord button{border:1px solid var(--line,#e2e8f0);background:#fff;border-radius:999px;padding:6px 4px;flex:1;white-space:nowrap;font:inherit;font-size:12px;font-weight:600;color:#334155;cursor:pointer}.crmord button[aria-pressed="true"]{background:var(--brand,#0E7490);border-color:transparent;color:#fff}.stpct b{font-size:17px;line-height:1}.stpct em{font-style:normal;font-size:10.5px;font-weight:700;color:#B45309}
 .c-hot{background:#FFEDD5;color:#C2410C}
 .stsum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}.stsum button{border:0;border-radius:12px;padding:8px 4px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}.stsum b{display:block;font-size:20px}
 .pl-f{display:flex;align-items:center;gap:8px;font:inherit;font-size:12.5px;font-weight:700;border:0;background:none;color:inherit;padding:3px 0;width:100%;text-align:left;cursor:pointer}.pl-f em{font-style:normal;color:var(--muted)}.pl-f span{width:118px;flex:none}.pl-f i{flex:1;height:16px;border-radius:6px;background:var(--surface-2);overflow:hidden}.pl-f s{display:block;height:100%;border-radius:6px;text-decoration:none}.pl-f b{width:30px;text-align:right}
@@ -1209,7 +1209,7 @@ const store={db:null,uid:null,
   async set(k,v){if(k==="perfil"&&this.db&&!mineReady)return;if(this.db){try{await this.mine().doc(k).set(v);return}catch(e){toast("No se pudo guardar. Revisa tu conexión.")}}LS.set(k,v)},
   crm(){return this.db.collection("users/"+this.uid+"/crm")},
   async contacts(){if(this.db){for(let i=0;i<3;i++){try{const q=await this.crm().get();return q.docs.map(d=>Object.assign({id:d.id},d.data()))}catch(e){await new Promise(r=>setTimeout(r,1500))}}toast("No se pudieron cargar tus contactos. Revisa tu conexión y vuelve a abrir la app.");return []}return LS.get("crm")||[]},
-  async saveContact(c){const{id,...b0}=c;const body=JSON.parse(JSON.stringify(b0));if(this.db){try{if(id){await this.crm().doc(id).set(body);return id}const r=await this.crm().add(body);return r.id}catch(e){console.error("saveContact",e);toast("No se pudo guardar el contacto ("+((e&&(e.code||e.message))||"error").toString().slice(0,60)+"). Revise su internet e intente de nuevo.");return null}}
+  async saveContact(c){if(!c.id&&!c.creado)c.creado=Date.now();const{id,...b0}=c;const body=JSON.parse(JSON.stringify(b0));if(this.db){try{if(id){await this.crm().doc(id).set(body);return id}const r=await this.crm().add(body);return r.id}catch(e){console.error("saveContact",e);toast("No se pudo guardar el contacto ("+((e&&(e.code||e.message))||"error").toString().slice(0,60)+"). Revise su internet e intente de nuevo.");return null}}
     const all=LS.get("crm")||[];if(!id){c.id="c"+Date.now();all.push(c)}else{const i=all.findIndex(x=>x.id===id);all[i]=c}LS.set("crm",all);return c.id},
   async delContact(id){if(this.db){try{await this.crm().doc(id).delete()}catch(e){toast("No se pudo eliminar.")}return}
     LS.set("crm",(LS.get("crm")||[]).filter(x=>x.id!==id))}
@@ -3263,7 +3263,7 @@ function stepsHTML(c){const i=FLOW.indexOf(c.stage);
   const b=(s,cls,lbl)=>`<button class="${cls}" data-st="${esc(s)}" data-cid="${esc(c.id)}" aria-pressed="${c.stage===s}">${lbl||s}</button>`;
   return `<div class="stp">${FLOW.map((s,k)=>b(s,c.stage===s?"cur":(i>k?"done":""),(i>k?"✓ ":"")+s+" "+ST_PCT[s]+"%")).join("")}${b("Cliente",c.stage==="Cliente"?"cur":"","Cliente 100%")}${b("No interesado","no "+(c.stage==="No interesado"?"cur":""),"✕ No 0%")}</div>`}
 const STAGE_C={"Nuevo":"c-brand","Contactado":"c-brand","Presentación":"c-gold","Seguimiento":"c-warn","Por cerrar":"c-hot","Socio":"c-good","Cliente":"c-good","No interesado":"c-bad"};
-let contacts=[],stageF="Todos",openC=null;
+let contacts=[],stageF="Todos",openC=null,crmOrd=(()=>{try{return LS.get("crmOrd")||"seg"}catch(e){return "seg"}})();
 const STAGE_COL={"Nuevo":"#2AC1F1","Contactado":"#2AC1F1","Presentación":"#d4a017","Seguimiento":"#e8862a","Por cerrar":"#EA580C","Socio":"#22a35a","Cliente":"#22a35a","No interesado":"#d64545"};
 const PAISES=[["Honduras","504"],["Estados Unidos","1"],["España","34"],["Reino Unido","44"],["Guatemala","502"],["El Salvador","503"],["Nicaragua","505"],["Costa Rica","506"],["Panamá","507"],["México","52"],["Colombia","57"],["Venezuela","58"],["Perú","51"],["Ecuador","593"],["Chile","56"],["Argentina","54"],["República Dominicana","1"],["Canadá","1"],["Italia","39"],["Francia","33"],["Alemania","49"]];
 const waNum=(t,cc)=>{const raw=String(t||"").trim();let d=raw.replace(/\D/g,"");if(!d)return"";if(raw.startsWith("+")||raw.startsWith("00"))return d.replace(/^00/,"");cc=cc||"504";if(d.startsWith(cc)&&d.length>cc.length+6)return d;return cc+d.replace(/^0+/,"")};
@@ -3273,16 +3273,19 @@ function msgPara(c,first){const nt=c.note||"";if((c.stage||"Nuevo")==="Nuevo"&&n
   return (WA_MSG[c.stage]||WA_MSG.Nuevo).replace("{n}",first)}
 const WA_MSG={"Nuevo":"Hola {n}, ¿cómo está? Quería saludarle y contarle algo que estoy haciendo y creo que le puede interesar.","Contactado":"Hola {n}, ¿cómo está? ¿Tiene unos minutos esta semana para mostrarle lo que le comenté?","Presentación":"Hola {n}, ¡gracias por su tiempo en la presentación! ¿Qué fue lo que más le gustó?","Seguimiento":"Hola {n}, ¿cómo está? Le escribo para saber si pudo revisar la información y si tiene alguna pregunta.","Por cerrar":"Hola {n}, ¿cómo está? 😊 Le escribo para ayudarle a crear su cuenta. ¿Le parece si lo hacemos hoy juntos? Solo toma unos minutos.","Socio":"Hola {n}, ¿cómo va todo? Aquí estoy para apoyarle en lo que necesite.","Cliente":"Hola {n}, ¿cómo está? Quería saber cómo le ha ido.","No interesado":"Hola {n}, ¿cómo está? Solo quería saludarle."};
 const waLink=c=>{const n=waNum(c.phone,c.cc);if(!n)return"";const first=String(c.name||"").trim().split(/\s+/)[0]||"";return "https://wa.me/"+n+"?text="+encodeURIComponent(msgPara(c,first))};
+function crmIng(c){return +(c.creado||c.updated||0)||0}
+function crmCmp(){const o=pipeOk()?crmOrd:"seg";if(o==="rec")return(a,b)=>crmIng(b)-crmIng(a);if(o==="pct"){const g=c=>c.stage==="No interesado"?2:(c.stage==="Socio"||c.stage==="Cliente")?1:0;return(a,b)=>(g(a)-g(b))||(stPct(b)-stPct(a))||(crmIng(b)-crmIng(a))}return(a,b)=>(a.next||"9999").localeCompare(b.next||"9999")}
 function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerCase();
   const counts={Todos:contacts.length};STAGES.forEach(s=>counts[s]=contacts.filter(c=>c.stage===s).length);
   $("#stageBar").innerHTML=["Todos"].concat(STAGES).map(s=>`<button aria-pressed="${s===stageF}" data-s="${s}">${s}<span class="n">${counts[s]}</span></button>`).join("");
-  const list=contacts.filter(c=>(stageF==="Todos"||c.stage===stageF)&&(!q||(c.name+" "+(c.note||"")).toLowerCase().includes(q))).sort((a,b)=>(a.next||"9999").localeCompare(b.next||"9999"));
+  const list=contacts.filter(c=>(stageF==="Todos"||c.stage===stageF)&&(!q||(c.name+" "+(c.note||"")).toLowerCase().includes(q))).sort(crmCmp());
   if(!contacts.length){$("#contactList").innerHTML=`<div class="empty"><h3>Tu lista de contactos está vacía</h3>
     <p class="small muted">Agrega a las personas con las que quieres compartir el negocio o el producto. Registra la etapa, una nota y la fecha del próximo seguimiento.</p>
     <button class="btn gold sm" id="addFirst">Agregar mi primer contacto</button></div>`;$("#addFirst").onclick=()=>editContact();return}
   if(!list.length){$("#contactList").innerHTML=`<p class="muted small">No hay contactos en esta vista.</p>`;return}
   const pipeSum=pipeOk()?(()=>{const n=s=>contacts.filter(c=>c.stage===s).length,fr=contacts.filter(stFrio).length;return `<div class="stsum"><button type="button" data-sf="Por cerrar" style="background:#FFEDD5;color:#C2410C"><b>${n("Por cerrar")}</b>🔥 Por cerrar</button><button type="button" data-sf="Seguimiento" style="background:#FEF3C7;color:#B45309"><b>${n("Seguimiento")}</b>🔁 Seguimiento</button><button type="button" data-sf="Presentación" style="background:#E0F2FE;color:#0369A1"><b>${n("Presentación")}</b>🎤 Presentados</button></div>${fr?`<p class="small" style="margin:0 0 6px;color:#B45309;font-weight:700">⚠️ ${fr} ${fr===1?"prospecto lleva":"prospectos llevan"} más de 7 días sin avanzar</p>`:""}`})():"";
-  $("#contactList").innerHTML=pipeSum+list.map(c=>{const late=c.next&&c.next<TODAY,today=c.next===TODAY,op=openC===c.id;
+  const ordUI=pipeOk()?`<div class="crmord" role="group" aria-label="Ordenar contactos">${[["seg","📅 Seguimiento"],["rec","🆕 Recientes"],["pct","📈 Mayor %"]].map(([k,t])=>`<button type="button" data-ord="${k}" aria-pressed="${crmOrd===k}">${t}</button>`).join("")}</div>`:"";
+  $("#contactList").innerHTML=ordUI+pipeSum+list.map(c=>{const late=c.next&&c.next<TODAY,today=c.next===TODAY,op=openC===c.id;
     const k=c.stage==="Cliente"?FLOW.length:c.stage==="No interesado"?0:FLOW.indexOf(c.stage)+1,pc=STAGE_COL[c.stage]||"var(--brand)";
     return `<div class="contact ${op?"open":""}" style="--pc:${pc}"><div class="ch" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}">
     <div class="av" style="box-shadow:0 0 0 2px ${pc}">${c.stage==="Socio"||c.stage==="Cliente"?"✓":esc(initials(c.name))}</div>
@@ -3303,7 +3306,7 @@ $("#bienBtn").onclick=()=>abrirBienvenida();$("#addContact").onclick=()=>editCon
 $("#contactList").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-tog]")){e.preventDefault();e.target.click()}});
 $("#contactList").addEventListener("click",async e=>{const st=e.target.closest("[data-st]");
   const tg=e.target.closest("[data-tog]");if(tg){openC=openC===tg.dataset.tog?null:tg.dataset.tog;renderCRM();return}
-  const sf=e.target.closest("[data-sf]");if(sf){stageF=stageF===sf.dataset.sf?"Todos":sf.dataset.sf;renderCRM();return}
+  const sf=e.target.closest("[data-sf]");const od=e.target.closest("[data-ord]");if(od){crmOrd=od.dataset.ord;try{LS.set("crmOrd",crmOrd)}catch(e){}renderCRM();return}if(sf){stageF=stageF===sf.dataset.sf?"Todos":sf.dataset.sf;renderCRM();return}
   const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c)setTimeout(()=>stAvanza(c,"Contactado","le escribió por WhatsApp"),300)}
   if(st){const c=contacts.find(x=>x.id===st.dataset.cid);if(!c||c.stage===st.dataset.st)return;const prev=c.stage;c.stage=st.dataset.st;c.stT=Date.now();c.stAuto="";c.updated=Date.now();renderCRM();
     const id=await store.saveContact(Object.assign({},c));if(!id){c.stage=prev;renderCRM();return}if(c.stage==="Socio"){abrirBienvenida(c);return}toast(c.name.split(" ")[0]+": "+c.stage);return}
@@ -4283,7 +4286,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261030174213";var busy=false,pend=null;
+(function(){var V="20261030191844";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
