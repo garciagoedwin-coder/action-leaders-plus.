@@ -1630,7 +1630,7 @@ function renderActBan(){const c=$("#actBan");if(!c||banDone)return;
   (T.activaciones||[]).forEach(a=>{if(!a.fecha)return;const f=dkey(new Date(a.fecha));if(f<hace30)return;if(/starter/i.test(a.paquete||"")&&!banSocio(a))return;
     const r=(T.ranking||[]).find(x=>sameN(x.nombre,a.patrocinador)),nom=r?r.nombre:a.patrocinador;
     let g=G0.find(x=>sameN(x.nom,nom));if(!g){g={nom,L:[]};G0.push(g)}g.L.push(Object.assign({_f:f},a))});
-  const fel=LS.get("banFel")||{},G=[];G0.forEach(g=>{const pu=banPuede(g),ok=a=>pu&&!!banWa(a),sp=pu?banSp(g.nom):null,okF=a=>!!sp&&!fel[banK(a)]&&a._f>=hace7&&!/starter/i.test(a.paquete||""),L=g.L.filter(a=>ok(a)?!bien[banK(a)]:okF(a)||(a._f===hoy&&!vis[banK(a)]&&!/starter/i.test(a.paquete||"")));if(L.length)G.push({nom:g.nom,L,W:L.filter(ok),F:sp?L.filter(okF):[],sp})});
+  const fel=LS.get("banFel")||{},bx=LS.get("banX")||{},G=[];G0.forEach(g=>{g.L=g.L.filter(a=>!bx[banK(a)]);if(!g.L.length)return;const pu=banPuede(g),ok=a=>pu&&!!banWa(a),sp=pu?banSp(g.nom):null,okF=a=>!!sp&&!fel[banK(a)]&&a._f>=hace7&&!/starter/i.test(a.paquete||""),L=g.L.filter(a=>ok(a)?!bien[banK(a)]:okF(a)||(a._f===hoy&&!vis[banK(a)]&&!/starter/i.test(a.paquete||"")));if(L.length)G.push({nom:g.nom,L,W:L.filter(ok),F:sp?L.filter(okF):[],sp})});
   banMarca("banVisto",G.flatMap(g=>g.L));
   if(!G.length){c.hidden=true;c.innerHTML="";return}
   const corto=n=>{const w=String(n||"").trim().split(/\s+/);return w.length>2?w[0]+" "+w[w.length>3?2:1]:w.join(" ")},cap=t=>String(t||"").toLowerCase().replace(/(^|\s)\S/g,m=>m.toUpperCase());
@@ -1639,7 +1639,7 @@ function renderActBan(){const c=$("#actBan");if(!c||banDone)return;
     return `<div class="ab"><span class="av" style="${f?`background-image:url('${f}')`:""}">${f?"":esc(ini)}</span><div><b>${solo?`🎉 ¡${esc(corto(cap(g.W[0].socio)))} ya entró a la app!`:`🎉 ¡Felicidades, ${esc(corto(g.nom))}!`}</b><small>${det}</small>${g.F&&g.F.length?`<button type="button" class="abWa" data-abfel="1">👏 Felicitar a ${esc(corto(g.nom).split(" ")[0])}</button>`:""}${g.W.length?`<button type="button" class="abWa" data-abwa="1">💬 Darle la bienvenida</button>`:""}</div><span class="tag">${tg}</span><span class="x" aria-label="Cerrar">✕</span></div>`};
   const show=()=>{c.innerHTML=card(G[banI%G.length])+(G.length>1?`<div class="dots">${G.map((_,i)=>`<i class="${i===banI%G.length?"on":""}"></i>`).join("")}</div>`:"")};
   banI=0;banDone=true;show();c.hidden=false;
-  c.onclick=e=>{if(e.target.closest("[data-abfel]")){clearInterval(banT);banFelicitar(G[banI%G.length]);return}if(e.target.closest("[data-abwa]")){clearInterval(banT);banBienvenida(G[banI%G.length]);return}cerrarBan()};
+  c.onclick=e=>{if(e.target.closest("[data-abfel]")){clearInterval(banT);const g=G[banI%G.length];banMarca("banX",g.L);banFelicitar(g);return}if(e.target.closest("[data-abwa]")){clearInterval(banT);banBienvenida(G[banI%G.length]);return}banMarca("banX",G.reduce((a,g)=>a.concat(g.L),[]));cerrarBan()};
   if(mios===null&&store.db&&store.uid&&!banMiosT){banMiosT=1;loadMios().then(()=>{if(!c.hidden&&c.innerHTML)show()}).catch(()=>{})}
   let vistos=1;banT=setInterval(()=>{if(document.hidden)return;if(vistos>=G.length){if(!G.some(g=>g.W.length||(g.F&&g.F.length)))cerrarBan();else{clearInterval(banT)}return}banI++;vistos++;show()},4500)}
 let banMiosT=0,banSocT=0;
@@ -4411,7 +4411,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261030231105";var busy=false,pend=null;
+(function(){var V="20261030233727";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
