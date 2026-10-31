@@ -656,9 +656,9 @@
    "registros": 1,
    "regSemana": 1,
    "id": "karla-patricia-calderon-fajardo",
-   "activaciones": 2,
-   "volumen": 1000,
-   "actSemana": 2
+   "activaciones": 3,
+   "volumen": 1500,
+   "actSemana": 3
   },
   {
    "nombre": "Josefina Pacheco",
@@ -1147,7 +1147,7 @@
    "nuevos": 0,
    "presentaciones": 1,
    "rango": "Team Leader",
-   "volumen": 1000,
+   "volumen": 1500,
    "volumenDetalle": "",
    "id": "karla-patricia-calderon-fajardo",
    "volumenHoja": 0
@@ -2624,6 +2624,16 @@
    "wk": "b7faed",
    "fuente": "gmail",
    "id": "joel-alvarez"
+  },
+  {
+   "socio": "Jorge francisco Paz ortega",
+   "paquete": "Premium",
+   "patrocinador": "Karla patricia Calderon fajardo",
+   "fecha": "2026-10-31T20:56:12Z",
+   "ek": "d387bd",
+   "wk": "a29118",
+   "fuente": "gmail",
+   "id": "jorge-francisco-paz-ortega"
   }
  ],
  "academia": [],
@@ -2641,7 +2651,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-31T20:55:34Z",
+  "activacionesCorte": "2026-10-31T20:56:12Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2651,7 +2661,7 @@
   "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-31T14:56:00-06:00",
+  "rankingActualizado": "2026-10-31T15:03:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
