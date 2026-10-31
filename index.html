@@ -1018,7 +1018,6 @@ nav.tabs button{z-index:0;isolation:isolate}
       <div class="card" id="salaCard" hidden style="border:1.5px solid #C2410C"></div>
       
       <div class="actBan" id="actBan" hidden></div>
-      <div class="metaStrip" id="metaStrip" hidden></div>
       <div class="card entCard" id="entCard" hidden></div>
       <div class="card evCard" id="evCard" hidden></div>
       <div class="card" id="whoCard" hidden></div>
@@ -1115,6 +1114,7 @@ nav.tabs button{z-index:0;isolation:isolate}
     <!-- IA -->
     <section class="view" id="v-suenos" hidden>
       <div><p class="eyebrow">Privado · solo usted lo ve</p><h1>Mi mapa de sueños</h1></div>
+      <div class="metaStrip" id="metaStrip" hidden></div>
       <div id="snBody"></div>
       <button class="btn ghost" id="snShare" type="button" style="width:100%">📤 Compartir mi mapa en historias</button>
     </section>
@@ -2383,6 +2383,7 @@ function premBanner(k){const D=premDatos();if(!D)return"";const{P,min,yo,myV,myG
    ${lead(g1,g1?g1.G:0,win,null).replace(" · 1.er lugar",(g1&&g1.G===1?" registro":" registros")+" · 1.er lugar")}
    ${me?`<div class="pb-me">${me}${yo&&g1?`<div class="pb-bar"><i style="width:${Math.max(2,Math.min(100,myG*100/Math.max(1,g1.G)))}%"></i></div>`:""}</div>`:""}</div>`}
 function premConfeti(k){const el=$(k==="vol"?"#pbVol":"#pbReg");if(!el)return;const K="premConf:"+k+":"+TODAY;try{if(LS.get(K))return;LS.set(K,1)}catch(e){}const D=premDatos();if(D&&!D.cerrado)setTimeout(()=>confeti(el,64),400)}
+var RETO_STRIP_OFF=true; // franja del reto del mes (Roatán) quitada de Inicio el 31 oct
 let rcJ=null,rcJT=0,rcTick=null;
 function rcN(t){return String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z ]/g," ").replace(/\s+/g," ").trim()}
 function rcSame(a,b){a=rcN(a);b=rcN(b);if(!a||!b)return false;if(a===b)return true;const A=a.split(" "),B=b.split(" "),S=A.length<=B.length?A:B,L=S===A?B:A;return S.length>=2&&S.every(w=>L.includes(w))}
@@ -2444,7 +2445,7 @@ function rcUnirme(){const D=rcDatos();if(!D)return;
      try{await store.db.doc("constancia/"+store.uid).set({rc:{id:D.R.id,v:+b.dataset.v,n:nm,t:Date.now()}},{merge:true});rcJ=(rcJ||[]).concat([{n:nm,v:+b.dataset.v}]);
        const R=(T.config||{}).retoCierre;if(R){R.comp=(R.comp||[]).concat([{n:nm.split(/\s+/).slice(0,2).join(" "),k:[nm],v:+b.dataset.v}])}
        closeSheet();toast("¡Ya está en el reto! 🔥");renderRC();const c=$("#rcCard");c&&confeti(c,70)}catch(x){b.disabled=false;toast("No se pudo guardar ("+(x.code||"error")+")")}}})}
-function renderPremios(){const c=$("#premCard");if(c)c.hidden=true;const s=$("#retoStrip");if(!s)return;const D=premDatos();if(!D){s.hidden=true;return}
+function renderPremios(){const c=$("#premCard");if(c)c.hidden=true;const s=$("#retoStrip");if(!s)return;if(RETO_STRIP_OFF){s.hidden=true;return}const D=premDatos();if(!D){s.hidden=true;return}
   const{P,v1,min,empV,cd,cerrado}=D,res=P.res;
   const t=res&&res.vol?`🎉 <b>Ganador de ${esc(P.vol.t)}:</b> ${esc(res.vol)}`:cerrado?`🏁 <b>Reto cerrado.</b> Pronto anunciamos a los ganadores`:v1&&v1.V>=min&&!empV?`${esc(P.vol.ic||"🏝️")} <b>Reto del mes:</b> ${esc(dtFirst(v1.n))} va para ${esc(String(P.vol.t).replace(/^Viaje a /,""))} · ${esc(cd)}`:`${esc(P.vol.ic||"🏝️")} <b>Reto del mes:</b> ${esc(P.vol.t)} · ${esc(cd)}`;
   s.hidden=false;s.innerHTML=`<span class="grow">${t}</span><b style="flex:none">›</b>`;
@@ -4565,7 +4566,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261031113002";var busy=false,pend=null;
+(function(){var V="20261031113121";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
