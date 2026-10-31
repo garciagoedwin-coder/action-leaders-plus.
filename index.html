@@ -227,7 +227,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 #presOv .pv-gs{align-self:flex-start;background:transparent;border:1px dashed rgba(236,169,72,.6);color:#ECA948;border-radius:99px;padding:6px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
 #presOv .pv-nav{display:flex;gap:10px;padding:10px 14px max(16px,env(safe-area-inset-bottom));position:sticky;bottom:0;background:linear-gradient(transparent,#0E2A4F 30%)}#presOv .pv-nav button{flex:1;border:0;border-radius:14px;padding:14px;font:inherit;font-weight:800;font-size:15px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}#presOv .pv-nav button:disabled{opacity:.4}#presOv .pv-nav .go{background:#ECA948;color:#0B2E57}
 @media (orientation:landscape) and (max-height:560px){#presOv .pv-sl{height:calc(100vh - 150px);aspect-ratio:auto;margin:0 auto;width:auto;max-width:calc(100vw - 20px)}#presOv .pv-sl img{width:auto;height:100%}}
-.stpct{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none}.rd-f{padding:12px 0;border-bottom:1px solid var(--line,#e2e8f0)}.rd-f:last-child{border-bottom:0}.rd-f.ok{opacity:.65}.rd-hero{background:linear-gradient(135deg,#0A7DAD,#13447A);color:#fff;border:0}.crmord.rd-fl{flex-wrap:wrap}.crmord.rd-fl button{flex:none;padding:6px 10px}[data-rh][aria-pressed="true"]{background:#DCFCE7;color:#15803D;border-color:#86EFAC}.crmord{display:flex;align-items:center;gap:5px;margin:0 0 10px}.crmord button{border:1px solid var(--line,#e2e8f0);background:#fff;border-radius:999px;padding:6px 4px;flex:1;white-space:nowrap;font:inherit;font-size:12px;font-weight:600;color:#334155;cursor:pointer}.crmord button[aria-pressed="true"]{background:var(--brand,#0E7490);border-color:transparent;color:#fff}.stpct b{font-size:17px;line-height:1}.stpct em{font-style:normal;font-size:10.5px;font-weight:700;color:#B45309}
+.stpct{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none}.seg.rd-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px}.seg.rd-seg button{white-space:nowrap}.rd-f{padding:12px 0;border-bottom:1px solid var(--line,#e2e8f0)}.rd-f:last-child{border-bottom:0}.rd-f.ok{opacity:.65}.rd-hero{background:linear-gradient(135deg,#0A7DAD,#13447A);color:#fff;border:0}.crmord.rd-fl{flex-wrap:wrap}.crmord.rd-fl button{flex:none;padding:6px 10px}[data-rh][aria-pressed="true"]{background:#DCFCE7;color:#15803D;border-color:#86EFAC}.crmord{display:flex;align-items:center;gap:5px;margin:0 0 10px}.crmord button{border:1px solid var(--line,#e2e8f0);background:#fff;border-radius:999px;padding:6px 4px;flex:1;white-space:nowrap;font:inherit;font-size:12px;font-weight:600;color:#334155;cursor:pointer}.crmord button[aria-pressed="true"]{background:var(--brand,#0E7490);border-color:transparent;color:#fff}.stpct b{font-size:17px;line-height:1}.stpct em{font-style:normal;font-size:10.5px;font-weight:700;color:#B45309}
 .c-hot{background:#FFEDD5;color:#C2410C}
 .stsum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}.stsum button{border:0;border-radius:12px;padding:8px 4px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}.stsum b{display:block;font-size:20px}
 .pl-f{display:flex;align-items:center;gap:8px;font:inherit;font-size:12.5px;font-weight:700;border:0;background:none;color:inherit;padding:3px 0;width:100%;text-align:left;cursor:pointer}.pl-f em{font-style:normal;color:var(--muted)}.pl-f span{width:118px;flex:none}.pl-f i{flex:1;height:16px;border-radius:6px;background:var(--surface-2);overflow:hidden}.pl-f s{display:block;height:100%;border-radius:6px;text-decoration:none}.pl-f b{width:30px;text-align:right}
@@ -2390,6 +2390,7 @@ function redMsgP(r){const e=redEst(r),yo=miNombreCorto(),cr=((T.config||{}).cier
   t+=`\n\nCon los puntos de su ahorro es como usted reserva su crucero.\n\n¿Lo puede hacer ahora mismo, o le queda mejor antes de la tarde?`;return t}
 function redMsgS(r){const yo=miNombreCorto(),u="https://actionleadersplus.com/?unirme="+(r.iv||miInv());
   return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`Nuestro equipo tiene su propia app, *Action Leaders PLUS*. Ahí tiene su agenda, su CRM, la academia y todo para crecer en el negocio.\n\nRegístrese aquí, ya queda en su línea:\n${u}`}
+function redMsgX(r){const yo=miNombreCorto();return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`Usted ya tiene su código de socio y su red en inCruises. 🙌\n\nSi activa su membresía, empieza a ahorrar puntos con el doble punto para viajar en los cruceros del 2027.\n\n¿Le gustaría que le explique cómo hacerlo?`}
 function redMsgC(r){const yo=miNombreCorto();return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`¿Cómo va con su membresía? Si tiene alguna duda sobre sus puntos o cómo reservar su próximo viaje, con gusto le ayudo.`}
 function redHace(t){const m=Math.round((Date.now()-t)/6e4);return m<60?(m<=1?"ahora":"hace "+m+" min"):m<1440?"hace "+Math.round(m/60)+" h":"hace "+Math.round(m/1440)+" d"}
 function redStTxt(r){const s=r.st||{},o=[];if(s.h)o.push(`👍 Paga hoy · ${esc(redFirst(s.h.by))} ${redHace(s.h.t)}`);if(s.c)o.push(`📩 Le escribió ${esc(redFirst(s.c.by))} · ${redHace(s.c.t)}`);return o.join(" · ")}
@@ -2399,24 +2400,26 @@ async function redMarca(id,k){const r=(redL||[]).find(x=>x.id===id);if(!r)return
 function redFila(r){const e=r.t==="p"?redEst(r):null,st=r.t==="p"?redStTxt(r):"";
   const btn=r.t==="p"?(e.k==="ok"?"":`<div class="row" style="gap:6px;margin-top:8px"><button class="btn sm" data-rw="${esc(r.id)}" style="flex:1;background:#16A34A;color:#fff">💬 Recordarle</button><button class="btn sm ghost" data-rh="${esc(r.id)}" style="flex:none" aria-pressed="${!!(r.st&&r.st.h)}">👍 Paga hoy</button></div>`)
     :r.t==="s"?`<div class="row" style="gap:6px;margin-top:8px"><button class="btn sm" data-rw="${esc(r.id)}" style="flex:1">📲 Invitar a la app</button></div>`
+    :r.t==="x"?`<div class="row" style="gap:6px;margin-top:8px"><button class="btn sm" data-rw="${esc(r.id)}" style="flex:1;background:#EA580C;color:#fff">💬 Invitarlo a activar su membresía</button></div>`
     :`<div class="row" style="gap:6px;margin-top:8px"><button class="btn sm ghost" data-rw="${esc(r.id)}" style="flex:1">💬 Escribirle</button></div>`;
-  return `<div class="rd-f${e&&e.k==="ok"?" ok":""}"><b>${esc(r.n)}</b><div class="small muted">${esc(r.pl||"")}${r.sp?` · Patrocina: ${esc(r.sp)}`:""}</div>${e?`<span class="chip ${e.cls}" style="margin-top:6px">${e.txt}</span>`:""}
+  return `<div class="rd-f${e&&e.k==="ok"?" ok":""}"><b>${esc(r.n)}</b><div class="small muted">${r.t==="p"?(r.ps?"<b style='color:#0A7DAD'>Socio</b> ":"Cliente "):""}${esc(r.t==="x"?"Solo código de socio":(r.pl||""))}${r.sp?` · Patrocina: ${esc(r.sp)}`:""}</div>${e?`<span class="chip ${e.cls}" style="margin-top:6px">${e.txt}</span>`:""}
    ${st?`<div class="small" style="margin-top:6px;color:#0A7DAD;font-weight:600">${st}</div>`:""}${btn}</div>`}
 function renderCierre(b){if(!redOk()){b.innerHTML=emptyCard("Cierre de mes","Aquí verá los ahorros pendientes de su red.");return}
   if(!redL){b.innerHTML=`<div class="card"><p class="muted small">${redErrTxt?esc(redErrTxt):"Cargando su red…"}</p>${isAdmin?redAdmHTML():""}</div>`;redBindAdm();
     if(!redErrTxt)redCargar().then(()=>{if(eqTab==="cierre")renderEquipo()}).catch(e=>{redErrTxt=(e&&e.code)==="permission-denied"?"Falta pegar las reglas de la red en Firebase.":"No se pudo cargar la red. Revise su internet.";if(eqTab==="cierre")renderEquipo()});return}
-  const P=redL.filter(r=>r.t==="p"),S=redL.filter(r=>r.t==="s"&&!r.u),SA=redL.filter(r=>r.t==="s"&&r.u),C=redL.filter(r=>r.t==="c");
+  const P=redL.filter(r=>r.t==="p"),S=redL.filter(r=>r.t==="s"&&!r.u),SA=redL.filter(r=>r.t==="s"&&r.u),C=redL.filter(r=>r.t==="c"),X=redL.filter(r=>r.t==="x");
   const E=P.map(r=>[r,redEst(r)]),pag=E.filter(x=>x[1].k==="ok").length,dp=E.filter(x=>x[1].k==="dp").length,urg=E.filter(x=>x[1].k==="dp"&&x[1].d<=2).length,
     inc=E.filter(x=>x[1].k==="in").length,con=P.filter(r=>r.st&&r.st.c).length,falt=P.length-pag;
   let L=redSeg==="p"?E.filter(([r,e])=>redF==="todo"||(redF==="dp"&&e.k==="dp")||(redF==="in"&&e.k==="in")||(redF==="sin"&&e.k!=="ok"&&!(r.st&&r.st.c))||(redF==="ok"&&e.k==="ok")).sort((a,c)=>(a[1].o-c[1].o)||(Date.parse(a[0].dp||0)-Date.parse(c[0].dp||0))).map(x=>x[0])
-    :redSeg==="s"?S.slice().sort((a,c)=>a.n.localeCompare(c.n)):C.slice().sort((a,c)=>a.n.localeCompare(c.n));
+    :redSeg==="s"?S.slice().sort((a,c)=>a.n.localeCompare(c.n)):redSeg==="x"?X.slice().sort((a,c)=>a.n.localeCompare(c.n)):C.slice().sort((a,c)=>a.n.localeCompare(c.n));
   const q=redQ.trim().toLowerCase();if(q)L=L.filter(r=>(r.n+" "+(r.sp||"")).toLowerCase().includes(q));
   const fb=(k,t)=>`<button type="button" data-rf="${k}" aria-pressed="${redF===k}">${t}</button>`;
   b.innerHTML=`<div class="card rd-hero"><div class="small" style="font-weight:800;letter-spacing:.08em;opacity:.85">💰 CIERRE DE MES</div>
     <div style="display:flex;align-items:baseline;gap:8px;margin:4px 0 2px"><b style="font-size:40px;line-height:1;font-family:'Barlow Condensed',Figtree,sans-serif">${falt}</b><span style="font-weight:700">ahorros pendientes en su red</span></div>
     <div class="small" style="opacity:.9">${urg?`🔥 <b>${urg}</b> pierden el doble punto en 2 días o menos · `:""}📩 ${con} contactados · ✅ ${pag} ya pagaron</div></div>
-   <div class="seg" id="rdSeg"><button data-rs="p" aria-selected="${redSeg==="p"}">💰 Ahorros · ${falt}</button><button data-rs="s" aria-selected="${redSeg==="s"}">⏳ Sin app · ${S.length}</button><button data-rs="c" aria-selected="${redSeg==="c"}">🛍️ Clientes · ${C.length}</button></div>
+   <div class="seg rd-seg" id="rdSeg"><button data-rs="p" aria-selected="${redSeg==="p"}">💰 Ahorros · ${falt}</button><button data-rs="x" aria-selected="${redSeg==="x"}">🟠 Sin membresía · ${X.length}</button><button data-rs="s" aria-selected="${redSeg==="s"}">⏳ Sin app · ${S.length}</button><button data-rs="c" aria-selected="${redSeg==="c"}">🛍️ Clientes · ${C.length}</button></div>
    ${redSeg==="p"?`<div class="crmord rd-fl">${fb("todo","Todos")}${fb("dp","🔥 Doble punto · "+dp)}${fb("in","⚠️ Inactivar · "+inc)}${fb("sin","Sin escribir")}${fb("ok","✅ Pagaron · "+pag)}</div>`
+     :redSeg==="x"?`<p class="small muted" style="margin:0">Socios que tienen su código pero no tienen membresía activa. No cuentan en su Índice de Duplicación ni en el Dream Team. Si activan su membresía, pasan solos a "al día" en el siguiente reporte.</p>`
      :redSeg==="s"?`<p class="small muted" style="margin:0">Socios de su red en inCruises que aún no se registran en la app. No cuentan en su Índice de Duplicación hasta que se registren. Ya en la app: ${SA.length}.</p>`
      :`<p class="small muted" style="margin:0">Miembros de su red que no son socios: quedan como clientes.</p>`}
    <input class="inp" id="rdQ" type="search" placeholder="Buscar por nombre o patrocinador" value="${esc(redQ)}">
@@ -2428,7 +2431,7 @@ function redBind(b){const sg=$("#rdSeg");if(sg)sg.onclick=e=>{const x=e.target.c
   b.querySelectorAll("[data-rf]").forEach(x=>x.onclick=()=>{redF=redF===x.dataset.rf?"todo":x.dataset.rf;renderEquipo()});
   const qi=$("#rdQ");if(qi)qi.oninput=()=>{redQ=qi.value;const L=$("#rdList");clearTimeout(qi._t);qi._t=setTimeout(()=>{renderEquipo();const n=$("#rdQ");if(n){n.focus();n.setSelectionRange(n.value.length,n.value.length)}},350)};
   const li=$("#rdList");if(li)li.onclick=e=>{const w=e.target.closest("[data-rw]"),h=e.target.closest("[data-rh]");
-    if(w){const r=redL.find(x=>x.id===w.dataset.rw);if(!r)return;const t=r.t==="p"?redMsgP(r):r.t==="s"?redMsgS(r):redMsgC(r);
+    if(w){const r=redL.find(x=>x.id===w.dataset.rw);if(!r)return;const t=r.t==="p"?redMsgP(r):r.t==="s"?redMsgS(r):r.t==="x"?redMsgX(r):redMsgC(r);
       if(r.t==="p")redMarca(r.id,"c");location.href="https://wa.me/"+(r.w||"")+"?text="+encodeURIComponent(t);setTimeout(()=>{if(eqTab==="cierre")renderEquipo()},800);return}
     if(h){redMarca(h.dataset.rh,"h").then(()=>renderEquipo())}};
   redBindAdm()}
@@ -2451,15 +2454,15 @@ async function redSubir(btn){if(!isAdmin)return;const m=$("#rdUpMsg"),say=t=>{if
     D.rows.forEach(r=>{const me=uOf(r.k);if(me)enApp++;const ve=new Set();let iv="";
       (r.anc||[]).forEach((k,j)=>{const x=uOf(k);if(!x)return;if(!iv)iv=redInvDe(x);if(j===0||rangoActualIdx(x.registro,x.registro.nombre)>=RED_MD)ve.add(x.uid)});
       if(root){ve.add(root.uid);if(!iv)iv=redInvDe(root)}if(me)ve.delete(me.uid);if(ve.size>1||!root)conVe++;
-      const o={n:r.n,t:r.t,pl:r.pl||"",lv:r.lv||0,sp:r.sp||"",w:r.w||"",ek:r.ek||"",wk:r.wk||"",ve:[...ve],u:me?me.uid:"",iv,v:D.v};
+      const o={ps:r.ps?1:0,n:r.n,t:r.t,pl:r.pl||"",lv:r.lv||0,sp:r.sp||"",w:r.w||"",ek:r.ek||"",wk:r.wk||"",ve:[...ve],u:me?me.uid:"",iv,v:D.v};
       if(r.t==="p"){o.dp=r.dp;o.in=r.in}docs[r.k]=o});
     say("Leyendo la base anterior…");let old={};try{(await store.db.collection("red").get()).docs.forEach(d=>old[d.id]=d.data())}catch(e){}
     const ops=[];Object.entries(docs).forEach(([k,o])=>{const a=old[k];o.st=a&&a.t===o.t&&a.st?a.st:{};ops.push(["set",k,o])});
     Object.keys(old).forEach(k=>{if(!docs[k])ops.push(["del",k])});
     for(let i=0;i<ops.length;i+=400){say(`Guardando ${Math.min(i+400,ops.length)} de ${ops.length}…`);const bt=store.db.batch();
       ops.slice(i,i+400).forEach(([t,k,o])=>{const ref=store.db.doc("red/"+k);t==="set"?bt.set(ref,o):bt.delete(ref)});await bt.commit()}
-    const c={s:0,c:0,p:0};D.rows.forEach(r=>c[r.t]++);
-    say(`✅ Listo: ${D.rows.length} personas (${c.s} socios, ${c.c} clientes, ${c.p} ahorros pendientes). ${enApp} ya están en la app. ${(D.dud||[]).length} patrocinadores sin enlazar (esa gente la ve solo la cuenta del equipo).`);
+    const c={s:0,c:0,p:0,x:0};D.rows.forEach(r=>c[r.t]=(c[r.t]||0)+1);
+    say(`✅ Listo: ${D.rows.length} personas (${c.s} socios, ${c.x} socios sin membresía, ${c.c} clientes, ${c.p} ahorros pendientes). ${enApp} ya están en la app. ${(D.dud||[]).length} patrocinadores sin enlazar (esa gente la ve solo la cuenta del equipo).`);
     redL=null;redHay=true;redBtn();setTimeout(()=>{if(eqTab==="cierre")renderEquipo()},2500)}
   catch(e){console.error("redSubir",e);say("❌ No se pudo: "+((e&&e.code)==="permission-denied"?"faltan las reglas de la red en Firebase.":((e&&(e.code||e.message))||"error")))}
   btn.disabled=false}
@@ -4393,7 +4396,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261030223127";var busy=false,pend=null;
+(function(){var V="20261030224737";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
