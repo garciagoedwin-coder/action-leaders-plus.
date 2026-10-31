@@ -656,9 +656,9 @@
    "registros": 1,
    "regSemana": 1,
    "id": "karla-patricia-calderon-fajardo",
-   "activaciones": 3,
-   "volumen": 1500,
-   "actSemana": 3
+   "activaciones": 5,
+   "volumen": 2500,
+   "actSemana": 5
   },
   {
    "nombre": "Josefina Pacheco",
@@ -1147,7 +1147,7 @@
    "nuevos": 0,
    "presentaciones": 1,
    "rango": "Team Leader",
-   "volumen": 1500,
+   "volumen": 2500,
    "volumenDetalle": "",
    "id": "karla-patricia-calderon-fajardo",
    "volumenHoja": 0
@@ -2634,6 +2634,26 @@
    "wk": "a29118",
    "fuente": "gmail",
    "id": "jorge-francisco-paz-ortega"
+  },
+  {
+   "socio": "Gabriela Villatoro",
+   "paquete": "Premium",
+   "patrocinador": "Karla patricia Calderon fajardo",
+   "fecha": "2026-10-31T21:56:08Z",
+   "ek": "1d8694",
+   "wk": "a7600b",
+   "fuente": "gmail",
+   "id": "gabriela-villatoro"
+  },
+  {
+   "socio": "Nereyda esther Ulloa benitez",
+   "paquete": "Premium",
+   "patrocinador": "Karla patricia Calderon fajardo",
+   "fecha": "2026-10-31T21:56:40Z",
+   "ek": "8c144a",
+   "wk": "f43d57",
+   "fuente": "gmail",
+   "id": "nereyda-esther-ulloa-benitez"
   }
  ],
  "academia": [],
@@ -2651,7 +2671,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-10-31T20:56:12Z",
+  "activacionesCorte": "2026-10-31T21:56:40Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2661,7 +2681,7 @@
   "calendarioActualizado": "2026-10-26T12:06:44-06:00",
   "liderazgoActualizado": "2026-10-18T11:22:00-06:00",
   "liderazgoPeriodo": "Octubre 2026",
-  "rankingActualizado": "2026-10-31T15:03:00-06:00",
+  "rankingActualizado": "2026-10-31T16:02:00-06:00",
   "rankingMes": "Octubre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
