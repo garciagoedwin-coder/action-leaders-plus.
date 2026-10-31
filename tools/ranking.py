@@ -86,6 +86,10 @@ d['ranking'] = new
 for L in d.get('liderazgo', []):
     names = [L['nombre']] + [z.strip() for z in str(L.get('nombreRanking') or '').split('|') if z.strip()]
     L['presentaciones'] = sum(e['registros'] for e in new if any(same(e['nombre'], k) for k in names))
+    # volumen del mes = el mayor entre la hoja Calificados (volumenHoja) y las activaciones del ranking
+    rv = sum(e['volumen'] for e in new if any(same(e['nombre'], k) for k in names))
+    if 'volumenHoja' not in L: L['volumenHoja'] = int(L.get('volumen') or 0)
+    L['volumen'] = max(int(L.get('volumenHoja') or 0), rv)
 
 if cambio: cfg['rankingActualizado'] = (now - datetime.timedelta(hours=6)).strftime('%Y-%m-%dT%H:%M:00-06:00')
 cfg['rankingFuente'] = 'drive-csv'
