@@ -308,3 +308,7 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - (30 oct, tarde) emb.top ahora guarda hasta 80 prospectos de TODAS las etapas activas (Nuevo→Por cerrar) con NOMBRE COMPLETO (Edwin lo pidió). Vista del líder: selector #pipeSel por socio (pipeU), filas del embudo tocables (data-pst) → hoja con los nombres de esa etapa (pipeFila). Teléfonos y notas nunca.
 - (30 oct, noche) Botones de etapa (stepsHTML) muestran el % para TODOS ("Nuevo 10%"). saveContact limpia undefined (JSON) y el toast de error muestra el código (e.code) para diagnosticar. Edwin vio "No se pudo guardar el contacto" al cambiar etapa en su teléfono; en pruebas funciona: si se repite, revisar el código que muestra el toast (permission-denied = reglas de producción distintas a respaldo/firestore.rules).
 - (30 oct, noche) Sueños: si la carga falla o viene vacía desde caché sin internet, ya NO se muestra "Agregue su primer sueño" (parecía que se habían borrado): sale "No se pudieron cargar sus sueños" + "🔄 Cargar de nuevo" (snErr).
+
+### 32b. Orden del CRM (30 oct noche) — admin, va junto al embudo
+- Botones `.crmord [data-ord]`: seg (próximo seguimiento, el de siempre), rec (más recientes por `creado`, si no hay usa `updated`), pct (activos por % mayor→menor; luego Socio/Cliente; al final No interesado). Se recuerda en LS `crmOrd`.
+- `crmCmp()` usa "seg" si `pipeOk()` es falso. `saveContact` pone `creado:Date.now()` a todo contacto nuevo (para todos los usuarios).
