@@ -1736,7 +1736,7 @@ function banBienvenida(g){const L=g.W||[];if(!L.length)return;const ir=a=>{banMa
     document.querySelectorAll("[data-bw]").forEach(b=>b.onclick=()=>{closeSheet();setTimeout(()=>ir(L[+b.dataset.bw]),250)})})}
 function renderAccesos(){const c=$("#accesos");if(!c)return;const L=((T.config&&Array.isArray(T.config.accesos)&&T.config.accesos.length)?T.config.accesos:ACC_DEF).filter(a=>safeUrl(a.u));
   if(!L.length){c.hidden=true;return}c.hidden=false;
-  c.innerHTML=`<h3>Accesos directos</h3><div class="acc"><a href="#" id="accBien"><span class="ic">🎉</span>Bienvenida socio nuevo</a><a href="#" id="accPag"><span class="ic">🌐</span>Mi página prospectos</a>${L.map(a=>`<a href="${esc(a.u)}" target="_blank" rel="noopener"><span class="ic">${esc(a.i||"🔗")}</span>${esc(a.t)}</a>`).join("")}</div>`;$("#accBien").onclick=e=>{e.preventDefault();abrirBienvenida()};$("#accPag").onclick=e=>{e.preventDefault();abrirMiPagina()}}
+  c.innerHTML=`<h3>Accesos directos</h3><div class="acc"><a href="#" id="accBien"><span class="ic">🎉</span>Bienvenida socio nuevo</a><a href="#" id="accPag"><span class="ic">🌐</span>Mi página prospectos</a><a href="#" id="accMem"><span class="ic">🛳️</span>Página de membresía</a>${L.map(a=>`<a href="${esc(a.u)}" target="_blank" rel="noopener"><span class="ic">${esc(a.i||"🔗")}</span>${esc(a.t)}</a>`).join("")}</div>`;$("#accBien").onclick=e=>{e.preventDefault();abrirBienvenida()};$("#accPag").onclick=e=>{e.preventDefault();abrirMiPagina()};$("#accMem").onclick=e=>{e.preventDefault();memCompartir()}}
 function renderMe(){let rk=null;const me=myRow();try{if(!me&&fbUser)rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}const v=me?(Number(me.registros)||0)+(Number(me.activaciones)||0):rk?rk.R:null;$("#topPv").textContent=v!=null?fmt(v):"—";$("#topPvBox").toggleAttribute("data-empty",v==null);renderWho();if(eqTab==="ranking")renderEquipo()}
 
 // ---------- retos ----------
@@ -3428,6 +3428,25 @@ function memMsg(nombre,u){const f=String(nombre||"").trim().split(/\s+/)[0]||"",
 async function enviarMem(c){if(!c)return;if(!(await salaPrep()))return;LS.set("memOn",1);const E=LS.get("memEnv")||{};E[c.id]=Date.now();LS.set("memEnv",E);stAvanza(c,"Contactado","le envió la página de la membresía");
   const t=memMsg(c.name,memUrl(c.name,c.id)),n=waNum(c.phone,c.cc);if(n){location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t);return}
   if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
+async function memCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}
+  openSheet(`<h2>🛳️ Página de membresía</h2><p class="small muted" style="margin:0 0 10px">Cómo funciona la membresía, con el simulador de cruceros. Los botones le escriben a su WhatsApp.</p>
+   <div class="field"><label for="mcN">¿Para quién es? (opcional)</label><input class="inp" id="mcN" placeholder="Nombre de la persona" maxlength="50"></div>
+   <label class="row" style="gap:8px;font-size:14px;font-weight:600;margin:4px 0 12px"><input type="checkbox" id="mcCrm"> ➕ Guardarlo también en mi CRM</label>
+   <div class="field" id="mcTelF" hidden><label for="mcTel">WhatsApp (opcional)</label><input class="inp" id="mcTel" type="tel" inputmode="tel" placeholder="Para el CRM"></div>
+   <div style="display:grid;gap:8px"><button class="btn" id="mcWa" style="background:#25D366;color:#fff">📲 Enviar por WhatsApp</button><button class="btn ghost" id="mcCp">🔗 Copiar enlace</button><button class="btn ghost" id="mcVer">👀 Ver la página</button></div>
+   <button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{
+   $("#mcCrm").onchange=e=>{$("#mcTelF").hidden=!e.target.checked};
+   const prep=async()=>{if(!(await salaPrep()))return null;LS.set("memOn",1);const n=$("#mcN").value.trim().slice(0,50);let cid="";
+     if(n&&$("#mcCrm").checked){const t=$("#mcTel").value.replace(/[^\d+]/g,"").slice(0,15);const c={name:n,cc:LS.get("lastCC")||"504",phone:t,stage:"Contactado",note:"Le envió la página de la membresía",next:TODAY,updated:Date.now()};
+       const id=await store.saveContact(c);if(id){c.id=id;cid=id;contacts.push(c);const E=LS.get("memEnv")||{};E[id]=Date.now();LS.set("memEnv",E);try{renderCRM()}catch(x){}}}
+     return {n,u:memUrl(n,cid)}};
+   $("#mcWa").onclick=async()=>{const r=await prep();if(!r)return;const t=memMsg(r.n,r.u);closeSheet();location.href="https://wa.me/?text="+encodeURIComponent(t)};
+   $("#mcCp").onclick=async()=>{const r=await prep();if(!r)return;try{await navigator.clipboard.writeText(r.u);toast("Enlace copiado ✅")}catch(x){prompt("Copie el enlace:",r.u)}};
+   $("#mcVer").onclick=async()=>{const r=await prep();if(!r)return;window.open(r.u+(r.u.includes("?")?"&":"?")+"ver=1","_blank")}})}
+async function memVisitas(){LS.set("memOn",1);try{await loadSala(true)}catch(x){}const V=Object.values(LS.get("salaV")||{}).filter(v=>String(v.id||"").startsWith("m_")).sort((a,b)=>(b.t||0)-(a.t||0)).slice(0,60);
+  openSheet(`<h2>👀 Quién vio mi página de membresía</h2><p class="small muted" style="margin:0 0 8px">Se actualiza al abrir esta lista.</p>
+   ${V.length?V.map(v=>`<div class="row" style="gap:10px;padding:10px 0;border-top:1px solid var(--line);align-items:flex-start"><span style="font-size:22px">${v.como?"🔥":v.resp==="sim"?"🧮":"👀"}</span><div class="grow" style="min-width:0"><b>${esc(v.n||"Sin nombre")}</b><div class="small muted">${memHace(v.t)} · bajó el ${+v.pct||0}%${v.resp==="sim"?" · usó el simulador":""}${v.como?" · tocó \"Quiero\"":""}</div></div></div>`).join(""):emptyCard("Aún no hay visitas","Comparta su página de membresía y aquí verá quién la abrió.")}
+   <button class="btn" id="mvNew" style="width:100%;margin-top:10px">🛳️ Compartir página de membresía</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{$("#mvNew").onclick=()=>memCompartir()})}
 let memVT=0;document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&LS.get("memOn")&&Date.now()-memVT>120000){memVT=Date.now();loadSala()}});
 function salaDe(cid){if(!cid)return null;const V=salaCache();let b=null;for(const k in V){const v=V[k];if(v.c===cid&&(!b||(v.t||0)>(b.t||0)))b=v}return b}
 function salaNivel(v){if(v.resp==="ambas")return["🔥 Caliente","c-bad","#C2410C"];if(v.resp==="viajar"||v.resp==="ingresos")return["🟠 Tibio","c-gold","#B45309"];if(v.resp==="no")return["❄️ No por ahora","c-brand","#0369A1"];return[(+v.pct||0)>=75?"👀 Casi termina":(+v.pct||0)>0?"⏳ Viéndola":"👋 Entró",(+v.pct||0)>=75?"c-gold":"c-brand","var(--muted)"]}
@@ -4403,6 +4422,8 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <button class="pf-it" id="pfFoto"><span class="ic">📷</span>Cambiar mi foto</button>
     <button class="pf-it" id="pfNombre"><span class="ic">👤</span>Mis datos <span class="small muted" style="font-weight:500">· nombre y WhatsApp</span></button>
     <button class="pf-it" id="pfPag"><span class="ic">🌐</span>Mi página para prospectos</button>
+    <button class="pf-it" id="pfMem"><span class="ic">🛳️</span>Compartir página de membresía</button>
+    <button class="pf-it" id="pfMemV"><span class="ic">👀</span>Quién vio mi página de membresía</button>
     ${salaOk()?`<button class="pf-it" id="pfSala"><span class="ic">🎬</span>Mi presentación virtual</button>`:""}
     <button class="pf-it" id="pfInv"><span class="ic">🔗</span>Mi enlace de invitación para socios</button>
     <button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
@@ -4413,7 +4434,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
     $("#pfNombre").onclick=abrirMisDatos;{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
-    $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;
+    $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfMem").onclick=()=>memCompartir();$("#pfMemV").onclick=()=>memVisitas();
     $("#pfInv").onclick=()=>{if(!(regDoc&&regDoc.registro)){toast("Completa tu registro primero");return}const u=miEnlace();openSheet(`<h2>🔗 Tu enlace de invitación</h2><p class="small muted">Compártelo solo con tus socios nuevos. Al registrarse, aparecerás como su patrocinador.</p>
       <div class="card" style="word-break:break-all;font-weight:600">${esc(u)}</div><button class="btn" id="invCp" style="width:100%">Copiar enlace</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#invCp").onclick=async()=>{try{await navigator.clipboard.writeText(u);toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})};
     $("#pfInst").onclick=()=>openSheet(`<h2>Instala la app</h2>
@@ -4657,7 +4678,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261031123708";var busy=false,pend=null;
+(function(){var V="20261031125232";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

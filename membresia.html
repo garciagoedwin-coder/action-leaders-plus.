@@ -2,9 +2,9 @@
 <html lang="es"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Así funciona su membresía de viajes · Action Leaders PLUS</title>
+<title>Su próximo crucero empieza hoy · Action Leaders PLUS</title>
 <meta name="description" content="Viaje más con el mismo dinero: cómo funciona la membresía de viajes, cómo se reserva un crucero y con cuánto se empieza.">
-<meta property="og:title" content="Viaje más con el mismo dinero 🚢">
+<meta property="og:title" content="Su próximo crucero empieza hoy 🚢">
 <meta property="og:description" content="Así funciona la membresía de viajes: ahorre, duplique en puntos y reserve su crucero. Simulador incluido.">
 <meta property="og:image" content="https://actionleadersplus.com/media/mem/hero.jpg">
 <meta name="theme-color" content="#0B1B33">
@@ -126,9 +126,9 @@ input[type=date]{width:100%;font:600 16px Figtree;padding:12px;border:1.5px soli
  <img class="logo" src="media/logo-plus.png" alt="Action Leaders PLUS">
  <div class="w">
   <div class="host" id="host" hidden><i id="hAv"></i><span>Le comparte esta información<br><b id="hNm"></b></span></div>
-  <div class="hi" id="hiN">🚢 Membresía de viajes</div>
-  <h1>Viaje más<br><span>con el mismo dinero</span></h1>
-  <p>Así funciona la membresía de viajes: usted ahorra cada mes, su dinero se convierte en el <b>doble de puntos</b> y con ellos reserva hoteles, tours y cruceros.</p>
+  <div class="hi" id="hiN">🌴 ¿A dónde le gustaría ir?</div>
+  <h1>Su próximo crucero<br><span>empieza hoy</span></h1>
+  <p>Así funciona la membresía de viajes: su ahorro se convierte en <b>el doble de puntos</b> para hoteles, tours y cruceros.</p>
   <a class="btn bg" href="#como">Ver cómo funciona ↓</a>
   <a class="scroll" href="#sim">o vaya directo al simulador 🧮</a>
  </div>
@@ -262,7 +262,7 @@ const U=new URLSearchParams(location.search);
 const code=(U.get("de")||"").trim().toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60);
 const pName=(U.get("p")||"").replace(/[<>]/g,"").trim().slice(0,50),first=pName.split(/\s+/)[0]||"";
 const cid=(U.get("c")||"").replace(/[^A-Za-z0-9_-]/g,"").slice(0,40);
-if(first){$("hiN").textContent="🚢 "+first+", esto es para usted"}
+if(first){$("hiN").textContent="🌴 "+first+", ¿a dónde le gustaría ir?"}
 // animaciones al bajar
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("on");if(e.target.querySelector("#bars"))$("bars").classList.add("on")}}),{threshold:.15});
 document.querySelectorAll(".rv").forEach(x=>io.observe(x));
@@ -296,7 +296,8 @@ const host=P&&P.nombre?String(P.nombre):"",hostF=host.split(" ")[0]||"",hostWa=P
 if(host){$("host").hidden=false;$("hNm").textContent=host;const av=$("hAv");if(P.foto&&/^data:image\//.test(P.foto))av.style.backgroundImage=`url(${P.foto})`;else av.textContent=host.split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase()}
 const LSg=k=>{try{return JSON.parse(localStorage.getItem("mem:"+k))}catch(e){return null}},LSs=(k,v)=>{try{localStorage.setItem("mem:"+k,JSON.stringify(v))}catch(e){}};
 const vKey="v-"+code+"-"+(cid||pName.toLowerCase()||"anon");let V=LSg(vKey)||{id:null};const D={},t0=Date.now();let maxP=0,saveT;
-async function save(extra,now){Object.assign(D,extra||{});if(!(db&&P&&P.uid))return;clearTimeout(saveT);const go=async()=>{try{
+const soloVer=U.get("ver")==="1";
+async function save(extra,now){Object.assign(D,extra||{});if(soloVer||!(db&&P&&P.uid))return;clearTimeout(saveT);const go=async()=>{try{
   if(!V.id){V.id="m_"+Math.random().toString(36).slice(2,10)+Date.now().toString(36);LSs(vKey,V);D.t0=Date.now();D.n=(pName||"Sin nombre").slice(0,60);if(cid)D.c=cid}
   D.pct=maxP;D.dur=Math.round((Date.now()-t0)/1000);D.t=Date.now();await setDoc(doc(db,"users",P.uid,"sala",V.id),D,{merge:true})}catch(e){}};if(now)await go();else saveT=setTimeout(go,1200)}
 save({},true);
