@@ -2593,11 +2593,29 @@ function redCierreTxt(){const n=Date.now(),d=new Date(n),fin=Date.UTC(d.getUTCFu
   if(ult===hoy)return "hoy mismo, antes de las 6:00 p.m. hora de Honduras";
   if(ult===man)return `mañana ${dia}, antes de las 6:00 p.m. hora de Honduras`;
   return `antes del ${dia} a las 6:00 p.m. hora de Honduras`}
-function redMsgP(r){const yo=miNombreCorto();
-  return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`Le escribo porque su ahorro de este mes aparece pendiente. Es muy importante tener su cuenta al día para seguir acumulando sus puntos y no perder los beneficios de su membresía.\n\n¿Lo puede hacer ${redCierreTxt()}? Así cierra el mes con todo su puntaje acumulado. 🙌\n\nSi necesita ayuda para hacerlo, con gusto le acompaño.`}
+function redVar(r,L){let h=0;for(const ch of String(r.id||r.n||""))h=(h*31+ch.charCodeAt(0))>>>0;return L[h%L.length]}
+function redFirma(){const y=String(miNombreCorto()||"").split(/\s+/)[0];return y?`\n\n${y}`:""}
+function redEsCierre(){const n=Date.now(),d=new Date(n),fin=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1);return fin-n<864e5}
+function redMsgP(r){const f=redFirst(r.n),e=redEst(r);let L;
+  if(e.k==="ok")L=[`¡Hola ${f}! 🙌\n\nVi que ya hizo su ahorro. ¡Gracias por su compromiso! Así se construye el viaje.\n\nCualquier cosa que necesite, aquí estoy.`,
+    `Hola ${f} 😊\n\nYa me salió que su ahorro pasó. ¡Muchas gracias!\n\nSeguimos juntando puntos para ese viaje. 🚢`];
+  else if(e.k==="dp"&&redEsCierre())L=[`Hola ${f} 👋\n\nPasando a saludarle: su ahorro todavía aparece pendiente y hoy cierra el mes a las 6 p.m.\n\n¿Le ayudo con algo para hacerlo?`,
+    `Hola ${f}, ¿cómo está? 😊\n\nLe escribo rapidito: vi que su ahorro de este mes todavía no ha pasado.\n\n¿Lo puede hacer hoy antes de las 6 de la tarde? Si necesita ayuda, aquí estoy. 🙌`,
+    `¡Hola ${f}! 😊\n\nUna pregunta rápida: ¿ya pudo hacer su ahorro del mes? Me sale pendiente todavía.\n\nHoy es el último día, hasta las 6 p.m. Cualquier cosa me avisa y le apoyo.`];
+  else if(e.k==="dp")L=[`Hola ${f}, ¿cómo está? 😊\n\nLe escribo rapidito: su ahorro de este mes todavía no ha pasado, y aún está a tiempo de recibir sus *puntos dobles*.\n\n¿Lo puede hacer hoy? Si necesita ayuda, aquí estoy. 🙌`,
+    `Hola ${f}, ¿cómo le va?\n\nNo quiero que pierda los puntos dobles de este mes 🙏 Su ahorro todavía aparece pendiente.\n\n¿Lo hacemos hoy? Aquí estoy si tiene alguna duda.`,
+    `¡Hola ${f}! 👋\n\nPasando a recordarle su ahorro del mes: todavía está a tiempo de duplicar sus puntos.\n\n¿Le ayudo con algo para hacerlo?`];
+  else if(e.k==="in"&&e.d<=7)L=[`Hola ${f} 😊\n\nLe escribo porque no quiero que pierda lo que ya ha ahorrado. Su cuenta está por quedar inactiva si no se pone al día.\n\n¿Lo vemos juntos hoy? Aquí estoy para apoyarle.`,
+    `Hola ${f}, ¿cómo está?\n\nSu cuenta está a pocos días de quedar inactiva y me gustaría ayudarle a que no pase. 🙏\n\n¿Tiene un ratito hoy para ponerla al día?`];
+  else if(e.k==="in")L=[`Hola ${f}, ¿cómo le va?\n\nVi que su ahorro de este mes no alcanzó a pasar a tiempo para los puntos dobles. No pasa nada, todavía puede ponerse al día. 🙏\n\nLo importante es mantener su cuenta activa y sus puntos guardados. ¿Le ayudo a hacerlo?`,
+    `Hola ${f} 👋\n\nSu ahorro quedó pendiente y ya pasaron los días de los puntos dobles, pero aún está a tiempo de mantener su cuenta activa.\n\n¿Le ayudo a ponerse al día?`];
+  else L=[`Hola ${f}, ¿cómo está? Hace rato no hablamos.\n\nVi que su cuenta quedó inactiva. Si quiere retomarla, con gusto le ayudo a reactivarla para que siga ahorrando para su viaje. 🚢\n\n¿Le parece si lo vemos?`,
+    `Hola ${f} 😊\n\nMe acordé de usted. Vi que su cuenta está inactiva y quería saber cómo está.\n\nSi quiere volver a ahorrar para su viaje, aquí estoy para ayudarle.`];
+  return redVar(r,L)+redFirma()}
 function redMsgS(r){const yo=miNombreCorto(),u="https://actionleadersplus.com/?unirme="+(r.iv||miInv());
   return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`Nuestro equipo tiene su propia app, *Action Leaders PLUS*. Ahí tiene su agenda, su CRM, la academia y todo para crecer en el negocio.\n\nRegístrese aquí, ya queda en su línea:\n${u}`}
-function redMsgX(r){const yo=miNombreCorto();return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`Usted ya tiene su código de socio y su red en inCruises. 🙌\n\nSi activa su membresía, empieza a acumular sus puntos cada mes y a disfrutar todos los beneficios.\n\n¿Le gustaría que le explique cómo hacerlo?`}
+function redMsgX(r){const f=redFirst(r.n);return redVar(r,[`Hola ${f} 👋\n\nVi que su código de socio está activo, pero todavía no tiene su membresía de viajes.\n\nCuando quiera, le explico rapidito cómo activarla. Sin compromiso. 😊`,
+  `Hola ${f}, ¿cómo está? 😊\n\nUsted ya tiene su código de socio. Si activa su membresía, empieza a juntar puntos para viajar cada mes.\n\n¿Le cuento cómo en 5 minutos?`])+redFirma()}
 function redMsgC(r){const yo=miNombreCorto();return `Hola ${redFirst(r.n)} 👋\n\n`+(yo?`Le saluda ${yo}, de su equipo de inCruises.\n\n`:"")+`¿Cómo va con su membresía? Si tiene alguna duda sobre sus puntos o cómo reservar su próximo viaje, con gusto le ayudo.`}
 function redHace(t){const m=Math.round((Date.now()-t)/6e4);return m<60?(m<=1?"ahora":"hace "+m+" min"):m<1440?"hace "+Math.round(m/60)+" h":"hace "+Math.round(m/1440)+" d"}
 function redStTxt(r){const s=r.st||{},o=[];if(s.h)o.push(`👍 Paga hoy · ${esc(redFirst(s.h.by))} ${redHace(s.h.t)}`);return o.join(" · ")}
@@ -2611,7 +2629,7 @@ function redPiDe(r){const me=store.uid,au=r.au||[],an=r.an||[],ap=r.ap||[],i=au.
 function redBtnW(r,txt,css){const c=r.st&&r.st.c;if(!c)return `<button class="btn sm" data-rw="${esc(r.id)}" style="flex:1;${css}">${txt}</button>`;
   const yo=c.u===store.uid;return `<button class="btn sm ghost rd-ya" data-rw="${esc(r.id)}" style="flex:1">✅ ${yo?"Recordado":esc(redFirst(c.by))+" ya le escribió"} · ${redHace(c.t)} · Reenviar</button>`}
 function redFila(r){const e=r.t==="p"?redEst(r):null,st=r.t==="p"?redStTxt(r):"";
-  const btn=r.t==="p"?(e.k==="ok"?"":`<div class="row" style="gap:6px;margin-top:8px">${redBtnW(r,"💬 Recordarle","background:#16A34A;color:#fff")}<button class="btn sm ghost" data-rh="${esc(r.id)}" style="flex:none" aria-pressed="${!!(r.st&&r.st.h)}">👍 Paga hoy</button></div>`)
+  const btn=r.t==="p"?(e.k==="ok"?`<div class="row" style="gap:6px;margin-top:8px">${redBtnW(r,"🙏 Agradecerle","")}</div>`:`<div class="row" style="gap:6px;margin-top:8px">${redBtnW(r,e.k==="dp"?"💬 Recordarle · 🔥 aún duplica":e.k==="in"&&e.d<=7?"💬 Recordarle · ⚠️ por inactivarse":e.k==="in"?"💬 Recordarle · 🟠 perdió el doble":"💬 Escribirle · 💤 inactiva","background:#16A34A;color:#fff")}<button class="btn sm ghost" data-rh="${esc(r.id)}" style="flex:none" aria-pressed="${!!(r.st&&r.st.h)}">👍 Paga hoy</button></div>`)
     :r.t==="s"?`<div class="row" style="gap:6px;margin-top:8px">${redBtnW(r,"📲 Invitar a la app","")}</div>`
     :r.t==="x"?`<div class="row" style="gap:6px;margin-top:8px">${redBtnW(r,"💬 Invitarlo a activar su membresía","background:#EA580C;color:#fff")}</div>`
     :`<div class="row" style="gap:6px;margin-top:8px">${redBtnW(r,"💬 Escribirle","")}</div>`;
@@ -4682,7 +4700,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261031125531";var busy=false,pend=null;
+(function(){var V="20261031132904";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
