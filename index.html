@@ -305,6 +305,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .rc-fl{border:1px solid rgba(251,191,36,.5);background:rgba(251,191,36,.14);color:#fff;border-radius:12px;padding:9px 12px;font-size:17px}
 .rc-in{flex:1;font-size:13px;font-weight:800;color:#4ADE80}.rc-ver{font-size:12.5px;font-weight:700;color:#FBBF24;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.rcCard *,.rcCard::before,.rcCard *::after{animation:none!important}}
+.rc-eq{font-size:12px;color:#FDE68A;font-weight:700;margin-top:1px}
 .rc-cl{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#FBBF24;font-size:16px;z-index:2}
 .rc-yo{margin-top:10px;font-size:13px;font-weight:700;color:#4ADE80;text-align:center}
 .rc-op{display:grid;gap:8px;margin:12px 0}.rc-op button{border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:13px;font-weight:800;font-size:15px;text-align:left;color:var(--ink)}
@@ -2415,6 +2416,7 @@ let rcJ=null,rcJT=0,rcTick=null;
 function rcN(t){return String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z ]/g," ").replace(/\s+/g," ").trim()}
 function rcSame(a,b){a=rcN(a);b=rcN(b);if(!a||!b)return false;if(a===b)return true;const A=a.split(" "),B=b.split(" "),S=A.length<=B.length?A:B,L=S===A?B:A;return S.length>=2&&S.every(w=>L.includes(w))}
 function rcCfg(){const R=(T.config||{}).retoCierre;if(!R||!R.desde||!R.hasta)return null;const t=Date.now();if(t<Date.parse(R.desde)||t>Date.parse(R.hasta)+18*3600e3)return null;return R}
+function rcEquiv(f){const p=Math.ceil(f/500),c=Math.ceil(f/200);return `≈ ${p} Premium o ${c} Classic`}
 function rcPrem(v){return v>=1500?"3+ Premium":v%500===0&&v>0?(v/500)+" Premium":v.toLocaleString("en-US")+" pts"}
 function rcDatos(){const R=rcCfg();if(!R)return null;const V={Starter:50,Classic:200,Premium:500};
   const acts=(T.activaciones||[]).filter(a=>a.fecha>=R.desde&&a.fecha<R.hasta);
@@ -2449,10 +2451,10 @@ function renderRC(){const c=$("#rcCard");if(!c)return;const D=rcDatos();if(!D){c
     if(!cerr)F.push(`⏰ Quedan <b>${h} h ${m} min</b>: ¿quién cierra el siguiente?`);
     if(!cerr&&fal)F.push(`🎯 Faltan <b>${fp} Premium</b> para la meta del equipo`);
     if(!cerr&&!(yo&&yo.v))F.push("🙋 <b>¡Únase al reto ahora!</b> Su compromiso cuenta");
-    c.innerHTML=`<div class="rc-mini" id="rcTog"><div class="rc-mt"><span class="rc-k"><i class="rc-fire">🔥</i> RETO DE CIERRE</span><b>${esc(R.t||"20 Premium para cerrar el mes")}</b></div>
+    c.innerHTML=`<div class="rc-mini" id="rcTog"><div class="rc-mt"><span class="rc-k"><i class="rc-fire">🔥</i> RETO DE CIERRE</span><b>${fal?`Faltan ${fal.toLocaleString("en-US")} pts para la meta`:"🎉 ¡Meta cumplida! "+meta.toLocaleString("en-US")+" pts"}</b>${fal&&!cerr?`<small class="rc-eq">${rcEquiv(fal)}</small>`:""}</div>
      <div class="rc-mr">${cerr?`<span class="rc-mc">Cerrado</span>`:`<span class="rc-mc${urg?" urg":""}" id="rcCd"><b>${h}</b>h <b>${String(m).padStart(2,"0")}</b>m <b>${String(sg).padStart(2,"0")}</b>s</span>`}<span class="rc-ch">›</span></div>
      <div class="rc-bar rc-live" style="grid-column:1/-1"><i style="width:${Math.max(pct,tot?3:0)}%"></i></div>
-     <div class="rc-mn"><span><b>${tot.toLocaleString("en-US")}</b> de ${meta.toLocaleString("en-US")} pts · ${pct}%</span><span>${fal?`Faltan <b>${fal.toLocaleString("en-US")}</b>`:"<b>¡Meta!</b>"}</span></div>
+     <div class="rc-mn"><span>Vamos en <b>${tot.toLocaleString("en-US")}</b> de ${meta.toLocaleString("en-US")} pts</span><span><b>${pct}%</b></span></div>
      <div class="rc-rot" id="rcRot">${F[0]}</div>
      ${cerr?"":`<div class="rc-mb">${yo&&yo.v?`<span class="rc-in">✅ Estoy en el reto · ${rcPrem(yo.v)}</span>`:`<button class="rc-jm" id="rcJm">🙋 Unirme al reto</button>`}<button class="rc-fl" id="rcFl" aria-label="Flyer para invitar">📣</button><span class="rc-ver">Ver ▾</span></div>`}</div>`;
     c.hidden=false;c.classList.add("min");c.classList.toggle("vivo",!cerr);$("#rcTog").onclick=e=>{if(e.target.closest("#rcJm,#rcFl"))return;LS.set("rcOpen:"+R.id,1);renderRC()};
@@ -2461,8 +2463,8 @@ function renderRC(){const c=$("#rcCard");if(!c)return;const D=rcDatos();if(!D){c
       if(++ft%4===0&&F.length>1){fi=(fi+1)%F.length;ro.classList.remove("in");void ro.offsetWidth;ro.innerHTML=F[fi];ro.classList.add("in")}
       if(!cd||cerr)return;if(Date.now()>=fin){renderRC();return}const [x,y,z]=rcCuenta(fin),B=cd.querySelectorAll("b");B[0].textContent=x;B[1].textContent=String(y).padStart(2,"0");B[2].textContent=String(z).padStart(2,"0");B[2].classList.remove("tk");void B[2].offsetWidth;B[2].classList.add("tk");if(fin-Date.now()<3600e3)cd.classList.add("urg")},1000);return}
   c.classList.remove("min","vivo");
-  c.innerHTML=`<button class="rc-cl" id="rcCl" aria-label="Contraer">▴</button><div class="rc-k">🔥 RETO DE CIERRE · ${esc(R.mes||"")}</div><h3>${esc(R.t||"20 Premium para cerrar el mes")}</h3>
-   <div class="rc-sub">Meta del equipo: <b>${meta.toLocaleString("en-US")} pts</b> (${Math.round(meta/500)} Premium) · Cuenta desde las ${new Date(R.desde).toLocaleTimeString("es-HN",{hour:"numeric",minute:"2-digit",timeZone:"America/Tegucigalpa"})} hasta hoy 6:00 p.m. HN</div>
+  c.innerHTML=`<button class="rc-cl" id="rcCl" aria-label="Contraer">▴</button><div class="rc-k">🔥 RETO DE CIERRE · ${esc(R.mes||"")}</div><h3>${fal?`Faltan ${fal.toLocaleString("en-US")} pts para la meta`:"🎉 ¡Meta cumplida! "+meta.toLocaleString("en-US")+" pts"}</h3>${fal&&!cerr?`<div class="rc-sub" style="color:#FDE68A;font-weight:700">${rcEquiv(fal)}</div>`:""}
+   <div class="rc-sub">Meta del equipo: <b>${meta.toLocaleString("en-US")} pts</b> de volumen (${Math.round(meta/500)} Premium) · Cuenta desde las ${new Date(R.desde).toLocaleTimeString("es-HN",{hour:"numeric",minute:"2-digit",timeZone:"America/Tegucigalpa"})} hasta hoy 6:00 p.m. HN</div>
    ${cerr?`<div class="rc-msg" style="margin-top:12px">⏱️ Reto cerrado</div>`:`<div class="rc-cd" id="rcCd"><div><b>${h}</b><small>HORAS</small></div><div><b>${String(m).padStart(2,"0")}</b><small>MIN</small></div><div><b>${String(sg).padStart(2,"0")}</b><small>SEG</small></div></div>`}
    <div class="rc-bar"><i style="width:${pct}%"></i></div>
    <div class="rc-nums"><span><b>${tot.toLocaleString("en-US")}</b> de ${meta.toLocaleString("en-US")} pts · ${pct}%</span><span>${fal?`Faltan <b>${fal.toLocaleString("en-US")}</b>`:"<b>¡Meta!</b>"}</span></div>
@@ -2490,18 +2492,20 @@ async function rcCanvas(D){const W=1080,H=1920,cv=document.createElement("canvas
   const lg=await imgLoad("media/logo-plus.png");if(lg){const h=56,w=lg.width*h/lg.height;g.drawImage(lg,(W-w)/2,104,w,h)}
   g.font="800 30px "+BF;g.fillStyle=AM;sp("RETO DE CIERRE · "+String(D.R.mes||"").split(" ")[0].toUpperCase(),W/2,262,11);
   g.save();g.shadowColor="rgba(249,115,22,.9)";g.shadowBlur=50;C("🔥",430,"120px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif","#fff");g.restore();
-  const np=Math.round(D.meta/500);g.font="400 250px "+BB;gr=g.createLinearGradient(0,470,0,690);gr.addColorStop(0,"#FFF7D6");gr.addColorStop(.55,AM);gr.addColorStop(1,"#B45309");
-  g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=8;g.fillStyle=gr;g.textAlign="center";g.fillText(String(np),W/2,690);
-  g.font="400 230px "+BB;gr=g.createLinearGradient(0,700,0,900);gr.addColorStop(0,"#FFF7D6");gr.addColorStop(.5,AM);gr.addColorStop(1,"#B45309");g.fillStyle=gr;g.fillText("PREMIUM",W/2,895);g.restore();
-  g.font="400 96px "+BB;g.fillStyle="#fff";sp("PARA CERRAR EL MES",W/2,1000,4);
-  g.font="500 36px "+BF;g.fillStyle="#E7E5E4";g.textAlign="center";g.fillText("Meta del equipo: "+fm(D.meta)+" pts · hoy antes de las 6:00 p.m.",W/2,1075);g.fillText("(hora de Honduras)",W/2,1122);
+  const np=Math.round(D.meta/500),FL=Math.max(0,D.meta-D.tot);
+  if(FL){g.font="400 110px "+BB;g.fillStyle="#fff";sp("FALTAN",W/2,560,8)}
+  g.font="400 "+(FL?250:200)+"px "+BB;gr=g.createLinearGradient(0,600,0,820);gr.addColorStop(0,"#FFF7D6");gr.addColorStop(.55,AM);gr.addColorStop(1,"#B45309");
+  g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=8;g.fillStyle=gr;g.textAlign="center";g.fillText(FL?fm(FL):"¡META!",W/2,800);g.restore();
+  g.font="400 96px "+BB;g.fillStyle="#fff";sp(FL?"PTS PARA LA META":"CUMPLIDA: "+fm(D.meta)+" PTS",W/2,910,4);
+  if(FL){g.font="700 38px "+BF;g.fillStyle=GO;g.textAlign="center";g.fillText(rcEquiv(FL),W/2,985)}
+  g.font="500 34px "+BF;g.fillStyle="#E7E5E4";g.textAlign="center";g.fillText("Meta del equipo: "+fm(D.meta)+" pts ("+np+" Premium)",W/2,1060);g.fillText("hoy antes de las 6:00 p.m. (hora de Honduras)",W/2,1108);
   const [hh,mm]=rcCuenta(D.fin),box=(x,v,l)=>{g.beginPath();g.roundRect(x,1170,240,200,30);g.fillStyle="rgba(255,255,255,.08)";g.fill();g.lineWidth=3;g.strokeStyle="rgba(251,191,36,.5)";g.stroke();
     g.font="400 130px "+BB;g.fillStyle=GO;g.textAlign="center";g.fillText(v,x+120,1310);g.font="800 22px "+BF;g.fillStyle="#D6D3D1";sp(l,x+120,1348,6)};
   if(D.cerr){C("¡RETO CERRADO!",1300,"400 120px "+BB,GO)}else{box(W/2-255,String(hh),"HORAS");box(W/2+15,String(mm).padStart(2,"0"),"MIN")}
   const pct=Math.min(1,D.tot/D.meta);g.beginPath();g.roundRect(80,1430,W-160,30,15);g.fillStyle="rgba(255,255,255,.14)";g.fill();
   if(pct>0){gr=g.createLinearGradient(80,0,80+(W-160)*pct,0);gr.addColorStop(0,"#F59E0B");gr.addColorStop(1,"#FDE047");g.beginPath();g.roundRect(80,1430,Math.max(30,(W-160)*pct),30,15);g.fillStyle=gr;g.fill()}
   const fal=Math.max(0,D.meta-D.tot);g.font="500 32px "+BF;g.textAlign="left";g.fillStyle="#fff";g.fillText("Vamos en ",80,1508);let x=80+g.measureText("Vamos en ").width;g.font="800 32px "+BF;g.fillStyle=GO;g.fillText(fm(D.tot),x,1508);x+=g.measureText(fm(D.tot)).width;g.font="500 32px "+BF;g.fillStyle="#fff";g.fillText(" de "+fm(D.meta)+" pts",x,1508);
-  g.textAlign="right";g.font="800 32px "+BF;g.fillStyle=GO;g.fillText(fal?"Faltan "+Math.ceil(fal/500)+" Premium":"¡Meta cumplida!",W-80,1508);
+  g.textAlign="right";g.font="800 32px "+BF;g.fillStyle=GO;g.fillText(fal?Math.floor(pct*100)+"% de la meta":"¡Meta cumplida!",W-80,1508);
   const Y=D.rows.filter(r=>r.l>0);g.textAlign="center";
   if(Y.length){g.font="700 30px "+BF;g.fillStyle="#4ADE80";const t="✅ Ya cerraron: "+Y.slice(0,3).map(r=>r.n.split(" ")[0]+" +"+fm(r.l)).join(" · ")+(Y.length>3?" · y "+(Y.length-3)+" más":"");g.fillText(t.length>60?t.slice(0,58)+"…":t,W/2,1572)}
   g.font="500 32px "+BF;g.fillStyle="#F5F5F4";g.fillText("🔥 "+D.nComp+" líderes ya se comprometieron",W/2,Y.length?1622:1590);
@@ -4678,7 +4682,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261031125232";var busy=false,pend=null;
+(function(){var V="20261031125531";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
