@@ -302,6 +302,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .rc-jm{position:relative;overflow:hidden;flex:1;border:0;border-radius:12px;padding:11px;font-weight:800;font-size:14.5px;color:#1C1917;background:linear-gradient(90deg,#F59E0B,#FDE047,#F59E0B);animation:rcBt 1.6s ease-in-out infinite}
 .rc-jm::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);animation:rcSw 2.4s ease-in-out infinite}
 @keyframes rcSw{0%{left:-60%}60%,100%{left:130%}}@keyframes rcBt{50%{transform:scale(1.03)}}
+.rc-fl{border:1px solid rgba(251,191,36,.5);background:rgba(251,191,36,.14);color:#fff;border-radius:12px;padding:9px 12px;font-size:17px}
 .rc-in{flex:1;font-size:13px;font-weight:800;color:#4ADE80}.rc-ver{font-size:12.5px;font-weight:700;color:#FBBF24;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.rcCard *,.rcCard::before,.rcCard *::after{animation:none!important}}
 .rc-cl{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#FBBF24;font-size:16px;z-index:2}
@@ -2447,9 +2448,9 @@ function renderRC(){const c=$("#rcCard");if(!c)return;const D=rcDatos();if(!D){c
      <div class="rc-bar rc-live" style="grid-column:1/-1"><i style="width:${Math.max(pct,tot?3:0)}%"></i></div>
      <div class="rc-mn"><span><b>${tot.toLocaleString("en-US")}</b> de ${meta.toLocaleString("en-US")} pts · ${pct}%</span><span>${fal?`Faltan <b>${fal.toLocaleString("en-US")}</b>`:"<b>¡Meta!</b>"}</span></div>
      <div class="rc-rot" id="rcRot">${F[0]}</div>
-     ${cerr?"":`<div class="rc-mb">${yo&&yo.v?`<span class="rc-in">✅ Estoy en el reto · ${rcPrem(yo.v)}</span>`:`<button class="rc-jm" id="rcJm">🙋 Unirme al reto</button>`}<span class="rc-ver">Ver tabla ▾</span></div>`}</div>`;
-    c.hidden=false;c.classList.add("min");c.classList.toggle("vivo",!cerr);$("#rcTog").onclick=e=>{if(e.target.closest("#rcJm"))return;LS.set("rcOpen:"+R.id,1);renderRC()};
-    const jm=$("#rcJm");if(jm)jm.onclick=e=>{e.stopPropagation();rcUnirme()};
+     ${cerr?"":`<div class="rc-mb">${yo&&yo.v?`<span class="rc-in">✅ Estoy en el reto · ${rcPrem(yo.v)}</span>`:`<button class="rc-jm" id="rcJm">🙋 Unirme al reto</button>`}<button class="rc-fl" id="rcFl" aria-label="Flyer para invitar">📣</button><span class="rc-ver">Ver ▾</span></div>`}</div>`;
+    c.hidden=false;c.classList.add("min");c.classList.toggle("vivo",!cerr);$("#rcTog").onclick=e=>{if(e.target.closest("#rcJm,#rcFl"))return;LS.set("rcOpen:"+R.id,1);renderRC()};
+    const jm=$("#rcJm");if(jm)jm.onclick=e=>{e.stopPropagation();rcUnirme()};const fl=$("#rcFl");if(fl)fl.onclick=e=>{e.stopPropagation();rcCompartir(null)};
     let fi=0,ft=0;clearInterval(rcTick);rcTick=setInterval(()=>{const cd=$("#rcCd"),ro=$("#rcRot");if(!ro){clearInterval(rcTick);return}
       if(++ft%4===0&&F.length>1){fi=(fi+1)%F.length;ro.classList.remove("in");void ro.offsetWidth;ro.innerHTML=F[fi];ro.classList.add("in")}
       if(!cd||cerr)return;if(Date.now()>=fin){renderRC();return}const [x,y,z]=rcCuenta(fin),B=cd.querySelectorAll("b");B[0].textContent=x;B[1].textContent=String(y).padStart(2,"0");B[2].textContent=String(z).padStart(2,"0");B[2].classList.remove("tk");void B[2].offsetWidth;B[2].classList.add("tk");if(fin-Date.now()<3600e3)cd.classList.add("urg")},1000);return}
@@ -2463,15 +2464,50 @@ function renderRC(){const c=$("#rcCard");if(!c)return;const D=rcDatos();if(!D){c
    <table class="rc-t">${top.map(rcFila).join("")}</table>
    ${rows.length>top.length?`<button class="rc-more" id="rcAll">Ver los ${rows.length} líderes del reto ›</button>`:""}
    ${yo&&yo.v?`<div class="rc-yo">✅ Usted está en el reto · compromiso ${rcPrem(yo.v)}</div>`:""}
-   ${cerr?"":`<div class="rc-row">${yo&&yo.v?"":`<button class="rc-j" id="rcJoin">🙋 Unirme al reto</button>`}<button class="rc-s" id="rcInv">📣 Invitar a mi equipo</button></div>`}`;
+   ${cerr?"":`<div class="rc-row">${yo&&yo.v?"":`<button class="rc-j" id="rcJoin">🙋 Unirme al reto</button>`}<button class="rc-s" id="rcInv">📣 Flyer para invitar</button></div>`}`;
   c.hidden=false;$("#rcCl").onclick=()=>{LS.set("rcOpen:"+R.id,0);renderRC()};
   const all=$("#rcAll");if(all)all.onclick=()=>openSheet(`<h2>🔥 Líderes del reto</h2><p class="muted">${D.nComp} comprometidos · logrado ${tot.toLocaleString("en-US")} de ${meta.toLocaleString("en-US")} pts</p><div style="background:#111827;border-radius:14px;padding:6px 10px;margin-top:10px" class="rcCard"><table class="rc-t">${rows.map(rcFila).join("")}</table></div><button class="btn ghost full" data-close style="margin-top:12px">Cerrar</button>`);
-  const jn=$("#rcJoin");if(jn)jn.onclick=rcUnirme;const iv=$("#rcInv");if(iv)iv.onclick=()=>{location.href="https://wa.me/?text="+encodeURIComponent(rcTxt(D))};
+  const jn=$("#rcJoin");if(jn)jn.onclick=rcUnirme;const iv=$("#rcInv");if(iv)iv.onclick=()=>rcCompartir(iv);
   const K="rcConf:"+R.id+":"+(tot>=meta?"meta":TODAY);if(!LS.get(K)&&(tot>=meta||!cerr)){LS.set(K,1);setTimeout(()=>confeti(c,tot>=meta?90:40),500)}
   clearInterval(rcTick);if(!cerr)rcTick=setInterval(()=>{const cd=$("#rcCd");if(!cd){clearInterval(rcTick);return}if(Date.now()>=fin){renderRC();return}const [a,b,d]=rcCuenta(fin),B=cd.querySelectorAll("b");B[0].textContent=a;B[1].textContent=String(b).padStart(2,"0");B[2].textContent=String(d).padStart(2,"0")},1000)}
 function rcAvisos(D,c){const K="rcSeen:"+D.R.id;let seen=LS.get(K);const nuevo=seen===null;seen=seen||[];
   let nw=D.cie.filter(x=>!seen.includes(x.key));if(!nw.length)return;LS.set(K,seen.concat(nw.map(x=>x.key)).slice(-200));if(nuevo)nw=nw.slice(0,1);
   const fal=Math.max(0,D.meta-D.tot);nw.slice(0,2).forEach((x,i)=>setTimeout(()=>{try{avisoTop(`🎉 ${x.n} acaba de cerrar +${x.v.toLocaleString("en-US")}`,fal?`Reto de cierre · faltan ${fal.toLocaleString("en-US")} pts`:"¡Meta del equipo cumplida!",()=>{LS.set("rcOpen:"+D.R.id,1);go&&go("inicio");renderRC()})}catch(e){}confeti(c,60)},1500+i*4500))}
+async function rcCanvas(D){const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
+  await bienFonts();try{await Promise.all(["800 30px Figtree","700 30px Figtree","500 30px Figtree","400 60px 'Bebas Neue'"].map(x=>document.fonts.load(x)))}catch(x){}
+  const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', 'Bricolage Grotesque', Arial, sans-serif",GO="#FDE68A",AM="#FBBF24",fm=n=>n.toLocaleString("en-US");
+  g.fillStyle="#07080c";g.fillRect(0,0,W,H);const bg=await imgLoad("media/flyers/lc-espartano.jpg");if(bg){g.save();g.filter="blur(6px) brightness(.42)";g.drawImage(bg,-30,-50,W+60,H+100);g.restore()}
+  let gr=g.createRadialGradient(W/2,560,40,W/2,560,760);gr.addColorStop(0,"rgba(249,115,22,.38)");gr.addColorStop(1,"rgba(249,115,22,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
+  gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,"rgba(0,0,0,.25)");gr.addColorStop(.55,"rgba(0,0,0,.1)");gr.addColorStop(1,"rgba(0,0,0,.8)");g.fillStyle=gr;g.fillRect(0,0,W,H);
+  const sp=(t,x,y,ls)=>{let w=0;for(const ch of t)w+=g.measureText(ch).width+ls;w-=ls;let cx=x-w/2;g.textAlign="left";for(const ch of t){g.fillText(ch,cx,y);cx+=g.measureText(ch).width+ls}};
+  const C=(t,y,f,col)=>{g.font=f;g.fillStyle=col;g.textAlign="center";g.fillText(t,W/2,y)};
+  const lg=await imgLoad("media/logo-plus.png");if(lg){const h=56,w=lg.width*h/lg.height;g.drawImage(lg,(W-w)/2,104,w,h)}
+  g.font="800 30px "+BF;g.fillStyle=AM;sp("RETO DE CIERRE · "+String(D.R.mes||"").split(" ")[0].toUpperCase(),W/2,262,11);
+  g.save();g.shadowColor="rgba(249,115,22,.9)";g.shadowBlur=50;C("🔥",430,"120px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif","#fff");g.restore();
+  const np=Math.round(D.meta/500);g.font="400 250px "+BB;gr=g.createLinearGradient(0,470,0,690);gr.addColorStop(0,"#FFF7D6");gr.addColorStop(.55,AM);gr.addColorStop(1,"#B45309");
+  g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=8;g.fillStyle=gr;g.textAlign="center";g.fillText(String(np),W/2,690);
+  g.font="400 230px "+BB;gr=g.createLinearGradient(0,700,0,900);gr.addColorStop(0,"#FFF7D6");gr.addColorStop(.5,AM);gr.addColorStop(1,"#B45309");g.fillStyle=gr;g.fillText("PREMIUM",W/2,895);g.restore();
+  g.font="400 96px "+BB;g.fillStyle="#fff";sp("PARA CERRAR EL MES",W/2,1000,4);
+  g.font="500 36px "+BF;g.fillStyle="#E7E5E4";g.textAlign="center";g.fillText("Meta del equipo: "+fm(D.meta)+" pts · hoy antes de las 6:00 p.m.",W/2,1075);g.fillText("(hora de Honduras)",W/2,1122);
+  const [hh,mm]=rcCuenta(D.fin),box=(x,v,l)=>{g.beginPath();g.roundRect(x,1170,240,200,30);g.fillStyle="rgba(255,255,255,.08)";g.fill();g.lineWidth=3;g.strokeStyle="rgba(251,191,36,.5)";g.stroke();
+    g.font="400 130px "+BB;g.fillStyle=GO;g.textAlign="center";g.fillText(v,x+120,1310);g.font="800 22px "+BF;g.fillStyle="#D6D3D1";sp(l,x+120,1348,6)};
+  if(D.cerr){C("¡RETO CERRADO!",1300,"400 120px "+BB,GO)}else{box(W/2-255,String(hh),"HORAS");box(W/2+15,String(mm).padStart(2,"0"),"MIN")}
+  const pct=Math.min(1,D.tot/D.meta);g.beginPath();g.roundRect(80,1430,W-160,30,15);g.fillStyle="rgba(255,255,255,.14)";g.fill();
+  if(pct>0){gr=g.createLinearGradient(80,0,80+(W-160)*pct,0);gr.addColorStop(0,"#F59E0B");gr.addColorStop(1,"#FDE047");g.beginPath();g.roundRect(80,1430,Math.max(30,(W-160)*pct),30,15);g.fillStyle=gr;g.fill()}
+  const fal=Math.max(0,D.meta-D.tot);g.font="500 32px "+BF;g.textAlign="left";g.fillStyle="#fff";g.fillText("Vamos en ",80,1508);let x=80+g.measureText("Vamos en ").width;g.font="800 32px "+BF;g.fillStyle=GO;g.fillText(fm(D.tot),x,1508);x+=g.measureText(fm(D.tot)).width;g.font="500 32px "+BF;g.fillStyle="#fff";g.fillText(" de "+fm(D.meta)+" pts",x,1508);
+  g.textAlign="right";g.font="800 32px "+BF;g.fillStyle=GO;g.fillText(fal?"Faltan "+Math.ceil(fal/500)+" Premium":"¡Meta cumplida!",W-80,1508);
+  const Y=D.rows.filter(r=>r.l>0);g.textAlign="center";
+  if(Y.length){g.font="700 30px "+BF;g.fillStyle="#4ADE80";const t="✅ Ya cerraron: "+Y.slice(0,3).map(r=>r.n.split(" ")[0]+" +"+fm(r.l)).join(" · ")+(Y.length>3?" · y "+(Y.length-3)+" más":"");g.fillText(t.length>60?t.slice(0,58)+"…":t,W/2,1572)}
+  g.font="500 32px "+BF;g.fillStyle="#F5F5F4";g.fillText("🔥 "+D.nComp+" líderes ya se comprometieron",W/2,Y.length?1622:1590);
+  if(!D.cerr){g.save();g.shadowColor="rgba(251,191,36,.55)";g.shadowBlur=50;gr=g.createLinearGradient(250,0,830,0);gr.addColorStop(0,"#F59E0B");gr.addColorStop(1,"#FDE047");g.beginPath();g.roundRect(250,1670,580,104,52);g.fillStyle=gr;g.fill();g.restore();
+    C("🙋 ¡ÚNASE AL RETO!",1738,"800 44px "+BF,"#1C1917")}
+  g.textAlign="left";g.font="400 52px "+BB;g.fillStyle="#fff";g.fillText("#HASTAQUEFUNCIONE",80,1858);g.textAlign="right";g.font="800 25px "+BF;g.fillStyle=AM;g.fillText("actionleadersplus.com",W-80,1852);
+  return cv}
+async function rcCompartir(bt){const D=rcDatos();if(!D)return;let file=null,lb=bt?bt.textContent:"";if(bt){bt.disabled=true;bt.textContent="Creando flyer…"}
+  try{const cv=await rcCanvas(D);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));file=new File([b],"Reto-de-cierre.jpg",{type:"image/jpeg"})}catch(e){}
+  if(bt){bt.disabled=false;bt.textContent=lb}const t=rcTxt(D);
+  if(file&&navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(e){if(e&&e.name==="AbortError")return}}
+  if(file){const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click()}location.href="https://wa.me/?text="+encodeURIComponent(t)}
 function rcTxt(D){const [h,m]=rcCuenta(D.fin),fp=Math.ceil(Math.max(0,D.meta-D.tot)/500);
   return `🔥 *RETO DE CIERRE DE MES*\n\nMeta del equipo: *${Math.round(D.meta/500)} Premium* antes de hoy a las 6:00 p.m. (hora de Honduras).\n\nVamos en *${D.tot.toLocaleString("en-US")} de ${D.meta.toLocaleString("en-US")} pts*${fp?` y faltan ${fp} Premium`:" y ya cumplimos la meta"}. Quedan ${h} h ${m} min.\n\n${D.nComp} líderes ya se comprometieron. ¿Se une usted también?\n\nEntre a la app y toque *"Unirme al reto"* en Inicio:\nhttps://actionleadersplus.com\n\n#HastaQueFuncione`}
 function rcUnirme(){const D=rcDatos();if(!D)return;
@@ -4603,7 +4639,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261031113635";var busy=false,pend=null;
+(function(){var V="20261031115125";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
