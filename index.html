@@ -2805,7 +2805,7 @@ function fotoFoco(im){try{const S=72,c=document.createElement("canvas");c.width=
   if(n<S*S*.012)return null;const fy=sy/n;let top=Math.round(fy);while(top>0&&fil[top-1]>=2)top--;
   return{fx:sx/n/S,fy:fy/S,top:top/S}}catch(e){return null}}
 async function circFoto(g,src,cx,cy,r,ph,vacio){const im=src?await imgLoad(src,!/^(data|blob):/.test(src)):null;
-  g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();
+  g.save();g.imageSmoothingEnabled=true;g.imageSmoothingQuality="high";g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();
   if(!im){if(vacio)vacio();g.restore();return}
   const w=im.width,h=im.height,f=fotoFoco(im),s=Math.max(2*r/w,2*r/h),iw=w*s,ih=h*s,cl=(v,a,b)=>Math.min(Math.max(v,a),b);
   // la foto siempre cubre el círculo; se mueve para que la cara quede centrada y con aire arriba de la cabeza
@@ -2821,25 +2821,26 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto){const W=1080,H=1920
   const grad=(x0,x1)=>{const q=g.createLinearGradient(x0,0,x1,0);q.addColorStop(0,T.g[0]);q.addColorStop(.5,T.g[1]);q.addColorStop(1,T.g[2]);return q};
   const sp=(t,x,y,ls,al)=>{let w=0;for(const ch of t)w+=g.measureText(ch).width+ls;w-=ls;let cx=al==="right"?x-w:al==="center"?x-w/2:x;g.textAlign="left";for(const ch of t){g.fillText(ch,cx,y);cx+=g.measureText(ch).width+ls}return w};
   const wrap=(t,mw)=>{const L=[];let c="";String(t).split(/\s+/).forEach(w=>{const z=c?c+" "+w:w;if(c&&g.measureText(z).width>mw){L.push(c);c=w}else c=z});if(c)L.push(c);return L};
-  const lg=await imgLoad("media/logo-plus.png");if(lg){const h=44,w=lg.width*h/lg.height;g.drawImage(lg,80,110,w,h)}
-  g.font="700 19px "+BF;g.fillStyle=T.a;sp(T.top,1000,142,6,"right");
-  g.fillStyle=grad(80,150);g.fillRect(80,255,70,3);g.font="700 24px "+BF;g.fillStyle=T.a;sp(f?"BIENVENIDA A LA FAMILIA":"BIENVENIDO A LA FAMILIA",168,266,7.2);
+  const lg=await imgLoad("media/logo-plus.png");if(lg){const h=52,w=lg.width*h/lg.height;g.drawImage(lg,80,104,w,h)}
+  g.font="700 22px "+BF;g.fillStyle=T.a;sp(T.top,1000,142,6.4,"right");
+  g.fillStyle=grad(80,150);g.fillRect(80,262,78,3);g.font="700 27px "+BF;g.fillStyle=T.a;sp(f?"BIENVENIDA A LA FAMILIA":"BIENVENIDO A LA FAMILIA",178,274,7.6);
   const ring=async(src,cx,cy,r,b,glow,ph,pad)=>{g.save();if(glow){g.shadowColor=T.glow;g.shadowBlur=80}g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.fillStyle=grad(cx-r,cx+r);g.fill();g.restore();
     g.beginPath();g.arc(cx,cy,r-pad,0,Math.PI*2);g.fillStyle="#05070c";g.fill();const ri=r-pad-b;
     await circFoto(g,src,cx,cy,ri,ph,()=>{g.fillStyle=grad(cx-ri,cx+ri);g.fillRect(cx-ri,cy-ri,2*ri,2*ri);g.fillStyle=T.pill?"#111":"#05253a";g.font="800 "+Math.round(ri*.62)+"px "+BF;g.textAlign="center";g.fillText(initials(ph||"AL"),cx,cy+ri*.22)})};
-  await ring(fotoSrc,270,550,190,6,true,n,7);
+  await ring(fotoSrc,300,590,222,7,true,n,8);
   const P=String(n||"").trim().toUpperCase().split(/\s+/),l1=P[0]||"",R=P.slice(1);
   const wr=(z,mw)=>{g.font="400 "+z+"px "+BB;const L=[];let cur="";R.forEach(w=>{const t=cur?cur+" "+w:w;if(cur&&g.measureText(t).width>mw){L.push(cur);cur=w}else cur=t});if(cur)L.push(cur);return L};
-  let z=180,RL=wr(z,700);const ZS=[180,168,156,144,132,120,108,96];
-  pick:for(const mx of [2,3,9])for(const zz of ZS){const L=wr(zz,700);g.font="400 "+zz+"px "+BB;if(1+L.length<=mx&&g.measureText(l1).width<=920&&L.every(x=>g.measureText(x).width<=920)){z=zz;RL=L;break pick}}
-  g.font="400 "+z+"px "+BB;const lh=z*.86;let yy=800+lh;g.textAlign="left";g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=6;g.fillStyle="#fff";g.fillText(l1,76,yy);
+  let z=76,RL=wr(z,920);const ZS=[184,172,160,150,140,132,124,116,108,100,92,84,76];
+  g.font="700 40px "+BF;const NL=Math.min(3,wrap("Bienvenida al equipo donde los sueños se trabajan juntos.",860).length),FIN=1452,est=(zz,L)=>(1+L.length)*zz*.86+90+128+56*NL;
+  pick:for(const zz of ZS)for(const mw of [920,640,460]){const L=wr(zz,mw);g.font="400 "+zz+"px "+BB;if(1+L.length<=3&&850+est(zz,L)<=FIN&&g.measureText(l1).width<=920&&L.every(x=>g.measureText(x).width<=920)){z=zz;RL=L;break pick}}
+  g.font="400 "+z+"px "+BB;const lh=z*.86;const slk=Math.max(0,FIN-850-(1+RL.length)*lh-90-128-56*NL),G1=90+slk*.3,G2=128+slk*.3;let yy=850+slk*.4+lh;g.textAlign="left";g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=6;g.fillStyle="#fff";g.fillText(l1,76,yy);
   RL.forEach(t=>{yy+=lh;const w2=g.measureText(t).width;g.fillStyle=grad(76,76+w2);g.fillText(t,76,yy)});g.restore();
-  let yb=yy+76;g.font="800 22px "+BF;const lw=(()=>{let w=0;for(const ch of T.lab)w+=g.measureText(ch).width+4.4;return w-4.4})()+52;
-  g.beginPath();g.roundRect(80,yb-34,lw,50,25);if(T.pill){g.fillStyle=grad(80,80+lw);g.fill()}else{g.fillStyle="rgba(42,193,241,.14)";g.fill();g.lineWidth=2;g.strokeStyle=T.a;g.stroke()}
-  g.fillStyle=T.pill?"#111":"#fff";sp(T.lab,106,yb-1,4.4);
-  if(pais){let x=80+lw+18;const fl=bandera(pais);if(fl){g.font="30px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";g.fillText(fl,x,yb);x+=g.measureText(fl).width+12}g.font="600 24px "+BF;g.fillStyle="#E5E7EB";sp(pais.toUpperCase(),x,yb-2,3.4)}
-  let yq=Math.min(yb+110,1400);g.font="500 34px "+BF;g.textAlign="left";g.fillStyle="rgba(255,255,255,.9)";g.fillText("Hoy empieza su nueva historia.",80,yq);
-  g.font="700 34px "+BF;g.fillStyle=T.a;wrap((f?"Bienvenida":"Bienvenido")+" al equipo donde los sueños se trabajan juntos.",760).slice(0,3).forEach((t,i)=>g.fillText(t,80,yq+48*(i+1)));
+  let yb=yy+G1;g.font="800 26px "+BF;const lw=(()=>{let w=0;for(const ch of T.lab)w+=g.measureText(ch).width+5;return w-5})()+60;
+  g.beginPath();g.roundRect(80,yb-40,lw,60,30);if(T.pill){g.fillStyle=grad(80,80+lw);g.fill()}else{g.fillStyle="rgba(42,193,241,.14)";g.fill();g.lineWidth=2;g.strokeStyle=T.a;g.stroke()}
+  g.fillStyle=T.pill?"#111":"#fff";sp(T.lab,110,yb-1,5);
+  if(pais){let x=80+lw+18;const fl=bandera(pais);if(fl){g.font="36px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";g.fillText(fl,x,yb+1);x+=g.measureText(fl).width+14}g.font="600 28px "+BF;g.fillStyle="#E5E7EB";sp(pais.toUpperCase(),x,yb-2,3.8)}
+  let yq=yb+G2;g.font="500 40px "+BF;g.textAlign="left";g.fillStyle="rgba(255,255,255,.9)";g.fillText("Hoy empieza su nueva historia.",80,yq);
+  g.font="700 40px "+BF;g.fillStyle=T.a;wrap((f?"Bienvenida":"Bienvenido")+" al equipo donde los sueños se trabajan juntos.",860).slice(0,3).forEach((t,i)=>g.fillText(t,80,yq+56*(i+1)));
   // tarjetas
   const card=(x,w,b,s)=>{g.beginPath();g.roundRect(x,1530,w,104,20);g.fillStyle="rgba(255,255,255,.07)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.15)";g.stroke();g.textAlign="left";g.fillStyle="#fff";g.font="700 30px "+BF;g.fillText(b,x+20,1576);g.fillStyle=T.a;g.font="700 14px "+BF;sp(s,x+20,1608,2.8)};
   const now=new Date(),mm=MONTHS[now.getMonth()].toUpperCase()+" "+now.getFullYear();card(80,453,mm,"SE UNIÓ");card(547,453,"Action Leaders","SU EQUIPO");
@@ -2850,7 +2851,7 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto){const W=1080,H=1920
   g.textAlign="left";g.fillStyle=T.a;g.font="700 15px "+BF;sp("SU PATROCINADOR",184,1738,3.3);g.fillStyle="#fff";g.font="700 "+ps+"px "+BF;g.fillText(pat,184,1774);
   g.font="400 56px "+BB;g.fillStyle="#fff";sp("HASTA QUE FUNCIONE",1000,1762,3,"right");g.font="600 20px "+BF;g.fillStyle=T.a;sp("actionleadersplus.com",1000,1792,1.2,"right");
   return cv}
-function fotoReduce400(file){return new Promise((ok,ko)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const S=480,c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);c.getContext("2d").drawImage(im,(im.width-m)/2,Math.max(0,(im.height-m)/2.6),m,m,0,0,S,S);URL.revokeObjectURL(u);ok(c.toDataURL("image/jpeg",.88))};im.onerror=()=>{URL.revokeObjectURL(u);ko(new Error("img"))};im.src=u})}
+function fotoReduce400(file){return new Promise((ok,ko)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const M=1200,k=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext("2d");x.imageSmoothingEnabled=true;x.imageSmoothingQuality="high";x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL("image/jpeg",.93))};im.onerror=()=>{URL.revokeObjectURL(u);ko(new Error("img"))};im.src=u})}
 let bienPatP=null;const bienPat=()=>bienPatP||(bienPatP=bienFotoPat());
 function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,plan="classic",foto="",pais=c.ccN||(c.cc?(PAISES.find(x=>x[1]===c.cc)||[""])[0]:"")||"Honduras";let tel=c.phone?waNum(c.phone,c.cc):"";const pat=miNombreCorto()||"Tu patrocinador",sinTel=!c.phone;const invId=Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4),lk=miEnlace()+"&b="+invId;let invT;
   const guardarInv=()=>{clearTimeout(invT);invT=setTimeout(()=>{if(!n||!store.db||!store.uid)return;const ccv=$("#bnCC")?$("#bnCC").value:(c.cc||"");store.db.doc("invitaciones/"+invId).set({by:store.uid,byNombre:miRegistro().nombre||pat,nombre:n,plan:plan==="premium"?"Premium":"Classic",pais:pais||"",cc:String(ccv||""),wa:tel||"",f,t:Date.now()}).catch(()=>{})},300)};
@@ -2868,7 +2869,7 @@ function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,
    <a class="btn ghost" id="bnWa" style="width:100%;justify-content:center${tel?"":";display:none"}" target="_blank" rel="noopener">Abrir chat de WhatsApp</a>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     let tk=0;const upd=async()=>{n=$("#bnN").value.trim().replace(/\s+/g," ");const my=++tk;const box=$("#bnBox");if(!n){box.innerHTML='<span class="small" style="color:#fff">Escribe el nombre…</span>';file=null;return}
-      const cv=await bienCanvas(n,f,pat,plan,foto,pais,await bienPat());if(my!==tk)return;const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));file=new File([b],"Bienvenida-"+n.replace(/\s+/g,"-")+".jpg",{type:"image/jpeg"});
+      const cv=await bienCanvas(n,f,pat,plan,foto,pais,await bienPat());if(my!==tk)return;const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.95));file=new File([b],"Bienvenida-"+n.replace(/\s+/g,"-")+".jpg",{type:"image/jpeg"});
       box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im);
       const wa=$("#bnWa");if(wa)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat,lk));guardarInv()};
     let deb;$("#bnN").oninput=()=>{clearTimeout(deb);deb=setTimeout(upd,450)};
