@@ -283,6 +283,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .rc-mr{display:flex;align-items:center;gap:8px}.rc-mc{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:5px 8px;font-size:12px;color:#D6D3D1;white-space:nowrap}
 .rc-mc b{font:700 18px/1 'Barlow Condensed',sans-serif;color:#FDE68A}.rc-ch{font-size:24px;color:#FBBF24;line-height:1}
 .rc-mn{grid-column:1/-1;display:flex;justify-content:space-between;font-size:12px;color:#D6D3D1}.rc-mn b{color:#FDE68A}.rc-mn span:last-child{color:#FBBF24;font-weight:700}
+.rc-ya{grid-column:1/-1;font-size:12.5px;color:#E7E5E4;border-top:1px solid rgba(255,255,255,.1);padding-top:7px;margin-top:2px;line-height:1.45}.rc-ya b{color:#4ADE80}
 .rc-cl{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#FBBF24;font-size:16px;z-index:2}
 .rc-yo{margin-top:10px;font-size:13px;font-weight:700;color:#4ADE80;text-align:center}
 .rc-op{display:grid;gap:8px;margin:12px 0}.rc-op button{border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:13px;font-weight:800;font-size:15px;text-align:left;color:var(--ink)}
@@ -2413,12 +2414,13 @@ function renderRC(){const c=$("#rcCard");if(!c)return;const D=rcDatos();if(!D){c
   if(!abierto){c.innerHTML=`<div class="rc-mini" id="rcTog"><div class="rc-mt"><span class="rc-k">🔥 RETO DE CIERRE</span><b>${esc(R.t||"20 Premium para cerrar el mes")}</b></div>
      <div class="rc-mr">${cerr?`<span class="rc-mc">Cerrado</span>`:`<span class="rc-mc" id="rcCd"><b>${h}</b>h <b>${String(m).padStart(2,"0")}</b>m <b>${String(sg).padStart(2,"0")}</b>s</span>`}<span class="rc-ch">›</span></div>
      <div class="rc-bar" style="grid-column:1/-1"><i style="width:${pct}%"></i></div>
-     <div class="rc-mn"><span><b>${tot.toLocaleString("en-US")}</b> de ${meta.toLocaleString("en-US")} pts · ${D.nComp} comprometidos</span><span>Toque para ver ▾</span></div></div>`;
+     <div class="rc-mn"><span><b>${tot.toLocaleString("en-US")}</b> de ${meta.toLocaleString("en-US")} pts · ${D.nComp} comprometidos</span><span>Toque para ver ▾</span></div>
+     <div class="rc-ya">${(()=>{const Y=rows.filter(r=>r.l>0);return Y.length?"✅ <b>Ya cerraron:</b> "+Y.slice(0,4).map(r=>esc(r.n)+" <b>+"+r.l.toLocaleString("en-US")+"</b>").join(" · ")+(Y.length>4?" · y "+(Y.length-4)+" más":""):"⏳ Aún nadie cierra en el reto. ¡Sea usted el primero!"})()}</div></div>`;
     c.hidden=false;c.classList.add("min");$("#rcTog").onclick=()=>{LS.set("rcOpen:"+R.id,1);renderRC()};
     clearInterval(rcTick);if(!cerr)rcTick=setInterval(()=>{const cd=$("#rcCd");if(!cd){clearInterval(rcTick);return}if(Date.now()>=fin){renderRC();return}const [x,y,z]=rcCuenta(fin),B=cd.querySelectorAll("b");B[0].textContent=x;B[1].textContent=String(y).padStart(2,"0");B[2].textContent=String(z).padStart(2,"0")},1000);return}
   c.classList.remove("min");
   c.innerHTML=`<button class="rc-cl" id="rcCl" aria-label="Contraer">▴</button><div class="rc-k">🔥 RETO DE CIERRE · ${esc(R.mes||"")}</div><h3>${esc(R.t||"20 Premium para cerrar el mes")}</h3>
-   <div class="rc-sub">Meta del equipo: <b>${meta.toLocaleString("en-US")} pts</b> (${Math.round(meta/500)} Premium) · Cierre hoy 6:00 p.m. HN</div>
+   <div class="rc-sub">Meta del equipo: <b>${meta.toLocaleString("en-US")} pts</b> (${Math.round(meta/500)} Premium) · Cuenta desde las ${new Date(R.desde).toLocaleTimeString("es-HN",{hour:"numeric",minute:"2-digit",timeZone:"America/Tegucigalpa"})} hasta hoy 6:00 p.m. HN</div>
    ${cerr?`<div class="rc-msg" style="margin-top:12px">⏱️ Reto cerrado</div>`:`<div class="rc-cd" id="rcCd"><div><b>${h}</b><small>HORAS</small></div><div><b>${String(m).padStart(2,"0")}</b><small>MIN</small></div><div><b>${String(sg).padStart(2,"0")}</b><small>SEG</small></div></div>`}
    <div class="rc-bar"><i style="width:${pct}%"></i></div>
    <div class="rc-nums"><span><b>${tot.toLocaleString("en-US")}</b> de ${meta.toLocaleString("en-US")} pts · ${pct}%</span><span>${fal?`Faltan <b>${fal.toLocaleString("en-US")}</b>`:"<b>¡Meta!</b>"}</span></div>
@@ -4563,7 +4565,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261031112711";var busy=false,pend=null;
+(function(){var V="20261031113002";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
