@@ -263,6 +263,24 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .confeti{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:3}.confeti i{position:absolute;top:-14px;width:8px;height:12px;border-radius:2px;opacity:.95;animation:cfCae 3.2s cubic-bezier(.3,.6,.4,1) forwards}
 @keyframes cfCae{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(560px) rotate(720deg);opacity:0}}
 @media (prefers-reduced-motion:reduce){.confeti{display:none}}
+.rcCard{position:relative;overflow:hidden;border-radius:18px;padding:15px 15px 13px;color:#fff;background:radial-gradient(120% 90% at 100% 0%,#7C2D12 0%,transparent 60%),linear-gradient(150deg,#1C1917,#0B0F19 70%);border:1px solid rgba(251,191,36,.35);box-shadow:0 10px 28px rgba(0,0,0,.25)}
+.rcCard .rc-k{font-size:11px;font-weight:800;letter-spacing:2.4px;color:#FBBF24}
+.rcCard h3{margin:4px 0 2px;font:800 22px/1.15 'Bricolage Grotesque',sans-serif;color:#fff}
+.rcCard .rc-sub{font-size:13px;color:#D6D3D1}
+.rc-cd{display:flex;gap:6px;margin:12px 0 10px}.rc-cd div{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;text-align:center;padding:7px 0}
+.rc-cd b{display:block;font:700 26px/1 'Barlow Condensed',sans-serif;color:#FDE68A}.rc-cd small{font-size:10px;letter-spacing:1.4px;color:#A8A29E;font-weight:700}
+.rc-bar{height:12px;border-radius:8px;background:rgba(255,255,255,.1);overflow:hidden}.rc-bar i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#F59E0B,#FDE047)}
+.rc-nums{display:flex;justify-content:space-between;font-size:12.5px;margin:6px 0 2px;color:#E7E5E4}.rc-nums b{color:#FDE68A}
+.rc-msg{font-size:13.5px;font-weight:700;margin:8px 0 10px;color:#FED7AA}
+.rc-t{width:100%;border-collapse:collapse;font-size:13px}.rc-t td{padding:7px 4px;border-top:1px solid rgba(255,255,255,.09);vertical-align:middle}
+.rc-t td.r{text-align:right;white-space:nowrap}.rc-t .n{font-weight:700;color:#fff}.rc-t small{display:block;color:#A8A29E;font-size:11px}
+.rc-ok{color:#4ADE80;font-weight:800}.rc-f{color:#FDBA74;font-weight:700}
+.rc-row{display:flex;gap:8px;margin-top:11px}.rc-row button{flex:1;border:0;border-radius:12px;padding:11px 8px;font-weight:800;font-size:13.5px}
+.rc-j{background:linear-gradient(90deg,#F59E0B,#FBBF24);color:#1C1917}.rc-s{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.18)!important}
+.rc-more{display:block;width:100%;margin-top:6px;background:none;border:0;color:#FDE68A;font-weight:700;font-size:13px;padding:6px}
+.rc-yo{margin-top:10px;font-size:13px;font-weight:700;color:#4ADE80;text-align:center}
+.rc-op{display:grid;gap:8px;margin:12px 0}.rc-op button{border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:13px;font-weight:800;font-size:15px;text-align:left;color:var(--ink)}
+.rc-op button small{display:block;font-weight:600;color:var(--muted);font-size:12px}
 .ahCard{border-radius:16px;padding:12px 14px;display:flex;gap:10px;align-items:center;font-size:14px}
 .ahCard.ok{background:var(--good-soft);color:var(--ink);border:1px solid color-mix(in srgb,var(--good) 35%,transparent)}
 .ahCard.pend{flex-direction:column;align-items:stretch;background:var(--bad-soft);border:1.5px solid var(--bad);color:var(--ink)}
@@ -987,6 +1005,7 @@ nav.tabs button{z-index:0;isolation:isolate}
       <div class="card" id="avisoCard" hidden></div>
       <div class="miwa" id="miWaCard" hidden></div>
       <div class="ahCard" id="ahCard" hidden></div>
+      <div class="rcCard" id="rcCard" hidden></div>
       <div class="pendStrip" id="pendStrip" hidden></div>
       <div class="retoStrip" id="retoStrip" hidden></div>
       <div class="card" id="salaCard" hidden style="border:1.5px solid #C2410C"></div>
@@ -1336,7 +1355,7 @@ let resT;function pushResumen(){if(!store.db||!store.uid)return;clearTimeout(res
       const top=(contacts||[]).filter(c=>["Nuevo","Contactado","Presentación","Seguimiento","Por cerrar"].includes(c.stage||"Nuevo")).map(c=>({n:String(c.name||"").trim().slice(0,60),s:c.stage||"Nuevo",d:c.stT||c.updated||0,p:(c.pres&&c.pres.n)||0})).sort((a,b)=>(ST_PCT[b.s]-ST_PCT[a.s])||(a.d-b.d)).slice(0,80);return{c:cnt,top}})(),historia:!!(profile.historias||{})[TODAY],bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),cons:constStats(),t:Date.now()};
   await store.db.doc("users/"+store.uid).set({actividad:a},{merge:true});
   const nm=(miRegistro().nombre||"").trim(),em=String((fbUser&&fbUser.email)||"").toLowerCase();
-  if(nm&&!SOLO_ADMIN.includes(em))await store.db.doc("constancia/"+store.uid).set(Object.assign({nombre:nm,hoy:a.hoy,fecha:TODAY,acc:Object.values(sum).reduce((x,y)=>x+(+y||0),0),t:Date.now()},a.cons));if(constL){const vq=document.querySelector("#v-equipo");if(vq&&!vq.hidden&&eqTab==="ranking"&&rankMetric==="rutina")loadConst(true);else{const me=constL.find(y=>y.uid===store.uid);if(me){me.hoy=a.hoy;me.fecha=TODAY}}}}catch(e){}},3000)}
+  if(nm&&!SOLO_ADMIN.includes(em))await store.db.doc("constancia/"+store.uid).set(Object.assign({nombre:nm,hoy:a.hoy,fecha:TODAY,acc:Object.values(sum).reduce((x,y)=>x+(+y||0),0),t:Date.now()},a.cons),{merge:true});if(constL){const vq=document.querySelector("#v-equipo");if(vq&&!vq.hidden&&eqTab==="ranking"&&rankMetric==="rutina")loadConst(true);else{const me=constL.find(y=>y.uid===store.uid);if(me){me.hoy=a.hoy;me.fecha=TODAY}}}}catch(e){}},3000)}
 function renderWeek(){const out=[];let streak=0;
   for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));
     out.push(`<div><i class="${s>=1?"full":s>0?"part":""} ${i===0?"today":""}">${d.getDate()}</i>${DAYS[d.getDay()]}</div>`)}
@@ -1815,7 +1834,7 @@ const actScore=x=>{const a=actDe(x);return a.hoy+a.d7*40+(a.sem.contactos||0)*3+
 const byAct=(a,b)=>actScore(b)-actScore(a)||tsMs(b.ultimoAcceso)-tsMs(a.ultimoAcceso);
 let constSync=false;async function syncConst(){if(constSync||!isAdmin||!socios)return;constSync=true;let n=0;
   for(const x of socios){if(!x.registro||!x.registro.nombre||esSoloAdmin(x))continue;const a=x.actividad||{},sm=a.semana||{};
-    try{await store.db.doc("constancia/"+x.uid).set(Object.assign({nombre:x.registro.nombre,hoy:+a.hoy||0,fecha:a.fecha||"",acc:Object.values(sm).reduce((p,q)=>p+(+q||0),0),t:a.t||0},a.cons||{}));n++}catch(e){break}}
+    try{await store.db.doc("constancia/"+x.uid).set(Object.assign({nombre:x.registro.nombre,hoy:+a.hoy||0,fecha:a.fecha||"",acc:Object.values(sm).reduce((p,q)=>p+(+q||0),0),t:a.t||0},a.cons||{}),{merge:true});n++}catch(e){break}}
   if(n)loadConst(true)}
 async function loadSocios(){try{const q=await store.db.collection("users").get();socios=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.registro||x.email)
   .sort((a,b)=>String((b.registro&&b.registro.fecha)||"").localeCompare(String((a.registro&&a.registro.fecha)||"")))}catch(e){socios=[];toast("No se pudo cargar la lista de socios")}renderEquipo();syncConst();setTimeout(async()=>{try{await loadConst();liderResGuardar()}catch(e){}},8000);setTimeout(()=>{soloAdminFix().catch(()=>{})},5000);setTimeout(()=>{dtStatsGuardar().catch(()=>{})},12000)}
@@ -2357,6 +2376,59 @@ function premBanner(k){const D=premDatos();if(!D)return"";const{P,min,yo,myV,myG
    ${lead(g1,g1?g1.G:0,win,null).replace(" · 1.er lugar",(g1&&g1.G===1?" registro":" registros")+" · 1.er lugar")}
    ${me?`<div class="pb-me">${me}${yo&&g1?`<div class="pb-bar"><i style="width:${Math.max(2,Math.min(100,myG*100/Math.max(1,g1.G)))}%"></i></div>`:""}</div>`:""}</div>`}
 function premConfeti(k){const el=$(k==="vol"?"#pbVol":"#pbReg");if(!el)return;const K="premConf:"+k+":"+TODAY;try{if(LS.get(K))return;LS.set(K,1)}catch(e){}const D=premDatos();if(D&&!D.cerrado)setTimeout(()=>confeti(el,64),400)}
+let rcJ=null,rcJT=0,rcTick=null;
+function rcN(t){return String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z ]/g," ").replace(/\s+/g," ").trim()}
+function rcSame(a,b){a=rcN(a);b=rcN(b);if(!a||!b)return false;if(a===b)return true;const A=a.split(" "),B=b.split(" "),S=A.length<=B.length?A:B,L=S===A?B:A;return S.length>=2&&S.every(w=>L.includes(w))}
+function rcCfg(){const R=(T.config||{}).retoCierre;if(!R||!R.desde||!R.hasta)return null;const t=Date.now();if(t<Date.parse(R.desde)||t>Date.parse(R.hasta)+18*3600e3)return null;return R}
+function rcPrem(v){return v>=1500?"3+ Premium":v%500===0&&v>0?(v/500)+" Premium":v.toLocaleString("en-US")+" pts"}
+function rcDatos(){const R=rcCfg();if(!R)return null;const V={Starter:50,Classic:200,Premium:500};
+  const acts=(T.activaciones||[]).filter(a=>a.fecha>=R.desde&&a.fecha<R.hasta);
+  const rows=(R.comp||[]).map(c=>({n:c.n,k:[c.n].concat(c.k||[]),v:+c.v||0,l:0,pr:0}));
+  (rcJ||[]).forEach(j=>{if(!j.n||rows.some(r=>r.k.some(k=>rcSame(k,j.n))))return;rows.push({n:j.n.split(/\s+/).slice(0,2).join(" "),k:[j.n],v:+j.v||500,l:0,pr:0,app:1})});
+  let tot=0;acts.forEach(a=>{const v=V[a.paquete]||0;tot+=v;let r=rows.find(x=>x.k.some(k=>rcSame(k,a.patrocinador)));
+    if(!r){r={n:String(a.patrocinador).split(/\s+/).slice(0,2).map(w=>w[0].toUpperCase()+w.slice(1).toLowerCase()).join(" "),k:[a.patrocinador],v:0,l:0,pr:0,extra:1};rows.push(r)}r.l+=v;if(a.paquete==="Premium")r.pr++});
+  rows.sort((a,b)=>(b.l-a.l)||((b.l>=b.v)-(a.l>=a.v))||(b.v-a.v)||a.n.localeCompare(b.n,"es"));
+  const meta=+R.meta||10000,comp=rows.reduce((x,r)=>x+r.v,0),fin=Date.parse(R.hasta),cerr=Date.now()>=fin;
+  const yoN=miNombreFull(),yo=rows.find(r=>r.k.some(k=>rcSame(k,yoN)));
+  return {R,rows,tot,meta,comp,fin,cerr,yo,nComp:rows.filter(r=>r.v>0).length,prem:acts.filter(a=>a.paquete==="Premium").length}}
+function rcCargar(){const R=rcCfg();if(!R||!store.db)return;if(rcJ&&Date.now()-rcJT<1800000)return;rcJT=Date.now();
+  store.db.collection("constancia").where("rc.id",R.id).get().then(q=>{rcJ=q.docs.map(d=>{const x=d.data()||{};return{n:(x.rc&&x.rc.n)||x.nombre,v:(x.rc&&x.rc.v)||500}});renderRC()}).catch(()=>{rcJ=rcJ||[]})}
+function rcFila(r){const ok=r.v>0&&r.l>=r.v,fal=Math.max(0,r.v-r.l);
+  return `<tr><td><span class="n">${esc(r.n)}</span><small>${r.v?"Compromiso: "+rcPrem(r.v)+" · "+r.v.toLocaleString("en-US")+" pts":"Aportó sin comprometerse 👏"}</small></td><td class="r">${r.l?`<b>${r.l.toLocaleString("en-US")}</b> pts`:"0 pts"}<small>${ok?'<span class="rc-ok">✅ Cumplió</span>':r.v?`<span class="rc-f">Faltan ${fal.toLocaleString("en-US")}</span>`:""}</small></td></tr>`}
+function rcCuenta(fin){const ms=Math.max(0,fin-Date.now()),h=Math.floor(ms/3600e3),m=Math.floor(ms%3600e3/60e3),sg=Math.floor(ms%60e3/1e3);return[h,m,sg]}
+function renderRC(){const c=$("#rcCard");if(!c)return;const D=rcDatos();if(!D){c.hidden=true;clearInterval(rcTick);return}rcCargar();
+  const {R,rows,tot,meta,fin,cerr,yo}=D,pct=Math.min(100,Math.round(tot*100/meta)),fal=Math.max(0,meta-tot),fp=Math.ceil(fal/500);
+  const msg=cerr?(tot>=meta?"🎉 ¡Lo logramos! Gracias a cada líder que cumplió su palabra.":`Cerramos con ${tot.toLocaleString("en-US")} pts. ¡Gracias por darlo todo! El próximo cierre va por más.`)
+    :tot>=meta?"🎉 ¡Meta cumplida! Ahora vamos por más: cada Premium suma al equipo."
+    :fp<=3?`🔥 ¡Solo faltan ${fp} Premium! Es ahora o nunca.`
+    :pct>=50?`💪 Vamos a la mitad. Faltan ${fp} Premium: una llamada más puede ser la que cierre.`
+    :`🚀 Cada Premium cuenta. Hable hoy con quien le dijo "sí" y ayúdele a cerrar antes de las 6:00 p.m.`;
+  const [h,m,sg]=rcCuenta(fin),top=rows.slice(0,6);
+  c.innerHTML=`<div class="rc-k">🔥 RETO DE CIERRE · ${esc(R.mes||"")}</div><h3>${esc(R.t||"20 Premium para cerrar el mes")}</h3>
+   <div class="rc-sub">Meta del equipo: <b>${meta.toLocaleString("en-US")} pts</b> (${Math.round(meta/500)} Premium) · Cierre hoy 6:00 p.m. HN</div>
+   ${cerr?`<div class="rc-msg" style="margin-top:12px">⏱️ Reto cerrado</div>`:`<div class="rc-cd" id="rcCd"><div><b>${h}</b><small>HORAS</small></div><div><b>${String(m).padStart(2,"0")}</b><small>MIN</small></div><div><b>${String(sg).padStart(2,"0")}</b><small>SEG</small></div></div>`}
+   <div class="rc-bar"><i style="width:${pct}%"></i></div>
+   <div class="rc-nums"><span><b>${tot.toLocaleString("en-US")}</b> de ${meta.toLocaleString("en-US")} pts · ${pct}%</span><span>${fal?`Faltan <b>${fal.toLocaleString("en-US")}</b>`:"<b>¡Meta!</b>"}</span></div>
+   <div class="rc-msg">${msg}</div>
+   <table class="rc-t">${top.map(rcFila).join("")}</table>
+   ${rows.length>top.length?`<button class="rc-more" id="rcAll">Ver los ${rows.length} líderes del reto ›</button>`:""}
+   ${yo&&yo.v?`<div class="rc-yo">✅ Usted está en el reto · compromiso ${rcPrem(yo.v)}</div>`:""}
+   ${cerr?"":`<div class="rc-row">${yo&&yo.v?"":`<button class="rc-j" id="rcJoin">🙋 Unirme al reto</button>`}<button class="rc-s" id="rcInv">📣 Invitar a mi equipo</button></div>`}`;
+  c.hidden=false;
+  const all=$("#rcAll");if(all)all.onclick=()=>openSheet(`<h2>🔥 Líderes del reto</h2><p class="muted">${D.nComp} comprometidos · logrado ${tot.toLocaleString("en-US")} de ${meta.toLocaleString("en-US")} pts</p><div style="background:#111827;border-radius:14px;padding:6px 10px;margin-top:10px" class="rcCard"><table class="rc-t">${rows.map(rcFila).join("")}</table></div><button class="btn ghost full" data-close style="margin-top:12px">Cerrar</button>`);
+  const jn=$("#rcJoin");if(jn)jn.onclick=rcUnirme;const iv=$("#rcInv");if(iv)iv.onclick=()=>{location.href="https://wa.me/?text="+encodeURIComponent(rcTxt(D))};
+  const K="rcConf:"+R.id+":"+(tot>=meta?"meta":TODAY);if(!LS.get(K)&&(tot>=meta||!cerr)){LS.set(K,1);setTimeout(()=>confeti(c,tot>=meta?90:40),500)}
+  clearInterval(rcTick);if(!cerr)rcTick=setInterval(()=>{const cd=$("#rcCd");if(!cd){clearInterval(rcTick);return}if(Date.now()>=fin){renderRC();return}const [a,b,d]=rcCuenta(fin),B=cd.querySelectorAll("b");B[0].textContent=a;B[1].textContent=String(b).padStart(2,"0");B[2].textContent=String(d).padStart(2,"0")},1000)}
+function rcTxt(D){const [h,m]=rcCuenta(D.fin),fp=Math.ceil(Math.max(0,D.meta-D.tot)/500);
+  return `🔥 *RETO DE CIERRE DE MES*\n\nMeta del equipo: *${Math.round(D.meta/500)} Premium* antes de hoy a las 6:00 p.m. (hora de Honduras).\n\nVamos en *${D.tot.toLocaleString("en-US")} de ${D.meta.toLocaleString("en-US")} pts*${fp?` y faltan ${fp} Premium`:" y ya cumplimos la meta"}. Quedan ${h} h ${m} min.\n\n${D.nComp} líderes ya se comprometieron. ¿Se une usted también?\n\nEntre a la app y toque *"Unirme al reto"* en Inicio:\nhttps://actionleadersplus.com\n\n#HastaQueFuncione`}
+function rcUnirme(){const D=rcDatos();if(!D)return;
+  openSheet(`<h2>🙋 Unirme al reto</h2><p class="muted">¿Con cuánto se compromete a cerrar hoy, antes de las 6:00 p.m. hora de Honduras?</p>
+   <div class="rc-op">${[[500,"1 Premium"],[1000,"2 Premium"],[1500,"3 o más Premium"]].map(([v,t])=>`<button data-v="${v}">${t}<small>${v.toLocaleString("en-US")} pts de volumen</small></button>`).join("")}</div>
+   <button class="btn ghost full" data-close>Ahora no</button>`,()=>{$("#sheetPanel .rc-op").onclick=async e=>{const b=e.target.closest("button[data-v]");if(!b)return;b.disabled=true;
+     const nm=(miRegistro().nombre||miNombreFull()||"").trim();if(!nm||!store.db||!store.uid){toast("Inicie sesión para unirse");return}
+     try{await store.db.doc("constancia/"+store.uid).set({rc:{id:D.R.id,v:+b.dataset.v,n:nm,t:Date.now()}},{merge:true});rcJ=(rcJ||[]).concat([{n:nm,v:+b.dataset.v}]);
+       const R=(T.config||{}).retoCierre;if(R){R.comp=(R.comp||[]).concat([{n:nm.split(/\s+/).slice(0,2).join(" "),k:[nm],v:+b.dataset.v}])}
+       closeSheet();toast("¡Ya está en el reto! 🔥");renderRC();const c=$("#rcCard");c&&confeti(c,70)}catch(x){b.disabled=false;toast("No se pudo guardar ("+(x.code||"error")+")")}}})}
 function renderPremios(){const c=$("#premCard");if(c)c.hidden=true;const s=$("#retoStrip");if(!s)return;const D=premDatos();if(!D){s.hidden=true;return}
   const{P,v1,min,empV,cd,cerrado}=D,res=P.res;
   const t=res&&res.vol?`🎉 <b>Ganador de ${esc(P.vol.t)}:</b> ${esc(res.vol)}`:cerrado?`🏁 <b>Reto cerrado.</b> Pronto anunciamos a los ganadores`:v1&&v1.V>=min&&!empV?`${esc(P.vol.ic||"🏝️")} <b>Reto del mes:</b> ${esc(dtFirst(v1.n))} va para ${esc(String(P.vol.t).replace(/^Viaje a /,""))} · ${esc(cd)}`:`${esc(P.vol.ic||"🏝️")} <b>Reto del mes:</b> ${esc(P.vol.t)} · ${esc(cd)}`;
@@ -4269,7 +4341,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-refr
 async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
-  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderPremios()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
+  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderPremios()}catch(e){}try{renderRC()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
 let autoFotoHecho=false;
 function urlADataUrl(u,S){return new Promise(ok=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{S=S||240;const c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);
   c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);ok(c.toDataURL("image/jpeg",.85))}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=u})}
@@ -4478,7 +4550,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261031111105";var busy=false,pend=null;
+(function(){var V="20261031112127";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

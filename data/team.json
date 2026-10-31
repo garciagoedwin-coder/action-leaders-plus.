@@ -3702,7 +3702,127 @@
     }
    ]
   },
-  "lcMesClave": "2026-10"
+  "lcMesClave": "2026-10",
+  "retoCierre": {
+   "id": "2026-10",
+   "mes": "Octubre 2026",
+   "t": "20 Premium para cerrar el mes",
+   "meta": 10000,
+   "desde": "2026-10-31T06:00:00Z",
+   "hasta": "2026-11-01T00:00:00Z",
+   "comp": [
+    {
+     "n": "Edwin García",
+     "k": [
+      "Edwin Alexander Garcia Gomez",
+      "Edwin Garcia"
+     ],
+     "v": 500
+    },
+    {
+     "n": "Gabriela Castillo",
+     "v": 500
+    },
+    {
+     "n": "Henrry Muñoz",
+     "k": [
+      "Henrry Antonio Munoz Sosa"
+     ],
+     "v": 500
+    },
+    {
+     "n": "Nancy Díaz",
+     "k": [
+      "Nancy Diaz"
+     ],
+     "v": 500
+    },
+    {
+     "n": "Glenda López",
+     "k": [
+      "Glenda Lopez"
+     ],
+     "v": 500
+    },
+    {
+     "n": "Denia Rocha",
+     "k": [
+      "Denia V Rivas Rocha"
+     ],
+     "v": 500
+    },
+    {
+     "n": "Maynor Larios",
+     "k": [
+      "Maynor Agustín Larios Lobo"
+     ],
+     "v": 500
+    },
+    {
+     "n": "Mayckol Meraz",
+     "v": 500
+    },
+    {
+     "n": "Josué Delgado",
+     "v": 500
+    },
+    {
+     "n": "Joel Salgado",
+     "k": [
+      "Joel Enrrique Salgado Moradel"
+     ],
+     "v": 500
+    },
+    {
+     "n": "Cesia Marely",
+     "v": 500
+    },
+    {
+     "n": "Saby Isaguirre",
+     "k": [
+      "Saby Odett Isaguirre Aguilar",
+      "Saby Izaguirre"
+     ],
+     "v": 500
+    },
+    {
+     "n": "Juan Carlos Granados",
+     "k": [
+      "Juan Carlos Granados Claros"
+     ],
+     "v": 500
+    },
+    {
+     "n": "Francisco Caballero",
+     "v": 500
+    },
+    {
+     "n": "Olga Meléndez",
+     "k": [
+      "Olga Lizzette Melendez Norales"
+     ],
+     "v": 500
+    },
+    {
+     "n": "Jorge Turcios",
+     "v": 500
+    },
+    {
+     "n": "Zamir Fuentes",
+     "k": [
+      "Zamir Ely Fuentes Trochez"
+     ],
+     "v": 1000
+    },
+    {
+     "n": "Flor Reyes",
+     "k": [
+      "Flor Idalma Reyes Padilla"
+     ],
+     "v": 1500
+    }
+   ]
+  }
  },
  "fotos": [
   {
