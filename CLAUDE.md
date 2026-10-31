@@ -289,7 +289,7 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Siempre ordenado por volumen (leadOrden). leadFila: puesto, foto con punto de rango, insignia (⚔️ Espartano / 🛡️ Líder / chip del rango), ⚡ índice (liderDe(l).idx) y volumen con chip 500+/200–499/−200 y barrita. Se quitaron los filtros por posición (leadPos) y la barra de orden (leadSort).
 - Tocar una fila (data-li = índice en T.lideres) → leadFicha(l): la ficha completa de antes + 💬 Felicitar y 📣 Compartir flyer si lcNivel(volumen) es lid/esp.
 
-## 31. Presentación interactiva (30 oct) — por ahora solo admins
+## 31. Presentación interactiva (30 oct) — ABIERTA A TODOS el 30 oct 20:10 (presOk=true)
 - Diapositivas en media/pres/s01..s21.jpg (1280×720, del PDF "NOVIEMBRE PPT" de Edwin, ~2.4 MB en total; se cargan solo al presentar, con precarga de la siguiente).
 - PRES {n, img, q (preguntas por diapositiva: 2 r1, 3 dest múltiple, 20 r2, 21 n del 1 al 10), g (guion del socio por diapositiva), val, dest, dudas}. presOk() = isAdmin; para abrir a todos: return true y publicar.
 - Entrada: CRM → "🎤 Presentar" (data-pres) → presAbrir(c). presElegir() existe para elegir contacto o crear persona nueva.
@@ -298,7 +298,7 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - presMsg: mensaje de USTED con lo que respondió, destinos y profile.ref (enlace de inCruises; si falta, avisa).
 - presGuardar: c.pres {t,n,r1,r2,dest,min}, nota en el contacto, próximo seguimiento y sumarPres (rutina/ranking, etapa Presentación). En el CRM sale "🎤 Presentado {fecha} · n/10".
 
-## 32. Embudo de prospectos (30 oct) — vista con % y del líder solo admins por ahora
+## 32. Embudo de prospectos (30 oct) — ABIERTO A TODOS el 30 oct 20:10 (pipeOk=true)
 - Etapas (STAGES/FLOW) con nueva "Por cerrar" entre Seguimiento y Socio. ST_PCT: Nuevo 10, Contactado 25, Presentación 50, Seguimiento 70, Por cerrar 90, Socio/Cliente 100, No interesado 0.
 - Avance automático SOLO HACIA ARRIBA (stAvanza(c, etapa, motivo); no toca Socio/Cliente/No interesado): WhatsApp desde el CRM (data-wac) y presentación virtual → Contactado; sumarPres/cita → Presentación; sumarSeg → Seguimiento; presentación interactiva 1–7 → Seguimiento, 8–10 → Por cerrar. Guarda c.stT (fecha de cambio de etapa) y c.stAuto (motivo, se muestra 14 días). El cambio manual también pone stT y limpia stAuto.
 - Frío: Seguimiento/Por cerrar con más de 7 días sin cambio de etapa (stFrio).
@@ -309,6 +309,6 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - (30 oct, noche) Botones de etapa (stepsHTML) muestran el % para TODOS ("Nuevo 10%"). saveContact limpia undefined (JSON) y el toast de error muestra el código (e.code) para diagnosticar. Edwin vio "No se pudo guardar el contacto" al cambiar etapa en su teléfono; en pruebas funciona: si se repite, revisar el código que muestra el toast (permission-denied = reglas de producción distintas a respaldo/firestore.rules).
 - (30 oct, noche) Sueños: si la carga falla o viene vacía desde caché sin internet, ya NO se muestra "Agregue su primer sueño" (parecía que se habían borrado): sale "No se pudieron cargar sus sueños" + "🔄 Cargar de nuevo" (snErr).
 
-### 32b. Orden del CRM (30 oct noche) — admin, va junto al embudo
+### 32b. Orden del CRM (30 oct noche) — abierto a todos con el embudo
 - Botones `.crmord [data-ord]`: seg (próximo seguimiento, el de siempre), rec (más recientes por `creado`, si no hay usa `updated`), pct (activos por % mayor→menor; luego Socio/Cliente; al final No interesado). Se recuerda en LS `crmOrd`.
 - `crmCmp()` usa "seg" si `pipeOk()` es falso. `saveContact` pone `creado:Date.now()` a todo contacto nuevo (para todos los usuarios).

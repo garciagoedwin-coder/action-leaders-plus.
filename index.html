@@ -3251,7 +3251,7 @@ const FLOW=["Nuevo","Contactado","Presentación","Seguimiento","Por cerrar","Soc
 // ---------- Embudo de prospectos (30 oct): % por etapa, avance automático y vista del líder ----------
 const ST_PCT={"Nuevo":10,"Contactado":25,"Presentación":50,"Seguimiento":70,"Por cerrar":90,"Socio":100,"Cliente":100,"No interesado":0};
 const ST_IC={"Nuevo":"🆕","Contactado":"💬","Presentación":"🎤","Seguimiento":"🔁","Por cerrar":"🔥","Socio":"✅","Cliente":"✅","No interesado":"✖"};
-function pipeOk(){return !!isAdmin}
+function pipeOk(){return true}
 function stPct(c){return ST_PCT[(c&&c.stage)||"Nuevo"]??10}
 function stDias(c){const t=(c&&(c.stT||c.updated))||0;return t?Math.floor((Date.now()-t)/864e5):0}
 function stFrio(c){return ["Seguimiento","Por cerrar"].includes(c.stage)&&stDias(c)>7}
@@ -3678,7 +3678,7 @@ const PRES={n:21,img:i=>"media/pres/s"+String(i).padStart(2,"0")+".jpg",
     ["¿Y si un mes no puedo pagar?","Tiene hasta 60 días desde su último pago para mantener la cuenta activa. Pagando a tiempo duplica sus puntos."],
     ["¿Tengo que vender?","No. Puede solo viajar. Si recomienda el club, recibe bonos y descuentos."],
     ["¿Cuándo puedo viajar?","Con la opción mitad puntos y mitad efectivo puede reservar desde 90 días antes."]]};
-function presOk(){return !!isAdmin}
+function presOk(){return true}
 let PS=null;
 function presEl(){let o=$("#presOv");if(!o){o=document.createElement("div");o.id="presOv";o.setAttribute("role","dialog");o.setAttribute("aria-label","Presentación");document.body.appendChild(o);
   o.addEventListener("click",presClick);
@@ -4286,7 +4286,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261030191844";var busy=false,pend=null;
+(function(){var V="20261030200732";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
