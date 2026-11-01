@@ -345,7 +345,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .mq-who{margin-top:6px;border-top:1px solid rgba(255,255,255,.15);padding-top:8px}.mq-who small{font-size:12px;font-weight:700;opacity:.85}
 .mq-av{display:flex;gap:10px;overflow-x:auto;padding:6px 2px 2px;scrollbar-width:none}.mq-av::-webkit-scrollbar{display:none}
 .mq-p{flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;width:58px}.mq-p .av{width:44px;height:44px;box-shadow:0 0 0 2px #F5B700}.mq-p .av.badge{box-shadow:none;border-radius:0}.mq-p b{font-size:11.5px;max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mq-p i{font-style:normal;font-size:11px;color:#FDE047;font-weight:700}
-.mq-p0{margin:4px 0 0;font-size:13.5px;opacity:.9}.mqCard .mq-btn{align-self:stretch;margin-top:6px;background:#F5B700;color:#0b1020;border:0}
+.mq-less{text-align:center;font-size:12px;font-weight:700;opacity:.7;margin-top:2px}.mq-p0{margin:4px 0 0;font-size:13.5px;opacity:.9}.mqCard .mq-btn{align-self:stretch;margin-top:6px;background:#F5B700;color:#0b1020;border:0}
 .ganCard{position:relative;overflow:hidden;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px;color:#fff;background:radial-gradient(120% 90% at 100% 0%,rgba(125,211,252,.45) 0%,transparent 60%),linear-gradient(150deg,#0A7DAD,#0b4f73 55%,#0b3b57);border:1px solid rgba(42,193,241,.55);box-shadow:0 12px 28px -14px rgba(11,16,32,.7);animation:banIn .5s cubic-bezier(.2,.8,.2,1)}
 .ganCard h2{margin:0;font-size:22px;color:#fff}.ganCard .gn-x{background:rgba(42,193,241,.18);color:#fff;border:0;border-radius:99px;padding:4px 10px;font:700 12px Figtree,system-ui,sans-serif;cursor:pointer}
 .gn-e{font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;opacity:.95;color:#2AC1F1}.gn-k{display:block;font-size:12px;font-weight:800;opacity:.9}
@@ -1776,9 +1776,9 @@ function renderMetaEq(cargado){const c=$("#metaEq");if(!c)return;const M=mqCfg()
    <div class="mq-row"><span>🤝 Comprometido</span><b>${fmt(comp)} <small>de ${fmt(meta)}</small></b></div><div class="mq-bar"><i class="c" style="width:${pc(comp)}%"></i></div>
    <div class="mq-row"><span>⚡ Logrado</span><b>${fmt(log)} <small>de ${fmt(meta)}</small></b></div><div class="mq-bar"><i class="l" style="width:${pc(log)}%"></i></div>
    ${L.length?`<div class="mq-who"><small>${L.length} ${L.length===1?"socio comprometido":"socios comprometidos"}</small><div class="mq-av">${L.slice(0,40).map(x=>`<span class="mq-p" title="${esc(x.n)}">${avHTML(x.n,false,false)}<b>${esc(dtFirst(x.n))}</b><i>${fmt(x.v)}</i></span>`).join("")}</div></div>`:`<p class="mq-p0">Sea el primero en hacer su compromiso 💪</p>`}
-   ${puede?`<button type="button" class="btn sm mq-btn" data-comp>🎯 Hacer mi compromiso</button>`:""}`;
+   ${puede?`<button type="button" class="btn sm mq-btn" data-comp>🎯 Hacer mi compromiso</button>`:""}<div class="mq-less">Toque para cerrar ▴</div>`;
   c.querySelectorAll("[data-comp]").forEach(b=>b.onclick=e=>{e.stopPropagation();compAbrir()});
-  c.querySelectorAll("[data-mqc]").forEach(b=>b.onclick=()=>{try{LS.set("mqOpen","")}catch(e){}renderMetaEq()});
+  c.onclick=e=>{if(e.target.closest("button,a,[data-foto]"))return;try{LS.set("mqOpen","")}catch(x){}renderMetaEq()};c.style.cursor="pointer";
   if(cargado&&mqL){const K="mqSeen:"+mesMeta();let seen=null;try{seen=JSON.parse(LS.get(K)||"null")}catch(e){}const ids=mqL.map(x=>x.uid);
     if(seen){const nw=mqL.filter(x=>!seen.includes(x.uid)&&x.uid!==store.uid).sort((a,b)=>b.t-a.t).slice(0,2);nw.forEach((x,i)=>setTimeout(()=>{try{avisoTop(`🎉 ${dtFirst(x.n)} se comprometió con ${fmt(x.v)} pts`,`Meta del equipo · ${fmt(comp)} de ${fmt(meta)} comprometidos`,()=>{go&&go("inicio")})}catch(e){}},1500+i*5000))}
     try{LS.set(K,JSON.stringify(ids))}catch(e){}}}
@@ -5012,7 +5012,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101003455";var busy=false,pend=null;
+(function(){var V="20261101003715";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
