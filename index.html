@@ -327,6 +327,8 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .metas .sueno{background:linear-gradient(120deg,#ECFDF5,#D1FAE5);color:#065F46}.metas .sueno .lbl{color:#047857}.metas .sueno .big{color:#065F46}
 .rgDot{width:14px;height:14px;border-radius:50%;flex:none}
 .metas .bar{margin:2px 0 0;background:var(--surface)}.metas .ok{color:var(--good);font-weight:800}
+#ptr{position:fixed;top:calc(env(safe-area-inset-top,0px) + 96px);left:50%;transform:translate(-50%,-60px);opacity:0;z-index:70;background:var(--surface);color:var(--ink);border-radius:99px;padding:8px 14px 8px 10px;display:flex;align-items:center;gap:8px;font:700 13px Figtree,system-ui,sans-serif;box-shadow:0 8px 20px -6px rgba(0,0,0,.35);pointer-events:none}
+#ptr i{width:18px;height:18px;border-radius:50%;border:2.5px solid #2AC1F1;border-top-color:transparent;flex:none}#ptr.gira i{animation:ptrG .7s linear infinite}@keyframes ptrG{to{transform:rotate(360deg)}}#ptr.vuelve{transition:transform .25s,opacity .25s}
 .mqCard.mini{gap:6px;padding:13px 15px;cursor:pointer}.mqCard .mq-big{font:800 22px/1.1 'Bricolage Grotesque',Figtree,sans-serif}
 .mq-stk{display:flex;align-items:center}.mq-stk .av{width:30px;height:30px;margin-left:-9px;box-shadow:0 0 0 2px #0b1020;font-size:11px}.mq-stk .av:first-child{margin-left:0}.mq-stk .av.badge{box-shadow:none}.mq-stk em{font-style:normal;font-size:12px;font-weight:800;margin-left:6px;color:#FDE047}
 .mq-dual{position:relative;height:9px}.mq-dual i{position:absolute;left:0;top:0;bottom:0}.mq-dual i.c{opacity:.55}
@@ -4801,6 +4803,19 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-refr
   try{await loadTeamJSON();const c=T.config||{},k=b.dataset.refresh==="cal"?c.calendarioActualizado:c.rankingActualizado;
     toast((b.dataset.refresh==="cal"?"Agenda al día":"Ranking al día")+(k?" · actualizado "+new Date(k).toLocaleString("es",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):""))}catch(x){toast("No se pudo actualizar. Revisa tu conexión.")}
   b.disabled=false;b.textContent=t});
+// ---------- Deslizar hacia abajo para actualizar (ranking, compromisos y Mi Racha; máx. 1 vez por minuto) ----------
+(function(){const m=document.getElementById("main");if(!m)return;const ind=document.createElement("div");ind.id="ptr";ind.innerHTML='<i></i><span>Deslice para actualizar</span>';document.body.appendChild(ind);
+ let y0=null,dy=0,act=false,busy=false,ult=0;const MAX=110,ON=70;
+ const set=d=>{ind.style.transform="translate(-50%,"+(Math.min(d,MAX)-60)+"px)";ind.style.opacity=Math.min(1,d/ON);ind.querySelector("i").style.transform="rotate("+Math.round(d*3)+"deg)";ind.querySelector("span").textContent=d>=ON?"Suelte para actualizar":"Deslice para actualizar"};
+ const fin=()=>{ind.classList.add("vuelve");set(0);setTimeout(()=>ind.classList.remove("vuelve"),260)};
+ m.addEventListener("touchstart",e=>{const sh=document.getElementById("sheet");if(busy||m.scrollTop>0||(sh&&!sh.hidden)||e.touches.length>1){y0=null;return}y0=e.touches[0].clientY;dy=0;act=false},{passive:true});
+ m.addEventListener("touchmove",e=>{if(y0==null)return;dy=e.touches[0].clientY-y0;if(dy<=0||m.scrollTop>0){if(act)set(0);act=false;return}act=true;set(dy*.55)},{passive:true});
+ m.addEventListener("touchend",async()=>{if(y0==null)return;const ok=act&&dy*.55>=ON;y0=null;act=false;if(!ok){fin();return}
+  busy=true;ind.classList.add("gira");ind.querySelector("span").textContent="Actualizando…";ind.querySelector("i").style.transform="";ind.style.transform="translate(-50%,10px)";ind.style.opacity=1;
+  const rec=Date.now()-ult<60000;
+  if(!rec){ult=Date.now();try{await loadTeamJSON()}catch(e){}try{mqCargar(true)}catch(e){}try{if(constL)await loadConst(true)}catch(e){}}
+  setTimeout(()=>{ind.classList.remove("gira");fin();busy=false;try{toast(rec?"✅ Ya está al día":"✅ Datos al día")}catch(e){}},rec?350:600)});
+})();
 let tjSello=null;async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
   {const se=((d.config||{}).rankingActualizado||"")+"|"+((d.config||{}).activacionesCorte||"")+"|"+(d.ranking||[]).length;if(tjSello&&se!==tjSello)setTimeout(()=>{try{toast("📊 Ranking actualizado")}catch(e){}},600);tjSello=se}
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
@@ -5014,7 +5029,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101081650";var busy=false,pend=null;
+(function(){var V="20261101082412";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
