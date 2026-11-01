@@ -1731,7 +1731,7 @@ function compStripHTML(){const C=miComp(),mn=mesNom();
    <div class="row between small"><span>🎤 Presentaciones esta semana</span><b>${p} de ${C.pres}${p>=C.pres?" ✅":""}</b></div>${bar(p,C.pres)}</div>`}
 function renderComp(){const s=$("#compStrip"),sn=$("#compSn"),ok=compPuede();
   [s,sn].forEach(el=>{if(!el)return;if(!ok){el.hidden=true;el.innerHTML="";return}el.hidden=false;el.innerHTML=compStripHTML();el.querySelectorAll("[data-comp]").forEach(b=>b.onclick=compAbrir)});
-  if(ok)setTimeout(compCheck,1200)}
+  if(ok){setTimeout(compCheck,1200);setTimeout(()=>{try{if(miComp()||compVisto)comp15()}catch(e){}},2500)}}
 
 // ---------- Meta del equipo del mes (config.metaEquipo) con los compromisos (constancia.comp) ----------
 let mqL=null,mqT=0;
@@ -1756,6 +1756,34 @@ function renderMetaEq(cargado){const c=$("#metaEq");if(!c)return;const M=mqCfg()
   if(cargado&&mqL){const K="mqSeen:"+mesMeta();let seen=null;try{seen=JSON.parse(LS.get(K)||"null")}catch(e){}const ids=mqL.map(x=>x.uid);
     if(seen){const nw=mqL.filter(x=>!seen.includes(x.uid)&&x.uid!==store.uid).sort((a,b)=>b.t-a.t).slice(0,2);nw.forEach((x,i)=>setTimeout(()=>{try{avisoTop(`🎉 ${dtFirst(x.n)} se comprometió con ${fmt(x.v)} pts`,`Meta del equipo · ${fmt(comp)} de ${fmt(meta)} comprometidos`,()=>{go&&go("inicio")})}catch(e){}},1500+i*5000))}
     try{LS.set(K,JSON.stringify(ids))}catch(e){}}}
+
+// ---------- Compromiso: vista de líder (Mi equipo) y recordatorio de mitad de mes ----------
+function compDe(x){const c=x&&x.comp;return c&&c.mes===mesMeta()?c:null}
+function compAvance(c,nm){let rk=null;try{rk=rankDe(nm)}catch(e){}return{A:rk?rk.A:0,V:rk?rk.V:0,vol:+c.vol||(+c.act||0)*200}}
+function compChip(x,nm){if(!compPuede0())return"";const c=compDe(x);
+  if(!c)return `<span class="chip c-warn">🎯 Sin compromiso de ${esc(mesNom())}</span>`;
+  if(c.no)return `<span class="chip c-brand">🎯 Decidió no hacer compromiso</span>`;
+  const r=compR(c.rango)||{ic:"🎯",t:c.rango||""},{A,V,vol}=compAvance(c,nm);
+  return `<span class="chip c-good" style="font-weight:700;white-space:normal;text-align:left">🤝 ${r.ic} ${esc(r.t)} · ${A}/${c.act} activaciones · ${fmt(V)}/${fmt(vol)} pts · ${c.pres}/sem</span>`}
+function compPuede0(){const C=(T.config||{}).compromiso;return !!C&&!(C.desde&&Date.now()<Date.parse(C.desde))}
+function compMsg(x){const r0=x.registro||{},nm=r0.nombre||"",f=nm.split(" ")[0]||"",c=compDe(x),yo=miNombreCorto()||"",M=(T.config||{}).metaEquipo;let t;
+  if(!c||c.no)t=`Hola, ${f} 👋\n\nYa arrancó ${mesNom()} y el equipo va por ${M?fmt(M.pts)+" pts":"una gran meta"}.\n\n¿Ya hizo su compromiso del mes en la app? Toma menos de un minuto: su rango objetivo, sus activaciones y sus presentaciones.\n\nCuente conmigo para lograrlo. 💪`;
+  else{const r=compR(c.rango)||{t:c.rango},{A,V,vol}=compAvance(c,nm),fa=Math.max(0,c.act-A);
+    t=`¡Hola, ${f}! 🙌\n\nVi su compromiso de ${mesNom()}: ${r.t}, ${c.act} ${c.act===1?"activación":"activaciones"} y ${c.pres} presentaciones por semana.\n\nVa en ${A} de ${c.act} activaciones y ${fmt(V)} de ${fmt(vol)} pts.${fa?` Le ${fa===1?"falta":"faltan"} ${fa}.`:" ¡Ya lo cumplió! 🎉"}\n\n¿Cómo le puedo ayudar esta semana? 🚀`}
+  return t+(yo?"\n\n*"+yo+"*":"")}
+function comp15(){const n=new Date(),d=n.getDate();if(d<15||d>18||!compPuede())return;const K="comp15:"+mesMeta();try{if(LS.get(K))return}catch(e){}
+  if(!$("#sheet").hidden||document.querySelector(".waGate"))return;try{LS.set(K,1)}catch(e){}
+  const c=miComp(),dias=compDias();
+  if(!c||c.no){openSheet(`<div style="text-align:center;font-size:44px;line-height:1">⏳</div><h2 style="text-align:center">Vamos a mitad de ${esc(mesNom())}</h2><p style="text-align:center;margin:0">Quedan <b>${dias} días</b> y todavía está a tiempo de hacer su compromiso del mes.</p><button class="btn" data-c15 style="width:100%">🎯 Hacer mi compromiso</button><button class="btn ghost" data-close style="width:100%">Ahora no</button>`,()=>{$("#sheetPanel [data-c15]").onclick=compAbrir});return}
+  const r=compR(c.rango)||{ic:"🎯",t:c.rango},{A,V,vol}=compAvance(c,miNombreFull()||miNombreCorto()),p=presSemana().length,pa=c.act?Math.round(A*100/c.act):0;
+  const bar=(a,b)=>`<div class="mtBar" style="height:10px;border-radius:99px;background:var(--surface-2);overflow:hidden"><i style="display:block;height:100%;background:#16A34A;width:${b?Math.min(100,Math.round(a*100/b)):0}%"></i></div>`;
+  openSheet(`<div style="text-align:center;font-size:44px;line-height:1">📊</div><h2 style="text-align:center">Mitad de mes: así va su compromiso</h2>
+   <p style="text-align:center;margin:0">${r.ic} <b>${esc(r.t)}</b> · quedan <b>${dias} días</b></p>
+   <div class="row between small"><span>🚀 Activaciones</span><b>${A} de ${c.act}</b></div>${bar(A,c.act)}
+   ${vol?`<div class="row between small"><span>⚡ Volumen</span><b>${fmt(V)} de ${fmt(vol)} pts</b></div>${bar(V,vol)}`:""}
+   <div class="row between small"><span>🎤 Presentaciones esta semana</span><b>${p} de ${c.pres}</b></div>${bar(p,c.pres)}
+   <p style="text-align:center;margin:4px 0 0">${pa>=100?"🎉 ¡Ya cumplió sus activaciones! Vaya por más.":pa>=50?"💪 Va muy bien. La segunda mitad es donde se gana el mes.":"🔥 Todavía hay tiempo. Agende sus presentaciones de esta semana hoy mismo."}</p>
+   <button class="btn" data-close style="width:100%">¡Vamos!</button>`)}
 function evMiIdx(L,noms){noms=noms.filter(Boolean);let i=L.findIndex(x=>noms.some(n=>sameN(x.nombre,n)));if(i<0)i=L.findIndex(x=>noms.some(n=>parecidoN(x.nombre,n)));return i}
 function evLlegadas(L,iy){const R=(entPub&&entPub.rank)||[],yo=iy>=0?L[iy].nombre:"",md=["🥇","🥈","🥉"];
   openSheet(`<h2>🎉 Invitados que ya llegaron</h2><p class="small muted" style="margin:0">${entPub.inv} invitados han llegado al evento. Gana el socio con más invitados que lleguen. Solo se muestran los números de cada socio.</p>
@@ -2337,7 +2365,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
   if(isAdmin&&socios===null&&!window._ldS){window._ldS=1;loadSocios()}
   const inv=`<div class="card"><h3 style="margin:0">🔗 Tu enlace de invitación</h3><p class="small muted" style="margin:0">Los socios que se registren con tu enlace aparecen aquí con su avance.</p>
     <div class="ref"><code style="word-break:break-all">${esc(miEnlace())}</code><button class="btn sm gold" id="miosCopy">Copiar</button></div></div>`;
-  const bind=()=>{b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=waSocio(x);
+  const bind=()=>{b.querySelectorAll("[data-mcp]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mcp);if(!x)return;const w=waSocio(x);location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(compMsg(x))});b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=waSocio(x);
     if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});b.querySelectorAll("[data-wnum]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.wnum);if(x)cambiarNumSocio(x)});b.querySelectorAll("[data-mah]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mah);if(!x)return;const nm=((x.registro||{}).nombre||"").split(" ")[0],ah=ahSoc(x)||{},t=`¡Hola${nm?", "+nm:""}! 🙌 Vi que su ahorro de este mes en inCruises quedó pendiente. Póngase al día${ah.lim&&!ah.bloq?" antes del "+ahFecha(ah.lim):""} para no perder sus beneficios ni sus herramientas del equipo. ¿Le ayudo con algo?`,w=waSocio(x);if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});b.querySelectorAll("[data-ip]").forEach(x=>x.onclick=()=>{idxPer=x.dataset.ip;renderEquipo()});b.querySelectorAll("[data-idxv]").forEach(x=>x.onclick=()=>{idxStk=[""];idxSheet("")});b.querySelectorAll("[data-reac]").forEach(x=>x.onclick=abrirReactivar);const c=$("#miosCopy");if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(miEnlace());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
   if(miosErr){b.innerHTML=emptyCard("No se pudo cargar tu equipo","Revisa tu conexión e intenta de nuevo. Si sigue igual, avisa al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
   if(!mios.length){b.innerHTML=idxCard()+`<div class="card empty"><h3>Aún no tienes socios en la app</h3><p class="small muted">Cuando firmes a alguien, mándale tu mensaje de bienvenida desde el CRM o comparte tu enlace. Al registrarse aparecerá aquí.</p></div>`+inv;bind();return}
@@ -2404,9 +2432,9 @@ function miosFila(V,lvl0){let lvl=lvl0;const cname=k=>{const c=cursosL().find(x=
        <span class="chip c-brand">👥 ${S.contactos||0} ${(S.contactos||0)===1?"contacto":"contactos"}</span>
        ${a.hist?`<span class="chip c-good">📸 Historia hoy</span>`:""}
        ${(()=>{const rk=rankDe(nm);return rk?`<span class="chip ${rk.pPos&&rk.pPos<=10?"c-gold":"c-brand"}">🏆 Registros: ${rk.R}${rk.pPos?" · #"+rk.pPos:""}</span><span class="chip ${rk.aPos&&rk.aPos<=10?"c-gold":"c-brand"}">🚀 Activaciones: ${rk.A} · Vol. ${fmt(rk.V)}${rk.aPos?" · #"+rk.aPos:""}</span>`:`<span class="chip c-brand">🏆 Sin registros en el ranking</span>`})()}
-       ${(()=>{const m=x.metas||{},R=proxRango(rangoActualIdx(x.registro,nm)),rg=R?R.n:"";if(!m.act&&!rg&&!m.sueno)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(R?`<span class="chip" style="background:${R.c};color:#fff">🏅 Próximo: ${esc(rg)}</span>`:"")+(m.sueno?`<span class="chip c-good">💰 Sueño: ${usd(m.sueno)}/mes</span>`:"")})()}
+       ${(()=>{const m=x.metas||{},R=proxRango(rangoActualIdx(x.registro,nm)),rg=R?R.n:"";if(!m.act&&!rg&&!m.sueno)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(R?`<span class="chip" style="background:${R.c};color:#fff">🏅 Próximo: ${esc(rg)}</span>`:"")+(m.sueno?`<span class="chip c-good">💰 Sueño: ${usd(m.sueno)}/mes</span>`:"")})()}${compChip(x,nm)}
        ${cs.length?cs.map(k=>`<span class="chip c-good">🎓 ${esc(cname(k))}</span>`).join(""):`<span class="chip c-brand">🎓 Sin cursos aún</span>`}
-      </div><div class="row" style="gap:8px;margin-top:10px">${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<button class="btn sm grow" data-mah="${esc(x.uid)}" style="background:#B42335;color:#fff">💰 Motivar su ahorro</button>`:""})()}<button class="btn sm grow" data-mot="${esc(x.uid)}" style="background:#25D366;color:#fff">💬 Motivar por WhatsApp</button><button class="btn sm ghost" data-wnum="${esc(x.uid)}" type="button" aria-label="Cambiar número de WhatsApp de ${esc(nm)}">✏️ Número</button></div></div>`}}
+      </div><div class="row" style="gap:8px;margin-top:10px">${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<button class="btn sm grow" data-mah="${esc(x.uid)}" style="background:#B42335;color:#fff">💰 Motivar su ahorro</button>`:""})()}<button class="btn sm grow" data-mot="${esc(x.uid)}" style="background:#25D366;color:#fff">💬 Motivar por WhatsApp</button>${compPuede0()?`<button class="btn sm grow" data-mcp="${esc(x.uid)}" style="background:#16A34A;color:#fff">🎯 ${compDe(x)&&!compDe(x).no?"Motivar compromiso":"Pedir compromiso"}</button>`:""}<button class="btn sm ghost" data-wnum="${esc(x.uid)}" type="button" aria-label="Cambiar número de WhatsApp de ${esc(nm)}">✏️ Número</button></div></div>`}}
 const SOLO_ADMIN=["garciagoedwin@gmail.com"];const esSoloAdmin=x=>SOLO_ADMIN.includes(String(x.email||"").toLowerCase());
 function editarSocio(uid){const x=(socios||[]).find(y=>y.uid===uid);if(!x)return;const r=x.registro||{},nm=r.nombre||x.email||"Socio";
   const opts=(socios||[]).filter(y=>y.uid!==uid&&y.registro&&y.registro.nombre&&!esSoloAdmin(y)).sort((a,b)=>a.registro.nombre.localeCompare(b.registro.nombre,"es"));
@@ -4958,7 +4986,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101001935";var busy=false,pend=null;
+(function(){var V="20261101002504";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
