@@ -3989,7 +3989,47 @@
     }
    ]
   },
-  "rankingCongelado": "2026-10-31T23:59:59Z"
+  "rankingCongelado": "2026-10-31T23:59:59Z",
+  "ganadores": {
+   "mes": "2026-10",
+   "mesN": "octubre",
+   "hasta": "2026-11-06T06:00:00Z",
+   "roatan": {
+    "k": "Viaje a Roatán",
+    "n": "Karla Calderón",
+    "s": "3,000 pts · 6 activaciones"
+   },
+   "libros": {
+    "k": "Pack de libros de negocios",
+    "n": "Carlos Alberto Rubio Valladares",
+    "s": "19 registros en inCruises"
+   },
+   "racha": [
+    {
+     "n": "Mayckol Turcios",
+     "s": "12 días · 26 presentaciones · 64 pts"
+    },
+    {
+     "n": "Josué Delgado",
+     "s": "8 días · 31 presentaciones · 59 pts"
+    },
+    {
+     "n": "Kevin Matute",
+     "s": "7 días · 7 presentaciones · 35 pts"
+    }
+   ],
+   "esp": 17,
+   "lid": 11,
+   "equipo": {
+    "socios": 54,
+    "pts": 15600,
+    "reg": 185
+   },
+   "nota": "Reto de cierre: 6,050 de 10,000 pts con 16 socios. ¡En noviembre vamos por más!"
+  },
+  "compromiso": {
+   "desde": "2026-11-01T06:00:00Z"
+  }
  },
  "fotos": [
   {

@@ -348,3 +348,10 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Al enviar un paso del camino guiado se registra la entrada (notaPend(c,k,1)) y al volver a la app (visibilitychange, 2.5 s–3 h) se abre notaAbrir para completar nota/fecha; el botón WhatsApp normal también la pide (sin registrar entrada). Botón "📝 Nota" en cada tarjeta.
 - Opción "Ponerlo en el calendario" → citaIcs con cita tipo lider (iPhone .ics / Google Calendar).
 - Historial (sgHTML) en la tarjeta: últimas 3 + "Ver todas"; contador "Nº seguimiento" (sgN). flMsg seg cambia en el 2.º y 3.º seguimiento. El buscador también busca en las notas. Notas privadas (solo users/{uid}/crm).
+
+## Ganadores del mes y Compromiso del mes (1 nov)
+- `config.ganadores` {mes, mesN, hasta, roatan{k,n,s}, libros{k,n,s}, racha[{n,s}], esp, lid, equipo{socios,pts,reg}, nota}: tarjeta #ganCard en Inicio (renderGan) con confeti 1 vez al día; "Ocultar" la minimiza a una franja (LS ganMin:{mes}). Se quita sola después de `hasta`.
+- Compromiso del mes: `users/{uid}.comp` {mes (UTC, mesMeta), rango, act, pres (mín. 5 por semana), porque (privado), t} o {mes, no:true}. Copia sin porqué en `constancia/{uid}.comp` (para vista de líder / total del equipo, fase 2).
+  - Se activa con `config.compromiso.desde`. Ventana obligatoria al abrir (compCheck): "✍️ Hacer mi compromiso" / "No haré compromiso este mes". Franja #compStrip en Inicio y #compSn en Sueños: progreso de activaciones (T.ranking), presentaciones de la semana (presSemana) y días que faltan; si no lo hizo, botón "🎯 Hacer mi compromiso".
+  - Al guardar: tarjeta "🤝 Me comprometo" con confeti y flyer 1080x1350 para compartir (compFlyer).
+- Premios de noviembre: `config.premios` = {mes:"2026-11", fin:"2026-12-01T00:00:00Z", vol:{t:"Premio por anunciar", ic:"🚀", pend:true}, racha:{t:"Libros Go Pro", ic:"📚", top:3}, reg:null, res:null}. vol.pend muestra "🚀 Más activaciones del mes · premio por anunciar"; racha muestra la tarjeta de premio en Mi Racha (rachaPremio). Con premios.mes ≥ 2026-11 ya no salen los premios fijos viejos.

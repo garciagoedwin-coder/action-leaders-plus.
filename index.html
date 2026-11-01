@@ -327,6 +327,17 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .metas .sueno{background:linear-gradient(120deg,#ECFDF5,#D1FAE5);color:#065F46}.metas .sueno .lbl{color:#047857}.metas .sueno .big{color:#065F46}
 .rgDot{width:14px;height:14px;border-radius:50%;flex:none}
 .metas .bar{margin:2px 0 0;background:var(--surface)}.metas .ok{color:var(--good);font-weight:800}
+.ganCard{position:relative;overflow:hidden;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px;color:#fff;background:linear-gradient(135deg,#7C2D12,#C2410C 45%,#F59E0B);box-shadow:0 12px 28px -14px rgba(194,65,12,.6);animation:banIn .5s cubic-bezier(.2,.8,.2,1)}
+.ganCard h2{margin:0;font-size:22px;color:#fff}.ganCard .gn-x{background:rgba(255,255,255,.2);color:#fff;border:0;border-radius:99px;padding:4px 10px;font:700 12px Figtree,system-ui,sans-serif;cursor:pointer}
+.gn-e{font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;opacity:.95}.gn-k{display:block;font-size:12px;font-weight:800;opacity:.9}
+.gn-it,.gn-r{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.14);border-radius:14px;padding:8px 10px}.gn-it b,.gn-r b{display:block;font-size:15px;line-height:1.2}.gn-it small,.gn-r small{display:block;font-size:12.5px;opacity:.9}
+.gn-r{padding:6px 10px;background:rgba(255,255,255,.1)}.gn-md{font-size:22px;width:26px;text-align:center}.gn-ch{display:flex;flex-wrap:wrap;gap:6px}.gn-ch span{background:rgba(0,0,0,.2);border-radius:99px;padding:4px 10px;font-size:12.5px;font-weight:700}.gn-p{margin:0;font-size:13.5px}
+.ganCard.min{flex-direction:row;align-items:center;gap:8px;padding:12px 16px;cursor:pointer;font-size:14px}
+.compStrip{border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;cursor:pointer;background:color-mix(in srgb,#16A34A 12%,var(--surface));border:1px solid color-mix(in srgb,#16A34A 35%,transparent);border-left:5px solid #16A34A}
+.compStrip .mtN{font-size:17px}.compStrip .mtBar{height:8px;border-radius:99px;background:color-mix(in srgb,#16A34A 18%,var(--surface));overflow:hidden}.compStrip .mtBar i{display:block;height:100%;background:#16A34A;border-radius:99px}
+.compBtn{width:100%;border:1.5px dashed #16A34A;background:var(--surface);color:var(--ink);border-radius:16px;padding:14px;font:800 15px Figtree,system-ui,sans-serif;cursor:pointer;text-align:left}
+.cpR small{margin-left:0!important}.cpStep{display:flex;align-items:center;justify-content:center;gap:18px}.cpStep .btn{width:52px;height:52px;font-size:24px;padding:0}.cpStep b{font-size:34px;min-width:56px;text-align:center}
+.cpCard{position:relative;overflow:hidden;border-radius:20px;padding:20px;text-align:center;color:#fff;background:linear-gradient(135deg,#0b1020,#0b3b57)}.cpCard h2{color:#fff;margin:6px 0}.cpCard p{margin:0 0 10px}.cpN{display:flex;gap:10px}.cpN span{flex:1;background:rgba(255,255,255,.1);border-radius:14px;padding:10px;font-size:13px}.cpN b{display:block;font-size:30px}
 .rgList{display:flex;flex-direction:column;gap:6px}.rgList label{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-weight:600}
 .rgList label.lk{opacity:.5;cursor:default}.rgList label:has(input:checked){border-color:var(--brand);background:var(--gold-soft)}.rgList small{margin-left:auto;color:var(--muted);font-weight:700}
 .actBan{max-height:180px;position:relative;border-radius:18px;padding:12px 14px;background:linear-gradient(120deg,#0b3b57,#0A7DAD 60%,#2AC1F1);color:#fff;box-shadow:0 10px 24px -12px rgba(10,125,173,.6);overflow:hidden;animation:banIn .5s cubic-bezier(.2,.8,.2,1)}
@@ -1051,7 +1062,9 @@ nav.tabs button{z-index:0;isolation:isolate}
       <div class="card" id="avisoCard" hidden></div>
       <div class="miwa" id="miWaCard" hidden></div>
       <div class="ahCard" id="ahCard" hidden></div>
+      <div class="ganCard" id="ganCard" hidden></div>
       <div class="rcCard" id="rcCard" hidden></div>
+      <div id="compStrip" hidden></div>
       <div class="pendStrip" id="pendStrip" hidden></div>
       <div class="retoStrip" id="retoStrip" hidden></div>
       <div class="card" id="salaCard" hidden style="border:1.5px solid #C2410C"></div>
@@ -1154,6 +1167,7 @@ nav.tabs button{z-index:0;isolation:isolate}
     <section class="view" id="v-suenos" hidden>
       <div><p class="eyebrow">Privado · solo usted lo ve</p><h1>Mi mapa de sueños</h1></div>
       <div class="metaStrip" id="metaStrip" hidden></div>
+      <div id="compSn" hidden></div>
       <div id="snBody"></div>
       <button class="btn ghost" id="snShare" type="button" style="width:100%">📤 Compartir mi mapa en historias</button>
     </section>
@@ -1623,6 +1637,88 @@ function abrirMetas(){const M=misMetas(),delMes=M.mes===mesMeta(),cur=miRangoIdx
     const nm={mes:mesMeta(),act:Math.max(0,Math.min(9999,parseInt($("#mtAct").value,10)||0)),rango:x?x.value:"",sueno:Math.max(0,Math.min(99999999,parseInt(String($("#mtSue").value).replace(/\D/g,""),10)||0)),t:Date.now()};
     $("#mtSave").disabled=true;try{await store.db.doc("users/"+store.uid).set({metas:nm},{merge:true});regDoc=Object.assign({},regDoc,{metas:nm});closeSheet();renderMetas();toast("Metas guardadas 🎯")}
     catch(e){$("#mtSave").disabled=false;toast("No se pudieron guardar. Revise su conexión.")}}}
+// ---------- Ganadores del mes (config.ganadores) y Compromiso del mes (users/{uid}.comp) — 1 nov ----------
+const MESES_N=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const mesNom=k=>MESES_N[((+String(k||mesMeta()).slice(5,7))||1)-1];
+function renderGan(){const c=$("#ganCard");if(!c)return;const G=(T.config||{}).ganadores,t=Date.now();
+  if(!G||!G.hasta||t>Date.parse(G.hasta)){c.hidden=true;return}
+  const md=["🥇","🥈","🥉"],E=G.equipo||{},K="ganMin:"+G.mes;let min=false;try{min=!!LS.get(K)}catch(e){}
+  c.hidden=false;c.classList.toggle("min",min);
+  if(min){c.innerHTML=`<span class="grow">🏆 <b>Ganadores de ${esc(G.mesN||mesNom(G.mes))}</b> · ¡Felicidades, campeones!</span><b>›</b>`;c.onclick=()=>{try{LS.set(K,"")}catch(e){}renderGan()};return}
+  c.onclick=null;
+  const it=(ic,k,x)=>x?`<div class="gn-it">${avHTML(x.n,false,false)}<div class="grow" style="min-width:0"><span class="gn-k">${ic} ${esc(k)}</span><b>${esc(x.n)}</b><small>${esc(x.s||"")}</small></div></div>`:"";
+  c.innerHTML=`<div class="row between" style="align-items:center"><span class="gn-e">🏆 Ganadores de ${esc(G.mesN||mesNom(G.mes))}</span><button class="gn-x" type="button">Ocultar</button></div>
+   <h2>¡Felicidades, campeones! 🎉</h2>
+   ${it("🏝️",G.roatan&&G.roatan.k||"Viaje a Roatán",G.roatan)}${it("📚",G.libros&&G.libros.k||"Pack de libros",G.libros)}
+   ${(G.racha||[]).length?`<span class="gn-k" style="margin-top:4px">🔥 Mi Racha · los 3 más constantes</span>${G.racha.map((x,i)=>`<div class="gn-r"><span class="gn-md">${md[i]||""}</span>${avHTML(x.n,false,false)}<div class="grow" style="min-width:0"><b>${esc(x.n)}</b><small>${esc(x.s||"")}</small></div></div>`).join("")}`:""}
+   <div class="gn-ch">${G.esp?`<span>⚔️ ${G.esp} Líderes Espartanos</span>`:""}${G.lid?`<span>🛡️ ${G.lid} Líderes</span>`:""}${E.socios?`<span>👥 ${E.socios} socios nuevos</span>`:""}${E.pts?`<span>⚡ ${fmt(E.pts)} pts</span>`:""}${E.reg?`<span>📝 ${E.reg} registros</span>`:""}</div>
+   ${G.nota?`<p class="gn-p">${esc(G.nota)}</p>`:""}`;
+  c.querySelector(".gn-x").onclick=e=>{e.stopPropagation();try{LS.set(K,1)}catch(x){}renderGan()};
+  const KC="ganConf:"+G.mes+":"+TODAY;try{if(!LS.get(KC)){LS.set(KC,1);setTimeout(()=>confeti(c,70),500)}}catch(e){}}
+
+const COMP_R=[{k:"Líder",ic:"🛡️",t:"Líder",pts:200,d:"200 pts personales"},{k:"Team Leader",ic:"⚔️",t:"Espartano · Team Leader",pts:500,d:"500 pts personales"},{k:"Membresía gratuita",ic:"💎",t:"Membresía gratuita",pts:0,d:"Su membresía sin costo"},{k:"Marketing Director",ic:"🟢",t:"Marketing Director",pts:0,d:"Su primer rango de director"}];
+const compR=k=>COMP_R.find(r=>r.k===k)||null;
+function miComp(){const c=(regDoc&&regDoc.comp)||null;return c&&c.mes===mesMeta()?c:null}
+function compPuede(){const C=(T.config||{}).compromiso;if(!C||!fbUser||!regDoc||SOLO_ADMIN.includes(String(fbUser.email||"").toLowerCase()))return false;return !(C.desde&&Date.now()<Date.parse(C.desde))}
+function compDias(){const n=new Date(),f=new Date(n.getFullYear(),n.getMonth()+1,1);return Math.max(0,Math.ceil((f-n)/864e5))}
+async function compGuardar(o){const nm=Object.assign({mes:mesMeta(),t:Date.now()},o);
+  await store.db.doc("users/"+store.uid).set({comp:nm},{merge:true});regDoc=Object.assign({},regDoc,{comp:nm});
+  try{const nmb=miNombreFull()||miNombreCorto();if(nmb)store.db.doc("constancia/"+store.uid).set({comp:nm.no?{mes:nm.mes,no:true}:{mes:nm.mes,rango:nm.rango,act:nm.act,pres:nm.pres}},{merge:true}).catch(()=>{})}catch(e){}
+  renderComp()}
+let compVisto=false;
+function compCheck(){if(compVisto||!compPuede()||miComp())return;if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate"))return;compVisto=true;compIntro()}
+function compIntro(){const mn=mesNom();openSheet(`<div style="text-align:center;font-size:44px;line-height:1">🎯</div><h2 style="text-align:center">Mi compromiso de ${esc(mn)}</h2>
+   <p style="text-align:center;margin:0">Empieza un mes nuevo y es el momento de decidir qué quiere lograr.</p>
+   <p class="small muted" style="text-align:center;margin:0">Toma menos de un minuto: su rango objetivo, sus activaciones personales y sus presentaciones por semana.</p>
+   <button class="btn" id="cpSi" style="width:100%">✍️ Hacer mi compromiso</button><button class="btn ghost" id="cpNo" style="width:100%">No haré compromiso este mes</button>`,()=>{
+   $("#cpSi").onclick=compAbrir;
+   $("#cpNo").onclick=async()=>{$("#cpNo").disabled=true;try{await compGuardar({no:true});closeSheet();toast("Está bien. Puede hacerlo cuando quiera desde Inicio 🎯")}catch(e){$("#cpNo").disabled=false;toast("No se pudo guardar. Revise su conexión.")}}})}
+function compAbrir(){const C=miComp()||{},mn=mesNom();let act=C.act||2,pres=Math.max(5,C.pres||5),rg=C.rango||"";
+  if(!rg){try{const cur=miRangoIdx();rg=cur<0?"Líder":cur===0?"Team Leader":"Marketing Director"}catch(e){rg="Líder"}}
+  const opts=COMP_R.map(r=>`<label><input type="radio" name="cpR" value="${esc(r.k)}" ${r.k===rg?"checked":""}><span style="font-size:20px">${r.ic}</span><span class="grow"><b>${esc(r.t)}</b><small class="muted" style="display:block">${esc(r.d)}</small></span></label>`).join("");
+  openSheet(`<h2>🎯 Mi compromiso de ${esc(mn)}</h2>
+   <p class="small" style="font-weight:800;margin:0">1. Mi rango objetivo</p><div class="rgList cpR">${opts}</div>
+   <p class="small" style="font-weight:800;margin:10px 0 0">2. Mis activaciones personales del mes</p>
+   <div class="cpStep"><button type="button" class="btn ghost" data-st="act" data-d="-1">−</button><b id="cpAct">${act}</b><button type="button" class="btn ghost" data-st="act" data-d="1">+</button></div>
+   <p class="small muted" id="cpPts" style="margin:0;text-align:center"></p>
+   <p class="small" style="font-weight:800;margin:10px 0 0">3. Mis presentaciones por semana <span class="muted">(mínimo 5)</span></p>
+   <div class="cpStep"><button type="button" class="btn ghost" data-st="pres" data-d="-1">−</button><b id="cpPres">${pres}</b><button type="button" class="btn ghost" data-st="pres" data-d="1">+</button></div>
+   <p class="small" style="font-weight:800;margin:10px 0 0">4. ¿Por qué lo hago este mes? <span class="muted">(opcional · privado)</span></p>
+   <textarea id="cpWhy" rows="2" maxlength="200" placeholder="Ej. Por mi familia, para viajar con mi mamá" data-nofocus>${esc(C.porque||"")}</textarea>
+   <button class="btn" id="cpSave" style="width:100%">🤝 Me comprometo</button><button class="btn ghost" data-close style="width:100%">Ahora no</button>`,()=>{
+   const pts=()=>{$("#cpAct").textContent=act;$("#cpPres").textContent=pres;$("#cpPts").innerHTML=act?`≈ <b>${fmt(act*200)}</b> pts si son Classic · <b>${fmt(act*500)}</b> pts si son Premium`:"Sume al menos una activación"};pts();
+   $("#sheetPanel").querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{const d=+b.dataset.d;if(b.dataset.st==="act")act=Math.max(0,Math.min(99,act+d));else pres=Math.max(5,Math.min(50,pres+d));pts()});
+   $("#cpSave").onclick=async()=>{const x=$("#sheetPanel").querySelector("input[name=cpR]:checked");$("#cpSave").disabled=true;
+     try{await compGuardar({rango:x?x.value:"",act,pres,porque:$("#cpWhy").value.trim().slice(0,200)});compListo()}catch(e){$("#cpSave").disabled=false;toast("No se pudo guardar. Revise su conexión.")}}})}
+function compListo(){const C=miComp();if(!C)return;const r=compR(C.rango)||{ic:"🎯",t:C.rango};
+  openSheet(`<div class="cpCard" id="cpCard"><span class="gn-e">🤝 Me comprometo</span><h2>${esc(miNombreCorto()||"Líder")}</h2>
+    <p>En ${esc(mesNom())} voy por <b>${r.ic} ${esc(r.t)}</b>.</p><div class="cpN"><span><b>${C.act}</b>activaciones</span><span><b>${C.pres}</b>presentaciones por semana</span></div></div>
+   <p class="small muted" style="text-align:center;margin:0">¡Listo! Su compromiso queda en Inicio para que lo vea cada día.</p>
+   <button class="btn" id="cpShare" style="width:100%">📤 Compartir mi compromiso</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
+   const cc=$("#cpCard");if(cc)setTimeout(()=>confeti(cc,50),250);$("#cpShare").onclick=compFlyer})}
+async function compFlyer(){const C=miComp();if(!C)return;const r=compR(C.rango)||{ic:"🎯",t:C.rango},W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const g=c.getContext("2d");
+  const bg=g.createLinearGradient(0,0,W,H);bg.addColorStop(0,"#0b1020");bg.addColorStop(1,"#0b3b57");g.fillStyle=bg;g.fillRect(0,0,W,H);
+  g.textAlign="center";g.fillStyle="#2AC1F1";g.font="800 40px Figtree,system-ui,sans-serif";g.fillText("MI COMPROMISO DE "+mesNom().toUpperCase(),W/2,190);
+  g.fillStyle="#fff";g.font="800 96px 'Bricolage Grotesque',Figtree,system-ui,sans-serif";g.fillText("Me comprometo",W/2,330);
+  g.font="700 54px Figtree,system-ui,sans-serif";g.fillStyle="rgba(255,255,255,.9)";g.fillText(miNombreCorto()||"Líder",W/2,420);
+  g.font="800 70px Figtree,system-ui,sans-serif";g.fillStyle="#FDE047";g.fillText(r.ic+" "+r.t,W/2,590);
+  const box=(x,n,t)=>{g.fillStyle="rgba(255,255,255,.1)";g.beginPath();g.roundRect(x,690,430,300,36);g.fill();g.fillStyle="#fff";g.font="800 140px Figtree,system-ui,sans-serif";g.fillText(String(n),x+215,860);g.font="700 36px Figtree,system-ui,sans-serif";g.fillStyle="rgba(255,255,255,.85)";t.forEach((l,i)=>g.fillText(l,x+215,920+i*44))};
+  box(90,C.act,["activaciones"]);box(560,C.pres,["presentaciones","por semana"]);
+  g.fillStyle="rgba(255,255,255,.7)";g.font="700 34px Figtree,system-ui,sans-serif";g.fillText("Action Leaders PLUS",W/2,H-90);
+  try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],"mi-compromiso.jpg",{type:"image/jpeg"});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(x){if(x&&x.name==="AbortError")return}}
+    const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
+function compStripHTML(){const C=miComp(),mn=mesNom();
+  if(!C||C.no)return `<button type="button" class="compBtn" data-comp>🎯 Hacer mi compromiso de ${esc(mn)} ›</button>`;
+  let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}const A=rk?rk.A:0,V=rk?rk.V:0,p=presSemana().length,r=compR(C.rango)||{ic:"🎯",t:C.rango,pts:0},d=compDias();
+  const bar=(a,b)=>`<div class="mtBar"><i style="width:${b?Math.min(100,Math.round(a*100/b)):0}%"></i></div>`;
+  return `<div class="compStrip" data-comp><div class="row between"><small class="gn-e" style="color:inherit">🤝 Mi compromiso de ${esc(mn)}</small><small>⏳ ${d} ${d===1?"día":"días"}</small></div>
+   <b class="mtN">${r.ic} ${esc(r.t)}${r.pts?` <small class="muted">· ${fmt(V)} / ${fmt(r.pts)} pts</small>`:""}</b>
+   <div class="row between small"><span>🚀 Activaciones</span><b>${A} de ${C.act}${A>=C.act&&C.act?" ✅":""}</b></div>${bar(A,C.act)}
+   <div class="row between small"><span>🎤 Presentaciones esta semana</span><b>${p} de ${C.pres}${p>=C.pres?" ✅":""}</b></div>${bar(p,C.pres)}</div>`}
+function renderComp(){const s=$("#compStrip"),sn=$("#compSn"),ok=compPuede();
+  [s,sn].forEach(el=>{if(!el)return;if(!ok){el.hidden=true;el.innerHTML="";return}el.hidden=false;el.innerHTML=compStripHTML();el.querySelectorAll("[data-comp]").forEach(b=>b.onclick=compAbrir)});
+  if(ok)setTimeout(compCheck,1200)}
 function evMiIdx(L,noms){noms=noms.filter(Boolean);let i=L.findIndex(x=>noms.some(n=>sameN(x.nombre,n)));if(i<0)i=L.findIndex(x=>noms.some(n=>parecidoN(x.nombre,n)));return i}
 function evLlegadas(L,iy){const R=(entPub&&entPub.rank)||[],yo=iy>=0?L[iy].nombre:"",md=["🥇","🥈","🥉"];
   openSheet(`<h2>🎉 Invitados que ya llegaron</h2><p class="small muted" style="margin:0">${entPub.inv} invitados han llegado al evento. Gana el socio con más invitados que lleguen. Solo se muestran los números de cada socio.</p>
@@ -2405,6 +2501,10 @@ function premDatos(){const P=(T.config||{}).premios;if(!P||!P.vol)return null;
 function premBanner(k){const D=premDatos();if(!D)return"";const{P,min,yo,myV,myG,cd,v1,empV,g1,empG}=D;
   if(k==="reg"&&!P.reg)return"";
   const lead=(x,val,win,pct)=>x?`<div class="pb-lead">${avHTML(x.n,false,false)}<div style="flex:1;min-width:0"><b>${esc(x.n)}${win?` <span class="pb-pill">${win}</span>`:""}</b><small>${fmt(val)} · 1.er lugar</small>${pct!=null?`<div class="pb-bar"><i style="width:${Math.max(3,Math.min(100,pct))}%"></i></div>`:""}</div></div>`:`<div class="pb-lead"><b>¡Nadie ha sumado aún! Sea el primero.</b></div>`;
+  if(k==="vol"&&P.vol.pend){const L=(T.ranking||[]).map(r=>({n:r.nombre,A:+r.activaciones||0})).filter(x=>x.A>0).sort((x,y)=>y.A-x.A),x=L[0];
+    return `<div class="pban pb-rt" id="pbVol"><div class="pb-wave"></div><div class="pb-ic">${esc(P.vol.ic||"🚀")}</div><div class="pb-top"><span class="pb-k">PREMIO DEL MES</span><span class="pb-cd">⏳ ${esc(cd)}</span></div>
+     <h2>🚀 Más activaciones del mes</h2><p class="pb-p">Para el socio que más personas active este mes. <b>El premio se anuncia muy pronto.</b></p>
+     ${x?`<div class="pb-lead">${avHTML(x.n,false,false)}<div style="flex:1;min-width:0"><b>${esc(x.n)}</b><small>${x.A} ${x.A===1?"activación":"activaciones"} · 1.er lugar</small></div></div>`:`<div class="pb-lead"><b>¡Nadie ha activado aún! Sea el primero.</b></div>`}</div>`}
   if(k==="vol"){const win=v1&&v1.V>=min?(empV?"¡Empatados!":"🏆 Va para Roatán"):"";
     const me=yo?(v1&&v1.n===yo.n?(myV>=min?(empV?"¡Va empatado en primer lugar! Una activación más y se desempata 🔥":"🏆 <b>¡Usted va primero rumbo a Roatán!</b> Siga sumando para asegurarlo."):`<b>¡Usted va primero!</b> Le faltan <b>${fmt(min-myV)} pts</b> para el mínimo de ${fmt(min)}.`):
       `Usted lleva <b>${fmt(myV)} pts</b>. ${(()=>{const meta=Math.max(min,v1?v1.V+1:min),f=meta-myV;return `Le faltan <b>${fmt(f)} pts</b> para ${v1&&v1.V>=min?"pasar al primer lugar":"llegar a "+fmt(min)} (≈ ${Math.ceil(f/500)} Premium o ${Math.ceil(f/200)} Classic).`})()}`):"Active socios nuevos este mes y sume volumen personal.";
@@ -2556,18 +2656,20 @@ function renderTopRut(){const c=$("#topRut");if(!c)return;c.hidden=true;return;i
   $("#topRutVer").onclick=()=>{eqTab="ranking";rankMetric="rutina";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()}}
 const CONST_INI="2026-10-19";const constDia=()=>Math.floor((parseK(TODAY)-parseK(CONST_INI))/864e5)+1;
 const constBanner=()=>{const d=constDia();if(d<1||d>7)return"";return `<div class="card" style="background:linear-gradient(135deg,#2AC1F1,#6b4dff);color:#fff;gap:4px"><b style="font-size:17px">🚀 ${d===1?"¡Hoy empezamos! Día 1":"Día "+d+" del ranking"}</b><span style="font-size:14px;opacity:.95">${d===1?"El ranking de consistencia arrancó hoy, todos parten de cero. Completa tu rutina hoy al 100% y mañana empiezas tu racha 🔥":"El ranking arrancó el lunes 19 de octubre. Cada día que completas tu rutina suma a tu racha 🔥"}</span></div>`};
+function rachaPremio(){const P=(T.config||{}).premios;if(!P||!P.racha||Date.now()>=Date.parse(P.fin))return"";
+  return `<div class="card" style="background:linear-gradient(135deg,#1e3a8a,#2AC1F1);color:#fff;gap:4px"><b style="font-size:17px">${esc(P.racha.ic||"📚")} Premio de ${esc(mesNom(P.mes))}: ${esc(P.racha.t)}</b><span style="font-size:14px;opacity:.95">Para los <b>${+P.racha.top||3} primeros</b> de Mi Racha del mes. Cumpla su rutina cada día y suba en la tabla 🔥</span></div>`}
 function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="false" data-k="nuevos">Activaciones</button><button aria-selected="false" data-k="presentaciones">Registros inCruises</button><button aria-selected="true" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button><button aria-selected="false" data-k="liderazgo">⭐ Liderazgo</button></div><div class="seg" id="rankSeg" hidden></div>
    <div class="seg" id="consV"><button aria-selected="${constVista==="sem"}" data-cv="sem">Esta semana</button><button aria-selected="${constVista==="mes"}" data-cv="mes">Este mes</button></div>
    <p class="small muted">Cada acción de la rutina da 1 punto al día (máximo 5). Orden: 1) ${constVista==="sem"?"racha actual (días seguidos con la rutina completa; si falla un día, vuelve a cero)":"mejor racha del mes"}, 2) presentaciones del plan, 3) puntos.${constVista==="sem"?" La semana va de lunes a domingo y se reinicia cada lunes.":""}</p>`;
   if(constL===null){b.innerHTML=segs+`<p class="muted small">Cargando…</p>`;bindRank();loadConst(true);return}
-  if(!constL.length){b.innerHTML=segs+emptyCard("Aún nadie suma racha","Completa tu rutina hoy y toma el primer lugar.");bindRank();loadConst();return}
+  if(!constL.length){b.innerHTML=segs+rachaPremio()+emptyCard("Aún nadie suma racha","Completa tu rutina hoy y toma el primer lugar.");bindRank();loadConst();return}
   const L=constL.filter(x=>constVista==="sem"?x.semPts>0:x.mesPts>0).map((x,i)=>Object.assign(x,{rk:i+1})),pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.uid===store.uid,true)}<span class="nm">${esc(p.nombre)}</span><div class="block"><b>${p.rk}</b>${(c=>`<span class="small num">${c?"🔥 "+c+" "+(c===1?"día":"días"):"Sin racha"}</span>`)(constVista==="sem"?p.racha:p.mesMejor)}<span class="small num" style="opacity:.85">🎯 ${p.sinPres?"—":(constVista==="sem"?p.semPres:p.mesPres)} pres. · ${constVista==="sem"?p.semPts:p.mesPts} pts</span><span class="small num" style="opacity:.85">Hoy ${hoyPts(p)} pts</span></div>${constBtn(p)}</div>`:"<div></div>";
   const mine=L.find(x=>x.uid===store.uid);
   const visU=new Set(L.map(x=>x.uid)),seenU=new Set(),Z=((isAdmin?(socios||[]):[]).concat(mios||[])).filter(u=>u&&u.registro&&u.registro.nombre&&u.uid!==store.uid&&!esSoloAdmin(u)&&!visU.has(u.uid)&&!seenU.has(u.uid)&&seenU.add(u.uid))
     .map(u=>Object.assign({},constL.find(y=>y.uid===u.uid)||{},{uid:u.uid,nombre:u.registro.nombre,racha:0,fecha:""})).sort((a,b)=>String(a.nombre).localeCompare(b.nombre,"es")).slice(0,80);
   const zCard=Z.length?`<div class="card" style="gap:0"><h3 style="margin:0">😴 Sin actividad ${constVista==="sem"?"esta semana":"este mes"}</h3><p class="small muted" style="margin:2px 0 6px">Socios de su línea con 0 puntos. Mándeles un mensaje para que empiecen su racha.</p>${Z.map(x=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">${avHTML(x.nombre,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small" style="color:var(--bad)">Hoy 0 pts · sin racha</div>${constBtn(x)}</div></div>`).join("")}</div>`:"";
-  if(!L.length){b.innerHTML=segs+emptyCard("Aún nadie suma puntos "+(constVista==="sem"?"esta semana":"este mes"),"Haga una acción de su rutina y tome el primer lugar.");b.querySelectorAll("[data-cv]").forEach(x=>x.onclick=()=>{constVista=x.dataset.cv;constSort(constL);renderEquipo()});bindRank();loadConst();return}
-  b.innerHTML=segs+constBanner()+(mine?`<div class="card row between"><span>Tu lugar ${constVista==="sem"?"esta semana":"este mes"}</span><b class="num" style="font-size:20px">#${mine.rk}</b></div>`:`<div class="card small">Haga al menos una acción de su rutina para aparecer en este ranking 💪</div>`)+`<div class="card"><div class="podium">${pod(L[1],1)+pod(L[0],0)+pod(L[2],2)}</div></div>
+  if(!L.length){b.innerHTML=segs+rachaPremio()+emptyCard("Aún nadie suma puntos "+(constVista==="sem"?"esta semana":"este mes"),"Haga una acción de su rutina y tome el primer lugar.");b.querySelectorAll("[data-cv]").forEach(x=>x.onclick=()=>{constVista=x.dataset.cv;constSort(constL);renderEquipo()});bindRank();loadConst();return}
+  b.innerHTML=segs+constBanner()+rachaPremio()+(mine?`<div class="card row between"><span>Tu lugar ${constVista==="sem"?"esta semana":"este mes"}</span><b class="num" style="font-size:20px">#${mine.rk}</b></div>`:`<div class="card small">Haga al menos una acción de su rutina para aparecer en este ranking 💪</div>`)+`<div class="card"><div class="podium">${pod(L[1],1)+pod(L[0],0)+pod(L[2],2)}</div></div>
    <div class="card" style="gap:0">${L.slice(3).map(x=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)${x.uid===store.uid?";background:var(--brand-soft,rgba(42,193,241,.08))":""}"><b class="num" style="width:26px;text-align:center">${x.rk}</b>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(x.nombre)}</b><div class="small muted">${constSub(x)}</div><div class="small">${hoyTxt(x)}</div>${constBtn(x)}</div><span class="chip ${(constVista==="sem"?x.racha:x.mesMejor)?"c-gold":"c-brand"}" style="flex:none">${(constVista==="sem"?x.semPts:x.mesPts)} pts</span></div>`).join("")||`<p class="small muted" style="padding:8px 0">¡Súmese al ranking haciendo su rutina!</p>`}</div>`+zCard;
   b.querySelectorAll("[data-cv]").forEach(x=>x.onclick=()=>{constVista=x.dataset.cv;constSort(constL);renderEquipo()});
   b.querySelectorAll("[data-cwa]").forEach(bt=>bt.onclick=()=>{const x=L.concat(Z).find(y=>y.uid===bt.dataset.cwa),u=x&&constUser(x);if(!u)return;const t=constMsg(x),w=waSocio(u);cwaMarca(x.uid,hoyPts(x)>=ROUTINE.length?"fel":"mot");renderEquipo();if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(u,t)});
@@ -2754,7 +2856,7 @@ function renderEquipo(){const b=$("#eqBody");redProbe();redBtn();
     const pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.me,true)}<span class="nm">${esc(p.nombre)}</span>${tags(p)}${rankMetric==="nuevos"?`<div class="block"><b>${p.rk}</b><span class="small num">Vol. ${fmt(p.v)}</span></div>`:`<div class="block"><b>${fmt(p.v)}</b><span class="small num">${u(p.v)}</span><span class="small num" style="font-weight:800;opacity:.9">#${p.rk}${p.rk===1?" Top":""}</span></div>`}</div>`:"<div></div>";
     const max=Math.max(...d.map(x=>x.v),1);
     const pb=sem?"":premBanner(rankMetric==="nuevos"?"vol":"reg");
-    const premios=sem?"":pb?pb:(rankMetric==="nuevos"?`<div class="card small"><b>Premios del mes</b><div class="row wrap" style="gap:6px;margin-top:6px"><span class="chip c-gold">✈️ 1.er lugar: Viaje de incentivo</span><span class="chip c-good">500+: Membresía gratuita</span><span class="chip c-warn">200+: Sistema de Líderes</span></div></div>`:`<div class="card small"><b>Premio del mes</b><div class="row wrap" style="gap:6px;margin-top:6px"><span class="chip c-gold">📚 1.er lugar al cierre del mes: Pack de 3 libros</span></div></div>`);
+    const premios=sem?"":pb?pb:((T.config||{}).premios&&(T.config.premios.mes||"")>="2026-11")?"":(rankMetric==="nuevos"?`<div class="card small"><b>Premios del mes</b><div class="row wrap" style="gap:6px;margin-top:6px"><span class="chip c-gold">✈️ 1.er lugar: Viaje de incentivo</span><span class="chip c-good">500+: Membresía gratuita</span><span class="chip c-warn">200+: Sistema de Líderes</span></div></div>`:`<div class="card small"><b>Premio del mes</b><div class="row wrap" style="gap:6px;margin-top:6px"><span class="chip c-gold">📚 1.er lugar al cierre del mes: Pack de 3 libros</span></div></div>`);
     b.innerHTML=segs+premios+(rankMetric==="nuevos"?`<div class="card row between"><span>Volumen del equipo ${sem?"esta semana":"este mes"}</span><b class="num" style="font-size:20px">${fmt(volTot)}</b></div>`:"")+`<div class="card"><div class="podium">${pod(d[1],1)+pod(d[0],0)+pod(d[2],2)}</div></div>
      ${d.length>3?`<div class="card"><div class="list">${d.slice(3).map(p=>`<div class="row ${p.me?"rank-me":""}"><span class="rank-n">${p.rk}</span>${avHTML(p.nombre,p.me,true)}
       <div class="grow"><div class="row between"><b style="font-weight:600">${esc(p.nombre)}</b><span class="num ${rankMetric==="nuevos"?"c-"+vcls(p.v)+" chip":""}" style="font-size:${rankMetric==="nuevos"?"15px":"18px"}">${rankMetric==="nuevos"?"Vol. ":""}${fmt(p.v)}</span></div>
@@ -4610,7 +4712,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-refr
 async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
-  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderPremios()}catch(e){}try{renderRC()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
+  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderGan()}catch(e){}try{renderComp()}catch(e){}try{renderPremios()}catch(e){}try{renderRC()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
 let autoFotoHecho=false;
 function urlADataUrl(u,S){return new Promise(ok=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{S=S||240;const c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);
   c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);ok(c.toDataURL("image/jpeg",.85))}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=u})}
@@ -4819,7 +4921,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261031182616";var busy=false,pend=null;
+(function(){var V="20261031233554";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
