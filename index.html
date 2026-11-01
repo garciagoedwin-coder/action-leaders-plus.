@@ -327,7 +327,17 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .metas .sueno{background:linear-gradient(120deg,#ECFDF5,#D1FAE5);color:#065F46}.metas .sueno .lbl{color:#047857}.metas .sueno .big{color:#065F46}
 .rgDot{width:14px;height:14px;border-radius:50%;flex:none}
 .metas .bar{margin:2px 0 0;background:var(--surface)}.metas .ok{color:var(--good);font-weight:800}
-.mqCard{position:relative;overflow:hidden;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:6px;color:#fff;background:radial-gradient(120% 90% at 100% 0%,rgba(42,193,241,.35) 0%,transparent 60%),linear-gradient(150deg,#0b3b57,#0b1020 75%);box-shadow:0 12px 28px -14px rgba(11,16,32,.7)}
+.mqCard.mini{gap:6px;padding:13px 15px;cursor:pointer}.mqCard .mq-big{font:800 22px/1.1 'Bricolage Grotesque',Figtree,sans-serif}
+.mq-stk{display:flex;align-items:center}.mq-stk .av{width:30px;height:30px;margin-left:-9px;box-shadow:0 0 0 2px #0b1020;font-size:11px}.mq-stk .av:first-child{margin-left:0}.mq-stk .av.badge{box-shadow:none}.mq-stk em{font-style:normal;font-size:12px;font-weight:800;margin-left:6px;color:#FDE047}
+.mq-dual{position:relative;height:9px}.mq-dual i{position:absolute;left:0;top:0;bottom:0}.mq-dual i.c{opacity:.55}
+.mq-bar i.c{background-size:200% 100%!important;animation:mqSh 2.4s linear infinite}@keyframes mqSh{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.mq-tk{height:20px;overflow:hidden;font-size:13px}.mq-tk span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mq-tk span.in{animation:mqIn .45s ease}
+@keyframes mqIn{from{transform:translateY(100%);opacity:0}to{transform:none;opacity:1}}
+.cpMini{gap:5px;padding:12px 15px}.cp-chev{font-size:12px;font-weight:700;opacity:.8}.cp-pct{font-weight:800;font-size:15px;color:#2AC1F1}
+.cp-pills{display:flex;gap:6px;flex-wrap:wrap}.cp-pills span{font-size:12.5px;font-weight:700;padding:3px 9px;border-radius:99px;background:rgba(42,193,241,.12);border:1px solid rgba(42,193,241,.4)}.cp-pills span.ok{background:#2AC1F1;color:#0b1020}
+.cp-tot{height:6px!important}
+@media (prefers-reduced-motion:reduce){.mq-bar i.c,.mq-tk span.in{animation:none}}
+.mqCard{position:relative;overflow:hidden;border-radius:20px;padding:16px;border:1px solid rgba(42,193,241,.55);display:flex;flex-direction:column;gap:6px;color:#fff;background:radial-gradient(120% 90% at 100% 0%,rgba(42,193,241,.35) 0%,transparent 60%),linear-gradient(150deg,#0b3b57,#0b1020 75%);box-shadow:0 12px 28px -14px rgba(11,16,32,.7)}
 .mqCard .mq-k{font-size:11.5px;font-weight:800;letter-spacing:.08em;color:#2AC1F1}.mqCard .mq-d{font-size:12px;font-weight:700;background:rgba(255,255,255,.12);border-radius:99px;padding:3px 9px}
 .mqCard h3{margin:0;font:800 30px/1.1 'Bricolage Grotesque',Figtree,sans-serif;color:#fff}
 .mq-row{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;margin-top:4px}.mq-row b{font-size:16px}.mq-row small{font-weight:600;opacity:.75;font-size:12px}
@@ -336,15 +346,15 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .mq-av{display:flex;gap:10px;overflow-x:auto;padding:6px 2px 2px;scrollbar-width:none}.mq-av::-webkit-scrollbar{display:none}
 .mq-p{flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;width:58px}.mq-p .av{width:44px;height:44px;box-shadow:0 0 0 2px #F5B700}.mq-p .av.badge{box-shadow:none;border-radius:0}.mq-p b{font-size:11.5px;max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mq-p i{font-style:normal;font-size:11px;color:#FDE047;font-weight:700}
 .mq-p0{margin:4px 0 0;font-size:13.5px;opacity:.9}.mqCard .mq-btn{align-self:stretch;margin-top:6px;background:#F5B700;color:#0b1020;border:0}
-.ganCard{position:relative;overflow:hidden;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px;color:#fff;background:linear-gradient(135deg,#7C2D12,#C2410C 45%,#F59E0B);box-shadow:0 12px 28px -14px rgba(194,65,12,.6);animation:banIn .5s cubic-bezier(.2,.8,.2,1)}
-.ganCard h2{margin:0;font-size:22px;color:#fff}.ganCard .gn-x{background:rgba(255,255,255,.2);color:#fff;border:0;border-radius:99px;padding:4px 10px;font:700 12px Figtree,system-ui,sans-serif;cursor:pointer}
-.gn-e{font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;opacity:.95}.gn-k{display:block;font-size:12px;font-weight:800;opacity:.9}
-.gn-it,.gn-r{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.14);border-radius:14px;padding:8px 10px}.gn-it b,.gn-r b{display:block;font-size:15px;line-height:1.2}.gn-it small,.gn-r small{display:block;font-size:12.5px;opacity:.9}
-.gn-r{padding:6px 10px;background:rgba(255,255,255,.1)}.gn-md{font-size:22px;width:26px;text-align:center}.gn-ch{display:flex;flex-wrap:wrap;gap:6px}.gn-ch span{background:rgba(0,0,0,.2);border-radius:99px;padding:4px 10px;font-size:12.5px;font-weight:700}.gn-p{margin:0;font-size:13.5px}
-.ganCard.min{flex-direction:row;align-items:center;gap:8px;padding:12px 16px;cursor:pointer;font-size:14px}
-.compStrip{border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;cursor:pointer;background:color-mix(in srgb,#16A34A 12%,var(--surface));border:1px solid color-mix(in srgb,#16A34A 35%,transparent);border-left:5px solid #16A34A}
-.compStrip .mtN{font-size:17px}.compStrip .mtBar{height:8px;border-radius:99px;background:color-mix(in srgb,#16A34A 18%,var(--surface));overflow:hidden}.compStrip .mtBar i{display:block;height:100%;background:#16A34A;border-radius:99px}
-.compBtn{width:100%;border:1.5px dashed #16A34A;background:var(--surface);color:var(--ink);border-radius:16px;padding:14px;font:800 15px Figtree,system-ui,sans-serif;cursor:pointer;text-align:left}
+.ganCard{position:relative;overflow:hidden;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px;color:#fff;background:radial-gradient(120% 90% at 100% 0%,rgba(125,211,252,.45) 0%,transparent 60%),linear-gradient(150deg,#0A7DAD,#0b4f73 55%,#0b3b57);border:1px solid rgba(42,193,241,.55);box-shadow:0 12px 28px -14px rgba(11,16,32,.7);animation:banIn .5s cubic-bezier(.2,.8,.2,1)}
+.ganCard h2{margin:0;font-size:22px;color:#fff}.ganCard .gn-x{background:rgba(42,193,241,.18);color:#fff;border:0;border-radius:99px;padding:4px 10px;font:700 12px Figtree,system-ui,sans-serif;cursor:pointer}
+.gn-e{font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;opacity:.95;color:#2AC1F1}.gn-k{display:block;font-size:12px;font-weight:800;opacity:.9}
+.gn-it,.gn-r{display:flex;align-items:center;gap:10px;background:rgba(42,193,241,.08);border:1px solid rgba(42,193,241,.35);border-radius:14px;padding:8px 10px}.gn-it b,.gn-r b{display:block;font-size:15px;line-height:1.2}.gn-it small,.gn-r small{display:block;font-size:12.5px;opacity:.9}
+.gn-r{padding:6px 10px}.gn-md{font-size:22px;width:26px;text-align:center}.gn-ch{display:flex;flex-wrap:wrap;gap:6px}.gn-ch span{background:rgba(42,193,241,.14);border:1px solid rgba(42,193,241,.4);border-radius:99px;padding:4px 10px;font-size:12.5px;font-weight:700}.gn-p{margin:0;font-size:13.5px}
+.ganCard .gn-e{color:#E0F2FE}.ganCard.min{flex-direction:row;align-items:center;gap:8px;padding:12px 16px;cursor:pointer;font-size:14px}
+.compStrip{border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;cursor:pointer;color:#fff;background:radial-gradient(120% 90% at 100% 0%,rgba(42,193,241,.35) 0%,transparent 60%),linear-gradient(150deg,#0b3b57,#0b1020 75%);border:1px solid rgba(42,193,241,.55);box-shadow:0 12px 28px -14px rgba(11,16,32,.7)}.compStrip .mtN{color:#fff}.compStrip .gn-e{color:#2AC1F1!important}.compStrip .small,.compStrip small{color:#dbeafe}.compStrip .btn.ghost{background:rgba(42,193,241,.15);color:#fff}
+.compStrip .mtN{font-size:17px}.compStrip .mtBar{height:8px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}.compStrip .mtBar i{display:block;height:100%;background:linear-gradient(90deg,#2AC1F1,#7dd3fc);border-radius:99px}
+.compBtn{width:100%;border:1.5px dashed #2AC1F1;background:#0b1020;color:#fff;border-radius:16px;padding:14px;font:800 15px Figtree,system-ui,sans-serif;cursor:pointer;text-align:left}
 .cpR small{margin-left:0!important}.cpRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 0}.cpRow>span b{display:block}.cpRow>span small{font-size:12.5px}.cpRow .cpStep{gap:12px}.cpRow .cpStep .btn{width:46px;height:46px}.cpRow .cpStep b{font-size:28px;min-width:40px}.cpN span{line-height:1.25}.cpStep{display:flex;align-items:center;justify-content:center;gap:18px}.cpStep .btn{width:52px;height:52px;font-size:24px;padding:0}.cpStep b{font-size:34px;min-width:56px;text-align:center}
 .cpCard{position:relative;overflow:hidden;border-radius:20px;padding:20px;text-align:center;color:#fff;background:linear-gradient(135deg,#0b1020,#0b3b57)}.cpCard h2{color:#fff;margin:6px 0}.cpCard p{margin:0 0 10px}.cpN{display:flex;gap:10px}.cpN span{flex:1;background:rgba(255,255,255,.1);border-radius:14px;padding:10px;font-size:13px}.cpN b{display:block;font-size:30px}
 .rgList{display:flex;flex-direction:column;gap:6px}.rgList label{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-weight:600}
@@ -1721,20 +1731,26 @@ async function compFlyer(){const C=miComp();if(!C)return;const r=compR(C.rango)|
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],"mi-compromiso.jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(x){if(x&&x.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
-function compStripHTML(){const C=miComp(),mn=mesNom();
+function compStripHTML(mini){const C=miComp(),mn=mesNom();
   if(!C||C.no)return `<button type="button" class="compBtn" data-comp>🎯 Hacer mi compromiso de ${esc(mn)} ›</button>`;
   let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}const A=rk?rk.A:0,V=rk?rk.V:0,p=presSemana().length,r=compR(C.rango)||{ic:"🎯",t:C.rango,pts:0},d=compDias();
   const bar=(a,b)=>`<div class="mtBar"><i style="width:${b?Math.min(100,Math.round(a*100/b)):0}%"></i></div>`;
-  return `<div class="compStrip" data-comp><div class="row between"><small class="gn-e" style="color:inherit">🤝 Mi compromiso de ${esc(mn)}</small><small>⏳ ${d} ${d===1?"día":"días"}</small></div>
+  const pc=(a,b)=>b?Math.min(100,Math.round(a*100/b)):0,tot=Math.round(((C.vol?pc(V,C.vol):pc(A,C.act))+pc(p,C.pres))/2);
+  let open=false;try{open=LS.get("cpOpen")==="1"}catch(e){}
+  if(mini&&!open)return `<div class="compStrip cpMini" data-cpt><div class="row between" style="align-items:center"><small class="gn-e" style="color:inherit">🤝 Mi compromiso · ${esc(mn)}</small><span class="cp-chev">⏳ ${d}d ▾</span></div>
+   <div class="row between" style="align-items:center;gap:10px"><b class="mtN" style="font-size:16px">${r.ic} ${esc(r.t)}</b><span class="cp-pct">${tot}%</span></div>
+   <div class="cp-pills">${C.vol?`<span class="${V>=C.vol?"ok":""}">⚡ ${fmt(V)}/${fmt(C.vol)}</span>`:""}<span class="${A>=C.act&&C.act?"ok":""}">🚀 ${A}/${C.act}</span><span class="${p>=C.pres?"ok":""}">🎤 ${p}/${C.pres} sem</span></div>
+   <div class="mtBar cp-tot"><i style="width:${Math.max(tot?3:0,tot)}%"></i></div></div>`;
+  return `<div class="compStrip"${mini?" data-cpt":" data-comp"}><div class="row between"><small class="gn-e" style="color:inherit">🤝 Mi compromiso de ${esc(mn)}</small><small>⏳ ${d} ${d===1?"día":"días"}${mini?" ▴":""}</small></div>
    <b class="mtN">${r.ic} ${esc(r.t)}</b>${C.vol?`<div class="row between small"><span>⚡ Volumen personal</span><b>${fmt(V)} de ${fmt(C.vol)} pts${V>=C.vol?" ✅":""}</b></div>${bar(V,C.vol)}`:""}
    <div class="row between small"><span>🚀 Activaciones</span><b>${A} de ${C.act}${A>=C.act&&C.act?" ✅":""}</b></div>${bar(A,C.act)}
-   <div class="row between small"><span>🎤 Presentaciones esta semana</span><b>${p} de ${C.pres}${p>=C.pres?" ✅":""}</b></div>${bar(p,C.pres)}</div>`}
+   <div class="row between small"><span>🎤 Presentaciones esta semana</span><b>${p} de ${C.pres}${p>=C.pres?" ✅":""}</b></div>${bar(p,C.pres)}${mini?`<button type="button" class="btn sm ghost" data-comp style="align-self:flex-start;margin-top:4px">✏️ Editar mi compromiso</button>`:""}</div>`}
 function renderComp(){const s=$("#compStrip"),sn=$("#compSn"),ok=compPuede();
-  [s,sn].forEach(el=>{if(!el)return;if(!ok){el.hidden=true;el.innerHTML="";return}el.hidden=false;el.innerHTML=compStripHTML();el.querySelectorAll("[data-comp]").forEach(b=>b.onclick=compAbrir)});
+  [s,sn].forEach(el=>{if(!el)return;if(!ok){el.hidden=true;el.innerHTML="";return}el.hidden=false;el.innerHTML=compStripHTML(el===s);el.querySelectorAll("[data-comp]").forEach(b=>b.onclick=e=>{e.stopPropagation();compAbrir()});el.querySelectorAll("[data-cpt]").forEach(b=>b.onclick=()=>{let o=false;try{o=LS.get("cpOpen")==="1";LS.set("cpOpen",o?"":"1")}catch(e){}renderComp()})});
   if(ok){setTimeout(compCheck,1200);setTimeout(()=>{try{if(miComp()||compVisto)comp15()}catch(e){}},2500)}}
 
 // ---------- Meta del equipo del mes (config.metaEquipo) con los compromisos (constancia.comp) ----------
-let mqL=null,mqT=0;
+let mqL=null,mqT=0,mqTick=null;
 function mqCfg(){const M=(T.config||{}).metaEquipo;return M&&M.mes===mesMeta()&&+M.pts?M:null}
 function mqCargar(force){if(!store.db||!mqCfg())return;if(!force&&mqL&&Date.now()-mqT<600000)return;mqT=Date.now();
   store.db.collection("constancia").where("comp.mes",mesMeta()).get().then(q=>{mqL=q.docs.map(d=>{const x=d.data()||{},c=x.comp||{};return{uid:d.id,n:x.nombre||"",no:!!c.no,v:+c.vol||(+c.act||0)*200,r:c.rango||"",t:+c.t||0}}).filter(x=>!x.no&&x.n);renderMetaEq(true)}).catch(()=>{mqL=mqL||[]})}
@@ -1746,13 +1762,23 @@ function renderMetaEq(cargado){const c=$("#metaEq");if(!c)return;const M=mqCfg()
   const meta=+M.pts,comp=L.reduce((a,x)=>a+x.v,0),log=(T.ranking||[]).reduce((a,r)=>a+(+r.volumen||0),0),pc=v=>Math.max(v?2:0,Math.min(100,Math.round(v*100/meta)));
   const ms=new Date(new Date().getFullYear(),new Date().getMonth()+1,1)-new Date(),dias=Math.max(0,Math.ceil(ms/864e5));
   const puede=compPuede()&&!(yo&&!yo.no);
-  c.hidden=false;c.innerHTML=`<div class="row between" style="align-items:center"><span class="mq-k">🎯 META DEL EQUIPO · ${esc(mesNom().toUpperCase())}</span><span class="mq-d">⏳ ${dias} ${dias===1?"día":"días"}</span></div>
+  let open=false;try{open=LS.get("mqOpen")==="1"}catch(e){}clearInterval(mqTick);c.hidden=false;c.classList.toggle("mini",!open);
+  if(!open){const tk=[`🤝 <b>${fmt(comp)}</b> comprometidos · ⚡ <b>${fmt(log)}</b> logrados`].concat(L.slice(0,6).map(x=>`🎉 <b>${esc(dtFirst(x.n))}</b> se comprometió con ${fmt(x.v)} pts`)).concat(puede?["👉 Toque aquí y haga su compromiso"]:[]);
+    c.innerHTML=`<div class="row between" style="align-items:center"><span class="mq-k">🎯 META DEL EQUIPO · ${esc(mesNom().toUpperCase())}</span><span class="mq-d">⏳ ${dias}d ▾</span></div>
+     <div class="row between" style="align-items:center;gap:10px"><b class="mq-big">${fmt(meta)} pts</b><span class="mq-stk">${L.slice(0,5).map(x=>avHTML(x.n,false,false)).join("")}${L.length>5?`<em>+${L.length-5}</em>`:""}</span></div>
+     <div class="mq-bar mq-dual"><i class="c" style="width:${pc(comp)}%"></i><i class="l" style="width:${pc(log)}%"></i></div>
+     <div class="mq-tk"><span>${tk[0]}</span></div>`;
+    let i=0;const sp=c.querySelector(".mq-tk span");if(tk.length>1)mqTick=setInterval(()=>{if(!document.body.contains(sp)){clearInterval(mqTick);return}sp.classList.remove("in");void sp.offsetWidth;i=(i+1)%tk.length;sp.innerHTML=tk[i];sp.classList.add("in")},3500);
+    c.onclick=()=>{try{LS.set("mqOpen","1")}catch(e){}renderMetaEq()};return}
+  c.onclick=null;
+  c.innerHTML=`<div class="row between" style="align-items:center;cursor:pointer" data-mqc><span class="mq-k">🎯 META DEL EQUIPO · ${esc(mesNom().toUpperCase())}</span><span class="mq-d">⏳ ${dias} ${dias===1?"día":"días"} ▴</span></div>
    <h3>${fmt(meta)} pts</h3>
    <div class="mq-row"><span>🤝 Comprometido</span><b>${fmt(comp)} <small>de ${fmt(meta)}</small></b></div><div class="mq-bar"><i class="c" style="width:${pc(comp)}%"></i></div>
    <div class="mq-row"><span>⚡ Logrado</span><b>${fmt(log)} <small>de ${fmt(meta)}</small></b></div><div class="mq-bar"><i class="l" style="width:${pc(log)}%"></i></div>
    ${L.length?`<div class="mq-who"><small>${L.length} ${L.length===1?"socio comprometido":"socios comprometidos"}</small><div class="mq-av">${L.slice(0,40).map(x=>`<span class="mq-p" title="${esc(x.n)}">${avHTML(x.n,false,false)}<b>${esc(dtFirst(x.n))}</b><i>${fmt(x.v)}</i></span>`).join("")}</div></div>`:`<p class="mq-p0">Sea el primero en hacer su compromiso 💪</p>`}
    ${puede?`<button type="button" class="btn sm mq-btn" data-comp>🎯 Hacer mi compromiso</button>`:""}`;
-  c.querySelectorAll("[data-comp]").forEach(b=>b.onclick=compAbrir);
+  c.querySelectorAll("[data-comp]").forEach(b=>b.onclick=e=>{e.stopPropagation();compAbrir()});
+  c.querySelectorAll("[data-mqc]").forEach(b=>b.onclick=()=>{try{LS.set("mqOpen","")}catch(e){}renderMetaEq()});
   if(cargado&&mqL){const K="mqSeen:"+mesMeta();let seen=null;try{seen=JSON.parse(LS.get(K)||"null")}catch(e){}const ids=mqL.map(x=>x.uid);
     if(seen){const nw=mqL.filter(x=>!seen.includes(x.uid)&&x.uid!==store.uid).sort((a,b)=>b.t-a.t).slice(0,2);nw.forEach((x,i)=>setTimeout(()=>{try{avisoTop(`🎉 ${dtFirst(x.n)} se comprometió con ${fmt(x.v)} pts`,`Meta del equipo · ${fmt(comp)} de ${fmt(meta)} comprometidos`,()=>{go&&go("inicio")})}catch(e){}},1500+i*5000))}
     try{LS.set(K,JSON.stringify(ids))}catch(e){}}}
@@ -4986,7 +5012,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101002504";var busy=false,pend=null;
+(function(){var V="20261101003455";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
