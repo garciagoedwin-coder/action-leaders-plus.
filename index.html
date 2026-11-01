@@ -409,6 +409,9 @@ h1.motto{overflow:hidden;height:1.3em;line-height:1.3em;margin-top:2px}
 .btn.fl-done{background:color-mix(in srgb,var(--good) 14%,transparent)!important;color:var(--good)!important}
 .fl-txt{font-size:13.5px;font-weight:700;color:var(--muted);margin:2px 0}.fl-mini{margin-top:6px;border:0;background:none;color:var(--brand);font-weight:800;font-size:13.5px;padding:0}
 .contact .info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.sgh{display:flex;flex-direction:column;gap:6px;margin-top:2px}.sgh .it{background:var(--surface-2);border-radius:12px;padding:7px 10px;font-size:13px;line-height:1.35}.sgh .it b{font-weight:800}.sgh .it em{font-style:normal;color:var(--muted);font-size:12px}
+.sgh-b{border:0;background:none;color:var(--brand);font-weight:800;font-size:13px;padding:2px 0;text-align:left}
+.ntc{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}.ntc button{border:1.5px solid var(--line);background:var(--card);border-radius:20px;padding:8px 11px;font-weight:700;font-size:13.5px;color:var(--ink)}.ntc button[aria-pressed=true]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 12%,transparent);color:var(--brand)}
 .contact .info b{font-weight:600}
 .acc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
 .acc a{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:14px 12px;border-radius:14px;background:var(--surface-2);color:var(--ink);text-decoration:none;font-weight:700;font-size:14px;line-height:1.2;min-height:84px}
@@ -3725,7 +3728,11 @@ function flMsg(c,k,v){const n=String(c.name||"").trim().split(/\s+/)[0]||"",U=!c
    agd:[x(`¡Excelente! Son unos 20 minutos.\n\n¿Qué le queda mejor, hoy en la noche o mañana?`,`¡Excelente! Son unos 20 minutos.\n\n¿Qué te queda mejor, hoy en la noche o mañana?`),
         x(`¡Perfecto! 🙌 Se lo explico en unos 20 minutos.\n\n¿Le parece hoy en la noche o prefiere mañana?`,`¡Perfecto! 🙌 Te lo explico en unos 20 minutos.\n\n¿Te parece hoy en la noche o prefieres mañana?`),
         x(`¡Qué bueno! 😊 Busquemos un momento de 20 minutitos.\n\n¿Hoy en la noche o mañana le queda mejor?`,`¡Qué bueno! 😊 Busquemos un momento de 20 minutitos.\n\n¿Hoy en la noche o mañana te queda mejor?`)],
-   seg:pr>=8?[x(`¡Qué emoción, ${n}! 🎉\n\n${ref?`Aquí está su enlace para registrarse:\n${ref}\n\n`:""}Si quiere, lo hacemos juntos ahora mismo. 🙌`,`¡Qué emoción, ${n}! 🎉\n\n${ref?`Aquí está tu enlace para registrarte:\n${ref}\n\n`:""}Si quieres, lo hacemos juntos ahora mismo. 🙌`)]
+   seg:pr<8&&sgN(c)>=2?[x(`Hola ${n} 😊 No quiero ser insistente, solo quería saber cómo va todo.\n\nSi este no es su momento, lo entiendo perfectamente. Y si tiene alguna duda, con gusto le ayudo. 🙌`,`Hola ${n} 😊 No quiero ser insistente, solo quería saber cómo va todo.\n\nSi este no es tu momento, lo entiendo perfectamente. Y si tienes alguna duda, con gusto te ayudo. 🙌`),
+        x(`¡Hola ${n}! 👋 Paso a saludarle.\n\n¿Pudo pensar en lo que platicamos? Me encantaría saber qué decidió, sea lo que sea. 😊`,`¡Hola ${n}! 👋 Paso a saludarte.\n\n¿Pudiste pensar en lo que platicamos? Me encantaría saber qué decidiste, sea lo que sea. 😊`)]
+      :pr<8&&sgN(c)===1?[x(`Hola ${n} 😊 ¿Cómo ha estado?\n\nLe escribo para saber si le quedó alguna pregunta sobre la información.\n\nSi quiere, le explico lo que necesite en 10 minutitos. ¿Le parece?`,`Hola ${n} 😊 ¿Cómo has estado?\n\nTe escribo para saber si te quedó alguna pregunta sobre la información.\n\nSi quieres, te explico lo que necesites en 10 minutitos. ¿Te parece?`),
+        x(`¡Hola ${n}! 👋 Me acordé de usted.\n\n¿Qué es lo que más le llamó la atención de la información?\n\nQuedo pendiente para ayudarle. 🙌`,`¡Hola ${n}! 👋 Me acordé de ti.\n\n¿Qué es lo que más te llamó la atención de la información?\n\nQuedo pendiente para ayudarte. 🙌`)]
+      :pr>=8?[x(`¡Qué emoción, ${n}! 🎉\n\n${ref?`Aquí está su enlace para registrarse:\n${ref}\n\n`:""}Si quiere, lo hacemos juntos ahora mismo. 🙌`,`¡Qué emoción, ${n}! 🎉\n\n${ref?`Aquí está tu enlace para registrarte:\n${ref}\n\n`:""}Si quieres, lo hacemos juntos ahora mismo. 🙌`)]
       :pr>=6?[x(`Hola ${n} 😊 ¿Qué le pareció la información?\n\n¿Qué le falta para llegar a un 10?\n\nLe dejo esta página con un simulador para que vea cómo funciona la membresía:\n${memUrl(c.name,c.id)}`,`Hola ${n} 😊 ¿Qué te pareció la información?\n\n¿Qué te falta para llegar a un 10?\n\nTe dejo esta página con un simulador para que veas cómo funciona la membresía:\n${memUrl(c.name,c.id)}`)]
       :[x(`Hola ${n}, ¿qué le pareció la información? 😊\n\nSi le quedó alguna duda, me gustaría que hablemos unos 10 minutos con un líder de mi equipo. ¿Le parece?`,`Hola ${n}, ¿qué te pareció la información? 😊\n\nSi te quedó alguna duda, me gustaría que hablemos unos 10 minutos con un líder de mi equipo. ¿Te parece?`)],
    no:[x(`Le entiendo perfectamente, ${n}, gracias por su sinceridad. 🙏\n\nSi más adelante cambia de opinión, aquí estoy.`,`Te entiendo perfectamente, ${n}, gracias por tu sinceridad. 🙏\n\nSi más adelante cambias de opinión, aquí estoy.`)],
@@ -3740,6 +3747,36 @@ function flHTML(c){const P=flPaso(c),h=flH(c);
     body=`<div class="fl-q"><b>${Q[0]}</b><div>${Q[1].map(([v,t])=>`<button data-flr="${esc(c.id)}|${v}">${t}</button>`).join("")}</div></div>`}
   else body=`<button class="fl-go" data-flgo="${esc(c.id)}|${P.k}">👉 Siguiente paso: ${FL_TIT[P.k]||P.k}</button>`;
   return `<div class="fl"><div class="fl-hd"><span>🧭 Camino de ${esc(String(c.name||"").split(" ")[0])}</span><button class="fl-tu" data-fltu="${esc(c.id)}">Le hablo de: <b>${c.tu?"Tú":"Usted"}</b> ⇄</button></div>${linea}${body}</div>`}
+const SG_R=[["int","👍 Interesado"],["pen","🤔 Lo está pensando"],["din","💸 Tema de dinero"],["tiem","⏰ No tiene tiempo"],["nc","📵 No contestó"],["hab","💬 Hablamos"]];
+const SG_K={sal:"👋 Saludo",resal:"👋 Saludo",inv:"💬 Invitación",rinv:"💬 Invitación",agd:"📅 Cita",pres:"🎤 Presentación",seg:"🔁 Seguimiento",re2:"🔁 Seguimiento",bien:"🎉 Bienvenida",re:"👋 Recontacto",no:"🙏 Cierre",wa:"💬 WhatsApp",nota:"📝 Nota"};
+const sgN=c=>(c.seg||[]).filter(x=>x.k==="seg"||x.k==="re2").length;
+const sgFecha=t=>{const d=new Date(t);return DAYS_L[d.getDay()].slice(0,3)+" "+d.getDate()+" "+MONTHS[d.getMonth()].slice(0,3)};
+function sgItem(x){const r=(SG_R.find(z=>z[0]===x.r)||[])[1];return `<div class="it"><b>${esc(SG_K[x.k]||"📝 Nota")}</b> <em>· ${esc(sgFecha(x.t))}</em>${r?` · ${esc(r)}`:""}${x.n?`<br>"${esc(x.n)}"`:""}${x.p?`<br><em>➡️ Próximo: ${esc(niceDate(x.p))}</em>`:""}</div>`}
+function sgHTML(c){const L=(c.seg||[]).slice().reverse();if(!L.length)return "";const n=sgN(c);
+  return `<div class="sgh">${n?`<span class="small" style="font-weight:800;color:#B45309">🔁 ${n}${n===1?"er":n===2?"do":n===3?"er":"º"} seguimiento</span>`:""}${L.slice(0,3).map(sgItem).join("")}${L.length>3?`<button class="sgh-b" data-sgall="${esc(c.id)}">Ver todas (${L.length}) ›</button>`:""}</div>`}
+function sgTodas(c){openSheet(`<h2>📝 Historial de ${esc(String(c.name||"").split(" ")[0])}</h2><div class="sgh">${(c.seg||[]).slice().reverse().map(sgItem).join("")}</div><button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`)}
+function sgCal(c,f,h,nt){const ci={id:"sg"+c.id+f.replace(/-/g,""),tipo:"lider",titulo:"🔁 Seguimiento a "+c.name,fecha:f,hora:h||"10:00",dur:15,nota:nt||""};citaIcs(ci)}
+function notaAbrir(c,k,lg){if(!c)return;let r="",p=c.next&&c.next>=TODAY?c.next:"";const nm=String(c.name||"").split(" ")[0];
+  const F=[["Mañana",1],["2 días",2],["3 días",3],["1 semana",7]];
+  openSheet(`<h2>📝 ¿Cómo le fue con ${esc(nm)}?</h2><p class="small muted" style="margin:0">${esc(SG_K[k]||"📝 Nota")} · queda guardado en su historial.</p>
+   <div class="ntc" id="ntR">${SG_R.map(([v,t])=>`<button type="button" data-v="${v}" aria-pressed="false">${t}</button>`).join("")}</div>
+   <textarea class="inp" id="ntN" rows="3" maxlength="300" placeholder="Ej.: Le pagan el 15, que le escriba ese día" style="width:100%;font-size:15px"></textarea>
+   <p style="margin:12px 0 4px;font-weight:800">📅 ¿Cuándo el próximo seguimiento?</p>
+   <div class="ntc" id="ntP">${F.map(([t,d])=>`<button type="button" data-d="${addD(TODAY,d)}" aria-pressed="${p===addD(TODAY,d)}">${t}</button>`).join("")}</div>
+   <div class="row" style="gap:8px;align-items:center"><input class="inp" id="ntF" type="date" min="${TODAY}" value="${esc(p)}" style="flex:1"><input class="inp" id="ntH" type="time" value="10:00" style="width:120px"></div>
+   <label class="small" style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="ntC"> Ponerlo en el calendario de mi teléfono con alarma</label>
+   <button class="btn" id="ntOk" style="width:100%;margin-top:12px">Guardar</button><button class="btn ghost" data-close style="width:100%;margin-top:6px">Ahora no</button>`,()=>{
+   $("#ntR").onclick=e=>{const b=e.target.closest("button");if(!b)return;r=r===b.dataset.v?"":b.dataset.v;document.querySelectorAll("#ntR button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.v===r))};
+   const marcaP=()=>document.querySelectorAll("#ntP button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.d===$("#ntF").value));
+   $("#ntP").onclick=e=>{const b=e.target.closest("button");if(!b)return;$("#ntF").value=b.dataset.d;marcaP()};$("#ntF").oninput=marcaP;
+   $("#ntOk").onclick=async()=>{const n=$("#ntN").value.trim().slice(0,300),f=$("#ntF").value,h=$("#ntH").value,cal=$("#ntC").checked;
+     if(!n&&!r&&!f){closeSheet();return}
+     const L=(c.seg||[]).slice(),j=lg?L.findIndex(x=>x.t===lg):-1,it=j>=0?Object.assign({},L[j]):{t:Date.now(),k:k||"nota"};if(r)it.r=r;if(n)it.n=n;if(f)it.p=f;if(j>=0)L[j]=it;else L.push(it);c.seg=L.slice(-30);if(f)c.next=f;c.updated=Date.now();
+     const id=await store.saveContact(Object.assign({},c));if(!id){toast("No se pudo guardar la nota.");return}renderCRM();
+     if(cal&&f)sgCal(c,f,h,n);else{closeSheet();toast("📝 Nota guardada"+(f?" · próximo: "+niceDate(f):""))}}})}
+function notaPend(c,k,log){const t=Date.now();if(log){c.seg=(c.seg||[]).concat([{t,k}]).slice(-30)}try{LS.set("notaPend",{id:c.id,k,t,log:log?t:0})}catch(e){}}
+document.addEventListener("visibilitychange",()=>{if(document.hidden)return;let q=null;try{q=LS.get("notaPend")}catch(e){}if(!q)return;try{LS.set("notaPend",null)}catch(e){}
+  if(Date.now()-q.t>3*36e5||Date.now()-q.t<2500)return;const c=(contacts||[]).find(x=>x.id===q.id);if(c&&$("#sheet").hidden)setTimeout(()=>notaAbrir(c,q.k,q.log),400)});
 async function flGuardar(c){c.updated=Date.now();try{await store.saveContact(Object.assign({},c))}catch(e){}renderCRM()}
 function flMarca(c,k,r){c.fl=Object.assign({h:{},r:""},c.fl||{});c.fl.h=Object.assign({},c.fl.h||{});c.fl.h[k]=Date.now();if(r!==undefined)c.fl.r=r}
 function flEnviar(c,k){if(k==="pres"){presAbrir(c);return}if(k==="bien"){flMarca(c,"bien");flGuardar(c);abrirBienvenida(c);return}
@@ -3754,7 +3791,7 @@ function flEnviar(c,k){if(k==="pres"){presAbrir(c);return}if(k==="bien"){flMarca
    $("#flW").onclick=()=>{const t=$("#flT").value.trim();if(!t)return;const kk=k==="re2"?"seg":k;flMarca(c,kk,["sal","resal","inv","rinv","re"].includes(k)?(k==="resal"?"nr":k==="rinv"?"pen":""):undefined);
      if(k==="resal")c.fl.h.sal=c.fl.h.sal||Date.now();if(k==="re"){c.stage="Contactado";c.stT=Date.now();c.fl.h={re:Date.now(),sal:Date.now()};c.fl.r=""}
      if(k==="sal"||k==="resal")stAvanza(c,"Contactado","le escribió el saludo");if(k==="seg")stAvanza(c,"Seguimiento","le dio seguimiento");
-     flGuardar(c);const n=waNum(c.phone,c.cc);closeSheet();location.href="https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t)};
+     notaPend(c,k,1);flGuardar(c);const n=waNum(c.phone,c.cc);closeSheet();location.href="https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t)};
    document.querySelectorAll("#sheetPanel [data-fla]").forEach(b=>b.onclick=()=>{const a=b.dataset.fla;if(k==="agd"){flMarca(c,"agd");flGuardar(c)}closeSheet();
      if(a==="cita")abrirCita(null,c);else if(a==="pres")presAbrir(c);else if(a==="l3")pedirL3(c);else if(a==="sala")enviarSala(c)})})}
 async function flResp(c,v){c.fl=Object.assign({h:{},r:""},c.fl||{});
@@ -3765,7 +3802,7 @@ async function flResp(c,v){c.fl=Object.assign({h:{},r:""},c.fl||{});
 function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerCase();
   const counts={Todos:contacts.length};STAGES.forEach(s=>counts[s]=contacts.filter(c=>c.stage===s).length);
   $("#stageBar").innerHTML=["Todos"].concat(STAGES).map(s=>`<button aria-pressed="${s===stageF}" data-s="${s}">${s}<span class="n">${counts[s]}</span></button>`).join("");
-  const list=contacts.filter(c=>(stageF==="Todos"||c.stage===stageF)&&(!q||(c.name+" "+(c.note||"")).toLowerCase().includes(q))).sort(crmCmp());
+  const list=contacts.filter(c=>(stageF==="Todos"||c.stage===stageF)&&(!q||(c.name+" "+(c.note||"")+" "+(c.seg||[]).map(x=>x.n||"").join(" ")).toLowerCase().includes(q))).sort(crmCmp());
   if(!contacts.length){$("#contactList").innerHTML=`<div class="empty"><h3>Tu lista de contactos está vacía</h3>
     <p class="small muted">Agrega a las personas con las que quieres compartir el negocio o el producto. Registra la etapa, una nota y la fecha del próximo seguimiento.</p>
     <button class="btn gold sm" id="addFirst">Agregar mi primer contacto</button></div>`;$("#addFirst").onclick=()=>editContact();return}
@@ -3780,14 +3817,14 @@ function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerC
     <div class="pbar" aria-label="Avance: ${esc(c.stage)}">${FLOW.map((_,i)=>`<i class="${i<k?"on":""}"></i>`).join("")}</div></div>
     ${pipeOk()?`<span class="stpct"><b style="color:${pc}">${stPct(c)}%</b><span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage==="No interesado"?"No":c.stage)}</span>${stFrio(c)?`<em>⚠️ ${stDias(c)} días</em>`:""}</span>`:`<span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage==="No interesado"?"No":c.stage)}</span>`}<span class="chev">›</span></div>
     <div class="cbody">${flHTML(c)}<div class="info">
-    ${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}${c.note?`<span class="note">${esc(c.note)}</span>`:""}
+    ${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}${c.note?`<span class="note">${esc(c.note)}</span>`:""}${sgHTML(c)}
     ${(()=>{const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fecha>=TODAY).sort(citaSort)[0];return ci?`<span class="small" style="color:var(--brand);font-weight:700">📅 Cita: ${esc(citaCuando(ci))}</span>`:""})()}
     ${pipeOk()&&c.stAuto&&c.stT&&Date.now()-c.stT<14*864e5?`<span class="small" style="background:var(--surface-2);border-radius:10px;padding:6px 9px">🤖 Pasó solo a <b>${esc(c.stage)}</b> (${stPct(c)}%): ${esc(c.stAuto)}. Si no es así, toque otra etapa.</span>`:""}
     ${c.pres&&c.pres.t?`<span class="small" style="font-weight:700;color:${c.pres.n>=8?"var(--good)":c.pres.n>=6?"#B45309":"var(--brand)"}">🎤 Presentado ${esc(niceDate(new Date(c.pres.t-216e5).toISOString().slice(0,10)))}${c.pres.n?" · "+c.pres.n+"/10"+(c.pres.n>=8?" 🔥":""):""}</span>`:""}
     ${(()=>{const v=salaOk()&&salaDe(c.id);return v?`<span class="small" style="font-weight:700;color:${salaNivel(v)[2]}">🎬 ${esc(salaNivel(v)[0])} · vio el ${+v.pct||0}%${v.resp?" · "+esc(SALA_R[v.resp]||""):""}</span>`:""})()}
     ${(()=>{const m=memDe(c.id),e=(LS.get("memEnv")||{})[c.id];return m?`<span class="small" style="font-weight:700;color:#0E7490">🛳️ Vio la membresía ${memHace(m.t)} · ${+m.pct||0}%${m.resp==="sim"?" · 🧮 usó el simulador":""}${m.como?" · 📲 tocó \"Quiero\"":""}</span>`:e?`<span class="small" style="color:var(--muted);font-weight:600">🛳️ Membresía enviada ${memHace(e)} · aún no la abre</span>`:""})()}
     ${c.next?`<span class="small" style="color:var(--${late?"bad":today?"warn":"muted"});font-weight:600">${late?"Seguimiento atrasado: "+niceDate(c.next):today?"Seguimiento hoy":"Próximo seguimiento: "+niceDate(c.next)}</span>`:""}
-    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${presOk()?`<button class="btn sm gold" data-pres="${esc(c.id)}">${c.pres&&c.pres.t?"✓ Presentado":"🎤 Presentar"}</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost${(LS.get("memEnv")||{})[c.id]||memDe(c.id)?" fl-done":""}" data-mem="${esc(c.id)}">${(LS.get("memEnv")||{})[c.id]||memDe(c.id)?"✓ Membresía":"🛳️ Membresía"}</button><button class="btn sm ghost${flCita(c)?" fl-done":""}" data-cita="${esc(c.id)}">${flCita(c)?"✓ Cita":"📅 Agendar"}</button><button class="btn sm ghost" data-l3="${esc(c.id)}">📞 Llamada de 3</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
+    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${presOk()?`<button class="btn sm gold" data-pres="${esc(c.id)}">${c.pres&&c.pres.t?"✓ Presentado":"🎤 Presentar"}</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost${(LS.get("memEnv")||{})[c.id]||memDe(c.id)?" fl-done":""}" data-mem="${esc(c.id)}">${(LS.get("memEnv")||{})[c.id]||memDe(c.id)?"✓ Membresía":"🛳️ Membresía"}</button><button class="btn sm ghost${flCita(c)?" fl-done":""}" data-cita="${esc(c.id)}">${flCita(c)?"✓ Cita":"📅 Agendar"}</button><button class="btn sm ghost" data-l3="${esc(c.id)}">📞 Llamada de 3</button><button class="btn sm ghost" data-nota="${esc(c.id)}">📝 Nota</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
 $("#stageBar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;stageF=b.dataset.s;renderCRM()});
 $("#crmSearch").addEventListener("input",renderCRM);
 $("#bienBtn").onclick=()=>abrirBienvenida();$("#addContact").onclick=()=>editContact();
@@ -3795,7 +3832,7 @@ $("#contactList").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" 
 $("#contactList").addEventListener("click",async e=>{const st=e.target.closest("[data-st]");
   const tg=e.target.closest("[data-tog]");if(tg){openC=openC===tg.dataset.tog?null:tg.dataset.tog;renderCRM();return}
   const sf=e.target.closest("[data-sf]");const od=e.target.closest("[data-ord]");if(od){crmOrd=od.dataset.ord;try{LS.set("crmOrd",crmOrd)}catch(e){}renderCRM();return}if(sf){stageF=stageF===sf.dataset.sf?"Todos":sf.dataset.sf;renderCRM();return}
-  const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c)setTimeout(()=>stAvanza(c,"Contactado","le escribió por WhatsApp"),300)}
+  const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c){notaPend(c,"wa");setTimeout(()=>stAvanza(c,"Contactado","le escribió por WhatsApp"),300)}}
   if(st){const c=contacts.find(x=>x.id===st.dataset.cid);if(!c||c.stage===st.dataset.st)return;const prev=c.stage;c.stage=st.dataset.st;c.stT=Date.now();c.stAuto="";c.updated=Date.now();renderCRM();
     const id=await store.saveContact(Object.assign({},c));if(!id){c.stage=prev;renderCRM();return}if(c.stage==="Socio"){abrirBienvenida(c);return}toast(c.name.split(" ")[0]+": "+c.stage);return}
   const bw=e.target.closest("[data-bien]");if(bw){abrirBienvenida(contacts.find(c=>c.id===bw.dataset.bien));return}
@@ -3806,6 +3843,8 @@ $("#contactList").addEventListener("click",async e=>{const st=e.target.closest("
   const mb=e.target.closest("[data-mem]");if(mb){enviarMem(contacts.find(c=>c.id===mb.dataset.mem));return}
   const fg=e.target.closest("[data-flgo]");if(fg){const [id,k]=fg.dataset.flgo.split("|");const c=contacts.find(x=>x.id===id);if(c)flEnviar(c,k);return}
   const fr=e.target.closest("[data-flr]");if(fr){const [id,v]=fr.dataset.flr.split("|");const c=contacts.find(x=>x.id===id);if(c)flResp(c,v);return}
+  const nb=e.target.closest("[data-nota]");if(nb){notaAbrir(contacts.find(x=>x.id===nb.dataset.nota),"nota");return}
+  const sa=e.target.closest("[data-sgall]");if(sa){sgTodas(contacts.find(x=>x.id===sa.dataset.sgall));return}
   const ft=e.target.closest("[data-fltu]");if(ft){const c=contacts.find(x=>x.id===ft.dataset.fltu);if(c){c.tu=!c.tu;flGuardar(c)}return}
   const b=e.target.closest("[data-edit]");if(b)editContact(contacts.find(c=>c.id===b.dataset.edit))});
 
@@ -4780,7 +4819,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261031142559";var busy=false,pend=null;
+(function(){var V="20261031182616";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
