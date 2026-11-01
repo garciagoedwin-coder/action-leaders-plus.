@@ -1164,7 +1164,7 @@ nav.tabs button{z-index:0;isolation:isolate}
         <div class="cal" id="cal"></div>
       </div>
       <div class="seg" role="tablist" id="agSeg">
-        <button aria-selected="true" data-k="semana">Esta semana</button>
+        <button aria-selected="true" data-k="semana">Próximos 7 días</button>
         <button aria-selected="false" data-k="proxima">Próxima semana</button>
         <button aria-selected="false" data-k="pend" id="agPendBtn">Por asignar</button>
         <button aria-selected="false" data-k="mes">Todo el mes</button>
@@ -3810,13 +3810,13 @@ async function invCanvas(){const W=1080,H=1350,K=2,cv=document.createElement("ca
 window.__invCanvas=invCanvas;
 function evHTML(e){const fin=finalizada(e);return `<div class="ev ${fin?"ev-past":""}"><span class="hr">${esc(h12(e.hora))||"—"}${e.horaFin?`<br><span class="small muted" style="font-family:var(--f-body);font-weight:600">a ${esc(h12(e.horaFin))}</span>`:""}</span><div class="body">
   <div class="row between" style="align-items:flex-start"><b>${esc(e.titulo)}</b><span class="row" style="gap:4px;flex:none">${fin?'<span class="chip c-brand" style="color:var(--muted)">Finalizada</span>':modoChip(e)}</span></div>
-  <div class="meta">${e.responsable?`<span>${USER}Presenta: <b style="font-weight:600;color:var(--ink)">${esc(e.responsable)}</b></span>`:pendiente(e)&&!fin?`<span class="chip c-warn">Presentador por asignar</span>`:""}${e.edifica?`<span>${edLbl(e)}: <b style="font-weight:600;color:var(--ink)">${esc(e.edifica)}</b></span>`:""}</div>
+  <div class="meta">${e.responsable?`<span style="display:block">${USER}Presenta: <b style="font-weight:600;color:var(--ink)">${esc(e.responsable)}</b></span>`:pendiente(e)&&!fin?`<span class="chip c-warn">Presentador por asignar</span>`:""}${e.edifica?`<span>${edLbl(e)}: <b style="font-weight:600;color:var(--ink)">${esc(e.edifica)}</b></span>`:""}</div>
   <div class="meta">${zoneTimes(e)?`<span>${esc(zoneTimes(e))}</span>`:""}${e.lugar?`<span>${PIN}${esc(e.lugar)}</span>`:""}</div>
   ${e.notas?`<span class="small muted">${esc(e.notas)}</span>`:""}
   <div class="row" style="gap:8px;flex-wrap:wrap">${!fin&&e.id?`<button class="btn sm" data-share="${esc(e.id)}" type="button">${esYess(e)?"📧 ¿Cómo entrar?":"📤 Compartir"+(esFlyer(e)?" con flyer":"")}</button>`:""}${espDe(e)&&espDe(e).enlace&&!fin?`<a class="btn sm ghost" href="${esc(espDe(e).enlace)}" target="_blank" rel="noopener">${esc(espDe(e).boton||"Abrir enlace")}</a>`:evLink(e)&&!fin?`<a class="btn sm ghost" href="${esc(evLink(e))}" target="_blank" rel="noopener">Entrar al Zoom</a>`:""}</div>
   ${false&&isAdmin&&e.id?`<button class="btn sm ${pendiente(e)&&!fin?"gold":"ghost"}" style="align-self:flex-start" data-ev="${esc(e.id)}">${pendiente(e)&&!fin?"Asignar":"Editar"}</button>`:""}</div></div>`}
-function groupDays(keys){return keys.map(k=>{const ev=evOf(k);if(!ev.length)return"";return `<div class="day-h"><h3 style="text-transform:capitalize">${longDate(k)}</h3>${k===TODAY?'<span class="chip c-gold">Hoy</span>':""}</div><div class="list">${ev.map(evHTML).join("")}</div>`}).join("")}
-function weekKeys(off){const s=new Date(now);s.setDate(now.getDate()-((now.getDay()+6)%7)+7*(off||0));return Array.from({length:7},(_,i)=>{const d=new Date(s);d.setDate(s.getDate()+i);return dkey(d)})}
+function groupDays(keys){return keys.map(k=>{const ev=evOf(k);if(!ev.length)return"";return `<div class="day-h"><h3 style="text-transform:capitalize">${longDate(k)}</h3>${k===TODAY?'<span class="chip c-gold">Hoy</span>':k===dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1))?'<span class="chip c-brand">Mañana</span>':""}</div><div class="list">${ev.map(evHTML).join("")}</div>`}).join("")}
+function weekKeys(off){const s=new Date(now.getFullYear(),now.getMonth(),now.getDate()+7*(off||0)); /* empieza HOY */return Array.from({length:7},(_,i)=>{const d=new Date(s);d.setDate(s.getDate()+i);return dkey(d)})}
 function renderEvList(){let keys,label;
   if(agTab==="dia"&&selDay){keys=[selDay];label="Sin actividades el "+niceDate(selDay)+"."}
   else if(agTab==="mes"){const n=new Date(calM.getFullYear(),calM.getMonth()+1,0).getDate();keys=Array.from({length:n},(_,i)=>dkey(new Date(calM.getFullYear(),calM.getMonth(),i+1)));label="No hay actividades este mes."}
@@ -3825,8 +3825,10 @@ function renderEvList(){let keys,label;
     const n=T.eventos.filter(e=>e.fecha>=TODAY&&pendiente(e)&&!finalizada(e)).length;
     const h=keys.map(k=>{const ev=evOf(k).filter(e=>pendiente(e)&&!finalizada(e));return `<div class="day-h"><h3 style="text-transform:capitalize">${longDate(k)}</h3></div><div class="list">${ev.map(evHTML).join("")}</div>`}).join("");
     $("#evList").innerHTML=h?`<p class="small muted">${n} ${n===1?"actividad necesita":"actividades necesitan"} presentador.${isAdmin?" Asígnalos en la hoja de Google: la app se actualiza sola cada hora.":""}</p>`+h:`<div class="empty"><h3>${label}</h3></div>`;return}
-  else{keys=weekKeys(0);label="No hay actividades programadas esta semana."}
-  const h=groupDays(keys);
+  else{keys=weekKeys(0);label="No hay actividades programadas en los próximos 7 días."}
+  let h=groupDays(keys);
+  if(agTab==="semana"){const pk=Array.from({length:7},(_,i)=>dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()-7+i))),ph=groupDays(pk),n=pk.reduce((a,k)=>a+evOf(k).length,0);
+    if(ph)h+=`<details class="card agPas" style="gap:8px;margin-top:6px"><summary style="cursor:pointer;font-weight:700">🕘 Días anteriores <span class="small muted">(${n} ${n===1?"actividad":"actividades"})</span></summary><div style="opacity:.75">${ph}</div></details>`}
   if(!h&&welSigned===false&&!T.eventos.length){$("#evList").innerHTML=signCard("la agenda");return}
   $("#evList").innerHTML=h||`<div class="empty"><h3>${label}</h3><p class="small muted">${isAdmin?"Agrega las actividades en la hoja de Google. La app se actualiza sola cada hora.":"Aquí aparecerán las actividades del equipo con su hora, lugar y quién las dirige."}</p></div>`}
 $("#cal").addEventListener("click",e=>{const b=e.target.closest("[data-d]");if(!b)return;selDay=b.dataset.d;agTab="dia";$("#agDiaBtn").hidden=false;$("#agDiaBtn").textContent=niceDate(selDay);setSeg("agSeg","dia");renderCal()});
@@ -5032,7 +5034,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101085303";var busy=false,pend=null;
+(function(){var V="20261101104545";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
