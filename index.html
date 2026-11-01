@@ -1478,7 +1478,7 @@ let resT;function pushResumen(){if(!store.db||!store.uid)return;clearTimeout(res
       const top=(contacts||[]).filter(c=>["Nuevo","Contactado","Presentación","Seguimiento","Por cerrar"].includes(c.stage||"Nuevo")).map(c=>({n:String(c.name||"").trim().slice(0,60),s:c.stage||"Nuevo",d:c.stT||c.updated||0,p:(c.pres&&c.pres.n)||0})).sort((a,b)=>(ST_PCT[b.s]-ST_PCT[a.s])||(a.d-b.d)).slice(0,80);return{c:cnt,top}})(),historia:!!(profile.historias||{})[TODAY],bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),cons:constStats(),t:Date.now()};
   await store.db.doc("users/"+store.uid).set({actividad:a},{merge:true});
   const nm=(miRegistro().nombre||"").trim(),em=String((fbUser&&fbUser.email)||"").toLowerCase();
-  if(nm&&!SOLO_ADMIN.includes(em))await store.db.doc("constancia/"+store.uid).set(Object.assign({nombre:nm,hoy:a.hoy,fecha:TODAY,acc:Object.values(sum).reduce((x,y)=>x+(+y||0),0),t:Date.now()},a.cons),{merge:true});if(constL){const vq=document.querySelector("#v-equipo");if(vq&&!vq.hidden&&eqTab==="ranking"&&rankMetric==="rutina")loadConst(true);else{const me=constL.find(y=>y.uid===store.uid);if(me){me.hoy=a.hoy;me.fecha=TODAY}}}}catch(e){}},3000)}
+  if(nm&&!SOLO_ADMIN.includes(em)&&!yoPrueba())await store.db.doc("constancia/"+store.uid).set(Object.assign({nombre:nm,hoy:a.hoy,fecha:TODAY,acc:Object.values(sum).reduce((x,y)=>x+(+y||0),0),t:Date.now()},a.cons),{merge:true});if(constL){const vq=document.querySelector("#v-equipo");if(vq&&!vq.hidden&&eqTab==="ranking"&&rankMetric==="rutina")loadConst(true);else{const me=constL.find(y=>y.uid===store.uid);if(me){me.hoy=a.hoy;me.fecha=TODAY}}}}catch(e){}},3000)}
 function renderWeek(){const out=[];let streak=0;
   for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));
     out.push(`<div><i class="${s>=1?"full":s>0?"part":""} ${i===0?"today":""}">${d.getDate()}</i>${DAYS[d.getDay()]}</div>`)}
@@ -1726,7 +1726,7 @@ function compPuede(){const C=(T.config||{}).compromiso;if(!C||!fbUser||!regDoc||
 function compDias(){const n=new Date(),f=new Date(n.getFullYear(),n.getMonth()+1,1);return Math.max(0,Math.ceil((f-n)/864e5))}
 async function compGuardar(o){const nm=Object.assign({mes:mesMeta(),t:Date.now()},o);
   await store.db.doc("users/"+store.uid).set({comp:nm},{merge:true});regDoc=Object.assign({},regDoc,{comp:nm});
-  try{const nmb=miNombreFull()||miNombreCorto();if(nmb)store.db.doc("constancia/"+store.uid).set({comp:nm.no?{mes:nm.mes,no:true}:{mes:nm.mes,rango:nm.rango,act:nm.act,ac:nm.ac,ap:nm.ap,vol:nm.vol,pres:nm.pres}},{merge:true}).catch(()=>{})}catch(e){}
+  try{const nmb=miNombreFull()||miNombreCorto();if(nmb&&!yoPrueba())store.db.doc("constancia/"+store.uid).set({comp:nm.no?{mes:nm.mes,no:true}:{mes:nm.mes,rango:nm.rango,act:nm.act,ac:nm.ac,ap:nm.ap,vol:nm.vol,pres:nm.pres}},{merge:true}).catch(()=>{})}catch(e){}
   renderComp();try{renderMetaEq()}catch(e){}}
 let compVisto=false;
 function compCheck(){if(compVisto||!compPuede()||miComp())return;try{if(irIntroPend())return}catch(e){}if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate"))return;compVisto=true;compIntro()}
@@ -2113,7 +2113,7 @@ const actDe=x=>{const a=x.actividad||{};const fresh=a.t&&Date.now()-a.t<8*864e5;
 const actScore=x=>{const a=actDe(x);return a.hoy+a.d7*40+(a.sem.contactos||0)*3+(a.sem.presentaciones||0)*15+a.racha*20+(a.hist?20:0)+(a.bien?10:0)+a.cursos*10+Math.min(a.crm,20)};
 const byAct=(a,b)=>actScore(b)-actScore(a)||tsMs(b.ultimoAcceso)-tsMs(a.ultimoAcceso);
 let constSync=false;async function syncConst(){if(constSync||!isAdmin||!socios)return;constSync=true;let n=0;
-  for(const x of socios){if(!x.registro||!x.registro.nombre||esSoloAdmin(x))continue;const a=x.actividad||{},sm=a.semana||{};
+  for(const x of socios){if(!x.registro||!x.registro.nombre||esSoloAdmin(x)||esPrueba(x))continue;const a=x.actividad||{},sm=a.semana||{};
     try{await store.db.doc("constancia/"+x.uid).set(Object.assign({nombre:x.registro.nombre,hoy:+a.hoy||0,fecha:a.fecha||"",acc:Object.values(sm).reduce((p,q)=>p+(+q||0),0),t:a.t||0},a.cons||{}),{merge:true});n++}catch(e){break}}
   if(n)loadConst(true)}
 async function loadSocios(){try{const q=await store.db.collection("users").get();socios=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.registro||x.email)
@@ -2395,7 +2395,7 @@ function pedirWaSocio(x,t){const nm=(x.registro||{}).nombre||"este socio";
 async function loadMios(){miosErr=false;const me=store.uid,M={};if(telSoc===null){try{telSoc=(await store.get("telsocios"))||{}}catch(e){telSoc={}}}
   try{const q=await store.db.collection("users").where("registro.patrocinadorUid",me).get();q.docs.forEach(d=>M[d.id]=Object.assign({uid:d.id},d.data()))}catch(e){miosErr=true}
   try{const q=await store.db.collection("users").where("registro.linea",me,"array-contains").get();q.docs.forEach(d=>{if(!M[d.id])M[d.id]=Object.assign({uid:d.id},d.data())})}catch(e){}
-  const L=Object.values(M).filter(x=>x.registro&&x.uid!==me);
+  const L=Object.values(M).filter(x=>x.registro&&x.uid!==me&&(isAdmin||!esPrueba(x)));
   L.forEach(x=>{const r=x.registro,ln=Array.isArray(r.linea)?r.linea:[];if(r.patrocinadorUid===me){x.nivel=1;x.pierna=x.uid;return}const i=ln.indexOf(me);x.nivel=i>=0?i+1:1;x.pierna=i>0?ln[i-1]:x.uid});
   L.forEach(x=>{const p=M[x.pierna],q=M[x.registro.patrocinadorUid];x.piernaNom=p&&p.registro?p.registro.nombre:"";x.patNom=q&&q.registro?q.registro.nombre:""});
   if(miosErr&&L.length)miosErr=false;mios=L.sort(byAct);renderEquipo();try{const s=dtArmar();if(s){dtSum=s;LS.set("dtSum:"+store.uid,s);dtConvertir().catch(()=>{})}renderDT()}catch(e){}}
@@ -4851,7 +4851,10 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#sheet").hidden
 $("#todayLbl").textContent=longDate(TODAY);
 // ---------- Plan de Inicio Rápido (30 días) + Inicio simple — BETA: solo admin ----------
 // irBeta(): interruptor. Cuando Edwin apruebe, cambiar a ()=>true y publicar.
-const irBeta=()=>isAdmin;
+const prPruebas=()=>((T.config||{}).pruebas)||[];
+const esPrueba=x=>{try{const k=ahKe(x&&x.email);return !!k&&prPruebas().includes(k)}catch(e){return false}};
+const yoPrueba=()=>{try{return !!fbUser&&esPrueba({email:fbUser.email})}catch(e){return false}};
+const irBeta=()=>isAdmin||yoPrueba();
 const IR_DESDE="2026-11-02";
 const IR_W=[
  {n:1,k:"Despegue",ic:"🚀",fin:7},{n:2,k:"Presentador",ic:"🎤",fin:14},{n:3,k:"Cerrador",ic:"🔁",fin:21},{n:4,k:"Duplicador",ic:"🌱",fin:30}];
@@ -4864,7 +4867,7 @@ function irSave(patch){const s=irSimM(),f=s?"irSim":"ir";regDoc=regDoc||{};regDo
 function irBump(k){try{if(!regDoc)return;["ir","irSim"].forEach(f=>{const s=regDoc[f];if(!s||!s.ini)return;const c=Object.assign({},s.c||{});c[k]=(c[k]||0)+1;regDoc[f]=Object.assign({},s,{c});irPend[f]=regDoc[f]});
   clearTimeout(irSaveT);irSaveT=setTimeout(()=>{const P=irPend;irPend={};if(store.db&&store.uid&&Object.keys(P).length)store.db.doc("users/"+store.uid).update(P).catch(()=>{})},700);setTimeout(irRender,400)}catch(e){}}
 // modo: "nuevo" (plan automático), "actual" (invitación), null (no aplica)
-function irModo(){const s=irSimM();if(s)return s;if(!irBeta()||isAdmin)return null;const r=miRegistro();if(!r||!r.nombre)return null;
+function irModo(){const s=irSimM();if(s)return s;if(yoPrueba())return "nuevo";if(!irBeta()||isAdmin)return null;const r=miRegistro();if(!r||!r.nombre)return null;
   return String(r.fecha||"")>=IR_DESDE?"nuevo":"actual"}
 function irActivo(){const m=irModo(),st=irSt();if(!m)return false;if(m==="nuevo")return true;return !!st.ini}
 function irIni(){const st=irSt();if(st.ini)return st.ini;const m=irModo();if(m==="nuevo"&&!irSimM()){const f=Date.parse(miRegistro().fecha||"");return isNaN(f)?Date.now():f}return Date.now()}
@@ -4983,7 +4986,10 @@ function irLista(n){const E=irEstado(),st=irSt();n=n||E.cur.n;const w=E.W[n-1],G
    ${n>E.cur.n&&!E.grad?`<p class="small muted" style="margin:6px 2px">Esta semana se abre al terminar la semana ${E.cur.n}. Lo que ya tenga hecho se marca solo.</p>`:""}
    ${Object.keys(G).map(g=>`<div class="irG"><h4>${esc(g)}</h4>${G[g].map(i=>`<div class="irIt${i.ok?" d":""}"><span class="ck${i.ok?" ok":""}">${i.ok?"✓":""}</span><span class="tx">${esc(i.t)}${i.ok&&!i.m?` <span class="au">AUTOMÁTICO</span>`:""}${i.s||i.pt?`<small>${esc(i.pt?(i.pt+(i.s?" · "+i.s:"")):i.s)}</small>`:""}</span>${!i.ok&&i.b?`<button type="button" class="go${i.f?" f":""}" data-it="${i.k}">${esc(i.b[0])}</button>`:""}</div>`).join("")}</div>`).join("")}
    ${n===1?`<p class="small muted" style="margin:8px 2px 0;text-align:center">No necesita saberlo todo para comenzar. Comience acompañado y aprenda mientras avanza.</p>`:""}
+   ${yoPrueba()?`<div class="row" style="gap:8px;margin-top:10px"><button class="btn sm ghost" id="irPD" style="flex:1">🧪 Adelantar 7 días</button><button class="btn sm ghost" id="irPR" style="flex:1">🧪 Reiniciar</button></div>`:""}
    <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{const sh=$("#sheet");
+    {const d=$("#irPD");if(d)d.onclick=()=>{const st=irSt();irSave({ini:(st.ini||Date.now())-7*864e5});closeSheet();setTimeout(()=>{irRender();toast("⏩ Día "+irDia())},400)}}
+    {const r=$("#irPR");if(r)r.onclick=()=>{const f={ini:Date.now()};regDoc.ir=f;store.db.doc("users/"+store.uid).update({ir:f}).catch(()=>{});closeSheet();setTimeout(irRevisar,500)}}
     sh.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>irLista(+b.dataset.w));
     sh.querySelectorAll("[data-it]").forEach(b=>b.onclick=()=>{const i=w.L.find(z=>z.k===b.dataset.it);if(i&&i.b)i.b[1]()})})}
 function irIntro(){const nm=(miRegistro().nombre||profile.nombrePila||"").split(" ")[0];
@@ -4995,7 +5001,7 @@ function irIntro(){const nm=(miRegistro().nombre||profile.nombrePila||"").split(
    <button class="btn" id="irGo" style="width:100%;margin-top:12px">Empezar mi plan</button><button class="btn ghost" data-close style="width:100%">Lo veo después</button>`,()=>{
     $("#irGo").onclick=()=>{closeSheet();setTimeout(()=>irMeta(),250)}});irSave({vis:1})}
 function irIntroPend(){const m=irModo(),st=irSt();return m==="nuevo"&&!st.vis}
-let irRevT=0;function irRevisar(){try{irRender();irInicio();if(!irIntroPend())return;if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate")){if(++irRevT<6)setTimeout(irRevisar,8000);return}irIntro()}catch(e){}}
+let irRevT=0;function irRevisar(){try{if(yoPrueba()&&store.db&&store.uid&&!window._prOc){window._prOc=1;store.db.doc("fotos/"+store.uid).set({oculto:true},{merge:true}).catch(()=>{});store.db.doc("constancia/"+store.uid).delete().catch(()=>{})}irRender();irInicio();if(!irIntroPend())return;if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate")){if(++irRevT<6)setTimeout(irRevisar,8000);return}irIntro()}catch(e){}}
 // ---- Inicio simple (beta) ----
 function irSimple(){return irBeta()||!!irSimM()}
 function irInicio(){const v=$("#v-inicio");if(!v)return;const on=irSimple();v.classList.toggle("simple",on);document.body.classList.toggle("beta",on);
@@ -5064,7 +5070,7 @@ let tjSello=null;async function loadTeamJSON(){try{const r=await fetch("data/tea
   {const se=((d.config||{}).rankingActualizado||"")+"|"+((d.config||{}).activacionesCorte||"")+"|"+(d.ranking||[]).length;if(tjSello&&se!==tjSello)setTimeout(()=>{try{toast("📊 Ranking actualizado")}catch(e){}},600);tjSello=se}
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
-  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderGan()}catch(e){}try{renderComp()}catch(e){}try{renderMetaEq()}catch(e){}try{renderPremios()}catch(e){}try{renderRC()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist();try{irInicio();irRender()}catch(e){}}catch(e){}}
+  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderGan()}catch(e){}try{renderComp()}catch(e){}try{renderMetaEq()}catch(e){}try{renderPremios()}catch(e){}try{renderRC()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist();try{irInicio();irRevisar()}catch(e){}}catch(e){}}
 let autoFotoHecho=false;
 function urlADataUrl(u,S){return new Promise(ok=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{S=S||240;const c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);
   c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);ok(c.toDataURL("image/jpeg",.85))}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=u})}
@@ -5108,7 +5114,7 @@ async function invOK(){try{const c=(localStorage.getItem("alp:inv")||"").trim().
   const q=await window.FB.db.collection("fotos").get();const m=q.docs.map(d=>Object.assign({id:d.id},d.data())).find(x=>(x.inv||"")===c);if(m){invSponsor={uid:m.id,nombre:m.invNombre||m.nombre||""};return true}return false}catch(e){return false}}
 const miInv=()=>{const n=(miRegistro().nombre||miNombreCorto()||"socio").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").split("-").slice(0,2).join("-");return (n||"socio")+"-"+String(store.uid||"").slice(0,4).toLowerCase()};
 const miEnlace=()=>"https://actionleadersplus.com/?unirme="+miInv();
-async function publicarInv(){try{if(esSoloAdminYo())return;if(!store.db||!store.uid||!(regDoc&&regDoc.registro))return;await store.db.doc("fotos/"+store.uid).set({inv:miInv(),invNombre:regDoc.registro.nombre,linea:Array.isArray(regDoc.registro.linea)?regDoc.registro.linea:[]},{merge:true})}catch(e){}}
+async function publicarInv(){try{if(esSoloAdminYo())return;if(!store.db||!store.uid||!(regDoc&&regDoc.registro))return;await store.db.doc("fotos/"+store.uid).set({inv:miInv(),invNombre:regDoc.registro.nombre,linea:Array.isArray(regDoc.registro.linea)?regDoc.registro.linea:[],...(yoPrueba()?{oculto:true}:{})},{merge:true})}catch(e){}}
 function bloquearSinInvitacion(){const d=document.createElement("div");d.style.cssText="position:fixed;inset:0;z-index:99999;background:#0d0c12;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;gap:14px;font-family:inherit";
   d.innerHTML=`<img src="media/escudo.png" style="width:80px"><h2 style="margin:6px 0 0;font-size:24px">Acceso exclusivo para socios</h2><p style="max-width:340px;opacity:.8;margin:0;line-height:1.5">Para entrar a Action Leaders PLUS necesitas el enlace de invitación que te comparte tu patrocinador al asociarte.</p><button id="bqOut" style="margin-top:10px;background:#fff;color:#111;border:0;border-radius:999px;padding:12px 22px;font:inherit;font-weight:700">Salir</button>`;
   document.body.appendChild(d);d.querySelector("#bqOut").onclick=async()=>{try{await window.FB.logout()}catch(e){}location.reload()}}
@@ -5273,7 +5279,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101173722";var busy=false,pend=null;
+(function(){var V="20261101174957";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
