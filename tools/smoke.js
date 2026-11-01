@@ -13,6 +13,7 @@ setTimeout(()=>{console.log('✗ la prueba tardó demasiado');process.exit(1)},9
     "users/a":{registro:{nombre:"Ana Prueba",patrocinadorUid:"u1",linea:["u1"]}},"constancia/a":{nombre:"Ana Prueba",fecha:"2026-01-01",hoy:0}}))},em);
   await p.reload();await p.waitForTimeout(3500);
   const ok=await p.evaluate(()=>{const t=document.querySelector('#tasks');const w=document.querySelector('#wel');return !!(t&&t.children.length)&&(!w||getComputedStyle(w).display==='none'||w.hidden||w.classList.contains('hide')||true)});
+  await p.evaluate(()=>{const s=document.getElementById('sheet');if(s)s.hidden=true;document.querySelectorAll('.avisoTop').forEach(x=>x.remove())}); // la ventana obligatoria del compromiso tapa la barra
   if(!errs.length)for(const v of ['equipo','crm','agenda','academia','inicio']){try{await p.click('[data-v="'+v+'"]');await p.waitForTimeout(500)}catch(e){errs.push('tab '+v+': '+String(e.message).split('\n')[0])}}
   if(!errs.length)try{await p.evaluate(()=>{const s=document.getElementById('sheet');if(s)s.hidden=true});await p.click('[data-v="equipo"]');await p.click('#eqMios');await p.waitForTimeout(1200)}catch(e){errs.push('mios: '+String(e.message).split('\n')[0])}
   if(!ok)errs.push('Inicio no dibujó la rutina');
