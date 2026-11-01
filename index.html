@@ -1756,7 +1756,7 @@ function mqCfg(){const M=(T.config||{}).metaEquipo;return M&&M.mes===mesMeta()&&
 function mqCargar(force){if(!store.db||!mqCfg())return;if(!force&&mqL&&Date.now()-mqT<600000)return;mqT=Date.now();
   store.db.collection("constancia").where("comp.mes",mesMeta()).get().then(q=>{mqL=q.docs.map(d=>{const x=d.data()||{},c=x.comp||{};return{uid:d.id,n:x.nombre||"",no:!!c.no,v:+c.vol||(+c.act||0)*200,r:c.rango||"",t:+c.t||0}}).filter(x=>!x.no&&x.n);renderMetaEq(true)}).catch(()=>{mqL=mqL||[]})}
 function renderMetaEq(cargado){const c=$("#metaEq");if(!c)return;const M=mqCfg();if(!M||!fbUser){c.hidden=true;return}
-  if(mqL===null){mqCargar();}
+  mqCargar(); // respeta su caché de 10 min; antes solo cargaba una vez y no se refrescaba
   let L=(mqL||[]).slice();const yo=miComp();
   if(yo&&!yo.no&&store.uid){L=L.filter(x=>x.uid!==store.uid);L.push({uid:store.uid,n:miNombreFull()||miNombreCorto(),v:+yo.vol||(+yo.act||0)*200,r:yo.rango||"",t:+yo.t||Date.now()})}
   L.sort((a,b)=>b.t-a.t);
@@ -4797,11 +4797,12 @@ try{const t=localStorage.getItem("alp:tab");if(t&&document.getElementById("v-"+t
 let fotosRepo=[],fotosFs=[],fotosOc=[];
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-refresh]");if(!b||b.disabled)return;b.disabled=true;const t=b.textContent;b.textContent="Actualizando…";
   if(b.dataset.refresh==="eq"&&eqTab==="mios"){mios=null;renderEquipo()}
-  if(b.dataset.refresh==="eq")loadConst(true);
+  if(b.dataset.refresh==="eq"){loadConst(true);try{mqCargar(true)}catch(x){}}
   try{await loadTeamJSON();const c=T.config||{},k=b.dataset.refresh==="cal"?c.calendarioActualizado:c.rankingActualizado;
     toast((b.dataset.refresh==="cal"?"Agenda al día":"Ranking al día")+(k?" · actualizado "+new Date(k).toLocaleString("es",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):""))}catch(x){toast("No se pudo actualizar. Revisa tu conexión.")}
   b.disabled=false;b.textContent=t});
-async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
+let tjSello=null;async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
+  {const se=((d.config||{}).rankingActualizado||"")+"|"+((d.config||{}).activacionesCorte||"")+"|"+(d.ranking||[]).length;if(tjSello&&se!==tjSello)setTimeout(()=>{try{toast("📊 Ranking actualizado")}catch(e){}},600);tjSello=se}
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
   renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderGan()}catch(e){}try{renderComp()}catch(e){}try{renderMetaEq()}catch(e){}try{renderPremios()}catch(e){}try{renderRC()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
@@ -5013,7 +5014,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101004310";var busy=false,pend=null;
+(function(){var V="20261101081650";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
