@@ -4242,17 +4242,20 @@ function abrirHorario(){const H=miHorario();let dias=H.dias.slice(),horas=H.hora
     $("#hH").onclick=e=>{const b=e.target.closest("[data-h]");if(!b)return;const k=b.dataset.h;horas=horas.includes(k)?horas.filter(x=>x!==k):horas.concat(k).sort();b.setAttribute("aria-pressed",horas.includes(k));res()};
     $("#hOk").onclick=()=>{if(!dias.length||!horas.length){toast("Elige al menos un día y una hora");return}profile.horario={dias,horas};store.set("perfil",profile);publicarSlots();closeSheet();toast("Horario guardado ✓");renderMiAgenda()}})}
 function renderMiAgenda(){const el=$("#agMia");if(!el||agVista!=="mia")return;if(!citasOk){el.innerHTML=`<p class="muted small">Cargando tu agenda…</p>`;loadCitas();return}
-  const t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7)+agWk*7),ds=Array.from({length:7},(_,i)=>new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+i));
+  const t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()+agWk*7), /* empieza HOY y sigue 7 días; las flechas mueven de 7 en 7 */ds=Array.from({length:7},(_,i)=>new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+i));
   const W=ds.map(d=>{const k=dkey(d);return{k,d,L:citas.filter(c=>c.fecha===k).sort(citaSort)}}),tot=W.reduce((a,x)=>a+x.L.length,0),hrs=W.reduce((a,x)=>a+x.L.reduce((b,c)=>b+(c.dur||60),0),0)/60;
   const mx=Math.max(4,...W.map(x=>x.L.reduce((b,c)=>b+(c.dur||60),0)/60));const lleno=W.filter(x=>x.L.reduce((b,c)=>b+(c.dur||60),0)>=240).map(x=>DAYS[x.d.getDay()]);
   const rango=ds[0].getDate()+" "+MONTHS[ds[0].getMonth()].slice(0,3)+" – "+ds[6].getDate()+" "+MONTHS[ds[6].getMonth()].slice(0,3);
   const Hh=miHorario(),dn=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
   el.innerHTML=`   <div class="card row between" style="gap:10px"><div style="min-width:0"><b style="font-size:14px">🌐 Agenda desde tu página</b><div class="small muted">${[1,2,3,4,5,6,0].filter(d=>Hh.dias.includes(d)).map(d=>dn[d]).join(", ")} · ${Hh.horas.map(h12).join(", ")}</div></div><button class="btn sm ghost" id="hEdit" style="flex:none">⚙️ Mi horario</button></div>
-   <div class="card" style="gap:10px"><div class="cal-head"><button id="wkPrev" aria-label="Semana anterior">‹</button><h3 style="margin:0">${agWk===0?"Esta semana":agWk===1?"Próxima semana":rango}</h3><button id="wkNext" aria-label="Semana siguiente">›</button></div>
+   <div class="card" style="gap:10px"><div class="cal-head"><button id="wkPrev" aria-label="Semana anterior">‹</button><h3 style="margin:0">${agWk===0?"Próximos 7 días":agWk===1?"Siguientes 7 días":agWk===-1?"7 días anteriores":rango}</h3><button id="wkNext" aria-label="Semana siguiente">›</button></div>
     <p class="small muted" style="margin:0;text-align:center">${rango} · <b style="color:var(--ink)">${tot} ${tot===1?"cita":"citas"}</b> · ${hrs%1?hrs.toFixed(1):hrs} h${lleno.length?` · <span style="color:var(--warn);font-weight:700">${lleno.join(", ")} lleno</span>`:""}</p>
     <div class="wkbars">${W.map(x=>{const h=x.L.reduce((b,c)=>b+(c.dur||60),0)/60;return `<div class="${x.k===TODAY?"hoy":""}"><span class="bw"><i style="height:${Math.round(h/mx*100)}%;background:${h>=4?"var(--warn)":"var(--brand)"}"></i></span><b>${x.L.length||""}</b><small>${DAYS[x.d.getDay()]} ${x.d.getDate()}</small></div>`}).join("")}</div></div>
-   ${W.map(x=>`<div class="card" style="gap:8px${x.k<TODAY?";opacity:.55":""}"><div class="row between"><h3 style="margin:0">${x.k===TODAY?"Hoy · ":""}${DAYS_L[x.d.getDay()][0].toUpperCase()+DAYS_L[x.d.getDay()].slice(1)} ${x.d.getDate()}</h3>${x.k>=TODAY?`<button class="btn sm ghost" data-cinew="${x.k}">+</button>`:""}</div>
-     ${x.L.length?x.L.map(citaCard).join(""):`<p class="small muted" style="margin:0">Libre</p>`}</div>`).join("")}`;
+   ${W.map(x=>{const man=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1)),nm=(x.k===TODAY?"Hoy · ":x.k===man?"Mañana · ":"")+DAYS_L[x.d.getDay()][0].toUpperCase()+DAYS_L[x.d.getDay()].slice(1)+" "+x.d.getDate();
+     if(!x.L.length)return `<div class="card agLibre" style="flex-direction:row;align-items:center;justify-content:space-between;text-align:left;padding:8px 14px${x.k<TODAY?";opacity:.55":""}"><span><b style="font-size:14px">${nm}</b> <span class="small muted">· Libre</span></span>${x.k>=TODAY?`<button class="btn sm ghost" data-cinew="${x.k}">+</button>`:""}</div>`;
+     return `<div class="card" style="gap:8px${x.k<TODAY?";opacity:.55":""}"><div class="row between"><h3 style="margin:0">${nm}</h3>${x.k>=TODAY?`<button class="btn sm ghost" data-cinew="${x.k}">+</button>`:""}</div>${x.L.map(citaCard).join("")}</div>`}).join("")}
+   ${agWk===0?(()=>{const P=citas.filter(c=>c.fecha<TODAY&&c.fecha>=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()-7))).sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:citaSort(a,b));if(!P.length)return"";
+     return `<details class="card agPas" style="gap:8px"><summary style="cursor:pointer;font-weight:700">🕘 Días anteriores <span class="small muted">(${P.length} ${P.length===1?"cita":"citas"})</span></summary>${P.map(c=>`<div class="small muted" style="margin-top:8px;font-weight:700">${(d=>DAYS_L[d.getDay()][0].toUpperCase()+DAYS_L[d.getDay()].slice(1)+" "+d.getDate())(parseK(c.fecha))}</div>${citaCard(c)}`).join("")}</details>`})():""}`;
   $("#hEdit").onclick=abrirHorario;$("#wkPrev").onclick=()=>{agWk--;renderMiAgenda()};$("#wkNext").onclick=()=>{agWk++;renderMiAgenda()};
   el.querySelectorAll("[data-cinew]").forEach(b=>b.onclick=()=>abrirCita({fecha:b.dataset.cinew}));bindCitas(el)}
 function renderHoyCitas(){try{renderRecCard()}catch(e){}const c=$("#hoyCitas");if(!c)return;const L=citas.filter(x=>x.fecha===TODAY&&(citaIni(x).getTime()+(x.dur||60)*6e4>Date.now()||(x.tipo!=="lider"&&!x.hecha))).sort(citaSort);if(!L.length){c.hidden=true;return}c.hidden=false;
@@ -5029,7 +5032,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101082412";var busy=false,pend=null;
+(function(){var V="20261101085303";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
