@@ -741,6 +741,38 @@ nav.tabs button{z-index:0;isolation:isolate}
 .lz-camT{display:flex;justify-content:space-between;gap:8px}.lz-camT b{font-weight:600}.lz-camT .num{font-size:17px}
 .lz-camB{position:relative;height:7px;border-radius:99px;background:var(--soft,#E8EEF3);overflow:visible}.lz-camB i{display:block;height:100%;border-radius:99px;background:#94A3B8}.lz-camB i.l{background:#2AC1F1}.lz-camB i.e{background:linear-gradient(90deg,#D4AF37,#E8C766)}
 .lz-camB em{position:absolute;top:-3px;width:2px;height:13px;background:#0A7DAD;border-radius:2px}.lz-camR .ok{color:#0A7DAD;font-weight:700}
+#v-inicio.simple>*{order:60}#v-inicio.simple>:first-child{order:0}#v-inicio.simple>#avisoCard{order:1}#v-inicio.simple>#miWaCard{order:2}#v-inicio.simple>#ahCard{order:3}#v-inicio.simple>#pendStrip{order:4}
+#v-inicio.simple>#irCard{order:5}#v-inicio.simple>#rutCard{order:6}#v-inicio.simple>#metaEq{order:7}#v-inicio.simple>#compStrip{order:8}#v-inicio.simple>#ganCard{order:9}#v-inicio.simple>#actBan{order:10}
+#v-inicio.simple>#hoyCitas{order:11}#v-inicio.simple>#nextEvents{order:12}#v-inicio.simple>#accesos{order:30}#v-inicio.simple>#salaCard{display:none!important}
+.irCard{background:linear-gradient(150deg,#0b1020,#0b3b57 70%,#0A7DAD);color:#fff;border:1px solid rgba(42,193,241,.45);border-radius:20px;padding:16px;position:relative;overflow:hidden;cursor:pointer;box-shadow:0 10px 26px -14px #0A7DAD}
+.irCard:before{content:"";position:absolute;inset:0;background:radial-gradient(90% 70% at 100% 0%,rgba(42,193,241,.35),transparent 60%);pointer-events:none}.irCard>*{position:relative}
+.irCard .k,.irTop .k,.irHero .k{font-size:11px;letter-spacing:.14em;font-weight:800;color:#7DD3FC;text-transform:uppercase}
+.irCard .t,.irTop .t{font-family:"Bricolage Grotesque",Figtree,sans-serif;font-weight:800;font-size:19px;margin-top:3px}.irCard .t em,.irTop .t em{font-style:normal;color:#7DD3FC}
+.irBar{height:9px;background:rgba(255,255,255,.14);border-radius:99px;margin:10px 0 6px;overflow:hidden}.irBar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#2AC1F1,#7DD3FC);box-shadow:0 0 12px #2AC1F1;transition:width .6s}
+.irMeta{display:flex;justify-content:space-between;gap:8px;font-size:13px;opacity:.9}
+.irNx{margin-top:10px;background:rgba(255,255,255,.08);border:1px solid rgba(125,211,252,.35);border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:10px;font-size:14px}.irNx b{flex:1;font-weight:700}
+.irNx .btn{background:#2AC1F1;color:#06384F;white-space:nowrap}
+.irMed{display:flex;gap:6px;margin-top:10px}.irMed span{flex:1;text-align:center;font-size:11px;padding:6px 2px;border-radius:10px;background:rgba(255,255,255,.07);opacity:.55}.irMed span i{display:block;font-style:normal;font-size:18px}
+.irMed span.on{opacity:1;background:rgba(42,193,241,.2);border:1px solid #2AC1F1}.irMed span.ok{opacity:1;background:rgba(232,199,102,.2);border:1px solid #E8C766}
+.irCard.inv{cursor:default}
+.irTop{background:linear-gradient(150deg,#0b1020,#0b3b57 70%,#0A7DAD);color:#fff;border-radius:18px;padding:14px 16px;margin-bottom:10px}
+.irWk{display:flex;gap:6px;margin-bottom:6px}.irWk button{flex:1;border:0;font:inherit;font-size:12.5px;font-weight:800;padding:8px 0;border-radius:11px;background:var(--soft,#E6ECF2);color:#55606b;cursor:pointer}
+.irWk button.ok{background:#FEF3C7;color:#8C6A12}.irWk button.on{background:#0A7DAD;color:#fff}
+.irG{background:var(--card,#fff);border-radius:16px;padding:6px 14px;margin-top:10px;border:1px solid var(--line,#E5ECF1)}.irG h4{margin:8px 0 2px;font-size:15px}
+.irIt{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line,#EDF1F5)}.irIt:nth-child(2){border-top:0}
+.irIt .ck{width:26px;height:26px;border-radius:8px;flex:none;display:grid;place-items:center;font-size:15px;border:2px solid #C9D4DE;color:#fff;font-weight:800}.irIt .ck.ok{background:#0A7DAD;border-color:#0A7DAD}
+.irIt .tx{flex:1;font-size:14.5px}.irIt .tx small{display:block;font-size:12px;opacity:.65;margin-top:1px}.irIt.d .tx{opacity:.6}
+.irIt .au{font-size:10px;font-weight:800;color:#0A7DAD;background:#E0F2FE;border-radius:6px;padding:2px 6px;margin-left:4px;vertical-align:middle}
+.irIt .go{font:inherit;font-size:12.5px;font-weight:800;color:#0A7DAD;background:transparent;border:1.5px solid #0A7DAD;border-radius:10px;padding:6px 9px;white-space:nowrap;cursor:pointer}.irIt .go.f{background:#0A7DAD;color:#fff}
+.irTg{display:flex;align-items:center;gap:10px;text-align:left;border:1.5px solid var(--line,#DCE4EB);background:var(--card,#fff);color:inherit;font:inherit;font-size:14.5px;padding:11px 12px;border-radius:13px;cursor:pointer}
+.irTg .ck{width:24px;height:24px;border-radius:7px;border:2px solid #C9D4DE;display:grid;place-items:center;color:#fff;font-weight:800;flex:none}.irTg.on{border-color:#0A7DAD;background:#E0F2FE;color:#06384F}.irTg.on .ck{background:#0A7DAD;border-color:#0A7DAD}
+.irOp{display:flex;gap:6px}.irOp button{flex:1;border:1.5px solid var(--line,#DCE4EB);background:var(--card,#fff);color:inherit;font:inherit;font-weight:700;padding:9px 0;border-radius:11px;cursor:pointer}.irOp button.on{background:#0A7DAD;border-color:#0A7DAD;color:#fff}
+.irHero,.irCel{background:linear-gradient(150deg,#0b1020,#0b3b57 70%,#0A7DAD);border-radius:20px;color:#fff;padding:20px 18px;text-align:center;position:relative;overflow:hidden}
+.irHero h2,.irCel h2{color:#fff;margin:4px 0 0}.irHero p,.irCel p{opacity:.85;margin:6px 0 0}.irCel{margin-bottom:12px}.irCel.g{background:linear-gradient(150deg,#0b1020,#3b2a00 70%,#8C6A12)}.irCelIc{font-size:64px}.irCel .k{font-size:11px;letter-spacing:.14em;font-weight:800;color:#7DD3FC}.irCel.g .k{color:#E8C766}
+.irPath{display:flex;align-items:center;justify-content:space-between;margin:16px 0 6px}.irPath div{text-align:center;font-size:11px;font-weight:800;width:64px}.irPath div i{display:grid;place-items:center;font-style:normal;font-size:22px;width:46px;height:46px;margin:0 auto 4px;border-radius:50%;background:#E0F2FE;border:2px solid #2AC1F1}
+.irPath s{flex:1;height:2px;background:repeating-linear-gradient(90deg,#2AC1F1 0 5px,transparent 5px 9px);margin-bottom:18px}
+.irQ{background:var(--soft,#F1F6F9);border-left:3px solid #0A7DAD;border-radius:10px;padding:10px 12px;font-size:13.5px;margin:12px 0;font-style:italic}
+.irPts{font-size:14px;line-height:1.5}.irPts div{display:flex;gap:8px;margin:4px 0}
 </style>
 
 </head>
@@ -1095,6 +1127,7 @@ nav.tabs button{z-index:0;isolation:isolate}
       <div class="rcCard" id="rcCard" hidden></div>
       <div id="compStrip" hidden></div>
       <div class="pendStrip" id="pendStrip" hidden></div>
+      <div class="irCard" id="irCard" hidden></div>
       <div class="retoStrip" id="retoStrip" hidden></div>
       <div class="card" id="salaCard" hidden style="border:1.5px solid #C2410C"></div>
       
@@ -1386,7 +1419,7 @@ async function sumarSeg(c){if(!c)return false;if((day.segL||[]).some(x=>x.cid===
   day.segL=(day.segL||[]).concat([{cid:c.id,n:String(c.name||"").slice(0,60)}]);day.seguimientos=Math.max((day.seguimientos||0)+1,day.segL.length);renderTasks();saveDay();
   c.ultSeg=TODAY;c.updated=Date.now();if(FLOW.indexOf(c.stage||"Nuevo")>=0&&FLOW.indexOf(c.stage||"Nuevo")<FLOW.indexOf("Seguimiento")){c.stage="Seguimiento";c.stT=Date.now();c.stAuto="le dio seguimiento en la rutina"}
   try{await store.saveContact(Object.assign({},c));renderCRM()}catch(e){}
-  toast("🔁 Seguimiento a "+c.name.split(" ")[0]+" registrado");return true}
+  try{irBump("seg")}catch(e){}toast("🔁 Seguimiento a "+c.name.split(" ")[0]+" registrado");return true}
 function abrirSeg(){let q="";const hoy=new Set((day.segL||[]).map(x=>x.cid));
   const pr=c=>({"Por cerrar":0,"Seguimiento":1,"Presentación":2,"Contactado":3,"Nuevo":4}[c.stage||"Nuevo"]||5);
   const L=()=>contacts.filter(c=>!hoy.has(c.id)&&c.stage!=="No interesado"&&(!q||nrmN(c.name).includes(nrmN(q)))).sort((a,b)=>pr(a)-pr(b)||(a.ultSeg||"").localeCompare(b.ultSeg||"")||(b.updated||0)-(a.updated||0)).slice(0,40);
@@ -1403,7 +1436,7 @@ async function sumarPres(c,ci){const ya=presSemana();if(c.id&&ya.some(x=>x.cid==
   day.presL=(day.presL||[]).concat([{cid:c.id||"",n:String(c.name||"").slice(0,60)}]);day.presentaciones=Math.max((day.presentaciones||0)+1,day.presL.length);bumpReto("presentaciones",1);renderTasks();saveDay();
   if(c.id&&FLOW.indexOf(c.stage||"Nuevo")<FLOW.indexOf("Presentación")&&c.stage!=="Cliente"&&c.stage!=="No interesado"){c.stage="Presentación";c.stT=Date.now();c.stAuto="le presentó el plan";c.updated=Date.now();await store.saveContact(Object.assign({},c));try{renderCRM()}catch(e){}}
   const cc=ci||citas.find(x=>x.fecha===TODAY&&x.cid&&x.cid===c.id&&!x.hecha);if(cc){cc.hecha=true;await saveCita(cc);renderHoyCitas();renderMiAgenda()}
-  toast("🎯 Presentación a "+c.name.split(" ")[0]+" registrada");return true}
+  try{irBump("pres")}catch(e){}toast("🎯 Presentación a "+c.name.split(" ")[0]+" registrada");return true}
 function quitarPres(){if(!(day.presentaciones>0))return;const L=day.presL||[];if(L.length){const x=L[L.length-1];day.presL=L.slice(0,-1);const cc=citas.find(y=>y.fecha===TODAY&&y.cid&&y.cid===x.cid&&y.hecha);if(cc){cc.hecha=false;saveCita(cc)}toast("Quitada: "+x.n.split(" ")[0])}
   day.presentaciones--;bumpReto("presentaciones",-1);renderTasks();saveDay();renderHoyCitas()}
 function abrirPres(){let q="";const ya=new Set(presSemana().map(x=>x.cid).filter(Boolean)),hoyC=new Set(citas.filter(x=>x.fecha===TODAY&&x.cid).map(x=>x.cid));
@@ -1696,7 +1729,7 @@ async function compGuardar(o){const nm=Object.assign({mes:mesMeta(),t:Date.now()
   try{const nmb=miNombreFull()||miNombreCorto();if(nmb)store.db.doc("constancia/"+store.uid).set({comp:nm.no?{mes:nm.mes,no:true}:{mes:nm.mes,rango:nm.rango,act:nm.act,ac:nm.ac,ap:nm.ap,vol:nm.vol,pres:nm.pres}},{merge:true}).catch(()=>{})}catch(e){}
   renderComp();try{renderMetaEq()}catch(e){}}
 let compVisto=false;
-function compCheck(){if(compVisto||!compPuede()||miComp())return;if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate"))return;compVisto=true;compIntro()}
+function compCheck(){if(compVisto||!compPuede()||miComp())return;try{if(irIntroPend())return}catch(e){}if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate"))return;compVisto=true;compIntro()}
 function compIntro(){const mn=mesNom();openSheet(`<div style="text-align:center;font-size:44px;line-height:1">🎯</div><h2 style="text-align:center">Mi compromiso de ${esc(mn)}</h2>
    <p style="text-align:center;margin:0">Empieza un mes nuevo y es el momento de decidir qué quiere lograr.</p>
    <p class="small muted" style="text-align:center;margin:0">Toma menos de un minuto: su rango objetivo, sus activaciones personales y sus presentaciones por semana.</p>
@@ -2472,7 +2505,7 @@ function miosFila(V,lvl0){let lvl=lvl0;const cname=k=>{const c=cursosL().find(x=
        <span class="chip c-brand">👥 ${S.contactos||0} ${(S.contactos||0)===1?"contacto":"contactos"}</span>
        ${a.hist?`<span class="chip c-good">📸 Historia hoy</span>`:""}
        ${(()=>{const rk=rankDe(nm);return rk?`<span class="chip ${rk.pPos&&rk.pPos<=10?"c-gold":"c-brand"}">🏆 Registros: ${rk.R}${rk.pPos?" · #"+rk.pPos:""}</span><span class="chip ${rk.aPos&&rk.aPos<=10?"c-gold":"c-brand"}">🚀 Activaciones: ${rk.A} · Vol. ${fmt(rk.V)}${rk.aPos?" · #"+rk.aPos:""}</span>`:`<span class="chip c-brand">🏆 Sin registros en el ranking</span>`})()}
-       ${(()=>{const m=x.metas||{},R=proxRango(rangoActualIdx(x.registro,nm)),rg=R?R.n:"";if(!m.act&&!rg&&!m.sueno)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(R?`<span class="chip" style="background:${R.c};color:#fff">🏅 Próximo: ${esc(rg)}</span>`:"")+(m.sueno?`<span class="chip c-good">💰 Sueño: ${usd(m.sueno)}/mes</span>`:"")})()}${compChip(x,nm)}
+       ${(()=>{const m=x.metas||{},R=proxRango(rangoActualIdx(x.registro,nm)),rg=R?R.n:"";if(!m.act&&!rg&&!m.sueno)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(R?`<span class="chip" style="background:${R.c};color:#fff">🏅 Próximo: ${esc(rg)}</span>`:"")+(m.sueno?`<span class="chip c-good">💰 Sueño: ${usd(m.sueno)}/mes</span>`:"")})()}${compChip(x,nm)}${irChip(x)}
        ${cs.length?cs.map(k=>`<span class="chip c-good">🎓 ${esc(cname(k))}</span>`).join(""):`<span class="chip c-brand">🎓 Sin cursos aún</span>`}
       </div><div class="row" style="gap:8px;margin-top:10px">${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<button class="btn sm grow" data-mah="${esc(x.uid)}" style="background:#B42335;color:#fff">💰 Motivar su ahorro</button>`:""})()}<button class="btn sm grow" data-mot="${esc(x.uid)}" style="background:#25D366;color:#fff">💬 Motivar por WhatsApp</button>${compPuede0()?`<button class="btn sm grow" data-mcp="${esc(x.uid)}" style="background:#16A34A;color:#fff">🎯 ${compDe(x)&&!compDe(x).no?"Motivar compromiso":"Pedir compromiso"}</button>`:""}<button class="btn sm ghost" data-wnum="${esc(x.uid)}" type="button" aria-label="Cambiar número de WhatsApp de ${esc(nm)}">✏️ Número</button></div></div>`}}
 const SOLO_ADMIN=["garciagoedwin@gmail.com"];const esSoloAdmin=x=>SOLO_ADMIN.includes(String(x.email||"").toLowerCase());
@@ -2922,7 +2955,8 @@ async function redSubir(btn){if(!isAdmin)return;const m=$("#rdUpMsg"),say=t=>{if
     redL=null;redHay=true;redBtn();setTimeout(()=>{if(eqTab==="cierre")renderEquipo()},2500)}
   catch(e){console.error("redSubir",e);say("❌ No se pudo: "+((e&&e.code)==="permission-denied"?"faltan las reglas de la red en Firebase.":((e&&(e.code||e.message))||"error")))}
   btn.disabled=false}
-function renderEquipo(){const b=$("#eqBody");redProbe();redBtn();
+function renderEquipo(){try{if(irSimple()&&rankMetric==="presentaciones")rankMetric="nuevos"}catch(e){}renderEquipo0();try{rankBeta()}catch(e){}}
+function renderEquipo0(){const b=$("#eqBody");redProbe();redBtn();
   if(eqTab==="cierre"){renderCierre(b);return}
   if(eqTab==="socios"){renderSocios(b);return}
   if(eqTab==="mios"){renderMios(b);return}
@@ -3855,8 +3889,8 @@ $("#calNext").onclick=()=>{calM=new Date(calM.getFullYear(),calM.getMonth()+1,1)
 $("#agSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;agTab=b.dataset.k;setSeg("agSeg",agTab);if(agTab==="semana")calM=new Date(now.getFullYear(),now.getMonth(),1);if(agTab==="proxima"){const d=new Date(now);d.setDate(d.getDate()+7);calM=new Date(d.getFullYear(),d.getMonth(),1)}renderCal()});
 $("#evList").addEventListener("click",e=>{const b=e.target.closest("[data-ev]");if(b)editEvent(T.eventos.find(x=>x.id===b.dataset.ev))});
 const WA_IC=`<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>`;
-function renderNext(){const nowHM=pad(now.getHours())+":"+pad(now.getMinutes());const up=T.eventos.filter(e=>e.fecha>=TODAY&&!finalizada(e)).sort((a,b)=>(a.fecha+(a.hora||"")).localeCompare(b.fecha+(b.hora||""))).slice(0,3);
-  $("#nextEvents").innerHTML=`<div class="row between" style="align-items:flex-start"><div><h3>📣 Próximas actividades</h3><p class="small muted" style="margin:2px 0 0">Invite hoy: comparta el flyer con sus prospectos.</p></div><button class="btn sm ghost" id="goAgenda">Calendario</button></div>`+
+function renderNext(){const nowHM=pad(now.getHours())+":"+pad(now.getMinutes());const up=T.eventos.filter(e=>e.fecha>=TODAY&&!finalizada(e)).sort((a,b)=>(a.fecha+(a.hora||"")).localeCompare(b.fecha+(b.hora||""))).slice(0,irSimple()?1:3);
+  $("#nextEvents").innerHTML=`<div class="row between" style="align-items:flex-start"><div><h3>📣 ${irSimple()?"Próxima actividad":"Próximas actividades"}</h3><p class="small muted" style="margin:2px 0 0">Invite hoy: comparta el flyer con sus prospectos.</p></div><button class="btn sm ghost" id="goAgenda">Calendario</button></div>`+
    (up.length?`<div class="list">${up.map(e=>`<div class="ev"><span class="hr" style="font-size:15px">${e.fecha===TODAY?"Hoy":esc(niceDate(e.fecha).replace(" de "," "))}<br><span class="muted" style="font-size:14px">${esc(h12(e.hora))}</span></span><div class="body"><div class="row between" style="align-items:flex-start"><b>${esc(e.titulo)}</b>${modoChip(e)}</div><div class="meta">${e.lugar?`<span>${PIN}${esc(e.lugar)}</span>`:""}${e.responsable?`<span>${USER}${esc(e.responsable)}</span>`:pendiente(e)?`<span class="chip c-warn">Por asignar</span>`:""}</div>${e.id?`<button type="button" class="nxShare" data-share="${esc(e.id)}">${esYess(e)?"📧 ¿Cómo entrar?":WA_IC+" Compartir"+(esFlyer(e)?" flyer":"")}</button>`:""}</div></div>`).join("")}</div>`
    :welSigned===false&&!T.eventos.length?`<p class="small muted">Crea tu cuenta gratis en <a href="https://claude.ai/login" target="_blank" rel="noopener"><b>Claude</b></a> para ver la agenda del equipo.</p>`:`<p class="small muted">No hay actividades próximas en el calendario.</p>`);
   $("#goAgenda").onclick=()=>go("agenda")}
@@ -4789,11 +4823,11 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
     <button class="pf-it" id="pfFront"><span class="ic">🏠</span>Ver la portada de la app</button>
-    ${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
+    ${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
-    $("#pfNombre").onclick=abrirMisDatos;{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
+    $("#pfNombre").onclick=abrirMisDatos;{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
     $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfMem").onclick=()=>memCompartir();$("#pfMemV").onclick=()=>memVisitas();
     $("#pfInv").onclick=()=>{if(!(regDoc&&regDoc.registro)){toast("Completa tu registro primero");return}const u=miEnlace();openSheet(`<h2>🔗 Tu enlace de invitación</h2><p class="small muted">Compártelo solo con tus socios nuevos. Al registrarse, aparecerás como su patrocinador.</p>
       <div class="card" style="word-break:break-all;font-weight:600">${esc(u)}</div><button class="btn" id="invCp" style="width:100%">Copiar enlace</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#invCp").onclick=async()=>{try{await navigator.clipboard.writeText(u);toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})};
@@ -4815,6 +4849,193 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#sheet").hidden
 
 // ---------- inicio ----------
 $("#todayLbl").textContent=longDate(TODAY);
+// ---------- Plan de Inicio Rápido (30 días) + Inicio simple — BETA: solo admin ----------
+// irBeta(): interruptor. Cuando Edwin apruebe, cambiar a ()=>true y publicar.
+const irBeta=()=>isAdmin;
+const IR_DESDE="2026-11-02";
+const IR_W=[
+ {n:1,k:"Despegue",ic:"🚀",fin:7},{n:2,k:"Presentador",ic:"🎤",fin:14},{n:3,k:"Cerrador",ic:"🔁",fin:21},{n:4,k:"Duplicador",ic:"🌱",fin:30}];
+const IR_HERR=[["pago","Dejé configurado mi pago recurrente"],["app","Instalé la app de inCruises"],["arr","Descargué ARRANQUE PRO"],["work","Workbook de presentación impreso"],["yess","Me registré en YessMovement"],["caja","Caja de herramientas lista"]];
+function irSimM(){try{return isAdmin&&store.uid?LS.get("irSim:"+store.uid):null}catch(e){return null}}
+function irSt(){const s=irSimM();return Object.assign({},(regDoc&&(s?regDoc.irSim:regDoc.ir))||{})}
+let irSaveT=null,irPend={};
+function irSave(patch){const s=irSimM(),f=s?"irSim":"ir";regDoc=regDoc||{};regDoc[f]=Object.assign({},regDoc[f]||{},patch);irPend[f]=regDoc[f];
+  clearTimeout(irSaveT);irSaveT=setTimeout(()=>{const P=irPend;irPend={};if(!store.db||!store.uid)return;store.db.doc("users/"+store.uid).update(P).catch(()=>{})},700)}
+function irBump(k){try{if(!regDoc)return;["ir","irSim"].forEach(f=>{const s=regDoc[f];if(!s||!s.ini)return;const c=Object.assign({},s.c||{});c[k]=(c[k]||0)+1;regDoc[f]=Object.assign({},s,{c});irPend[f]=regDoc[f]});
+  clearTimeout(irSaveT);irSaveT=setTimeout(()=>{const P=irPend;irPend={};if(store.db&&store.uid&&Object.keys(P).length)store.db.doc("users/"+store.uid).update(P).catch(()=>{})},700);setTimeout(irRender,400)}catch(e){}}
+// modo: "nuevo" (plan automático), "actual" (invitación), null (no aplica)
+function irModo(){const s=irSimM();if(s)return s;if(!irBeta()||isAdmin)return null;const r=miRegistro();if(!r||!r.nombre)return null;
+  return String(r.fecha||"")>=IR_DESDE?"nuevo":"actual"}
+function irActivo(){const m=irModo(),st=irSt();if(!m)return false;if(m==="nuevo")return true;return !!st.ini}
+function irIni(){const st=irSt();if(st.ini)return st.ini;const m=irModo();if(m==="nuevo"&&!irSimM()){const f=Date.parse(miRegistro().fecha||"");return isNaN(f)?Date.now():f}return Date.now()}
+function irDia(){return Math.max(1,Math.floor((Date.now()-irIni())/864e5)+1)}
+let irValOk=null,irValT=0,irMiosT=0;
+function irCtx(){const st=irSt(),ini=irIni(),iniD=dkey(new Date(ini)),C=contacts||[],c=st.c||{},mk=st.mk||{},sim=!!irSimM();
+  const lid=(citas||[]).filter(x=>x.tipo==="lider"&&!x.cancel&&String(x.fecha||"")>=iniD);
+  const yo=miNombreFull()||miRegistro().nombre||"";
+  const act1=(T.activaciones||[]).some(a=>yo&&(nrmN(a.patrocinador)===nrmN(yo)||(nrmN(yo).split(" ").length>=2&&nrmN(a.patrocinador).includes(nrmN(yo).split(" ").slice(0,2).join(" "))))&&Date.parse(a.fecha)>=ini)||C.some(x=>["Socio","Cliente"].includes(x.stage)&&(x.stT||0)>=ini);
+  const dir=(mios||[]).filter(x=>(x.registro||{}).patrocinadorUid===store.uid&&Date.parse((x.registro||{}).fecha||"")>=ini);
+  return {st,ini,nC:C.length,cont:C.filter(x=>(x.stage||"Nuevo")!=="Nuevo").length,pc:C.filter(x=>["Por cerrar","Socio","Cliente"].includes(x.stage)).length,
+   pres:c.pres||0,seg:c.seg||0,lid:lid.length,l3:lid.filter(x=>x.l3&&!x.lz&&!x.lzE).length,mk,
+   herrN:IR_HERR.filter(h=>mk[h[0]]).length,porque:!!(snInfo&&String(snInfo.porque||"").trim()),meta:!!(st.meta&&st.meta.tiempo),
+   pat:sim||!!miRegistro().patrocinadorUid,ref:!!String(profile.ref||"").trim(),val:!!st.val||!!irValOk,comp:!!(miComp()&&!miComp().no),
+   act1,soc:dir.length>0,ayu:!!mk.ayu||dir.some(x=>x.ir&&x.ir.ini)||(citas||[]).some(x=>x.lzE&&String(x.fecha||"")>=iniD),racha:irRacha(),sim}}
+function irRacha(){let r=0;try{for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const k=dkey(d),s=dayScore(k===TODAY?day:weekCache[k],k);if(i===0&&s<1)continue;if(s>=1)r++;else break}}catch(e){}return r}
+const irGoCRM=()=>{closeSheet();go("crm")};
+function irItems(n){const its={
+ 1:[{k:"porque",g:"Define su meta",t:"Su “por qué”",s:"Lo más importante que quiere lograr con inCruises",a:x=>x.porque,b:["Escribir",()=>{closeSheet();go("suenos")}]},
+    {k:"meta",g:"Define su meta",t:"Su meta y compromiso diario",s:"Tiempo, contactos y presentaciones al día",a:x=>x.meta,m:1,b:["Llenar",()=>irMeta()]},
+    {k:"pat",g:"Prepare su negocio",t:"Conectado con su patrocinador",a:x=>x.pat},
+    {k:"ref",g:"Prepare su negocio",t:"Su link de referido listo",a:x=>x.ref,b:["Agregar",()=>{closeSheet();abrirMiPagina()}]},
+    {k:"herr",g:"Prepare su negocio",t:"Sus herramientas listas",s:"Pago recurrente, app de inCruises, Arranque Pro, Workbook, YessMovement y caja de herramientas",a:x=>x.herrN>=6,p:x=>x.herrN+" de 6",m:1,b:["Marcar",()=>irHerr()]},
+    {k:"act1",g:"Prepare su negocio",t:"Su primera actividad con su patrocinador",s:"Lo que no tiene día y hora, probablemente no suceda",a:x=>x.lid>0,b:["Agendar",()=>{closeSheet();pedirL3(null)}],f:1},
+    {k:"l30",g:"Su lista y primeras presentaciones",t:"30 contactos en su lista",s:"No seleccione quién cree que dirá que sí: primero escriba nombres",a:x=>x.nC>=30,p:x=>Math.min(x.nC,30)+" de 30",b:["Agregar",irGoCRM]},
+    {k:"c10",g:"Su lista y primeras presentaciones",t:"Contactar a 10 personas",a:x=>x.cont>=10,p:x=>Math.min(x.cont,10)+" de 10",b:["Contactar",irGoCRM]},
+    {k:"p5",g:"Su lista y primeras presentaciones",t:"5 presentaciones",a:x=>x.pres>=5,p:x=>Math.min(x.pres,5)+" de 5",b:["Presentar",()=>{closeSheet();abrirPres()}]},
+    {k:"s5",g:"Su lista y primeras presentaciones",t:"Seguimiento a 5 prospectos",s:"Cada presentación termina con una decisión o un siguiente paso con fecha",a:x=>x.seg>=5,p:x=>Math.min(x.seg,5)+" de 5",b:["Registrar",()=>{closeSheet();abrirSeg()}]}],
+ 2:[{k:"p10",g:"Presente acompañado",t:"10 presentaciones en total",a:x=>x.pres>=10,p:x=>Math.min(x.pres,10)+" de 10",b:["Presentar",()=>{closeSheet();abrirPres()}]},
+    {k:"l3",g:"Presente acompañado",t:"2 llamadas de 3 con su líder",a:x=>x.l3>=2,p:x=>Math.min(x.l3,2)+" de 2",b:["Pedir",()=>{closeSheet();pedirL3(null)}],f:1},
+    {k:"ent",g:"Presente acompañado",t:"Conectarse a 1 entrenamiento del equipo",s:"Action Leaders Training o Llamada de Poder",a:x=>!!x.mk.ent,m:1,b:["Ya me conecté",()=>irMk("ent")]},
+    {k:"l50",g:"Presente acompañado",t:"Lista de 50 contactos",a:x=>x.nC>=50,p:x=>Math.min(x.nC,50)+" de 50",b:["Agregar",irGoCRM]}],
+ 3:[{k:"s15",g:"Siga y cierre",t:"10 seguimientos más (15 en total)",a:x=>x.seg>=15,p:x=>Math.min(x.seg,15)+" de 15",b:["Registrar",()=>{closeSheet();abrirSeg()}]},
+    {k:"pc3",g:"Siga y cierre",t:"3 prospectos en “Por cerrar”",a:x=>x.pc>=3,p:x=>Math.min(x.pc,3)+" de 3",b:["Ver CRM",irGoCRM]},
+    {k:"val",g:"Siga y cierre",t:"Dar 1 presentación usted solo",s:"Su patrocinador confirma que ya puede presentar",a:x=>x.val,b:["Pedir validación",()=>irPedirVal()],f:1},
+    {k:"comp",g:"Siga y cierre",t:"Su compromiso del mes",a:x=>x.comp,b:["Hacerlo",()=>{closeSheet();try{compAbrir()}catch(e){}}]}],
+ 4:[{k:"act",g:"El ciclo continúa",t:"Su primer socio o cliente activado",a:x=>x.act1},
+    {k:"soc",g:"El ciclo continúa",t:"Su socio nuevo entra a la app",s:"Compártale su enlace de invitación",a:x=>x.soc,b:["Invitar",()=>irInvitar()]},
+    {k:"ayu",g:"El ciclo continúa",t:"Ayudarlo a empezar su Inicio Rápido",s:"Agende su primera actividad con él",a:x=>x.ayu,m:1,b:["Ya lo hice",()=>irMk("ayu")]},
+    {k:"r7",g:"El ciclo continúa",t:"Racha de 7 días seguidos",a:x=>x.racha>=7,p:x=>Math.min(x.racha,7)+" de 7"}]};return its[n]}
+function irEstado(){const x=irCtx(),W=IR_W.map(w=>{const L=irItems(w.n).map(i=>Object.assign({},i,{ok:!!i.a(x),pt:i.p?i.p(x):""}));return Object.assign({},w,{L,n2:L.filter(i=>i.ok).length})});
+  let cur=W.find(w=>w.n2<w.L.length);const grad=!cur;if(!cur)cur=W[3];return {x,W,cur,grad,dia:irDia()}}
+function irMk(k){const st=irSt(),mk=Object.assign({},st.mk||{});mk[k]=Date.now();irSave({mk});closeSheet();toast("✅ Marcado");setTimeout(()=>{irRender();irLista()},300)}
+function irHerr(){const st=irSt(),mk=Object.assign({},st.mk||{});
+  openSheet(`<h2>🧰 Prepare su negocio</h2><p class="small muted" style="margin:0">Marque lo que ya tiene listo. Deje lo esencial y luego salga a la acción.</p>
+   <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">${IR_HERR.map(h=>`<button type="button" class="irTg${mk[h[0]]?" on":""}" data-h="${h[0]}"><span class="ck">${mk[h[0]]?"✓":""}</span>${esc(h[1])}</button>`).join("")}</div>
+   <button class="btn" id="irHok" style="width:100%;margin-top:12px">Guardar</button>`,()=>{
+    $("#sheet").querySelectorAll("[data-h]").forEach(b=>b.onclick=()=>{const k=b.dataset.h;if(mk[k])delete mk[k];else mk[k]=Date.now();b.classList.toggle("on",!!mk[k]);b.querySelector(".ck").textContent=mk[k]?"✓":""});
+    $("#irHok").onclick=()=>{irSave({mk});closeSheet();toast("✅ Guardado");setTimeout(irRender,300)}})}
+function irMeta(){const st=irSt(),m=st.meta||{},sue=((regDoc||{}).metas||{}).sueno||"";const op=(k,arr,v)=>`<div class="irOp" data-k="${k}">${arr.map(a=>`<button type="button" class="${String(v)===String(a)?"on":""}" data-v="${esc(a)}">${esc(a)}</button>`).join("")}</div>`;
+  openSheet(`<h2>🎯 Define su meta</h2><p class="small muted" style="margin:0">Tomó una decisión. Ahora conviértala en acción.</p>
+   <div class="field"><label>¿Cuánto necesitaría generar al mes para que este negocio reemplace su empleo u otra actividad? (USD)</label><input class="inp" id="irM1" inputmode="numeric" value="${esc(m.reemp||"")}" placeholder="$"></div>
+   <div class="field"><label>¿Cuál sería su ingreso mensual soñado en 5 años con inCruises? (USD)</label><input class="inp" id="irM2" inputmode="numeric" value="${esc(m.sueno||sue)}" placeholder="$"></div>
+   <div class="field"><label>Si alcanzar sus metas requiere aprender, trabajar y desarrollar nuevas habilidades, ¿qué está dispuesto a hacer desde hoy?</label><textarea class="inp" id="irM3" rows="2">${esc(m.disp||"")}</textarea></div>
+   <p class="small" style="font-weight:800;margin:8px 0 4px">Mi compromiso diario</p>
+   <p class="small muted" style="margin:0 0 4px">Tiempo diario</p>${op("tiempo",["30 min","1 h","2 h","3+ h"],m.tiempo)}
+   <p class="small muted" style="margin:8px 0 4px">Personas que contactaré al día</p>${op("cont",["2","5","10"],m.cont)}
+   <p class="small muted" style="margin:8px 0 4px">Presentaciones que buscaré hacer al día</p>${op("pres",["1","2","3"],m.pres)}
+   <p class="small muted" style="margin:10px 0 0">Esto es su meta personal, no una promesa de ingresos.</p>
+   <button class="btn" id="irMok" style="width:100%;margin-top:12px">Guardar mi meta</button>`,()=>{const sel=Object.assign({},m);
+    $("#sheet").querySelectorAll(".irOp").forEach(g=>g.onclick=e=>{const b=e.target.closest("button");if(!b)return;g.querySelectorAll("button").forEach(z=>z.classList.remove("on"));b.classList.add("on");sel[g.dataset.k]=b.dataset.v});
+    $("#irMok").onclick=()=>{if(!sel.tiempo){toast("Elija su tiempo diario");return}const nm=Object.assign(sel,{reemp:$("#irM1").value.replace(/[^\d]/g,""),sueno:$("#irM2").value.replace(/[^\d]/g,""),disp:$("#irM3").value.trim().slice(0,300)});irSave({meta:nm});closeSheet();toast("🎯 Meta guardada");setTimeout(irRender,300)}})}
+async function irPedirVal(){if(irSimM()){openSheet(`<h2>✅ Validación</h2><p>En la app real, su patrocinador recibe esto en <b>Mi equipo</b> y toca <b>“✅ Ya puede presentar”</b>.</p><button class="btn" id="irSV" style="width:100%">🧪 Simular que mi patrocinador validó</button>`,()=>{$("#irSV").onclick=()=>{irSave({val:Date.now()});closeSheet();setTimeout(irRender,300)}});return}
+  const r=miRegistro(),sp=(r.invitadoPor||r.patrocinador||"").split(" ")[0];let w="";
+  try{if(r.patrocinadorUid){const d=await store.db.doc("users/"+r.patrocinadorUid).get();w=String(((d.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}}catch(e){}
+  const t=`Hola${sp?", "+sp:""} 🙌\n\nYa di mi primera presentación yo solo, como parte de mi Plan de Inicio Rápido.\n\n¿Me ayuda a validarla en la app (Mi equipo → ✅ Ya puede presentar)?`;
+  location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t)}
+function irInvitar(){closeSheet();const u=miEnlace(),t=`¡Bienvenido al equipo! 🎉\n\nEntre a nuestra app con este enlace para empezar su Plan de Inicio Rápido conmigo:\n\n${u}`;location.href="https://wa.me/?text="+encodeURIComponent(t)}
+async function irValCheck(){try{if(irValOk||irSimM()||Date.now()-irValT<18e5)return;irValT=Date.now();const p=miRegistro().patrocinadorUid;if(!p||!store.db)return;const d=await store.db.doc("constancia/"+p).get();const v=d.exists&&(d.data().irVal||{})[store.uid];if(v){irValOk=v;irSave({val:v});irRender()}}catch(e){}}
+function irResumen(E){try{if(irSimM())return;const st=irSt();if(!st.ini&&irModo()!=="nuevo")return;const tot=E.W.reduce((s,w)=>s+w.n2,0);const p0=st.p||{};
+  const p={w:E.grad?5:E.cur.n,n:E.cur.n2,tot:E.cur.L.length,d:E.dia,g:E.grad?1:0,med:Object.keys(st.med||{}).map(Number),all:tot,u:tot>(p0.all||0)?Date.now():(p0.u||Date.now())};
+  const pat={p};if(!st.ini)pat.ini=irIni();if(JSON.stringify(p0)!==JSON.stringify(Object.assign({},p0,p)))irSave(pat)}catch(e){}}
+function irPremiar(E){const st=irSt(),med=Object.assign({},st.med||{});let nueva=null;E.W.forEach(w=>{if(w.n2>=w.L.length&&!med[w.n]){med[w.n]=Date.now();nueva=nueva||w}});
+  if(E.grad&&!st.grad){irSave({med,grad:Date.now()});setTimeout(()=>irCelebrar(null),900);return}
+  if(nueva){irSave({med});setTimeout(()=>irCelebrar(nueva),900)}}
+function irCelebrar(w){if(!$("#sheet").hidden){setTimeout(()=>irCelebrar(w),4000);return}const g=!w,nm=(miRegistro().nombre||profile.nombrePila||"").split(" ")[0];
+  openSheet(`<div class="irCel${g?" g":""}" id="irCel"><div class="irCelIc">${g?"🎓":w.ic}</div><div class="k">${g?"PLAN DE INICIO RÁPIDO COMPLETADO":"SEMANA "+w.n+" COMPLETADA"}</div><h2>${g?"¡Action Leader graduado!":"¡Insignia "+esc(w.k)+"!"}</h2><p>${g?`¡Felicidades${nm?", "+esc(nm):""}! Terminó sus 30 días. Ahora el ciclo continúa: ayude a su equipo a hacer el suyo.`:`¡Muy bien${nm?", "+esc(nm):""}! ${w.n<4?"Siga así: la semana "+(w.n+1)+" ya está lista.":"Ya casi se gradúa."}`}</p></div>
+   <button class="btn" id="irFly" style="width:100%">📣 Compartir mi logro</button><button class="btn ghost" data-close style="width:100%">Seguir</button>`,()=>{confeti($("#irCel"),60);$("#irFly").onclick=()=>irFlyer(w)})}
+async function irFlyer(w){const g=!w,W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  const gr=x.createLinearGradient(0,0,W,H);gr.addColorStop(0,"#0b1020");gr.addColorStop(.6,"#0b3b57");gr.addColorStop(1,g?"#8C6A12":"#0A7DAD");x.fillStyle=gr;x.fillRect(0,0,W,H);
+  const rg=x.createRadialGradient(W/2,380,40,W/2,380,600);rg.addColorStop(0,g?"rgba(232,199,102,.45)":"rgba(42,193,241,.45)");rg.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=rg;x.fillRect(0,0,W,H);
+  x.textAlign="center";x.fillStyle=g?"#E8C766":"#7DD3FC";x.font="700 34px Figtree,system-ui,sans-serif";x.fillText("PLAN DE INICIO RÁPIDO",W/2,140);
+  x.font="230px system-ui";x.fillText(g?"🎓":w.ic,W/2,470);
+  x.fillStyle="#fff";x.font="800 84px 'Bricolage Grotesque',Figtree,system-ui,sans-serif";x.fillText(g?"¡Graduado!":"¡Semana "+w.n+"!",W/2,640);
+  x.fillStyle=g?"#E8C766":"#7DD3FC";x.font="700 54px Figtree,system-ui,sans-serif";x.fillText(g?"Action Leader":"Insignia "+w.k,W/2,725);
+  const nm=miRegistro().nombre||profile.nombrePila||"";x.fillStyle="#fff";x.font="600 50px Figtree,system-ui,sans-serif";x.fillText(nm.slice(0,32),W/2,860);
+  x.fillStyle="rgba(255,255,255,.75)";x.font="500 36px Figtree,system-ui,sans-serif";x.fillText(g?"Completé mis 30 días de Inicio Rápido":"Completé la semana "+w.n+" de mi Inicio Rápido",W/2,930);
+  x.fillStyle=g?"#E8C766":"#2AC1F1";x.font="800 40px Figtree,system-ui,sans-serif";x.fillText("#HASTAQUEFUNCIONE",W/2,1150);
+  x.fillStyle="rgba(255,255,255,.7)";x.font="700 34px Figtree,system-ui,sans-serif";x.fillText("Action Leaders PLUS",W/2,H-70);
+  try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],g?"graduado-inicio-rapido.jpg":"inicio-rapido-semana-"+w.n+".jpg",{type:"image/jpeg"});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
+    const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
+function irRender(){const el=$("#irCard");if(!el)return;try{
+  const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
+  if(m==="actual"&&!st.ini){const no=LS.get("irNo:"+store.uid);if(no&&Date.now()<no){el.hidden=true;return}
+    el.hidden=false;el.className="irCard inv";el.innerHTML=`<div class="k">🚀 Plan de Inicio Rápido</div><div class="t">Haga su Inicio Rápido para enseñarlo a su equipo</div><p class="small" style="margin:4px 0 0;opacity:.85">30 días, 4 insignias. Lo que ya tiene hecho se marca solo. Lo que usted vive, lo puede duplicar.</p>
+     <div class="row" style="gap:8px;margin-top:10px"><button class="btn sm" id="irEmp" style="background:#2AC1F1;color:#06384F;flex:1">🚀 Empezar mi plan</button><button class="btn sm ghost" id="irNo" style="color:#fff;background:transparent;border:1px solid rgba(255,255,255,.35)">Ahora no</button></div>`;
+    $("#irEmp").onclick=()=>{irSave({ini:Date.now(),vis:1});irRender();setTimeout(irLista,300)};$("#irNo").onclick=()=>{LS.set("irNo:"+store.uid,Date.now()+14*864e5);irRender()};return}
+  if(m==="nuevo"&&!st.ini)irSave({ini:irIni()});
+  const E=irEstado();irPremiar(E);irResumen(E);if(E.cur.n>=3)irValCheck();if(E.cur.n>=4&&mios===null&&Date.now()-irMiosT>6e5){irMiosT=Date.now();try{loadMios().then(()=>setTimeout(irRender,500))}catch(e){}}
+  const st2=irSt();if(st2.grad&&Date.now()-st2.grad>3*864e5){el.hidden=true;return}
+  const w=E.cur,pc=Math.round(w.n2/w.L.length*100),nx=w.L.find(i=>!i.ok),fin=w.fin,d=E.dia,q=Math.max(0,fin-d);
+  el.hidden=false;el.className="irCard";
+  el.innerHTML=E.grad?`<div class="k">🎓 Plan de Inicio Rápido</div><div class="t">¡Action Leader <em>graduado</em>!</div><p class="small" style="margin:4px 0 0;opacity:.85">Ahora ayude a su equipo a hacer el suyo.</p><button class="btn sm" id="irFlyG" style="background:#E8C766;color:#3b2a00;margin-top:10px">📣 Compartir mi logro</button>`:
+   `<div class="k">🚀 Plan de Inicio Rápido</div><div class="t">Semana ${w.n} · <em>${esc(w.k)}</em></div>
+    <div class="irBar"><i style="width:${Math.max(4,pc)}%"></i></div>
+    <div class="irMeta"><span><b>${w.n2} de ${w.L.length}</b> ✅</span><span>Día ${d} de ${fin}${d>fin?" · ¡a terminarla!":q>0?" · quedan "+q+(q===1?" día":" días"):" · ¡último día!"}</span></div>
+    ${nx?`<div class="irNx">👉 <b>${esc(nx.t)}</b>${nx.b?`<button class="btn sm" id="irNxB" type="button">${esc(nx.b[0])}</button>`:""}</div>`:""}
+    <div class="irMed">${IR_W.map(z=>`<span class="${(st2.med||{})[z.n]?"ok":z.n===w.n?"on":""}"><i>${z.ic}</i>${esc(z.k)}</span>`).join("")}</div>`;
+  if(E.grad){$("#irFlyG").onclick=e=>{e.stopPropagation();irFlyer(null)}}
+  {const b=$("#irNxB");if(b&&nx)b.onclick=e=>{e.stopPropagation();nx.b[1]()}}
+  el.onclick=e=>{if(e.target.closest("button"))return;irLista()}}catch(e){el.hidden=true;try{console.warn("irRender",e)}catch(x){}}}
+function irLista(n){const E=irEstado(),st=irSt();n=n||E.cur.n;const w=E.W[n-1],G={};w.L.forEach(i=>{(G[i.g]=G[i.g]||[]).push(i)});
+  openSheet(`<div class="irTop"><div class="k">🚀 Plan de Inicio Rápido</div><div class="t">Semana ${w.n} · <em>${esc(w.k)}</em></div><div class="irBar"><i style="width:${Math.max(4,Math.round(w.n2/w.L.length*100))}%"></i></div><div class="irMeta"><span><b>${w.n2} de ${w.L.length}</b> listas</span><span>Día ${E.dia} · meta: día ${w.fin}</span></div></div>
+   <div class="irWk">${E.W.map(z=>`<button type="button" data-w="${z.n}" class="${z.n===n?"on":""}${(st.med||{})[z.n]?" ok":""}">${z.ic} Sem ${z.n}</button>`).join("")}</div>
+   ${n>E.cur.n&&!E.grad?`<p class="small muted" style="margin:6px 2px">Esta semana se abre al terminar la semana ${E.cur.n}. Lo que ya tenga hecho se marca solo.</p>`:""}
+   ${Object.keys(G).map(g=>`<div class="irG"><h4>${esc(g)}</h4>${G[g].map(i=>`<div class="irIt${i.ok?" d":""}"><span class="ck${i.ok?" ok":""}">${i.ok?"✓":""}</span><span class="tx">${esc(i.t)}${i.ok&&!i.m?` <span class="au">AUTOMÁTICO</span>`:""}${i.s||i.pt?`<small>${esc(i.pt?(i.pt+(i.s?" · "+i.s:"")):i.s)}</small>`:""}</span>${!i.ok&&i.b?`<button type="button" class="go${i.f?" f":""}" data-it="${i.k}">${esc(i.b[0])}</button>`:""}</div>`).join("")}</div>`).join("")}
+   ${n===1?`<p class="small muted" style="margin:8px 2px 0;text-align:center">No necesita saberlo todo para comenzar. Comience acompañado y aprenda mientras avanza.</p>`:""}
+   <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{const sh=$("#sheet");
+    sh.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>irLista(+b.dataset.w));
+    sh.querySelectorAll("[data-it]").forEach(b=>b.onclick=()=>{const i=w.L.find(z=>z.k===b.dataset.it);if(i&&i.b)i.b[1]()})})}
+function irIntro(){const nm=(miRegistro().nombre||profile.nombrePila||"").split(" ")[0];
+  openSheet(`<div class="irHero"><div class="k">ACTION LEADER SYSTEM</div><div style="font-size:46px">🚀</div><h2>Su Plan de Inicio Rápido</h2><p>${nm?esc(nm)+", ":""}30 días para poner su negocio en movimiento, acompañado.</p></div>
+   <div class="irPath">${IR_W.map((z,i)=>`${i?"<s></s>":""}<div><i>${z.ic}</i>${esc(z.k)}</div>`).join("")}</div>
+   <div style="text-align:center;font-size:13px;font-weight:800;color:#8C6A12">🎓 Al final: Action Leader graduado</div>
+   <div class="irQ">“No necesita saberlo todo para comenzar. Comience acompañado y aprenda mientras avanza.”</div>
+   <div class="irPts"><div>✅ <span>Muchas acciones se marcan <b>solas</b> con lo que ya hace en la app.</span></div><div>🤝 <span>Su patrocinador ve su avance y le ayuda.</span></div><div>🏅 <span>Gane una insignia cada semana.</span></div></div>
+   <button class="btn" id="irGo" style="width:100%;margin-top:12px">Empezar mi plan</button><button class="btn ghost" data-close style="width:100%">Lo veo después</button>`,()=>{
+    $("#irGo").onclick=()=>{closeSheet();setTimeout(()=>irMeta(),250)}});irSave({vis:1})}
+function irIntroPend(){const m=irModo(),st=irSt();return m==="nuevo"&&!st.vis}
+let irRevT=0;function irRevisar(){try{irRender();irInicio();if(!irIntroPend())return;if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate")){if(++irRevT<6)setTimeout(irRevisar,8000);return}irIntro()}catch(e){}}
+// ---- Inicio simple (beta) ----
+function irSimple(){return irBeta()||!!irSimM()}
+function irInicio(){const v=$("#v-inicio");if(!v)return;const on=irSimple();v.classList.toggle("simple",on);document.body.classList.toggle("beta",on);
+  const pf=document.querySelector(".card.perf"),sn=$("#v-suenos"),ini=$("#rutCard");if(!pf)return;
+  if(on&&sn&&pf.parentNode!==sn){const ref=$("#compSn");if(ref&&ref.nextSibling)sn.insertBefore(pf,ref.nextSibling);else sn.appendChild(pf)}
+  else if(!on&&v&&pf.parentNode!==v){const a=$("#nextEvents");v.insertBefore(pf,a?a.nextSibling:null)}}
+// ---- Rankings sin "Registros inCruises" (beta) ----
+function rankBeta(){if(!irSimple())return;document.querySelectorAll('#rankMetric [data-k="presentaciones"]').forEach(b=>b.remove());document.querySelectorAll('#rankMetric [data-k="liderazgo"]').forEach(b=>{b.textContent="⭐ Sistema de liderazgo"})}
+// ---- Vista del patrocinador ----
+let irVals=null,irValsT=0;
+async function irValsCargar(){if(irVals!==null&&Date.now()-irValsT<6e5)return;irValsT=Date.now();try{const d=await store.db.doc("constancia/"+store.uid).get();irVals=(d.exists&&d.data().irVal)||{}}catch(e){irVals=irVals||{}}}
+function irChip(x){if(!irSimple())return"";const s=x.ir||{},p=s.p;if(!p)return"";const nm=((x.registro||{}).nombre||"").split(" ")[0];
+  if(irVals===null)irValsCargar().then(()=>{try{renderEquipo()}catch(e){}});
+  if(p.g)return `<span class="chip" style="background:linear-gradient(120deg,#FBEFC0,#D4AF37);color:#3b2a00;font-weight:800">🎓 Graduado del Inicio Rápido</span>`;
+  const w=IR_W[(p.w||1)-1]||IR_W[0],quieto=Date.now()-(p.u||0)>2*864e5,ah=ahSoc(x),val=(irVals||{})[x.uid];
+  let h=`<span class="chip c-brand" style="font-weight:800">${w.ic} Inicio Rápido · Semana ${w.n} · ${p.n||0}/${p.tot||0} · Día ${p.d||1}</span>`;
+  if(ah&&ah.pend)h+=`<span class="chip c-bad">💰 Plan en pausa por ahorro</span>`;
+  else if(quieto)h+=`<button type="button" class="chip c-bad" style="border:0;font:inherit;cursor:pointer" data-irh="${esc(x.uid)}">⚠️ ${Math.floor((Date.now()-(p.u||0))/864e5)} días sin avanzar · 💬 Ayudarlo</button>`;
+  if((p.med||[]).length&&!quieto)h+=`<button type="button" class="chip c-good" style="border:0;font:inherit;cursor:pointer" data-irf="${esc(x.uid)}">🏅 ${(p.med||[]).map(n=>IR_W[n-1]?IR_W[n-1].ic:"").join("")} · 👏 Felicitar</button>`;
+  if(p.w===3&&!val)h+=`<button type="button" class="chip" style="border:0;font:inherit;cursor:pointer;background:#0A7DAD;color:#fff" data-irv="${esc(x.uid)}">✅ ¿Ya puede presentar? Validar</button>`;
+  return h}
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-irh],[data-irf],[data-irv]");if(!b)return;const uid=b.dataset.irh||b.dataset.irf||b.dataset.irv,x=(mios||[]).find(y=>y.uid===uid);if(!x)return;
+  const nm=((x.registro||{}).nombre||"").split(" ")[0],p=((x.ir||{}).p)||{},w=waSocio(x);
+  if(b.dataset.irv){if(!confirm("¿Confirma que "+nm+" ya puede dar la presentación solo?"))return;try{await store.db.doc("constancia/"+store.uid).set({irVal:{[uid]:Date.now()}},{merge:true});irVals=Object.assign({},irVals||{},{[uid]:Date.now()});toast("✅ Validado: "+nm+" ya puede presentar");renderEquipo()}catch(err){toast("No se pudo guardar")}return}
+  const t=b.dataset.irf?`¡Felicidades, ${nm}! 🏅\n\nYa ganó su insignia de la semana ${Math.max(...(p.med||[1]))} del Plan de Inicio Rápido.\n\nMe llena de orgullo su avance. ¡Vamos por la siguiente! 🚀`:`¡Hola, ${nm}! 🙌\n\nVi que va en la semana ${p.w||1} de su Plan de Inicio Rápido.\n\n¿Qué le está costando? Agendemos 15 minutos y lo hacemos juntos. 💪`;
+  location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t)});
+// ---- Interruptor de prueba (solo admin) ----
+function simAbrir(){const s=irSimM();openSheet(`<h2>🧪 Ver como socio</h2><p class="small muted" style="margin:0">Pruebe lo nuevo como lo vería un socio. Lo que marque aquí se guarda aparte: no toca su avance real ni lo ve el equipo. Usa sus datos reales (CRM, citas, racha).</p>
+   <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+    <button class="btn${s==="nuevo"?"":" ghost"}" id="smN">🚀 Ver como socio nuevo${s==="nuevo"?" · activo":""}</button>
+    <button class="btn${s==="actual"?"":" ghost"}" id="smA">👀 Ver como socio actual (invitación)${s==="actual"?" · activo":""}</button>
+    ${s?`<button class="btn ghost" id="smD">⏩ Adelantar 7 días</button><button class="btn ghost" id="smR">🔄 Reiniciar la prueba</button><button class="btn ghost" id="smOff" style="color:#B42335">Apagar · volver a mi vista de admin</button>`:""}</div>
+   <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{
+    const set=v=>{LS.set("irSim:"+store.uid,v);closeSheet();irInicio();irRender();try{renderEquipo()}catch(e){}go("inicio")};
+    $("#smN").onclick=()=>{set("nuevo");const st=irSt();if(!st.ini)irSave({ini:Date.now()});setTimeout(irRevisar,600)};
+    $("#smA").onclick=()=>{set("actual");try{localStorage.removeItem("alp:irNo:"+store.uid)}catch(e){}};
+    {const d=$("#smD");if(d)d.onclick=()=>{const st=irSt();irSave({ini:(st.ini||Date.now())-7*864e5});closeSheet();setTimeout(irRender,300);toast("⏩ +7 días · Día "+irDia())}}
+    {const r=$("#smR");if(r)r.onclick=()=>{const f={ini:irSimM()==="nuevo"?Date.now():null};regDoc=regDoc||{};regDoc.irSim=f;store.db.doc("users/"+store.uid).update({irSim:f}).catch(()=>{});closeSheet();setTimeout(irRevisar,500)}}
+    {const o=$("#smOff");if(o)o.onclick=()=>{try{localStorage.removeItem("alp:irSim:"+store.uid)}catch(e){}closeSheet();irInicio();irRender();try{renderEquipo()}catch(e){}}}})}
+
 function renderAll(){renderTasks();renderWeek();renderRetoMini();renderRef();renderEquipo();renderCRM();renderCal();renderNext();renderAca();renderMe()}
 renderAll();
 try{const t=localStorage.getItem("alp:tab");if(t&&document.getElementById("v-"+t))go(t)}catch(e){}
@@ -4843,7 +5064,7 @@ let tjSello=null;async function loadTeamJSON(){try{const r=await fetch("data/tea
   {const se=((d.config||{}).rankingActualizado||"")+"|"+((d.config||{}).activacionesCorte||"")+"|"+(d.ranking||[]).length;if(tjSello&&se!==tjSello)setTimeout(()=>{try{toast("📊 Ranking actualizado")}catch(e){}},600);tjSello=se}
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
-  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderGan()}catch(e){}try{renderComp()}catch(e){}try{renderMetaEq()}catch(e){}try{renderPremios()}catch(e){}try{renderRC()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
+  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderGan()}catch(e){}try{renderComp()}catch(e){}try{renderMetaEq()}catch(e){}try{renderPremios()}catch(e){}try{renderRC()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist();try{irInicio();irRender()}catch(e){}}catch(e){}}
 let autoFotoHecho=false;
 function urlADataUrl(u,S){return new Promise(ok=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{S=S||240;const c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);
   c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);ok(c.toDataURL("image/jpeg",.85))}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=u})}
@@ -4876,7 +5097,7 @@ async function loadMine(){
   try{const b=bw;if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}catch(e){}
   if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
   welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();
-  contacts=await store.contacts();setTimeout(importarProspectos,1500);setTimeout(()=>loadSala(),2500);setTimeout(()=>loadL3(),1800);setTimeout(()=>{try{renderDT();dtCargar(false)}catch(e){}},2600);setTimeout(lcRevisar,6000);setTimeout(()=>loadEvA(),2200);loadCitas();
+  contacts=await store.contacts();setTimeout(importarProspectos,1500);setTimeout(()=>loadSala(),2500);setTimeout(()=>loadL3(),1800);setTimeout(()=>{try{renderDT();dtCargar(false)}catch(e){}},2600);setTimeout(lcRevisar,6000);setTimeout(()=>loadEvA(),2200);loadCitas();setTimeout(irRevisar,1500);
   renderAll()}
 
 let invSponsor=null,invData=null;
@@ -5052,7 +5273,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101154153";var busy=false,pend=null;
+(function(){var V="20261101173722";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
