@@ -336,7 +336,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .compStrip{border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;cursor:pointer;background:color-mix(in srgb,#16A34A 12%,var(--surface));border:1px solid color-mix(in srgb,#16A34A 35%,transparent);border-left:5px solid #16A34A}
 .compStrip .mtN{font-size:17px}.compStrip .mtBar{height:8px;border-radius:99px;background:color-mix(in srgb,#16A34A 18%,var(--surface));overflow:hidden}.compStrip .mtBar i{display:block;height:100%;background:#16A34A;border-radius:99px}
 .compBtn{width:100%;border:1.5px dashed #16A34A;background:var(--surface);color:var(--ink);border-radius:16px;padding:14px;font:800 15px Figtree,system-ui,sans-serif;cursor:pointer;text-align:left}
-.cpR small{margin-left:0!important}.cpStep{display:flex;align-items:center;justify-content:center;gap:18px}.cpStep .btn{width:52px;height:52px;font-size:24px;padding:0}.cpStep b{font-size:34px;min-width:56px;text-align:center}
+.cpR small{margin-left:0!important}.cpRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 0}.cpRow>span b{display:block}.cpRow>span small{font-size:12.5px}.cpRow .cpStep{gap:12px}.cpRow .cpStep .btn{width:46px;height:46px}.cpRow .cpStep b{font-size:28px;min-width:40px}.cpN span{line-height:1.25}.cpStep{display:flex;align-items:center;justify-content:center;gap:18px}.cpStep .btn{width:52px;height:52px;font-size:24px;padding:0}.cpStep b{font-size:34px;min-width:56px;text-align:center}
 .cpCard{position:relative;overflow:hidden;border-radius:20px;padding:20px;text-align:center;color:#fff;background:linear-gradient(135deg,#0b1020,#0b3b57)}.cpCard h2{color:#fff;margin:6px 0}.cpCard p{margin:0 0 10px}.cpN{display:flex;gap:10px}.cpN span{flex:1;background:rgba(255,255,255,.1);border-radius:14px;padding:10px;font-size:13px}.cpN b{display:block;font-size:30px}
 .rgList{display:flex;flex-direction:column;gap:6px}.rgList label{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-weight:600}
 .rgList label.lk{opacity:.5;cursor:default}.rgList label:has(input:checked){border-color:var(--brand);background:var(--gold-soft)}.rgList small{margin-left:auto;color:var(--muted);font-weight:700}
@@ -1656,14 +1656,14 @@ function renderGan(){const c=$("#ganCard");if(!c)return;const G=(T.config||{}).g
   c.querySelector(".gn-x").onclick=e=>{e.stopPropagation();try{LS.set(K,1)}catch(x){}renderGan()};
   const KC="ganConf:"+G.mes+":"+TODAY;try{if(!LS.get(KC)){LS.set(KC,1);setTimeout(()=>confeti(c,70),500)}}catch(e){}}
 
-const COMP_R=[{k:"Líder",ic:"🛡️",t:"Líder",pts:200,d:"200 pts personales"},{k:"Team Leader",ic:"⚔️",t:"Espartano · Team Leader",pts:500,d:"500 pts personales"},{k:"Membresía gratuita",ic:"💎",t:"Membresía gratuita",pts:0,d:"Su membresía sin costo"},{k:"Marketing Director",ic:"🟢",t:"Marketing Director",pts:0,d:"Su primer rango de director"}];
+const COMP_R=[{k:"Líder",ic:"🛡️",t:"Líder",pts:200,d:"200 pts personales"},{k:"Team Leader",ic:"⚔️",t:"Espartano · Team Leader",pts:500,d:"500 pts personales"},{k:"Membresía gratuita",ic:"💎",t:"Membresía gratuita",pts:0,d:"Su membresía sin costo"},{k:"Marketing Director",ic:"🟢",t:"Marketing Director",pts:0,d:"Su primer rango de director"},{k:"SM Director",ic:"🔵",t:"SM Director",pts:0,d:"Senior Marketing Director"},{k:"Regional Director",ic:"🟠",t:"Regional Director",pts:0,d:""},{k:"National Director",ic:"🔴",t:"National Director",pts:0,d:""},{k:"International Director",ic:"🟣",t:"International Director",pts:0,d:""}];
 const compR=k=>COMP_R.find(r=>r.k===k)||null;
 function miComp(){const c=(regDoc&&regDoc.comp)||null;return c&&c.mes===mesMeta()?c:null}
 function compPuede(){const C=(T.config||{}).compromiso;if(!C||!fbUser||!regDoc||SOLO_ADMIN.includes(String(fbUser.email||"").toLowerCase()))return false;return !(C.desde&&Date.now()<Date.parse(C.desde))}
 function compDias(){const n=new Date(),f=new Date(n.getFullYear(),n.getMonth()+1,1);return Math.max(0,Math.ceil((f-n)/864e5))}
 async function compGuardar(o){const nm=Object.assign({mes:mesMeta(),t:Date.now()},o);
   await store.db.doc("users/"+store.uid).set({comp:nm},{merge:true});regDoc=Object.assign({},regDoc,{comp:nm});
-  try{const nmb=miNombreFull()||miNombreCorto();if(nmb)store.db.doc("constancia/"+store.uid).set({comp:nm.no?{mes:nm.mes,no:true}:{mes:nm.mes,rango:nm.rango,act:nm.act,pres:nm.pres}},{merge:true}).catch(()=>{})}catch(e){}
+  try{const nmb=miNombreFull()||miNombreCorto();if(nmb)store.db.doc("constancia/"+store.uid).set({comp:nm.no?{mes:nm.mes,no:true}:{mes:nm.mes,rango:nm.rango,act:nm.act,ac:nm.ac,ap:nm.ap,vol:nm.vol,pres:nm.pres}},{merge:true}).catch(()=>{})}catch(e){}
   renderComp()}
 let compVisto=false;
 function compCheck(){if(compVisto||!compPuede()||miComp())return;if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate"))return;compVisto=true;compIntro()}
@@ -1673,26 +1673,27 @@ function compIntro(){const mn=mesNom();openSheet(`<div style="text-align:center;
    <button class="btn" id="cpSi" style="width:100%">✍️ Hacer mi compromiso</button><button class="btn ghost" id="cpNo" style="width:100%">No haré compromiso este mes</button>`,()=>{
    $("#cpSi").onclick=compAbrir;
    $("#cpNo").onclick=async()=>{$("#cpNo").disabled=true;try{await compGuardar({no:true});closeSheet();toast("Está bien. Puede hacerlo cuando quiera desde Inicio 🎯")}catch(e){$("#cpNo").disabled=false;toast("No se pudo guardar. Revise su conexión.")}}})}
-function compAbrir(){const C=miComp()||{},mn=mesNom();let act=C.act||2,pres=Math.max(5,C.pres||5),rg=C.rango||"";
+function compAbrir(){const C=miComp()||{},mn=mesNom();let ac=C.ac!=null?C.ac:(C.act||1),ap=C.ap||0,pres=Math.max(5,C.pres||5),rg=C.rango||"";
   if(!rg){try{const cur=miRangoIdx();rg=cur<0?"Líder":cur===0?"Team Leader":"Marketing Director"}catch(e){rg="Líder"}}
-  const opts=COMP_R.map(r=>`<label><input type="radio" name="cpR" value="${esc(r.k)}" ${r.k===rg?"checked":""}><span style="font-size:20px">${r.ic}</span><span class="grow"><b>${esc(r.t)}</b><small class="muted" style="display:block">${esc(r.d)}</small></span></label>`).join("");
+  const opts=COMP_R.map(r=>`<label><input type="radio" name="cpR" value="${esc(r.k)}" ${r.k===rg?"checked":""}><span style="font-size:20px">${r.ic}</span><span class="grow"><b>${esc(r.t)}</b>${r.d?`<small class="muted" style="display:block">${esc(r.d)}</small>`:""}</span></label>`).join("");
   openSheet(`<h2>🎯 Mi compromiso de ${esc(mn)}</h2>
    <p class="small" style="font-weight:800;margin:0">1. Mi rango objetivo</p><div class="rgList cpR">${opts}</div>
    <p class="small" style="font-weight:800;margin:10px 0 0">2. Mis activaciones personales del mes</p>
-   <div class="cpStep"><button type="button" class="btn ghost" data-st="act" data-d="-1">−</button><b id="cpAct">${act}</b><button type="button" class="btn ghost" data-st="act" data-d="1">+</button></div>
+   <div class="cpRow"><span><b>Classic</b><small class="muted">200 pts c/u</small></span><div class="cpStep"><button type="button" class="btn ghost" data-st="ac" data-d="-1">−</button><b id="cpAc">${ac}</b><button type="button" class="btn ghost" data-st="ac" data-d="1">+</button></div></div>
+   <div class="cpRow"><span><b>Premium</b><small class="muted">500 pts c/u</small></span><div class="cpStep"><button type="button" class="btn ghost" data-st="ap" data-d="-1">−</button><b id="cpAp">${ap}</b><button type="button" class="btn ghost" data-st="ap" data-d="1">+</button></div></div>
    <p class="small muted" id="cpPts" style="margin:0;text-align:center"></p>
    <p class="small" style="font-weight:800;margin:10px 0 0">3. Mis presentaciones por semana <span class="muted">(mínimo 5)</span></p>
    <div class="cpStep"><button type="button" class="btn ghost" data-st="pres" data-d="-1">−</button><b id="cpPres">${pres}</b><button type="button" class="btn ghost" data-st="pres" data-d="1">+</button></div>
    <p class="small" style="font-weight:800;margin:10px 0 0">4. ¿Por qué lo hago este mes? <span class="muted">(opcional · privado)</span></p>
    <textarea id="cpWhy" rows="2" maxlength="200" placeholder="Ej. Por mi familia, para viajar con mi mamá" data-nofocus>${esc(C.porque||"")}</textarea>
    <button class="btn" id="cpSave" style="width:100%">🤝 Me comprometo</button><button class="btn ghost" data-close style="width:100%">Ahora no</button>`,()=>{
-   const pts=()=>{$("#cpAct").textContent=act;$("#cpPres").textContent=pres;$("#cpPts").innerHTML=act?`≈ <b>${fmt(act*200)}</b> pts si son Classic · <b>${fmt(act*500)}</b> pts si son Premium`:"Sume al menos una activación"};pts();
-   $("#sheetPanel").querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{const d=+b.dataset.d;if(b.dataset.st==="act")act=Math.max(0,Math.min(99,act+d));else pres=Math.max(5,Math.min(50,pres+d));pts()});
+   const pts=()=>{$("#cpAc").textContent=ac;$("#cpAp").textContent=ap;$("#cpPres").textContent=pres;const n=ac+ap;$("#cpPts").innerHTML=n?`<b>${n}</b> ${n===1?"activación":"activaciones"} = <b style="font-size:17px;color:var(--ink)">${fmt(ac*200+ap*500)} pts</b> de volumen personal`:"Sume al menos una activación"};pts();
+   $("#sheetPanel").querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{const d=+b.dataset.d;const k=b.dataset.st;if(k==="ac")ac=Math.max(0,Math.min(99,ac+d));else if(k==="ap")ap=Math.max(0,Math.min(99,ap+d));else pres=Math.max(5,Math.min(50,pres+d));pts()});
    $("#cpSave").onclick=async()=>{const x=$("#sheetPanel").querySelector("input[name=cpR]:checked");$("#cpSave").disabled=true;
-     try{await compGuardar({rango:x?x.value:"",act,pres,porque:$("#cpWhy").value.trim().slice(0,200)});compListo()}catch(e){$("#cpSave").disabled=false;toast("No se pudo guardar. Revise su conexión.")}}})}
+     try{await compGuardar({rango:x?x.value:"",act:ac+ap,ac,ap,vol:ac*200+ap*500,pres,porque:$("#cpWhy").value.trim().slice(0,200)});compListo()}catch(e){$("#cpSave").disabled=false;toast("No se pudo guardar. Revise su conexión.")}}})}
 function compListo(){const C=miComp();if(!C)return;const r=compR(C.rango)||{ic:"🎯",t:C.rango};
   openSheet(`<div class="cpCard" id="cpCard"><span class="gn-e">🤝 Me comprometo</span><h2>${esc(miNombreCorto()||"Líder")}</h2>
-    <p>En ${esc(mesNom())} voy por <b>${r.ic} ${esc(r.t)}</b>.</p><div class="cpN"><span><b>${C.act}</b>activaciones</span><span><b>${C.pres}</b>presentaciones por semana</span></div></div>
+    <p>En ${esc(mesNom())} voy por <b>${r.ic} ${esc(r.t)}</b>.</p><div class="cpN"><span><b>${C.act}</b>activaciones${C.ap||C.ac?`<br>${C.ap?C.ap+" Premium":""}${C.ap&&C.ac?" · ":""}${C.ac?C.ac+" Classic":""}`:""}</span>${C.vol?`<span><b>${fmt(C.vol)}</b>pts de volumen</span>`:""}<span><b>${C.pres}</b>presentaciones por semana</span></div></div>
    <p class="small muted" style="text-align:center;margin:0">¡Listo! Su compromiso queda en Inicio para que lo vea cada día.</p>
    <button class="btn" id="cpShare" style="width:100%">📤 Compartir mi compromiso</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
    const cc=$("#cpCard");if(cc)setTimeout(()=>confeti(cc,50),250);$("#cpShare").onclick=compFlyer})}
@@ -1702,9 +1703,11 @@ async function compFlyer(){const C=miComp();if(!C)return;const r=compR(C.rango)|
   g.fillStyle="#fff";g.font="800 96px 'Bricolage Grotesque',Figtree,system-ui,sans-serif";g.fillText("Me comprometo",W/2,330);
   g.font="700 54px Figtree,system-ui,sans-serif";g.fillStyle="rgba(255,255,255,.9)";g.fillText(miNombreCorto()||"Líder",W/2,420);
   g.font="800 70px Figtree,system-ui,sans-serif";g.fillStyle="#FDE047";g.fillText(r.ic+" "+r.t,W/2,590);
-  const box=(x,n,t)=>{g.fillStyle="rgba(255,255,255,.1)";g.beginPath();g.roundRect(x,690,430,300,36);g.fill();g.fillStyle="#fff";g.font="800 140px Figtree,system-ui,sans-serif";g.fillText(String(n),x+215,860);g.font="700 36px Figtree,system-ui,sans-serif";g.fillStyle="rgba(255,255,255,.85)";t.forEach((l,i)=>g.fillText(l,x+215,920+i*44))};
-  box(90,C.act,["activaciones"]);box(560,C.pres,["presentaciones","por semana"]);
-  g.fillStyle="rgba(255,255,255,.7)";g.font="700 34px Figtree,system-ui,sans-serif";g.fillText("Action Leaders PLUS",W/2,H-90);
+  const box=(x,y,w,n,t,col)=>{g.fillStyle="rgba(255,255,255,.1)";g.beginPath();g.roundRect(x,y,w,270,36);g.fill();g.fillStyle=col||"#fff";g.font="800 "+(String(n).length>4?104:120)+"px Figtree,system-ui,sans-serif";g.fillText(String(n),x+w/2,y+150);g.font="700 34px Figtree,system-ui,sans-serif";g.fillStyle="rgba(255,255,255,.85)";t.forEach((l,i)=>g.fillText(l,x+w/2,y+205+i*42))};
+  const det=[C.ap?C.ap+" Premium":"",C.ac?C.ac+" Classic":""].filter(Boolean).join(" · ");
+  box(90,640,430,C.act,["activaciones",det].filter(Boolean));box(560,640,430,C.pres,["presentaciones","por semana"]);
+  if(C.vol)box(90,940,900,fmt(C.vol)+" pts",["de volumen personal"],"#FDE047");
+  g.fillStyle="rgba(255,255,255,.7)";g.font="700 34px Figtree,system-ui,sans-serif";g.fillText("Action Leaders PLUS",W/2,H-45);
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],"mi-compromiso.jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(x){if(x&&x.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
@@ -1713,7 +1716,7 @@ function compStripHTML(){const C=miComp(),mn=mesNom();
   let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}const A=rk?rk.A:0,V=rk?rk.V:0,p=presSemana().length,r=compR(C.rango)||{ic:"🎯",t:C.rango,pts:0},d=compDias();
   const bar=(a,b)=>`<div class="mtBar"><i style="width:${b?Math.min(100,Math.round(a*100/b)):0}%"></i></div>`;
   return `<div class="compStrip" data-comp><div class="row between"><small class="gn-e" style="color:inherit">🤝 Mi compromiso de ${esc(mn)}</small><small>⏳ ${d} ${d===1?"día":"días"}</small></div>
-   <b class="mtN">${r.ic} ${esc(r.t)}${r.pts?` <small class="muted">· ${fmt(V)} / ${fmt(r.pts)} pts</small>`:""}</b>
+   <b class="mtN">${r.ic} ${esc(r.t)}</b>${C.vol?`<div class="row between small"><span>⚡ Volumen personal</span><b>${fmt(V)} de ${fmt(C.vol)} pts${V>=C.vol?" ✅":""}</b></div>${bar(V,C.vol)}`:""}
    <div class="row between small"><span>🚀 Activaciones</span><b>${A} de ${C.act}${A>=C.act&&C.act?" ✅":""}</b></div>${bar(A,C.act)}
    <div class="row between small"><span>🎤 Presentaciones esta semana</span><b>${p} de ${C.pres}${p>=C.pres?" ✅":""}</b></div>${bar(p,C.pres)}</div>`}
 function renderComp(){const s=$("#compStrip"),sn=$("#compSn"),ok=compPuede();
@@ -4921,7 +4924,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261031233554";var busy=false,pend=null;
+(function(){var V="20261031235745";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
