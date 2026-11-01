@@ -40,7 +40,9 @@ for a in nuevas:
         if a['fecha'] > cfg.get('activacionesCorte', ''): cfg['activacionesCorte'] = a['fecha']
 
 VOL = {"Starter": 50, "Classic": 200, "Premium": 500}
-now = datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
+import os
+_fz = os.environ.get('RK_NOW') or cfg.get('rankingCongelado')  # config.rankingCongelado (UTC) congela el mes hasta que el admin lo quite
+now = datetime.datetime.fromisoformat(_fz.rstrip('Z')) if _fz else datetime.datetime.now(datetime.UTC).replace(tzinfo=None)  # RK_NOW=AAAA-MM-DDTHH:MM:SS (UTC) congela la fecha (cierre de mes)
 mes0 = now.strftime('%Y-%m-01T00:00:00')
 hn = now - datetime.timedelta(hours=6)
 wk0 = (hn - datetime.timedelta(days=hn.weekday())).replace(hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(hours=6)
