@@ -327,6 +327,15 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .metas .sueno{background:linear-gradient(120deg,#ECFDF5,#D1FAE5);color:#065F46}.metas .sueno .lbl{color:#047857}.metas .sueno .big{color:#065F46}
 .rgDot{width:14px;height:14px;border-radius:50%;flex:none}
 .metas .bar{margin:2px 0 0;background:var(--surface)}.metas .ok{color:var(--good);font-weight:800}
+.mqCard{position:relative;overflow:hidden;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:6px;color:#fff;background:radial-gradient(120% 90% at 100% 0%,rgba(42,193,241,.35) 0%,transparent 60%),linear-gradient(150deg,#0b3b57,#0b1020 75%);box-shadow:0 12px 28px -14px rgba(11,16,32,.7)}
+.mqCard .mq-k{font-size:11.5px;font-weight:800;letter-spacing:.08em;color:#2AC1F1}.mqCard .mq-d{font-size:12px;font-weight:700;background:rgba(255,255,255,.12);border-radius:99px;padding:3px 9px}
+.mqCard h3{margin:0;font:800 30px/1.1 'Bricolage Grotesque',Figtree,sans-serif;color:#fff}
+.mq-row{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;margin-top:4px}.mq-row b{font-size:16px}.mq-row small{font-weight:600;opacity:.75;font-size:12px}
+.mq-bar{height:10px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}.mq-bar i{display:block;height:100%;border-radius:99px;transition:width .6s}.mq-bar i.c{background:linear-gradient(90deg,#2AC1F1,#7dd3fc)}.mq-bar i.l{background:linear-gradient(90deg,#F5B700,#FDE047)}
+.mq-who{margin-top:6px;border-top:1px solid rgba(255,255,255,.15);padding-top:8px}.mq-who small{font-size:12px;font-weight:700;opacity:.85}
+.mq-av{display:flex;gap:10px;overflow-x:auto;padding:6px 2px 2px;scrollbar-width:none}.mq-av::-webkit-scrollbar{display:none}
+.mq-p{flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;width:58px}.mq-p .av{width:44px;height:44px;box-shadow:0 0 0 2px #F5B700}.mq-p .av.badge{box-shadow:none;border-radius:0}.mq-p b{font-size:11.5px;max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mq-p i{font-style:normal;font-size:11px;color:#FDE047;font-weight:700}
+.mq-p0{margin:4px 0 0;font-size:13.5px;opacity:.9}.mqCard .mq-btn{align-self:stretch;margin-top:6px;background:#F5B700;color:#0b1020;border:0}
 .ganCard{position:relative;overflow:hidden;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px;color:#fff;background:linear-gradient(135deg,#7C2D12,#C2410C 45%,#F59E0B);box-shadow:0 12px 28px -14px rgba(194,65,12,.6);animation:banIn .5s cubic-bezier(.2,.8,.2,1)}
 .ganCard h2{margin:0;font-size:22px;color:#fff}.ganCard .gn-x{background:rgba(255,255,255,.2);color:#fff;border:0;border-radius:99px;padding:4px 10px;font:700 12px Figtree,system-ui,sans-serif;cursor:pointer}
 .gn-e{font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;opacity:.95}.gn-k{display:block;font-size:12px;font-weight:800;opacity:.9}
@@ -1063,6 +1072,7 @@ nav.tabs button{z-index:0;isolation:isolate}
       <div class="miwa" id="miWaCard" hidden></div>
       <div class="ahCard" id="ahCard" hidden></div>
       <div class="ganCard" id="ganCard" hidden></div>
+      <div class="mqCard" id="metaEq" hidden></div>
       <div class="rcCard" id="rcCard" hidden></div>
       <div id="compStrip" hidden></div>
       <div class="pendStrip" id="pendStrip" hidden></div>
@@ -1664,7 +1674,7 @@ function compDias(){const n=new Date(),f=new Date(n.getFullYear(),n.getMonth()+1
 async function compGuardar(o){const nm=Object.assign({mes:mesMeta(),t:Date.now()},o);
   await store.db.doc("users/"+store.uid).set({comp:nm},{merge:true});regDoc=Object.assign({},regDoc,{comp:nm});
   try{const nmb=miNombreFull()||miNombreCorto();if(nmb)store.db.doc("constancia/"+store.uid).set({comp:nm.no?{mes:nm.mes,no:true}:{mes:nm.mes,rango:nm.rango,act:nm.act,ac:nm.ac,ap:nm.ap,vol:nm.vol,pres:nm.pres}},{merge:true}).catch(()=>{})}catch(e){}
-  renderComp()}
+  renderComp();try{renderMetaEq()}catch(e){}}
 let compVisto=false;
 function compCheck(){if(compVisto||!compPuede()||miComp())return;if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate"))return;compVisto=true;compIntro()}
 function compIntro(){const mn=mesNom();openSheet(`<div style="text-align:center;font-size:44px;line-height:1">🎯</div><h2 style="text-align:center">Mi compromiso de ${esc(mn)}</h2>
@@ -1722,6 +1732,30 @@ function compStripHTML(){const C=miComp(),mn=mesNom();
 function renderComp(){const s=$("#compStrip"),sn=$("#compSn"),ok=compPuede();
   [s,sn].forEach(el=>{if(!el)return;if(!ok){el.hidden=true;el.innerHTML="";return}el.hidden=false;el.innerHTML=compStripHTML();el.querySelectorAll("[data-comp]").forEach(b=>b.onclick=compAbrir)});
   if(ok)setTimeout(compCheck,1200)}
+
+// ---------- Meta del equipo del mes (config.metaEquipo) con los compromisos (constancia.comp) ----------
+let mqL=null,mqT=0;
+function mqCfg(){const M=(T.config||{}).metaEquipo;return M&&M.mes===mesMeta()&&+M.pts?M:null}
+function mqCargar(force){if(!store.db||!mqCfg())return;if(!force&&mqL&&Date.now()-mqT<600000)return;mqT=Date.now();
+  store.db.collection("constancia").where("comp.mes",mesMeta()).get().then(q=>{mqL=q.docs.map(d=>{const x=d.data()||{},c=x.comp||{};return{uid:d.id,n:x.nombre||"",no:!!c.no,v:+c.vol||(+c.act||0)*200,r:c.rango||"",t:+c.t||0}}).filter(x=>!x.no&&x.n);renderMetaEq(true)}).catch(()=>{mqL=mqL||[]})}
+function renderMetaEq(cargado){const c=$("#metaEq");if(!c)return;const M=mqCfg();if(!M||!fbUser){c.hidden=true;return}
+  if(mqL===null){mqCargar();}
+  let L=(mqL||[]).slice();const yo=miComp();
+  if(yo&&!yo.no&&store.uid){L=L.filter(x=>x.uid!==store.uid);L.push({uid:store.uid,n:miNombreFull()||miNombreCorto(),v:+yo.vol||(+yo.act||0)*200,r:yo.rango||"",t:+yo.t||Date.now()})}
+  L.sort((a,b)=>b.t-a.t);
+  const meta=+M.pts,comp=L.reduce((a,x)=>a+x.v,0),log=(T.ranking||[]).reduce((a,r)=>a+(+r.volumen||0),0),pc=v=>Math.max(v?2:0,Math.min(100,Math.round(v*100/meta)));
+  const ms=new Date(new Date().getFullYear(),new Date().getMonth()+1,1)-new Date(),dias=Math.max(0,Math.ceil(ms/864e5));
+  const puede=compPuede()&&!(yo&&!yo.no);
+  c.hidden=false;c.innerHTML=`<div class="row between" style="align-items:center"><span class="mq-k">🎯 META DEL EQUIPO · ${esc(mesNom().toUpperCase())}</span><span class="mq-d">⏳ ${dias} ${dias===1?"día":"días"}</span></div>
+   <h3>${fmt(meta)} pts</h3>
+   <div class="mq-row"><span>🤝 Comprometido</span><b>${fmt(comp)} <small>de ${fmt(meta)}</small></b></div><div class="mq-bar"><i class="c" style="width:${pc(comp)}%"></i></div>
+   <div class="mq-row"><span>⚡ Logrado</span><b>${fmt(log)} <small>de ${fmt(meta)}</small></b></div><div class="mq-bar"><i class="l" style="width:${pc(log)}%"></i></div>
+   ${L.length?`<div class="mq-who"><small>${L.length} ${L.length===1?"socio comprometido":"socios comprometidos"}</small><div class="mq-av">${L.slice(0,40).map(x=>`<span class="mq-p" title="${esc(x.n)}">${avHTML(x.n,false,false)}<b>${esc(dtFirst(x.n))}</b><i>${fmt(x.v)}</i></span>`).join("")}</div></div>`:`<p class="mq-p0">Sea el primero en hacer su compromiso 💪</p>`}
+   ${puede?`<button type="button" class="btn sm mq-btn" data-comp>🎯 Hacer mi compromiso</button>`:""}`;
+  c.querySelectorAll("[data-comp]").forEach(b=>b.onclick=compAbrir);
+  if(cargado&&mqL){const K="mqSeen:"+mesMeta();let seen=null;try{seen=JSON.parse(LS.get(K)||"null")}catch(e){}const ids=mqL.map(x=>x.uid);
+    if(seen){const nw=mqL.filter(x=>!seen.includes(x.uid)&&x.uid!==store.uid).sort((a,b)=>b.t-a.t).slice(0,2);nw.forEach((x,i)=>setTimeout(()=>{try{avisoTop(`🎉 ${dtFirst(x.n)} se comprometió con ${fmt(x.v)} pts`,`Meta del equipo · ${fmt(comp)} de ${fmt(meta)} comprometidos`,()=>{go&&go("inicio")})}catch(e){}},1500+i*5000))}
+    try{LS.set(K,JSON.stringify(ids))}catch(e){}}}
 function evMiIdx(L,noms){noms=noms.filter(Boolean);let i=L.findIndex(x=>noms.some(n=>sameN(x.nombre,n)));if(i<0)i=L.findIndex(x=>noms.some(n=>parecidoN(x.nombre,n)));return i}
 function evLlegadas(L,iy){const R=(entPub&&entPub.rank)||[],yo=iy>=0?L[iy].nombre:"",md=["🥇","🥈","🥉"];
   openSheet(`<h2>🎉 Invitados que ya llegaron</h2><p class="small muted" style="margin:0">${entPub.inv} invitados han llegado al evento. Gana el socio con más invitados que lleguen. Solo se muestran los números de cada socio.</p>
@@ -4715,7 +4749,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-refr
 async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
-  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderGan()}catch(e){}try{renderComp()}catch(e){}try{renderPremios()}catch(e){}try{renderRC()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
+  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderGan()}catch(e){}try{renderComp()}catch(e){}try{renderMetaEq()}catch(e){}try{renderPremios()}catch(e){}try{renderRC()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist()}catch(e){}}
 let autoFotoHecho=false;
 function urlADataUrl(u,S){return new Promise(ok=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{S=S||240;const c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);
   c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);ok(c.toDataURL("image/jpeg",.85))}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=u})}
