@@ -1434,8 +1434,8 @@
    "horaFin": "",
    "lugar": "",
    "modalidad": "Virtual",
-   "notas": "",
-   "responsable": "Zamir Fuentes y Josué Delgado",
+   "notas": "Arranque de mes: planificamos noviembre y su compromiso personal.",
+   "responsable": "Edwin Garcia Go, Mayckol Turcios, Josué Delgado y Zamir Fuentes",
    "tipo": "Llamada",
    "titulo": "Llamada de Poder",
    "id": "2026-11-01-2000-llamada-de-poder"
@@ -1994,6 +1994,9 @@
     "msg": "👋 *¡Hola!*\n\nConfirma tu participación en nuestro próximo evento presencial!\n\n🗓️ Domingo 25 de Octubre el 2026\n🕛 2:45 PM Registro\n📍 Hotel Copantl (Salón las Islas )\n\n📝 Regístrate aquí:\n\nhttps://forms.gle/Cyzq9PW9bpYR5tKN8\n\n✅ Te tomará menos de 1 minuto.\n\n¡Nos vemos en el evento!",
     "enlace": "https://forms.gle/Cyzq9PW9bpYR5tKN8",
     "boton": "Registrarme"
+   },
+   "2026-11-01-2000-llamada-de-poder": {
+    "img": "media/flyers/llamada-poder-2026-11-01.jpg"
    }
   },
   "alias": {
