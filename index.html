@@ -773,6 +773,13 @@ nav.tabs button{z-index:0;isolation:isolate}
 .irPath s{flex:1;height:2px;background:repeating-linear-gradient(90deg,#2AC1F1 0 5px,transparent 5px 9px);margin-bottom:18px}
 .irQ{background:var(--soft,#F1F6F9);border-left:3px solid #0A7DAD;border-radius:10px;padding:10px 12px;font-size:13.5px;margin:12px 0;font-style:italic}
 .irPts{font-size:14px;line-height:1.5}.irPts div{display:flex;gap:8px;margin:4px 0}
+body.beta #pfFront,body.beta #pfSala,body.beta #goPrompts{display:none!important}
+.pf-h{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.55;margin:12px 4px 2px}
+body.beta .mfc:not(.all)>*:not(.mk){display:none!important}.mfAll{display:none!important}body.beta .mfAll{display:inline-flex!important;border:0;font:inherit;cursor:pointer;background:var(--soft,#EEF3F7);font-weight:700}
+.agMas{display:none}body.beta #agBig [data-ab="lz"],body.beta #agBig [data-ab="ev"]{display:none}body.beta #agBig .agMas{display:block;grid-column:1/-1;background:transparent!important;color:var(--brand,#0A7DAD)!important;border:1.5px dashed var(--line,#C9D4DE);font-size:14px;font-weight:700;padding:10px;min-height:0}
+.stLine{display:flex;justify-content:space-between;width:100%;margin-top:10px;border:1.5px solid var(--line,#DCE4EB);background:var(--surface-2,#F1F6F9);color:inherit;font:inherit;font-size:13.5px;padding:10px 12px;border-radius:12px;cursor:pointer}.stLine span:last-child{color:var(--brand,#0A7DAD);font-weight:800}
+.mnum{padding:0;overflow:hidden}.mnum>summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:800;display:block}.mnum>summary::-webkit-details-marker{display:none}.mnum>summary span{display:block;font-weight:600;font-size:13px;opacity:.65;margin-top:2px}.mnum[open]>summary{border-bottom:1px solid var(--line,#E5ECF1)}.mnum>.card,.mnum>*:not(summary){margin:10px}
+.hoyL h3{margin:0 0 6px}.hoyR{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--line,#EDF1F5)}.hoyR:first-of-type{border-top:0}
 </style>
 
 </head>
@@ -1190,7 +1197,7 @@ nav.tabs button{z-index:0;isolation:isolate}
     <!-- AGENDA -->
     <section class="view" id="v-agenda" hidden>
       <div><p class="eyebrow">Planee y dé seguimiento</p><h1>Agenda</h1></div>
-      <div class="ag-big" id="agBig"><button type="button" data-ab="l3" style="background:linear-gradient(135deg,#0A7DAD,#2AC1F1)">📞 Llamada de 3<small>Pídala a un líder</small></button><button type="button" data-ab="lz" style="background:linear-gradient(135deg,#B07D00,#F5B700)">🚀 Lanzamiento<small>Planee con su líder</small></button><button type="button" data-ab="ev" style="background:linear-gradient(135deg,#6D28D9,#A855F7)">🤝 Junta / Evento<small>Con flyer y script</small></button><button type="button" data-ab="ci" style="background:linear-gradient(135deg,#15803D,#22C55E)">➕ Cita<small>Con un prospecto</small></button></div>
+      <div class="ag-big" id="agBig"><button type="button" data-ab="l3" style="background:linear-gradient(135deg,#0A7DAD,#2AC1F1)">📞 Llamada de 3<small>Pídala a un líder</small></button><button type="button" data-ab="lz" style="background:linear-gradient(135deg,#B07D00,#F5B700)">🚀 Lanzamiento<small>Planee con su líder</small></button><button type="button" data-ab="ev" style="background:linear-gradient(135deg,#6D28D9,#A855F7)">🤝 Junta / Evento<small>Con flyer y script</small></button><button type="button" data-ab="ci" style="background:linear-gradient(135deg,#15803D,#22C55E)">➕ Cita<small>Con un prospecto</small></button><button type="button" data-ab="mas" class="agMas">⋯ Lanzamiento, junta o evento</button></div>
       <div class="card" id="l3Card" hidden></div>
       <div class="card" id="evaInv" hidden style="border:1.5px solid #7C3AED"></div>
       <div class="card" id="recCard" hidden></div>
@@ -1729,7 +1736,7 @@ async function compGuardar(o){const nm=Object.assign({mes:mesMeta(),t:Date.now()
   try{const nmb=miNombreFull()||miNombreCorto();if(nmb&&!yoPrueba())store.db.doc("constancia/"+store.uid).set({comp:nm.no?{mes:nm.mes,no:true}:{mes:nm.mes,rango:nm.rango,act:nm.act,ac:nm.ac,ap:nm.ap,vol:nm.vol,pres:nm.pres}},{merge:true}).catch(()=>{})}catch(e){}
   renderComp();try{renderMetaEq()}catch(e){}}
 let compVisto=false;
-function compCheck(){if(compVisto||!compPuede()||miComp())return;try{if(irIntroPend())return}catch(e){}if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate"))return;compVisto=true;compIntro()}
+function compCheck(){if(compVisto||!compPuede()||miComp())return;try{if(irIntroPend())return}catch(e){}if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate"))return;compVisto=true;try{if(!popHoy("comp"))return}catch(e){}compIntro()}
 function compIntro(){const mn=mesNom();openSheet(`<div style="text-align:center;font-size:44px;line-height:1">🎯</div><h2 style="text-align:center">Mi compromiso de ${esc(mn)}</h2>
    <p style="text-align:center;margin:0">Empieza un mes nuevo y es el momento de decidir qué quiere lograr.</p>
    <p class="small muted" style="text-align:center;margin:0">Toma menos de un minuto: su rango objetivo, sus activaciones personales y sus presentaciones por semana.</p>
@@ -1830,17 +1837,17 @@ function renderMetaEq(cargado){const c=$("#metaEq");if(!c)return;const M=mqCfg()
 function compDe(x){const c=x&&x.comp;return c&&c.mes===mesMeta()?c:null}
 function compAvance(c,nm){let rk=null;try{rk=rankDe(nm)}catch(e){}return{A:rk?rk.A:0,V:rk?rk.V:0,vol:+c.vol||(+c.act||0)*200}}
 function compChip(x,nm){if(!compPuede0())return"";const c=compDe(x);
-  if(!c)return `<span class="chip c-warn">🎯 Sin compromiso de ${esc(mesNom())}</span>`;
-  if(c.no)return `<span class="chip c-brand">🎯 Decidió no hacer compromiso</span>`;
+  if(!c)return `<span class="chip c-warn mk">🎯 Sin compromiso de ${esc(mesNom())}</span>`;
+  if(c.no)return `<span class="chip c-brand mk">🎯 Decidió no hacer compromiso</span>`;
   const r=compR(c.rango)||{ic:"🎯",t:c.rango||""},{A,V,vol}=compAvance(c,nm);
-  return `<span class="chip c-good" style="font-weight:700;white-space:normal;text-align:left">🤝 ${r.ic} ${esc(r.t)} · ${A}/${c.act} activaciones · ${fmt(V)}/${fmt(vol)} pts · ${c.pres}/sem</span>`}
+  return `<span class="chip c-good mk" style="font-weight:700;white-space:normal;text-align:left">🤝 ${r.ic} ${esc(r.t)} · ${A}/${c.act} activaciones · ${fmt(V)}/${fmt(vol)} pts · ${c.pres}/sem</span>`}
 function compPuede0(){const C=(T.config||{}).compromiso;return !!C&&!(C.desde&&Date.now()<Date.parse(C.desde))}
 function compMsg(x){const r0=x.registro||{},nm=r0.nombre||"",f=nm.split(" ")[0]||"",c=compDe(x),yo=miNombreCorto()||"",M=(T.config||{}).metaEquipo;let t;
   if(!c||c.no)t=`Hola, ${f} 👋\n\nYa arrancó ${mesNom()} y el equipo va por ${M?fmt(M.pts)+" pts":"una gran meta"}.\n\n¿Ya hizo su compromiso del mes en la app? Toma menos de un minuto: su rango objetivo, sus activaciones y sus presentaciones.\n\nCuente conmigo para lograrlo. 💪`;
   else{const r=compR(c.rango)||{t:c.rango},{A,V,vol}=compAvance(c,nm),fa=Math.max(0,c.act-A);
     t=`¡Hola, ${f}! 🙌\n\nVi su compromiso de ${mesNom()}: ${r.t}, ${c.act} ${c.act===1?"activación":"activaciones"} y ${c.pres} presentaciones por semana.\n\nVa en ${A} de ${c.act} activaciones y ${fmt(V)} de ${fmt(vol)} pts.${fa?` Le ${fa===1?"falta":"faltan"} ${fa}.`:" ¡Ya lo cumplió! 🎉"}\n\n¿Cómo le puedo ayudar esta semana? 🚀`}
   return t+(yo?"\n\n*"+yo+"*":"")}
-function comp15(){const n=new Date(),d=n.getDate();if(d<15||d>18||!compPuede())return;const K="comp15:"+mesMeta();try{if(LS.get(K))return}catch(e){}
+function comp15(){const n=new Date(),d=n.getDate();if(d<15||d>18||!compPuede())return;const K="comp15:"+mesMeta();try{if(LS.get(K))return}catch(e){}try{if(!popHoy("c15"))return}catch(e){}
   if(!$("#sheet").hidden||document.querySelector(".waGate"))return;try{LS.set(K,1)}catch(e){}
   const c=miComp(),dias=compDias();
   if(!c||c.no){openSheet(`<div style="text-align:center;font-size:44px;line-height:1">⏳</div><h2 style="text-align:center">Vamos a mitad de ${esc(mesNom())}</h2><p style="text-align:center;margin:0">Quedan <b>${dias} días</b> y todavía está a tiempo de hacer su compromiso del mes.</p><button class="btn" data-c15 style="width:100%">🎯 Hacer mi compromiso</button><button class="btn ghost" data-close style="width:100%">Ahora no</button>`,()=>{$("#sheetPanel [data-c15]").onclick=compAbrir});return}
@@ -2215,7 +2222,7 @@ function lcVentana(L,titulo){if(!L.length)return;let i=0;
       confeti($("#lcCel"),esp?60:40);const fe=$("#lcFel");if(fe)fe.onclick=()=>lcFelicitar(q);const sh=$("#lcSh");if(sh)sh.onclick=()=>lcCompartir(q,sh);
       const p=$("#lcPrev");if(p)p.onclick=()=>{i--;pinta()};const n=$("#lcNext");if(n)n.onclick=()=>{if(i<L.length-1){i++;pinta()}else closeSheet()}})};
   pinta()}
-let lcTry=0;function lcRevisar(){try{if(!store.uid||!(regDoc&&regDoc.registro||isAdmin))return;const vi=$("#v-inicio");if(!$("#sheet").hidden||(vi&&vi.hidden)){if(++lcTry<8)setTimeout(lcRevisar,20000);return}lcAvisoYo();const L=lcPendientes();if(!L.length)return;lcMarcar(L);lcVentana(L,L.every(r=>r.cie)?"🛡️ Líderes del mes de "+L[0].mes.split(" ")[0].toLowerCase():"🎉 Nuevos calificados del sistema de liderazgo")}catch(e){}}
+let lcTry=0;function lcRevisar(){try{if(!store.uid||!(regDoc&&regDoc.registro||isAdmin))return;const vi=$("#v-inicio");if(!$("#sheet").hidden||(vi&&vi.hidden)){if(++lcTry<8)setTimeout(lcRevisar,20000);return}lcAvisoYo();const L=lcPendientes();if(!L.length)return;try{if(!popHoy("lc"))return}catch(e){}lcMarcar(L);lcVentana(L,L.every(r=>r.cie)?"🛡️ Líderes del mes de "+L[0].mes.split(" ")[0].toLowerCase():"🎉 Nuevos calificados del sistema de liderazgo")}catch(e){}}
 function lcAvisoYo(){try{const yo=miRegistro().nombre||miNombreFull();if(!yo)return;const r=lcLista0().find(x=>sameN(x.n,yo));if(!r||r.k!=="lid")return;const k="lcAviso:"+store.uid+":"+lcMes();if(LS.get(k))return;LS.set(k,1);
   avisoTop("🛡️ ¡Ya es Líder del sistema!","Le faltan "+fmt(calCfg().esp-r.v)+" pts para Líder Espartano. ¡Vamos!",()=>{eqTab="ranking";rankMetric="liderazgo";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()})}catch(e){}}
 function lcLista(){const L=lcLista0();
@@ -2433,6 +2440,14 @@ function idxSheet(uid){const P=idxPool(),ids=new Set(P.map(x=>x.uid)),root=!uid;
    <p class="small muted" style="margin:0">% = puntos de la rutina ÷ puntos posibles (5 por día). 🟢 70% o más · 🟡 40–69% · 🔴 menos de 40%. Toque un socio con equipo para ver su índice.</p><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     document.querySelectorAll("#sheetPanel [data-idxv]").forEach(r=>r.onclick=()=>{idxStk.push(r.dataset.idxv);idxSheet(r.dataset.idxv)});
     const bk=$("#idxBack");if(bk)bk.onclick=()=>{idxStk.pop();idxSheet(idxStk[idxStk.length-1]||"")}})}
+function hoyLlamar(){try{const L=[];(mios||[]).forEach(x=>{const nm=(x.registro||{}).nombre||"Socio",ah=ahSoc(x),p=(x.ir||{}).p,dd=new Date().getDate();let r=null,o=9;
+  if(ah&&ah.pend){r=ah.bloq?"💰 Ahorro vencido · está en pausa":"💰 Ahorro pendiente";o=1}
+  else if(p&&!p.g&&Date.now()-(p.u||0)>2*864e5){r="🚀 Inicio Rápido atrasado · semana "+(p.w||1);o=2}
+  else if(constL&&!idxActivo(x)){r="😴 Sin actividad en la app";o=3}
+  else if(dd>=3&&compPuede0()&&!compDe(x)){r="🎯 Sin compromiso del mes";o=4}
+  if(r)L.push({x,nm,r,o,n:x.nivel||1})});L.sort((a,b)=>a.o-b.o||a.n-b.n);const M=L.slice(0,8);
+  if(!M.length)return `<div class="card hoyL"><h3>📞 Hoy</h3><p class="small muted" style="margin:0">✅ Todo su equipo va al día. ¡Felicítelos!</p></div>`;
+  return `<div class="card hoyL"><h3>📞 Hoy llame a estos <span class="small muted">(${L.length})</span></h3>${M.map(z=>`<div class="hoyR"><div style="min-width:0"><b>${esc(z.nm)}</b><div class="small muted">${esc(z.r)}${z.n>1?" · nivel "+z.n:""}</div></div><button class="btn sm" data-${z.o===1?"mah":"mot"}="${esc(z.x.uid)}" style="background:#25D366;color:#fff">💬</button></div>`).join("")}${L.length>8?`<p class="small muted" style="margin:6px 0 0">Y ${L.length-8} más en la lista de abajo.</p>`:""}</div>`}catch(e){return""}}
 function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia sesión","Entra con tu cuenta para ver a tus socios.");return}
   if(mios===null){b.innerHTML=`<p class="muted small">Cargando tus socios…</p>`;loadMios();return}
   if(isAdmin&&socios===null&&!window._ldS){window._ldS=1;loadSocios()}
@@ -2454,7 +2469,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
     return Dr.map(({d,M,ac,nv})=>{const r=d.registro||{},nm=r.nombre||"Socio",g=dtRg({u:d.uid,n:nm,rg:r.rango||""}),pc=M.length?Math.round(ac/M.length*100):0;
       return `<details class="card pi" data-pi="${esc(d.uid)}" style="gap:8px"><summary style="list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:8px"><div class="row" style="gap:10px;align-items:center">${avHTML(nm,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:700">Línea de ${esc(nm)}</b><div class="small muted">⭐ Directo${g?` · <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${g.c};vertical-align:middle"></span> ${esc(DT_RGTX[g.n]||g.n)}`:""} · ${M.length} ${M.length===1?"socio":"socios"} · ${nv} ${nv===1?"nivel":"niveles"}</div></div><span class="chip ${pc>=50?"c-good":pc>0?"c-gold":"c-brand"}">${ac} de ${M.length} activos</span></div>
        <div class="bar" style="height:6px"><i style="width:${pc}%"></i></div><span class="small" style="color:var(--brand);font-weight:700">Ver su línea ›</span></summary><div class="pi-b"></div></details>`}).join("")||emptyCard("Aún no tiene directos","Cuando un socio se registre con su enlace, aquí verá su línea.")};
-  b.innerHTML=`${idxCard()}${seg}${miosVista==="dir"&&DTP.h?`<div class="card dtin" style="gap:10px">${DTP.h}</div>`:""}<div class="grid2">${st(n,miosVista==="todo"?"Socios en toda tu línea":n===1?"Socio directo":"Socios directos")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}${st(pres,"Presentaciones esta semana")}</div>
+  b.innerHTML=irSimple()?`${hoyLlamar()}${seg}<details class="card mnum"><summary>📊 Mis números <span>Índice de Duplicación${miosVista==="dir"&&DTP.h?" y Dream Team":""} ›</span></summary>${idxCard()}${miosVista==="dir"&&DTP.h?`<div class="card dtin" style="gap:10px">${DTP.h}</div>`:""}</details>`:`${idxCard()}${seg}${miosVista==="dir"&&DTP.h?`<div class="card dtin" style="gap:10px">${DTP.h}</div>`:""}`;b.innerHTML+=`<div class="grid2">${st(n,miosVista==="todo"?"Socios en toda tu línea":n===1?"Socio directo":"Socios directos")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}${st(pres,"Presentaciones esta semana")}</div>
    ${miosVista==="dir"?`<p class="eyebrow" style="margin:6px 0 0">Detalle de mis directos</p>`:""}
    ${miosVista==="todo"?`<div class="seg" id="miosLin" style="width:auto;align-self:flex-start"><button aria-selected="${miosLin==="pi"}" data-ml="pi">🌳 Por piernas</button><button aria-selected="${miosLin==="li"}" data-ml="li">☰ Lista por nivel</button></div>`:""}
    ${miosVista==="todo"&&miosLin==="pi"?piernas():`<div class="card" style="gap:0">${V.map(x=>fila(x)).join("")}</div>`}
@@ -2495,17 +2510,17 @@ function miosFila(V,lvl0){let lvl=lvl0;const cname=k=>{const c=cursosL().find(x=
      return `${hd}<div style="padding:12px 0;border-bottom:1px solid var(--line)">${enPi?`<div class="small" style="margin-bottom:6px"><span class="chip ${x.nivel===1?"c-gold":"c-brand"}" style="font-weight:700">${x.nivel===1?"⭐ Directo":"Nivel "+x.nivel+" · de "+esc(dtFirst(x.patNom||r.invitadoPor||r.patrocinador||"—"))}</span></div>`:miosVista==="todo"&&x.nivel>1?`<div class="small" style="color:var(--brand);font-weight:700;margin-bottom:6px">Línea de ${esc(x.piernaNom||"tu equipo")} · Patrocinador: ${esc(x.patNom||r.invitadoPor||r.patrocinador||"—")}</div>`:""}<div class="row" style="align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0">
       <b style="font-weight:600">${esc(nm)}</b><div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.fecha?"Desde "+niceDate(String(r.fecha).slice(0,10)):""}${ua?" · Entró "+haceTxt(ua):""}</div>${(isAdmin||r.patrocinadorUid===store.uid)?[...new Set([x.email,r.correo].map(e=>String(e||"").trim().toLowerCase()).filter(Boolean))].map(e=>`<button type="button" class="emCp" data-cpem="${esc(e)}">✉️ ${esc(e)} <span>Copiar</span></button>`).join(""):""}</div>
       <span class="chip ${a.hoy>=100?"c-good":a.hoy>0?"c-gold":"c-brand"}">Hoy ${a.hoy}%</span></div>
-      <div class="row wrap" style="gap:6px;margin-top:8px">
-       ${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<span class="chip c-bad" style="font-weight:700">🔴 Ahorro pendiente · ${ah.bloq?"en pausa":"hasta el "+esc(ahFecha(ah.lim))}</span>`:ah?`<span class="chip c-good" style="font-weight:700">🚢 Ahorro al día</span>`:""})()}${!idxActivo(x)&&constL?`<span class="chip c-warn">😴 ${(d=>d>90||!idxUlt(x)?"Sin actividad":d+" días sin actividad")(Math.floor((Date.now()-idxUlt(x))/864e5))}</span>`:""}
+      <div class="row wrap mfc" style="gap:6px;margin-top:8px">
+       ${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<span class="chip c-bad mk" style="font-weight:700">🔴 Ahorro pendiente · ${ah.bloq?"en pausa":"hasta el "+esc(ahFecha(ah.lim))}</span>`:ah?`<span class="chip c-good mk" style="font-weight:700">🚢 Ahorro al día</span>`:""})()}${!idxActivo(x)&&constL?`<span class="chip c-warn mk">😴 ${(d=>d>90||!idxUlt(x)?"Sin actividad":d+" días sin actividad")(Math.floor((Date.now()-idxUlt(x))/864e5))}</span>`:""}
        ${constL?(()=>{const ip=idxPersX(x),E=idxDesc(x.uid,idxPool()),e=idxEq(E);return `<span class="chip" style="background:${IDX_C(ip)};color:#fff">⚡ Personal ${ip}%</span>${E.length?`<span class="chip" style="background:${IDX_C(e)};color:#fff">⚡ Equipo de ${esc(nm.split(" ")[0])} ${e}% (${E.length} ${E.length===1?"socio":"socios"})</span>`:""}`})():""}
        <span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"🎬 Bienvenida ✓":"🎬 Bienvenida pendiente"}</span>
        <span class="chip ${a.racha?"c-gold":"c-brand"}">🔥 Racha ${a.racha} ${a.racha===1?"día":"días"}</span>
-       <span class="chip c-brand">📅 ${a.d7}/7 días activos</span>
+       <span class="chip c-brand mk">📅 ${a.d7}/7 días activos</span>
        ${(()=>{const pn=((x.actividad||{}).presN)||[];return pn.length?`<button type="button" class="chip c-good" style="border:0;font:inherit;cursor:pointer" data-presn="${esc(pn.join(" · "))}">🎯 ${pn.length} ${pn.length===1?"presentación":"presentaciones"} ›</button>`:`<span class="chip ${(S.presentaciones||0)?"c-good":"c-brand"}">🎯 ${S.presentaciones||0} ${(S.presentaciones||0)===1?"presentación":"presentaciones"}</span>`})()}
        <span class="chip c-brand">👥 ${S.contactos||0} ${(S.contactos||0)===1?"contacto":"contactos"}</span>
        ${a.hist?`<span class="chip c-good">📸 Historia hoy</span>`:""}
        ${(()=>{const rk=rankDe(nm);return rk?`<span class="chip ${rk.pPos&&rk.pPos<=10?"c-gold":"c-brand"}">🏆 Registros: ${rk.R}${rk.pPos?" · #"+rk.pPos:""}</span><span class="chip ${rk.aPos&&rk.aPos<=10?"c-gold":"c-brand"}">🚀 Activaciones: ${rk.A} · Vol. ${fmt(rk.V)}${rk.aPos?" · #"+rk.aPos:""}</span>`:`<span class="chip c-brand">🏆 Sin registros en el ranking</span>`})()}
-       ${(()=>{const m=x.metas||{},R=proxRango(rangoActualIdx(x.registro,nm)),rg=R?R.n:"";if(!m.act&&!rg&&!m.sueno)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(R?`<span class="chip" style="background:${R.c};color:#fff">🏅 Próximo: ${esc(rg)}</span>`:"")+(m.sueno?`<span class="chip c-good">💰 Sueño: ${usd(m.sueno)}/mes</span>`:"")})()}${compChip(x,nm)}${irChip(x)}
+       ${(()=>{const m=x.metas||{},R=proxRango(rangoActualIdx(x.registro,nm)),rg=R?R.n:"";if(!m.act&&!rg&&!m.sueno)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(R?`<span class="chip" style="background:${R.c};color:#fff">🏅 Próximo: ${esc(rg)}</span>`:"")+(m.sueno?`<span class="chip c-good">💰 Sueño: ${usd(m.sueno)}/mes</span>`:"")})()}${compChip(x,nm)}${irChip(x)}<button type="button" class="chip mk mfAll" data-mfall>Ver todo ▾</button>
        ${cs.length?cs.map(k=>`<span class="chip c-good">🎓 ${esc(cname(k))}</span>`).join(""):`<span class="chip c-brand">🎓 Sin cursos aún</span>`}
       </div><div class="row" style="gap:8px;margin-top:10px">${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<button class="btn sm grow" data-mah="${esc(x.uid)}" style="background:#B42335;color:#fff">💰 Motivar su ahorro</button>`:""})()}<button class="btn sm grow" data-mot="${esc(x.uid)}" style="background:#25D366;color:#fff">💬 Motivar por WhatsApp</button>${compPuede0()?`<button class="btn sm grow" data-mcp="${esc(x.uid)}" style="background:#16A34A;color:#fff">🎯 ${compDe(x)&&!compDe(x).no?"Motivar compromiso":"Pedir compromiso"}</button>`:""}<button class="btn sm ghost" data-wnum="${esc(x.uid)}" type="button" aria-label="Cambiar número de WhatsApp de ${esc(nm)}">✏️ Número</button></div></div>`}}
 const SOLO_ADMIN=["garciagoedwin@gmail.com"];const esSoloAdmin=x=>SOLO_ADMIN.includes(String(x.email||"").toLowerCase());
@@ -2824,7 +2839,7 @@ const redTZ={timeZone:"America/Tegucigalpa"};
 const redFC=iso=>new Date(iso).toLocaleDateString("es-HN",Object.assign({weekday:"short",day:"numeric",month:"short"},redTZ)).replace(/[.,]/g,"");
 const redFL=iso=>new Date(iso).toLocaleDateString("es-HN",Object.assign({weekday:"long",day:"numeric",month:"long"},redTZ)).replace(",","");
 const redFirst=n=>String(n||"").trim().split(/\s+/)[0]||"";
-function redOk(){return !!(isAdmin||redHay)}
+function redOk(){if(isAdmin)return true;try{if(irSimple()){const d=new Date().getDate();if(!(d>=25||d<=1))return false}}catch(e){}return !!redHay}
 async function redProbe(){if(redHay!==null||!store.db||!store.uid)return;redHay=false;
   try{const q=await store.db.collection("red").where("ve",store.uid,"array-contains").limit(1).get();redHay=q.docs.length>0}catch(e){redHay=false}
   redBtn()}
@@ -4074,12 +4089,13 @@ function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerC
     ${(()=>{const v=salaOk()&&salaDe(c.id);return v?`<span class="small" style="font-weight:700;color:${salaNivel(v)[2]}">🎬 ${esc(salaNivel(v)[0])} · vio el ${+v.pct||0}%${v.resp?" · "+esc(SALA_R[v.resp]||""):""}</span>`:""})()}
     ${(()=>{const m=memDe(c.id),e=(LS.get("memEnv")||{})[c.id];return m?`<span class="small" style="font-weight:700;color:#0E7490">🛳️ Vio la membresía ${memHace(m.t)} · ${+m.pct||0}%${m.resp==="sim"?" · 🧮 usó el simulador":""}${m.como?" · 📲 tocó \"Quiero\"":""}</span>`:e?`<span class="small" style="color:var(--muted);font-weight:600">🛳️ Membresía enviada ${memHace(e)} · aún no la abre</span>`:""})()}
     ${c.next?`<span class="small" style="color:var(--${late?"bad":today?"warn":"muted"});font-weight:600">${late?"Seguimiento atrasado: "+niceDate(c.next):today?"Seguimiento hoy":"Próximo seguimiento: "+niceDate(c.next)}</span>`:""}
-    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${presOk()?`<button class="btn sm gold" data-pres="${esc(c.id)}">${c.pres&&c.pres.t?"✓ Presentado":"🎤 Presentar"}</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost${(LS.get("memEnv")||{})[c.id]||memDe(c.id)?" fl-done":""}" data-mem="${esc(c.id)}">${(LS.get("memEnv")||{})[c.id]||memDe(c.id)?"✓ Membresía":"🛳️ Membresía"}</button><button class="btn sm ghost${flCita(c)?" fl-done":""}" data-cita="${esc(c.id)}">${flCita(c)?"✓ Cita":"📅 Agendar"}</button><button class="btn sm ghost" data-l3="${esc(c.id)}">📞 Llamada de 3</button><button class="btn sm ghost" data-nota="${esc(c.id)}">📝 Nota</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button></div>${stepsHTML(c)}</div></div>`}).join("")}
+    </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${irSimple()?`<button class="btn sm ghost" data-cmas="${esc(c.id)}">${crmMas.has(c.id)?"Menos ▴":"⋯ Más"}</button>`:""}${!irSimple()||crmMas.has(c.id)?`${presOk()?`<button class="btn sm gold" data-pres="${esc(c.id)}">${c.pres&&c.pres.t?"✓ Presentado":"🎤 Presentar"}</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost${(LS.get("memEnv")||{})[c.id]||memDe(c.id)?" fl-done":""}" data-mem="${esc(c.id)}">${(LS.get("memEnv")||{})[c.id]||memDe(c.id)?"✓ Membresía":"🛳️ Membresía"}</button><button class="btn sm ghost${flCita(c)?" fl-done":""}" data-cita="${esc(c.id)}">${flCita(c)?"✓ Cita":"📅 Agendar"}</button><button class="btn sm ghost" data-l3="${esc(c.id)}">📞 Llamada de 3</button><button class="btn sm ghost" data-nota="${esc(c.id)}">📝 Nota</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button>`:""}</div>${irSimple()&&!crmSt.has(c.id)?`<button type="button" class="stLine" data-stopen="${esc(c.id)}"><span>Etapa: <b>${esc(c.stage||"Nuevo")}</b> · ${stPct(c)}%</span><span>Cambiar ›</span></button>`:stepsHTML(c)}</div></div>`}).join("")}
 $("#stageBar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;stageF=b.dataset.s;renderCRM()});
 $("#crmSearch").addEventListener("input",renderCRM);
 $("#bienBtn").onclick=()=>abrirBienvenida();$("#addContact").onclick=()=>editContact();
 $("#contactList").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-tog]")){e.preventDefault();e.target.click()}});
-$("#contactList").addEventListener("click",async e=>{const st=e.target.closest("[data-st]");
+const crmMas=new Set(),crmSt=new Set();
+$("#contactList").addEventListener("click",async e=>{{const mb=e.target.closest("[data-cmas]");if(mb){const k=mb.dataset.cmas;crmMas.has(k)?crmMas.delete(k):crmMas.add(k);renderCRM();return}const so=e.target.closest("[data-stopen]");if(so){crmSt.add(so.dataset.stopen);renderCRM();return}}const st=e.target.closest("[data-st]");
   const tg=e.target.closest("[data-tog]");if(tg){openC=openC===tg.dataset.tog?null:tg.dataset.tog;renderCRM();return}
   const sf=e.target.closest("[data-sf]");const od=e.target.closest("[data-ord]");if(od){crmOrd=od.dataset.ord;try{LS.set("crmOrd",crmOrd)}catch(e){}renderCRM();return}if(sf){stageF=stageF===sf.dataset.sf?"Todos":sf.dataset.sf;renderCRM();return}
   const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c){notaPend(c,"wa");setTimeout(()=>stAvanza(c,"Contactado","le escribió por WhatsApp"),300)}}
@@ -4318,7 +4334,7 @@ function renderHoyCitas(){try{renderRecCard()}catch(e){}const c=$("#hoyCitas");i
   $("#hcVer").onclick=()=>{go("agenda");setAgVista("mia")};bindCitas(c)}
 function setAgVista(v){agVista=v;setSeg("agView",v);$("#agMia").hidden=v!=="mia";$("#agEquipo").hidden=v==="mia";if(v==="mia")renderMiAgenda()}
 $("#agView").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setAgVista(b.dataset.k)});
-$("#agBig").addEventListener("click",e=>{const b=e.target.closest("[data-ab]");if(!b)return;const k=b.dataset.ab;if(k==="l3")pedirL3(null);else if(k==="lz")abrirLanz();else if(k==="ev")abrirCrearEva();else abrirCita()});
+$("#agBig").addEventListener("click",e=>{const b=e.target.closest("[data-ab]");if(!b)return;const k=b.dataset.ab;if(k==="mas"){openSheet(`<h2>⋯ Más opciones</h2><div style="display:flex;flex-direction:column;gap:10px"><button class="btn" id="amLz" style="background:linear-gradient(135deg,#B07D00,#F5B700);color:#fff">🚀 Planear un lanzamiento</button><button class="btn" id="amEv" style="background:linear-gradient(135deg,#6D28D9,#A855F7);color:#fff">🤝 Crear junta o evento</button></div><button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{$("#amLz").onclick=()=>{closeSheet();setTimeout(abrirLanz,250)};$("#amEv").onclick=()=>{closeSheet();setTimeout(abrirCrearEva,250)}});return}if(k==="l3")pedirL3(null);else if(k==="lz")abrirLanz();else if(k==="ev")abrirCrearEva();else abrirCita()});
 
 // ---------- llenado rápido de contactos ----------
 function splitPhone(raw){let t=String(raw||"").trim();const intl=/^\s*(\+|00)/.test(t);let d=t.replace(/\D/g,"");if(/^00/.test(t))d=d.replace(/^00/,"");
@@ -4813,17 +4829,17 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <div style="min-width:0"><h2 style="margin:0">${esc(nm||"Mi perfil")}</h2><p class="small muted" style="margin:2px 0 0;overflow:hidden;text-overflow:ellipsis">${esc((fbUser&&fbUser.email)||"")}</p>
     <p class="small" style="margin:6px 0 0">${R.plan?`<span class="chip">${esc(R.plan)}</span> `:""}${R.patrocinador?`<span class="muted">Patrocinador: ${esc(R.patrocinador)}</span>`:""}</p></div></div>
    <div class="pf-list">
-    <button class="pf-it" id="pfFoto"><span class="ic">📷</span>Cambiar mi foto</button>
+    ${irSimple()?`<div class="pf-h">Mis datos</div>`:""}<button class="pf-it" id="pfFoto"><span class="ic">📷</span>Cambiar mi foto</button>
     <button class="pf-it" id="pfNombre"><span class="ic">👤</span>Mis datos <span class="small muted" style="font-weight:500">· nombre y WhatsApp</span></button>
-    <button class="pf-it" id="pfPag"><span class="ic">🌐</span>Mi página para prospectos</button>
+    ${irSimple()?`<div class="pf-h">Mis páginas</div>`:""}<button class="pf-it" id="pfPag"><span class="ic">🌐</span>Mi página para prospectos</button>
     <button class="pf-it" id="pfMem"><span class="ic">🛳️</span>Compartir página de membresía</button>
     <button class="pf-it" id="pfMemV"><span class="ic">👀</span>Quién vio mi página de membresía</button>
     ${salaOk()?`<button class="pf-it" id="pfSala"><span class="ic">🎬</span>Mi presentación virtual</button>`:""}
-    <button class="pf-it" id="pfInv"><span class="ic">🔗</span>Mi enlace de invitación para socios</button>
-    <button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
+    ${irSimple()?`<div class="pf-h">Invitar</div>`:""}<button class="pf-it" id="pfInv"><span class="ic">🔗</span>Mi enlace de invitación para socios</button>
+    ${irSimple()?`<div class="pf-h">Ayuda</div>`:""}<button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
     <button class="pf-it" id="pfFront"><span class="ic">🏠</span>Ver la portada de la app</button>
-    ${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
+    ${isAdmin&&irSimple()?`<div class="pf-h">Admin</div>`:""}${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
@@ -5001,7 +5017,8 @@ function irIntro(){const nm=(miRegistro().nombre||profile.nombrePila||"").split(
    <button class="btn" id="irGo" style="width:100%;margin-top:12px">Empezar mi plan</button><button class="btn ghost" data-close style="width:100%">Lo veo después</button>`,()=>{
     $("#irGo").onclick=()=>{closeSheet();setTimeout(()=>irMeta(),250)}});irSave({vis:1})}
 function irIntroPend(){const m=irModo(),st=irSt();return m==="nuevo"&&!st.vis}
-let irRevT=0;function irRevisar(){try{if(yoPrueba()&&store.db&&store.uid&&!window._prOc){window._prOc=1;store.db.doc("fotos/"+store.uid).set({oculto:true},{merge:true}).catch(()=>{});store.db.doc("constancia/"+store.uid).delete().catch(()=>{})}irRender();irInicio();if(!irIntroPend())return;if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate")){if(++irRevT<6)setTimeout(irRevisar,8000);return}irIntro()}catch(e){}}
+function popHoy(k){try{if(!irSimple())return true;const p=LS.get("popDia")||{};if(p.d===TODAY&&p.k!==k)return false;LS.set("popDia",{d:TODAY,k});return true}catch(e){return true}}
+let irRevT=0;function irRevisar(){try{if(yoPrueba()&&store.db&&store.uid&&!window._prOc){window._prOc=1;store.db.doc("fotos/"+store.uid).set({oculto:true},{merge:true}).catch(()=>{});store.db.doc("constancia/"+store.uid).delete().catch(()=>{})}irRender();irInicio();if(!irIntroPend())return;if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate")){if(++irRevT<6)setTimeout(irRevisar,8000);return}if(!popHoy("ir"))return;irIntro()}catch(e){}}
 // ---- Inicio simple (beta) ----
 function irSimple(){return irBeta()||!!irSimM()}
 function irInicio(){const v=$("#v-inicio");if(!v)return;const on=irSimple();v.classList.toggle("simple",on);document.body.classList.toggle("beta",on);
@@ -5015,14 +5032,15 @@ let irVals=null,irValsT=0;
 async function irValsCargar(){if(irVals!==null&&Date.now()-irValsT<6e5)return;irValsT=Date.now();try{const d=await store.db.doc("constancia/"+store.uid).get();irVals=(d.exists&&d.data().irVal)||{}}catch(e){irVals=irVals||{}}}
 function irChip(x){if(!irSimple())return"";const s=x.ir||{},p=s.p;if(!p)return"";const nm=((x.registro||{}).nombre||"").split(" ")[0];
   if(irVals===null)irValsCargar().then(()=>{try{renderEquipo()}catch(e){}});
-  if(p.g)return `<span class="chip" style="background:linear-gradient(120deg,#FBEFC0,#D4AF37);color:#3b2a00;font-weight:800">🎓 Graduado del Inicio Rápido</span>`;
+  if(p.g)return `<span class="chip mk" style="background:linear-gradient(120deg,#FBEFC0,#D4AF37);color:#3b2a00;font-weight:800">🎓 Graduado del Inicio Rápido</span>`;
   const w=IR_W[(p.w||1)-1]||IR_W[0],quieto=Date.now()-(p.u||0)>2*864e5,ah=ahSoc(x),val=(irVals||{})[x.uid];
-  let h=`<span class="chip c-brand" style="font-weight:800">${w.ic} Inicio Rápido · Semana ${w.n} · ${p.n||0}/${p.tot||0} · Día ${p.d||1}</span>`;
-  if(ah&&ah.pend)h+=`<span class="chip c-bad">💰 Plan en pausa por ahorro</span>`;
-  else if(quieto)h+=`<button type="button" class="chip c-bad" style="border:0;font:inherit;cursor:pointer" data-irh="${esc(x.uid)}">⚠️ ${Math.floor((Date.now()-(p.u||0))/864e5)} días sin avanzar · 💬 Ayudarlo</button>`;
-  if((p.med||[]).length&&!quieto)h+=`<button type="button" class="chip c-good" style="border:0;font:inherit;cursor:pointer" data-irf="${esc(x.uid)}">🏅 ${(p.med||[]).map(n=>IR_W[n-1]?IR_W[n-1].ic:"").join("")} · 👏 Felicitar</button>`;
-  if(p.w===3&&!val)h+=`<button type="button" class="chip" style="border:0;font:inherit;cursor:pointer;background:#0A7DAD;color:#fff" data-irv="${esc(x.uid)}">✅ ¿Ya puede presentar? Validar</button>`;
+  let h=`<span class="chip c-brand mk" style="font-weight:800">${w.ic} Inicio Rápido · Semana ${w.n} · ${p.n||0}/${p.tot||0} · Día ${p.d||1}</span>`;
+  if(ah&&ah.pend)h+=`<span class="chip c-bad mk">💰 Plan en pausa por ahorro</span>`;
+  else if(quieto)h+=`<button type="button" class="chip c-bad mk" style="border:0;font:inherit;cursor:pointer" data-irh="${esc(x.uid)}">⚠️ ${Math.floor((Date.now()-(p.u||0))/864e5)} días sin avanzar · 💬 Ayudarlo</button>`;
+  if((p.med||[]).length&&!quieto)h+=`<button type="button" class="chip c-good mk" style="border:0;font:inherit;cursor:pointer" data-irf="${esc(x.uid)}">🏅 ${(p.med||[]).map(n=>IR_W[n-1]?IR_W[n-1].ic:"").join("")} · 👏 Felicitar</button>`;
+  if(p.w===3&&!val)h+=`<button type="button" class="chip mk" style="border:0;font:inherit;cursor:pointer;background:#0A7DAD;color:#fff" data-irv="${esc(x.uid)}">✅ ¿Ya puede presentar? Validar</button>`;
   return h}
+document.addEventListener("click",e=>{const m=e.target.closest("[data-mfall]");if(!m)return;const c=m.closest(".mfc");if(!c)return;c.classList.toggle("all");m.textContent=c.classList.contains("all")?"Ver menos ▴":"Ver todo ▾"});
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-irh],[data-irf],[data-irv]");if(!b)return;const uid=b.dataset.irh||b.dataset.irf||b.dataset.irv,x=(mios||[]).find(y=>y.uid===uid);if(!x)return;
   const nm=((x.registro||{}).nombre||"").split(" ")[0],p=((x.ir||{}).p)||{},w=waSocio(x);
   if(b.dataset.irv){if(!confirm("¿Confirma que "+nm+" ya puede dar la presentación solo?"))return;try{await store.db.doc("constancia/"+store.uid).set({irVal:{[uid]:Date.now()}},{merge:true});irVals=Object.assign({},irVals||{},{[uid]:Date.now()});toast("✅ Validado: "+nm+" ya puede presentar");renderEquipo()}catch(err){toast("No se pudo guardar")}return}
@@ -5279,7 +5297,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101174957";var busy=false,pend=null;
+(function(){var V="20261101180007";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
