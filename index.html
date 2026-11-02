@@ -793,6 +793,8 @@ body.beta #eqCierre{display:none!important}body.beta #agView [data-k="mia"]{orde
 .actVac{text-align:center;background:linear-gradient(150deg,#0b1020,#0b3b57 70%,#0A7DAD);color:#fff;border-radius:20px;padding:22px 18px}.actVac h3{color:#fff;margin:6px 0 4px}.actVac p{opacity:.85;margin:0 0 12px}
 body.beta #v-inicio>#metaEq{display:none!important}#metaEqR{cursor:pointer}
 body.beta #compSn{display:none!important}#agMia[hidden]+.card.perf{display:none}
+.irAca{display:none}body.beta .irAca{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid rgba(42,193,241,.45);background:linear-gradient(150deg,#0b1020,#0b3b57 70%,#0A7DAD);color:#fff;border-radius:18px;padding:14px 16px;font:inherit;font-size:22px;cursor:pointer}.irAca span{flex:1;font-size:15px}.irAca small{display:block;font-size:12.5px;opacity:.8;margin-top:2px}.irAca em{font-style:normal;font-size:22px;color:#7DD3FC}
+.irMini{display:flex;align-items:center;gap:10px;background:linear-gradient(120deg,#0b1020,#0b3b57);color:#fff;border:1px solid rgba(42,193,241,.45);border-radius:16px;padding:10px 12px;font-size:13.5px;cursor:pointer}.irMini .ic{font-size:20px}.irMini .tx{flex:1;min-width:0}.irMini .go{border:0;background:#2AC1F1;color:#06384F;font:inherit;font-weight:800;border-radius:10px;padding:7px 10px;white-space:nowrap;cursor:pointer}.irMini .x{border:0;background:transparent;color:#fff;opacity:.6;font-size:15px;cursor:pointer;padding:4px}
 </style>
 
 </head>
@@ -1238,6 +1240,7 @@ body.beta #compSn{display:none!important}#agMia[hidden]+.card.perf{display:none}
     <!-- ACADEMIA -->
     <section class="view" id="v-academia" hidden>
       <div class="row between"><div><p class="eyebrow">Aprende y crece</p><h1>Academia</h1></div><button class="btn sm ghost" id="goPrompts" type="button">🤖 Prompts IA</button></div>
+      <button type="button" class="irAca" id="goIR">🚀 <span><b>Plan de Inicio Rápido</b><small>30 días · 4 insignias · aprenda a duplicar</small></span><em>›</em></button>
       <div class="seg" role="tablist" id="acaSeg">
         <button aria-selected="true" data-k="arranque">Arranque</button>
         <button aria-selected="false" data-k="training">Training</button>
@@ -1608,7 +1611,7 @@ async function snCompartir(){if(!snList||!snList.length){toast("Agregue primero 
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(x){if(x&&x.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);toast("Imagen descargada 📲")}catch(e){toast("No se pudo crear la imagen")}}
 $("#snShare").onclick=snCompartir;
-$("#goPrompts").onclick=()=>go("ia");$("#iaBack").onclick=()=>go("academia");
+$("#goPrompts").onclick=()=>go("ia");$("#goIR").onclick=()=>irDesdeAca();$("#iaBack").onclick=()=>go("academia");
 
 // ---------- mi constancia (mes) ----------
 function perfRankHtml(){let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}
@@ -4993,9 +4996,8 @@ async function irFlyer(w){const g=!w,W=1080,H=1350,c=document.createElement("can
 function irRender(){const el=$("#irCard");if(!el)return;try{
   const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
   if(m==="actual"&&!st.ini){const no=LS.get("irNo:"+store.uid);if(no&&Date.now()<no){el.hidden=true;return}
-    el.hidden=false;el.className="irCard inv";el.innerHTML=`<div class="k">🚀 Plan de Inicio Rápido</div><div class="t">Haga su Inicio Rápido para enseñarlo a su equipo</div><p class="small" style="margin:4px 0 0;opacity:.85">30 días, 4 insignias. Lo que ya tiene hecho se marca solo. Lo que usted vive, lo puede duplicar.</p>
-     <div class="row" style="gap:8px;margin-top:10px"><button class="btn sm" id="irEmp" style="background:#2AC1F1;color:#06384F;flex:1">🚀 Empezar mi plan</button><button class="btn sm ghost" id="irNo" style="color:#fff;background:transparent;border:1px solid rgba(255,255,255,.35)">Ahora no</button></div>`;
-    $("#irEmp").onclick=()=>{irSave({ini:Date.now(),vis:1});irRender();setTimeout(irLista,300)};$("#irNo").onclick=()=>{LS.set("irNo:"+store.uid,Date.now()+14*864e5);irRender()};return}
+    el.hidden=false;el.className="irMini";el.innerHTML=`<span class="ic">🚀</span><span class="tx"><b>Plan de Inicio Rápido</b> · Aprenda a duplicar en 30 días</span><button type="button" class="go" id="irEmp">Empezar ›</button><button type="button" class="x" id="irNo" aria-label="Quitar">✕</button>`;
+    $("#irEmp").onclick=e=>{e.stopPropagation();irEmpezar()};$("#irNo").onclick=e=>{e.stopPropagation();LS.set("irNo:"+store.uid,Date.now()+30*864e5);irRender()};el.onclick=e=>{if(!e.target.closest("button"))irEmpezar()};return}
   if(m==="nuevo"&&!st.ini)irSave({ini:irIni()});
   const E=irEstado();irPremiar(E);irResumen(E);if(E.cur.n>=3)irValCheck();if(E.cur.n>=4&&mios===null&&Date.now()-irMiosT>6e5){irMiosT=Date.now();try{loadMios().then(()=>setTimeout(irRender,500))}catch(e){}}
   const st2=irSt();if(st2.grad&&Date.now()-st2.grad>3*864e5){el.hidden=true;return}
@@ -5030,6 +5032,8 @@ function irIntro(){const nm=(miRegistro().nombre||profile.nombrePila||"").split(
    <div class="irPts"><div>✅ <span>Muchas acciones se marcan <b>solas</b> con lo que ya hace en la app.</span></div><div>🤝 <span>Su patrocinador ve su avance y le ayuda.</span></div><div>🏅 <span>Gane una insignia cada semana.</span></div></div>
    <button class="btn" id="irGo" style="width:100%;margin-top:12px">Empezar mi plan</button><button class="btn ghost" data-close style="width:100%">Lo veo después</button>`,()=>{
     $("#irGo").onclick=()=>{closeSheet();setTimeout(()=>irMeta(),250)}});irSave({vis:1})}
+function irEmpezar(){const st=irSt();if(!st.ini)irSave({ini:Date.now()});setTimeout(()=>{irRender();irIntro()},200)}
+function irDesdeAca(){const m=irModo();if(!m){if(isAdmin){simAbrir();return}toast("El plan estará disponible muy pronto");return}const st=irSt();if(m==="actual"&&!st.ini){irEmpezar();return}irLista()}
 function irIntroPend(){const m=irModo(),st=irSt();return m==="nuevo"&&!st.vis}
 function popHoy(k){try{if(!irSimple())return true;const p=LS.get("popDia")||{};if(p.d===TODAY&&p.k!==k)return false;LS.set("popDia",{d:TODAY,k});return true}catch(e){return true}}
 let irRevT=0;function irRevisar(){try{if(yoPrueba()&&store.db&&store.uid&&!window._prOc){window._prOc=1;store.db.doc("fotos/"+store.uid).set({oculto:true},{merge:true}).catch(()=>{});store.db.doc("constancia/"+store.uid).delete().catch(()=>{})}irRender();irInicio();if(!irIntroPend())return;if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate")){if(++irRevT<6)setTimeout(irRevisar,8000);return}if(!popHoy("ir"))return;irIntro()}catch(e){}}
@@ -5339,7 +5343,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101203107";var busy=false,pend=null;
+(function(){var V="20261101203338";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
