@@ -1729,9 +1729,9 @@ const MESES_N=["enero","febrero","marzo","abril","mayo","junio","julio","agosto"
 const mesNom=k=>MESES_N[((+String(k||mesMeta()).slice(5,7))||1)-1];
 function renderGan(){const c=$("#ganCard");if(!c)return;const G=(T.config||{}).ganadores,t=Date.now();
   if(!G||!G.hasta||t>Date.parse(G.hasta)){c.hidden=true;return}
-  const md=["🥇","🥈","🥉"],E=G.equipo||{},K="ganMin:"+G.mes;let min=false;try{min=!!LS.get(K)}catch(e){}
+  const md=["🥇","🥈","🥉"],E=G.equipo||{},K="ganMin:"+G.mes;let min=!window._ganOpen;
   c.hidden=false;c.classList.toggle("min",min);
-  if(min){c.innerHTML=`<span class="grow">🏆 <b>Ganadores de ${esc(G.mesN||mesNom(G.mes))}</b> · ¡Felicidades, campeones!</span><b>›</b>`;c.onclick=()=>{try{LS.set(K,"")}catch(e){}renderGan()};return}
+  if(min){c.innerHTML=`<span class="grow">🏆 <b>Ganadores de ${esc(G.mesN||mesNom(G.mes))}</b> · ¡Felicidades, campeones!</span><b>›</b>`;c.onclick=()=>{window._ganOpen=1;window._ganConf=1;renderGan()};return}
   c.onclick=null;
   const it=(ic,k,x)=>x?`<div class="gn-it">${avHTML(x.n,false,false)}<div class="grow" style="min-width:0"><span class="gn-k">${ic} ${esc(k)}</span><b>${esc(x.n)}</b><small>${esc(x.s||"")}</small></div></div>`:"";
   c.innerHTML=`<div class="row between" style="align-items:center"><span class="gn-e">🏆 Ganadores de ${esc(G.mesN||mesNom(G.mes))}</span><button class="gn-x" type="button">Ocultar</button></div>
@@ -1740,8 +1740,8 @@ function renderGan(){const c=$("#ganCard");if(!c)return;const G=(T.config||{}).g
    ${(G.racha||[]).length?`<span class="gn-k" style="margin-top:4px">🔥 Mi Racha · los 3 más constantes</span>${G.racha.map((x,i)=>`<div class="gn-r"><span class="gn-md">${md[i]||""}</span>${avHTML(x.n,false,false)}<div class="grow" style="min-width:0"><b>${esc(x.n)}</b><small>${esc(x.s||"")}</small></div></div>`).join("")}`:""}
    <div class="gn-ch">${G.esp?`<span>⚔️ ${G.esp} Líderes Espartanos</span>`:""}${G.lid?`<span>🛡️ ${G.lid} Líderes</span>`:""}${E.socios?`<span>👥 ${E.socios} socios nuevos</span>`:""}${E.pts?`<span>⚡ ${fmt(E.pts)} pts</span>`:""}${E.reg?`<span>📝 ${E.reg} registros</span>`:""}</div>
    ${G.nota?`<p class="gn-p">${esc(G.nota)}</p>`:""}`;
-  c.querySelector(".gn-x").onclick=e=>{e.stopPropagation();try{LS.set(K,1)}catch(x){}renderGan()};
-  const KC="ganConf:"+G.mes+":"+TODAY;try{if(!LS.get(KC)){LS.set(KC,1);setTimeout(()=>confeti(c,70),500)}}catch(e){}}
+  c.querySelector(".gn-x").onclick=e=>{e.stopPropagation();window._ganOpen=0;renderGan()};
+  if(window._ganConf){window._ganConf=0;setTimeout(()=>confeti(c,70),300)}}
 
 const COMP_R=[{k:"Líder",ic:"🛡️",t:"Líder",pts:200,d:"200 pts personales"},{k:"Team Leader",ic:"⚔️",t:"Espartano · Team Leader",pts:500,d:"500 pts personales"},{k:"Membresía gratuita",ic:"💎",t:"Membresía gratuita",pts:0,d:"Su membresía sin costo"},{k:"Marketing Director",ic:"🟢",t:"Marketing Director",pts:0,d:"Su primer rango de director"},{k:"SM Director",ic:"🔵",t:"SM Director",pts:0,d:"Senior Marketing Director"},{k:"Regional Director",ic:"🟠",t:"Regional Director",pts:0,d:""},{k:"National Director",ic:"🔴",t:"National Director",pts:0,d:""},{k:"International Director",ic:"🟣",t:"International Director",pts:0,d:""}];
 const compR=k=>COMP_R.find(r=>r.k===k)||null;
@@ -4887,7 +4887,7 @@ $("#todayLbl").textContent=longDate(TODAY);
 const prPruebas=()=>((T.config||{}).pruebas)||[];
 const esPrueba=x=>{try{const k=ahKe(x&&x.email);return !!k&&prPruebas().includes(k)}catch(e){return false}};
 const yoPrueba=()=>{try{return !!fbUser&&esPrueba({email:fbUser.email})}catch(e){return false}};
-const irBeta=()=>isAdmin||yoPrueba();
+const irBeta=()=>true; // abierto a todos el 1 nov 2026, 20:40
 const IR_DESDE="2026-11-02";
 const IR_W=[
  {n:1,k:"Despegue",ic:"🚀",fin:7},{n:2,k:"Presentador",ic:"🎤",fin:14},{n:3,k:"Cerrador",ic:"🔁",fin:21},{n:4,k:"Duplicador",ic:"🌱",fin:30}];
@@ -5343,7 +5343,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101203338";var busy=false,pend=null;
+(function(){var V="20261101203645";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
