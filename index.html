@@ -792,6 +792,7 @@ body.beta .mfRow{cursor:pointer}body.beta .mfRow:not(.open) .mfc,body.beta .mfRo
 body.beta #eqCierre{display:none!important}body.beta #agView [data-k="mia"]{order:-1}
 .actVac{text-align:center;background:linear-gradient(150deg,#0b1020,#0b3b57 70%,#0A7DAD);color:#fff;border-radius:20px;padding:22px 18px}.actVac h3{color:#fff;margin:6px 0 4px}.actVac p{opacity:.85;margin:0 0 12px}
 body.beta #v-inicio>#metaEq{display:none!important}#metaEqR{cursor:pointer}
+body.beta #compSn{display:none!important}#agMia[hidden]+.card.perf{display:none}
 </style>
 
 </head>
@@ -5037,7 +5038,7 @@ function irSimple(){return irBeta()||!!irSimM()}
 function irInicio(){const v=$("#v-inicio");if(!v)return;const on=irSimple();v.classList.toggle("simple",on);document.body.classList.toggle("beta",on);try{renderLzCall()}catch(e){}
   if(on&&!window._agMia){window._agMia=1;try{setAgVista("mia")}catch(e){}}
   const pf=document.querySelector(".card.perf"),sn=$("#v-suenos"),ini=$("#rutCard");if(!pf)return;
-  if(on&&sn&&pf.parentNode!==sn){const ref=$("#compSn");if(ref&&ref.nextSibling)sn.insertBefore(pf,ref.nextSibling);else sn.appendChild(pf)}
+  const am=$("#agMia");if(on&&am&&pf.previousElementSibling!==am)am.insertAdjacentElement("afterend",pf);
   else if(!on&&v&&pf.parentNode!==v){const a=$("#nextEvents");v.insertBefore(pf,a?a.nextSibling:null)}}
 // ---- Rankings sin "Registros inCruises" (beta) ----
 let mqRT=null;function mqEnRanking(){const b=$("#eqBody"),o=$("#metaEq");clearInterval(mqRT);if(!b||!o||eqTab!=="ranking"||rankMetric!=="nuevos"||!o.innerHTML.trim())return;const segs=$("#rankSeg")||$("#rankMetric");if(!segs)return;let c=$("#metaEqR");if(!c){c=document.createElement("div");c.id="metaEqR";segs.insertAdjacentElement("afterend",c);c.onclick=e=>{if(e.target.closest("a"))return;o.click();setTimeout(cp,60)}}const cp=()=>{const x=$("#metaEqR");if(!x){clearInterval(mqRT);return}x.className=o.className;x.hidden=false;x.innerHTML=o.innerHTML};cp();mqRT=setInterval(cp,3500)}
@@ -5338,7 +5339,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101202546";var busy=false,pend=null;
+(function(){var V="20261101203107";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
