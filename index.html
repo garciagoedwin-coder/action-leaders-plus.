@@ -4936,7 +4936,7 @@ function irItems(n){const its={
     {k:"pat",g:"Prepare su negocio",t:"Conectado con su patrocinador",a:x=>x.pat},
     {k:"ref",g:"Prepare su negocio",t:"Su link de referido listo",a:x=>x.ref,b:["Agregar",()=>{closeSheet();abrirMiPagina()}]},
     {k:"herr",g:"Prepare su negocio",t:"Sus herramientas listas",s:"Pago recurrente, app de inCruises, Arranque Pro, Workbook, YessMovement y caja de herramientas",a:x=>x.herrN>=6,p:x=>x.herrN+" de 6",m:1,b:["Marcar",()=>irHerr()]},
-    {k:"act1",g:"Prepare su negocio",t:"Su primera actividad con su patrocinador",s:"Lo que no tiene día y hora, probablemente no suceda",a:x=>x.lid>0,b:["Agendar",()=>{closeSheet();pedirL3(null)}],f:1},
+    {k:"act1",g:"Prepare su negocio",t:"Su primera actividad con su patrocinador",s:"Lo que no tiene día y hora, probablemente no suceda",a:x=>x.lid>0||!!x.mk.act1,b:["Agendar",()=>irAct1()],f:1},
     {k:"l30",g:"Su lista y primeras presentaciones",t:"30 contactos en su lista",s:"No seleccione quién cree que dirá que sí: primero escriba nombres",a:x=>x.nC>=30,p:x=>Math.min(x.nC,30)+" de 30",b:["Agregar",irGoCRM]},
     {k:"c10",g:"Su lista y primeras presentaciones",t:"Contactar a 10 personas",a:x=>x.cont>=10,p:x=>Math.min(x.cont,10)+" de 10",b:["Contactar",irGoCRM]},
     {k:"p5",g:"Su lista y primeras presentaciones",t:"5 presentaciones",a:x=>x.pres>=5,p:x=>Math.min(x.pres,5)+" de 5",b:["Presentar",()=>{closeSheet();abrirPres()}]},
@@ -4955,6 +4955,9 @@ function irItems(n){const its={
     {k:"r7",g:"El ciclo continúa",t:"Racha de 7 días seguidos",a:x=>x.racha>=7,p:x=>Math.min(x.racha,7)+" de 7"}]};return its[n]}
 function irEstado(){const x=irCtx(),W=IR_W.map(w=>{const L=irItems(w.n).map(i=>Object.assign({},i,{ok:!!i.a(x),pt:i.p?i.p(x):""}));return Object.assign({},w,{L,n2:L.filter(i=>i.ok).length})});
   let cur=W.find(w=>w.n2<w.L.length);const grad=!cur;if(!cur)cur=W[3];return {x,W,cur,grad,dia:irDia()}}
+function irAct1(){openSheet(`<h2>📅 Su primera actividad</h2><p class="small muted" style="margin:0">Agéndela con su patrocinador o con un líder de su línea.</p>
+   <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px"><button class="btn" id="a1L3">📞 Pedir llamada de 3 a mi líder</button><button class="btn" id="a1Lz" style="background:linear-gradient(135deg,#B07D00,#F5B700);color:#fff">🚀 Planear mi lanzamiento con mi líder</button><button class="btn ghost" id="a1Ok">✅ Ya la agendé por WhatsApp o en persona</button></div>
+   <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{$("#a1L3").onclick=()=>{closeSheet();setTimeout(()=>pedirL3(null),250)};$("#a1Lz").onclick=()=>{closeSheet();setTimeout(abrirLanz,250)};$("#a1Ok").onclick=()=>irMk("act1")})}
 function irMk(k){const st=irSt(),mk=Object.assign({},st.mk||{});mk[k]=Date.now();irSave({mk});closeSheet();toast("✅ Marcado");setTimeout(()=>{irRender();irLista()},300)}
 function irHerr(){const st=irSt(),mk=Object.assign({},st.mk||{});
   openSheet(`<h2>🧰 Prepare su negocio</h2><p class="small muted" style="margin:0">Marque lo que ya tiene listo. Deje lo esencial y luego salga a la acción.</p>
@@ -5133,6 +5136,7 @@ const TUR_NO=e=>/yes+\s*move/i.test(e.titulo||"")||/liderazgo/i.test(e.titulo||"
 const turSoloRango=e=>/action leaders training/i.test(e.titulo||"");
 const turMs=e=>Date.parse(e.fecha+"T"+(e.hora||"00:00")+":00-06:00");
 const TUR_K=[["p","Presenta"],["e","Edifica"]];
+const turKs=e=>/p[ií]ldora/i.test(e.titulo||"")?TUR_K.slice(0,1):TUR_K;
 let turD=null,turT=0,turDia=null;
 function turPuede(){try{return isAdmin||lzSoyMiembro()}catch(e){return false}}
 function turRango(){try{return isAdmin||rangoActualIdx(miRegistro(),miNombreFull())>=2}catch(e){return false}}
@@ -5143,7 +5147,7 @@ function turAplicar(){if(!turD)return;let c=false;(T.eventos||[]).forEach(e=>{if
   const r=s.p&&s.p.n?s.p.n:e._r0,ed=s.e&&s.e.n?s.e.n:e._e0;if(r!==e.responsable||ed!==e.edifica){e.responsable=r;e.edifica=ed;c=true}});
   if(c){try{renderCal();renderNext()}catch(e){}}}
 function turLista(){return (T.eventos||[]).filter(e=>!TUR_NO(e)&&e.fecha>=TODAY&&e.fecha.slice(0,7)===TODAY.slice(0,7)&&turMs(e)>Date.now()-36e5).sort((a,b)=>(a.fecha+(a.hora||"")).localeCompare(b.fecha+(b.hora||"")))}
-function turResumen(){const L=turLista();let mis=0,cub=0;L.forEach(e=>{const s=(turD||{})[e.id]||{};TUR_K.forEach(([k])=>{if(s[k]&&s[k].n){cub++;if(turYo(s[k]))mis++}})});return {L,mis,cub,por:L.length*2-cub}}
+function turResumen(){const L=turLista();let mis=0,cub=0;let tot=0;L.forEach(e=>{const s=(turD||{})[e.id]||{};turKs(e).forEach(([k])=>{tot++;if(s[k]&&s[k].n){cub++;if(turYo(s[k]))mis++}})});return {L,mis,cub,por:tot-cub}}
 function turAvisos(){try{if(!turPuede()||!turD)return;const man=dkey(new Date(Date.now()+864e5));(T.eventos||[]).forEach(e=>{if(e.fecha!==TODAY&&e.fecha!==man)return;if(turMs(e)<Date.now())return;const s=turD[e.id]||{};
   TUR_K.forEach(([k,lb])=>{if(!turYo(s[k]))return;const K="turAv:"+e.id+":"+k+":"+TODAY;if(LS.get(K))return;LS.set(K,1);
     setTimeout(()=>{try{avisoTop("📣 "+(e.fecha===TODAY?"Hoy":"Mañana")+" le toca "+(k==="p"?"presentar":"edificar"),e.titulo+" · "+h12(e.hora),()=>turAbrir(e.fecha))}catch(x){}},3500)})})}catch(e){}}
@@ -5158,7 +5162,7 @@ function turPinta(){const R=turResumen(),L=R.L,dias=[...new Set(L.map(e=>e.fecha
   openSheet(`<div class="tuTop"><div class="k">⭐ Sistema de liderazgo</div><div class="t">📅 Turnos de ${esc(mesNom())}</div>
     <div class="tuSt"><div><b>${R.mis}</b>Mis turnos</div><div><b>${R.cub}</b>Cubiertos</div><div><b style="color:#FCD34D">${R.por}</b>Por cubrir</div></div></div>
    ${L.length?`<div class="tuDias">${dias.map(f=>`<button type="button" data-td="${f}" class="${f===turDia?"on":""}">${f===TODAY?"Hoy":dn(f)}</button>`).join("")}</div>
-   ${D.map(e=>`<div class="tuEv"><div class="tuEh"><div><b>${ic(e)} ${esc(e.titulo)}</b><small>${esc(niceDate(e.fecha))} · ${esc(h12(e.hora))}</small></div>${turSoloRango(e)?`<span class="tuTag">Solo rangos</span>`:""}</div>${TUR_K.map(([k,lb])=>slot(e,k,lb)).join("")}</div>`).join("")}`:`<p class="muted">No hay actividades por cubrir este mes.</p>`}
+   ${D.map(e=>`<div class="tuEv"><div class="tuEh"><div><b>${ic(e)} ${esc(e.titulo)}</b><small>${esc(niceDate(e.fecha))} · ${esc(h12(e.hora))}</small></div>${turSoloRango(e)?`<span class="tuTag">Solo rangos</span>`:""}</div>${turKs(e).map(([k,lb])=>slot(e,k,lb)).join("")}</div>`).join("")}`:`<p class="muted">No hay actividades por cubrir este mes.</p>`}
    <p class="small muted" style="margin:10px 2px 0">Puede soltar su turno hasta 24 horas antes. Al apuntarse, su nombre sale en la agenda del equipo.</p>
    <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{const sh=$("#sheet");
     sh.querySelectorAll("[data-td]").forEach(b=>b.onclick=()=>{turDia=b.dataset.td;turPinta()});
@@ -5412,7 +5416,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101232032";var busy=false,pend=null;
+(function(){var V="20261102005429";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
