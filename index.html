@@ -1504,7 +1504,7 @@ function renderTasks(){
     ra.innerHTML=h;
     if(ra.dataset.st!==st){ra.firstChild&&ra.firstChild.classList.add("shake");if(st==="ok"&&ra.dataset.st)rutJust=true;if(st==="ok"){try{if(LS.get("rutConf")!==TODAY){LS.set("rutConf",TODAY);setTimeout(()=>confeti($("#rutCard"),46),ra.dataset.st?350:900)}}catch(e){}}}ra.dataset.st=st;ra.dataset.key=key;
     const g=ra.querySelector("[data-rgo]");if(g)g.onclick=()=>{const k=g.dataset.rgo,t=$("#tasks");const el=k==="historia"?t.querySelector("[data-hist]"):t.querySelector(`[data-k="${k}"]`)||t.querySelector(`[data-inc="${k}"]`);if(el)el.click()}}}
-  rutFold(!falta);const rc=$("#rutCard");if(rc)rc.classList.toggle("done",!falta);
+  rutFold(!falta);const rc=$("#rutCard");if(rc)rc.classList.toggle("done",!falta);clearTimeout(window._rcT);window._rcT=setTimeout(()=>{try{renderComp(true)}catch(e){}},400);
 }
 let saveDayT;function saveDay(){clearTimeout(saveDayT);saveDayT=setTimeout(()=>store.set("rutina-"+TODAY,day),600);weekCache[TODAY]=day;renderWeek()}
 $("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(ahGate())return;if(b.dataset.hist){abrirHist();return}
@@ -1894,9 +1894,9 @@ function compStripHTML(mini){const C=miComp(),mn=mesNom();
    <b class="mtN">${r.ic} ${esc(r.t)}</b>${C.vol?`<div class="row between small"><span>⚡ Volumen personal</span><b>${fmt(V)} de ${fmt(C.vol)} pts${V>=C.vol?" ✅":""}</b></div>${bar(V,C.vol)}`:""}
    <div class="row between small"><span>🚀 Activaciones</span><b>${A} de ${C.act}${A>=C.act&&C.act?" ✅":""}</b></div>${bar(A,C.act)}
    <div class="row between small"><span>🎤 Presentaciones esta semana</span><b>${p} de ${C.pres}${p>=C.pres?" ✅":""}</b></div>${bar(p,C.pres)}${mini?`<button type="button" class="btn sm ghost" data-comp style="align-self:flex-start;margin-top:4px">✏️ Editar mi compromiso</button>`:""}</div>`}
-function renderComp(){const s=$("#compStrip"),sn=$("#compSn"),ok=compPuede();
+function renderComp(solo){const s=$("#compStrip"),sn=$("#compSn"),ok=compPuede();
   [s,sn].forEach(el=>{if(!el)return;if(!ok){el.hidden=true;el.innerHTML="";return}el.hidden=false;el.innerHTML=compStripHTML(el===s);el.querySelectorAll("[data-comp]").forEach(b=>b.onclick=e=>{e.stopPropagation();compAbrir()});el.querySelectorAll("[data-cpt]").forEach(b=>b.onclick=()=>{let o=false;try{o=LS.get("cpOpen")==="1";LS.set("cpOpen",o?"":"1")}catch(e){}renderComp()})});
-  if(ok){setTimeout(compCheck,1200);setTimeout(()=>{try{if(miComp()||compVisto)comp15()}catch(e){}},2500)}}
+  if(ok&&!solo){setTimeout(compCheck,1200);setTimeout(()=>{try{if(miComp()||compVisto)comp15()}catch(e){}},2500)}}
 
 // ---------- Meta del equipo del mes (config.metaEquipo) con los compromisos (constancia.comp) ----------
 let mqL=null,mqT=0,mqTick=null;
@@ -5653,7 +5653,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261102125835";var busy=false,pend=null;
+(function(){var V="20261102130132";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
