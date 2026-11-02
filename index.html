@@ -795,6 +795,7 @@ body.beta #v-inicio>#metaEq{display:none!important}#metaEqR{cursor:pointer}
 body.beta #compSn{display:none!important}#agMia[hidden]+.card.perf{display:none}
 .irAca{display:none}body.beta .irAca{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid rgba(42,193,241,.45);background:linear-gradient(150deg,#0b1020,#0b3b57 70%,#0A7DAD);color:#fff;border-radius:18px;padding:14px 16px;font:inherit;font-size:22px;cursor:pointer}.irAca span{flex:1;font-size:15px}.irAca small{display:block;font-size:12.5px;opacity:.8;margin-top:2px}.irAca em{font-style:normal;font-size:22px;color:#7DD3FC}
 .irMini{display:flex;align-items:center;gap:10px;background:linear-gradient(120deg,#0b1020,#0b3b57);color:#fff;border:1px solid rgba(42,193,241,.45);border-radius:16px;padding:10px 12px;font-size:13.5px;cursor:pointer}.irMini .ic{font-size:20px}.irMini .tx{flex:1;min-width:0}.irMini .go{border:0;background:#2AC1F1;color:#06384F;font:inherit;font-weight:800;border-radius:10px;padding:7px 10px;white-space:nowrap;cursor:pointer}.irMini .x{border:0;background:transparent;color:#fff;opacity:.6;font-size:15px;cursor:pointer;padding:4px}
+.lz-cmp{margin-top:8px;font-size:14px;background:rgba(255,255,255,.12);border-radius:12px;padding:8px 12px;display:inline-block}
 </style>
 
 </head>
@@ -1820,7 +1821,7 @@ function renderComp(){const s=$("#compStrip"),sn=$("#compSn"),ok=compPuede();
 let mqL=null,mqT=0,mqTick=null;
 function mqCfg(){const M=(T.config||{}).metaEquipo;return M&&M.mes===mesMeta()&&+M.pts?M:null}
 function mqCargar(force){if(!store.db||!mqCfg())return;if(!force&&mqL&&Date.now()-mqT<600000)return;mqT=Date.now();
-  store.db.collection("constancia").where("comp.mes",mesMeta()).get().then(q=>{mqL=q.docs.map(d=>{const x=d.data()||{},c=x.comp||{};return{uid:d.id,n:x.nombre||"",no:!!c.no,v:+c.vol||(+c.act||0)*200,r:c.rango||"",t:+c.t||0}}).filter(x=>!x.no&&x.n);renderMetaEq(true)}).catch(()=>{mqL=mqL||[]})}
+  store.db.collection("constancia").where("comp.mes",mesMeta()).get().then(q=>{mqL=q.docs.map(d=>{const x=d.data()||{},c=x.comp||{};return{uid:d.id,n:x.nombre||"",no:!!c.no,v:+c.vol||(+c.act||0)*200,r:c.rango||"",t:+c.t||0}}).filter(x=>!x.no&&x.n);renderMetaEq(true);try{const ve=$("#v-equipo");if(ve&&!ve.hidden&&eqTab==="ranking"&&rankMetric==="liderazgo")renderEquipo()}catch(e){}}).catch(()=>{mqL=mqL||[]})}
 function renderMetaEq(cargado){const c=$("#metaEq");if(!c)return;const M=mqCfg();if(!M||!fbUser){c.hidden=true;return}
   mqCargar(); // respeta su caché de 10 min; antes solo cargaba una vez y no se refrescaba
   let L=(mqL||[]).slice();const yo=miComp();
@@ -3046,7 +3047,7 @@ function renderLiderazgo(b){{
     const L=T.lideres,C=calCfg(),cn={esp:0,lid:0,rango:0,pend:0};L.forEach(l=>cn[calLid(l).k]++);const nCal=cn.esp+cn.lid+cn.rango;if(!["cal","esp","lid","rango"].includes(leadCal))leadCal="cal";
     const per=(T.config&&T.config.liderazgoPeriodo)||C.mes||lcMes();
     const S=sisCfg();
-    b.innerHTML=rankSegsL()+`<div class="lz-hero"><div class="lz-k">${esc(String(per).toUpperCase())}</div><h2>⭐ ${S?"Sistema de liderazgo":"Calificados al sistema de liderazgo"}</h2>${S&&irSimple()&&!isAdmin&&!lzSoyMiembro()?`<div class="lz-invit">🚀 <b>¡Usted también puede entrar!</b> Califique este mes con <b>🛡️ 200 pts</b> (Líder) o <b>⚔️ 500 pts</b> (Líder Espartano). Estos son los que calificaron el mes pasado.</div>`:""}${S?`<p class="lz-sub">Calificados al sistema de liderazgo en ${esc(String(S.mes||per).split(" ")[0].toLowerCase())} con sus puntos de ${esc(String(S.base||"").split(" ")[0].toLowerCase())}</p>`:""}
+    b.innerHTML=rankSegsL()+`<div class="lz-hero"><div class="lz-k">${esc(String(per).toUpperCase())}</div><h2>⭐ ${S?"Sistema de liderazgo":"Calificados al sistema de liderazgo"}</h2>${S&&irSimple()&&mqL?(()=>{const n=L.filter(l=>lzComp(l)).length;return `<div class="lz-cmp">🤝 <b>${n} de ${L.length}</b> ya hicieron su compromiso de ${esc(mesNom())}</div>`})():""}${S&&irSimple()&&!isAdmin&&!lzSoyMiembro()?`<div class="lz-invit">🚀 <b>¡Usted también puede entrar!</b> Califique este mes con <b>🛡️ 200 pts</b> (Líder) o <b>⚔️ 500 pts</b> (Líder Espartano). Estos son los que calificaron el mes pasado.</div>`:""}${S?`<p class="lz-sub">Calificados al sistema de liderazgo en ${esc(String(S.mes||per).split(" ")[0].toLowerCase())} con sus puntos de ${esc(String(S.base||"").split(" ")[0].toLowerCase())}</p>`:""}
       <div class="lz-cnt"><div><b>${cn.esp}</b><small>⚔️ Espartanos</small></div><div><b>${cn.lid}</b><small>🛡️ Líderes</small></div><div><b>${cn.rango}</b><small>✅ Por rango</small></div></div>
       ${lcLista0().length?`<button class="lz-fly" id="lcBtn" type="button">🎉 Ver flyers de los calificados (${lcLista0().length})</button>`:""}
       <p class="lz-req">${S?`Calificaron en ${esc(String(S.base||"").split(" ")[0].toLowerCase())} con su ahorro al día: 🛡️ Líder ${fmt(C.lider)}+ pts · ⚔️ Líder Espartano ${fmt(C.esp)}+ pts. De Marketing Director en adelante entran por su rango.`:`Requisitos: ahorro al día y puntos personales del mes (🛡️ Líder ${fmt(C.lider)} · ⚔️ Espartano ${fmt(C.esp)}). De Marketing Director en adelante califican al recalificar su rango.`}</p></div>
@@ -5087,11 +5088,13 @@ const lzYo=()=>nrmN(miNombreFull()||miRegistro().nombre||"");
 function lzMio(l){if(isAdmin)return true;const ns=lzNs(l),yo=lzYo();if(yo&&ns.includes(yo))return true;const f=(fotosFs||[]).find(x=>ns.includes(nrmN(x.invNombre||x.nombre||"")));return !!(f&&store.uid&&(f.linea||[]).includes(store.uid))}
 function lzSoyMiembro(){const yo=lzYo();return !!yo&&(T.lideres||[]).some(l=>lzNs(l).includes(yo))}
 function insigDe(nombre){const n=nrmN(nombre);if(!n)return"";const l=(T.lideres||[]).find(z=>lzNs(z).includes(n));if(!l)return"";const c=calLid(l),rg=RANGOS.find(g=>g.n===l.rango),dot=posRank(l.rango)<=4&&rg?`<i class="insD" style="background:${rg.c}" title="${esc(rangoTxt(l.rango))}"></i>`:"";const k=c.k==="esp"?"⚔️":c.k==="lid"?"🛡️":"";return dot||k?` <span class="insig">${dot}${k}</span>`:""}
+function lzComp(l){if(mqL===null){try{mqCargar()}catch(e){}return undefined}const ns=lzNs(l);return mqL.find(x=>ns.includes(nrmN(x.n)))||null}
+function lzCompChip(l){const c=lzComp(l);if(c===undefined)return"";return c?`<span class="chip c-good">🤝 Comprometido: ${fmt(c.v)} pts</span>`:`<span class="chip c-warn">🎯 Sin compromiso</span>`}
 function leadFilaB(l,i){const c=calLid(l),R=liderDe(l),rg=RANGOS.find(g=>g.n===l.rango),mio=lzMio(l),v=Number(l.volumen)||0,C=calCfg(),w=Math.min(100,v/C.esp*100);
   const rgC=rg&&posRank(l.rango)<=4?`<span class="chip" style="background:${rg.c};color:#fff">${esc(rangoTxt(l.rango))}</span>`:"";
   const ins=c.k==="esp"?`<span class="chip lz-esp">⚔️ Líder Espartano</span>`:c.k==="lid"?`<span class="chip lz-lid">🛡️ Líder</span>`:c.k==="rango"?`<span class="chip c-good">✅ Calificado por rango</span>`:(c.ah&&mio?`<span class="chip c-bad">💰 Ahorro pendiente</span>`:`<span class="chip c-brand">⏳ Pendiente</span>`);
   return `<button type="button" class="lz-r${l.nombre===profile.miNombre?" rank-me":""}" data-li="${T.lideres.indexOf(l)}"${mio?"":' data-nomio="1"'}><span class="lz-av">${avHTML(l.nombre,l.nombre===profile.miNombre,true)}${rg?`<em style="background:${rg.n==="Board of Director"?"linear-gradient(120deg,#EA580C 50%,#7C2D12 50%)":rg.c}"></em>`:""}</span>
-   <span class="lz-g"><b>${esc(l.nombre)}</b><span class="lz-t">${ins}${rgC}${mio&&R&&R.idx!=null?`<span class="chip lz-ix" style="color:${IDX_C(R.idx)}">⚡ ${R.idx}%</span>`:""}</span>
+   <span class="lz-g"><b>${esc(l.nombre)}</b><span class="lz-t">${ins}${rgC}${lzCompChip(l)}${mio&&R&&R.idx!=null?`<span class="chip lz-ix" style="color:${IDX_C(R.idx)}">⚡ ${R.idx}%</span>`:""}</span>
    ${mio?`<span class="lzBar"><i style="width:${Math.max(v?3:0,w)}%" class="${v>=C.esp?"e":v>=C.lider?"l":""}"></i><em style="left:${C.lider/C.esp*100}%"></em></span><span class="small muted">${fmt(v)} de ${fmt(C.esp)} pts este mes${v>=C.esp?" · ⚔️ ya volvió a calificar":v>=C.lider?" · 🛡️ ya es Líder":""}</span>`:""}</span>${mio?"":`<span class="small muted" style="flex:none">🔒</span>`}</button>`}
 function llamLz(){const L=(T.config||{}).llamadaLz;if(!L||!L.zoom)return null;return L}
 function llamLzCard(){const L=llamLz();if(!L)return"";const hoy=new Date().getDay()===(L.dia||0);
@@ -5343,7 +5346,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101203645";var busy=false,pend=null;
+(function(){var V="20261101211113";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
