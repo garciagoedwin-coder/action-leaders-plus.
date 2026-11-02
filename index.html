@@ -1883,7 +1883,7 @@ const HOME_WAVE=`<svg class="hwave" viewBox="0 0 400 60" preserveAspectRatio="no
 function homeRing(pc,col,txt){pc=Math.max(0,Math.min(100,+pc||0));return `<div class="hring"><svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="7"/><circle cx="36" cy="36" r="30" fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(188.5*pc/100).toFixed(1)} 188.5" transform="rotate(-90 36 36)"/></svg><b>${esc(txt)}</b></div>`}
 function compStripHTML(mini){const C=miComp(),mn=mesNom();
   if(!C||C.no)return `<button type="button" class="compBtn" data-comp>🎯 Hacer mi compromiso de ${esc(mn)} ›</button>`;
-  let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}const A=rk?rk.A:0,V=rk?rk.V:0,p=presSemana().length,r=compR(C.rango)||{ic:"🎯",t:C.rango,pts:0},d=compDias();
+  let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}const A=rk?rk.A:0,V=rk?rk.V:0,p=(()=>{let n=presSemana().length;try{n=Math.max(n,+constStats().semPres||0)}catch(e){}return n})(),r=compR(C.rango)||{ic:"🎯",t:C.rango,pts:0},d=compDias();
   const bar=(a,b)=>`<div class="mtBar"><i style="width:${b?Math.min(100,Math.round(a*100/b)):0}%"></i></div>`;
   const pc=(a,b)=>b?Math.min(100,Math.round(a*100/b)):0,tot=Math.round(((C.vol?pc(V,C.vol):pc(A,C.act))+pc(p,C.pres))/2);
   let open=false;try{open=LS.get("cpOpen")==="1"}catch(e){}
@@ -2134,11 +2134,11 @@ let rkTab=(()=>{try{return LS.get("rkTab")||"act"}catch(e){return "act"}})();
 function rkInicio(){const c=$("#rkCard");if(!c)return;try{
   const yo=miNombreFull()||miNombreCorto()||"",mes=(m=>m.charAt(0).toUpperCase()+m.slice(1))(mesNom().split(" ")[0]);let L=[],mi=-1,cargando=false;
   if(rkTab==="rac"){if(!constL){cargando=true;if(!window._rkCL){window._rkCL=1;Promise.resolve(loadConst()).finally(()=>{window._rkCL=0;rkInicio()})}}
-    else{L=constL.filter(x=>+x.racha>0).sort((a,b)=>(+b.racha)-(+a.racha)||String(a.nombre).localeCompare(b.nombre,"es")).map(x=>({n:x.nombre,v:+x.racha,u:x.uid}));mi=L.findIndex(x=>x.u===store.uid)}}
+    else{L=constSort(constL.slice()).filter(x=>+x.racha>0).map(x=>({n:x.nombre,v:+x.racha,u:x.uid}));mi=L.findIndex(x=>x.u===store.uid)}}
   else{L=(T.ranking||[]).filter(r=>+r.activaciones>0).sort((a,b)=>(+b.activaciones)-(+a.activaciones)||(+b.volumen||0)-(+a.volumen||0)).map(r=>({n:r.nombre,v:+r.activaciones}));mi=yo?L.findIndex(x=>sameN(x.n,yo)):-1}
   const md=["🥇","🥈","🥉"],T3=L.slice(0,3),w=rkTab==="rac"?["día","días"]:["activación","activaciones"];
   let pie="";if(!cargando){if(mi>=0&&mi<3)pie=`🔥 <b>¡Usted está en el top 3!</b> Defienda su lugar`;
-    else if(mi>=3){const f=Math.max(1,T3[2].v-L[mi].v+1);pie=`Usted va <b>#${mi+1}</b> · le ${f===1?"falta":"faltan"} <b>${f}</b> ${f===1?w[0]:w[1]} para el top 3 💪`}
+    else if(mi>=3){if(L[mi].v>=T3[2].v)pie=`Usted va <b>#${mi+1}</b> · empatado con el top 3: ${rkTab==="rac"?"sume presentaciones y puntos":"sume más volumen"} para subir 💪`;else{const f=T3[2].v-L[mi].v+1;pie=`Usted va <b>#${mi+1}</b> · le ${f===1?"falta":"faltan"} <b>${f}</b> ${f===1?w[0]:w[1]} para el top 3 💪`}}
     else pie=L.length<3?(rkTab==="rac"?"Haga su rutina hoy y entre al top 3 💪":"¡Una activación y entra al top 3! 💪"):(rkTab==="rac"?"Haga su rutina hoy y empiece su racha 🔥":"Su primera activación le pone en el ranking 💪")}
   const G=(T.config||{}).ganadores,gan=G&&G.hasta&&Date.now()<=Date.parse(G.hasta);
   c.hidden=false;c.innerHTML=`<div class="row between" style="align-items:center"><h3 style="margin:0;font-size:16px;min-width:0">🏆 Así va el ranking <span class="muted" style="font-weight:600;font-size:13px">· ${esc(mes)}</span></h3><button type="button" class="rkVer" id="rkVer">Ver todo ›</button></div>
@@ -5653,7 +5653,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261102125237";var busy=false,pend=null;
+(function(){var V="20261102125835";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
