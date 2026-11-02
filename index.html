@@ -4583,17 +4583,34 @@ const TOURS={agenda:{t:"📅 Su Agenda",d:"Llamadas de 3, lanzamientos, juntas y
   {sel:"#l3Card",si:1,tx:"📬 <b>Por responder</b>: cuando un socio le invita a una llamada de 3 o a un lanzamiento, aparece aquí. Acepte, proponga otra hora o diga que no puede."},
   {sel:"#recCard",si:1,tx:"⏰ <b>Recuerde a sus invitados</b>: el día antes y el mismo día, toque “Recordar” y se abre WhatsApp con el mensaje listo."},
   {sel:"#agView",tx:"Aquí cambia entre la <b>Agenda del equipo</b> (presentaciones, píldoras, eventos) y <b>Mi agenda</b> (sus citas)."},
-  {act:()=>{try{setAgVista("mia")}catch(e){}},sel:"#agMia",tx:"En <b>Mi agenda</b> ve sus citas de la semana. En cada cita puede recordar, reprogramar o cancelar.",fin:"¡Listo! Ya domina su Agenda 💪"}]}};
+  {act:()=>{try{setAgVista("mia")}catch(e){}},sel:"#agMia",tx:"En <b>Mi agenda</b> ve sus citas de la semana. En cada cita puede recordar, reprogramar o cancelar.",fin:"¡Listo! Ya domina su Agenda 💪"}]},
+ ir:{t:"🚀 Su Plan de Inicio Rápido",d:"Sus primeros 30 días, paso a paso",min:2,ok:()=>{try{return !!irModo()}catch(e){return false}},steps:[
+  {go:"inicio",act:()=>{try{closeSheet();irAbierto=false;irRender()}catch(e){}},sel:"#irCard",tx:"Este es su <b>Plan de Inicio Rápido</b>: 4 semanas para arrancar su negocio acompañado. Siempre lo encuentra aquí, en Inicio."},
+  {sel:"#irCard .irS1",tx:"Aquí ve en qué <b>semana</b> va, cuántos pasos lleva y cuántos días le quedan. Mientras le falte algo, el banner <b>late</b> para recordarle: ¡termínelo!"},
+  {sel:"#irCard .irS3",si:1,tx:"👉 Su <b>siguiente paso</b>. Toque el botón y la app le lleva directo a hacerlo. No tiene que adivinar qué sigue."},
+  {act:()=>{try{irAbierto=true;irRender()}catch(e){}},sel:"#irCard .irMed",si:1,tx:"Sus 4 <b>insignias</b>: 🚀 Despegue, 🎤 Presentador, 🔁 Cerrador y 🌱 Duplicador. Al terminar cada semana gana una, y al final se gradúa 🎓."},
+  {act:()=>{try{irAbierto=false;irRender();irLista()}catch(e){}},sel:"#sheet .irWk",si:1,tx:"Al tocar el banner ve la <b>lista completa</b> de la semana. Arriba puede mirar las 4 semanas."},
+  {sel:"#sheet .irG",si:1,tx:"Cada paso tiene su botón. Muchos se marcan <b>solos</b> (contactos, presentaciones, seguimientos) y otros los marca usted, como su meta o sus herramientas."},
+  {act:()=>{try{closeSheet()}catch(e){}},go:"inicio",sel:"#irCard",tx:"Lo importante: <b>un paso cada día</b>, con su patrocinador a la par. Cuando termine, la app le hace su flyer de Graduado para compartir.",fin:"¡Listo! Ya sabe usar su plan 🚀"}]},
+ crm:{t:"👥 Su CRM",d:"Cómo agregar y dar seguimiento a sus contactos",min:2,steps:[
+  {go:"crm",act:()=>{try{crmV="proc";stageF="Todos";openC=null;renderCRM()}catch(e){}},sel:"#addContact",tx:"Su <b>CRM</b> es su lista de prospectos. Con <b>+ Contacto</b> agrega a cada persona: nombre, WhatsApp y una nota."},
+  {sel:"#crmVseg",si:1,tx:"<b>🔥 En proceso</b> son los que todavía hay que mover. <b>✅ Cerrados</b> son sus clientes y socios, en su propia pestaña."},
+  {sel:"#stageBar",tx:"Las <b>etapas</b>: Nuevo › Contactado › Presentación › Seguimiento › Por cerrar. Toque una para ver solo esos contactos."},
+  {sel:"#contactList .crmord",si:1,tx:"Ordénelos por <b>📅 Seguimiento</b> (los que le toca atender primero), los más recientes o el mayor avance."},
+  {sel:"#contactList .contact",si:1,tx:"Cada contacto muestra su <b>avance en %</b> y su etapa. Un <b>puntito rojo</b> significa que su seguimiento está atrasado."},
+  {act:()=>{try{const c=(contacts||[]).find(x=>!["Socio","Cliente"].includes(x.stage));if(c){openC=c.id;renderCRM()}}catch(e){}},sel:"#contactList .contact.open .cbody",si:1,tx:"Al abrirlo: <b>WhatsApp</b> con un toque, su <b>siguiente paso</b> y en <b>⋯ Más</b> presentar, agendar una cita o pedir una llamada de 3. La etapa avanza sola cuando usted actúa."},
+  {act:()=>{try{if((contacts||[]).some(x=>["Socio","Cliente"].includes(x.stage))){crmV="cer";openC=null;renderCRM()}}catch(e){}},sel:"#contactList .contact",si:1,tx:"En <b>Cerrados</b> está su marcador. Al abrir un cliente puede revisar su <b>ahorro</b>, pedirle <b>referidos</b> o invitarlo al negocio."},
+  {act:()=>{try{crmV="proc";openC=null;renderCRM()}catch(e){}},sel:"#bkSave",tx:"Y aquí <b>respalda sus contactos</b> antes de cambiar de teléfono. ¡Nunca pierde su lista!",fin:"¡Listo! Ya sabe gestionar sus contactos 💪"}]}};
 let tourSt=null;
 function tourEl(s){const e=$(s);if(!e)return null;const r=e.getBoundingClientRect();return e.hidden||(!r.width&&!r.height)?null:e}
 function tourCerrar(ok){const o=$("#tourOv");if(o)o.remove();if(ok&&tourSt){const D=LS.get("tourOk")||{};D[tourSt.k]=Date.now();LS.set("tourOk",D);try{renderAca()}catch(e){}}tourSt=null}
 function tourIr(k){const T0=TOURS[k];if(!T0)return;closeSheet&&closeSheet();tourSt={k,i:0};tourPaso()}
 function tourPaso(){if(!tourSt)return;const T0=TOURS[tourSt.k],L=T0.steps;let st=L[tourSt.i];
-  while(st&&st.si&&(!st.go&&!tourEl(st.sel))){tourSt.i++;st=L[tourSt.i]}if(!st){tourCerrar(true);return}
+  while(st&&st.si&&!st.go&&!st.act&&!tourEl(st.sel)){tourSt.i++;tourSt.sk=(tourSt.sk||0)+1;st=L[tourSt.i]}if(!st){tourCerrar(true);return}
   if(st.go)go(st.go);if(st.act)st.act();
-  setTimeout(()=>{const e=tourEl(st.sel);if(e)e.scrollIntoView({block:"center",behavior:"instant"});setTimeout(()=>tourPinta(st,e),120)},st.go||st.act?260:40)}
+  setTimeout(()=>{const e=tourEl(st.sel);if(!e&&st.si){tourSt.i++;tourSt.sk=(tourSt.sk||0)+1;tourPaso();return}if(e)e.scrollIntoView({block:"center",behavior:"instant"});setTimeout(()=>tourPinta(st,e),120)},st.go||st.act?260:40)}
 function tourPinta(st,e){let o=$("#tourOv");if(!o){o=document.createElement("div");o.id="tourOv";document.body.appendChild(o)}
-  const L=TOURS[tourSt.k].steps,vis=L.filter(s=>!s.si||tourEl(s.sel)),n=vis.indexOf(st)+1,tot=vis.length,ult=tourSt.i>=L.length-1||!L.slice(tourSt.i+1).some(s=>!s.si||tourEl(s.sel));
+  const L=TOURS[tourSt.k].steps,sk=tourSt.sk||0,n=tourSt.i+1-sk,tot=L.length-sk,ult=tourSt.i>=L.length-1||!L.slice(tourSt.i+1).some(s=>!s.si||s.act||tourEl(s.sel));
   const r=e?e.getBoundingClientRect():{top:innerHeight/2,left:innerWidth/2,width:0,height:0,bottom:innerHeight/2},pad=6,abajo=r.top+r.height/2<innerHeight*.55;
   o.innerHTML=`<div class="tour-hole" style="top:${r.top-pad}px;left:${r.left-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px"></div>
    <div class="tour-tip" style="${abajo?`top:${Math.min(innerHeight-220,r.bottom+14)}px`:`bottom:${Math.min(innerHeight-220,innerHeight-r.top+14)}px`}">
@@ -4601,7 +4618,7 @@ function tourPinta(st,e){let o=$("#tourOv");if(!o){o=document.createElement("div
     <div class="row" style="gap:8px"><button type="button" class="btn ghost sm" id="tourX">Salir</button><span class="grow"></span>${tourSt.i?`<button type="button" class="btn ghost sm" id="tourB">‹ Atrás</button>`:""}<button type="button" class="btn sm" id="tourN">${ult?"¡Entendido!":"Siguiente ›"}</button></div></div>`;
   $("#tourX").onclick=()=>tourCerrar(false);const b=$("#tourB");if(b)b.onclick=()=>{do{tourSt.i--}while(tourSt.i>0&&L[tourSt.i].si&&!tourEl(L[tourSt.i].sel));tourPaso()};
   $("#tourN").onclick=()=>{if(ult){tourCerrar(true);return}tourSt.i++;tourPaso()}}
-function tourCard(){const D=LS.get("tourOk")||{},K=Object.keys(TOURS),h=K.filter(k=>D[k]).length;
+function tourCard(){const D=LS.get("tourOk")||{},K=Object.keys(TOURS).filter(k=>!TOURS[k].ok||TOURS[k].ok()),h=K.filter(k=>D[k]).length;
   return `<div class="card" style="gap:8px;background:linear-gradient(135deg,#0A7DAD,#2AC1F1);color:#fff;border:0"><b style="font-size:17px">🧭 Descubra su app</b><p class="small" style="margin:0;opacity:.92">Guías paso a paso dentro de la app. Toque una y la app le enseña dónde tocar.</p><p class="small" style="margin:0;font-weight:800">${h} de ${K.length} completadas</p></div>`
    +K.map(k=>{const t=TOURS[k],ok=!!D[k];return `<button type="button" class="card row between" data-tour="${k}" style="gap:10px;text-align:left;cursor:pointer"><span class="grow"><b>${esc(t.t)}</b><small class="muted" style="display:block">${esc(t.d)} · ${t.min} min</small></span><span class="chip ${ok?"c-good":"c-gold"}">${ok?"✓ Visto":"Ver ›"}</span></button>`}).join("")}
 // ---------- Presentación interactiva (31 oct): el socio presenta desde la app ----------
@@ -5058,7 +5075,7 @@ function irCtx(){const st=irSt(),ini=irIni(),iniD=dkey(new Date(ini)),C=contacts
    pat:sim||!!miRegistro().patrocinadorUid,ref:!!String(profile.ref||"").trim(),val:!!st.val||!!irValOk,comp:!!(miComp()&&!miComp().no),
    act1,soc:dir.length>0,ayu:!!mk.ayu||dir.some(x=>x.ir&&x.ir.ini)||(citas||[]).some(x=>x.lzE&&String(x.fecha||"")>=iniD),racha:irRacha(),sim}}
 function irRacha(){let r=0;try{for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const k=dkey(d),s=dayScore(k===TODAY?day:weekCache[k],k);if(i===0&&s<1)continue;if(s>=1)r++;else break}}catch(e){}return r}
-const irGoCRM=()=>{closeSheet();go("crm")};
+const irGoCRM=()=>{closeSheet();go("crm");try{const D=LS.get("tourOk")||{};if(!D.crm&&!LS.get("tourAskCrm")){LS.set("tourAskCrm",1);setTimeout(()=>avisoTop("🧭 ¿Le enseño a usar su CRM?","Guía de 2 minutos · toque Ver",()=>tourIr("crm")),700)}}catch(e){}};
 function irItems(n){const its={
  1:[{k:"porque",g:"Define su meta",t:"Su “por qué”",s:"Lo más importante que quiere lograr con inCruises",a:x=>x.porque,b:["Escribir",()=>{closeSheet();go("suenos")}]},
     {k:"meta",g:"Define su meta",t:"Su meta y compromiso diario",s:"Tiempo, contactos y presentaciones al día",a:x=>x.meta,m:1,b:["Llenar",()=>irMeta()]},
@@ -5151,7 +5168,8 @@ let irAbierto=false;function irRender(){const el=$("#irCard");if(!el)return;try{
     el.innerHTML=`<div class="irS1"><span class="ic">🚀</span><span class="grow" style="min-width:0"><b>Inicio Rápido · Semana ${w.n} · ${esc(w.k)}</b><span class="irS2">${nx?`¡Termínelo! Le ${falta===1?"falta 1 paso":"faltan "+falta+" pasos"}${d>fin?" · se le pasó el día "+fin:q>0?" · quedan "+q+(q===1?" día":" días"):" · ¡hoy es el último día!"}`:"✅ ¡Semana lista!"}</span></span><span class="irSp">${w.n2}/${w.L.length}</span><button type="button" class="irSx" id="irSx" aria-label="Ver más">▾</button></div>
      <div class="irBar" style="margin:8px 0 0;height:6px"><i style="width:${Math.max(4,pc)}%"></i></div>
      ${nx?`<div class="irS3"><span class="ap">👉</span><b class="grow">${esc(nx.t)}</b>${nx.b?`<button class="btn sm" id="irNxB" type="button">${esc(nx.b[0])}</button>`:""}</div>`:""}`;
-    $("#irSx").onclick=e=>{e.stopPropagation();irAbierto=true;irRender()};{const b=$("#irNxB");if(b&&nx)b.onclick=e=>{e.stopPropagation();nx.b[1]()}}
+    $("#irSx").onclick=e=>{e.stopPropagation();irAbierto=true;irRender()};
+    try{const D=LS.get("tourOk")||{};if(!D.ir&&!LS.get("tourAskIr")&&!tourSt){LS.set("tourAskIr",1);setTimeout(()=>{if(!document.querySelector(".avisoTop.on")&&$("#irCard")&&!$("#irCard").hidden&&!$("#v-inicio").hidden)avisoTop("🧭 ¿Le enseño cómo funciona su plan?","Guía de 2 minutos · toque Ver",()=>tourIr("ir"));else LS.set("tourAskIr","")},6000)}}catch(e){}{const b=$("#irNxB");if(b&&nx)b.onclick=e=>{e.stopPropagation();nx.b[1]()}}
     el.onclick=e=>{if(e.target.closest("button"))return;irLista()};return}
   el.innerHTML=E.grad?`<div class="k">🎓 Plan de Inicio Rápido</div><div class="t">¡Action Leader <em>graduado</em>!</div><p class="small" style="margin:4px 0 0;opacity:.85">Ahora ayude a su equipo a hacer el suyo.</p><button class="btn sm" id="irFlyG" style="background:#E8C766;color:#3b2a00;margin-top:10px">📣 Compartir mi logro</button>`:
    `<div class="k">🚀 Plan de Inicio Rápido</div><div class="t">Semana ${w.n} · <em>${esc(w.k)}</em></div>
@@ -5552,7 +5570,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261102122223";var busy=false,pend=null;
+(function(){var V="20261102122747";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
