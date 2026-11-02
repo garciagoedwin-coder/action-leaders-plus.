@@ -4296,8 +4296,10 @@ function citaIcs(c){const a=citaIni(c),b=new Date(a.getTime()+(c.dur||60)*6e4),t
    ${ios?`<a class="btn" style="width:100%;justify-content:center" href="cal.html#${encodeURIComponent(t)}" target="_blank" rel="noopener">🍎 Calendario del iPhone</a>`:""}
    <a class="btn ${ios?"ghost":""}" style="width:100%;justify-content:center" href="${esc(citaGcal(c,ti))}" target="_blank" rel="noopener">📅 Google Calendar</a>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`)}
-function citaLink(c){const a=citaIni(c),u=a.toISOString().replace(/[-:T]/g,"").slice(0,12),yo=miNombreCorto()||"";let q="t="+u+"&m="+(c.dur||60);if(yo)q+="&n="+encodeURIComponent(yo).replace(/%20/g,"+");
-  if(c.tipo==="zoom"&&c.enlace){const zm=c.enlace.match(/zoom\.us\/j\/(\d{9,12})\/?$/);q+="&z="+(zm?zm[1]:encodeURIComponent(c.enlace.replace(/^https?:\/\//,"")).replace(/%2F/g,"/"))}else if(c.tipo==="persona"&&c.lugar)q+="&l="+encodeURIComponent(c.lugar).replace(/%20/g,"+");return "https://actionleadersplus.com/cal.html?"+q}
+// Enlace de calendario con solo letras y números (base64url), para que WhatsApp no lo corte en espacios ni símbolos
+function citaLink(c){const a=citaIni(c),u=a.toISOString().replace(/[-:T]/g,"").slice(0,12),yo=miNombreCorto()||"",o={t:u,m:c.dur||60};if(yo)o.n=yo;
+  if(c.tipo==="zoom"&&c.enlace){const zm=c.enlace.match(/zoom\.us\/j\/(\d{9,12})\/?$/);o.z=zm?zm[1]:c.enlace.replace(/^https?:\/\//,"")}else if(c.tipo==="persona"&&c.lugar)o.l=c.lugar;
+  const b64=btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");return "https://actionleadersplus.com/cal.html?c="+b64}
 function citaMsg(c,rec){const first=String(c.nombre||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"",d=parseK(c.fecha),L=[];
   const dia=DAYS_L[d.getDay()][0].toUpperCase()+DAYS_L[d.getDay()].slice(1)+" "+d.getDate()+" de "+MONTHS[d.getMonth()];
   const como=c.tipo==="zoom"?"💻 *Por Zoom*":c.tipo==="whatsapp"?"📱 *Videollamada de WhatsApp*":"📍 *En persona*";
@@ -5550,7 +5552,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261102121724";var busy=false,pend=null;
+(function(){var V="20261102122223";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

@@ -12,6 +12,7 @@ a.b.g{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,2
 <p class="s" id="help" hidden style="background:rgba(255,255,255,.08);border-radius:14px;padding:12px">¿No se abrió el calendario? Si está dentro de la app, toque <b>⋯</b> o el ícono de compartir y elija <b>Abrir en Safari</b>, y vuelva a tocar el botón. También puede usar <b>Google Calendar</b>.</p></div>
 <script>
 (function(){var p=new URLSearchParams(location.search),ics="",ti="Reunión",a,b,z="";
+try{if(p.get("c")){var s64=p.get("c").replace(/-/g,"+").replace(/_/g,"/");while(s64.length%4)s64+="=";var bin=atob(s64),u8=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);var o=JSON.parse(new TextDecoder().decode(u8)),q=new URLSearchParams();for(var k in o)if(o[k]!=null&&o[k]!=="")q.set(k,String(o[k]));p=q}}catch(e){}
 function g(d){return d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"")}
 try{if(p.get("t")){var t=p.get("t");a=new Date(Date.UTC(+t.slice(0,4),+t.slice(4,6)-1,+t.slice(6,8),+t.slice(8,10),+t.slice(10,12)));b=new Date(a.getTime()+(+p.get("m")||60)*6e4);
   ti=p.get("n")?"Reunión con "+p.get("n"):"Reunión";z=p.get("z")?(/^\d+$/.test(p.get("z"))?"https://zoom.us/j/"+p.get("z"):(/^https?:/.test(p.get("z"))?"":"https://")+p.get("z")):"";var loc=z||p.get("l")||"";
