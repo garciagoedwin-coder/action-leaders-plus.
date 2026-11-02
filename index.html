@@ -2014,7 +2014,7 @@ function banBienvenida(g){const L=g.W||[];if(!L.length)return;const ir=a=>{banMa
     document.querySelectorAll("[data-bw]").forEach(b=>b.onclick=()=>{closeSheet();setTimeout(()=>ir(L[+b.dataset.bw]),250)})})}
 function renderAccesos(){const c=$("#accesos");if(!c)return;const L=((T.config&&Array.isArray(T.config.accesos)&&T.config.accesos.length)?T.config.accesos:ACC_DEF).filter(a=>safeUrl(a.u));
   if(!L.length){c.hidden=true;return}c.hidden=false;
-  c.innerHTML=`<h3>Accesos directos</h3><div class="acc"><a href="#" id="accBien"><span class="ic">🎉</span>Bienvenida socio nuevo</a><a href="#" id="accPag"><span class="ic">🌐</span>Mi página prospectos</a><a href="#" id="accMem"><span class="ic">🛳️</span>Página de membresía</a>${L.map(a=>`<a href="${esc(a.u)}" target="_blank" rel="noopener"><span class="ic">${esc(a.i||"🔗")}</span>${esc(a.t)}</a>`).join("")}</div>`;$("#accBien").onclick=e=>{e.preventDefault();abrirBienvenida()};$("#accPag").onclick=e=>{e.preventDefault();abrirMiPagina()};$("#accMem").onclick=e=>{e.preventDefault();memCompartir()}}
+  c.innerHTML=`<h3>Accesos directos</h3><div class="acc"><a href="#" id="accBien"><span class="ic">🎉</span>Bienvenida socio nuevo</a><a href="#" id="accPag"><span class="ic">🌐</span>Mi página prospectos</a><a href="#" id="accMem"><span class="ic">🛳️</span>Página de membresía</a>${L.map(a=>`<a href="${esc(a.u)}" target="_blank" rel="noopener"><span class="ic">${esc(a.i||"🔗")}</span>${esc(a.t)}${a.n&&(!a.h||Date.now()<Date.parse(a.h))?` <b style="font-size:10px;background:#F5B700;color:#2a1c00;border-radius:6px;padding:1px 5px;vertical-align:middle">NUEVO</b>`:""}</a>`).join("")}</div>`;$("#accBien").onclick=e=>{e.preventDefault();abrirBienvenida()};$("#accPag").onclick=e=>{e.preventDefault();abrirMiPagina()};$("#accMem").onclick=e=>{e.preventDefault();memCompartir()}}
 function renderMe(){let rk=null;const me=myRow();try{if(!me&&fbUser)rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}const v=me?(Number(me.registros)||0)+(Number(me.activaciones)||0):rk?rk.R:null;$("#topPv").textContent=v!=null?fmt(v):"—";$("#topPvBox").toggleAttribute("data-empty",v==null);renderWho();if(eqTab==="ranking")renderEquipo()}
 
 // ---------- retos ----------
@@ -3480,6 +3480,9 @@ async function pedirL3(c){if(ahGate())return;if(!store.db||!(regDoc&&regDoc.regi
 let l3Un=[],l3First={p:true,d:true},l3Seen=null;
 function avisoTop(t,sub,fn){try{if(navigator.vibrate)navigator.vibrate([60,40,60])}catch(e){}const d=document.createElement("div");d.className="avisoTop";d.innerHTML=`<span style="font-size:22px">🔔</span><span class="grow" style="min-width:0"><b>${esc(t)}</b>${sub?`<small>${esc(sub)}</small>`:""}</span><button type="button">Ver</button>`;
   document.body.appendChild(d);requestAnimationFrame(()=>d.classList.add("on"));const bye=()=>{d.classList.remove("on");setTimeout(()=>d.remove(),400)};d.querySelector("button").onclick=e=>{e.stopPropagation();bye();if(fn)fn()};d.onclick=bye;setTimeout(bye,8000)}
+// Novedad de config (config.novedad {id,t,sub,u,hasta}): aviso arriba una sola vez por persona, sin publicar la app
+let novHecho=false;function novedadAviso(){if(novHecho)return;const N=(T.config||{}).novedad;if(!N||!N.id||!N.t||!fbUser)return;if(N.hasta&&Date.now()>Date.parse(N.hasta))return;
+  const K="nov:"+N.id;try{if(LS.get(K))return}catch(e){}novHecho=true;setTimeout(()=>{try{if(document.querySelector(".avisoTop.on")){novHecho=false;setTimeout(novedadAviso,6000);return}LS.set(K,1);avisoTop(N.t,N.sub||"",N.u&&safeUrl(N.u)?()=>window.open(N.u,"_blank","noopener"):null)}catch(e){}},4500)}
 function avisosVer(){go("agenda");setTimeout(()=>{const c=[$("#l3Card"),$("#evaInv")].find(x=>x&&!x.hidden);if(c)c.scrollIntoView({behavior:"smooth",block:"center"})},250)}
 function pendPinta(){const el=$("#pendStrip");if(!el)return;const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid),n=l3P.length+l3D.length+pe.length;if(!n){el.hidden=true;return}el.hidden=false;
   const x=l3P[0],y=l3D[0],e=pe[0],t=x?(x.lz?"🚀 "+(x.deN||"").split(" ")[0]+" le invita a un lanzamiento":"📞 "+(x.deN||"").split(" ")[0]+" le pide una llamada de 3")+" · "+l3Cuando(x.fecha,x.hora).toLowerCase():y?"💬 "+(y.paraN||"").split(" ")[0]+" respondió su "+(y.lz?"lanzamiento":"llamada de 3"):e?"🎤 "+(e.creN||"").split(" ")[0]+" le incluyó en "+(e.tipo==="gran"?"un evento":"una junta"):"";
@@ -5289,7 +5292,7 @@ let tjSello=null;async function loadTeamJSON(){try{const r=await fetch("data/tea
   {const se=((d.config||{}).rankingActualizado||"")+"|"+((d.config||{}).activacionesCorte||"")+"|"+(d.ranking||[]).length;if(tjSello&&se!==tjSello)setTimeout(()=>{try{toast("📊 Ranking actualizado")}catch(e){}},600);tjSello=se}
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
-  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderGan()}catch(e){}try{renderComp()}catch(e){}try{renderMetaEq()}catch(e){}try{renderPremios()}catch(e){}try{renderRC()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist();try{irInicio();irRevisar()}catch(e){}}catch(e){}}
+  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();try{novedadAviso()}catch(e){}renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderGan()}catch(e){}try{renderComp()}catch(e){}try{renderMetaEq()}catch(e){}try{renderPremios()}catch(e){}try{renderRC()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist();try{irInicio();irRevisar()}catch(e){}}catch(e){}}
 let autoFotoHecho=false;
 function urlADataUrl(u,S){return new Promise(ok=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{S=S||240;const c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);
   c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);ok(c.toDataURL("image/jpeg",.85))}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=u})}
@@ -5498,7 +5501,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261102101148";var busy=false,pend=null;
+(function(){var V="20261102101744";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
