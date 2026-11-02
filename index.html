@@ -791,6 +791,7 @@ body.beta #pfFront,body.beta #pfSala,body.beta #goPrompts{display:none!important
 body.beta .mfRow{cursor:pointer}body.beta .mfRow:not(.open) .mfc,body.beta .mfRow:not(.open) .mfBtns,body.beta .mfRow:not(.open) .emCp{display:none!important}body.beta .mfRow.open .mfSum{display:none}
 body.beta #eqCierre{display:none!important}body.beta #agView [data-k="mia"]{order:-1}
 .actVac{text-align:center;background:linear-gradient(150deg,#0b1020,#0b3b57 70%,#0A7DAD);color:#fff;border-radius:20px;padding:22px 18px}.actVac h3{color:#fff;margin:6px 0 4px}.actVac p{opacity:.85;margin:0 0 12px}
+body.beta #v-inicio>#metaEq{display:none!important}#metaEqR{cursor:pointer}
 </style>
 
 </head>
@@ -5039,7 +5040,8 @@ function irInicio(){const v=$("#v-inicio");if(!v)return;const on=irSimple();v.cl
   if(on&&sn&&pf.parentNode!==sn){const ref=$("#compSn");if(ref&&ref.nextSibling)sn.insertBefore(pf,ref.nextSibling);else sn.appendChild(pf)}
   else if(!on&&v&&pf.parentNode!==v){const a=$("#nextEvents");v.insertBefore(pf,a?a.nextSibling:null)}}
 // ---- Rankings sin "Registros inCruises" (beta) ----
-function rankBeta(){if(!irSimple())return;try{const g=$("#actVacGo");if(g)g.onclick=()=>go("crm");if(eqTab==="ranking"&&rankMetric!=="liderazgo"){document.querySelectorAll("#eqBody b,#eqBody .nm,#eqBody .pd-n").forEach(el=>{if(el.dataset.ins||el.children.length)return;const h=insigDe(el.textContent);el.dataset.ins=1;if(h)el.insertAdjacentHTML("beforeend",h)})}}catch(e){}document.querySelectorAll('#rankMetric [data-k="presentaciones"]').forEach(b=>b.remove());document.querySelectorAll('#rankMetric [data-k="liderazgo"]').forEach(b=>{b.textContent="⭐ Sistema de liderazgo"})}
+let mqRT=null;function mqEnRanking(){const b=$("#eqBody"),o=$("#metaEq");clearInterval(mqRT);if(!b||!o||eqTab!=="ranking"||rankMetric!=="nuevos"||!o.innerHTML.trim())return;const segs=$("#rankSeg")||$("#rankMetric");if(!segs)return;let c=$("#metaEqR");if(!c){c=document.createElement("div");c.id="metaEqR";segs.insertAdjacentElement("afterend",c);c.onclick=e=>{if(e.target.closest("a"))return;o.click();setTimeout(cp,60)}}const cp=()=>{const x=$("#metaEqR");if(!x){clearInterval(mqRT);return}x.className=o.className;x.hidden=false;x.innerHTML=o.innerHTML};cp();mqRT=setInterval(cp,3500)}
+function rankBeta(){if(!irSimple())return;try{mqEnRanking()}catch(e){}try{const g=$("#actVacGo");if(g)g.onclick=()=>go("crm");if(eqTab==="ranking"&&rankMetric!=="liderazgo"){document.querySelectorAll("#eqBody b,#eqBody .nm,#eqBody .pd-n").forEach(el=>{if(el.dataset.ins||el.children.length)return;const h=insigDe(el.textContent);el.dataset.ins=1;if(h)el.insertAdjacentHTML("beforeend",h)})}}catch(e){}document.querySelectorAll('#rankMetric [data-k="presentaciones"]').forEach(b=>b.remove());document.querySelectorAll('#rankMetric [data-k="liderazgo"]').forEach(b=>{b.textContent="⭐ Sistema de liderazgo"})}
 // ---- Vista del patrocinador ----
 let irVals=null,irValsT=0;
 async function irValsCargar(){if(irVals!==null&&Date.now()-irValsT<6e5)return;irValsT=Date.now();try{const d=await store.db.doc("constancia/"+store.uid).get();irVals=(d.exists&&d.data().irVal)||{}}catch(e){irVals=irVals||{}}}
@@ -5091,7 +5093,7 @@ function llamLzCard(){const L=llamLz();if(!L)return"";const hoy=new Date().getDa
   return `<div class="card lzCall"><div class="k">📞 Reunión del sistema de liderazgo</div><div style="font-weight:800;font-size:16px;margin-top:2px">Todos los domingos · ${esc(h12(L.hora||"21:15"))} (hora de Honduras)</div>${hoy?`<div class="small" style="margin-top:2px;color:#7DD3FC;font-weight:700">¡Hoy es la reunión!</div>`:""}<a class="btn sm" href="${esc(L.zoom)}" target="_blank" rel="noopener" style="margin-top:10px;background:#2AC1F1;color:#06384F;width:100%;justify-content:center">🎥 Entrar al Zoom</a></div>`}
 function renderLzCall(){const el=$("#lzCallStrip");if(!el)return;try{const L=llamLz(),d=new Date();if(!L||!irSimple()||!(isAdmin||lzSoyMiembro())||d.getDay()!==(L.dia||0)){el.hidden=true;return}
   const [hh,mm]=String(L.hora||"21:15").split(":").map(Number),fin=hh*60+mm+75,ahora=d.getHours()*60+d.getMinutes();if(ahora>fin){el.hidden=true;return}
-  el.hidden=false;el.innerHTML=`<span>📞 <b>Hoy ${esc(h12(L.hora))}</b> · Reunión del sistema de liderazgo</span><a href="${esc(L.zoom)}" target="_blank" rel="noopener">Entrar</a>`}catch(e){el.hidden=true}}
+  el.hidden=false;el.innerHTML=`<span>📞 <b>Hoy ${esc(h12(L.hora))}</b> · Reunión del sistema de liderazgo</span><a href="${esc(L.zoom)}" target="_blank" rel="noopener">Entrar</a>`;if(!window._lzAv){window._lzAv=1;setTimeout(()=>{try{avisoTop("📞 Hoy "+h12(L.hora)+" · Reunión de liderazgo","Toque aquí para entrar al Zoom",()=>{window.open(L.zoom,"_blank")})}catch(e){}},2500)}}catch(e){el.hidden=true}}
 let mfOpen=new Set();
 function mfSum(x){try{const a=actDe(x),ah=ahSoc(x),c=compPuede0()?compDe(x):null,p=(x.ir||{}).p;const t=[];
   t.push(ah&&ah.pend?"🔴 Ahorro pendiente":"🚢 Ahorro al día");t.push("📅 "+a.d7+"/7 días");if(compPuede0())t.push(c&&!c.no?"🤝 Con compromiso":"🎯 Sin compromiso");if(p&&!p.g)t.push("🚀 Semana "+(p.w||1));
@@ -5336,7 +5338,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101184715";var busy=false,pend=null;
+(function(){var V="20261101202546";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
