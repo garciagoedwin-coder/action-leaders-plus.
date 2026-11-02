@@ -5088,7 +5088,8 @@ const lzYo=()=>nrmN(miNombreFull()||miRegistro().nombre||"");
 function lzMio(l){if(isAdmin)return true;const ns=lzNs(l),yo=lzYo();if(yo&&ns.includes(yo))return true;const f=(fotosFs||[]).find(x=>ns.includes(nrmN(x.invNombre||x.nombre||"")));return !!(f&&store.uid&&(f.linea||[]).includes(store.uid))}
 function lzSoyMiembro(){const yo=lzYo();return !!yo&&(T.lideres||[]).some(l=>lzNs(l).includes(yo))}
 function insigDe(nombre){const n=nrmN(nombre);if(!n)return"";const l=(T.lideres||[]).find(z=>lzNs(z).includes(n));if(!l)return"";const c=calLid(l),rg=RANGOS.find(g=>g.n===l.rango),dot=posRank(l.rango)<=4&&rg?`<i class="insD" style="background:${rg.c}" title="${esc(rangoTxt(l.rango))}"></i>`:"";const k=c.k==="esp"?"⚔️":c.k==="lid"?"🛡️":"";return dot||k?` <span class="insig">${dot}${k}</span>`:""}
-function lzComp(l){if(mqL===null){try{mqCargar()}catch(e){}return undefined}const ns=lzNs(l);return mqL.find(x=>ns.includes(nrmN(x.n)))||null}
+function lzMismo(a,b){a=nrmN(a);b=nrmN(b);if(!a||!b)return false;if(a===b)return true;const A=a.split(" "),B=b.split(" "),[S,L]=A.length<=B.length?[A,B]:[B,A];return S.length>=2&&S.every(w=>L.includes(w))}
+function lzComp(l){if(mqL===null){try{mqCargar()}catch(e){}return undefined}const ns=lzNs(l);let f=mqL.find(x=>ns.includes(nrmN(x.n)));if(!f){const fo=(fotosFs||[]).find(z=>ns.some(n=>lzMismo(n,z.invNombre||z.nombre||"")));if(fo)f=mqL.find(x=>x.uid===fo.id)}if(!f)f=mqL.find(x=>ns.some(n=>lzMismo(n,x.n)));return f||null}
 function lzCompChip(l){const c=lzComp(l);if(c===undefined)return"";return c?`<span class="chip c-good">🤝 Comprometido: ${fmt(c.v)} pts</span>`:`<span class="chip c-warn">🎯 Sin compromiso</span>`}
 function lzAsis(){const a=liderRes&&liderRes.asis;return a&&a.f&&Array.isArray(a.ids)?a:null}
 function lzAsisChip(l){const a=lzAsis();if(!a)return"";return a.ids.includes(l.id)?`<span class="chip c-good">✅ Asistió</span>`:`<span class="chip c-bad">❌ No asistió</span>`}
@@ -5353,7 +5354,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101214442";var busy=false,pend=null;
+(function(){var V="20261101220513";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
