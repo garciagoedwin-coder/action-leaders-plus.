@@ -775,11 +775,22 @@ nav.tabs button{z-index:0;isolation:isolate}
 .irPts{font-size:14px;line-height:1.5}.irPts div{display:flex;gap:8px;margin:4px 0}
 body.beta #pfFront,body.beta #pfSala,body.beta #goPrompts{display:none!important}
 .pf-h{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.55;margin:12px 4px 2px}
-body.beta .mfc:not(.all)>*:not(.mk){display:none!important}.mfAll{display:none!important}body.beta .mfAll{display:inline-flex!important;border:0;font:inherit;cursor:pointer;background:var(--soft,#EEF3F7);font-weight:700}
+.mfAll{display:none!important}
 .agMas{display:none}body.beta #agBig [data-ab="lz"],body.beta #agBig [data-ab="ev"]{display:none}body.beta #agBig .agMas{display:block;grid-column:1/-1;background:transparent!important;color:var(--brand,#0A7DAD)!important;border:1.5px dashed var(--line,#C9D4DE);font-size:14px;font-weight:700;padding:10px;min-height:0}
 .stLine{display:flex;justify-content:space-between;width:100%;margin-top:10px;border:1.5px solid var(--line,#DCE4EB);background:var(--surface-2,#F1F6F9);color:inherit;font:inherit;font-size:13.5px;padding:10px 12px;border-radius:12px;cursor:pointer}.stLine span:last-child{color:var(--brand,#0A7DAD);font-weight:800}
 .mnum{padding:0;overflow:hidden}.mnum>summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:800;display:block}.mnum>summary::-webkit-details-marker{display:none}.mnum>summary span{display:block;font-weight:600;font-size:13px;opacity:.65;margin-top:2px}.mnum[open]>summary{border-bottom:1px solid var(--line,#E5ECF1)}.mnum>.card,.mnum>*:not(summary){margin:10px}
 .hoyL h3{margin:0 0 6px}.hoyR{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--line,#EDF1F5)}.hoyR:first-of-type{border-top:0}
+
+#v-inicio.simple>#lzCallStrip{order:4}#v-inicio.simple>#compStrip{order:5}#v-inicio.simple>#rutCard{order:6}#v-inicio.simple>#irCard{order:7}#v-inicio.simple>#ganCard{order:8}#v-inicio.simple>#actBan{order:9}#v-inicio.simple>#metaEq{order:10}
+.lzStrip{display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(120deg,#0b1020,#0b3b57);color:#fff;border:1px solid #2AC1F1;border-radius:16px;padding:11px 14px;font-size:14px}.lzStrip a{background:#2AC1F1;color:#06384F;font-weight:800;border-radius:10px;padding:7px 12px;text-decoration:none;white-space:nowrap}
+.lzCall{background:linear-gradient(150deg,#0b1020,#0b3b57 70%,#0A7DAD);color:#fff;border:1px solid rgba(42,193,241,.45)}.lzCall .k{font-size:11px;letter-spacing:.12em;font-weight:800;color:#7DD3FC;text-transform:uppercase}
+.lz-invit{margin-top:10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:10px 12px;font-size:13.5px;line-height:1.45}
+.lzBar{position:relative;display:block;height:7px;border-radius:99px;background:var(--soft,#E8EEF3);margin-top:4px}.lzBar i{display:block;height:100%;border-radius:99px;background:#94A3B8}.lzBar i.l{background:#2AC1F1}.lzBar i.e{background:linear-gradient(90deg,#D4AF37,#E8C766)}.lzBar em{position:absolute;top:-3px;width:2px;height:13px;background:#0A7DAD;border-radius:2px}
+.insig{display:inline-flex;align-items:center;gap:3px;font-size:.9em;vertical-align:middle;margin-left:2px}.insD{display:inline-block;width:10px;height:10px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.8)}
+.mfSum{display:none}body.beta .mfSum{display:flex;flex-wrap:wrap;gap:6px 10px;margin-top:8px;font-size:12.5px;opacity:.85;cursor:pointer}body.beta .mfSum em{font-style:normal;color:var(--brand,#0A7DAD);font-weight:800;margin-left:auto}
+body.beta .mfRow{cursor:pointer}body.beta .mfRow:not(.open) .mfc,body.beta .mfRow:not(.open) .mfBtns,body.beta .mfRow:not(.open) .emCp{display:none!important}body.beta .mfRow.open .mfSum{display:none}
+body.beta #eqCierre{display:none!important}body.beta #agView [data-k="mia"]{order:-1}
+.actVac{text-align:center;background:linear-gradient(150deg,#0b1020,#0b3b57 70%,#0A7DAD);color:#fff;border-radius:20px;padding:22px 18px}.actVac h3{color:#fff;margin:6px 0 4px}.actVac p{opacity:.85;margin:0 0 12px}
 </style>
 
 </head>
@@ -1135,6 +1146,7 @@ body.beta .mfc:not(.all)>*:not(.mk){display:none!important}.mfAll{display:none!i
       <div id="compStrip" hidden></div>
       <div class="pendStrip" id="pendStrip" hidden></div>
       <div class="irCard" id="irCard" hidden></div>
+      <div class="lzStrip" id="lzCallStrip" hidden></div>
       <div class="retoStrip" id="retoStrip" hidden></div>
       <div class="card" id="salaCard" hidden style="border:1.5px solid #C2410C"></div>
       
@@ -1787,7 +1799,7 @@ function compStripHTML(mini){const C=miComp(),mn=mesNom();
   const bar=(a,b)=>`<div class="mtBar"><i style="width:${b?Math.min(100,Math.round(a*100/b)):0}%"></i></div>`;
   const pc=(a,b)=>b?Math.min(100,Math.round(a*100/b)):0,tot=Math.round(((C.vol?pc(V,C.vol):pc(A,C.act))+pc(p,C.pres))/2);
   let open=false;try{open=LS.get("cpOpen")==="1"}catch(e){}
-  if(mini&&!open)return `<div class="compStrip cpMini" data-cpt><div class="row between" style="align-items:center"><small class="gn-e" style="color:inherit">🤝 Mi compromiso · ${esc(mn)}</small><span class="cp-chev">⏳ ${d}d ▾</span></div>
+  if(mini&&!open)return `<div class="compStrip cpMini" data-cpt><div class="row between" style="align-items:center"><small class="gn-e" style="color:inherit">🤝 ${irSimple()?"Mi meta y compromiso":"Mi compromiso"} · ${esc(mn)}</small><span class="cp-chev">⏳ ${d}d ▾</span></div>
    <div class="row between" style="align-items:center;gap:10px"><b class="mtN" style="font-size:16px">${r.ic} ${esc(r.t)}</b><span class="cp-pct">${tot}%</span></div>
    <div class="cp-pills">${C.vol?`<span class="${V>=C.vol?"ok":""}">⚡ ${fmt(V)}/${fmt(C.vol)}</span>`:""}<span class="${A>=C.act&&C.act?"ok":""}">🚀 ${A}/${C.act}</span><span class="${p>=C.pres?"ok":""}">🎤 ${p}/${C.pres} sem</span></div>
    <div class="mtBar cp-tot"><i style="width:${Math.max(tot?3:0,tot)}%"></i></div></div>`;
@@ -2095,8 +2107,8 @@ function leadFila(l,i){const num=v=>Number(v)||0,S=sisCfg(),vol=S?num(l.ptsBase)
    <span class="lz-v"><b>${vol==null||(S&&!vv)?"—":fmt(vol)}</b><span class="chip c-${S&&!vv?"brand":vc}">${S?(vv?"pts "+esc(String(S.base||"").split(" ")[0].slice(0,3).toLowerCase())+".":"Rango"):vv>=500?"500+":vv>=200?"200–499":"−200"}</span><i class="lz-mini"><i style="width:${Math.max(vv?3:0,Math.min(100,vv/10))}%;background:var(--${vc})"></i></i></span></button>`}
 function renderLeadList(){const el=$("#leadList");if(!el)return;const q=leadQ.trim().toLowerCase(),okQ=l=>!q||((l.nombre||"")+" "+(l.linea||"")).toLowerCase().includes(q);
   const A=leadOrden(T.lideres.filter(l=>{const k=calLid(l).k;return k!=="pend"&&(leadCal==="cal"||k===leadCal)&&okQ(l)}));
-  el.innerHTML=A.length?A.map(leadFila).join(""):`<p class="small muted" style="padding:10px 0">Ningún líder coincide.</p>`;
-  const pd=$("#leadPend"),pl=$("#leadPendList");if(pd&&pl&&pd.open){const P=leadOrden(T.lideres.filter(l=>calLid(l).k==="pend"&&okQ(l)));pl.innerHTML=P.map(leadFila).join("")||`<p class="small muted">Nadie coincide.</p>`}}
+  el.innerHTML=A.length?A.map(irSimple()&&sisCfg()?leadFilaB:leadFila).join(""):`<p class="small muted" style="padding:10px 0">Ningún líder coincide.</p>`;
+  const pd=$("#leadPend"),pl=$("#leadPendList");if(pd&&pl&&pd.open){const P=leadOrden(T.lideres.filter(l=>calLid(l).k==="pend"&&okQ(l)));pl.innerHTML=P.map(irSimple()&&sisCfg()?leadFilaB:leadFila).join("")||`<p class="small muted">Nadie coincide.</p>`}}
 function leadFicha(l){const num=v=>Number(v)||0,meta=num(l.meta),vol=l.volumen==null||l.volumen===""?null:num(l.volumen),pct=meta&&vol!=null?Math.min(100,Math.round(vol/meta*100)):0,vv=vol==null?0:vol,vc=vv>=500?"good":vv>=200?"warn":"bad",qbi=l.qbi==null||l.qbi===""?null:Math.round(num(l.qbi));
   const nv=lcNivel(vv),q=nv?Object.assign(lcQ({n:l.nombre,k:nv,v:vv}),{}):null,f=String(l.nombre||"").split(" ")[0];
   openSheet(`<div class="row" style="gap:12px;align-items:center">${avHTML(l.nombre,l.nombre===profile.miNombre,false)}<div style="min-width:0"><h2 style="margin:0">${esc(l.nombre)}</h2>${l.linea?`<div class="small muted">Línea: ${esc(l.linea)}</div>`:""}</div></div>
@@ -2507,10 +2519,10 @@ function pipeBind(b){const ps=b.querySelector("#pipeSel");if(ps)ps.onchange=()=>
   location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t+(yo?"\n\n*"+yo+"*":""))})}
 function miosFila(V,lvl0){let lvl=lvl0;const cname=k=>{const c=cursosL().find(x=>x.k===k);return c?c.t:k};return (x,enPi)=>{const r=x.registro||{},a=actDe(x),S=a.sem,nm=r.nombre||"Socio",ua=tsMs(x.ultimoAcceso),cs=((x.actividad||{}).cursos||[]);
      const hd=!enPi&&miosVista==="todo"&&x.nivel!==lvl?(lvl=x.nivel,`<div class="lvl-h">Nivel ${x.nivel} <span>${(c=>c+(c===1?" socio":" socios"))(V.filter(y=>y.nivel===x.nivel).length)}</span></div>`):"";
-     return `${hd}<div style="padding:12px 0;border-bottom:1px solid var(--line)">${enPi?`<div class="small" style="margin-bottom:6px"><span class="chip ${x.nivel===1?"c-gold":"c-brand"}" style="font-weight:700">${x.nivel===1?"⭐ Directo":"Nivel "+x.nivel+" · de "+esc(dtFirst(x.patNom||r.invitadoPor||r.patrocinador||"—"))}</span></div>`:miosVista==="todo"&&x.nivel>1?`<div class="small" style="color:var(--brand);font-weight:700;margin-bottom:6px">Línea de ${esc(x.piernaNom||"tu equipo")} · Patrocinador: ${esc(x.patNom||r.invitadoPor||r.patrocinador||"—")}</div>`:""}<div class="row" style="align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0">
+     return `${hd}<div class="mfRow${mfOpen.has(x.uid)?" open":""}" data-mfr="${esc(x.uid)}" style="padding:12px 0;border-bottom:1px solid var(--line)">${enPi?`<div class="small" style="margin-bottom:6px"><span class="chip ${x.nivel===1?"c-gold":"c-brand"}" style="font-weight:700">${x.nivel===1?"⭐ Directo":"Nivel "+x.nivel+" · de "+esc(dtFirst(x.patNom||r.invitadoPor||r.patrocinador||"—"))}</span></div>`:miosVista==="todo"&&x.nivel>1?`<div class="small" style="color:var(--brand);font-weight:700;margin-bottom:6px">Línea de ${esc(x.piernaNom||"tu equipo")} · Patrocinador: ${esc(x.patNom||r.invitadoPor||r.patrocinador||"—")}</div>`:""}<div class="row" style="align-items:flex-start">${avHTML(nm,false,false)}<div class="grow" style="min-width:0">
       <b style="font-weight:600">${esc(nm)}</b><div class="small muted">${r.plan?esc(r.plan)+" · ":""}${r.fecha?"Desde "+niceDate(String(r.fecha).slice(0,10)):""}${ua?" · Entró "+haceTxt(ua):""}</div>${(isAdmin||r.patrocinadorUid===store.uid)?[...new Set([x.email,r.correo].map(e=>String(e||"").trim().toLowerCase()).filter(Boolean))].map(e=>`<button type="button" class="emCp" data-cpem="${esc(e)}">✉️ ${esc(e)} <span>Copiar</span></button>`).join(""):""}</div>
       <span class="chip ${a.hoy>=100?"c-good":a.hoy>0?"c-gold":"c-brand"}">Hoy ${a.hoy}%</span></div>
-      <div class="row wrap mfc" style="gap:6px;margin-top:8px">
+      <div class="mfSum">${mfSum(x)}</div><div class="row wrap mfc" style="gap:6px;margin-top:8px">
        ${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<span class="chip c-bad mk" style="font-weight:700">🔴 Ahorro pendiente · ${ah.bloq?"en pausa":"hasta el "+esc(ahFecha(ah.lim))}</span>`:ah?`<span class="chip c-good mk" style="font-weight:700">🚢 Ahorro al día</span>`:""})()}${!idxActivo(x)&&constL?`<span class="chip c-warn mk">😴 ${(d=>d>90||!idxUlt(x)?"Sin actividad":d+" días sin actividad")(Math.floor((Date.now()-idxUlt(x))/864e5))}</span>`:""}
        ${constL?(()=>{const ip=idxPersX(x),E=idxDesc(x.uid,idxPool()),e=idxEq(E);return `<span class="chip" style="background:${IDX_C(ip)};color:#fff">⚡ Personal ${ip}%</span>${E.length?`<span class="chip" style="background:${IDX_C(e)};color:#fff">⚡ Equipo de ${esc(nm.split(" ")[0])} ${e}% (${E.length} ${E.length===1?"socio":"socios"})</span>`:""}`})():""}
        <span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"🎬 Bienvenida ✓":"🎬 Bienvenida pendiente"}</span>
@@ -2522,7 +2534,7 @@ function miosFila(V,lvl0){let lvl=lvl0;const cname=k=>{const c=cursosL().find(x=
        ${(()=>{const rk=rankDe(nm);return rk?`<span class="chip ${rk.pPos&&rk.pPos<=10?"c-gold":"c-brand"}">🏆 Registros: ${rk.R}${rk.pPos?" · #"+rk.pPos:""}</span><span class="chip ${rk.aPos&&rk.aPos<=10?"c-gold":"c-brand"}">🚀 Activaciones: ${rk.A} · Vol. ${fmt(rk.V)}${rk.aPos?" · #"+rk.aPos:""}</span>`:`<span class="chip c-brand">🏆 Sin registros en el ranking</span>`})()}
        ${(()=>{const m=x.metas||{},R=proxRango(rangoActualIdx(x.registro,nm)),rg=R?R.n:"";if(!m.act&&!rg&&!m.sueno)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(R?`<span class="chip" style="background:${R.c};color:#fff">🏅 Próximo: ${esc(rg)}</span>`:"")+(m.sueno?`<span class="chip c-good">💰 Sueño: ${usd(m.sueno)}/mes</span>`:"")})()}${compChip(x,nm)}${irChip(x)}<button type="button" class="chip mk mfAll" data-mfall>Ver todo ▾</button>
        ${cs.length?cs.map(k=>`<span class="chip c-good">🎓 ${esc(cname(k))}</span>`).join(""):`<span class="chip c-brand">🎓 Sin cursos aún</span>`}
-      </div><div class="row" style="gap:8px;margin-top:10px">${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<button class="btn sm grow" data-mah="${esc(x.uid)}" style="background:#B42335;color:#fff">💰 Motivar su ahorro</button>`:""})()}<button class="btn sm grow" data-mot="${esc(x.uid)}" style="background:#25D366;color:#fff">💬 Motivar por WhatsApp</button>${compPuede0()?`<button class="btn sm grow" data-mcp="${esc(x.uid)}" style="background:#16A34A;color:#fff">🎯 ${compDe(x)&&!compDe(x).no?"Motivar compromiso":"Pedir compromiso"}</button>`:""}<button class="btn sm ghost" data-wnum="${esc(x.uid)}" type="button" aria-label="Cambiar número de WhatsApp de ${esc(nm)}">✏️ Número</button></div></div>`}}
+      </div><div class="row mfBtns" style="gap:8px;margin-top:10px">${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<button class="btn sm grow" data-mah="${esc(x.uid)}" style="background:#B42335;color:#fff">💰 Motivar su ahorro</button>`:""})()}<button class="btn sm grow" data-mot="${esc(x.uid)}" style="background:#25D366;color:#fff">💬 Motivar por WhatsApp</button>${compPuede0()?`<button class="btn sm grow" data-mcp="${esc(x.uid)}" style="background:#16A34A;color:#fff">🎯 ${compDe(x)&&!compDe(x).no?"Motivar compromiso":"Pedir compromiso"}</button>`:""}<button class="btn sm ghost" data-wnum="${esc(x.uid)}" type="button" aria-label="Cambiar número de WhatsApp de ${esc(nm)}">✏️ Número</button></div></div>`}}
 const SOLO_ADMIN=["garciagoedwin@gmail.com"];const esSoloAdmin=x=>SOLO_ADMIN.includes(String(x.email||"").toLowerCase());
 function editarSocio(uid){const x=(socios||[]).find(y=>y.uid===uid);if(!x)return;const r=x.registro||{},nm=r.nombre||x.email||"Socio";
   const opts=(socios||[]).filter(y=>y.uid!==uid&&y.registro&&y.registro.nombre&&!esSoloAdmin(y)).sort((a,b)=>a.registro.nombre.localeCompare(b.registro.nombre,"es"));
@@ -2839,7 +2851,7 @@ const redTZ={timeZone:"America/Tegucigalpa"};
 const redFC=iso=>new Date(iso).toLocaleDateString("es-HN",Object.assign({weekday:"short",day:"numeric",month:"short"},redTZ)).replace(/[.,]/g,"");
 const redFL=iso=>new Date(iso).toLocaleDateString("es-HN",Object.assign({weekday:"long",day:"numeric",month:"long"},redTZ)).replace(",","");
 const redFirst=n=>String(n||"").trim().split(/\s+/)[0]||"";
-function redOk(){if(isAdmin)return true;try{if(irSimple()){const d=new Date().getDate();if(!(d>=25||d<=1))return false}}catch(e){}return !!redHay}
+function redOk(){if(isAdmin)return true;try{if(irSimple())return false}catch(e){}return !!redHay}
 async function redProbe(){if(redHay!==null||!store.db||!store.uid)return;redHay=false;
   try{const q=await store.db.collection("red").where("ve",store.uid,"array-contains").limit(1).get();redHay=q.docs.length>0}catch(e){redHay=false}
   redBtn()}
@@ -2979,7 +2991,7 @@ function renderEquipo0(){const b=$("#eqBody");redProbe();redBtn();
   if(eqTab==="ranking"&&rankMetric==="rutina"){renderConst(b);return}
   if(eqTab==="ranking"&&rankMetric==="liderazgo"){renderLiderazgo(b);return}
   if(eqTab==="ranking"){
-    if(!T.ranking.length){const sg=rankSegsL().replace('aria-selected="true" data-k="liderazgo"','aria-selected="false" data-k="liderazgo"').replace('aria-selected="false" data-k="'+rankMetric+'"','aria-selected="true" data-k="'+rankMetric+'"');b.innerHTML=sg+emptyCard("El ranking aún no tiene datos","Aquí aparecerán las presentaciones registradas gratis en inCruises y los socios nuevos de cada miembro del equipo.");bindRank();return}
+    if(!T.ranking.length){const sg=rankSegsL().replace('aria-selected="true" data-k="liderazgo"','aria-selected="false" data-k="liderazgo"').replace('aria-selected="false" data-k="'+rankMetric+'"','aria-selected="true" data-k="'+rankMetric+'"');b.innerHTML=sg+(irSimple()&&rankMetric==="nuevos"?actVacio():emptyCard("El ranking aún no tiene datos","Aquí aparecerán las presentaciones registradas gratis en inCruises y los socios nuevos de cada miembro del equipo."));bindRank();return}
     const sem=rankTab==="semana",kR=sem?"regSemana":"registros",kA=sem?"actSemana":"activaciones",kP=sem?"presSemana":"presentaciones";
     const num=v=>Number(v)||0;
     let d=T.ranking.map(r=>({...r,R:num(r[kR])+num(r[kA]),A:num(r[kA]),P:num(r[kP]),me:r.nombre===profile.miNombre}));
@@ -3006,7 +3018,7 @@ function renderEquipo0(){const b=$("#eqBody");redProbe();redBtn();
     const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="${rankMetric==="nuevos"}" data-k="nuevos">Activaciones</button><button aria-selected="${rankMetric==="presentaciones"}" data-k="presentaciones">Registros inCruises</button><button aria-selected="false" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button><button aria-selected="false" data-k="liderazgo">⭐ Liderazgo</button></div>
      <div class="seg" role="tablist" id="rankSeg" hidden><button aria-selected="true" data-k="mes">Este mes</button></div>
      <p class="small muted">${rankMetric==="nuevos"?"Ordenado por volumen (Starter 50 · Classic 200 · Premium 500).":"Solo cuentan los prospectos registrados gratis en inCruises."}</p>`;
-    if(!d.length){b.innerHTML=segs+emptyCard(rankMetric==="nuevos"?"Aún no hay socios nuevos en este periodo":"Aún no hay registros en este periodo","El primero en sumar toma el primer lugar.");bindRank();return}
+    if(!d.length){b.innerHTML=segs+(irSimple()&&rankMetric==="nuevos"?actVacio():emptyCard(rankMetric==="nuevos"?"Aún no hay socios nuevos en este periodo":"Aún no hay registros en este periodo","El primero en sumar toma el primer lugar."));bindRank();return}
     const pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.me,true)}<span class="nm">${esc(p.nombre)}</span>${tags(p)}${rankMetric==="nuevos"?`<div class="block"><b>${p.rk}</b><span class="small num">Vol. ${fmt(p.v)}</span></div>`:`<div class="block"><b>${fmt(p.v)}</b><span class="small num">${u(p.v)}</span><span class="small num" style="font-weight:800;opacity:.9">#${p.rk}${p.rk===1?" Top":""}</span></div>`}</div>`:"<div></div>";
     const max=Math.max(...d.map(x=>x.v),1);
     const pb=sem?"":premBanner(rankMetric==="nuevos"?"vol":"reg");
@@ -3029,7 +3041,7 @@ function renderLiderazgo(b){{
     const L=T.lideres,C=calCfg(),cn={esp:0,lid:0,rango:0,pend:0};L.forEach(l=>cn[calLid(l).k]++);const nCal=cn.esp+cn.lid+cn.rango;if(!["cal","esp","lid","rango"].includes(leadCal))leadCal="cal";
     const per=(T.config&&T.config.liderazgoPeriodo)||C.mes||lcMes();
     const S=sisCfg();
-    b.innerHTML=rankSegsL()+`<div class="lz-hero"><div class="lz-k">${esc(String(per).toUpperCase())}</div><h2>⭐ ${S?"Sistema de liderazgo":"Calificados al sistema de liderazgo"}</h2>${S?`<p class="lz-sub">Calificados al sistema de liderazgo en ${esc(String(S.mes||per).split(" ")[0].toLowerCase())} con sus puntos de ${esc(String(S.base||"").split(" ")[0].toLowerCase())}</p>`:""}
+    b.innerHTML=rankSegsL()+`<div class="lz-hero"><div class="lz-k">${esc(String(per).toUpperCase())}</div><h2>⭐ ${S?"Sistema de liderazgo":"Calificados al sistema de liderazgo"}</h2>${S&&irSimple()&&!isAdmin&&!lzSoyMiembro()?`<div class="lz-invit">🚀 <b>¡Usted también puede entrar!</b> Califique este mes con <b>🛡️ 200 pts</b> (Líder) o <b>⚔️ 500 pts</b> (Líder Espartano). Estos son los que calificaron el mes pasado.</div>`:""}${S?`<p class="lz-sub">Calificados al sistema de liderazgo en ${esc(String(S.mes||per).split(" ")[0].toLowerCase())} con sus puntos de ${esc(String(S.base||"").split(" ")[0].toLowerCase())}</p>`:""}
       <div class="lz-cnt"><div><b>${cn.esp}</b><small>⚔️ Espartanos</small></div><div><b>${cn.lid}</b><small>🛡️ Líderes</small></div><div><b>${cn.rango}</b><small>✅ Por rango</small></div></div>
       ${lcLista0().length?`<button class="lz-fly" id="lcBtn" type="button">🎉 Ver flyers de los calificados (${lcLista0().length})</button>`:""}
       <p class="lz-req">${S?`Calificaron en ${esc(String(S.base||"").split(" ")[0].toLowerCase())} con su ahorro al día: 🛡️ Líder ${fmt(C.lider)}+ pts · ⚔️ Líder Espartano ${fmt(C.esp)}+ pts. De Marketing Director en adelante entran por su rango.`:`Requisitos: ahorro al día y puntos personales del mes (🛡️ Líder ${fmt(C.lider)} · ⚔️ Espartano ${fmt(C.esp)}). De Marketing Director en adelante califican al recalificar su rango.`}</p></div>
@@ -3037,14 +3049,14 @@ function renderLiderazgo(b){{
      <input class="inp" id="leadQ" type="search" placeholder="Buscar líder o línea ascendente" value="${esc(leadQ)}">
      <div class="card" style="padding:4px 14px"><div id="leadList"></div></div>
      ${cn.pend?`<details class="card lz-pend" id="leadPend"><summary>⏳ Aún no califican (${cn.pend}) <span>›</span></summary><div id="leadPendList"></div></details>`:""}
-     ${S?caminoHTML(L,C,S):""}
-     <p class="small muted" style="margin:0">${S?"Ordenados por sus puntos de "+esc(String(S.base||"").split(" ")[0].toLowerCase())+".":"Ordenados por volumen, del más alto al más bajo."} Toque a un líder para ver su ficha.</p>
+     ${S&&!irSimple()?caminoHTML(L,C,S):""}${irSimple()?llamLzCard():""}
+     <p class="small muted" style="margin:0">${S&&irSimple()?"Toque a un líder de su línea para ver su ficha. Solo su línea ascendente ve el detalle (🔒).":S?"Ordenados por sus puntos de "+esc(String(S.base||"").split(" ")[0].toLowerCase())+".":"Ordenados por volumen, del más alto al más bajo."} Toque a un líder para ver su ficha.</p>
      <p class="updated">${updatedTxt(T.config&&T.config.liderazgoActualizado)}</p>`;
     bindRank();renderLeadList();liderResCargar();{const lb=$("#lcBtn");if(lb)lb.onclick=lcLista}
     $("#leadQ").oninput=e=>{leadQ=e.target.value;renderLeadList()};
     $("#leadCal").onclick=e=>{const x=e.target.closest("button");if(!x)return;leadCal=x.dataset.c;renderEquipo()};
     {const pd=$("#leadPend");if(pd)pd.ontoggle=()=>{if(pd.open)renderLeadList()}}
-    b.onclick=e=>{const r=e.target.closest("[data-li]");if(!r||!b.contains(r))return;const l=T.lideres[+r.dataset.li];if(l)leadFicha(l)};return}
+    b.onclick=e=>{const r=e.target.closest("[data-li]");if(!r||!b.contains(r))return;if(r.dataset.nomio){toast("🔒 Solo su línea ascendente puede ver el detalle");return}const l=T.lideres[+r.dataset.li];if(l)leadFicha(l)};return}
   // red
   const R=T.red;
   if(!R||(!(R.niveles||[]).length&&!(R.directos||[]).length)){b.innerHTML=emptyCard("La red aún no tiene datos","Aquí verás los socios directos y la productividad de los 10 niveles de la organización en cuanto se cargue el reporte.");return}
@@ -4839,11 +4851,11 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     ${irSimple()?`<div class="pf-h">Ayuda</div>`:""}<button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
     <button class="pf-it" id="pfFront"><span class="ic">🏠</span>Ver la portada de la app</button>
-    ${isAdmin&&irSimple()?`<div class="pf-h">Admin</div>`:""}${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
+    ${isAdmin&&irSimple()?`<div class="pf-h">Admin</div><button class="pf-it" id="pfCie"><span class="ic">💰</span>Cierre de mes</button>`:""}${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
-    $("#pfNombre").onclick=abrirMisDatos;{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
+    $("#pfNombre").onclick=abrirMisDatos;{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const cz=$("#pfCie");if(cz)cz.onclick=()=>{closeSheet();eqTab="cierre";go("equipo");renderEquipo()}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
     $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfMem").onclick=()=>memCompartir();$("#pfMemV").onclick=()=>memVisitas();
     $("#pfInv").onclick=()=>{if(!(regDoc&&regDoc.registro)){toast("Completa tu registro primero");return}const u=miEnlace();openSheet(`<h2>🔗 Tu enlace de invitación</h2><p class="small muted">Compártelo solo con tus socios nuevos. Al registrarse, aparecerás como su patrocinador.</p>
       <div class="card" style="word-break:break-all;font-weight:600">${esc(u)}</div><button class="btn" id="invCp" style="width:100%">Copiar enlace</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#invCp").onclick=async()=>{try{await navigator.clipboard.writeText(u);toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})};
@@ -5021,12 +5033,13 @@ function popHoy(k){try{if(!irSimple())return true;const p=LS.get("popDia")||{};i
 let irRevT=0;function irRevisar(){try{if(yoPrueba()&&store.db&&store.uid&&!window._prOc){window._prOc=1;store.db.doc("fotos/"+store.uid).set({oculto:true},{merge:true}).catch(()=>{});store.db.doc("constancia/"+store.uid).delete().catch(()=>{})}irRender();irInicio();if(!irIntroPend())return;if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate")){if(++irRevT<6)setTimeout(irRevisar,8000);return}if(!popHoy("ir"))return;irIntro()}catch(e){}}
 // ---- Inicio simple (beta) ----
 function irSimple(){return irBeta()||!!irSimM()}
-function irInicio(){const v=$("#v-inicio");if(!v)return;const on=irSimple();v.classList.toggle("simple",on);document.body.classList.toggle("beta",on);
+function irInicio(){const v=$("#v-inicio");if(!v)return;const on=irSimple();v.classList.toggle("simple",on);document.body.classList.toggle("beta",on);try{renderLzCall()}catch(e){}
+  if(on&&!window._agMia){window._agMia=1;try{setAgVista("mia")}catch(e){}}
   const pf=document.querySelector(".card.perf"),sn=$("#v-suenos"),ini=$("#rutCard");if(!pf)return;
   if(on&&sn&&pf.parentNode!==sn){const ref=$("#compSn");if(ref&&ref.nextSibling)sn.insertBefore(pf,ref.nextSibling);else sn.appendChild(pf)}
   else if(!on&&v&&pf.parentNode!==v){const a=$("#nextEvents");v.insertBefore(pf,a?a.nextSibling:null)}}
 // ---- Rankings sin "Registros inCruises" (beta) ----
-function rankBeta(){if(!irSimple())return;document.querySelectorAll('#rankMetric [data-k="presentaciones"]').forEach(b=>b.remove());document.querySelectorAll('#rankMetric [data-k="liderazgo"]').forEach(b=>{b.textContent="⭐ Sistema de liderazgo"})}
+function rankBeta(){if(!irSimple())return;try{const g=$("#actVacGo");if(g)g.onclick=()=>go("crm");if(eqTab==="ranking"&&rankMetric!=="liderazgo"){document.querySelectorAll("#eqBody b,#eqBody .nm,#eqBody .pd-n").forEach(el=>{if(el.dataset.ins||el.children.length)return;const h=insigDe(el.textContent);el.dataset.ins=1;if(h)el.insertAdjacentHTML("beforeend",h)})}}catch(e){}document.querySelectorAll('#rankMetric [data-k="presentaciones"]').forEach(b=>b.remove());document.querySelectorAll('#rankMetric [data-k="liderazgo"]').forEach(b=>{b.textContent="⭐ Sistema de liderazgo"})}
 // ---- Vista del patrocinador ----
 let irVals=null,irValsT=0;
 async function irValsCargar(){if(irVals!==null&&Date.now()-irValsT<6e5)return;irValsT=Date.now();try{const d=await store.db.doc("constancia/"+store.uid).get();irVals=(d.exists&&d.data().irVal)||{}}catch(e){irVals=irVals||{}}}
@@ -5059,6 +5072,32 @@ function simAbrir(){const s=irSimM();openSheet(`<h2>🧪 Ver como socio</h2><p c
     {const d=$("#smD");if(d)d.onclick=()=>{const st=irSt();irSave({ini:(st.ini||Date.now())-7*864e5});closeSheet();setTimeout(irRender,300);toast("⏩ +7 días · Día "+irDia())}}
     {const r=$("#smR");if(r)r.onclick=()=>{const f={ini:irSimM()==="nuevo"?Date.now():null};regDoc=regDoc||{};regDoc.irSim=f;store.db.doc("users/"+store.uid).update({irSim:f}).catch(()=>{});closeSheet();setTimeout(irRevisar,500)}}
     {const o=$("#smOff");if(o)o.onclick=()=>{try{localStorage.removeItem("alp:irSim:"+store.uid)}catch(e){}closeSheet();irInicio();irRender();try{renderEquipo()}catch(e){}}}})}
+
+
+// ---- Segunda tanda (beta): privacidad, insignias, llamada de liderazgo, fichas cerradas ----
+const lzNs=l=>[l.nombre].concat(String(l.nombreRanking||"").split("|")).map(x=>nrmN(String(x).trim())).filter(Boolean);
+const lzYo=()=>nrmN(miNombreFull()||miRegistro().nombre||"");
+function lzMio(l){if(isAdmin)return true;const ns=lzNs(l),yo=lzYo();if(yo&&ns.includes(yo))return true;const f=(fotosFs||[]).find(x=>ns.includes(nrmN(x.invNombre||x.nombre||"")));return !!(f&&store.uid&&(f.linea||[]).includes(store.uid))}
+function lzSoyMiembro(){const yo=lzYo();return !!yo&&(T.lideres||[]).some(l=>lzNs(l).includes(yo))}
+function insigDe(nombre){const n=nrmN(nombre);if(!n)return"";const l=(T.lideres||[]).find(z=>lzNs(z).includes(n));if(!l)return"";const c=calLid(l),rg=RANGOS.find(g=>g.n===l.rango),dot=posRank(l.rango)<=4&&rg?`<i class="insD" style="background:${rg.c}" title="${esc(rangoTxt(l.rango))}"></i>`:"";const k=c.k==="esp"?"⚔️":c.k==="lid"?"🛡️":"";return dot||k?` <span class="insig">${dot}${k}</span>`:""}
+function leadFilaB(l,i){const c=calLid(l),R=liderDe(l),rg=RANGOS.find(g=>g.n===l.rango),mio=lzMio(l),v=Number(l.volumen)||0,C=calCfg(),w=Math.min(100,v/C.esp*100);
+  const rgC=rg&&posRank(l.rango)<=4?`<span class="chip" style="background:${rg.c};color:#fff">${esc(rangoTxt(l.rango))}</span>`:"";
+  const ins=c.k==="esp"?`<span class="chip lz-esp">⚔️ Líder Espartano</span>`:c.k==="lid"?`<span class="chip lz-lid">🛡️ Líder</span>`:c.k==="rango"?`<span class="chip c-good">✅ Calificado por rango</span>`:(c.ah&&mio?`<span class="chip c-bad">💰 Ahorro pendiente</span>`:`<span class="chip c-brand">⏳ Pendiente</span>`);
+  return `<button type="button" class="lz-r${l.nombre===profile.miNombre?" rank-me":""}" data-li="${T.lideres.indexOf(l)}"${mio?"":' data-nomio="1"'}><span class="lz-av">${avHTML(l.nombre,l.nombre===profile.miNombre,true)}${rg?`<em style="background:${rg.n==="Board of Director"?"linear-gradient(120deg,#EA580C 50%,#7C2D12 50%)":rg.c}"></em>`:""}</span>
+   <span class="lz-g"><b>${esc(l.nombre)}</b><span class="lz-t">${ins}${rgC}${mio&&R&&R.idx!=null?`<span class="chip lz-ix" style="color:${IDX_C(R.idx)}">⚡ ${R.idx}%</span>`:""}</span>
+   ${mio?`<span class="lzBar"><i style="width:${Math.max(v?3:0,w)}%" class="${v>=C.esp?"e":v>=C.lider?"l":""}"></i><em style="left:${C.lider/C.esp*100}%"></em></span><span class="small muted">${fmt(v)} de ${fmt(C.esp)} pts este mes${v>=C.esp?" · ⚔️ ya volvió a calificar":v>=C.lider?" · 🛡️ ya es Líder":""}</span>`:""}</span>${mio?"":`<span class="small muted" style="flex:none">🔒</span>`}</button>`}
+function llamLz(){const L=(T.config||{}).llamadaLz;if(!L||!L.zoom)return null;return L}
+function llamLzCard(){const L=llamLz();if(!L)return"";const hoy=new Date().getDay()===(L.dia||0);
+  return `<div class="card lzCall"><div class="k">📞 Reunión del sistema de liderazgo</div><div style="font-weight:800;font-size:16px;margin-top:2px">Todos los domingos · ${esc(h12(L.hora||"21:15"))} (hora de Honduras)</div>${hoy?`<div class="small" style="margin-top:2px;color:#7DD3FC;font-weight:700">¡Hoy es la reunión!</div>`:""}<a class="btn sm" href="${esc(L.zoom)}" target="_blank" rel="noopener" style="margin-top:10px;background:#2AC1F1;color:#06384F;width:100%;justify-content:center">🎥 Entrar al Zoom</a></div>`}
+function renderLzCall(){const el=$("#lzCallStrip");if(!el)return;try{const L=llamLz(),d=new Date();if(!L||!irSimple()||!(isAdmin||lzSoyMiembro())||d.getDay()!==(L.dia||0)){el.hidden=true;return}
+  const [hh,mm]=String(L.hora||"21:15").split(":").map(Number),fin=hh*60+mm+75,ahora=d.getHours()*60+d.getMinutes();if(ahora>fin){el.hidden=true;return}
+  el.hidden=false;el.innerHTML=`<span>📞 <b>Hoy ${esc(h12(L.hora))}</b> · Reunión del sistema de liderazgo</span><a href="${esc(L.zoom)}" target="_blank" rel="noopener">Entrar</a>`}catch(e){el.hidden=true}}
+let mfOpen=new Set();
+function mfSum(x){try{const a=actDe(x),ah=ahSoc(x),c=compPuede0()?compDe(x):null,p=(x.ir||{}).p;const t=[];
+  t.push(ah&&ah.pend?"🔴 Ahorro pendiente":"🚢 Ahorro al día");t.push("📅 "+a.d7+"/7 días");if(compPuede0())t.push(c&&!c.no?"🤝 Con compromiso":"🎯 Sin compromiso");if(p&&!p.g)t.push("🚀 Semana "+(p.w||1));
+  return t.map(z=>`<span>${esc(z)}</span>`).join("")+`<em>Ver más ›</em>`}catch(e){return""}}
+document.addEventListener("click",e=>{const r=e.target.closest(".mfRow");if(!r||!document.body.classList.contains("beta"))return;if(e.target.closest("button,a,.mfc,.mfBtns,.emCp,details,summary,input"))return;const u=r.dataset.mfr;if(!u)return;r.classList.toggle("open");r.classList.contains("open")?mfOpen.add(u):mfOpen.delete(u)});
+function actVacio(){return `<div class="actVac"><div style="font-size:44px">🏆</div><h3>Nadie ha activado todavía este mes</h3><p>¡Sea usted el primero! Compita y quédese en el primer lugar del ranking.</p><button class="btn" id="actVacGo" type="button" style="background:#2AC1F1;color:#06384F">🎯 Ir a mis prospectos</button></div>`}
 
 function renderAll(){renderTasks();renderWeek();renderRetoMini();renderRef();renderEquipo();renderCRM();renderCal();renderNext();renderAca();renderMe()}
 renderAll();
@@ -5297,7 +5336,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261101180007";var busy=false,pend=null;
+(function(){var V="20261101184715";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

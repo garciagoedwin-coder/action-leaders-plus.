@@ -1306,9 +1306,9 @@
   },
   {
    "edifica": "",
-   "enlace": "",
+   "enlace": "https://us06web.zoom.us/j/82180643365",
    "fecha": "2026-11-01",
-   "hora": "21:00",
+   "hora": "21:15",
    "horaFin": "",
    "lugar": "",
    "modalidad": "Virtual",
@@ -1316,7 +1316,7 @@
    "responsable": "Edwin Garcia Go",
    "tipo": "Reunión de líderes",
    "titulo": "Llamada de Liderazgo",
-   "id": "2026-11-01-2100-llamada-de-liderazgo"
+   "id": "2026-11-01-2115-llamada-de-liderazgo"
   }
  ],
  "activaciones": [
@@ -3069,7 +3069,13 @@
   },
   "pruebas": [
    "3e36eb"
-  ]
+  ],
+  "llamadaLz": {
+   "dia": 0,
+   "hora": "21:15",
+   "zoom": "https://us06web.zoom.us/j/82180643365",
+   "t": "Reunión del sistema de liderazgo"
+  }
  },
  "fotos": [
   {
