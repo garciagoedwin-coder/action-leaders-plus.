@@ -3975,11 +3975,10 @@
    "t": "Reunión del sistema de liderazgo"
   },
   "novedad": {
-   "id": "pres-nov-2026",
-   "t": "🎤 ¡Ya tenemos la nueva presentación de noviembre!",
-   "sub": "Tóquela para verla y úsela desde hoy en sus presentaciones.",
-   "u": "https://drive.google.com/file/d/1r7XKTz5Spt1K3WguupYBTBa21r8xiZf6/view?usp=drivesdk",
-   "hasta": "2026-11-09T06:00:00Z"
+   "id": "avisos-nov-2026",
+   "t": "🔔 Nuevo: active sus avisos",
+   "sub": "La app le avisará antes de que pierda su racha y cuando entre un socio nuevo a su equipo. Toque «Activar» en Inicio o vaya a Perfil › Mis avisos.",
+   "hasta": "2026-11-10T06:00:00Z"
   }
  },
  "fotos": [
