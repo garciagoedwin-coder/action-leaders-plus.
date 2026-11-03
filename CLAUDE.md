@@ -407,3 +407,10 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - (2 nov) renderTasks refresca la tarjeta del compromiso (renderComp(true), sin volver a lanzar compCheck/comp15) 400 ms después, porque la rutina del día carga después y la tarjeta se quedaba en 0 presentaciones.
 - (2 nov) Gestión compartida SIN lecturas ni reglas nuevas: al gestionar, la constancia propia guarda gs={d:hoy,h:[ahF("g:"+uid)],p:["hash|NombreLíder"]} (sin motivo ni nombre del socio; viaja en pushResumen). gestOtro(x) busca en constL (que Mi equipo ya carga) y muestra "✓ Ya lo contactó X hoy" / "🤝 X le pidió a Y que lo atienda"; esas filas cuentan como hechas. 💬 abre gestHoja: Escribirle yo / Pedirle a su patrocinador / Pedirle al rango más cercano (gestArriba recorre registro.linea hasta antes de mí, rango ≥ Team Leader). Mensajes a líderes GEST_L por motivo. Ahorro: hablar de que no se le inactive la cuenta ni pierda sus puntos dobles (nada de "perder su cuenta").
 - (2 nov) Turnos: en Action Leaders Training solo "Presenta" pide rango (Marketing Director+); "Edifica" lo toma cualquiera del sistema. Etiqueta "Presenta: solo rangos".
+
+## Rendimiento (2 nov 2026, plan Blaze)
+- `rdCache(k,ms,force,fc,fn)`: si la misma consulta se hizo en este teléfono hace menos de `ms`, lee de la caché local (0 lecturas). Ventanas: meta del equipo (mqCargar) 30 min, mi equipo (loadMios, 2 consultas) 15 min, constancia completa (loadConst) 10 min. Deslizar para actualizar fuerza el servidor (incluye loadMios(true)). El wrapper `where()` ahora tiene `getCache`.
+- header.top es sólido (`var(--bg)`), sin backdrop-filter. No volver a poner desenfoque en el encabezado.
+- Brillos decorativos (actBan, rc-live, rc-jm, rcCard.vivo, rutCard::before, #l3Card, #motto, mq-bar, rdIc/rdChk, nxShare) se repiten 3 veces. Pulsos con propósito (IR, fuego, en vivo, urgente) siguen infinitos. Reducir movimiento = quieto dentro de #main.
+- La recarga por cambio de día solo ocurre si la app está visible (no en segundo plano).
+- Publicar máximo 1–2 veces al día: cada publicación recarga todas las apps.

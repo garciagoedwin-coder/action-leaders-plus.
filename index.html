@@ -824,7 +824,7 @@ body.beta #compSn{display:none!important}#agMia[hidden]+.card.perf{display:none}
 @media (prefers-reduced-motion:reduce){.irSlim.urge,.irSlim.urge .ap,.rut-al.rutDone .rdIc{animation:none}}
 #v-inicio.simple>#irCard.irSlim{order:5}
 /* ===== Inicio v3 (2 nov): encabezado delgado, saludo, protagonista, ranking ===== */
-header.top{background:color-mix(in srgb,var(--bg) 86%,transparent)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:var(--ink)!important;border-radius:0!important;box-shadow:none!important;border-bottom:1px solid transparent;padding-block:8px!important;transition:margin-top .28s ease,border-color .2s}
+header.top{background:var(--bg)!important;color:var(--ink)!important;border-radius:0!important;box-shadow:none!important;border-bottom:1px solid transparent;padding-block:8px!important;transition:margin-top .28s ease,border-color .2s}
 header.top.sc{border-bottom-color:var(--line)}header.top.hid{position:relative!important;top:0!important}
 body::before{background:var(--bg)!important}
 header.top #hello,header.top .pv{display:none!important}
@@ -875,6 +875,10 @@ header.top #hello,header.top .pv{display:none!important}
 #v-inicio.irProta .cpHero .gl span{background:var(--surface-2);border-color:transparent}
 nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px solid var(--line);border-radius:22px;padding-bottom:0!important;box-shadow:0 12px 30px -14px rgba(0,0,0,.4)!important}
 @media (prefers-reduced-motion:reduce){.irSlim:not(.hero).urge,.rut-al.rutDone .rdChk{animation:none}header.top{transition:none}}
+
+/* Rendimiento: brillos decorativos se ven 3 veces y se quedan quietos; los avisos (pulso Inicio Rápido, fuego, en vivo, urgente) siguen. */
+.actBan::after,.rc-live::after,.rc-jm::after,.rcCard.vivo::before,.rutCard::before,#l3Card,#motto,.mq-bar i.c,.rut-al.rutDone .rdIc,.rut-al.rutDone .rdChk,.nxShare{animation-iteration-count:3!important}
+@media (prefers-reduced-motion:reduce){#main *,#main *::before,#main *::after{animation-iteration-count:1!important;animation-duration:.01ms!important}}
 </style>
 
 </head>
@@ -1372,7 +1376,7 @@ let fdb;try{fdb=initializeFirestore(app,{localCache:persistentLocalCache(),ignor
 const wrapS=q=>({docs:q.docs.map(d=>({id:d.id,data:()=>d.data()}))});
 const D=p=>({_p:p,update:b=>updateDoc(doc(fdb,p),b),get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>setDoc(doc(fdb,p),b,o||{}),delete:()=>deleteDoc(doc(fdb,p)),
   onSnapshot:(cb,er)=>onSnapshot(doc(fdb,p),x=>cb({exists:x.exists(),data:()=>x.data()}),er||(()=>{}))});
-const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),getCache:async()=>wrapS(await getDocsFromCache(collection(fdb,p))),where:(f,v,op)=>({limit:n=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v),limit(n))))}),get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v)))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),where(f,op||"==",v)),q=>cb(wrapS(q)),er||(()=>{}))}),whereAll:L=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))),q=>cb(wrapS(q)),er||(()=>{}))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
+const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),getCache:async()=>wrapS(await getDocsFromCache(collection(fdb,p))),where:(f,v,op)=>({limit:n=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v),limit(n))))}),get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v)))),getCache:async()=>wrapS(await getDocsFromCache(query(collection(fdb,p),where(f,op||"==",v)))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),where(f,op||"==",v)),q=>cb(wrapS(q)),er||(()=>{}))}),whereAll:L=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))),q=>cb(wrapS(q)),er||(()=>{}))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
   onSnapshot:(cb,er)=>onSnapshot(collection(fdb,p),q=>cb(wrapS(q)),er||(()=>{}))});
 const db={collection:C,doc:D,batch:()=>{const b=writeBatch(fdb);return{set:(r,o)=>b.set(doc(fdb,r._p),o),delete:r=>b.delete(doc(fdb,r._p)),commit:()=>b.commit()}}};
 setPersistence(auth,browserLocalPersistence).catch(()=>{});
@@ -1448,6 +1452,10 @@ async function copy(text){try{await navigator.clipboard.writeText(text);toast("C
 const safeUrl=u=>/^https?:\/\//i.test(String(u||""))?u:"";
 
 // ---------- almacenamiento ----------
+// Lecturas: si la misma consulta se hizo hace poco en este teléfono, se usa la copia local (0 lecturas). "Deslizar para actualizar" fuerza el servidor.
+async function rdCache(k,ms,force,fc,fn){const key="alp:rdT:"+k+":"+(store.uid||"");let t=0;try{t=+localStorage.getItem(key)||0}catch(e){}
+  if(!force&&Date.now()-t<ms){try{const q=await fc();if(q&&q.docs&&q.docs.length)return q}catch(e){}}
+  const q=await fn();try{localStorage.setItem(key,String(Date.now()))}catch(e){}return q}
 const LS={get(k){try{const v=localStorage.getItem("alp:"+k);return v?JSON.parse(v):null}catch(e){return null}},
           set(k,v){try{localStorage.setItem("alp:"+k,JSON.stringify(v))}catch(e){}}};
 const store={db:null,uid:null,
@@ -1902,7 +1910,7 @@ function renderComp(solo){const s=$("#compStrip"),sn=$("#compSn"),ok=compPuede()
 let mqL=null,mqT=0,mqTick=null;
 function mqCfg(){const M=(T.config||{}).metaEquipo;return M&&M.mes===mesMeta()&&+M.pts?M:null}
 function mqCargar(force){if(!store.db||!mqCfg())return;if(!force&&mqL&&Date.now()-mqT<600000)return;mqT=Date.now();
-  store.db.collection("constancia").where("comp.mes",mesMeta()).get().then(q=>{mqL=q.docs.map(d=>{const x=d.data()||{},c=x.comp||{};return{uid:d.id,n:x.nombre||"",no:!!c.no,v:+c.vol||(+c.act||0)*200,r:c.rango||"",t:+c.t||0}}).filter(x=>!x.no&&x.n);renderMetaEq(true);try{const ve=$("#v-equipo");if(ve&&!ve.hidden&&eqTab==="ranking"&&rankMetric==="liderazgo")renderEquipo()}catch(e){}}).catch(()=>{mqL=mqL||[]})}
+  rdCache("mq"+mesMeta(),30*60e3,force,()=>store.db.collection("constancia").where("comp.mes",mesMeta()).getCache(),()=>store.db.collection("constancia").where("comp.mes",mesMeta()).get()).then(q=>{mqL=q.docs.map(d=>{const x=d.data()||{},c=x.comp||{};return{uid:d.id,n:x.nombre||"",no:!!c.no,v:+c.vol||(+c.act||0)*200,r:c.rango||"",t:+c.t||0}}).filter(x=>!x.no&&x.n);renderMetaEq(true);try{const ve=$("#v-equipo");if(ve&&!ve.hidden&&eqTab==="ranking"&&rankMetric==="liderazgo")renderEquipo()}catch(e){}}).catch(()=>{mqL=mqL||[]})}
 function renderMetaEq(cargado){const c=$("#metaEq");if(!c)return;const M=mqCfg();if(!M||!fbUser){c.hidden=true;return}
   mqCargar(); // respeta su caché de 10 min; antes solo cargaba una vez y no se refrescaba
   let L=(mqL||[]).slice();const yo=miComp();
@@ -2426,7 +2434,7 @@ function dtArmar(){if(!Array.isArray(mios))return null;const L=mios.filter(x=>x.
     return{u:x.uid,n:r.nombre||"",ek:ahKe(x.email),rg:r.rango||"",ok:ok(x),a:E.filter(ok).length,dp:E.filter(y=>y.registro.patrocinadorUid===x.uid).length,f:r.fecha||""}});
   D.sort((a,b)=>(b.ok-a.ok)||String(b.f).localeCompare(String(a.f)));return{t:Date.now(),d:D,eq:L.filter(ok).length}}
 async function dtCargar(force){if(dtCargando||!store.db||!store.uid)return;if(!force&&dtSum&&Date.now()-dtSum.t<3*36e5)return;dtCargando=true;
-  try{if(force||mios===null)await loadMios();const s=dtArmar();if(s){dtSum=s;LS.set("dtSum:"+store.uid,s);await dtConvertir()}}catch(e){}dtCargando=false;renderDT()}
+  try{if(force||mios===null)await loadMios(force);const s=dtArmar();if(s){dtSum=s;LS.set("dtSum:"+store.uid,s);await dtConvertir()}}catch(e){}dtCargando=false;renderDT()}
 // clientes del Dream Team: contactos del CRM en etapa "Cliente" con correo de inCruises (privados del socio)
 function dtEks(){return new Set(((dtSum&&dtSum.d)||[]).map(x=>x.ek).filter(Boolean))}
 function dtClis(){const S=dtEks();return (contacts||[]).filter(c=>c.stage==="Cliente"&&c.email&&!S.has(ahKe(c.email))).map(c=>{const a=ahDe([c.email],[c.phone?waNum(c.phone,c.cc):""]);return{cli:1,id:c.id,n:c.name||"Cliente",ok:!(a&&a.pend),c}})}
@@ -2586,9 +2594,9 @@ function pedirWaSocio(x,t){const nm=(x.registro||{}).nombre||"este socio";
     $("#wsOk").onclick=async()=>{let v=$("#wsT").value.trim();const sp=splitPhone(v),n=sp.cc?sp.cc+sp.num:waNum(v,$("#wsC").value);if(n.length<8){toast("Escribe el número");return}
       telSoc=Object.assign({},telSoc||{},{[x.uid]:{n,b:String((x.registro||{}).whatsapp||"").replace(/\D/g,"")}});store.set("telsocios",telSoc);LS.set("lastCC",$("#wsC").value);closeSheet();location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t)};
     $("#wsSh").onclick=async()=>{closeSheet();if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}})}
-async function loadMios(){miosErr=false;const me=store.uid,M={};if(telSoc===null){try{telSoc=(await store.get("telsocios"))||{}}catch(e){telSoc={}}}
-  try{const q=await store.db.collection("users").where("registro.patrocinadorUid",me).get();q.docs.forEach(d=>M[d.id]=Object.assign({uid:d.id},d.data()))}catch(e){miosErr=true}
-  try{const q=await store.db.collection("users").where("registro.linea",me,"array-contains").get();q.docs.forEach(d=>{if(!M[d.id])M[d.id]=Object.assign({uid:d.id},d.data())})}catch(e){}
+async function loadMios(force){miosErr=false;const me=store.uid,M={};const cMs=15*60e3;if(telSoc===null){try{telSoc=(await store.get("telsocios"))||{}}catch(e){telSoc={}}}
+  try{const W=store.db.collection("users").where("registro.patrocinadorUid",me),q=await rdCache("mios1",cMs,force,()=>W.getCache(),()=>W.get());q.docs.forEach(d=>M[d.id]=Object.assign({uid:d.id},d.data()))}catch(e){miosErr=true}
+  try{const W=store.db.collection("users").where("registro.linea",me,"array-contains"),q=await rdCache("mios2",cMs,force,()=>W.getCache(),()=>W.get());q.docs.forEach(d=>{if(!M[d.id])M[d.id]=Object.assign({uid:d.id},d.data())})}catch(e){}
   const L=Object.values(M).filter(x=>x.registro&&x.uid!==me&&(isAdmin||!esPrueba(x)));
   L.forEach(x=>{const r=x.registro,ln=Array.isArray(r.linea)?r.linea:[];if(r.patrocinadorUid===me){x.nivel=1;x.pierna=x.uid;return}const i=ln.indexOf(me);x.nivel=i>=0?i+1:1;x.pierna=i>0?ln[i-1]:x.uid});
   L.forEach(x=>{const p=M[x.pierna],q=M[x.registro.patrocinadorUid];x.piernaNom=p&&p.registro?p.registro.nombre:"";x.patNom=q&&q.registro?q.registro.nombre:""});
@@ -2852,7 +2860,7 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
 let constL=null,constT=0;
 let constVista="sem";
 const constSort=L=>{const sem=constVista==="sem";L.sort((a,b)=>sem?(b.racha-a.racha||b.semPres-a.semPres||b.semPts-a.semPts):(b.mesMejor-a.mesMejor||b.mesPres-a.mesPres||b.mesPts-a.mesPts)||String(a.nombre).localeCompare(b.nombre,"es"));L.forEach((x,i)=>x.rk=i+1);return L};
-async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now()-constT<600000)return;try{const q=await store.db.collection("constancia").get();constT=Date.now();
+async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now()-constT<600000)return;try{const q=await rdCache("const",10*60e3,force,()=>store.db.collection("constancia").getCache(),()=>store.db.collection("constancia").get());constT=Date.now();
   const ay=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()-1)),lun=lunesK(),mes=TODAY.slice(0,7);
   const pl=(()=>{const d=parseK(lun);d.setDate(d.getDate()-7);return dkey(d)})();
   constL=constSort(q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.nombre).map(x=>{x.prevPts=x.wk===pl?(+x.semPts||0):x.wk===lun?(x.pwk===pl&&x.pSemPts!=null?+x.pSemPts||0:null):0;const hoy=x.fecha===TODAY?(+x.hoy||0):0,okW=x.wk===lun&&x.fecha>=lun&&(semIni()===lun||x.si===semIni()),okM=x.mes===mes;
@@ -3053,7 +3061,7 @@ function rachaPremio(){const P=(T.config||{}).premios;if(!P||!P.racha||Date.now(
 function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="false" data-k="nuevos">Activaciones</button><button aria-selected="false" data-k="presentaciones">Registros inCruises</button><button aria-selected="true" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button><button aria-selected="false" data-k="liderazgo">⭐ Liderazgo</button></div><div class="seg" id="rankSeg" hidden></div>
    <div class="seg" id="consV"><button aria-selected="${constVista==="sem"}" data-cv="sem">Esta semana</button><button aria-selected="${constVista==="mes"}" data-cv="mes">Este mes</button></div>
    <p class="small muted">Cada acción de la rutina da 1 punto al día (máximo 5). Orden: 1) ${constVista==="sem"?"racha actual (días seguidos con la rutina completa; si falla un día, vuelve a cero)":"mejor racha del mes"}, 2) presentaciones del plan, 3) puntos.${constVista==="sem"?" La semana va de lunes a domingo y se reinicia cada lunes.":""}</p>`;
-  if(constL===null){b.innerHTML=segs+`<p class="muted small">Cargando…</p>`;bindRank();loadConst(true);return}
+  if(constL===null){b.innerHTML=segs+`<p class="muted small">Cargando…</p>`;bindRank();loadConst();return}
   if(!constL.length){b.innerHTML=segs+rachaPremio()+emptyCard("Aún nadie suma racha","Completa tu rutina hoy y toma el primer lugar.");bindRank();loadConst();return}
   const L=constL.filter(x=>constVista==="sem"?x.semPts>0:x.mesPts>0).map((x,i)=>Object.assign(x,{rk:i+1})),pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.uid===store.uid,true)}<span class="nm">${esc(p.nombre)}</span><div class="block"><b>${p.rk}</b>${(c=>`<span class="small num">${c?"🔥 "+c+" "+(c===1?"día":"días"):"Sin racha"}</span>`)(constVista==="sem"?p.racha:p.mesMejor)}<span class="small num" style="opacity:.85">🎯 ${p.sinPres?"—":(constVista==="sem"?p.semPres:p.mesPres)} pres. · ${constVista==="sem"?p.semPts:p.mesPts} pts</span><span class="small num" style="opacity:.85">Hoy ${hoyPts(p)} pts</span></div>${constBtn(p)}</div>`:"<div></div>";
   const mine=L.find(x=>x.uid===store.uid);
@@ -5463,7 +5471,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-refr
  m.addEventListener("touchend",async()=>{if(y0==null)return;const ok=act&&dy*.55>=ON;y0=null;act=false;if(!ok){fin();return}
   busy=true;ind.classList.add("gira");ind.querySelector("span").textContent="Actualizando…";ind.querySelector("i").style.transform="";ind.style.transform="translate(-50%,10px)";ind.style.opacity=1;
   const rec=Date.now()-ult<60000;
-  if(!rec){ult=Date.now();try{await loadTeamJSON()}catch(e){}try{mqCargar(true)}catch(e){}try{if(constL)await loadConst(true)}catch(e){}}
+  if(!rec){ult=Date.now();try{await loadTeamJSON()}catch(e){}try{mqCargar(true)}catch(e){}try{if(constL)await loadConst(true)}catch(e){}try{if(mios!==null&&store.uid)await loadMios(true)}catch(e){}}
   setTimeout(()=>{ind.classList.remove("gira");fin();busy=false;try{toast(rec?"✅ Ya está al día":"✅ Datos al día")}catch(e){}},rec?350:600)});
 })();
 let tjSello=null;async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
@@ -5679,7 +5687,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261102135328";var busy=false,pend=null;
+(function(){var V="20261102223132";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
@@ -5691,7 +5699,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
   if(t&&t!==V){var k="alp:upd:"+t,tried=false;try{tried=!!sessionStorage.getItem(k)}catch(e){}
    if(!tried&&idle()){try{sessionStorage.setItem(k,"1")}catch(e){}return fetch("./",{cache:"reload"}).catch(function(){}).then(function(){go(t)})}
    bar(t)}}).catch(function(){}).then(function(){busy=false})}
- setTimeout(chk,2500);document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});window.addEventListener("focus",chk);setInterval(chk,2*60*1000);var D0=new Date().toDateString();setInterval(function(){if(new Date().toDateString()!==D0&&idle())go(V+"d"+Date.now())},60*1000);
+ setTimeout(chk,2500);document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});window.addEventListener("focus",chk);setInterval(chk,2*60*1000);var D0=new Date().toDateString();function dia(){if(!document.hidden&&new Date().toDateString()!==D0&&idle())go(V+"d"+Date.now())}setInterval(dia,60*1000);document.addEventListener("visibilitychange",dia);
 })();
 </script>
 </body>
