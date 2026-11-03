@@ -3688,6 +3688,13 @@ async function misAvisos(){const D=await pushCargarDoc()||{},pr=Object.assign({r
    const a=$("#avAct");if(a)a.onclick=async()=>{if(await pushActivar())misAvisos()};
    const sv=async()=>{try{await pushGuardar(null,{pr:{racha:$("#avR").checked,act:$("#avA").checked}});toast("Guardado")}catch(e){toast("No se pudo guardar")}};
    $("#avR").onchange=sv;$("#avA").onchange=sv;$("#avOk").onclick=closeSheet})}
+// Número rojo en el ícono (Badging API; iPhone 16.4+ instalado y con avisos permitidos). Al abrir se borra; al salir queda lo pendiente.
+function badgePend(){try{const pe=(typeof EVA!=="undefined"&&EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid).length;
+  return (dayScore(day)<1?1:0)+(l3P||[]).length+(l3D||[]).length+pe}catch(e){return 0}}
+function badgePinta(){try{if(!("setAppBadge" in navigator)||!store.uid)return;if(typeof Notification!=="undefined"&&Notification.permission!=="granted")return;
+  if(document.hidden){const n=badgePend();n?navigator.setAppBadge(n).catch(()=>{}):navigator.clearAppBadge().catch(()=>{})}
+  else{navigator.clearAppBadge().catch(()=>{});if(navigator.serviceWorker&&navigator.serviceWorker.getRegistration)navigator.serviceWorker.getRegistration("./").then(r=>r&&r.getNotifications&&r.getNotifications()).then(L=>(L||[]).forEach(x=>x.close())).catch(()=>{})}}catch(e){}}
+document.addEventListener("visibilitychange",badgePinta);window.addEventListener("pagehide",()=>{try{if("setAppBadge" in navigator&&store.uid&&(typeof Notification==="undefined"||Notification.permission==="granted")){const n=badgePend();if(n)navigator.setAppBadge(n).catch(()=>{})}}catch(e){}});
 window.addEventListener("push-fg",e=>{try{const n=(e.detail&&e.detail.notification)||{},d=(e.detail&&e.detail.data)||{};avisoTop(n.title||"🔔 Aviso",n.body||"",()=>{if(d.v)try{go(d.v)}catch(x){}})}catch(x){}});
 function pendPinta(){try{pushPinta()}catch(e){}const el=$("#pendStrip");if(!el)return;const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid),n=l3P.length+l3D.length+pe.length;if(!n){el.hidden=true;return}el.hidden=false;
   const x=l3P[0],y=l3D[0],e=pe[0],t=x?(x.lz?"🚀 "+(x.deN||"").split(" ")[0]+" le invita a un lanzamiento":"📞 "+(x.deN||"").split(" ")[0]+" le pide una llamada de 3")+" · "+l3Cuando(x.fecha,x.hora).toLowerCase():y?"💬 "+(y.paraN||"").split(" ")[0]+" respondió su "+(y.lz?"lanzamiento":"llamada de 3"):e?"🎤 "+(e.creN||"").split(" ")[0]+" le incluyó en "+(e.tipo==="gran"?"un evento":"una junta"):"";
@@ -5560,7 +5567,7 @@ async function loadMine(){
   if(profile.nombrePila)$("#hello").textContent="Hola, "+profile.nombrePila.split(" ")[0];
   try{const b=bw;if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}catch(e){}
   if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
-  welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();setTimeout(()=>{pushRefrescar();pushPinta()},6000);
+  welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();setTimeout(()=>{pushRefrescar();pushPinta();badgePinta()},6000);
   contacts=await store.contacts();setTimeout(importarProspectos,1500);setTimeout(()=>loadSala(),2500);setTimeout(()=>loadL3(),1800);setTimeout(()=>{try{renderDT();dtCargar(false)}catch(e){}},2600);setTimeout(lcRevisar,6000);setTimeout(()=>loadEvA(),2200);loadCitas();setTimeout(irRevisar,1500);
   renderAll()}
 
