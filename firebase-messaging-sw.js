@@ -4,3 +4,6 @@ firebase.initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDom
 firebase.messaging();
 self.addEventListener("install",()=>self.skipWaiting());
 self.addEventListener("activate",e=>e.waitUntil(self.clients.claim()));
+// Número rojo en el ícono cuando llega un aviso (cuántos avisos sin abrir).
+self.addEventListener("push",e=>{if(!self.navigator||!self.navigator.setAppBadge)return;
+  e.waitUntil(new Promise(r=>setTimeout(r,1200)).then(()=>self.registration.getNotifications()).then(L=>self.navigator.setAppBadge(Math.max(1,(L||[]).length))).catch(()=>{}))});

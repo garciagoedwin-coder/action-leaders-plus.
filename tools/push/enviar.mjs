@@ -30,6 +30,19 @@ export function estadoRutina(c, hoy, ayer) {
   return { pts: Math.min(5, pts), racha: valida ? (+c.racha || 0) : 0 };
 }
 
+// "manana": 8:00 a.m. HN, solo a quien aún no empieza su rutina de hoy.
+export function msgManana(uid, c, hoy, ayer) {
+  const { pts, racha } = estadoRutina(c, hoy, ayer); if (pts > 0) return null;
+  const n = primer(c && c.nombre), seed = uid + hoy + "m";
+  const m = racha >= 1 ? pick([
+    { title: `☀️ Buenos días${n ? ", " + n : ""}`, body: `Hoy va por el día ${racha + 1} de su racha 🔥 Empiece con la historia del día: toma 1 minuto.` },
+    { title: `🔥 Día ${racha + 1} de su racha`, body: `${n ? n + ", a" : "A"}rranque temprano: un punto de su rutina ahora y el resto sale solo.` }], seed)
+    : pick([
+    { title: `☀️ Buenos días${n ? ", " + n : ""}`, body: "Hoy es buen día para empezar su racha 🔥 Comparta la historia del día y lleva 1 de 5." },
+    { title: "🛡️ Su rutina de hoy ya está lista", body: `${n ? n + ", e" : "E"}mpiece temprano: 5 puntos sencillos y su día queda completo.` },
+    { title: "💪 Un día nuevo, una racha nueva", body: "Abra su rutina y haga el primer punto antes del mediodía." }], seed);
+  return m;
+}
 // "fin": unos minutos antes de medianoche, a todos los que tienen avisos de racha.
 export function msgFin(uid, c, hoy, ayer, ms = Date.now()) {
   const { pts, racha } = estadoRutina(c, hoy, ayer), n = primer(c && c.nombre);
@@ -92,12 +105,12 @@ async function main() {
   const db = getFirestore(), fcm = getMessaging();
   const salida = []; // [uid, tk, {title, body}]
 
-  if (modo === "racha" || modo === "racha2" || modo === "fin") {
+  if (modo === "racha" || modo === "racha2" || modo === "fin" || modo === "manana") {
     const hoy = hoyHN(), ayer = ayerHN();
     const P = (await db.collection("push").get()).docs.map(d => ({ uid: d.id, ...d.data() })).filter(p => p.tk && (p.pr || {}).racha !== false);
     if (!P.length) { console.log("Nadie con avisos activos."); return; }
     const C = {}; (await db.collection("constancia").get()).docs.forEach(d => C[d.id] = d.data());
-    for (const p of P) { const m = modo === "fin" ? msgFin(p.uid, C[p.uid], hoy, ayer) : msgRacha(modo, p.uid, C[p.uid], hoy, ayer); if (m) salida.push([p.uid, p.tk, m]); }
+    for (const p of P) { const m = modo === "fin" ? msgFin(p.uid, C[p.uid], hoy, ayer) : modo === "manana" ? msgManana(p.uid, C[p.uid], hoy, ayer) : msgRacha(modo, p.uid, C[p.uid], hoy, ayer); if (m) salida.push([p.uid, p.tk, m]); }
   } else if (modo === "act") {
     const leer = f => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return {}; } };
     const N = actNuevas(leer(viejoP), leer(nuevoP));
