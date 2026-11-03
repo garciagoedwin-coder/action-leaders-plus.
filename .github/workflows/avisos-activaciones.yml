@@ -1,0 +1,23 @@
+name: Avisos de socios nuevos
+on:
+  push:
+    branches: [main]
+    paths: ["data/team.json"]
+concurrency: avisos-act
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install --no-audit --no-fund
+        working-directory: tools/push
+      - name: Comparar y enviar
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+        run: |
+          git show "${{ github.event.before }}:data/team.json" > /tmp/viejo.json 2>/dev/null || git show HEAD~1:data/team.json > /tmp/viejo.json || echo '{}' > /tmp/viejo.json
+          node tools/push/enviar.mjs act /tmp/viejo.json data/team.json
