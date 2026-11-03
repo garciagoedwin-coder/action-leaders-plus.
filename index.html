@@ -914,6 +914,9 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .irB .go{border:0;background:#F59E0B;color:#1b1306;font:inherit;font-weight:800;font-size:13px;border-radius:999px;padding:8px 12px;white-space:nowrap}
 .irB:not(.pend) .go{background:var(--surface-2);color:var(--ink)}
 .irB .irS3{background:none!important;padding:0!important;margin:0!important;border:0!important;flex:none}.irB b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.irB .go{padding:7px 11px}
+.hsub{display:flex;flex-direction:column;gap:8px;margin-top:8px}.hsr{display:flex;align-items:center;gap:8px;min-width:0}.hsr .grow{min-width:0;font-size:14px}
+.hsck{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);background:var(--surface);color:#fff;font:700 13px/1 Figtree,sans-serif;display:grid;place-items:center;flex:none;padding:0;cursor:pointer}.hsck[aria-pressed="true"]{background:var(--good);border-color:var(--good)}
+.hsr .chip{border:0;font:inherit;font-weight:700;cursor:pointer;flex:none;white-space:nowrap}
 </style>
 
 </head>
@@ -1542,26 +1545,60 @@ function rutFold(ok){const t=$("#tasks"),bar=$("#dayBar")&&$("#dayBar").closest(
   const ap=()=>{t.hidden=hide;if(bar)bar.hidden=hide;const g=$("#rutTg");if(g)g.textContent=hide?"▾":"▴";const rc=$("#rutCard");if(rc)rc.classList.toggle("mini",hide)};
   if(hide&&rutJust){rutJust=false;rutFT=setTimeout(ap,1400)}else ap();
   {const db=$("#rutDoneB");if(db)db.onclick=()=>{rutOpen=!rutOpen;rutFold(true)}}}
-function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);
+// Punto 1: historia de atracción + flyer de la presentación del día (desde HFLY_DESDE). Si la presentación ya empezó, el flyer no se exige.
+const HFLY_DESDE="2026-11-04";
+const presIniMs=e=>{const[y,m,d]=e.fecha.split("-").map(Number),[h,mi]=(e.hora||"0:0").split(":").map(Number);return Date.UTC(y,m-1,d,h+6,mi||0)};
+function presHoyL(){if(TODAY<HFLY_DESDE)return[];return(T.eventos||[]).filter(e=>e.fecha===TODAY&&e.tipo==="Presentación").sort((a,b)=>(a.hora||"").localeCompare(b.hora||""))}
+const presHoyPend=()=>presHoyL().find(e=>presIniMs(e)>Date.now())||null;
+function histSync(){if(day.historia&&day.hAtr===undefined)day.hAtr=1;const L=presHoyL();const v=(!!day.hAtr&&(!L.length||!!day.hFly||!presHoyPend()))?1:0;if((day.historia||0)!==v){day.historia=v;return true}return false}
+const hHN=e=>h12(e.hora).replace(/ ?am$/," a.m.").replace(/ ?pm$/," p.m.");
+function histSubHTML(done){const L=presHoyL();if(!L.length)return `<br><button type="button" class="chip ${done?"c-brand":"c-good"}" data-hist="1" style="border:0;font:inherit;font-weight:700;margin-top:6px;cursor:pointer">${done?"Ver / compartir otra vez":"📤 Compartir mi historia"}</button>`;
+  const e=presHoyPend()||L[0],pend=!!presHoyPend(),a=!!day.hAtr,f=!!day.hFly;
+  return `<div class="hsub"><div class="hsr"><button type="button" class="hsck" data-hs="a" aria-pressed="${a}" aria-label="Historia de atracción">${a?"✓":""}</button><span class="grow ${a?"done-t":""}">🌅 Historia de atracción</span><button type="button" class="chip ${a?"c-brand":"c-good"}" data-hist="1">${a?"Otra vez":"📤 Compartir"}</button></div>
+   <div class="hsr"><button type="button" class="hsck" data-hs="f" aria-pressed="${f}" aria-label="Flyer de la presentación">${f?"✓":""}</button><span class="grow ${f?"done-t":""}">🎤 Flyer de la presentación · ${esc(hHN(e))}</span>${!f&&!pend?`<span class="small muted" style="flex:none">Ya empezó · no hace falta</span>`:`<button type="button" class="chip ${f?"c-brand":"c-good"}" data-hfly="1">${f?"Otra vez":"📤 Publicar"}</button>`}</div></div>`}
+const FLY_CTA=[h=>`Hoy ${h} ¿Le interesa? Respóndame este estado 🙋`,h=>`¿Quiere ver de qué se trata? Escríbame QUIERO y le paso el enlace.`,h=>`Hoy a las ${h} presento algo que me cambió el año. ¿Le guardo un lugar? 👇`,h=>`Si le da curiosidad, respóndame aquí y le explico 😉`];
+let flyHoyF=null,flyHoyK="";
+async function abrirFlyHoy(){const e=presHoyPend()||presHoyL()[0];if(!e){toast("Hoy no hay presentación");return}
+  const D=presDatos(e),eu=/europa/i.test(e.titulo||""),hz=eu&&D.Z[0]?hHN(e)+" 🇭🇳 · "+D.Z[0].slice(D.Z[0].indexOf(" ")+1).replace(" PM"," p.m.").replace(" AM"," a.m.")+" 🇪🇸":hHN(e)+" 🇭🇳";
+  let k=(Number(TODAY.replace(/-/g,""))+String(store.uid||"").length)%FLY_CTA.length;const txt=()=>FLY_CTA[k%FLY_CTA.length](hz);
+  openSheet(`<h2 style="margin:0">🎤 Flyer de la presentación de hoy</h2><p class="small muted" style="margin:0">${esc(e.titulo)} · ${esc(hz)}. Publíquelo en sus estados con el texto de abajo.</p>
+   <div id="fhImg" style="border-radius:14px;overflow:hidden;background:#0b0b10;aspect-ratio:9/16;max-height:56vh;margin:0 auto;width:100%;max-width:290px;display:flex;align-items:center;justify-content:center"><span class="small" style="color:#fff">Creando su flyer…</span></div>
+   <div class="card" style="gap:8px"><b class="small">✍️ Texto para su estado</b><div id="fhTxt" style="font-weight:600;line-height:1.35"></div><div class="row" style="gap:8px"><button type="button" class="btn sm ghost grow" id="fhOtro">🔄 Otro texto</button><button type="button" class="btn sm ghost grow" id="fhCopy">📋 Copiar texto</button></div></div>
+   <button class="btn" id="fhPub" style="width:100%">📤 Publicar en mis estados</button><p class="small muted" style="margin:0;text-align:center">Al publicar, el texto se copia solo: péguelo en su estado antes de enviarlo.</p>
+   <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
+    const pinta=()=>{const t=$("#fhTxt");if(t)t.textContent=txt()};pinta();
+    const cop=async(q)=>{try{await navigator.clipboard.writeText(txt());if(!q)toast("Texto copiado ✅")}catch(x){if(!q)toast("No se pudo copiar")}};
+    $("#fhOtro").onclick=()=>{k++;pinta()};$("#fhCopy").onclick=()=>cop();
+    $("#fhPub").onclick=async()=>{if(!flyHoyF){toast("El flyer aún se está creando");return}await cop(1);
+      const marcar=()=>{day.hFly=1;try{renderTasks();saveDay()}catch(x){}toast("¡Flyer publicado! 🔥");closeSheet()};
+      if(navigator.canShare&&navigator.canShare({files:[flyHoyF]})){try{await navigator.share({files:[flyHoyF]});marcar();return}catch(x){if(x&&x.name==="AbortError")return}}
+      const a=document.createElement("a");a.href=URL.createObjectURL(flyHoyF);a.download=flyHoyF.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);marcar();toast("Flyer descargado. Súbalo a sus estados 📲")}});
+  const key=e.id+"|"+(e.responsable||"")+"|"+(e.edifica||"");
+  if(key!==flyHoyK||!flyHoyF){flyHoyF=null;try{const cv=await presCanvas(e,"h");const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));flyHoyF=new File([b],"Presentacion-"+e.fecha+"-historia.jpg",{type:"image/jpeg"});flyHoyK=key}catch(x){}}
+  const box=$("#fhImg");if(box){if(flyHoyF){box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(flyHoyF);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im)}else box.innerHTML='<span class="small" style="color:#fff">No se pudo crear el flyer</span>'}}
+setInterval(()=>{try{if(!fbUser||TODAY<HFLY_DESDE)return;const k=!!presHoyPend();if(k!==window._phk){window._phk=k;renderTasks()}}catch(e){}},120000);
+function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histSync())saveDay();
   $("#tasks").innerHTML=ROUTINE.map(r=>{const v=day[r.k]||0,done=v>=1;
-    if(r.type==="check")return `<div class="task"><button class="check" aria-pressed="${done}" data-k="${r.k}" aria-label="Marcar ${esc(r.t)}">${done?CHECK:""}</button><span class="grow"><span class="${done?"done-t":""}">${esc(r.t)}</span>${r.k==="historia"?`<br><button type="button" class="chip ${done?"c-brand":"c-good"}" data-hist="1" style="border:0;font:inherit;font-weight:700;margin-top:6px;cursor:pointer">${done?"Ver / compartir otra vez":"📤 Compartir mi historia"}</button>`:r.sub&&!done?`<br><span class="small muted">${esc(r.sub)}</span>`:r.nota?`<br><span class="small muted">${esc(r.nota)}</span>`:""}${r.link?`<br><a class="chip c-good" style="display:inline-flex;margin-top:6px;text-decoration:none;font-weight:700" href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.linkT||"Abrir")}</a>`:""}</span></div>`;
+    if(r.type==="check")return `<div class="task"><button class="check" aria-pressed="${done}" data-k="${r.k}" aria-label="Marcar ${esc(r.t)}">${done?CHECK:""}</button><span class="grow"><span class="${done?"done-t":""}">${esc(r.k==="historia"&&presHoyL().length?"📸 Publique sus 2 historias del día":r.t)}</span>${r.k==="historia"?histSubHTML(done):r.sub&&!done?`<br><span class="small muted">${esc(r.sub)}</span>`:r.nota?`<br><span class="small muted">${esc(r.nota)}</span>`:""}${r.link?`<br><a class="chip c-good" style="display:inline-flex;margin-top:6px;text-decoration:none;font-weight:700" href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.linkT||"Abrir")}</a>`:""}</span></div>`;
     return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:""}</span><span class="grow ${done?"done-t":""}">${esc(r.t)}<br><span class="small muted">${(day[r.lk]||[]).length?r.ic+" "+day[r.lk].map(x=>esc(String(x.n).split(" ")[0])).join(", "):v?"Mínimo 1"+(r.goal>1?" · ideal "+r.goal:""):esc(r.vac||"")}</span></span>
       <span class="counter"><button data-dec="${r.k}" aria-label="Restar">−</button><span class="num">${v}</span><button data-inc="${r.k}" aria-label="Sumar">+</button></span></div>`}).join("");
   const p=Math.round(dayScore(day)*100),RL=ROUTINE.filter(r=>!r.desde||TODAY>=r.desde),hechas=RL.filter(r=>(day[r.k]||0)>=1).length;$("#dayPct").textContent=hechas+" de "+RL.length;$("#dayBar").style.width=p+"%";
   const pend=RL.filter(r=>!((day[r.k]||0)>=1)),falta=pend.length,ra=$("#rutAlert");
   const rach=(()=>{let r=0;for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=i===0?dayScore(day):dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)r++;else break}return r})();
-  if(ra){const st=falta?"pend":"ok",hr=new Date().getHours(),nx=pend[0],key=st+"|"+falta+"|"+(hr>=18)+"|"+rach;if(ra.dataset.key!==key){
+  if(ra){const st=falta?"pend":"ok",hr=new Date().getHours(),nx=pend[0],key=st+"|"+falta+"|"+(hr>=18)+"|"+rach+"|"+(day.hAtr?1:0);if(ra.dataset.key!==key){
     let h;if(!falta)h=`<div class="rut-al ok rutDone" id="rutDoneB"><span class="rdChk">✓</span><span class="grow" style="min-width:0"><b>¡Felicidades! Su rutina de hoy está hecha 🎉</b><span class="rdS">🔥 Racha de ${rach} ${rach===1?"día":"días"} · mañana va por ${rach+1}</span></span><button type="button" class="rutTg" id="rutTg">${rutOpen?"▴":"▾"}</button></div>`;
-    else{const tarde=hr>=18&&rach>0,txt=tarde?`⏰ <b>Le ${falta===1?"falta 1 paso":"faltan "+falta+" pasos"} para no perder su racha de ${rach} ${rach===1?"día":"días"}</b>`:hechas===0&&nx.k==="historia"?`👉 <b>Empiece por lo fácil:</b> <span>publique su historia (1 minuto)</span>`:`👉 <b>Siguiente paso:</b> <span>${esc(nx.nx||nx.t)}</span>`;
-      h=`<div class="rut-al rut-nx${tarde?" tarde":""}"><span class="grow" style="min-width:0">${txt}</span><button type="button" class="btn sm" data-rgo="${nx.k}" style="flex:none">${esc(nx.bt||"Hacerlo")}</button></div>`}
+    else{const tarde=hr>=18&&rach>0,txt=tarde?`⏰ <b>Le ${falta===1?"falta 1 paso":"faltan "+falta+" pasos"} para no perder su racha de ${rach} ${rach===1?"día":"días"}</b>`:hechas===0&&nx.k==="historia"&&!day.hAtr?`👉 <b>Empiece por lo fácil:</b> <span>publique su historia (1 minuto)</span>`:`👉 <b>Siguiente paso:</b> <span>${esc(nx.k==="historia"&&day.hAtr?"publique el flyer de la presentación de hoy":nx.nx||nx.t)}</span>`;
+      h=`<div class="rut-al rut-nx${tarde?" tarde":""}"><span class="grow" style="min-width:0">${txt}</span><button type="button" class="btn sm" data-rgo="${nx.k}" style="flex:none">${esc(nx.k==="historia"&&day.hAtr?"📤 Publicar":nx.bt||"Hacerlo")}</button></div>`}
     ra.innerHTML=h;
     if(ra.dataset.st!==st){ra.firstChild&&ra.firstChild.classList.add("shake");if(st==="ok"&&ra.dataset.st)rutJust=true;if(st==="ok"){try{if(LS.get("rutConf")!==TODAY){LS.set("rutConf",TODAY);setTimeout(()=>confeti($("#rutCard"),46),ra.dataset.st?350:900)}}catch(e){}}}ra.dataset.st=st;ra.dataset.key=key;
-    const g=ra.querySelector("[data-rgo]");if(g)g.onclick=()=>{const k=g.dataset.rgo,t=$("#tasks");const el=k==="historia"?t.querySelector("[data-hist]"):t.querySelector(`[data-k="${k}"]`)||t.querySelector(`[data-inc="${k}"]`);if(el)el.click()}}}
+    const g=ra.querySelector("[data-rgo]");if(g)g.onclick=()=>{const k=g.dataset.rgo,t=$("#tasks");const el=k==="historia"?(day.hAtr&&t.querySelector("[data-hfly]"))||t.querySelector("[data-hist]"):t.querySelector(`[data-k="${k}"]`)||t.querySelector(`[data-inc="${k}"]`);if(el)el.click()}}}
   rutFold(!falta);const rc=$("#rutCard");if(rc)rc.classList.toggle("done",!falta);clearTimeout(window._rcT);window._rcT=setTimeout(()=>{try{renderComp(true)}catch(e){}},400);
 }
 let saveDayT;function saveDay(){clearTimeout(saveDayT);saveDayT=setTimeout(()=>store.set("rutina-"+TODAY,day),600);weekCache[TODAY]=day;renderWeek()}
-$("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(ahGate())return;if(b.dataset.hist){abrirHist();return}
-  if(b.dataset.k){day[b.dataset.k]=day[b.dataset.k]?0:1}
+$("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(ahGate())return;if(b.dataset.hist){abrirHist();return}if(b.dataset.hfly){abrirFlyHoy();return}
+  if(b.dataset.hs){const q=b.dataset.hs==="a"?"hAtr":"hFly";day[q]=day[q]?0:1}
+  else if(b.dataset.k==="historia"){day.hAtr=day.hAtr?0:1;if(!day.hAtr)day.historia=0}
+  else if(b.dataset.k){day[b.dataset.k]=day[b.dataset.k]?0:1}
   else if(b.dataset.inc==="presentaciones"){abrirPres();return}
   else if(b.dataset.dec==="presentaciones"){quitarPres();return}
   else if(b.dataset.inc==="contactos"){editContact(null,null,{lista:1});return}
@@ -3538,7 +3575,7 @@ async function abrirHist(){if(!fbUser)return;const hecho=(profile.historias||{})
   if(histKey!==TODAY+miNombreCorto()+miFotoUrl()||!histFile){histKey=TODAY+miNombreCorto()+miFotoUrl();const cv=await histCanvas(TODAY);try{const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));histFile=new File([b],"historia-"+TODAY+".jpg",{type:"image/jpeg"})}catch(x){histFile=null}}
   const box=$("#histImg");if(box&&histFile){box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(histFile);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im)}}
 async function compartirHist(){if(!histFile){toast("La historia aún se está creando");return}
-  const marcar=()=>{day.historia=1;try{renderTasks();saveDay()}catch(e){}profile.historias=Object.assign({},profile.historias||{},{[TODAY]:true});store.set("perfil",profile);pushResumen();toast("¡Historia de hoy completada! 🔥 Mañana tendrá una nueva.");closeSheet()};
+  const marcar=()=>{day.hAtr=1;try{renderTasks();saveDay()}catch(e){}profile.historias=Object.assign({},profile.historias||{},{[TODAY]:true});store.set("perfil",profile);pushResumen();toast(presHoyPend()&&!day.hFly?"¡Historia lista! ✅ Ahora publique el flyer de la presentación 🎤":"¡Historia de hoy completada! 🔥 Mañana tendrá una nueva.");closeSheet()};
   if(navigator.canShare&&navigator.canShare({files:[histFile]})){try{await navigator.share({files:[histFile]});marcar();return}catch(x){if(x&&x.name==="AbortError")return}}
   const a=document.createElement("a");a.href=URL.createObjectURL(histFile);a.download=histFile.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);marcar();toast("Historia descargada. Súbela a tus estados 📲")}
 
@@ -5737,7 +5774,7 @@ let tjSello=null;async function loadTeamJSON(){try{const r=await fetch("data/tea
   {const se=((d.config||{}).rankingActualizado||"")+"|"+((d.config||{}).activacionesCorte||"")+"|"+(d.ranking||[]).length;if(tjSello&&se!==tjSello)setTimeout(()=>{try{toast("📊 Ranking actualizado")}catch(e){}},600);tjSello=se}
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
-  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();try{novedadAviso()}catch(e){}try{rkInicio();pillsPinta()}catch(e){}renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderGan()}catch(e){}try{renderComp()}catch(e){}try{renderMetaEq()}catch(e){}try{renderPremios()}catch(e){}try{renderRC()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist();try{irInicio();irRevisar()}catch(e){}}catch(e){}}
+  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();try{novedadAviso()}catch(e){}try{rkInicio();pillsPinta()}catch(e){}renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderGan()}catch(e){}try{renderComp()}catch(e){}try{renderMetaEq()}catch(e){}try{renderPremios()}catch(e){}try{renderRC()}catch(e){}renderTopAct();renderEvento();renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist();try{if(fbUser&&TODAY>=HFLY_DESDE)renderTasks()}catch(e){}try{irInicio();irRevisar()}catch(e){}}catch(e){}}
 let autoFotoHecho=false;
 function urlADataUrl(u,S){return new Promise(ok=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{S=S||240;const c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);
   c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);ok(c.toDataURL("image/jpeg",.85))}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=u})}
@@ -5765,7 +5802,7 @@ async function loadMine(){
   const [p,r,bw,...vals]=await Promise.all([store.get("perfil"),store.get("reto-"+MONTH),store.db?store.get("bienvenida").catch(()=>null):null].concat(ks.map(k=>store.get("rutina-"+k))));
   profile=Object.assign({ref:"",training:{},arranque:{},miNombre:""},p||{});try{if(store.uid&&localStorage.getItem("alp:welok")===store.uid)profile.bienvenida=true}catch(x){}
   if(r)reto=r;ks.forEach((k,i)=>{if(vals[i])weekCache[k]=vals[i]});window._wkFrom=ks[ks.length-1];
-  day=Object.assign({},weekCache[TODAY]||{});if((profile.historias||{})[TODAY]&&!day.historia)day.historia=1;
+  day=Object.assign({},weekCache[TODAY]||{});if((profile.historias||{})[TODAY]&&!day.hAtr){day.hAtr=1;if(!presHoyL().length)day.historia=1}
   if(profile.nombrePila)$("#hello").textContent="Hola, "+profile.nombrePila.split(" ")[0];
   try{const b=bw;if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}catch(e){}
   if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
@@ -5947,7 +5984,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261103090916";var busy=false,pend=null;
+(function(){var V="20261103092249";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
