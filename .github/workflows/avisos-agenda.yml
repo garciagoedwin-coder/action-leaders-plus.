@@ -1,0 +1,29 @@
+name: Avisos de entrenamientos y actividades
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+concurrency: avisos-agenda
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: ¿Hay actividad pronto?
+        id: hay
+        run: |
+          node -e '
+          import("./tools/push/enviar.mjs").then(P=>{const c=require("./data/team.json").calendario||[];const E=P.agendaPendientes(c);console.log(E.map(e=>e.titulo+" "+e.hora).join(", ")||"nada");require("fs").appendFileSync(process.env.GITHUB_OUTPUT,"si="+(E.length?"1":"0")+"\n")})'
+      - uses: actions/setup-node@v4
+        if: steps.hay.outputs.si == '1'
+        with: { node-version: 20 }
+      - run: npm install --no-audit --no-fund
+        if: steps.hay.outputs.si == '1'
+        working-directory: tools/push
+      - name: Enviar
+        if: steps.hay.outputs.si == '1'
+        working-directory: tools/push
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+        run: node enviar.mjs agenda

@@ -94,6 +94,24 @@ export function msgAct(a, paraSponsor) {
     : { title: "🎉 ¡Nuevo socio en su equipo!", body: `${n} se unió con ${p}. Felicite a ${p} por su activación.` };
 }
 
+// ---------- agenda del equipo ----------
+// Entrenamientos y llamadas: 30 min antes. Presentaciones: 1 h antes (solo la primera del día). Liderazgo: solo miembros del sistema.
+export function agendaPendientes(cal, ms = Date.now()) {
+  const hn = new Date(ms - 6 * 3600e3), hoy = hn.toISOString().slice(0, 10), ahora = hn.getUTCHours() * 60 + hn.getUTCMinutes();
+  const H = (cal || []).filter(e => e.fecha === hoy && /^\d\d:\d\d$/.test(e.hora || "")).map(e => ({ ...e, min: +e.hora.slice(0, 2) * 60 + +e.hora.slice(3) }));
+  const tipoDe = e => /liderazgo/i.test(e.titulo || "") || /líderes/i.test(e.tipo || "") ? "lid" : /presentaci/i.test(e.tipo || "") ? "pres" : /capacitaci|llamada/i.test(e.tipo || "") ? "ent" : null;
+  const primPres = H.filter(e => tipoDe(e) === "pres").sort((a, b) => a.min - b.min)[0];
+  return H.filter(e => { const t = tipoDe(e); if (!t) return false; if (t === "pres" && e !== primPres) return false;
+    const falta = e.min - ahora, ant = t === "pres" ? 60 : 30; return falta >= 5 && falta <= ant + 10; }).map(e => ({ ...e, k: tipoDe(e), falta: e.min - ahora }));
+}
+const h12 = h => { let [a, b] = h.split(":").map(Number); const p = a >= 12 ? "p.m." : "a.m."; a = a % 12 || 12; return `${a}:${String(b).padStart(2, "0")} ${p}`; };
+export function msgAgenda(e) {
+  if (e.k === "pres") return { title: `🎤 Hoy a las ${h12(e.hora)}: ${e.titulo}`, body: "¿Ya invitó a alguien? Todavía está a tiempo: un mensaje hoy puede ser un socio mañana." };
+  const mi = e.falta ? Math.max(5, Math.round(e.falta / 5) * 5) : 30;
+  if (e.k === "lid") return { title: `🛡️ En ${mi} min: ${e.titulo}`, body: `Empieza a las ${h12(e.hora)} · toque para ver el Zoom en la Agenda.` };
+  return { title: `📚 En ${mi} min: ${e.titulo}`, body: `Empieza a las ${h12(e.hora)} · toque para ver cómo entrar.` };
+}
+
 // ---------- envío ----------
 async function main() {
   const [modo, viejoP, nuevoP] = process.argv.slice(2);
@@ -105,7 +123,7 @@ async function main() {
   const db = getFirestore(), fcm = getMessaging();
   const salida = []; // [uid, tk, {title, body}]
   const hist = {}; // uid → historial actual (h) para guardar los últimos 15 avisos
-  const vista = modo === "act" ? "equipo" : "inicio";
+  let vista = modo === "act" ? "equipo" : modo === "agenda" ? "agenda" : "inicio";
 
   if (modo === "racha" || modo === "racha2" || modo === "fin" || modo === "manana") {
     const hoy = hoyHN(), ayer = ayerHN();
@@ -114,6 +132,17 @@ async function main() {
     if (!P.length) { console.log("Nadie con avisos activos."); return; }
     const C = {}; (await db.collection("constancia").get()).docs.forEach(d => C[d.id] = d.data());
     for (const p of P) { const m = modo === "fin" ? msgFin(p.uid, C[p.uid], hoy, ayer) : modo === "manana" ? msgManana(p.uid, C[p.uid], hoy, ayer) : msgRacha(modo, p.uid, C[p.uid], hoy, ayer); if (m) salida.push([p.uid, p.tk, m]); }
+  } else if (modo === "agenda") {
+    let cal = []; try { cal = JSON.parse(fs.readFileSync(viejoP || "../../data/team.json", "utf8")).calendario || []; } catch {}
+    const E = agendaPendientes(cal);
+    if (!E.length) { console.log("Sin actividades próximas."); return; }
+    const metaRef = db.doc("push_meta/agenda"), meta = (await metaRef.get()).data() || {}, ya = new Set(meta.sent || []);
+    const nuevos = E.filter(e => !ya.has(e.id));
+    if (!nuevos.length) { console.log("Ya se avisó."); return; }
+    const P = (await db.collection("push").get()).docs.map(d => ({ uid: d.id, ...d.data() })).filter(p => p.tk && (p.pr || {}).agenda !== false);
+    P.forEach(p => hist[p.uid] = p.h || []);
+    for (const e of nuevos) { const m = msgAgenda(e); for (const p of P) { if (e.k === "lid" && !p.sis) continue; salida.push([p.uid, p.tk, m]); } console.log("Aviso:", e.titulo, e.hora); }
+    if (!DRY) await metaRef.set({ sent: [...ya, ...nuevos.map(e => e.id)].slice(-80), t: Date.now() });
   } else if (modo === "act") {
     const leer = f => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return {}; } };
     const N = actNuevas(leer(viejoP), leer(nuevoP));

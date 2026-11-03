@@ -3708,32 +3708,33 @@ const pushSop=()=>"Notification" in window&&"serviceWorker" in navigator&&"PushM
 const pushStandalone=()=>(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
 const pushIOS=()=>/iPhone|iPad|iPod/.test(navigator.userAgent||"");
 let pushDoc=null;
-async function pushGuardar(tk,extra){if(!store.db||!store.uid)return;const b=Object.assign({t:Date.now(),ios:pushIOS()?1:0},tk?{tk}:{},extra||{});await store.db.doc("push/"+store.uid).set(b,{merge:true});pushDoc=Object.assign(pushDoc||{},b);if(tk){LS.set("pushTk",tk);LS.set("pushT",Date.now())}}
+async function pushGuardar(tk,extra){if(!store.db||!store.uid)return;let sis=0;try{sis=lzSoyMiembro()?1:0}catch(e){}const b=Object.assign({t:Date.now(),ios:pushIOS()?1:0,sis},tk?{tk}:{},extra||{});try{LS.set("pushSis",sis)}catch(e){}await store.db.doc("push/"+store.uid).set(b,{merge:true});pushDoc=Object.assign(pushDoc||{},b);if(tk){LS.set("pushTk",tk);LS.set("pushT",Date.now())}}
 async function pushActivar(){if(!PUSH_VAPID||!pushSop()){toast("Este teléfono no permite avisos desde aquí");return false}
   let p;try{p=await Notification.requestPermission()}catch(e){p="denied"}
   if(p!=="granted"){toast("Sin permiso no le podemos avisar. Puede activarlo en Perfil › Mis avisos.");pushPinta();return false}
-  try{const tk=await window.FB.pushToken(PUSH_VAPID);if(!tk)throw new Error("tk");await pushGuardar(tk,{pr:Object.assign({racha:true,act:true},(pushDoc&&pushDoc.pr)||{})});toast("🔔 ¡Listo! Sus avisos están activos");pushPinta();return true}
+  try{const tk=await window.FB.pushToken(PUSH_VAPID);if(!tk)throw new Error("tk");await pushGuardar(tk,{pr:Object.assign({racha:true,act:true,agenda:true},(pushDoc&&pushDoc.pr)||{})});toast("🔔 ¡Listo! Sus avisos están activos");pushPinta();return true}
   catch(e){toast("No se pudieron activar los avisos. Intente otra vez.");return false}}
-async function pushRefrescar(){try{if(!PUSH_VAPID||!pushSop()||Notification.permission!=="granted"||!store.uid)return;const t=+LS.get("pushT")||0;if(Date.now()-t<3*864e5&&LS.get("pushTk"))return;
+async function pushRefrescar(){try{if(!PUSH_VAPID||!pushSop()||Notification.permission!=="granted"||!store.uid)return;try{const si=lzSoyMiembro()?1:0;if(LS.get("pushTk")&&LS.get("pushSis")!==si)await pushGuardar(null)}catch(e){}const t=+LS.get("pushT")||0;if(Date.now()-t<3*864e5&&LS.get("pushTk"))return;
   const tk=await window.FB.pushToken(PUSH_VAPID);if(tk&&tk!==LS.get("pushTk"))await pushGuardar(tk);else LS.set("pushT",Date.now())}catch(e){}}
 function pushPinta(){const el=$("#pushStrip");if(!el)return;let no=0;try{no=+LS.get("pushNo")||0}catch(e){}
   if(!PUSH_VAPID||!fbUser||!store.uid||Date.now()-no<14*864e5){el.hidden=true;return}
   const iosNav=pushIOS()&&!pushStandalone();
   if(!iosNav&&(!pushSop()||Notification.permission!=="default")){el.hidden=true;return}
   el.hidden=false;el.innerHTML=iosNav?`<span class="pi">🔔</span><div class="grow" style="min-width:0"><b>¿Quiere recibir avisos?</b><small>En iPhone, abra la app desde el ícono 🛡️ de su pantalla de inicio (Compartir › Agregar a inicio) y actívelos ahí.</small></div><button class="px" aria-label="Cerrar">✕</button>`
-   :`<span class="pi">🔔</span><div class="grow" style="min-width:0"><b>Active sus avisos</b><small>Le avisamos si está por perder su racha y cuando entra un socio nuevo a su equipo.</small></div><button class="pb">Activar</button><button class="px" aria-label="Cerrar">✕</button>`;
+   :`<span class="pi">🔔</span><div class="grow" style="min-width:0"><b>Active sus avisos</b><small>Le avisamos de su racha, sus entrenamientos y cuando entra un socio nuevo a su equipo.</small></div><button class="pb">Activar</button><button class="px" aria-label="Cerrar">✕</button>`;
   const b=el.querySelector(".pb");if(b)b.onclick=()=>pushActivar();el.querySelector(".px").onclick=()=>{LS.set("pushNo",Date.now());el.hidden=true}}
 async function pushCargarDoc(){if(pushDoc||!store.db||!store.uid)return pushDoc;try{const d=await store.db.doc("push/"+store.uid).get();pushDoc=d.exists?d.data():{}}catch(e){pushDoc={}}return pushDoc}
-async function misAvisos(){const D=await pushCargarDoc()||{},pr=Object.assign({racha:true,act:true},D.pr||{});const perm=pushSop()?Notification.permission:"x",iosNav=pushIOS()&&!pushStandalone();
+async function misAvisos(){const D=await pushCargarDoc()||{},pr=Object.assign({racha:true,act:true,agenda:true},D.pr||{});const perm=pushSop()?Notification.permission:"x",iosNav=pushIOS()&&!pushStandalone();
   const est=!PUSH_VAPID?"Muy pronto podrá activarlos.":iosNav?"En iPhone: abra la app desde el ícono 🛡️ de su pantalla de inicio para activarlos.":perm==="x"?"Este navegador no permite avisos.":perm==="denied"?"Los avisos están bloqueados. Actívelos en los ajustes del teléfono: Notificaciones › Action Leaders.":perm==="granted"&&D.tk?"✅ Activos en este teléfono.":"Todavía no están activos en este teléfono.";
   openSheet(`<h2 style="margin:0 0 4px">🔔 Mis avisos</h2><p class="small muted" style="margin:0 0 8px">${est}</p>
    ${PUSH_VAPID&&!iosNav&&perm!=="denied"&&perm!=="x"&&!(perm==="granted"&&D.tk)?`<button class="btn pill dark" id="avAct" style="width:100%;margin-bottom:6px">🔔 Activar avisos</button>`:""}
    <label class="avTg"><input type="checkbox" id="avR" ${pr.racha?"checked":""}><span class="grow"><b>🔥 Mi racha</b><br><small class="muted">7:00 p.m. si no ha completado su rutina, y 9:30 p.m. si está por perder su racha.</small></span></label>
    <label class="avTg"><input type="checkbox" id="avA" ${pr.act?"checked":""}><span class="grow"><b>🎉 Socios nuevos</b><br><small class="muted">Cuando entra un socio nuevo a su equipo.</small></span></label>
+   <label class="avTg"><input type="checkbox" id="avG" ${pr.agenda?"checked":""}><span class="grow"><b>📚 Entrenamientos y actividades</b><br><small class="muted">30 min antes de cada entrenamiento y 1 h antes de la primera presentación del día.</small></span></label>
    <button class="btn pill" id="avOk" style="width:100%;margin-top:12px">Listo</button>`,()=>{
    const a=$("#avAct");if(a)a.onclick=async()=>{if(await pushActivar())misAvisos()};
-   const sv=async()=>{try{await pushGuardar(null,{pr:{racha:$("#avR").checked,act:$("#avA").checked}});toast("Guardado")}catch(e){toast("No se pudo guardar")}};
-   $("#avR").onchange=sv;$("#avA").onchange=sv;$("#avOk").onclick=closeSheet})}
+   const sv=async()=>{try{await pushGuardar(null,{pr:{racha:$("#avR").checked,act:$("#avA").checked,agenda:$("#avG").checked}});toast("Guardado")}catch(e){toast("No se pudo guardar")}};
+   $("#avR").onchange=sv;$("#avA").onchange=sv;$("#avG").onchange=sv;$("#avOk").onclick=closeSheet})}
 // Número rojo en el ícono (Badging API; iPhone 16.4+ instalado y con avisos permitidos). Al abrir se borra; al salir queda lo pendiente.
 function badgePend(){try{const pe=(typeof EVA!=="undefined"&&EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid).length;
   return (dayScore(day)<1?1:0)+(l3P||[]).length+(l3D||[]).length+pe}catch(e){return 0}}
@@ -3765,7 +3766,7 @@ async function avisosCentro(){try{if(pushDoc)pushDoc=null;await pushCargarDoc()}
   const fila=(ic,t,s,bt,k,i)=>`<div class="avIt"><span class="avIc">${ic}</span><div class="grow" style="min-width:0"><b>${esc(t)}</b>${s?`<small>${esc(s)}</small>`:""}</div>${bt?`<button type="button" class="btn pill" data-avk="${k}" style="padding:6px 12px">${esc(bt)}</button>`:""}</div>`;
   openSheet(`<h2 style="margin:0 0 6px">🔔 Avisos</h2>
    <div class="avH">Pendientes</div>${P.length?P.map(p=>fila(...p)).join(""):`<p class="small muted" style="margin:4px 0 10px">✅ No tiene nada pendiente. ¡Bien hecho!</p>`}
-   <div class="avH">Últimos avisos</div>${H.length?H.map(x=>`<button type="button" class="avIt avRow${(x.t||0)>v?" nuevo":""}" data-avk="${x.v==="equipo"?"eq":"rut"}"><span class="avIc">${(x.t||0)>v?"🔵":"🔔"}</span><div class="grow" style="min-width:0;text-align:left"><b>${esc(x.ti||"")}</b><small>${esc(x.b||"")}</small><small class="muted">${avHace(x.t||0)}</small></div></button>`).join(""):`<p class="small muted" style="margin:4px 0">${typeof Notification!=="undefined"&&Notification.permission==="granted"?"Aquí aparecerán los avisos que le lleguen.":"Active sus avisos en Perfil › 🔔 Mis avisos para recibirlos aquí."}</p>`}
+   <div class="avH">Últimos avisos</div>${H.length?H.map(x=>`<button type="button" class="avIt avRow${(x.t||0)>v?" nuevo":""}" data-avk="${x.v==="equipo"?"eq":x.v==="agenda"?"ag":"rut"}"><span class="avIc">${(x.t||0)>v?"🔵":"🔔"}</span><div class="grow" style="min-width:0;text-align:left"><b>${esc(x.ti||"")}</b><small>${esc(x.b||"")}</small><small class="muted">${avHace(x.t||0)}</small></div></button>`).join(""):`<p class="small muted" style="margin:4px 0">${typeof Notification!=="undefined"&&Notification.permission==="granted"?"Aquí aparecerán los avisos que le lleguen.":"Active sus avisos en Perfil › 🔔 Mis avisos para recibirlos aquí."}</p>`}
    <button class="btn ghost" data-close style="width:100%;margin-top:12px">Cerrar</button>`,()=>{
    $("#sheetPanel").querySelectorAll("[data-avk]").forEach(b=>b.onclick=()=>{const k=b.dataset.avk;closeSheet();setTimeout(()=>{if(k==="ag")avisosVer();else if(k==="eq")go("equipo");else{go("inicio");setTimeout(()=>{const r=$("#rutCard");if(r)r.scrollIntoView({behavior:"smooth",block:"center"})},250)}},200)})});
   avMarcar();bellPinta();try{if("clearAppBadge" in navigator)navigator.clearAppBadge().catch(()=>{})}catch(e){}}
@@ -5826,7 +5827,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261103072723";var busy=false,pend=null;
+(function(){var V="20261103074457";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
