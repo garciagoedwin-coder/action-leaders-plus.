@@ -3426,8 +3426,8 @@ async function flyerCanvas(e){const W=1080,H=1350,cv=document.createElement("can
   const ds=(d.getDate()+" DE "+MONTHS[d.getMonth()]).toUpperCase();fit(ds,"italic 500 {s}px Figtree, Arial, sans-serif",21,F.d[2]);g.fillText(ds,F.d[0],F.d[1]);
   const hh=h12(e.hora).replace(" am"," AM").replace(" pm"," PM")+(F.hsuf!=null?F.hsuf:" HN");fit(hh,"italic 500 {s}px Figtree, Arial, sans-serif",24,F.h[2]);g.fillText(hh,F.h[0],F.h[1]);
   return cv}
-async function abrirCompartir(e){const sp=espDe(e),msg=sp&&sp.msg?sp.msg:evMsg(e),fl=esFlyer(e);let file=null;
-  openSheet(`<h2>Compartir actividad</h2>${fl?`<div id="flyBox" style="aspect-ratio:4/5;border-radius:14px;background:#0b1a36;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Creando flyer…</span></div>`:""}
+async function abrirCompartir(e){const sp=espDe(e),msg=sp&&sp.msg?sp.msg:evMsg(e),fl=esFlyer(e),pr=fl&&!sp&&flyerCfg(e)===FLYERS.presentacion;let file=null;
+  openSheet(`<h2>Compartir actividad</h2>${pr?`<div class="seg" id="prFmtS"><button type="button" data-f="p">🖼️ Publicación</button><button type="button" data-f="h">📱 Historia</button></div><div class="row wrap" id="prFoS" style="gap:6px">${PRES_FONDOS.map(x=>`<button type="button" class="btn sm ghost" data-fo="${x.k}">${x.n}</button>`).join("")}</div>`:""}${fl?`<div id="flyBox" style="aspect-ratio:4/5;border-radius:14px;background:#0b1a36;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Creando flyer…</span></div>`:""}
     <pre class="small" style="white-space:pre-wrap;background:var(--bg);border-radius:12px;padding:10px;margin:0;font-family:inherit">${esc(msg)}</pre>
     <button class="btn" id="shGo" style="width:100%">📤 Compartir${fl?" flyer y mensaje":" mensaje"}</button>
     <div class="row" style="gap:8px"><button class="btn ghost grow" id="shCopy">Copiar mensaje</button>${fl?`<button class="btn ghost grow" id="shDl">Descargar flyer</button>`:""}</div>
@@ -3440,6 +3440,15 @@ async function abrirCompartir(e){const sp=espDe(e),msg=sp&&sp.msg?sp.msg:evMsg(e
       const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000)};
   });
   if(fl&&sp&&sp.img){const box=$("#flyBox");try{const r=await fetch(sp.img);const b=await r.blob();file=new File([b],"Flyer-"+e.fecha+".jpg",{type:"image/jpeg"});if(box){box.innerHTML="";box.style.aspectRatio="auto";box.style.display="block";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:auto;display:block";box.appendChild(im)}}catch(x){if(box)box.innerHTML='<span class="small" style="color:#fff">No se pudo cargar el flyer</span>'}return}
+  if(pr){let fmt=LS.get("presFmt")||"p",fo=presDatos(e).fondo,nv=0;
+    const mk=async()=>{const my=++nv;file=null;document.querySelectorAll("#prFmtS [data-f]").forEach(x=>x.setAttribute("aria-selected",x.dataset.f===fmt));document.querySelectorAll("#prFoS [data-fo]").forEach(x=>{const on=x.dataset.fo===fo;x.setAttribute("aria-pressed",on);x.style.outline=on?"2px solid var(--brand)":""});
+      const box=$("#flyBox");if(box){box.style.display="flex";box.style.aspectRatio=fmt==="h"?"1080/1920":"1080/1350";box.innerHTML='<span class="small" style="color:#fff">Creando flyer…</span>'}
+      try{const cv=await presCanvas(e,fmt,fo);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));if(my!==nv)return;file=new File([b],"Presentacion-"+e.fecha+(fmt==="h"?"-historia":"")+".jpg",{type:"image/jpeg"});
+        const bx=$("#flyBox");if(bx){bx.innerHTML="";bx.style.display="block";bx.style.aspectRatio="auto";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:auto;display:block";bx.appendChild(im)}}
+      catch(x){const bx=$("#flyBox");if(bx&&my===nv)bx.innerHTML='<span class="small" style="color:#fff">No se pudo crear el flyer</span>'}};
+    const fs=$("#prFmtS");if(fs)fs.onclick=ev=>{const b=ev.target.closest("[data-f]");if(!b||b.dataset.f===fmt)return;fmt=b.dataset.f;LS.set("presFmt",fmt);mk()};
+    const fz=$("#prFoS");if(fz)fz.onclick=ev=>{const b=ev.target.closest("[data-fo]");if(!b||b.dataset.fo===fo)return;fo=b.dataset.fo;mk()};
+    await mk();return}
   if(fl){const cv=await flyerCanvas(e);const box=$("#flyBox");if(!cv){if(box)box.innerHTML='<span class="small" style="color:#fff">No se pudo crear el flyer</span>';return}
     try{const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));file=new File([b],"Flyer-"+e.fecha+"-"+(e.responsable||"presentacion").replace(/\s+/g,"-")+".jpg",{type:"image/jpeg"});
       if(box){box.innerHTML="";box.style.aspectRatio="auto";box.style.display="block";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:auto;display:block";box.appendChild(im)}}
@@ -3821,48 +3830,152 @@ async function l3Avisar(x,t){const yo=miNombreCorto()||"";t=`Hola ${(x.deN||"").
   openSheet(`<h2>💬 Avisarle a ${esc((x.deN||"").split(" ")[0])}</h2><p class="small muted" style="margin:0">Ya le aparece en su app. Si quiere, avísele también por WhatsApp.</p>
    <button class="btn" id="l3aw" style="width:100%;background:#25D366;color:#fff">💬 Enviar por WhatsApp</button><button class="btn ghost" data-close style="width:100%">No hace falta</button>`,()=>{
     $("#l3aw").onclick=async()=>{if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}})}
+// ---------- Flyers nuevos (3 nov): Presentación de negocios y Lanzamiento ----------
+// Fondos ya oscurecidos (foto + degradados) en media/flyers/pres/* y media/flyers/lanz/*; aquí solo se dibuja el contenido.
+const FL_GOLD="#F2C35B";
+const PRES_FONDOS=[{k:"atardecer",n:"🌅 Atardecer"},{k:"roma",n:"🏛️ Roma"},{k:"avion",n:"✈️ Avión"},{k:"queenmary",n:"🛳️ Queen Mary"},{k:"fiordo",n:"🏔️ Fiordo"}];
+const PRES_DIA=["roma","atardecer","roma","avion","queenmary","fiordo","atardecer"]; // domingo..sábado
+const LZ_FONDOS=[{k:"ny",n:"🏙️ Nueva York"},{k:"avion",n:"✈️ Avión"}];
+function flFonts(){try{return Promise.all([evaFonts(),bienFonts()])}catch(e){return Promise.resolve()}}
+function flKit(g){
+  const sp=v=>{try{g.letterSpacing=v}catch(e){}};
+  const rr=(x,y,w,h,r)=>{g.beginPath();if(g.roundRect)g.roundRect(x,y,w,h,r);else g.rect(x,y,w,h)};
+  const fit=(t,font,size,maxW,min)=>{let z=size;g.font=font.replace("{s}",z);while(g.measureText(t).width>maxW&&z>(min||14)){z--;g.font=font.replace("{s}",z)}return z};
+  // texto con caja tipo HTML: y = arriba de la caja, h = alto de la caja
+  const tx=(t,x,y,h,font,color,align,ls)=>{g.font=font;g.fillStyle=color;g.textAlign=align||"left";g.textBaseline="middle";sp(ls||"0px");g.fillText(t,x+(align==="center"&&ls?parseFloat(ls)/2:0),y+h/2);sp("0px")};
+  // dos tramos (normal + negrita) centrados o a la izquierda
+  const tx2=(a,b,x,y,h,fa,fb,ca,cb,align)=>{g.textBaseline="middle";g.font=fa;const wa=g.measureText(a).width;g.font=fb;const wb=g.measureText(b).width;let x0=align==="center"?x-(wa+wb)/2:align==="right"?x-(wa+wb):x;
+    g.textAlign="left";g.font=fa;g.fillStyle=ca;g.fillText(a,x0,y+h/2);g.font=fb;g.fillStyle=cb;g.fillText(b,x0+wa,y+h/2)};
+  const sombra=(c,b,fn)=>{g.save();g.shadowColor=c;g.shadowBlur=b;fn();g.restore()};
+  return {sp,rr,fit,tx,tx2,sombra}}
+// Foto en círculo con anillo dorado (r = radio exterior del anillo)
+async function flFoto(g,src,nm,cx,cy,R,aro,borde){
+  g.save();g.shadowColor="rgba(242,195,91,.35)";g.shadowBlur=30;g.beginPath();g.arc(cx,cy,R,0,Math.PI*2);
+  const cg=g.createLinearGradient(cx-R,cy-R,cx+R,cy+R);cg.addColorStop(0,"#FFF1C2");cg.addColorStop(.3,"#C8901F");cg.addColorStop(.55,"#F4C65A");cg.addColorStop(.8,"#8E6212");cg.addColorStop(1,"#FFF1C2");g.fillStyle=cg;g.fill();g.restore();
+  g.beginPath();g.arc(cx,cy,R-aro,0,Math.PI*2);g.fillStyle="#04060b";g.fill();
+  const r=R-aro-borde;let vacio=false;
+  await circFoto(g,src,cx,cy,r,null,()=>{vacio=true});
+  if(vacio){g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.fillStyle="#141a26";g.fill();g.fillStyle=FL_GOLD;g.font="700 "+Math.round(r*.8)+"px ALBG, Figtree, sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText(initials(nm||"AL"),cx,cy+r*.04);g.restore()}}
+function flFotoDe(n){if(!n)return"";let s=fotoDe(n);if(!s&&fbUser&&fbUser.photoURL&&sameN(n,miNombreFull()))s=fbUser.photoURL;return s||""}
+// ---- Presentación de negocios ----
+function presDatos(e){const d=parseK(e.fecha),eu=/europa/i.test(e.titulo||"");
+  const[y,m,dd]=e.fecha.split("-").map(Number),[h,mi]=(e.hora||"20:00").split(":").map(Number),t=new Date(Date.UTC(y,m-1,dd,h+6,mi||0));
+  const hz=tz=>{try{return new Intl.DateTimeFormat("en-US",{timeZone:tz,hour:"numeric",minute:"2-digit",hour12:true}).format(t).replace(/\s/g," ")}catch(_){return""}};
+  const Z=(eu?[["🇪🇸","Europe/Madrid"],["🇬🇧","Europe/London"],["🇺🇸","America/New_York"]]:[["🇺🇸","America/New_York"],["🇨🇴","America/Bogota"],["🇲🇽","America/Mexico_City"]]).map(([f,z])=>f+" "+hz(z)).filter(x=>x.length>4);
+  return{dia:DAYS_L[d.getDay()].toUpperCase(),num:String(d.getDate()).padStart(2,"0"),mes:MONTHS[d.getMonth()].slice(0,3).toUpperCase(),hora:hz("America/Tegucigalpa")||h12(e.hora).toUpperCase(),Z,
+    p:e.responsable||"",ed:e.edifica||"",edL:(typeof edLbl==="function"?edLbl(e):"Edifica").toUpperCase(),fondo:PRES_DIA[d.getDay()]}}
+const PRES_L={
+  h:{W:1080,H:1920,logo:[68,209,36],live:[823,200,189,54],kick:[179,302,722,50],a:[366,203,236],m:[575,43,34],b:[628,225,262],sub:[877,86,32,"#e3e9f2"],
+     card:{y:1024,h:390,x:[68,551],w:461,ph:[1047,220],col:1,small:[1281,28,22],name:[1315,42,40],rk:[1361,32,25]},
+     when:[68,1458,944,203],day:[210,24,124,27],hn:[301,1484,86,96,27],ch:[1585,50,27],ft:[1695,57],tag:1798},
+  p:{W:1080,H:1350,logo:[64,65,36],live:[827,56,189,54],kick:[179,196,722,50],a:[260,182,212],m:[448,43,34],b:[501,200,232],sub:[721,81,30,"#c9d2df"],
+     card:{y:846,h:166,x:[64,551],w:465,ph:[865,128],col:0,small:[883,21,17],name:[910,35,33],rk:[949,26,21]},
+     when:[64,1042,952,187],day:[230,22,112,24],hn:[321,1074,68,76,22],ch:[1156,41,20],ft:[1255,62],tag:0}};
+async function presCanvas(e,fmt,fondo){fmt=fmt==="p"?"p":"h";const L=PRES_L[fmt],D=presDatos(e),cv=document.createElement("canvas");cv.width=L.W;cv.height=L.H;const g=cv.getContext("2d");
+  await flFonts();const K=flKit(g),{rr,fit,tx,tx2,sombra,sp}=K;const C=540;
+  fondo=PRES_FONDOS.some(x=>x.k===fondo)?fondo:D.fondo;
+  g.fillStyle="#04060b";g.fillRect(0,0,L.W,L.H);const bg=await imgLoad("media/flyers/pres/"+fondo+"-"+fmt+".jpg?v=1");if(bg)g.drawImage(bg,0,0,L.W,L.H);
+  // logo + EN VIVO
+  const lg=await imgLoad("media/logo-plus.png");if(lg){const hh=L.logo[2],ww=lg.width*hh/lg.height;sombra("rgba(0,0,0,.6)",10,()=>g.drawImage(lg,L.logo[0],L.logo[1],ww,hh))}
+  {const[x,y,w,h]=L.live;rr(x,y,w,h,h/2);g.fillStyle="rgba(0,0,0,.5)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.28)";g.stroke();
+   const dx=x+24,dy=y+h/2;g.beginPath();g.arc(dx,dy,13,0,Math.PI*2);g.fillStyle="rgba(255,59,59,.22)";g.fill();sombra("#ff3b3b",18,()=>{g.beginPath();g.arc(dx,dy,7,0,Math.PI*2);g.fillStyle="#ff3b3b";g.fill()});
+   tx("EN VIVO",dx+20,y,h,"700 24px ALO, Figtree, sans-serif","#fff","left","4px")}
+  // píldora PRESENTACIÓN DE NEGOCIOS
+  {const[x,y,w,h]=L.kick;rr(x,y,w,h,h/2);g.fillStyle="rgba(4,6,11,.6)";g.fill();
+   const lgr=(x1,x2,inv)=>{const gr=g.createLinearGradient(x1,0,x2,0);gr.addColorStop(inv?1:0,"rgba(242,195,91,0)");gr.addColorStop(inv?0:1,FL_GOLD);g.fillStyle=gr;g.fillRect(x1,y+h/2-1,x2-x1,2)};
+   lgr(x+17,x+57,0);lgr(x+w-48,x+w-8,1);
+   tx("PRESENTACIÓN DE NEGOCIOS",C,y,h,"700 25px ALO, Figtree, sans-serif",FL_GOLD,"center","9px")}
+  // título
+  g.textAlign="center";g.textBaseline="alphabetic";
+  const bebas=(t,y,h,s,fill)=>{g.font=s+"px 'Bebas Neue', Impact, sans-serif";sp("2px");const base=y+h/2+s*.35;
+    sombra("rgba(0,0,0,.8)",36,()=>{g.fillStyle=typeof fill==="string"?fill:"#000";g.fillText(t,C+1,base)});
+    g.fillStyle=fill;g.fillText(t,C+1,base);sp("0px")};
+  bebas("SUS VIAJES",L.a[0],L.a[1],L.a[2],"#fff");
+  sombra("#000",14,()=>tx("ahora pueden convertirse en",C,L.m[0],L.m[1],"700 "+L.m[2]+"px ALO, Figtree, sans-serif","#fff","center","1px"));
+  {const s=L.b[2],y=L.b[0],h=L.b[1],gr=g.createLinearGradient(0,y+h/2-s*.36,0,y+h/2+s*.36);gr.addColorStop(0,"#FFF1C2");gr.addColorStop(.38,"#F4C65A");gr.addColorStop(.78,"#C8901F");gr.addColorStop(1,"#8E6212");bebas("SU NEGOCIO",y,h,s,gr)}
+  // subtítulo
+  {const[y,h,s,c]=L.sub,lh=h/2;tx("Conozca la oportunidad que está cambiando",C,y,lh,"400 "+s+"px ALOR, Figtree, sans-serif",c,"center");
+   g.textBaseline="middle";g.textAlign="left";const sg=[["la forma de ","400 "+s+"px ALOR, Figtree, sans-serif",c],["viajar y emprender","700 "+s+"px ALO, Figtree, sans-serif","#fff"],[".","400 "+s+"px ALOR, Figtree, sans-serif",c]];
+   let tw=0;sg.forEach(q=>{g.font=q[1];q.push(g.measureText(q[0]).width);tw+=q[3]});let sx=C-tw/2;sg.forEach(q=>{g.font=q[1];g.fillStyle=q[2];g.fillText(q[0],sx,y+lh+lh/2);sx+=q[3]})}
+  // ponentes
+  const P=[[D.p||"Action Leaders","PRESENTA"]];if(D.ed)P.push([D.ed,D.edL]);const cd=L.card;
+  for(let i=0;i<P.length;i++){const[n,lab]=P[i],x=P.length===1?C-cd.w/2:cd.x[i],w=cd.w,y=cd.y,h=cd.h;
+    rr(x,y,w,h,26);const gr=g.createLinearGradient(x,y,x+w,y+h);gr.addColorStop(0,"rgba(255,255,255,.09)");gr.addColorStop(1,"rgba(255,255,255,.03)");g.fillStyle=gr;g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.12)";g.stroke();
+    const rg=D.p||D.ed?(n==="Action Leaders"?"Equipo de líderes":tituloFlyer(n)):"";
+    if(cd.col){const cx=x+w/2,R=cd.ph[1]/2;await flFoto(g,flFotoDe(n),n,cx,cd.ph[0]+R,R,6,4);
+      tx(lab,cx,cd.small[0],cd.small[1],"700 "+cd.small[2]+"px ALO, Figtree, sans-serif",FL_GOLD,"center","4px");
+      fit(n,"700 {s}px ALBG, Figtree, sans-serif",cd.name[2],w-36,24);tx(n,cx,cd.name[0],cd.name[1],g.font,"#fff","center");
+      if(rg){fit(rg,"400 {s}px ALOR, Figtree, sans-serif",cd.rk[2],w-36,16);tx(rg,cx,cd.rk[0],cd.rk[1],g.font,"#b9c3d1","center")}}
+    else{const R=cd.ph[1]/2,cx=x+21+R,tx0=x+169,mw=x+w-tx0-16;await flFoto(g,flFotoDe(n),n,cx,cd.ph[0]+R,R,5,4);
+      tx(lab,tx0,cd.small[0],cd.small[1],"700 "+cd.small[2]+"px ALO, Figtree, sans-serif",FL_GOLD,"left","4px");
+      fit(n,"700 {s}px ALBG, Figtree, sans-serif",cd.name[2],mw,20);tx(n,tx0,cd.name[0],cd.name[1],g.font,"#fff","left");
+      if(rg){fit(rg,"400 {s}px ALOR, Figtree, sans-serif",cd.rk[2],mw,14);tx(rg,tx0,cd.rk[0],cd.rk[1],g.font,"#b9c3d1","left")}}}
+  // fecha y hora
+  {const[x,y,w,h]=L.when,[dw,ds,dn,dm]=L.day;rr(x,y,w,h,28);g.fillStyle="rgba(10,13,22,.88)";g.fill();
+   g.save();rr(x,y,w,h,28);g.clip();const gr=g.createLinearGradient(x,y,x+dw,y+h);gr.addColorStop(0,"#F4C65A");gr.addColorStop(1,"#B9821A");g.fillStyle=gr;g.fillRect(x,y,dw+1,h);g.restore();
+   rr(x,y,w,h,28);g.lineWidth=1.5;g.strokeStyle="rgba(242,195,91,.45)";g.stroke();
+   const dcx=x+dw/2;fit(D.dia,"700 {s}px ALO, Figtree, sans-serif",ds,dw-20,14);const dz=g.font;
+   const nh=dn*.85,tot=ds*1.25+4+nh+dm*1.25,y0=y+(h-tot)/2;
+   tx(D.dia,dcx,y0,ds*1.25,dz,"#1a1204","center","5px");
+   g.font=dn+"px 'Bebas Neue', Impact, sans-serif";g.fillStyle="#1a1204";g.textAlign="center";g.textBaseline="alphabetic";g.fillText(D.num,dcx,y0+ds*1.25+4+nh/2+dn*.35);
+   tx(D.mes,dcx,y0+ds*1.25+4+nh,dm*1.25,"700 "+dm+"px ALO, Figtree, sans-serif","#1a1204","center","4px");
+   const[hx,hy,hh,hs,hl]=L.hn;g.font=hs+"px 'Bebas Neue', Impact, sans-serif";sp("1px");g.fillStyle="#fff";g.textAlign="left";g.textBaseline="alphabetic";g.fillText(D.hora,hx,hy+hh/2+hs*.35);const hw=g.measureText(D.hora).width;sp("0px");
+   g.font="500 "+hl+"px ALOR, Figtree, sans-serif";g.fillStyle="#c9d2df";g.textBaseline="alphabetic";g.fillText("🇭🇳 Honduras",hx+hw+16,hy+hh/2+hs*.35);
+   const[cy,ch,cs]=L.ch;let cx=hx;g.font="700 "+cs+"px ALO, Figtree, sans-serif";
+   for(const z of D.Z){const tw=g.measureText(z).width+cs*1.05;if(cx+tw>x+w-14)break;rr(cx,cy,tw,ch,12);g.fillStyle="rgba(255,255,255,.08)";g.fill();tx(z,cx+tw/2,cy,ch,"700 "+cs+"px ALO, Figtree, sans-serif","#e6ebf2","center");cx+=tw+8}}
+  // Zoom + pida su enlace
+  {const[y,h]=L.ft;g.font="700 "+(fmt==="h"?26:25)+"px ALO, Figtree, sans-serif";const zt="🎥 Por Zoom",zw=g.measureText(zt).width+48;
+   const pz=x=>{sombra("rgba(45,140,255,.45)",26,()=>{rr(x,y,zw,h,h/2);g.fillStyle="#2D8CFF";g.fill()});tx(zt,x+zw/2,y,h,g.font,"#fff","center")};
+   if(fmt==="h"){const fa="400 27px ALOR, Figtree, sans-serif",fb="700 27px ALO, Figtree, sans-serif";g.font=fa;const wa=g.measureText("Pida su enlace a ").width;g.font=fb;const wb=g.measureText("quien le invitó").width;
+     const tot=zw+22+wa+wb,x0=C-tot/2;g.font="700 26px ALO, Figtree, sans-serif";pz(x0);tx2("Pida su enlace a ","quien le invitó",x0+zw+22,y,h,fa,fb,"#aeb8c6",FL_GOLD,"left")}
+   else{pz(64);tx("Pida su enlace a",1016,y+2,h/2,"400 23px ALOR, Figtree, sans-serif","#aeb8c6","right");tx("quien le invitó",1016,y+h/2,h/2,"700 23px ALO, Figtree, sans-serif",FL_GOLD,"right")}}
+  if(L.tag)tx("#HASTAQUEFUNCIONE",C,L.tag,30,"700 24px ALO, Figtree, sans-serif","rgba(242,195,91,.75)","center","10px");
+  return cv}
+// ---- Lanzamiento de negocio ----
+const LZ_L={
+  h:{W:1080,H:1920,logo:[72,263,40],k:[682,260,326,45],a:[377,168,200],b:[545,138,164],sub:[736,83,32],card:{y:891,h:357,x:[72,549],w:459,ph:[912,200],small:[1128,20,16],name:[1152,42,38],rk:[1198,29,23]},chips:[1320,64,27],info:[72,1456,936,114]},
+  p:{W:1080,H:1350,logo:[64,59,40],k:[690,56,326,45],a:[158,148,176],b:[305,123,146],sub:[459,75,29],card:{y:590,h:300,x:[64,549],w:467,ph:[611,150],small:[777,20,16],name:[799,37,34],rk:[841,29,23]},ul:[947,62,52],info:[64,1180,952,114]}};
+const LZ_TXT={sub:["Una noche para conocer un proyecto","que nació para crecer."],chips:["🌎 Negocio global","💻 Franquicia digital","✈️ Emprenda viajando"],
+  ul:[["🌎","Negocio global"," en la industria de viajes, desde su celular."],["💻","Franquicia digital"," con un sistema paso a paso."],["✈️","Emprenda viajando",", acompañado de un equipo."]]};
+async function lzCanvas(o,fmt,fondo){fmt=fmt==="h"?"h":"p";const L=LZ_L[fmt],cv=document.createElement("canvas");cv.width=L.W;cv.height=L.H;const g=cv.getContext("2d");
+  await flFonts();const{rr,fit,tx,tx2,sombra,sp}=flKit(g),C=540,GO="#F5C451";
+  fondo=LZ_FONDOS.some(x=>x.k===fondo)?fondo:"ny";
+  g.fillStyle="#04070d";g.fillRect(0,0,L.W,L.H);const bg=await imgLoad("media/flyers/lanz/"+fondo+"-"+fmt+".jpg?v=1");if(bg)g.drawImage(bg,0,0,L.W,L.H);
+  const lg=await imgLoad("media/logo-plus.png");if(lg){const hh=L.logo[2],ww=lg.width*hh/lg.height;sombra("rgba(0,0,0,.6)",10,()=>g.drawImage(lg,L.logo[0],L.logo[1],ww,hh))}
+  {const[x,y,w,h]=L.k;rr(x,y,w,h,h/2);g.fillStyle="rgba(0,0,0,.45)";g.fill();g.lineWidth=2;g.strokeStyle=GO;g.stroke();tx("INVITACIÓN ESPECIAL",x+w/2,y,h,"700 17px ALO, Figtree, sans-serif",GO,"center","5px")}
+  g.textAlign="center";g.textBaseline="alphabetic";
+  const bebas=(t,y,h,s,fill)=>{const z=fit(t,"{s}px 'Bebas Neue', Impact, sans-serif",s,L.W-120,60);const base=y+h/2+z*.35;sombra("rgba(0,0,0,.85)",24,()=>{g.fillStyle=fill;g.fillText(t,C,base)});g.fillStyle=fill;g.fillText(t,C,base)};
+  g.textAlign="center";bebas("LANZAMIENTO",L.a[0],L.a[1],L.a[2],"#fff");g.textAlign="center";bebas("DE NEGOCIO",L.b[0],L.b[1],L.b[2],GO);
+  {const[y,h,s]=L.sub;LZ_TXT.sub.forEach((t,i)=>sombra("rgba(0,0,0,.7)",12,()=>tx(t,C,y+i*h/2,h/2,"400 "+s+"px ALOR, Figtree, sans-serif","rgba(255,255,255,.9)","center")))}
+  const cd=L.card,P=[[o.nA,o.lider?"LANZA SU NEGOCIO":"LANZA SU NEGOCIO","Socio emprendedor",o.fotoA],[o.nB,"JUNTO A SU LÍDER",o.rB||"",o.fotoB]];
+  for(let i=0;i<2;i++){const[n,lab,rk,src]=P[i],x=cd.x[i],w=cd.w,y=cd.y,h=cd.h,cx=x+w/2,R=cd.ph[1]/2;
+    rr(x,y,w,h,28);g.fillStyle="rgba(255,255,255,.065)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(255,255,255,.14)";g.stroke();
+    sombra("rgba(245,196,81,.5)",34,()=>{g.beginPath();g.arc(cx,cd.ph[0]+R,R,0,Math.PI*2);g.fillStyle=GO;g.fill()});
+    let vacio=false;await circFoto(g,src,cx,cd.ph[0]+R,R-5,null,()=>{vacio=true});
+    if(vacio){g.beginPath();g.arc(cx,cd.ph[0]+R,R-5,0,Math.PI*2);g.fillStyle="#141a26";g.fill();g.fillStyle=GO;g.font="700 "+Math.round(R*.75)+"px ALBG, Figtree, sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText(initials(n),cx,cd.ph[0]+R)}
+    tx(lab,cx,cd.small[0],cd.small[1],"700 "+cd.small[2]+"px ALO, Figtree, sans-serif",GO,"center","3px");
+    fit(n||"",""+"700 {s}px ALO, Figtree, sans-serif",cd.name[2],w-30,20);tx(n||"",cx,cd.name[0],cd.name[1],g.font,"#fff","center");
+    if(rk){fit(rk,"400 {s}px ALOR, Figtree, sans-serif",cd.rk[2],w-30,14);tx(rk,cx,cd.rk[0],cd.rk[1],g.font,"rgba(255,255,255,.75)","center")}}
+  if(L.chips){const[y,h,s]=L.chips,f="700 "+s+"px ALO, Figtree, sans-serif";g.font=f;const ws=LZ_TXT.chips.map(t=>g.measureText(t).width+40);const tot=ws.reduce((a,b)=>a+b,0)+20;let x=C-tot/2;
+    LZ_TXT.chips.forEach((t,i)=>{rr(x,y,ws[i],h,h/2);g.fillStyle="rgba(255,255,255,.09)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(245,194,79,.4)";g.stroke();tx(t,x+ws[i]/2,y,h,f,"#fff","center");x+=ws[i]+10})}
+  if(L.ul){const[y0,st,bx]=L.ul;LZ_TXT.ul.forEach(([ic,b,r],i)=>{const y=y0+i*st;rr(64,y,bx,bx,16);g.fillStyle="rgba(245,196,81,.12)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(245,196,81,.33)";g.stroke();
+    tx(ic,64+bx/2,y,bx,"28px sans-serif","#fff","center");tx2(b,r,130,y,bx,"700 26px ALO, Figtree, sans-serif","400 26px ALOR, Figtree, sans-serif","#fff","rgba(255,255,255,.9)","left")})}
+  {const[x,y,w,h]=L.info;rr(x,y,w,h,26);g.fillStyle="rgba(255,255,255,.065)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(255,255,255,.14)";g.stroke();
+   const zt=o.zoom===false?"📱 En vivo":"🎥 Por Zoom";g.font="700 24px ALO, Figtree, sans-serif";const zw=g.measureText(zt).width+40,zx=x+w-19-zw;
+   const hT=String(o.hora||"").replace(/ ?am$/i," a.m.").replace(/ ?pm$/i," p.m.")+(o.flag?" "+o.flag:"");
+   g.font="700 36px ALO, Figtree, sans-serif";let fs=36;const free=zx-14-(x+7)-2*(4+18+18)-14;
+   while(fs>22){g.font="700 "+fs+"px ALO, Figtree, sans-serif";if(g.measureText(o.fecha).width+g.measureText(hT).width<=free)break;fs--}
+   const w1=g.measureText(o.fecha).width,w2=g.measureText(hT).width;let cx=x+7;
+   const col=(lab,val,ww)=>{g.fillStyle=GO;g.fillRect(cx,y+19,4,76);tx(lab,cx+22,y+23,21,"700 17px ALO, Figtree, sans-serif",GO,"left","3px");tx(val,cx+22,y+46,45,"700 "+fs+"px ALO, Figtree, sans-serif","#fff","left");cx+=4+18+ww+18+14};
+   col("FECHA",o.fecha,w1);col("HORA",hT,w2);
+   rr(zx,y+(h-58)/2,zw,58,29);g.fillStyle="#2D8CFF";g.fill();tx(zt,zx+zw/2,y+(h-58)/2,58,"700 24px ALO, Figtree, sans-serif","#fff","center")}
+  return cv}
 // ---------- Lanzamiento de negocio (flyer + invitación al líder + invitados) ----------
 const LZ_TZ={"America/Tegucigalpa":["Honduras","🇭🇳"],"Europe/Madrid":["España","🇪🇸"],"America/New_York":["Nueva York","🇺🇸"],"America/Chicago":["EE. UU. centro","🇺🇸"],"America/Los_Angeles":["EE. UU. Pacífico","🇺🇸"],"America/Guatemala":["Guatemala","🇬🇹"],"America/El_Salvador":["El Salvador","🇸🇻"],"America/Managua":["Nicaragua","🇳🇮"],"America/Costa_Rica":["Costa Rica","🇨🇷"],"America/Mexico_City":["México","🇲🇽"]};
 function lzTz(){let z="";try{z=Intl.DateTimeFormat().resolvedOptions().timeZone}catch(e){}return LZ_TZ[z]||["su país",""]}
 function lzRango(n){try{const i=rangoActualIdx({},n);return i>=0&&RANGOS[i]?RANGOS[i].n:"Líder del equipo"}catch(e){return"Líder del equipo"}}
 function lzFechaTxt(f){const d=parseK(f),w=DAYS_L[d.getDay()];return w[0].toUpperCase()+w.slice(1)+" "+d.getDate()+" de "+MONTHS[d.getMonth()].toLowerCase()}
-async function lzCanvas(o){const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
-  try{await Promise.all(["900 118px 'Bricolage Grotesque'","800 36px Figtree","500 27px Figtree"].map(x=>document.fonts.load(x)))}catch(x){}
-  const HF="'Bricolage Grotesque', Figtree, Arial, sans-serif",BF="Figtree, Arial, sans-serif",GOLD="#F5B700",sp=v=>{try{g.letterSpacing=v}catch(e){}};
-  g.fillStyle="#070B14";g.fillRect(0,0,W,H);
-  const bg=await imgLoad("media/sala-fondo.jpg");if(bg){g.save();g.globalAlpha=.55;const s=Math.max(W/bg.width,760/bg.height),iw=bg.width*s,ih=bg.height*s;g.drawImage(bg,(W-iw)/2,(760-ih)/2,iw,ih);g.restore()}
-  let gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,"rgba(7,11,20,.55)");gr.addColorStop(.22,"rgba(7,11,20,.35)");gr.addColorStop(.52,"rgba(7,11,20,.92)");gr.addColorStop(.62,"#070B14");gr.addColorStop(1,"#070B14");g.fillStyle=gr;g.fillRect(0,0,W,H);
-  gr=g.createRadialGradient(540,540,0,540,540,520);gr.addColorStop(0,"rgba(245,183,0,.16)");gr.addColorStop(1,"rgba(245,183,0,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
-  gr=g.createLinearGradient(0,0,W,0);gr.addColorStop(0,"rgba(245,183,0,0)");gr.addColorStop(.5,"rgba(245,183,0,.7)");gr.addColorStop(1,"rgba(245,183,0,0)");g.fillStyle=gr;g.fillRect(0,689,W,2);
-  g.textAlign="center";
-  // píldora
-  g.font="900 22px "+BF;sp("7px");const pt="INVITACIÓN ESPECIAL",pw=g.measureText(pt).width+56;g.beginPath();g.roundRect(540-pw/2,130,pw,50,25);g.fillStyle="rgba(245,183,0,.08)";g.fill();g.lineWidth=2;g.strokeStyle=GOLD;g.stroke();g.fillStyle=GOLD;g.fillText(pt,540+3,163);sp("0px");
-  // título
-  const fit=(t,font,size,maxW)=>{let z=size;g.font=font.replace("{s}",z);while(g.measureText(t).width>maxW&&z>20){z--;g.font=font.replace("{s}",z)}};
-  fit("LANZAMIENTO","900 {s}px "+HF,118,960);g.fillStyle="#fff";g.fillText("LANZAMIENTO",540,300);
-  fit("DE NEGOCIO","900 {s}px "+HF,84,900);const tw=g.measureText("DE NEGOCIO").width;gr=g.createLinearGradient(540-tw/2,0,540+tw/2,0);gr.addColorStop(0,"#FDE68A");gr.addColorStop(.4,GOLD);gr.addColorStop(.6,"#FFF3C4");gr.addColorStop(1,"#D99A00");g.fillStyle=gr;g.fillText("DE NEGOCIO",540,380);
-  // fotos
-  const circ=async(src,cx,cy,nm)=>{const r=128,im=src?await imgLoad(src,!/^(data|blob):/.test(src)):null;
-    g.save();g.shadowColor="rgba(245,183,0,.55)";g.shadowBlur=50;g.beginPath();g.arc(cx,cy,r+13,0,Math.PI*2);const cg=g.createLinearGradient(cx-r,cy-r,cx+r,cy+r);cg.addColorStop(0,GOLD);cg.addColorStop(.5,"#FFF3C4");cg.addColorStop(1,"#D99A00");g.fillStyle=cg;g.fill();g.restore();
-    g.beginPath();g.arc(cx,cy,r+6,0,Math.PI*2);g.fillStyle="#070B14";g.fill();
-    if(im){await circFoto(g,src,cx,cy,r,nm);return}
-    g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();
-    {g.fillStyle="#141a26";g.fillRect(cx-r,cy-r,2*r,2*r);g.fillStyle=GOLD;g.font="800 96px "+HF;g.fillText(initials(nm),cx,cy+34)}g.restore()};
-  await circ(o.fotoA,320,580,o.nA);await circ(o.fotoB,760,580,o.nB);
-  g.fillStyle=GOLD;g.font="300 64px "+BF;g.fillText("×",540,602);
-  const lab=(cx,k,n,t)=>{g.fillStyle=GOLD;g.font="800 19px "+BF;sp("4px");g.fillText(k,cx+2,756);sp("0px");g.fillStyle="#fff";fit(n,"800 {s}px "+BF,36,360);g.fillText(n,cx,796);g.fillStyle="rgba(255,255,255,.75)";g.font="500 22px "+BF;g.fillText(t,cx,830)};
-  lab(320,"LANZA SU NEGOCIO",o.nA,"Socio emprendedor");lab(760,"JUNTO A SU LÍDER",o.nB,o.rB);
-  // fecha y hora
-  g.font="800 34px "+BF;const fT=o.fecha,hT=o.hora+(o.flag?" "+o.flag:""),w1=Math.max(g.measureText(fT).width,120)+60,w2=Math.max(g.measureText(hT).width,100)+60,x0=540-(w1+16+w2)/2;
-  const box=(x,w,k,t)=>{g.beginPath();g.roundRect(x,900,w,106,24);g.fillStyle="rgba(255,255,255,.06)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.14)";g.stroke();g.textAlign="left";g.fillStyle=GOLD;g.font="800 18px "+BF;sp("3px");g.fillText(k,x+30,940);sp("0px");g.fillStyle="#fff";g.font="800 34px "+BF;g.fillText(t,x+30,984);g.textAlign="center"};
-  box(x0,w1,"FECHA",fT);box(x0+w1+16,w2,"HORA",hT);
-  // mensaje
-  g.font="500 27px "+BF;g.fillStyle="rgba(255,255,255,.88)";g.fillText("Descubra cómo viajar más, gastar menos y generar",540,1078);g.fillText("ingresos desde su celular. ¡Le espero!",540,1116);
-  // pie
-  g.font="800 26px "+BF;const zt=o.zoom===false?"📱 En vivo":"🎥 En vivo por Zoom",zw=g.measureText(zt).width+56;g.beginPath();g.roundRect(70,1228,zw,58,29);g.fillStyle="#2D8CFF";g.fill();g.fillStyle="#fff";g.textAlign="left";g.fillText(zt,98,1266);
-  const lg=await imgLoad("media/logo-blanco.png");g.textAlign="right";if(lg){const h=40,w=lg.width*h/lg.height;g.drawImage(lg,1010-w,1222,w,h)}g.fillStyle="#8FD9F6";g.font="700 22px "+BF;g.fillText("actionleadersplus.com",1010,1290);
-  return cv}
-async function lzFile(o){const cv=await lzCanvas(o);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));return new File([b],"Lanzamiento.jpg",{type:"image/jpeg"})}
+async function lzFile(o,fmt,fondo){fmt=fmt||LS.get("lzFmt")||"p";fondo=fondo||LS.get("lzFondo")||"ny";const cv=await lzCanvas(o,fmt,fondo);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));return new File([b],"Lanzamiento.jpg",{type:"image/jpeg"})}
 function lzMsg(o,first){const[pais,fl]=lzTz();return [`¡Hola${first?", "+first:""}! 👋`,"",o.lider?`Quiero invitarle a algo muy especial: *el lanzamiento de negocio de ${o.nA}*, a quien acompaño como su líder.`:`Quiero invitarle a algo muy especial para mí: *el lanzamiento de mi negocio*, junto a mi líder *${o.nB}*.`,"",`📅 *${o.fecha}*`,`🕖 ${o.hora} (hora de ${pais}${fl?" "+fl:""})`].concat(o.enlace?["","🎥 Entre por Zoom aquí:",o.enlace]:["","🎥 En vivo por Zoom"]).concat(["","Sería muy importante para mí contar con usted. ¿Me confirma? 🙏"]).concat(o.yo?["","*"+o.yo+"*"]:[]).join("\n")}
 function lzDatos(ci){const yo=miRegistro().nombre||miNombreFull()||"";if(ci.lzE){const nA=ci.lzSN||"";return{lider:1,nA,nB:yo,rB:lzRango(yo),fotoA:fotoDe(nA),fotoB:miFotoUrl(),fecha:lzFechaTxt(ci.fecha),hora:h12(ci.hora),flag:lzTz()[1],enlace:ci.enlace||"",yo:miNombreCorto()||""}}const nB=ci.lzN||"";return{nA:yo,nB,rB:ci.lzR||lzRango(nB),fotoA:miFotoUrl(),fotoB:fotoDe(nB),fecha:lzFechaTxt(ci.fecha),hora:h12(ci.hora),flag:lzTz()[1],enlace:ci.enlace||"",yo:miNombreCorto()||""}}
 async function abrirLanz(){if(ahGate())return;if(!store.db||!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}
@@ -3898,11 +4011,18 @@ async function abrirLanz(){if(ahGate())return;if(!store.db||!(regDoc&&regDoc.reg
       const id=await saveCita(ci);if(!id){bt.disabled=false;return}ci.id=id;citas.push(ci);renderHoyCitas();renderMiAgenda();closeSheet();setTimeout(()=>lzVer(ci),250)}})}
 async function lzVer(ci){const o=lzDatos(ci);let file=null;
   openSheet(`<h2>🚀 ${ci.lzE?"Lanzamiento de "+esc((ci.lzSN||"").split(" ")[0]):"Su lanzamiento"}</h2><p class="small muted" style="margin:0">${ci.lzE?"Usted es el líder":"Con "+esc(ci.lzN)} · ${esc(citaCuando(ci))}</p>
-   <div style="aspect-ratio:1080/1350;border-radius:14px;overflow:hidden;background:#070B14;display:grid;place-items:center"><img id="lzImg" alt="Flyer del lanzamiento" style="width:100%;display:block"><span id="lzWait" class="small" style="color:#fff">Creando su flyer…</span></div>
+   <div class="seg" id="lzFmtS"><button type="button" data-f="p">🖼️ Publicación</button><button type="button" data-f="h">📱 Historia</button></div>
+   <div class="row wrap" id="lzFoS" style="gap:6px">${LZ_FONDOS.map(x=>`<button type="button" class="btn sm ghost" data-fo="${x.k}">${x.n}</button>`).join("")}</div>
+   <div id="lzBox" style="aspect-ratio:1080/1350;border-radius:14px;overflow:hidden;background:#070B14;display:grid;place-items:center;position:relative"><img id="lzImg" alt="Flyer del lanzamiento" style="width:100%;display:block;grid-area:1/1"><span id="lzWait" class="small" style="color:#fff;grid-area:1/1">Creando su flyer…</span></div>
    ${ci.lzR3?"":ci.l3?`<button class="btn" id="lzAv" style="width:100%;background:#25D366;color:#fff">💬 Avisar a ${esc(((ci.lzE?ci.lzSN:ci.lzN)||"").split(" ")[0])} por WhatsApp</button>`:`<button class="btn" id="lzLd" style="width:100%">📩 Enviar invitación a ${esc(((ci.lzE?ci.lzSN:ci.lzN)||"").split(" ")[0])}</button>`}
    <button class="btn" id="lzInv" style="width:100%;background:#25D366;color:#fff">👥 Invitar a mis prospectos${(ci.inv||[]).length?" ("+ci.inv.length+" invitados)":""}</button>${(ci.inv||[]).length?`<button class="btn ghost" id="lzRec" style="width:100%">⏰ Recordar a mis invitados</button>`:""}
    <div class="row" style="gap:8px"><button class="btn ghost grow" id="lzDl">⬇️ Guardar flyer</button><button class="btn ghost grow" data-close>Cerrar</button></div>`,()=>{
-    lzFile(o).then(f=>{file=f;const im=$("#lzImg"),w=$("#lzWait");if(im){im.src=URL.createObjectURL(f);if(w)w.remove()}}).catch(()=>toast("No se pudo crear el flyer"));
+    let fmt=LS.get("lzFmt")||"p",fo=LS.get("lzFondo")||"ny",nv=0;
+    const pinta=()=>{document.querySelectorAll("#lzFmtS [data-f]").forEach(b=>b.setAttribute("aria-selected",b.dataset.f===fmt));document.querySelectorAll("#lzFoS [data-fo]").forEach(b=>{const on=b.dataset.fo===fo;b.setAttribute("aria-pressed",on);b.style.outline=on?"2px solid var(--brand)":""});
+      const bx=$("#lzBox"),w=$("#lzWait");if(bx)bx.style.aspectRatio=fmt==="h"?"1080/1920":"1080/1350";if(w){w.hidden=false}file=null;const my=++nv;
+      lzFile(o,fmt,fo).then(f=>{if(my!==nv)return;file=f;const im=$("#lzImg"),w2=$("#lzWait");if(im)im.src=URL.createObjectURL(f);if(w2)w2.hidden=true}).catch(()=>toast("No se pudo crear el flyer"))};
+    $("#lzFmtS").onclick=e=>{const b=e.target.closest("[data-f]");if(!b||b.dataset.f===fmt)return;fmt=b.dataset.f;LS.set("lzFmt",fmt);pinta()};
+    $("#lzFoS").onclick=e=>{const b=e.target.closest("[data-fo]");if(!b||b.dataset.fo===fo)return;fo=b.dataset.fo;LS.set("lzFondo",fo);pinta()};pinta();
     const ld=$("#lzLd");if(ld)ld.onclick=()=>lzInvitarLider(ci);const av=$("#lzAv");if(av)av.onclick=()=>citaAvisar(ci);
     $("#lzInv").onclick=()=>{closeSheet();setTimeout(()=>lzInvitados(ci),250)};const lr=$("#lzRec");if(lr)lr.onclick=()=>{closeSheet();setTimeout(()=>recLista(recLz(ci)),250)};
     $("#lzDl").onclick=async()=>{if(!file){toast("El flyer aún se está creando");return}if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file]});return}catch(x){if(x&&x.name==="AbortError")return}}const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download="Lanzamiento.jpg";a.click()}})}
@@ -5827,7 +5947,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261103074457";var busy=false,pend=null;
+(function(){var V="20261103090916";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
