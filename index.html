@@ -3657,7 +3657,7 @@ let novHecho=false;function novedadAviso(){if(novHecho)return;const N=(T.config|
   const K="nov:"+N.id;try{if(LS.get(K))return}catch(e){}novHecho=true;setTimeout(()=>{try{if(document.querySelector(".avisoTop.on")){novHecho=false;setTimeout(novedadAviso,6000);return}LS.set(K,1);avisoTop(N.t,N.sub||"",N.u&&safeUrl(N.u)?()=>window.open(N.u,"_blank","noopener"):null)}catch(e){}},4500)}
 function avisosVer(){go("agenda");setTimeout(()=>{const c=[$("#l3Card"),$("#evaInv")].find(x=>x&&!x.hidden);if(c)c.scrollIntoView({behavior:"smooth",block:"center"})},250)}
 // ===== Avisos (notificaciones push). El servidor (GitHub Actions, tools/push) manda: racha 7:00/9:30 p.m. y socios nuevos. =====
-const PUSH_VAPID="BIOULMRlzPKU8c2oaM9sJgsuNuyAmtQVhIG4EIpxx1IcyoiYlGKU2gMjFjYFg19EnllIImNQRbQH7IDKNHAlIYg";
+const PUSH_VAPID="BMjRcKP8f_3-ilISLHl2EE32Y3pkiZvdiYGH2M1WcBpNl-E2i_gaUKG1TFVU_0JGMr1DdX9Up3V_i6h8p410g08";
 const pushSop=()=>"Notification" in window&&"serviceWorker" in navigator&&"PushManager" in window;
 const pushStandalone=()=>(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
 const pushIOS=()=>/iPhone|iPad|iPod/.test(navigator.userAgent||"");
