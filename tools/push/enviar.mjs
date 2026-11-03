@@ -30,6 +30,13 @@ export function estadoRutina(c, hoy, ayer) {
   return { pts: Math.min(5, pts), racha: valida ? (+c.racha || 0) : 0 };
 }
 
+// "fin": unos minutos antes de medianoche, a todos los que tienen avisos de racha.
+export function msgFin(uid, c, hoy, ayer, ms = Date.now()) {
+  const { pts, racha } = estadoRutina(c, hoy, ayer), n = primer(c && c.nombre);
+  const d = new Date(ms - 6 * 3600e3), min = Math.max(1, 60 * 24 - (d.getUTCHours() * 60 + d.getUTCMinutes()));
+  if (pts >= 5) return { title: `🎉 ¡Día completo${n ? ", " + n : ""}!`, body: `Su rutina de hoy quedó hecha. Mañana va por ${racha + 1} ${racha + 1 === 1 ? "día" : "días"} seguidos 🔥` };
+  return { title: `⏰ Quedan ${min} minutos del día`, body: `${n ? n + ", l" : "L"}${pts ? `e ${5 - pts === 1 ? "falta 1 punto" : `faltan ${5 - pts} puntos`}` : "a rutina de hoy todavía está a tiempo"}${racha >= 1 ? ` para mantener su racha de ${racha} ${racha === 1 ? "día" : "días"}` : ""}. ¡Todavía alcanza! 🔥` };
+}
 export function msgRacha(...a) { const m = msgRacha0(...a); if (m) { m.title = m.title[0].toUpperCase() + m.title.slice(1); m.body = m.body[0].toUpperCase() + m.body.slice(1); } return m; }
 function msgRacha0(modo, uid, c, hoy, ayer) {
   const { pts, racha } = estadoRutina(c, hoy, ayer); if (pts >= 5) return null;
@@ -85,12 +92,12 @@ async function main() {
   const db = getFirestore(), fcm = getMessaging();
   const salida = []; // [uid, tk, {title, body}]
 
-  if (modo === "racha" || modo === "racha2") {
+  if (modo === "racha" || modo === "racha2" || modo === "fin") {
     const hoy = hoyHN(), ayer = ayerHN();
     const P = (await db.collection("push").get()).docs.map(d => ({ uid: d.id, ...d.data() })).filter(p => p.tk && (p.pr || {}).racha !== false);
     if (!P.length) { console.log("Nadie con avisos activos."); return; }
     const C = {}; (await db.collection("constancia").get()).docs.forEach(d => C[d.id] = d.data());
-    for (const p of P) { const m = msgRacha(modo, p.uid, C[p.uid], hoy, ayer); if (m) salida.push([p.uid, p.tk, m]); }
+    for (const p of P) { const m = modo === "fin" ? msgFin(p.uid, C[p.uid], hoy, ayer) : msgRacha(modo, p.uid, C[p.uid], hoy, ayer); if (m) salida.push([p.uid, p.tk, m]); }
   } else if (modo === "act") {
     const leer = f => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return {}; } };
     const N = actNuevas(leer(viejoP), leer(nuevoP));
