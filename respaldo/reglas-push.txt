@@ -1,0 +1,6 @@
+// AVISOS (notificaciones push). Pegar DENTRO de "match /databases/{database}/documents { ... }",
+// junto a las demás reglas. Cada socio solo puede leer y escribir su propio documento.
+// El servidor (GitHub Actions con la cuenta de servicio) no pasa por estas reglas.
+    match /push/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }

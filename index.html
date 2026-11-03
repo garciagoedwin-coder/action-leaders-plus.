@@ -879,6 +879,13 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 /* Rendimiento: brillos decorativos se ven 3 veces y se quedan quietos; los avisos (pulso Inicio Rápido, fuego, en vivo, urgente) siguen. */
 .actBan::after,.rc-live::after,.rc-jm::after,.rcCard.vivo::before,.rutCard::before,#l3Card,#motto,.mq-bar i.c,.rut-al.rutDone .rdIc,.rut-al.rutDone .rdChk,.nxShare{animation-iteration-count:3!important}
 @media (prefers-reduced-motion:reduce){#main *,#main *::before,#main *::after{animation-iteration-count:1!important;animation-duration:.01ms!important}}
+
+#v-inicio.simple>#pushStrip{order:4}
+#pushStrip{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px;color:var(--ink)}
+#pushStrip .pi{font-size:22px}#pushStrip b{display:block;font-size:14px}#pushStrip small{color:var(--muted);font-size:12px;line-height:1.3;display:block}
+#pushStrip .pb{border:0;background:var(--brand);color:var(--bg);font-weight:800;border-radius:999px;padding:8px 14px;font:inherit;font-weight:800;white-space:nowrap}
+#pushStrip .px{border:0;background:transparent;color:var(--muted);font-size:18px;padding:4px}
+.avTg{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.avTg input{width:22px;height:22px;accent-color:var(--brand)}
 </style>
 
 </head>
@@ -1233,6 +1240,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
       <div class="rcCard" id="rcCard" hidden></div>
       <div id="compStrip" hidden></div>
       <div class="pendStrip" id="pendStrip" hidden></div>
+      <div id="pushStrip" hidden></div>
       <div class="irCard" id="irCard" hidden></div>
       <div class="lzStrip" id="lzCallStrip" hidden></div>
       <div class="retoStrip" id="retoStrip" hidden></div>
@@ -1384,7 +1392,11 @@ getRedirectResult(auth).catch(()=>{});
 window.FB={auth,db,serverTimestamp,
   async login(){const pr=new GoogleAuthProvider();pr.setCustomParameters({prompt:"select_account"});
     try{await signInWithPopup(auth,pr)}catch(e){if(e&&/popup-blocked|operation-not-supported|cancelled-popup/.test(e.code||""))await signInWithRedirect(auth,pr);else throw e}},
-  logout(){return signOut(auth)}};
+  logout(){return signOut(auth)},
+  async pushToken(vapid){const m=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js");if(!(await m.isSupported()))return null;
+    const reg=await navigator.serviceWorker.register("./firebase-messaging-sw.js",{scope:"./"});const msg=m.getMessaging(app);
+    if(!window._pushFg){window._pushFg=1;try{m.onMessage(msg,p=>window.dispatchEvent(new CustomEvent("push-fg",{detail:p})))}catch(e){}}
+    return await m.getToken(msg,{vapidKey:vapid,serviceWorkerRegistration:reg})}};
 let first=true;
 onAuthStateChanged(auth,u=>{if(first){first=false;window.dispatchEvent(new CustomEvent("fb-ready",{detail:u}))}else window.dispatchEvent(new CustomEvent("fb-auth",{detail:u}))});
 </script>
@@ -3644,7 +3656,40 @@ function avisoTop(t,sub,fn){try{if(navigator.vibrate)navigator.vibrate([60,40,60
 let novHecho=false;function novedadAviso(){if(novHecho)return;const N=(T.config||{}).novedad;if(!N||!N.id||!N.t||!fbUser)return;if(N.hasta&&Date.now()>Date.parse(N.hasta))return;
   const K="nov:"+N.id;try{if(LS.get(K))return}catch(e){}novHecho=true;setTimeout(()=>{try{if(document.querySelector(".avisoTop.on")){novHecho=false;setTimeout(novedadAviso,6000);return}LS.set(K,1);avisoTop(N.t,N.sub||"",N.u&&safeUrl(N.u)?()=>window.open(N.u,"_blank","noopener"):null)}catch(e){}},4500)}
 function avisosVer(){go("agenda");setTimeout(()=>{const c=[$("#l3Card"),$("#evaInv")].find(x=>x&&!x.hidden);if(c)c.scrollIntoView({behavior:"smooth",block:"center"})},250)}
-function pendPinta(){const el=$("#pendStrip");if(!el)return;const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid),n=l3P.length+l3D.length+pe.length;if(!n){el.hidden=true;return}el.hidden=false;
+// ===== Avisos (notificaciones push). El servidor (GitHub Actions, tools/push) manda: racha 7:00/9:30 p.m. y socios nuevos. =====
+const PUSH_VAPID="BMjRcKP8f_3-ilISLHl2EE32Y3pkiZvdiYGH2M1WcBpNl-E2i_gaUKG1TFVU_0JGMr1DdX9Up3V_i6h8p410g08";
+const pushSop=()=>"Notification" in window&&"serviceWorker" in navigator&&"PushManager" in window;
+const pushStandalone=()=>(window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true;
+const pushIOS=()=>/iPhone|iPad|iPod/.test(navigator.userAgent||"");
+let pushDoc=null;
+async function pushGuardar(tk,extra){if(!store.db||!store.uid)return;const b=Object.assign({t:Date.now(),ios:pushIOS()?1:0},tk?{tk}:{},extra||{});await store.db.doc("push/"+store.uid).set(b,{merge:true});pushDoc=Object.assign(pushDoc||{},b);if(tk){LS.set("pushTk",tk);LS.set("pushT",Date.now())}}
+async function pushActivar(){if(!PUSH_VAPID||!pushSop()){toast("Este teléfono no permite avisos desde aquí");return false}
+  let p;try{p=await Notification.requestPermission()}catch(e){p="denied"}
+  if(p!=="granted"){toast("Sin permiso no le podemos avisar. Puede activarlo en Perfil › Mis avisos.");pushPinta();return false}
+  try{const tk=await window.FB.pushToken(PUSH_VAPID);if(!tk)throw new Error("tk");await pushGuardar(tk,{pr:Object.assign({racha:true,act:true},(pushDoc&&pushDoc.pr)||{})});toast("🔔 ¡Listo! Sus avisos están activos");pushPinta();return true}
+  catch(e){toast("No se pudieron activar los avisos. Intente otra vez.");return false}}
+async function pushRefrescar(){try{if(!PUSH_VAPID||!pushSop()||Notification.permission!=="granted"||!store.uid)return;const t=+LS.get("pushT")||0;if(Date.now()-t<3*864e5&&LS.get("pushTk"))return;
+  const tk=await window.FB.pushToken(PUSH_VAPID);if(tk&&tk!==LS.get("pushTk"))await pushGuardar(tk);else LS.set("pushT",Date.now())}catch(e){}}
+function pushPinta(){const el=$("#pushStrip");if(!el)return;let no=0;try{no=+LS.get("pushNo")||0}catch(e){}
+  if(!PUSH_VAPID||!fbUser||!store.uid||Date.now()-no<14*864e5){el.hidden=true;return}
+  const iosNav=pushIOS()&&!pushStandalone();
+  if(!iosNav&&(!pushSop()||Notification.permission!=="default")){el.hidden=true;return}
+  el.hidden=false;el.innerHTML=iosNav?`<span class="pi">🔔</span><div class="grow" style="min-width:0"><b>¿Quiere recibir avisos?</b><small>En iPhone, abra la app desde el ícono 🛡️ de su pantalla de inicio (Compartir › Agregar a inicio) y actívelos ahí.</small></div><button class="px" aria-label="Cerrar">✕</button>`
+   :`<span class="pi">🔔</span><div class="grow" style="min-width:0"><b>Active sus avisos</b><small>Le avisamos si está por perder su racha y cuando entra un socio nuevo a su equipo.</small></div><button class="pb">Activar</button><button class="px" aria-label="Cerrar">✕</button>`;
+  const b=el.querySelector(".pb");if(b)b.onclick=()=>pushActivar();el.querySelector(".px").onclick=()=>{LS.set("pushNo",Date.now());el.hidden=true}}
+async function pushCargarDoc(){if(pushDoc||!store.db||!store.uid)return pushDoc;try{const d=await store.db.doc("push/"+store.uid).get();pushDoc=d.exists?d.data():{}}catch(e){pushDoc={}}return pushDoc}
+async function misAvisos(){const D=await pushCargarDoc()||{},pr=Object.assign({racha:true,act:true},D.pr||{});const perm=pushSop()?Notification.permission:"x",iosNav=pushIOS()&&!pushStandalone();
+  const est=!PUSH_VAPID?"Muy pronto podrá activarlos.":iosNav?"En iPhone: abra la app desde el ícono 🛡️ de su pantalla de inicio para activarlos.":perm==="x"?"Este navegador no permite avisos.":perm==="denied"?"Los avisos están bloqueados. Actívelos en los ajustes del teléfono: Notificaciones › Action Leaders.":perm==="granted"&&D.tk?"✅ Activos en este teléfono.":"Todavía no están activos en este teléfono.";
+  openSheet(`<h2 style="margin:0 0 4px">🔔 Mis avisos</h2><p class="small muted" style="margin:0 0 8px">${est}</p>
+   ${PUSH_VAPID&&!iosNav&&perm!=="denied"&&perm!=="x"&&!(perm==="granted"&&D.tk)?`<button class="btn pill dark" id="avAct" style="width:100%;margin-bottom:6px">🔔 Activar avisos</button>`:""}
+   <label class="avTg"><input type="checkbox" id="avR" ${pr.racha?"checked":""}><span class="grow"><b>🔥 Mi racha</b><br><small class="muted">7:00 p.m. si no ha completado su rutina, y 9:30 p.m. si está por perder su racha.</small></span></label>
+   <label class="avTg"><input type="checkbox" id="avA" ${pr.act?"checked":""}><span class="grow"><b>🎉 Socios nuevos</b><br><small class="muted">Cuando entra un socio nuevo a su equipo.</small></span></label>
+   <button class="btn pill" id="avOk" style="width:100%;margin-top:12px">Listo</button>`,()=>{
+   const a=$("#avAct");if(a)a.onclick=async()=>{if(await pushActivar())misAvisos()};
+   const sv=async()=>{try{await pushGuardar(null,{pr:{racha:$("#avR").checked,act:$("#avA").checked}});toast("Guardado")}catch(e){toast("No se pudo guardar")}};
+   $("#avR").onchange=sv;$("#avA").onchange=sv;$("#avOk").onclick=closeSheet})}
+window.addEventListener("push-fg",e=>{try{const n=(e.detail&&e.detail.notification)||{},d=(e.detail&&e.detail.data)||{};avisoTop(n.title||"🔔 Aviso",n.body||"",()=>{if(d.v)try{go(d.v)}catch(x){}})}catch(x){}});
+function pendPinta(){try{pushPinta()}catch(e){}const el=$("#pendStrip");if(!el)return;const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid),n=l3P.length+l3D.length+pe.length;if(!n){el.hidden=true;return}el.hidden=false;
   const x=l3P[0],y=l3D[0],e=pe[0],t=x?(x.lz?"🚀 "+(x.deN||"").split(" ")[0]+" le invita a un lanzamiento":"📞 "+(x.deN||"").split(" ")[0]+" le pide una llamada de 3")+" · "+l3Cuando(x.fecha,x.hora).toLowerCase():y?"💬 "+(y.paraN||"").split(" ")[0]+" respondió su "+(y.lz?"lanzamiento":"llamada de 3"):e?"🎤 "+(e.creN||"").split(" ")[0]+" le incluyó en "+(e.tipo==="gran"?"un evento":"una junta"):"";
   el.innerHTML=`<span class="grow" style="min-width:0">${n>1?`<b>📬 ${n} por responder</b> · `:""}${esc(t)}</span><button type="button" class="btn sm">Responder</button>`;el.onclick=avisosVer}
 function bellPinta(){try{pendPinta()}catch(e){}const b=$("#bellBtn");if(!b)return;const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid).length,n=l3P.length+l3D.length+pe;b.hidden=!n;$("#bellN").textContent=n>9?"9+":n;b.onclick=avisosVer}
@@ -5123,7 +5168,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <p class="small" style="margin:6px 0 0">${R.plan?`<span class="chip">${esc(R.plan)}</span> `:""}${R.patrocinador?`<span class="muted">Patrocinador: ${esc(R.patrocinador)}</span>`:""}</p></div></div>
    <div class="pf-list">
     ${irSimple()?`<div class="pf-h">Mis datos</div>`:""}<button class="pf-it" id="pfFoto"><span class="ic">📷</span>Cambiar mi foto</button>
-    <button class="pf-it" id="pfNombre"><span class="ic">👤</span>Mis datos <span class="small muted" style="font-weight:500">· nombre y WhatsApp</span></button>
+    <button class="pf-it" id="pfNombre"><span class="ic">👤</span>Mis datos <span class="small muted" style="font-weight:500">· nombre y WhatsApp</span></button><button class="pf-it" id="pfAvisos"><span class="ic">🔔</span>Mis avisos</button>
     ${irSimple()?`<div class="pf-h">Mis páginas</div>`:""}<button class="pf-it" id="pfPag"><span class="ic">🌐</span>Mi página para prospectos</button>
     <button class="pf-it" id="pfMem"><span class="ic">🛳️</span>Compartir página de membresía</button>
     <button class="pf-it" id="pfMemV"><span class="ic">👀</span>Quién vio mi página de membresía</button>
@@ -5136,7 +5181,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
-    $("#pfNombre").onclick=abrirMisDatos;{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const cz=$("#pfCie");if(cz)cz.onclick=()=>{closeSheet();eqTab="cierre";go("equipo");renderEquipo()}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
+    $("#pfNombre").onclick=abrirMisDatos;$("#pfAvisos").onclick=()=>{closeSheet();setTimeout(misAvisos,250)};{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const cz=$("#pfCie");if(cz)cz.onclick=()=>{closeSheet();eqTab="cierre";go("equipo");renderEquipo()}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
     $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfMem").onclick=()=>memCompartir();$("#pfMemV").onclick=()=>memVisitas();
     $("#pfInv").onclick=()=>{if(!(regDoc&&regDoc.registro)){toast("Completa tu registro primero");return}const u=miEnlace();openSheet(`<h2>🔗 Tu enlace de invitación</h2><p class="small muted">Compártelo solo con tus socios nuevos. Al registrarse, aparecerás como su patrocinador.</p>
       <div class="card" style="word-break:break-all;font-weight:600">${esc(u)}</div><button class="btn" id="invCp" style="width:100%">Copiar enlace</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#invCp").onclick=async()=>{try{await navigator.clipboard.writeText(u);toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})};
@@ -5515,7 +5560,7 @@ async function loadMine(){
   if(profile.nombrePila)$("#hello").textContent="Hola, "+profile.nombrePila.split(" ")[0];
   try{const b=bw;if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}catch(e){}
   if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
-  welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();
+  welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();setTimeout(()=>{pushRefrescar();pushPinta()},6000);
   contacts=await store.contacts();setTimeout(importarProspectos,1500);setTimeout(()=>loadSala(),2500);setTimeout(()=>loadL3(),1800);setTimeout(()=>{try{renderDT();dtCargar(false)}catch(e){}},2600);setTimeout(lcRevisar,6000);setTimeout(()=>loadEvA(),2200);loadCitas();setTimeout(irRevisar,1500);
   renderAll()}
 

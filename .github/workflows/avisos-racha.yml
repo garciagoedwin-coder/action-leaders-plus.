@@ -1,0 +1,33 @@
+name: Avisos de racha
+on:
+  schedule:
+    - cron: "0 1 * * *"    # 7:00 p.m. Honduras
+    - cron: "30 3 * * *"   # 9:30 p.m. Honduras
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "racha o racha2"
+        default: "racha"
+      dry:
+        description: "1 = solo mostrar, no enviar"
+        default: "1"
+concurrency: avisos-racha
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install --no-audit --no-fund
+        working-directory: tools/push
+      - name: Enviar
+        working-directory: tools/push
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+          DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry == '1' && '1' || '' }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then M="${{ inputs.modo }}";
+          elif [ "${{ github.event.schedule }}" = "30 3 * * *" ]; then M=racha2; else M=racha; fi
+          node enviar.mjs "$M"
