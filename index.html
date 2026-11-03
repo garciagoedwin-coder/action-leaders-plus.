@@ -3545,6 +3545,15 @@ Entre con Google, complete su registro y vea su video de bienvenida.
 
 ¡Hasta que funcione! 🚀
 ${pat}`;
+const BIEN_GRUPO=(n,f,plan,pais)=>{const bd=bandera(pais||"");return `🎉 *¡Démosle la bienvenida a ${n}!*
+
+Hoy se une a la familia Action Leaders como ${f?"Socia":"Socio"} ${plan==="premium"?"Premium":"Classic"}${bd?" "+bd:""}
+
+¡${f?"Bienvenida":"Bienvenido"} al equipo donde los sueños se trabajan juntos! 💪
+
+Escríbanle un saludo 👇
+
+#HastaQueFuncione`};
 const PAIS_ISO={"Honduras":"HN","Estados Unidos":"US","España":"ES","Reino Unido":"GB","Guatemala":"GT","El Salvador":"SV","Nicaragua":"NI","Costa Rica":"CR","Panamá":"PA","México":"MX","Colombia":"CO","Venezuela":"VE","Perú":"PE","Ecuador":"EC","Chile":"CL","Argentina":"AR","República Dominicana":"DO","Canadá":"CA","Italia":"IT","Francia":"FR","Alemania":"DE"};
 const bandera=p=>{const c=PAIS_ISO[p];return c?String.fromCodePoint(...[...c].map(x=>127397+x.charCodeAt(0))):""};
 const BIEN_TH={classic:{img:"media/flyers/bienvenida-classic.jpg?v=7",a:"#5FD3F7",g:["#D7F4FE","#2AC1F1","#0A7DAD"],glow:"rgba(42,193,241,.55)",lab:"SOCIO CLASSIC",top:"CLASSIC",pill:0},
@@ -3619,9 +3628,12 @@ function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,
    <div class="seg" id="bnP"><button aria-selected="true" data-p="classic" type="button">Classic</button><button aria-selected="false" data-p="premium" type="button">Premium</button></div>
    <label class="btn ghost" style="width:100%;justify-content:center;cursor:pointer">📷 Foto del socio nuevo<input type="file" id="bnFoto" accept="image/*" hidden></label>
    <div id="bnBox" style="aspect-ratio:9/16;width:100%;max-width:300px;margin:0 auto;border-radius:14px;background:#0b0b10;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Escribe el nombre…</span></div>
-   <button class="btn" id="bnGo" style="width:100%">📤 Enviar flyer y mensaje${tel?" por WhatsApp":""}</button>
-   <div class="row" style="gap:8px"><button class="btn ghost grow" id="bnCopy">Copiar mensaje</button><button class="btn ghost grow" id="bnDl">Descargar flyer</button></div>
-   <a class="btn ghost" id="bnWa" style="width:100%;justify-content:center${tel?"":";display:none"}" target="_blank" rel="noopener">Abrir chat de WhatsApp</a>
+   <button class="btn" id="bnGo" style="width:100%">🎉 Celebrar en un grupo</button>
+   <p class="small muted" style="margin:-4px 0 0;text-align:center">Flyer y mensaje de celebración, <b>sin enlaces</b>.</p>
+   <button class="btn ghost" id="bnPriv" style="width:100%">🔒 Enviar en privado al socio nuevo</button>
+   <p class="small muted" id="bnPrivTx" style="margin:-4px 0 0;text-align:center">Lleva su enlace personal para entrar a la app. Solo a esa persona.</p>
+   <div class="row" style="gap:8px"><button class="btn ghost grow" id="bnCopy">Copiar celebración</button><button class="btn ghost grow" id="bnDl">Descargar flyer</button></div>
+   <a id="bnWa" hidden></a>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     let tk=0;const upd=async()=>{n=$("#bnN").value.trim().replace(/\s+/g," ");const my=++tk;const box=$("#bnBox");if(!n){box.innerHTML='<span class="small" style="color:#fff">Escribe el nombre…</span>';file=null;return}
       const cv=await bienCanvas(n,f,pat,plan,foto,pais,await bienPat());if(my!==tk)return;const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.95));file=new File([b],"Bienvenida-"+n.replace(/\s+/g,"-")+".jpg",{type:"image/jpeg"});
@@ -3633,11 +3645,17 @@ function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,
     $("#bnPais").onchange=()=>{pais=$("#bnPais").value;upd()};
     $("#bnP").onclick=e=>{const b=e.target.closest("[data-p]");if(!b)return;plan=b.dataset.p;$("#bnP").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));upd()};
     $("#bnFoto").onchange=async e=>{const fl=e.target.files&&e.target.files[0];if(!fl)return;try{foto=await fotoReduce400(fl);toast("Foto lista")}catch(x){toast("No se pudo usar esa foto")}upd()};
-    $("#bnCopy").onclick=async()=>{if(!n)return toast("Escribe el nombre");try{await navigator.clipboard.writeText(BIEN_MSG(n,f,pat,lk));toast("Mensaje copiado")}catch(x){toast("No se pudo copiar")}};
-    $("#bnDl").onclick=()=>{if(!file)return toast("Escribe el nombre");const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000)};
-    $("#bnGo").onclick=async()=>{if(!n||!file)return toast("Escribe el nombre del socio");const msg=BIEN_MSG(n,f,pat,lk);
+    $("#bnCopy").onclick=async()=>{if(!n)return toast("Escribe el nombre");try{await navigator.clipboard.writeText(BIEN_GRUPO(n,f,plan,pais));toast("Celebración copiada (sin enlace)")}catch(x){toast("No se pudo copiar")}};
+    const pn=()=>(n.split(" ")[0]||"el socio nuevo");const privTx=()=>{const b=$("#bnPriv");if(b&&n)b.textContent="🔒 Enviar en privado a "+pn()};$("#bnN").addEventListener("input",()=>setTimeout(privTx,500));privTx();
+    let privOk=false;$("#bnPriv").onclick=async()=>{if(!n||!file)return toast("Escribe el nombre del socio");const msg=BIEN_MSG(n,f,pat,lk);
+      if(tel){location.href="https://wa.me/"+tel+"?text="+encodeURIComponent(msg);return}
+      if(!privOk){privOk=true;$("#bnPriv").textContent="⚠️ Solo a "+pn()+", no a grupos · toque otra vez";$("#bnPrivTx").innerHTML="Este mensaje lleva <b>el enlace personal de "+esc(pn())+"</b>. Elija <b>su chat</b>, no un grupo.";return}
       if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text:msg});return}catch(x){if(x&&x.name==="AbortError")return}}
-      location.href="https://wa.me/"+tel+"?text="+encodeURIComponent(msg)};
+      try{await navigator.clipboard.writeText(msg);toast("Mensaje copiado: péguelo en el chat de "+pn())}catch(x){}};
+    $("#bnDl").onclick=()=>{if(!file)return toast("Escribe el nombre");const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000)};
+    $("#bnGo").onclick=async()=>{if(!n||!file)return toast("Escribe el nombre del socio");const msg=BIEN_GRUPO(n,f,plan,pais);
+      if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text:msg});return}catch(x){if(x&&x.name==="AbortError")return}}
+      try{await navigator.clipboard.writeText(msg)}catch(x){}const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);toast("Flyer descargado y mensaje copiado: péguelo en el grupo")};
     if(n)upd()})}
 
 // ---------- llamada de 3 (socio pide a un líder de su línea; el líder acepta en su app) ----------
@@ -5124,6 +5142,7 @@ function renderWel(){const el=$("#wel");
     $("#welReg").innerHTML=`<div class="wel-step"><div class="wel-h">${badge("registro")}<h3>Regístrate en el equipo</h3></div>`+(welState.registro?
      `<p class="small muted">Registro listo${R0.nombre?": "+esc(R0.nombre):""}. ¡Gracias!</p></div>`:
      `<p class="small muted">${invSponsor?"Confirma tu nombre y listo.":"Déjanos tus datos para darte acceso."}</p>
+     ${invData&&invData.nombre?`<div class="small" style="background:var(--surface-2);border-radius:12px;padding:8px 12px;text-align:left">Esta invitación es para <b>${esc(invData.nombre)}</b>. <button type="button" id="rgNoSoy" style="border:0;background:none;color:var(--brand);font:inherit;font-weight:700;padding:0;text-decoration:underline">No soy yo</button></div>`:""}
      <form id="regF" style="display:flex;flex-direction:column;gap:10px;text-align:left" novalidate>
       <div class="field"><label for="rg_nombre">Nombre completo</label><input class="inp" id="rg_nombre" autocomplete="name" value="${esc(R0.nombre||(invData&&invData.nombre)||(fbUser&&fbUser.displayName)||"")}"></div>
       ${invSponsor?`<div class="card" style="text-align:left;gap:4px;padding:12px 14px"><span class="small muted">Tu patrocinador</span><b style="font-weight:600">${esc(invSponsor.nombre||"Tu patrocinador")} ✓</b>${invData&&invData.plan?`<span class="small muted" style="margin-top:4px">Tu paquete</span><b style="font-weight:600">${esc(invData.plan)} ✓</b>`:""}</div>`:`<div class="field"><label for="rg_patro">Nombre de tu patrocinador</label><input class="inp" id="rg_patro" value=""></div>`}
@@ -5634,7 +5653,8 @@ async function loadMine(){
   renderAll()}
 
 let invSponsor=null,invData=null;
-async function cargarInvitacion(){try{const b=localStorage.getItem("alp:invb");if(!b||!store.db)return;const d=await store.db.doc("invitaciones/"+b).get();if(!d.exists)return;invData=Object.assign({id:b},d.data());
+document.addEventListener("click",e=>{if(e.target&&e.target.id==="rgNoSoy"){invData=null;try{localStorage.removeItem("alp:invb")}catch(x){}try{renderWel()}catch(x){}toast("Listo: escriba sus propios datos")}});
+async function cargarInvitacion(){try{const b=localStorage.getItem("alp:invb");if(!b||!store.db)return;const d=await store.db.doc("invitaciones/"+b).get();if(!d.exists)return;const x=d.data()||{};if(x.usado&&x.usadoPor&&x.usadoPor!==store.uid){try{localStorage.removeItem("alp:invb")}catch(e){}return}invData=Object.assign({id:b},x);
   if(!invSponsor&&invData.by)invSponsor={uid:invData.by,nombre:invData.byNombre||""}}catch(e){}}
 async function invOK(){try{const c=(localStorage.getItem("alp:inv")||"").trim().toLowerCase();if(!c)return false;const h=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(c));
   if([...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("")==="f19dd27ad9265108f10992e57f0df2c8cc886c185969b89cadb69177e14e9986")return true;
@@ -5806,7 +5826,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261103001533";var busy=false,pend=null;
+(function(){var V="20261103072723";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
