@@ -892,6 +892,28 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .avIt{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-top:0;color:var(--ink);font:inherit}
 .avIt b{display:block;font-size:14px;font-weight:700}.avIt small{display:block;font-size:12.5px;color:var(--muted);line-height:1.35}
 .avIc{font-size:20px;width:26px;text-align:center;flex:none}.avRow{cursor:pointer}.avRow.nuevo b{color:var(--brand)}
+
+/* Campanita minimalista */
+.bell-btn{width:38px!important;height:38px!important;border:0!important;background:transparent!important;color:var(--ink);animation:none!important;margin-right:4px}
+.bell-btn i{top:2px!important;right:1px!important;min-width:17px!important;height:17px!important;font-size:10.5px!important;border:2px solid var(--bg)!important;background:#EF4444!important}
+/* Compromiso compacto */
+.cpHero.cpC{padding:12px 14px!important;border-radius:20px!important}
+.cpC .cpRow{display:flex;align-items:center;gap:12px;position:relative}
+.cpC .hring{width:52px;height:52px}.cpC .hring b{font-size:14px;color:#fff}
+.cpC .ht{font-size:16.5px}.cpC .hs{font-size:12px;margin-top:2px}
+.cpC .cpP{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}.cpC .cpP span{background:rgba(255,255,255,.1);border-radius:8px;padding:3px 8px;font-size:12.5px;font-weight:700}
+.cpC .cpP span.ok{background:rgba(60,196,143,.25)}.cpC .cp-chev{font-size:22px;opacity:.7}
+/* Inicio Rápido: banner pequeño ámbar */
+#irCard.irB{display:block;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:4px solid #F59E0B;border-radius:16px;padding:10px 12px;cursor:pointer;box-shadow:var(--shadow)}
+#v-inicio.simple>#irCard.irB{order:5}
+.irB .irS1{display:flex;align-items:center;gap:10px}
+.irB .ic{position:relative;width:38px;height:38px;border-radius:12px;background:var(--warn-soft,#FEF3C7);display:grid;place-items:center;font-size:19px;flex:none}
+.irB .dot{position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:#EF4444;border:2px solid var(--surface)}
+.irB b{display:block;font-size:14px;color:var(--ink)}.irB small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.irBb{display:block;height:5px;border-radius:5px;background:var(--line);margin-top:6px;overflow:hidden}.irBb i{display:block;height:100%;background:#F59E0B;border-radius:5px}
+.irB .go{border:0;background:#F59E0B;color:#1b1306;font:inherit;font-weight:800;font-size:13px;border-radius:999px;padding:8px 12px;white-space:nowrap}
+.irB:not(.pend) .go{background:var(--surface-2);color:var(--ink)}
+.irB .irS3{background:none!important;padding:0!important;margin:0!important;border:0!important;flex:none}.irB b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.irB .go{padding:7px 11px}
 </style>
 
 </head>
@@ -1227,7 +1249,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
   <header class="top">
     <div class="top-t"><b>Action Leaders <em>PLUS</em></b><span id="hello">Hola, líder</span></div>
     <div class="pv" id="topPvBox" data-empty><b class="num" id="topPv">—</b><small>Registros<br>inCruises</small></div>
-    <button class="bell-btn" id="bellBtn" aria-label="Avisos" hidden>🔔<i id="bellN">0</i></button>
+    <button class="bell-btn" id="bellBtn" aria-label="Avisos" hidden><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><i id="bellN">0</i></button>
     <button class="me-btn" id="meBtn" aria-label="Mi perfil" title="Mi perfil"></button>
   </header>
 
@@ -1919,9 +1941,8 @@ function compStripHTML(mini){const C=miComp(),mn=mesNom();
   const bar=(a,b)=>`<div class="mtBar"><i style="width:${b?Math.min(100,Math.round(a*100/b)):0}%"></i></div>`;
   const pc=(a,b)=>b?Math.min(100,Math.round(a*100/b)):0,tot=Math.round(((C.vol?pc(V,C.vol):pc(A,C.act))+pc(p,C.pres))/2);
   let open=false;try{open=LS.get("cpOpen")==="1"}catch(e){}
-  if(mini&&!open)return `<div class="compStrip cpMini cpHero" data-cpt>${HOME_WAVE}<div class="row between" style="align-items:center;position:relative"><span class="hk">🤝 ${irSimple()?"Mi compromiso":"Mi compromiso"} · ${esc(mn.split(" ")[0].toUpperCase())}</span><span class="cp-chev">▾</span></div>
-   <div class="hrow"><div style="min-width:0"><div class="ht">${r.ic} ${esc(r.t)}</div><div class="hs">⏳ Quedan ${d} ${d===1?"día":"días"}</div></div>${homeRing(tot,"#2AC1F1",tot+"%")}</div>
-   <div class="gl">${C.vol?`<span class="${V>=C.vol?"ok":""}"><b>${fmt(V)}/${fmt(C.vol)}</b>⚡ Puntos</span>`:""}<span class="${A>=C.act&&C.act?"ok":""}"><b>${A}/${C.act}</b>🚀 Activaciones</span><span class="${p>=C.pres?"ok":""}"><b>${p}/${C.pres}</b>🎤 Semana</span></div></div>`;
+  if(mini&&!open)return `<div class="compStrip cpMini cpHero cpC" data-cpt><div class="cpRow">${homeRing(tot,"#2AC1F1",tot+"%")}<div class="grow" style="min-width:0"><div class="ht">${r.ic} ${esc(r.t)}</div><div class="hs">Mi compromiso · quedan ${d} ${d===1?"día":"días"}</div>
+   <div class="cpP">${C.vol?`<span class="${V>=C.vol?"ok":""}">⚡ ${fmt(V)}/${fmt(C.vol)}</span>`:""}<span class="${A>=C.act&&C.act?"ok":""}">🚀 ${A}/${C.act}</span><span class="${p>=C.pres?"ok":""}">🎤 ${p}/${C.pres}</span></div></div><span class="cp-chev">›</span></div></div>`;
   return `<div class="compStrip"${mini?" data-cpt":" data-comp"}><div class="row between"><small class="gn-e" style="color:inherit">🤝 Mi compromiso de ${esc(mn)}</small><small>⏳ ${d} ${d===1?"día":"días"}${mini?" ▴":""}</small></div>
    <b class="mtN">${r.ic} ${esc(r.t)}</b>${C.vol?`<div class="row between small"><span>⚡ Volumen personal</span><b>${fmt(V)} de ${fmt(C.vol)} pts${V>=C.vol?" ✅":""}</b></div>${bar(V,C.vol)}`:""}
    <div class="row between small"><span>🚀 Activaciones</span><b>${A} de ${C.act}${A>=C.act&&C.act?" ✅":""}</b></div>${bar(A,C.act)}
@@ -3699,17 +3720,22 @@ async function misAvisos(){const D=await pushCargarDoc()||{},pr=Object.assign({r
 function badgePend(){try{const pe=(typeof EVA!=="undefined"&&EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid).length;
   return (dayScore(day)<1?1:0)+(l3P||[]).length+(l3D||[]).length+pe}catch(e){return 0}}
 function badgePinta(){try{if(!("setAppBadge" in navigator)||!store.uid)return;if(typeof Notification!=="undefined"&&Notification.permission!=="granted")return;
-  if(document.hidden){const n=badgePend();n?navigator.setAppBadge(n).catch(()=>{}):navigator.clearAppBadge().catch(()=>{})}
+  if(document.hidden){const n=avNuevos();n?navigator.setAppBadge(n).catch(()=>{}):navigator.clearAppBadge().catch(()=>{})}
   else{navigator.clearAppBadge().catch(()=>{});if(navigator.serviceWorker&&navigator.serviceWorker.getRegistration)navigator.serviceWorker.getRegistration("./").then(r=>r&&r.getNotifications&&r.getNotifications()).then(L=>(L||[]).forEach(x=>x.close())).catch(()=>{})}}catch(e){}}
-document.addEventListener("visibilitychange",badgePinta);window.addEventListener("pagehide",()=>{try{if("setAppBadge" in navigator&&store.uid&&(typeof Notification==="undefined"||Notification.permission==="granted")){const n=badgePend();if(n)navigator.setAppBadge(n).catch(()=>{})}}catch(e){}});
+document.addEventListener("visibilitychange",badgePinta);window.addEventListener("pagehide",()=>{try{if("setAppBadge" in navigator&&store.uid&&(typeof Notification==="undefined"||Notification.permission==="granted")){const n=avNuevos();if(n)navigator.setAppBadge(n).catch(()=>{})}}catch(e){}});
 window.addEventListener("push-fg",e=>{try{const n=(e.detail&&e.detail.notification)||{},d=(e.detail&&e.detail.data)||{};avisoTop(n.title||"🔔 Aviso",n.body||"",()=>{if(d.v)try{go(d.v)}catch(x){}})}catch(x){}});
 function pendPinta(){try{pushPinta()}catch(e){}const el=$("#pendStrip");if(!el)return;const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid),n=l3P.length+l3D.length+pe.length;if(!n){el.hidden=true;return}el.hidden=false;
   const x=l3P[0],y=l3D[0],e=pe[0],t=x?(x.lz?"🚀 "+(x.deN||"").split(" ")[0]+" le invita a un lanzamiento":"📞 "+(x.deN||"").split(" ")[0]+" le pide una llamada de 3")+" · "+l3Cuando(x.fecha,x.hora).toLowerCase():y?"💬 "+(y.paraN||"").split(" ")[0]+" respondió su "+(y.lz?"lanzamiento":"llamada de 3"):e?"🎤 "+(e.creN||"").split(" ")[0]+" le incluyó en "+(e.tipo==="gran"?"un evento":"una junta"):"";
   el.innerHTML=`<span class="grow" style="min-width:0">${n>1?`<b>📬 ${n} por responder</b> · `:""}${esc(t)}</span><button type="button" class="btn sm">Responder</button>`;el.onclick=avisosVer}
 // Campanita = Centro de avisos: pendientes (lo que da el número rojo) + últimos avisos recibidos (push/{uid}.h, lo escribe el servidor).
 function avNoLeidos(){try{const v=+LS.get("pushVisto")||0;return ((pushDoc&&pushDoc.h)||[]).filter(x=>(x.t||0)>v).length}catch(e){return 0}}
+// "Nuevo" = rutina de hoy pendiente (1 vez al día) + solicitudes/eventos que no ha visto + avisos sin leer. Al abrir la campanita queda en 0.
+function avIdsPend(){const pe=(typeof EVA!=="undefined"&&EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid);
+  return (l3P||[]).map(x=>"p"+x.id).concat((l3D||[]).map(x=>"d"+x.id+(x.estado||"")),pe.map(e=>"e"+e.id))}
+function avNuevos(){try{const vis=LS.get("avVis")||[],rut=dayScore(day)<1&&LS.get("avRutD")!==TODAY?1:0;return rut+avIdsPend().filter(k=>!vis.includes(k)).length+avNoLeidos()}catch(e){return 0}}
+function avMarcar(){try{LS.set("avRutD",TODAY);LS.set("avVis",avIdsPend().slice(-60));LS.set("pushVisto",Date.now())}catch(e){}}
 function bellPinta(){try{pendPinta()}catch(e){}const b=$("#bellBtn");if(!b)return;if(!store.uid){b.hidden=true;return}
-  const n=badgePend()+avNoLeidos();b.hidden=false;const i=$("#bellN");i.textContent=n>9?"9+":n;i.hidden=!n;b.onclick=avisosCentro}
+  const n=avNuevos();b.hidden=false;const i=$("#bellN");i.textContent=n>9?"9+":n;i.hidden=!n;b.onclick=avisosCentro}
 const avHace=t=>{const m=Math.round((Date.now()-t)/6e4);if(m<1)return"ahora";if(m<60)return"hace "+m+" min";const h=Math.round(m/60);if(h<24)return"hace "+h+" h";const d=Math.round(h/24);return d===1?"ayer":"hace "+d+" días"};
 async function avisosCentro(){try{if(pushDoc)pushDoc=null;await pushCargarDoc()}catch(e){}
   const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid),pts=Math.round(dayScore(day)*5);
@@ -3724,7 +3750,7 @@ async function avisosCentro(){try{if(pushDoc)pushDoc=null;await pushCargarDoc()}
    <div class="avH">Últimos avisos</div>${H.length?H.map(x=>`<button type="button" class="avIt avRow${(x.t||0)>v?" nuevo":""}" data-avk="${x.v==="equipo"?"eq":"rut"}"><span class="avIc">${(x.t||0)>v?"🔵":"🔔"}</span><div class="grow" style="min-width:0;text-align:left"><b>${esc(x.ti||"")}</b><small>${esc(x.b||"")}</small><small class="muted">${avHace(x.t||0)}</small></div></button>`).join(""):`<p class="small muted" style="margin:4px 0">${typeof Notification!=="undefined"&&Notification.permission==="granted"?"Aquí aparecerán los avisos que le lleguen.":"Active sus avisos en Perfil › 🔔 Mis avisos para recibirlos aquí."}</p>`}
    <button class="btn ghost" data-close style="width:100%;margin-top:12px">Cerrar</button>`,()=>{
    $("#sheetPanel").querySelectorAll("[data-avk]").forEach(b=>b.onclick=()=>{const k=b.dataset.avk;closeSheet();setTimeout(()=>{if(k==="ag")avisosVer();else if(k==="eq")go("equipo");else{go("inicio");setTimeout(()=>{const r=$("#rutCard");if(r)r.scrollIntoView({behavior:"smooth",block:"center"})},250)}},200)})});
-  try{LS.set("pushVisto",Date.now())}catch(e){}bellPinta();try{if("clearAppBadge" in navigator)navigator.clearAppBadge().catch(()=>{})}catch(e){}}
+  avMarcar();bellPinta();try{if("clearAppBadge" in navigator)navigator.clearAppBadge().catch(()=>{})}catch(e){}}
 function l3SeenGet(){if(!l3Seen)l3Seen=LS.get("l3Seen")||{};return l3Seen}
 function l3Nuevo(id,t){const S=l3SeenGet(),k=id+"|"+t;if(S[k])return false;S[k]=Date.now();const lim=Date.now()-30*864e5;Object.keys(S).forEach(x=>{if(S[x]<lim)delete S[x]});LS.set("l3Seen",S);return true}
 function l3Err(e){try{console.warn("l3",e)}catch(x){}if(l3ErrV)return;l3ErrV=1;toast("⚠️ No pudimos revisar sus invitaciones. Revise su internet y vuelva a abrir la app.")}
@@ -4781,8 +4807,8 @@ const TOURS={agenda:{t:"📅 Su Agenda",d:"Llamadas de 3, lanzamientos, juntas y
   {act:()=>{try{setAgVista("mia")}catch(e){}},sel:"#agMia",tx:"En <b>Mi agenda</b> ve sus citas de la semana. En cada cita puede recordar, reprogramar o cancelar.",fin:"¡Listo! Ya domina su Agenda 💪"}]},
  ir:{t:"🚀 Su Plan de Inicio Rápido",d:"Sus primeros 30 días, paso a paso",min:2,ok:()=>{try{return !!irModo()}catch(e){return false}},steps:[
   {go:"inicio",act:()=>{try{closeSheet();irAbierto=false;irRender()}catch(e){}},sel:"#irCard",tx:"Este es su <b>Plan de Inicio Rápido</b>: 4 semanas para arrancar su negocio acompañado. Siempre lo encuentra aquí, en Inicio."},
-  {sel:"#irCard .irS1",tx:"Aquí ve en qué <b>semana</b> va, cuántos pasos lleva y cuántos días le quedan. Mientras le falte algo, el banner <b>late</b> para recordarle: ¡termínelo!"},
-  {sel:"#irCard .irS3",si:1,tx:"👉 Su <b>siguiente paso</b>. Toque el botón y la app le lleva directo a hacerlo. No tiene que adivinar qué sigue."},
+  {sel:"#irCard .irS1",tx:"Aquí ve en qué <b>semana</b> va, cuántos pasos lleva y qué le falta. Mientras le falte algo, el cohete lleva un <b>puntito rojo</b>: ¡termínelo!"},
+  {sel:"#irCard .irS3",si:1,tx:"👉 Toque <b>Terminar</b> y verá la lista completa de su semana, con un botón para hacer cada paso."},
   {act:()=>{try{irAbierto=true;irRender()}catch(e){}},sel:"#irCard .irMed",si:1,tx:"Sus 4 <b>insignias</b>: 🚀 Despegue, 🎤 Presentador, 🔁 Cerrador y 🌱 Duplicador. Al terminar cada semana gana una, y al final se gradúa 🎓."},
   {act:()=>{try{irAbierto=false;irRender();irLista()}catch(e){}},sel:"#sheet .irWk",si:1,tx:"Al tocar el banner ve la <b>lista completa</b> de la semana. Arriba puede mirar las 4 semanas."},
   {sel:"#sheet .irG",si:1,tx:"Cada paso tiene su botón. Muchos se marcan <b>solos</b> (contactos, presentaciones, seguimientos) y otros los marca usted, como su meta o sus herramientas."},
@@ -5374,16 +5400,12 @@ let irAbierto=false;function irRender(){const el=$("#irCard");if(!el)return;try{
   const st2=irSt();if(st2.grad&&Date.now()-st2.grad>3*864e5){el.hidden=true;return}
   const w=E.cur,pc=Math.round(w.n2/w.L.length*100),nx=w.L.find(i=>!i.ok),fin=w.fin,d=E.dia,q=Math.max(0,fin-d);
   el.hidden=false;el.className="irCard";
-  {const vi=$("#v-inicio");if(vi)vi.classList.toggle("irProta",!E.grad&&m==="nuevo"&&!irAbierto)}
-  if(!E.grad&&!irAbierto){const falta=w.L.length-w.n2,hero=m==="nuevo";el.className="irSlim"+(hero?" hero":"")+(nx?" urge":"");
-    const msg=nx?`¡Termínelo! ${falta===1?"Falta 1":"Faltan "+falta}${d>fin?" · se le pasó el día "+fin:q>0?" · quedan "+q+(q===1?" día":" días"):" · ¡hoy es el último día!"}`:"✅ ¡Semana lista!";
-    const nxH=nx?`<div class="irS3"><span class="ap">👉</span><b class="grow">${esc(nx.t)}</b>${nx.b?`<button class="btn sm" id="irNxB" type="button">${esc(nx.b[0])}</button>`:""}</div>`:"";
-    el.innerHTML=hero?`${HOME_WAVE}<div class="row between" style="align-items:center;position:relative"><span class="hk">🚀 SU PLAN DE INICIO RÁPIDO</span><button type="button" class="irSx" id="irSx" aria-label="Ver más">▾</button></div>
-      <div class="hrow"><div style="min-width:0"><div class="ht">Semana ${w.n} · ${esc(w.k)}</div><div class="hs irMsg">${msg}</div></div>${homeRing(pc,"#F2A541",w.n2+"/"+w.L.length)}</div>${nxH}`
-     :`<div class="irS1"><span class="ic">🚀</span><span class="grow" style="min-width:0"><b>Inicio Rápido · Semana ${w.n} · ${esc(w.k)}</b><span class="irTag${nx?"":" ok"}">${msg}</span></span><span class="irSp">${w.n2}/${w.L.length}</span><button type="button" class="irSx" id="irSx" aria-label="Ver más">▾</button></div>
-      <div class="irSeg">${w.L.map(x=>`<i class="${x.ok?"on":""}"></i>`).join("")}</div>${nxH}`;
-    $("#irSx").onclick=e=>{e.stopPropagation();irAbierto=true;irRender()};
-    try{const D=LS.get("tourOk")||{};if(!D.ir&&!LS.get("tourAskIr")&&!tourSt){LS.set("tourAskIr",1);setTimeout(()=>{if(!document.querySelector(".avisoTop.on")&&$("#irCard")&&!$("#irCard").hidden&&!$("#v-inicio").hidden)avisoTop("🧭 ¿Le enseño cómo funciona su plan?","Guía de 2 minutos · toque Ver",()=>tourIr("ir"));else LS.set("tourAskIr","")},6000)}}catch(e){}{const b=$("#irNxB");if(b&&nx)b.onclick=e=>{e.stopPropagation();nx.b[1]()}}
+  {const vi=$("#v-inicio");if(vi)vi.classList.remove("irProta")}
+  if(!E.grad&&!irAbierto){const falta=w.L.length-w.n2;el.className="irB"+(nx?" pend":"");
+    const sub=nx?`${w.n2} de ${w.L.length} · le falta: ${esc(nx.t)}`:`✅ ¡Semana ${w.n} lista!`;
+    el.innerHTML=`<div class="irS1"><span class="ic">🚀${nx?`<i class="dot"></i>`:""}</span><span class="grow" style="min-width:0"><b>Inicio Rápido · Semana ${w.n}</b><small>${sub}</small><span class="irBb"><i style="width:${Math.max(4,pc)}%"></i></span></span><span class="irS3"><button type="button" class="go" id="irNxB">${nx?"Terminar ›":"Ver ›"}</button></span></div>`;
+    try{const D=LS.get("tourOk")||{};if(!D.ir&&!LS.get("tourAskIr")&&!tourSt){LS.set("tourAskIr",1);setTimeout(()=>{if(!document.querySelector(".avisoTop.on")&&$("#irCard")&&!$("#irCard").hidden&&!$("#v-inicio").hidden)avisoTop("🧭 ¿Le enseño cómo funciona su plan?","Guía de 2 minutos · toque Ver",()=>tourIr("ir"));else LS.set("tourAskIr","")},6000)}}catch(e){}
+    $("#irNxB").onclick=e=>{e.stopPropagation();irLista()};
     el.onclick=e=>{if(e.target.closest("button"))return;irLista()};return}
   el.innerHTML=E.grad?`<div class="k">🎓 Plan de Inicio Rápido</div><div class="t">¡Action Leader <em>graduado</em>!</div><p class="small" style="margin:4px 0 0;opacity:.85">Ahora ayude a su equipo a hacer el suyo.</p><button class="btn sm" id="irFlyG" style="background:#E8C766;color:#3b2a00;margin-top:10px">📣 Compartir mi logro</button>`:
    `<div class="k">🚀 Plan de Inicio Rápido</div><div class="t">Semana ${w.n} · <em>${esc(w.k)}</em></div>
@@ -5784,7 +5806,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261103000904";var busy=false,pend=null;
+(function(){var V="20261103001533";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
