@@ -104,10 +104,13 @@ async function main() {
   initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) });
   const db = getFirestore(), fcm = getMessaging();
   const salida = []; // [uid, tk, {title, body}]
+  const hist = {}; // uid → historial actual (h) para guardar los últimos 15 avisos
+  const vista = modo === "act" ? "equipo" : "inicio";
 
   if (modo === "racha" || modo === "racha2" || modo === "fin" || modo === "manana") {
     const hoy = hoyHN(), ayer = ayerHN();
     const P = (await db.collection("push").get()).docs.map(d => ({ uid: d.id, ...d.data() })).filter(p => p.tk && (p.pr || {}).racha !== false);
+    P.forEach(p => hist[p.uid] = p.h || []);
     if (!P.length) { console.log("Nadie con avisos activos."); return; }
     const C = {}; (await db.collection("constancia").get()).docs.forEach(d => C[d.id] = d.data());
     for (const p of P) { const m = modo === "fin" ? msgFin(p.uid, C[p.uid], hoy, ayer) : modo === "manana" ? msgManana(p.uid, C[p.uid], hoy, ayer) : msgRacha(modo, p.uid, C[p.uid], hoy, ayer); if (m) salida.push([p.uid, p.tk, m]); }
@@ -116,7 +119,7 @@ async function main() {
     const N = actNuevas(leer(viejoP), leer(nuevoP));
     if (!N.length) { console.log("Sin activaciones nuevas."); return; }
     const users = (await db.collection("users").get()).docs.map(d => ({ uid: d.id, ...d.data() }));
-    const tkDe = {}; const pushDe = async uid => { if (!(uid in tkDe)) { const d = await db.doc("push/" + uid).get(); const x = d.exists ? d.data() : {}; tkDe[uid] = x.tk && (x.pr || {}).act !== false ? x.tk : null; } return tkDe[uid]; };
+    const tkDe = {}; const pushDe = async uid => { if (!(uid in tkDe)) { const d = await db.doc("push/" + uid).get(); const x = d.exists ? d.data() : {}; hist[uid] = x.h || []; tkDe[uid] = x.tk && (x.pr || {}).act !== false ? x.tk : null; } return tkDe[uid]; };
     for (const a of N) {
       const { sp, arriba } = destinosAct(a, users);
       console.log(`Activación: ${a.socio} · patrocinador ${a.patrocinador} → ${sp ? "encontrado" : "NO encontrado en la app"} · ${arriba.length} arriba`);
@@ -136,6 +139,9 @@ async function main() {
       console.log("Falló", lote[j][0].slice(0, 5) + "…", code);
       if (/registration-token-not-registered|invalid-registration-token|invalid-argument/.test(code)) db.doc("push/" + lote[j][0]).set({ tk: FieldValue.delete() }, { merge: true }).catch(() => {}); } });
     console.log(`Enviados: ${r.successCount} · fallidos: ${r.failureCount}`);
+    // Historial para el Centro de avisos de la app (últimos 15 por persona)
+    const t = Date.now();
+    await Promise.all(lote.map(([uid, , m], j) => r.responses[j].success ? db.doc("push/" + uid).set({ h: (hist[uid] || []).concat([{ t, ti: m.title, b: m.body, v: vista }]).slice(-15) }, { merge: true }).catch(() => {}) : null));
   }
 }
 if (import.meta.url === `file://${process.argv[1]}`) main().catch(e => { console.error(e); process.exit(1); });

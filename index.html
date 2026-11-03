@@ -886,6 +886,12 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 #pushStrip .pb{border:0;background:var(--brand);color:var(--bg);font-weight:800;border-radius:999px;padding:8px 14px;font:inherit;font-weight:800;white-space:nowrap}
 #pushStrip .px{border:0;background:transparent;color:var(--muted);font-size:18px;padding:4px}
 .avTg{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.avTg input{width:22px;height:22px;accent-color:var(--brand)}
+
+.bell-btn i[hidden]{display:none}
+.avH{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px}
+.avIt{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-top:0;color:var(--ink);font:inherit}
+.avIt b{display:block;font-size:14px;font-weight:700}.avIt small{display:block;font-size:12.5px;color:var(--muted);line-height:1.35}
+.avIc{font-size:20px;width:26px;text-align:center;flex:none}.avRow{cursor:pointer}.avRow.nuevo b{color:var(--brand)}
 </style>
 
 </head>
@@ -1514,7 +1520,7 @@ function rutFold(ok){const t=$("#tasks"),bar=$("#dayBar")&&$("#dayBar").closest(
   const ap=()=>{t.hidden=hide;if(bar)bar.hidden=hide;const g=$("#rutTg");if(g)g.textContent=hide?"▾":"▴";const rc=$("#rutCard");if(rc)rc.classList.toggle("mini",hide)};
   if(hide&&rutJust){rutJust=false;rutFT=setTimeout(ap,1400)}else ap();
   {const db=$("#rutDoneB");if(db)db.onclick=()=>{rutOpen=!rutOpen;rutFold(true)}}}
-function renderTasks(){
+function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);
   $("#tasks").innerHTML=ROUTINE.map(r=>{const v=day[r.k]||0,done=v>=1;
     if(r.type==="check")return `<div class="task"><button class="check" aria-pressed="${done}" data-k="${r.k}" aria-label="Marcar ${esc(r.t)}">${done?CHECK:""}</button><span class="grow"><span class="${done?"done-t":""}">${esc(r.t)}</span>${r.k==="historia"?`<br><button type="button" class="chip ${done?"c-brand":"c-good"}" data-hist="1" style="border:0;font:inherit;font-weight:700;margin-top:6px;cursor:pointer">${done?"Ver / compartir otra vez":"📤 Compartir mi historia"}</button>`:r.sub&&!done?`<br><span class="small muted">${esc(r.sub)}</span>`:r.nota?`<br><span class="small muted">${esc(r.nota)}</span>`:""}${r.link?`<br><a class="chip c-good" style="display:inline-flex;margin-top:6px;text-decoration:none;font-weight:700" href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.linkT||"Abrir")}</a>`:""}</span></div>`;
     return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:""}</span><span class="grow ${done?"done-t":""}">${esc(r.t)}<br><span class="small muted">${(day[r.lk]||[]).length?r.ic+" "+day[r.lk].map(x=>esc(String(x.n).split(" ")[0])).join(", "):v?"Mínimo 1"+(r.goal>1?" · ideal "+r.goal:""):esc(r.vac||"")}</span></span>
@@ -3700,7 +3706,25 @@ window.addEventListener("push-fg",e=>{try{const n=(e.detail&&e.detail.notificati
 function pendPinta(){try{pushPinta()}catch(e){}const el=$("#pendStrip");if(!el)return;const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid),n=l3P.length+l3D.length+pe.length;if(!n){el.hidden=true;return}el.hidden=false;
   const x=l3P[0],y=l3D[0],e=pe[0],t=x?(x.lz?"🚀 "+(x.deN||"").split(" ")[0]+" le invita a un lanzamiento":"📞 "+(x.deN||"").split(" ")[0]+" le pide una llamada de 3")+" · "+l3Cuando(x.fecha,x.hora).toLowerCase():y?"💬 "+(y.paraN||"").split(" ")[0]+" respondió su "+(y.lz?"lanzamiento":"llamada de 3"):e?"🎤 "+(e.creN||"").split(" ")[0]+" le incluyó en "+(e.tipo==="gran"?"un evento":"una junta"):"";
   el.innerHTML=`<span class="grow" style="min-width:0">${n>1?`<b>📬 ${n} por responder</b> · `:""}${esc(t)}</span><button type="button" class="btn sm">Responder</button>`;el.onclick=avisosVer}
-function bellPinta(){try{pendPinta()}catch(e){}const b=$("#bellBtn");if(!b)return;const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid).length,n=l3P.length+l3D.length+pe;b.hidden=!n;$("#bellN").textContent=n>9?"9+":n;b.onclick=avisosVer}
+// Campanita = Centro de avisos: pendientes (lo que da el número rojo) + últimos avisos recibidos (push/{uid}.h, lo escribe el servidor).
+function avNoLeidos(){try{const v=+LS.get("pushVisto")||0;return ((pushDoc&&pushDoc.h)||[]).filter(x=>(x.t||0)>v).length}catch(e){return 0}}
+function bellPinta(){try{pendPinta()}catch(e){}const b=$("#bellBtn");if(!b)return;if(!store.uid){b.hidden=true;return}
+  const n=badgePend()+avNoLeidos();b.hidden=false;const i=$("#bellN");i.textContent=n>9?"9+":n;i.hidden=!n;b.onclick=avisosCentro}
+const avHace=t=>{const m=Math.round((Date.now()-t)/6e4);if(m<1)return"ahora";if(m<60)return"hace "+m+" min";const h=Math.round(m/60);if(h<24)return"hace "+h+" h";const d=Math.round(h/24);return d===1?"ayer":"hace "+d+" días"};
+async function avisosCentro(){try{if(pushDoc)pushDoc=null;await pushCargarDoc()}catch(e){}
+  const pe=(EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid),pts=Math.round(dayScore(day)*5);
+  const P=[];if(pts<5)P.push(["🔥",`Su rutina de hoy: ${pts} de 5`,pts?"Le "+(5-pts===1?"falta 1 punto":"faltan "+(5-pts)+" puntos")+" para completar su día":"Todavía no empieza · comience por la historia del día","Ir a mi rutina","rut"]);
+  (l3P||[]).forEach(x=>P.push(["📞",`${x.lz||x.lzE?"Lanzamiento":"Llamada de 3"} de ${(x.deN||x.n||"un socio").split(" ")[0]} por responder`,"","Responder","ag"]));
+  if((l3D||[]).length)P.push(["📬",`${l3D.length===1?"1 respuesta":l3D.length+" respuestas"} a sus solicitudes`,"","Ver","ag"]);
+  if(pe.length)P.push(["🎤",`${pe.length===1?"1 invitación":pe.length+" invitaciones"} a evento por confirmar`,"","Ver","ag"]);
+  const v=+LS.get("pushVisto")||0,H=((pushDoc&&pushDoc.h)||[]).slice().reverse();
+  const fila=(ic,t,s,bt,k,i)=>`<div class="avIt"><span class="avIc">${ic}</span><div class="grow" style="min-width:0"><b>${esc(t)}</b>${s?`<small>${esc(s)}</small>`:""}</div>${bt?`<button type="button" class="btn pill" data-avk="${k}" style="padding:6px 12px">${esc(bt)}</button>`:""}</div>`;
+  openSheet(`<h2 style="margin:0 0 6px">🔔 Avisos</h2>
+   <div class="avH">Pendientes</div>${P.length?P.map(p=>fila(...p)).join(""):`<p class="small muted" style="margin:4px 0 10px">✅ No tiene nada pendiente. ¡Bien hecho!</p>`}
+   <div class="avH">Últimos avisos</div>${H.length?H.map(x=>`<button type="button" class="avIt avRow${(x.t||0)>v?" nuevo":""}" data-avk="${x.v==="equipo"?"eq":"rut"}"><span class="avIc">${(x.t||0)>v?"🔵":"🔔"}</span><div class="grow" style="min-width:0;text-align:left"><b>${esc(x.ti||"")}</b><small>${esc(x.b||"")}</small><small class="muted">${avHace(x.t||0)}</small></div></button>`).join(""):`<p class="small muted" style="margin:4px 0">${typeof Notification!=="undefined"&&Notification.permission==="granted"?"Aquí aparecerán los avisos que le lleguen.":"Active sus avisos en Perfil › 🔔 Mis avisos para recibirlos aquí."}</p>`}
+   <button class="btn ghost" data-close style="width:100%;margin-top:12px">Cerrar</button>`,()=>{
+   $("#sheetPanel").querySelectorAll("[data-avk]").forEach(b=>b.onclick=()=>{const k=b.dataset.avk;closeSheet();setTimeout(()=>{if(k==="ag")avisosVer();else if(k==="eq")go("equipo");else{go("inicio");setTimeout(()=>{const r=$("#rutCard");if(r)r.scrollIntoView({behavior:"smooth",block:"center"})},250)}},200)})});
+  try{LS.set("pushVisto",Date.now())}catch(e){}bellPinta();try{if("clearAppBadge" in navigator)navigator.clearAppBadge().catch(()=>{})}catch(e){}}
 function l3SeenGet(){if(!l3Seen)l3Seen=LS.get("l3Seen")||{};return l3Seen}
 function l3Nuevo(id,t){const S=l3SeenGet(),k=id+"|"+t;if(S[k])return false;S[k]=Date.now();const lim=Date.now()-30*864e5;Object.keys(S).forEach(x=>{if(S[x]<lim)delete S[x]});LS.set("l3Seen",S);return true}
 function l3Err(e){try{console.warn("l3",e)}catch(x){}if(l3ErrV)return;l3ErrV=1;toast("⚠️ No pudimos revisar sus invitaciones. Revise su internet y vuelva a abrir la app.")}
@@ -5583,7 +5607,7 @@ async function loadMine(){
   if(profile.nombrePila)$("#hello").textContent="Hola, "+profile.nombrePila.split(" ")[0];
   try{const b=bw;if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}catch(e){}
   if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
-  welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();setTimeout(()=>{pushRefrescar();pushPinta();badgePinta()},6000);
+  welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();setTimeout(()=>{pushRefrescar();pushPinta();badgePinta();if(typeof Notification!=="undefined"&&Notification.permission==="granted")pushCargarDoc().then(()=>bellPinta()).catch(()=>{})},6000);
   contacts=await store.contacts();setTimeout(importarProspectos,1500);setTimeout(()=>loadSala(),2500);setTimeout(()=>loadL3(),1800);setTimeout(()=>{try{renderDT();dtCargar(false)}catch(e){}},2600);setTimeout(lcRevisar,6000);setTimeout(()=>loadEvA(),2200);loadCitas();setTimeout(irRevisar,1500);
   renderAll()}
 
@@ -5760,7 +5784,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261103000255";var busy=false,pend=null;
+(function(){var V="20261103000904";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
