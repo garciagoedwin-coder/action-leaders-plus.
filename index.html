@@ -1550,7 +1550,8 @@ async function sumarSeg(c){if(!c)return false;if((day.segL||[]).some(x=>x.cid===
   c.ultSeg=TODAY;c.updated=Date.now();if(FLOW.indexOf(c.stage||"Nuevo")>=0&&FLOW.indexOf(c.stage||"Nuevo")<FLOW.indexOf("Seguimiento")){c.stage="Seguimiento";c.stT=Date.now();c.stAuto="le dio seguimiento en la rutina"}
   try{await store.saveContact(Object.assign({},c));renderCRM()}catch(e){}
   try{irBump("seg")}catch(e){}toast("🔁 Seguimiento a "+c.name.split(" ")[0]+" registrado");return true}
-function abrirSeg(){let q="";const hoy=new Set((day.segL||[]).map(x=>x.cid));
+function irVolver(){if(window._irV){window._irV=0;setTimeout(()=>{try{irRender();irLista()}catch(e){}},350)}}
+function abrirSeg(){window._irV=0;let q="";const hoy=new Set((day.segL||[]).map(x=>x.cid));
   const pr=c=>({"Por cerrar":0,"Seguimiento":1,"Presentación":2,"Contactado":3,"Nuevo":4}[c.stage||"Nuevo"]||5);
   const L=()=>contacts.filter(c=>!hoy.has(c.id)&&c.stage!=="No interesado"&&(!q||nrmN(c.name).includes(nrmN(q)))).sort((a,b)=>pr(a)-pr(b)||(a.ultSeg||"").localeCompare(b.ultSeg||"")||(b.updated||0)-(a.updated||0)).slice(0,40);
   openSheet(`<div data-nofocus></div><h2>🔁 ¿A quién le dio seguimiento?</h2><p class="small muted" style="margin:0">Elíjalo de su CRM. Cada persona cuenta una vez al día.</p>
@@ -1558,7 +1559,7 @@ function abrirSeg(){let q="";const hoy=new Set((day.segL||[]).map(x=>x.cid));
    <button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
     const draw=()=>{const R=L();$("#sgL").innerHTML=R.length?R.map(c=>`<button type="button" class="ep-it" data-sg="${esc(c.id)}">${avHTML(c.name,false,false)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(c.name)}</b><span class="small muted">${esc(c.stage||"Nuevo")}${c.ultSeg?" · último seguimiento "+esc(c.ultSeg.slice(8)+"/"+c.ultSeg.slice(5,7)):""}</span></span><span style="color:var(--brand);font-weight:800">+</span></button>`).join(""):`<p class="small muted" style="margin:8px 0">${q?"No hay contactos con ese nombre.":contacts.length?"Ya registró seguimiento a todos hoy 👏":"Aún no tiene personas en su CRM. Primero agregue personas nuevas a la lista."}</p>`};draw();
     $("#sgQ").oninput=()=>{q=$("#sgQ").value.trim();draw()};
-    $("#sgL").onclick=async e=>{const b=e.target.closest("[data-sg]");if(!b)return;if(await sumarSeg(contacts.find(c=>c.id===b.dataset.sg)))closeSheet()}})}
+    $("#sgL").onclick=async e=>{const b=e.target.closest("[data-sg]");if(!b)return;if(await sumarSeg(contacts.find(c=>c.id===b.dataset.sg))){closeSheet();irVolver()}}})}
 // ---------- presentaciones con nombre ----------
 const semIni=()=>{const a=[lunesK(),TODAY.slice(0,7)+"-01",CONST_INI].sort();return a[2]}; // la semana empieza el lunes, pero nunca antes del día 1 del mes (todo lo de la app reinicia el día 1)
 const presSemana=()=>{const l=semIni(),o=[];for(let d=parseK(l);dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=k===TODAY?day:weekCache[k];((v&&v.presL)||[]).forEach(x=>o.push(Object.assign({f:k},x)))}return o};
@@ -1569,7 +1570,7 @@ async function sumarPres(c,ci){const ya=presSemana();if(c.id&&ya.some(x=>x.cid==
   try{irBump("pres")}catch(e){}toast("🎯 Presentación a "+c.name.split(" ")[0]+" registrada");return true}
 function quitarPres(){if(!(day.presentaciones>0))return;const L=day.presL||[];if(L.length){const x=L[L.length-1];day.presL=L.slice(0,-1);const cc=citas.find(y=>y.fecha===TODAY&&y.cid&&y.cid===x.cid&&y.hecha);if(cc){cc.hecha=false;saveCita(cc)}toast("Quitada: "+x.n.split(" ")[0])}
   day.presentaciones--;bumpReto("presentaciones",-1);renderTasks();saveDay();renderHoyCitas()}
-function abrirPres(){let q="";const ya=new Set(presSemana().map(x=>x.cid).filter(Boolean)),hoyC=new Set(citas.filter(x=>x.fecha===TODAY&&x.cid).map(x=>x.cid));
+function abrirPres(){window._irV=0;let q="";const ya=new Set(presSemana().map(x=>x.cid).filter(Boolean)),hoyC=new Set(citas.filter(x=>x.fecha===TODAY&&x.cid).map(x=>x.cid));
   const pr=c=>hoyC.has(c.id)?0:({"Presentación":1,"Contactado":2,"Seguimiento":3,"Nuevo":4}[c.stage||"Nuevo"]||5);
   const L=()=>contacts.filter(c=>!ya.has(c.id)&&c.stage!=="Socio"&&c.stage!=="Cliente"&&(!q||nrmN(c.name).includes(nrmN(q)))).sort((a,b)=>pr(a)-pr(b)||(b.updated||0)-(a.updated||0)).slice(0,30);
   openSheet(`<div data-nofocus></div><h2>🎯 ¿A quién le presentaste?</h2><p class="small muted" style="margin:0">Cada presentación lleva nombre. La misma persona cuenta una vez por semana.</p>
@@ -1584,10 +1585,10 @@ function abrirPres(){let q="";const ya=new Set(presSemana().map(x=>x.cid).filter
    <button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
     const draw=()=>{const R=L();$("#psL").innerHTML=R.length?R.map(c=>`<button type="button" class="ep-it" data-ps="${esc(c.id)}">${avHTML(c.name,false,false)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(c.name)}</b><span class="small muted">${hoyC.has(c.id)?"📅 Tiene cita hoy · ":""}${esc(c.stage||"Nuevo")}</span></span><span style="color:var(--brand);font-weight:800">+</span></button>`).join(""):`<p class="small muted" style="margin:8px 0">${q?"No hay contactos con ese nombre.":"No hay contactos disponibles. Agrega una persona nueva."}</p>`};draw();
     $("#psQ").oninput=()=>{q=$("#psQ").value.trim();draw()};
-    $("#psL").onclick=async e=>{const b=e.target.closest("[data-ps]");if(!b)return;if(await sumarPres(contacts.find(c=>c.id===b.dataset.ps)))closeSheet()};
+    $("#psL").onclick=async e=>{const b=e.target.closest("[data-ps]");if(!b)return;if(await sumarPres(contacts.find(c=>c.id===b.dataset.ps))){closeSheet();irVolver()}};
     $("#psNew").onclick=()=>{const f=$("#psNewF"),o=f.style.display==="none";f.style.display=o?"flex":"none";if(o)$("#psN").focus()};
     $("#psNewOk").onclick=async()=>{const nm=$("#psN").value.trim(),cc=$("#psC").value;let t=$("#psT").value.trim();const sp=splitPhone(t);t=sp.cc?sp.num:t.replace(/\D/g,"");if(nm.length<2){toast("Escribe el nombre");return}{const dup=yaEnCRM(nm,t);if(dup){toast("Ya está en su CRM como "+dup.name+": elíjalo de la lista");$("#psQ").value=dup.name.split(" ")[0];q=$("#psQ").value;draw();return}}LS.set("lastCC",cc);
-      const c={name:nm.slice(0,80),cc:sp.cc||cc,phone:t.slice(0,15),stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(c);if(!id)return;c.id=id;contacts.push(c);conNuevo(c);if(await sumarPres(c))closeSheet()}})}
+      const c={name:nm.slice(0,80),cc:sp.cc||cc,phone:t.slice(0,15),stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(c);if(!id)return;c.id=id;contacts.push(c);conNuevo(c);if(await sumarPres(c)){closeSheet();irVolver()}}})}
 const lunesK=()=>{const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7));return dkey(d)};
 function constStats(){const ini=k=>k<CONST_INI?CONST_INI:k,sc=k=>dayScore(k===TODAY?day:weekCache[k],k);
   const per=a=>{let act=0,comp=0,best=0,run=0,pres=0,pts=0;for(let d=parseK(ini(a));dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=sc(k),dd=(k===TODAY?day:weekCache[k])||{};pres+=+dd.presentaciones||0;pts+=ptsDia(dd,k);if(v>0)act++;if(v>=1){comp++;run++;best=Math.max(best,run)}else if(k!==TODAY)run=0}return{act,comp,best,pres,pts}};
@@ -5219,7 +5220,10 @@ const irBeta=()=>true; // abierto a todos el 1 nov 2026, 20:40
 const IR_DESDE="2026-11-02";
 const IR_W=[
  {n:1,k:"Despegue",ic:"🚀",fin:7},{n:2,k:"Presentador",ic:"🎤",fin:14},{n:3,k:"Cerrador",ic:"🔁",fin:21},{n:4,k:"Duplicador",ic:"🌱",fin:30}];
-const IR_HERR=[["pago","Dejé configurado mi pago recurrente"],["app","Instalé la app de inCruises"],["arr","Descargué ARRANQUE PRO"],["work","Workbook de presentación impreso"],["yess","Me registré en YessMovement"],["caja","Caja de herramientas lista"]];
+const IR_HERR_V=["pago","app","arr","work","yess","caja"]; // lista vieja (6): quien la completó se respeta
+const IR_HERR=[["alp","Instalé la app Action Leaders PLUS",1],["avisos","Activé mis avisos",1],["yess","Me registré en YessMovement"],["pres","Descargué la presentación"]];
+function irHerrAuto(k){try{if(k==="alp")return pushStandalone();if(k==="avisos")return typeof Notification!=="undefined"&&Notification.permission==="granted"&&!!LS.get("pushTk")}catch(e){}return false}
+function irPresUrl(){const A=(T.config&&T.config.accesos)||[];const p=A.find(a=>/presentaci/i.test(a.t||""));return p&&safeUrl(p.u)?p.u:""}
 function irSimM(){try{return isAdmin&&store.uid?LS.get("irSim:"+store.uid):null}catch(e){return null}}
 function irSt(){const s=irSimM();return Object.assign({},(regDoc&&(s?regDoc.irSim:regDoc.ir))||{})}
 let irSaveT=null,irPend={};
@@ -5241,7 +5245,7 @@ function irCtx(){const st=irSt(),ini=irIni(),iniD=dkey(new Date(ini)),C=contacts
   const dir=(mios||[]).filter(x=>(x.registro||{}).patrocinadorUid===store.uid&&Date.parse((x.registro||{}).fecha||"")>=ini);
   return {st,ini,nC:C.length,cont:C.filter(x=>(x.stage||"Nuevo")!=="Nuevo").length,pc:C.filter(x=>["Por cerrar","Socio","Cliente"].includes(x.stage)).length,
    pres:c.pres||0,seg:c.seg||0,lid:lid.length,l3:lid.filter(x=>x.l3&&!x.lz&&!x.lzE).length,mk,
-   herrN:IR_HERR.filter(h=>mk[h[0]]).length,porque:!!(snInfo&&String(snInfo.porque||"").trim()),meta:!!(st.meta&&st.meta.tiempo),
+   herrN:IR_HERR.filter(h=>mk[h[0]]||(h[2]&&irHerrAuto(h[0]))).length,herrV:IR_HERR_V.every(k=>mk[k]),porque:!!(snInfo&&String(snInfo.porque||"").trim()),meta:!!(st.meta&&st.meta.tiempo),
    pat:sim||!!miRegistro().patrocinadorUid,ref:!!String(profile.ref||"").trim(),val:!!st.val||!!irValOk,comp:!!(miComp()&&!miComp().no),
    act1,soc:dir.length>0,ayu:!!mk.ayu||dir.some(x=>x.ir&&x.ir.ini)||(citas||[]).some(x=>x.lzE&&String(x.fecha||"")>=iniD),racha:irRacha(),sim}}
 function irRacha(){let r=0;try{for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const k=dkey(d),s=dayScore(k===TODAY?day:weekCache[k],k);if(i===0&&s<1)continue;if(s>=1)r++;else break}}catch(e){}return r}
@@ -5249,19 +5253,20 @@ const irGoCRM=()=>{closeSheet();go("crm");try{const D=LS.get("tourOk")||{};if(!D
 function irItems(n){const its={
  1:[{k:"porque",g:"Define su meta",t:"Su “por qué”",s:"Lo más importante que quiere lograr con inCruises",a:x=>x.porque,b:["Escribir",()=>{closeSheet();go("suenos")}]},
     {k:"meta",g:"Define su meta",t:"Su meta y compromiso diario",s:"Tiempo, contactos y presentaciones al día",a:x=>x.meta,m:1,b:["Llenar",()=>irMeta()]},
+    {k:"pago",g:"Prepare su negocio",t:"Configure su pago recurrente",s:"En su cuenta de inCruises: su ahorro se paga solo cada mes y su cuenta no se inactiva",a:x=>!!x.mk.pago,m:1,b:["Ya lo configuré",()=>irMk("pago")]},
     {k:"pat",g:"Prepare su negocio",t:"Conectado con su patrocinador",a:x=>x.pat},
     {k:"ref",g:"Prepare su negocio",t:"Su link de referido listo",a:x=>x.ref,b:["Agregar",()=>{closeSheet();abrirMiPagina()}]},
-    {k:"herr",g:"Prepare su negocio",t:"Sus herramientas listas",s:"Pago recurrente, app de inCruises, Arranque Pro, Workbook, YessMovement y caja de herramientas",a:x=>x.herrN>=6,p:x=>x.herrN+" de 6",m:1,b:["Marcar",()=>irHerr()]},
+    {k:"herr",g:"Prepare su negocio",t:"Sus herramientas listas",s:"App Action Leaders PLUS, avisos, YessMovement y la presentación",a:x=>x.herrV||x.herrN>=IR_HERR.length,p:x=>x.herrV?"":x.herrN+" de "+IR_HERR.length,m:1,b:["Ver",()=>irHerr()]},
     {k:"act1",g:"Prepare su negocio",t:"Su primera actividad con su patrocinador",s:"Lo que no tiene día y hora, probablemente no suceda",a:x=>x.lid>0||!!x.mk.act1,b:["Agendar",()=>irAct1()],f:1},
     {k:"l30",g:"Su lista y primeras presentaciones",t:"30 contactos en su lista",s:"No seleccione quién cree que dirá que sí: primero escriba nombres",a:x=>x.nC>=30,p:x=>Math.min(x.nC,30)+" de 30",b:["Agregar",irGoCRM]},
     {k:"c10",g:"Su lista y primeras presentaciones",t:"Contactar a 10 personas",a:x=>x.cont>=10,p:x=>Math.min(x.cont,10)+" de 10",b:["Contactar",irGoCRM]},
-    {k:"p5",g:"Su lista y primeras presentaciones",t:"5 presentaciones",a:x=>x.pres>=5,p:x=>Math.min(x.pres,5)+" de 5",b:["Presentar",()=>{closeSheet();abrirPres()}]},
-    {k:"s5",g:"Su lista y primeras presentaciones",t:"Seguimiento a 5 prospectos",s:"Cada presentación termina con una decisión o un siguiente paso con fecha",a:x=>x.seg>=5,p:x=>Math.min(x.seg,5)+" de 5",b:["Registrar",()=>{closeSheet();abrirSeg()}]}],
- 2:[{k:"p10",g:"Presente acompañado",t:"10 presentaciones en total",a:x=>x.pres>=10,p:x=>Math.min(x.pres,10)+" de 10",b:["Presentar",()=>{closeSheet();abrirPres()}]},
+    {k:"p5",g:"Su lista y primeras presentaciones",t:"5 presentaciones",a:x=>x.pres>=5,p:x=>Math.min(x.pres,5)+" de 5",b:["Presentar",()=>{closeSheet();abrirPres();window._irV=1}]},
+    {k:"s5",g:"Su lista y primeras presentaciones",t:"Seguimiento a 5 prospectos",s:"Cada presentación termina con una decisión o un siguiente paso con fecha",a:x=>x.seg>=5,p:x=>Math.min(x.seg,5)+" de 5",b:["Registrar",()=>{closeSheet();abrirSeg();window._irV=1}]}],
+ 2:[{k:"p10",g:"Presente acompañado",t:"10 presentaciones en total",a:x=>x.pres>=10,p:x=>Math.min(x.pres,10)+" de 10",b:["Presentar",()=>{closeSheet();abrirPres();window._irV=1}]},
     {k:"l3",g:"Presente acompañado",t:"2 llamadas de 3 con su líder",a:x=>x.l3>=2,p:x=>Math.min(x.l3,2)+" de 2",b:["Pedir",()=>{closeSheet();pedirL3(null)}],f:1},
     {k:"ent",g:"Presente acompañado",t:"Conectarse a 1 entrenamiento del equipo",s:"Action Leaders Training o Llamada de Poder",a:x=>!!x.mk.ent,m:1,b:["Ya me conecté",()=>irMk("ent")]},
     {k:"l50",g:"Presente acompañado",t:"Lista de 50 contactos",a:x=>x.nC>=50,p:x=>Math.min(x.nC,50)+" de 50",b:["Agregar",irGoCRM]}],
- 3:[{k:"s15",g:"Siga y cierre",t:"10 seguimientos más (15 en total)",a:x=>x.seg>=15,p:x=>Math.min(x.seg,15)+" de 15",b:["Registrar",()=>{closeSheet();abrirSeg()}]},
+ 3:[{k:"s15",g:"Siga y cierre",t:"10 seguimientos más (15 en total)",a:x=>x.seg>=15,p:x=>Math.min(x.seg,15)+" de 15",b:["Registrar",()=>{closeSheet();abrirSeg();window._irV=1}]},
     {k:"pc3",g:"Siga y cierre",t:"3 prospectos en “Por cerrar”",a:x=>x.pc>=3,p:x=>Math.min(x.pc,3)+" de 3",b:["Ver CRM",irGoCRM]},
     {k:"val",g:"Siga y cierre",t:"Dar 1 presentación usted solo",s:"Su patrocinador confirma que ya puede presentar",a:x=>x.val,b:["Pedir validación",()=>irPedirVal()],f:1},
     {k:"comp",g:"Siga y cierre",t:"Su compromiso del mes",a:x=>x.comp,b:["Hacerlo",()=>{closeSheet();try{compAbrir()}catch(e){}}]}],
@@ -5269,18 +5274,29 @@ function irItems(n){const its={
     {k:"soc",g:"El ciclo continúa",t:"Su socio nuevo entra a la app",s:"Compártale su enlace de invitación",a:x=>x.soc,b:["Invitar",()=>irInvitar()]},
     {k:"ayu",g:"El ciclo continúa",t:"Ayudarlo a empezar su Inicio Rápido",s:"Agende su primera actividad con él",a:x=>x.ayu,m:1,b:["Ya lo hice",()=>irMk("ayu")]},
     {k:"r7",g:"El ciclo continúa",t:"Racha de 7 días seguidos",a:x=>x.racha>=7,p:x=>Math.min(x.racha,7)+" de 7"}]};return its[n]}
-function irEstado(){const x=irCtx(),W=IR_W.map(w=>{const L=irItems(w.n).map(i=>Object.assign({},i,{ok:!!i.a(x),pt:i.p?i.p(x):""}));return Object.assign({},w,{L,n2:L.filter(i=>i.ok).length})});
+function irEstado(){const x=irCtx(),md=(x.st&&x.st.med)||{},W=IR_W.map(w=>{const L=irItems(w.n).map(i=>Object.assign({},i,{ok:!!i.a(x)||!!md[w.n],pt:i.p?i.p(x):""}));return Object.assign({},w,{L,n2:L.filter(i=>i.ok).length})});
   let cur=W.find(w=>w.n2<w.L.length);const grad=!cur;if(!cur)cur=W[3];return {x,W,cur,grad,dia:irDia()}}
 function irAct1(){openSheet(`<h2>📅 Su primera actividad</h2><p class="small muted" style="margin:0">Agéndela con su patrocinador o con un líder de su línea.</p>
    <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px"><button class="btn" id="a1L3">📞 Pedir llamada de 3 a mi líder</button><button class="btn" id="a1Lz" style="background:linear-gradient(135deg,#B07D00,#F5B700);color:#fff">🚀 Planear mi lanzamiento con mi líder</button><button class="btn ghost" id="a1Ok">✅ Ya la agendé por WhatsApp o en persona</button></div>
    <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{$("#a1L3").onclick=()=>{closeSheet();setTimeout(()=>pedirL3(null),250)};$("#a1Lz").onclick=()=>{closeSheet();setTimeout(abrirLanz,250)};$("#a1Ok").onclick=()=>irMk("act1")})}
 function irMk(k){const st=irSt(),mk=Object.assign({},st.mk||{});mk[k]=Date.now();irSave({mk});closeSheet();toast("✅ Marcado");setTimeout(()=>{irRender();irLista()},300)}
 function irHerr(){const st=irSt(),mk=Object.assign({},st.mk||{});
-  openSheet(`<h2>🧰 Prepare su negocio</h2><p class="small muted" style="margin:0">Marque lo que ya tiene listo. Deje lo esencial y luego salga a la acción.</p>
-   <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">${IR_HERR.map(h=>`<button type="button" class="irTg${mk[h[0]]?" on":""}" data-h="${h[0]}"><span class="ck">${mk[h[0]]?"✓":""}</span>${esc(h[1])}</button>`).join("")}</div>
+  // las automáticas se guardan en cuanto se detectan
+  let ch=false;IR_HERR.forEach(h=>{if(h[2]&&!mk[h[0]]&&irHerrAuto(h[0])){mk[h[0]]=Date.now();ch=true}});if(ch)irSave({mk});
+  const pu=irPresUrl(),ios=pushIOS();
+  const fila=h=>{const on=!!mk[h[0]];const ck=`<span class="ck">${on?"✓":""}</span>`;
+   if(h[0]==="alp")return `<div class="irTg${on?" on":""}" style="flex-wrap:wrap">${ck}<span class="grow">${esc(h[1])}${on?"":`<br><small class="muted">${ios?"Safari › Compartir › Agregar a inicio, y ábrala desde el ícono 🛡️":"Menú del navegador › Instalar app o Agregar a pantalla de inicio"}</small>`}</span><small class="muted">Automático</small></div>`;
+   if(h[0]==="avisos")return `<div class="irTg${on?" on":""}">${ck}<span class="grow">${esc(h[1])}</span>${on?`<small class="muted">Automático</small>`:`<button type="button" class="btn pill" id="irHav" style="padding:6px 12px">Activar</button>`}</div>`;
+   if(h[0]==="pres")return `<div class="irTg${on?" on":""}">${ck}<span class="grow">${esc(h[1])}</span>${pu?`<a class="btn pill" id="irHpr" href="${esc(pu)}" target="_blank" rel="noopener" style="padding:6px 12px">Descargar</a>`:""}<button type="button" class="btn ghost" data-h="pres" style="padding:6px 10px">${on?"Quitar":"Ya la tengo"}</button></div>`;
+   return `<button type="button" class="irTg${on?" on":""}" data-h="${h[0]}">${ck}${esc(h[1])}</button>`};
+  openSheet(`<h2>🧰 Sus herramientas</h2><p class="small muted" style="margin:0">Lo esencial para trabajar con su equipo. Las automáticas se marcan solas.</p>
+   ${IR_HERR_V.every(k=>mk[k])?`<p class="small" style="margin:8px 0 0;color:var(--good,#16A34A)">✅ Este paso ya lo tenía completo con la lista anterior.</p>`:""}
+   <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">${IR_HERR.map(fila).join("")}</div>
    <button class="btn" id="irHok" style="width:100%;margin-top:12px">Guardar</button>`,()=>{
-    $("#sheet").querySelectorAll("[data-h]").forEach(b=>b.onclick=()=>{const k=b.dataset.h;if(mk[k])delete mk[k];else mk[k]=Date.now();b.classList.toggle("on",!!mk[k]);b.querySelector(".ck").textContent=mk[k]?"✓":""});
-    $("#irHok").onclick=()=>{irSave({mk});closeSheet();toast("✅ Guardado");setTimeout(irRender,300)}})}
+    $("#sheet").querySelectorAll("[data-h]").forEach(b=>b.onclick=()=>{const k=b.dataset.h;if(mk[k])delete mk[k];else mk[k]=Date.now();irSave({mk});irHerr()});
+    const pr=$("#irHpr");if(pr)pr.addEventListener("click",()=>{if(!mk.pres){mk.pres=Date.now();irSave({mk});setTimeout(irHerr,600)}});
+    const av=$("#irHav");if(av)av.onclick=async()=>{if(await pushActivar()){mk.avisos=Date.now();irSave({mk});irHerr()}};
+    $("#irHok").onclick=()=>{irSave({mk});closeSheet();toast("✅ Guardado");setTimeout(()=>{irRender();irLista()},300)}})}
 function irMeta(){const st=irSt(),m=st.meta||{},sue=((regDoc||{}).metas||{}).sueno||"";const op=(k,arr,v)=>`<div class="irOp" data-k="${k}">${arr.map(a=>`<button type="button" class="${String(v)===String(a)?"on":""}" data-v="${esc(a)}">${esc(a)}</button>`).join("")}</div>`;
   openSheet(`<h2>🎯 Define su meta</h2><p class="small muted" style="margin:0">Tomó una decisión. Ahora conviértala en acción.</p>
    <div class="field"><label>¿Cuánto necesitaría generar al mes para que este negocio reemplace su empleo u otra actividad? (USD)</label><input class="inp" id="irM1" inputmode="numeric" value="${esc(m.reemp||"")}" placeholder="$"></div>
