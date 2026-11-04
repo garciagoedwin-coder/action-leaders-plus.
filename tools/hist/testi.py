@@ -9,7 +9,7 @@ MAN = os.path.join(RAIZ, "data", "hist.json")
 EMO = re.compile("[\U0001F1E6-\U0001F1FF\U0001F300-\U0001FAFF☀-➿️]+")
 def limpia(t):
     t = EMO.sub("", t or "").strip().strip(",").strip()
-    t = re.sub(r"\s+", " ", t).replace(" ,", ",")
+    t = re.sub(r"\s+", " ", t).replace(" ,", ",").replace(" .", ".")
     return t
 def frase(t):
     t = limpia(t).strip('"“”').strip()
