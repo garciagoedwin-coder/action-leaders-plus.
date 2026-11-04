@@ -34,7 +34,10 @@ nuevas = json.loads(sys.argv[2]) if len(sys.argv) > 2 else []
 d = json.load(open('data/team.json'))
 cfg = d['config']
 
+UNIR0 = cfg.get('rankingUnir', {})
 for a in nuevas:
+    for k, v in UNIR0.items():  # la cuenta unida se guarda ya con el nombre de quien la trabaja (el banner y los avisos dicen ese nombre)
+        if same(k, a.get('patrocinador', '')): a['patrocinador'] = v
     if not any(same(x['socio'], a['socio']) for x in d['activaciones']):
         a.setdefault('fuente', 'gmail'); a.setdefault('id', slug(a['socio'])); d['activaciones'].append(a)
         if a['fecha'] > cfg.get('activacionesCorte', ''): cfg['activacionesCorte'] = a['fecha']
