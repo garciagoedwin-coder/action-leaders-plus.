@@ -3895,7 +3895,7 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo){n=nv(n);pat=nv(p
     g.fillStyle=grad(C-kw/2-110,C-kw/2-30);g.fillRect(C-kw/2-108,242,78,3);g.fillStyle=grad(C+kw/2+30,C+kw/2+110);g.fillRect(C+kw/2+30,242,78,3);
     await ring(fotoSrc,C,545,225,7,true,n,8);
     const Pn=String(n||"").trim().toUpperCase().split(/\s+/),a1=Pn[0]||"",a2=Pn.slice(1).join(" ");let zz=150;g.font="400 "+zz+"px "+BB;while((g.measureText(a1).width>940||g.measureText(a2).width>940)&&zz>80){zz-=4;g.font="400 "+zz+"px "+BB}
-    let y=820+zz*.86;g.textAlign="center";g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=6;g.fillStyle="#fff";g.fillText(a1,C,y);if(a2){y+=zz*.86;const w2=g.measureText(a2).width;g.fillStyle=grad(C-w2/2,C+w2/2);g.fillText(a2,C,y)}g.restore();
+    let y=795+zz*.86;g.textAlign="center";g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=6;g.fillStyle="#fff";g.fillText(a1,C,y);if(a2){y+=zz*.86;const w2=g.measureText(a2).width;g.fillStyle=grad(C-w2/2,C+w2/2);g.fillText(a2,C,y)}g.restore();
     let yb=y+80;g.font="800 26px "+BF;const lw=(()=>{let w=0;for(const ch of T.lab)w+=g.measureText(ch).width+5;return w-5})()+60;const fl=pais?bandera(pais):"";g.font="600 28px "+BF;const pt=pais?pais.toUpperCase():"";const pw2=pais?(fl?50:0)+(()=>{let w=0;for(const ch of pt)w+=g.measureText(ch).width+3.8;return w})()+18:0;
     let x0=C-(lw+pw2)/2;g.beginPath();g.roundRect(x0,yb-40,lw,60,30);if(T.pill){g.fillStyle=grad(x0,x0+lw);g.fill()}else{g.fillStyle="rgba(42,193,241,.14)";g.fill();g.lineWidth=2;g.strokeStyle=T.a;g.stroke()}
     g.font="800 26px "+BF;g.fillStyle=T.pill?"#111":"#fff";sp(T.lab,x0+30,yb-1,5);
