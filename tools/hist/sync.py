@@ -35,11 +35,17 @@ def bajar(fid, dest):
     b, ct = get("https://drive.usercontent.google.com/download?id=%s&export=download&confirm=t" % fid)
     im = Image.open(io.BytesIO(b))
     im = ImageOps.exif_transpose(im).convert("RGB")
+    return achicar(im, dest)
+
+def achicar(im, dest):
+    """Tamaño de historia: cubre 1080x1920; lo que pase de 3:4 en ancho se recorta al centro (nunca se ve)."""
     w, h = im.size
+    if w / h > 0.75:
+        nw = round(h * 0.75); x = (w - nw) // 2; im = im.crop((x, 0, x + nw, h)); w = nw
     s = min(1.0, max(1080 / w, 1920 / h))
     if s < 1:
         im = im.resize((round(w * s), round(h * s)), Image.LANCZOS)
-    im.save(dest, "JPEG", quality=80, optimize=True, progressive=True)
+    im.save(dest, "JPEG", quality=78, optimize=True, progressive=True)
     return im.size
 
 def main():
