@@ -3895,14 +3895,14 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo){n=nv(n);pat=nv(p
     g.fillStyle=grad(C-kw/2-110,C-kw/2-30);g.fillRect(C-kw/2-108,242,78,3);g.fillStyle=grad(C+kw/2+30,C+kw/2+110);g.fillRect(C+kw/2+30,242,78,3);
     await ring(fotoSrc,C,545,225,7,true,n,8);
     const Pn=String(n||"").trim().toUpperCase().split(/\s+/),a1=Pn[0]||"",a2=Pn.slice(1).join(" ");let zz=150;g.font="400 "+zz+"px "+BB;while((g.measureText(a1).width>940||g.measureText(a2).width>940)&&zz>80){zz-=4;g.font="400 "+zz+"px "+BB}
-    let y=860+zz*.86;g.textAlign="center";g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=6;g.fillStyle="#fff";g.fillText(a1,C,y);if(a2){y+=zz*.86;const w2=g.measureText(a2).width;g.fillStyle=grad(C-w2/2,C+w2/2);g.fillText(a2,C,y)}g.restore();
+    let y=820+zz*.86;g.textAlign="center";g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=6;g.fillStyle="#fff";g.fillText(a1,C,y);if(a2){y+=zz*.86;const w2=g.measureText(a2).width;g.fillStyle=grad(C-w2/2,C+w2/2);g.fillText(a2,C,y)}g.restore();
     let yb=y+80;g.font="800 26px "+BF;const lw=(()=>{let w=0;for(const ch of T.lab)w+=g.measureText(ch).width+5;return w-5})()+60;const fl=pais?bandera(pais):"";g.font="600 28px "+BF;const pt=pais?pais.toUpperCase():"";const pw2=pais?(fl?50:0)+(()=>{let w=0;for(const ch of pt)w+=g.measureText(ch).width+3.8;return w})()+18:0;
     let x0=C-(lw+pw2)/2;g.beginPath();g.roundRect(x0,yb-40,lw,60,30);if(T.pill){g.fillStyle=grad(x0,x0+lw);g.fill()}else{g.fillStyle="rgba(42,193,241,.14)";g.fill();g.lineWidth=2;g.strokeStyle=T.a;g.stroke()}
     g.font="800 26px "+BF;g.fillStyle=T.pill?"#111":"#fff";sp(T.lab,x0+30,yb-1,5);
     if(pais){let x=x0+lw+18;if(fl){g.font="36px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";g.textAlign="left";g.fillText(fl,x,yb+1);x+=50}g.font="600 28px "+BF;g.fillStyle="#E5E7EB";sp(pt,x,yb-2,3.8)}
     let yq=yb+100;g.textAlign="center";g.font="500 42px "+BF;g.fillStyle="rgba(255,255,255,.92)";g.fillText("Este es mi nuevo comienzo.",C,yq);
     const L2=window._L2T||"Elegí viajar más, conocer el mundo y construir algo propio al mismo tiempo.";g.font="700 40px "+BF;g.fillStyle=T.a;const LL=wrap(L2,880).slice(0,3);LL.forEach((t,i)=>{g.textAlign="center";g.fillText(t,C,yq+58*(i+1))});
-    const cy=Math.min(1450,yq+58*LL.length+60),ct="✈️ ¿Le cuento cómo?";g.font="800 32px "+BF;const cw=g.measureText(ct).width+80;g.save();g.shadowColor=T.glow;g.shadowBlur=40;g.beginPath();g.roundRect(C-cw/2,cy,cw,92,46);g.fillStyle=grad(C-cw/2,C+cw/2);g.fill();g.restore();
+    const cy=Math.min(1460,yq+58*LL.length+100),ct="✈️ ¿Le cuento cómo?";g.font="800 32px "+BF;const cw=g.measureText(ct).width+80;g.save();g.shadowColor=T.glow;g.shadowBlur=40;g.beginPath();g.roundRect(C-cw/2,cy,cw,92,46);g.fillStyle=grad(C-cw/2,C+cw/2);g.fill();g.restore();
     g.fillStyle=T.pill?"#111":"#062B3A";g.textAlign="center";g.textBaseline="middle";g.fillText(ct,C,cy+47);g.textBaseline="alphabetic";g.fillStyle=T.a;g.font="700 19px "+BF;sp("RESPÓNDAME «CÓMO»",C,cy+138,3.6,"center");
     return cv}
   await ring(fotoSrc,300,528,222,7,true,n,8);
