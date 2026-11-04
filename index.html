@@ -4136,10 +4136,10 @@ function presDatos(e){const d=parseK(e.fecha),eu=/europa/i.test(e.titulo||"");
   return{dia:DAYS_L[d.getDay()].toUpperCase(),num:String(d.getDate()).padStart(2,"0"),mes:MONTHS[d.getMonth()].slice(0,3).toUpperCase(),hora:hz("America/Tegucigalpa")||h12(e.hora).toUpperCase(),Z,
     p:e.responsable||"",ed:e.edifica||"",edL:(typeof edLbl==="function"?edLbl(e):"Edifica").toUpperCase(),fondo:PRES_DIA[d.getDay()]}}
 const PRES_L={
-  h:{W:1080,H:1920,logo:[68,206,36],live:[823,197,189,54],kick:[189,292,702,48],a:[354,172,196],m:[528,50,40],b:[582,196,220],sub:[790,100,36,"#e3e9f2"],
+  h:{W:1080,H:1920,logo:["c",1598,40],live:null,kick:[189,292,702,48],a:[354,172,196],m:[528,50,40],b:[582,196,220],sub:[790,100,36,"#e3e9f2"],
      card:{y:926,h:334,x:[68,551],w:461,ph:[946,184],col:1,small:[1142,30,24],name:[1174,46,42],rk:[1220,30,27]},
-     when:[68,1308,944,166],day:[188,22,98,24],hn:[282,1320,80,90,27],ch:[1406,48,26],ft:[1508,56],tag:1586},
-  p:{W:1080,H:1350,logo:[64,65,36],live:[827,56,189,54],kick:[179,196,722,50],a:[260,182,212],m:[448,43,34],b:[501,200,232],sub:[721,81,30,"#c9d2df"],
+     when:[68,1308,944,166],day:[188,22,98,24],hn:[282,1320,80,90,27],ch:[1406,48,26],ft:[1508,56],tag:0},
+  p:{W:1080,H:1350,logo:[64,65,36],live:null,kick:[179,196,722,50],a:[260,182,212],m:[448,43,34],b:[501,200,232],sub:[721,81,30,"#c9d2df"],
      card:{y:846,h:166,x:[64,551],w:465,ph:[865,128],col:0,small:[883,21,17],name:[910,35,33],rk:[949,26,21]},
      when:[64,1042,952,187],day:[230,22,112,24],hn:[321,1074,68,76,22],ch:[1156,41,20],ft:[1255,62],tag:0}};
 async function presCanvas(e,fmt,fondo){fmt=fmt==="p"?"p":"h";const L=PRES_L[fmt],D=presDatos(e),cv=document.createElement("canvas");cv.width=L.W;cv.height=L.H;const g=cv.getContext("2d");
@@ -4147,8 +4147,8 @@ async function presCanvas(e,fmt,fondo){fmt=fmt==="p"?"p":"h";const L=PRES_L[fmt]
   fondo=PRES_FONDOS.some(x=>x.k===fondo)?fondo:D.fondo;
   g.fillStyle="#04060b";g.fillRect(0,0,L.W,L.H);const bg=await imgLoad("media/flyers/pres/"+fondo+"-"+fmt+".jpg?v=1");if(bg)g.drawImage(bg,0,0,L.W,L.H);
   // logo + EN VIVO
-  const lg=await imgLoad("media/logo-plus.png");if(lg){const hh=L.logo[2],ww=lg.width*hh/lg.height;sombra("rgba(0,0,0,.6)",10,()=>g.drawImage(lg,L.logo[0],L.logo[1],ww,hh))}
-  {const[x,y,w,h]=L.live;rr(x,y,w,h,h/2);g.fillStyle="rgba(0,0,0,.5)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.28)";g.stroke();
+  const lg=await imgLoad("media/logo-plus.png");if(lg){const hh=L.logo[2],ww=lg.width*hh/lg.height,lx=L.logo[0]==="c"?(L.W-ww)/2:L.logo[0];sombra("rgba(0,0,0,.6)",10,()=>g.drawImage(lg,lx,L.logo[1],ww,hh))}
+  if(L.live){const[x,y,w,h]=L.live;rr(x,y,w,h,h/2);g.fillStyle="rgba(0,0,0,.5)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.28)";g.stroke();
    const dx=x+24,dy=y+h/2;g.beginPath();g.arc(dx,dy,13,0,Math.PI*2);g.fillStyle="rgba(255,59,59,.22)";g.fill();sombra("#ff3b3b",18,()=>{g.beginPath();g.arc(dx,dy,7,0,Math.PI*2);g.fillStyle="#ff3b3b";g.fill()});
    tx("EN VIVO",dx+20,y,h,"700 24px ALO, Figtree, sans-serif","#fff","left","4px")}
   // píldora PRESENTACIÓN DE NEGOCIOS
