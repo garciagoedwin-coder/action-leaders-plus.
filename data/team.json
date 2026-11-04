@@ -49,13 +49,13 @@
    "actSemana": 1
   },
   {
-   "nombre": "Edwin Alexander Garcia Gomez",
+   "nombre": "Edwin García Go",
    "linea": "",
    "presentaciones": 0,
    "presSemana": 0,
    "registros": 0,
    "regSemana": 0,
-   "id": "edwin-alexander-garcia-gomez",
+   "id": "edwin-garcia-go",
    "activaciones": 1,
    "volumen": 200,
    "actSemana": 1
@@ -2776,7 +2776,7 @@
   {
    "socio": "Nelson mauricio Fajardo escobar",
    "paquete": "Classic",
-   "patrocinador": "Edwin Alexander Garcia Gomez",
+   "patrocinador": "Edwin García Go",
    "fecha": "2026-11-04T14:55:07Z",
    "ek": "85e746",
    "wk": "22688b",
@@ -2816,7 +2816,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-04T09:35:00-06:00",
+  "rankingActualizado": "2026-11-04T09:58:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -4067,7 +4067,8 @@
    "dias": 7
   },
   "rankingUnir": {
-   "Gloria Stephanie Aranda Midence": "Edwin Alexander Garcia Gomez"
+   "Gloria Stephanie Aranda Midence": "Edwin García Go",
+   "Edwin Alexander Garcia Gomez": "Edwin García Go"
   }
  },
  "fotos": [
