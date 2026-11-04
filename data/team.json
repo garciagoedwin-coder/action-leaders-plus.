@@ -3804,9 +3804,9 @@
    "mes": "2026-11",
    "fin": "2026-12-01T00:00:00Z",
    "vol": {
-    "t": "Premio por anunciar",
-    "ic": "🚀",
-    "pend": true
+    "t": "Viaje a Roatán · 2 noches, 3 días",
+    "ic": "🏝️",
+    "min": 1000
    },
    "racha": {
     "t": "Libros Go Pro",
