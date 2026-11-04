@@ -39,6 +39,8 @@ def main():
             l = lugar(r[lc]) if len(fotos) == 1 else ""
             for i in fotos:
                 e = {"n": nm, "l": l, "f": f}
+                cs = ids(r[9])
+                if cs: e["c"] = cs[0]
                 e.update({k: v for k, v in (aj.get(i) or {}).items()})
                 tx[i] = e
     man["tx"] = tx

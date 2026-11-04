@@ -9,7 +9,14 @@ try:
 except Exception:
     pass
 
-CARPETAS = {"ev": "1Lk5vMZ2hNUxHmFhvLsNffF1kk3TtF1kt", "vi": "14o0vxerCDS3CB7RVL2l-Kl6JoVNmnvrQ"}
+CARPETAS = {"ev": ["1Lk5vMZ2hNUxHmFhvLsNffF1kk3TtF1kt"],
+            # Viajeros: carpeta curada + Foto 1/2/3 del formulario de testimonios (de estas solo las que tienen testimonio autorizado en tx)
+            "vi": ["14o0vxerCDS3CB7RVL2l-Kl6JoVNmnvrQ", "1J6VQaW_letmGdhB8ONxwyXFR_rw_ByMi2dKItcpQMw9-iHuUTmCaX8py-9Mvih7Pd7fLatNk",
+                   "1NiybrM9uDzZ_CraprBh4Q9ASrh6CziGY27bljprM5rxXITid2i83SN4ScOQ7eoIQ7mpNtm5e", "1ZEoZj9YGXS0F7LtkfMTAB6xEhLtvTi98Y6_frnrKv2MxoeYBzJm47VPaffKeffGyGGFzOBdc"],
+            # caras para el círculo del testimonio (solo las que aparecen como tx[*].c)
+            "caras": ["1mCNqNU-lNl84e5Lyz0hbgqFaMcOOeGJoIn0oIMHo_e7ykpq3QWmPCLJNr0LOWFSPZIicFxGk"]}
+FORM = {"1J6VQaW_letmGdhB8ONxwyXFR_rw_ByMi2dKItcpQMw9-iHuUTmCaX8py-9Mvih7Pd7fLatNk", "1NiybrM9uDzZ_CraprBh4Q9ASrh6CziGY27bljprM5rxXITid2i83SN4ScOQ7eoIQ7mpNtm5e",
+        "1ZEoZj9YGXS0F7LtkfMTAB6xEhLtvTi98Y6_frnrKv2MxoeYBzJm47VPaffKeffGyGGFzOBdc", "1mCNqNU-lNl84e5Lyz0hbgqFaMcOOeGJoIn0oIMHo_e7ykpq3QWmPCLJNr0LOWFSPZIicFxGk"}
 RAIZ = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 MAN = os.path.join(RAIZ, "data", "hist.json")
 UA = {"User-Agent": "Mozilla/5.0 (ActionLeadersSync)"}
@@ -35,10 +42,12 @@ def listar(fid):
             out.append((x, n))
     return out
 
-def bajar(fid, dest):
+def bajar(fid, dest, cara=False):
     b, ct = get("https://drive.usercontent.google.com/download?id=%s&export=download&confirm=t" % fid)
     im = Image.open(io.BytesIO(b))
     im = ImageOps.exif_transpose(im).convert("RGB")
+    if cara:  # miniatura cuadrada-ish para el círculo
+        im.thumbnail((480, 480)); im.save(dest, "JPEG", quality=82, optimize=True); return im.size
     return achicar(im, dest)
 
 def achicar(im, dest):
@@ -55,11 +64,21 @@ def achicar(im, dest):
 def main():
     man = json.load(open(MAN)) if os.path.exists(MAN) else {}
     cambio = False
-    for k, fid in CARPETAS.items():
-        try:
-            vivos = listar(fid)
-        except Exception as e:
-            print("No pude listar", k, e); continue
+    tx = man.get("tx", {})
+    caras = {v.get("c") for v in tx.values() if v.get("c")}
+    for k, fids in CARPETAS.items():
+        vivos, fallo = [], False
+        for fid in fids:
+            try:
+                L = listar(fid)
+            except Exception as e:
+                print("No pude listar", k, fid[:12], e); fallo = True; continue
+            L = [(x, n) for x, n in L if x not in set(man.get("fuera", []))]  # fotos que Edwin pidió quitar
+            if fid in FORM:
+                L = [(x, n) for x, n in L if (x in caras if k == "caras" else x in tx)]
+            print(k, fid[:12], len(L)); vivos += L
+        if fallo and not vivos:
+            continue
         d = os.path.join(RAIZ, "media", "hist", k); os.makedirs(d, exist_ok=True)
         prev = {x["id"]: x for x in man.get(k, [])}
         nuevos = []
@@ -67,7 +86,7 @@ def main():
             if x in prev and os.path.exists(os.path.join(d, x + ".jpg")):
                 nuevos.append(prev[x]); continue
             try:
-                w, h = bajar(x, os.path.join(d, x + ".jpg"))
+                w, h = bajar(x, os.path.join(d, x + ".jpg"), k == "caras")
                 nuevos.append({"id": x, "w": w, "h": h}); cambio = True; print("+", k, n)
             except Exception as e:
                 print("No pude bajar", k, n, e)
