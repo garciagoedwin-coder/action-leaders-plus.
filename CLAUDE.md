@@ -469,3 +469,4 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - vL = creador + anfitriones + línea de arriba del creador con rango ≥ Team Leader (rsvpVL; se guarda al crear y lo completa el creador al abrir una junta vieja).
 - rsvpRevisar (al pintar la agenda de eventos y al volver a la app, máx. cada 5 min, solo juntas próximas donde el socio compartió su link, LS rsvpI:id): aviso "🎉 X confirmó su asistencia" y lo agrega a su CRM (Contactado, nota "✅ Confirmó la junta del …", next = fecha; si ya existe por los últimos 8 dígitos solo agrega la nota).
 - Reglas: respaldo/reglas-rsvp.txt (Edwin debe pegarlas en Firebase).
+- (4 nov) rsvpRevisar: los contactos nuevos se agregan también a `contacts` en memoria (antes solo se veían al recargar el CRM).

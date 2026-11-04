@@ -4533,7 +4533,7 @@ let rsvpRevT=0;async function rsvpRevisar(){if(!store.db||!store.uid||!EVA||Date
     if(!nuevos.length)continue;LS.set(k,[...ya,...nuevos.map(r=>r.id)].slice(-300));
     for(const r of nuevos){const w8=String(r.w||"").replace(/\D/g,"").slice(-8);let c=(contacts||[]).find(x=>w8&&String(x.phone||"").replace(/\D/g,"").slice(-8)===w8);const nt="✅ Confirmó "+(e.tipo==="gran"?"el evento":"la junta")+" del "+niceDate(e.fecha);
       if(c){if(!String(c.note||"").includes(nt)){c.note=(c.note?c.note+" · ":"")+nt;c.next=e.fecha;c.updated=Date.now();try{await store.saveContact(c)}catch(z){}}}
-      else{c={name:String(r.n||"").slice(0,80),cc:String(r.cc||"504"),phone:String(r.w||"").slice(0,15),stage:"Contactado",note:nt,next:e.fecha,updated:Date.now()};try{await store.saveContact(c)}catch(z){}}}
+      else{c={name:String(r.n||"").slice(0,80),cc:String(r.cc||"504"),phone:String(r.w||"").slice(0,15),stage:"Contactado",note:nt,next:e.fecha,updated:Date.now()};try{const id=await store.saveContact(c);if(id){c.id=id;contacts.push(c)}}catch(z){}}}
     if(vis){const f=String(nuevos[0].n||"").split(" ")[0];avisoTop(nuevos.length>1?`🎉 ${nuevos.length} personas confirmaron`:`🎉 ${f} confirmó su asistencia`,(e.tipo==="gran"?"Gran evento":"Junta de negocios")+" · "+niceDate(e.fecha)+" · ya está en su CRM",()=>rsvpVer(e))}
     try{renderCRM()}catch(z){}}catch(x){}}}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(()=>{try{rsvpRevisar()}catch(e){}},1500)});
