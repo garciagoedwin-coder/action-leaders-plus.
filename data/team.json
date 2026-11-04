@@ -47,6 +47,18 @@
    "activaciones": 1,
    "volumen": 200,
    "actSemana": 1
+  },
+  {
+   "nombre": "Edwin Alexander Garcia Gomez",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "edwin-alexander-garcia-gomez",
+   "activaciones": 1,
+   "volumen": 200,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -2760,6 +2772,16 @@
    "wk": "b78e90",
    "fuente": "gmail",
    "id": "roger-nunez-orozco"
+  },
+  {
+   "socio": "Nelson mauricio Fajardo escobar",
+   "paquete": "Classic",
+   "patrocinador": "Gloria Stephanie Aranda Midence",
+   "fecha": "2026-11-04T14:55:07Z",
+   "ek": "85e746",
+   "wk": "22688b",
+   "fuente": "gmail",
+   "id": "nelson-mauricio-fajardo-escobar"
   }
  ],
  "academia": [],
@@ -2784,7 +2806,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-04T04:55:07Z",
+  "activacionesCorte": "2026-11-04T14:55:07Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -2794,7 +2816,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-03T23:28:00-06:00",
+  "rankingActualizado": "2026-11-04T09:35:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -3673,7 +3695,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-11-04T05:28:03Z",
+   "v": "2026-11-04T15:35:39Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "0225a9": "2026-10-27T10:09:44Z",
@@ -3736,7 +3758,6 @@
     "7c3fe0": "2026-10-14T20:33:07Z",
     "7e760f": "2026-10-24T23:08:55Z",
     "7ebd40": "2026-10-23T06:09:12Z",
-    "811595": "2026-11-06T10:08:01Z",
     "83a83d": "2026-10-31T22:45:55Z",
     "8495fe": "2026-10-30T06:38:51Z",
     "866efb": "2026-10-26T21:08:59Z",
