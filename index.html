@@ -5493,7 +5493,8 @@ const REG_F=[{k:"nombre",e:"1500475489",t:"Nombre completo",ty:"text",ac:"name"}
   {k:"plan",e:"771484550",t:"Plan",ty:"select",opts:["Classic","Premium"]},{k:"pais",e:"987456673",t:"País",ty:"text",ac:"country-name"},{k:"ciudad",e:"1482142378",t:"Ciudad",ty:"text",ac:"address-level2"}];
 const AVISO_FORM="https://forms.gle/YNAGLjLTv9VTk33bA";
 const WEL_DEF={video:"6ySNnmhDjwk",whatsapp:"https://chat.whatsapp.com/H2qNlABTfsAAuZ12JqCiKi",caja:"https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"};
-const WEL_PARTS=[0,1,2,3,4,5].map(i=>"media/bienvenida-"+i+".mp4?v=720"),WEL_DUR=[180,180,180,180,180,173],WEL_TOT=WEL_DUR.reduce((a,b)=>a+b,0);
+// 4 nov: solo la parte donde Edwin habla (4:41); la pantalla compartida se quitó
+const WEL_PARTS=["media/bienvenida-corto.mp4?v=1"],WEL_DUR=[281],WEL_TOT=WEL_DUR.reduce((a,b)=>a+b,0);
 let welVidFail=false,welUnl=false;
 const welVidPct=()=>{let m=0;try{m=(JSON.parse(localStorage.getItem("alp:welpos")||"{}").max)||0}catch(e){}return Math.min(100,Math.round(m/WEL_TOT*100))};
 let welState={},welName="",welTimer=null,welOpenedAt=0;
@@ -5528,7 +5529,7 @@ function renderWel(){const el=$("#wel");
    <p class="muted">Es un gusto tenerte en el equipo.<br>Desde hoy no caminas solo: vamos a crecer juntos.</p>
    <p><b>Lo más importante ahora es tomar acción ya.</b><br>Completa ${steps.length===1?"este paso":"estos "+steps.length+" pasos"} para entrar a la app.</p>`;
   const vh=`<div class="wel-h">${badge("video")}<h3>Mira tu video de bienvenida</h3></div>`;
-  const vbtn=`<button class="btn pill dark" id="welVidOk" ${welState.video||!manualOk?"disabled":""}>${welState.video?"Video visto ✓":manualOk?"Ya vi mi video":"🔒 Mira el video para continuar · "+welVidPct()+"%"}</button>`;
+  const vbtn=`<button class="btn pill dark" id="welVidOk" ${welState.video||!manualOk?"disabled":""}>${welState.video?"Video visto ✓":manualOk?"Ya vi mi video":"🔒 Vea el video para continuar · "+welVidPct()+"%"}</button>`;
   const rest=`${n("whatsapp")?`<div class="wel-step"><div class="wel-h">${badge("whatsapp")}<h3>Únete al grupo del equipo</h3></div>
     <p class="small muted">En nuestro grupo de WhatsApp compartimos los entrenamientos de la semana, avisos importantes y el apoyo de todo el equipo. Al solicitar el ingreso, te aprobamos en breve.</p>
     <a class="btn pill wa" href="${esc(c.whatsapp)}" target="_blank" rel="noopener" data-wel="whatsapp">${welState.whatsapp?"Grupo de WhatsApp ✓":"Unirme al grupo de WhatsApp"}</a></div>`:""}
@@ -5587,16 +5588,16 @@ function renderWel(){const el=$("#wel");
   clearTimeout(welTimer);if(!manualOk)welTimer=setTimeout(renderWel,Math.max(1000,120000-(Date.now()-welOpenedAt)+200))}
 function welVideo(){const box=$("#welVid");if(!box)return;
   let pos={i:0,t:0,max:0};try{pos=Object.assign(pos,JSON.parse(localStorage.getItem("alp:welpos")||"{}"))}catch(e){}
-  if(welState.video)pos={i:0,t:0,max:WEL_TOT};
+  if(welState.video)pos={i:0,t:0,max:WEL_TOT};if(!(pos.i>=0&&pos.i<WEL_PARTS.length)||pos.t>WEL_DUR[pos.i||0])pos={i:0,t:0,max:Math.min(pos.max||0,WEL_TOT)};pos.max=Math.min(pos.max||0,WEL_TOT);
   const v=document.createElement("video");v.controls=true;v.playsInline=true;v.setAttribute("playsinline","");v.preload="metadata";v.poster="media/poster.jpg?v=720";
   v.setAttribute("controlsList","nodownload noplaybackrate");box.appendChild(v);
   const base=i=>WEL_DUR.slice(0,i).reduce((a,b)=>a+b,0);
   let cur=pos.i,maxG=pos.max||0,resumeT=pos.t||0,seekFix=false,lastSave=0;
-  const ui=()=>{const g=base(cur)+(v.currentTime||0);$("#welPart").textContent="Parte "+(cur+1)+" de "+WEL_PARTS.length;const pc=Math.min(100,Math.round(Math.max(maxG,g)/WEL_TOT*100));$("#welPct").textContent=pc+"% visto";$("#welBar").style.width=pc+"%";
-    if(!welState.video&&!welUnl){const b=$("#welVidOk");if(pc>=90){welUnl=true;try{save()}catch(e){}renderWel();toast("¡Muy bien! Ya puedes tocar «Ya vi mi video» ✅")}else if(b)b.textContent="🔒 Mira el video para continuar · "+pc+"%"}};
+  const ui=()=>{const g=base(cur)+(v.currentTime||0);$("#welPart").textContent=WEL_PARTS.length>1?"Parte "+(cur+1)+" de "+WEL_PARTS.length:"Video de bienvenida · 4 min";const pc=Math.min(100,Math.round(Math.max(maxG,g)/WEL_TOT*100));$("#welPct").textContent=pc+"% visto";$("#welBar").style.width=pc+"%";
+    if(!welState.video&&!welUnl){const b=$("#welVidOk");if(pc>=90){welUnl=true;try{save()}catch(e){}renderWel();toast("¡Muy bien! Ya puede tocar «Ya vi mi video» ✅")}else if(b)b.textContent="🔒 Vea el video para continuar · "+pc+"%"}};
   const save=()=>{try{localStorage.setItem("alp:welpos",JSON.stringify({i:cur,t:v.currentTime||0,max:maxG}))}catch(e){}};
   const blobs={},getPart=i=>Promise.resolve(WEL_PARTS[i]);
-  const load=async(i,t,play)=>{cur=i;const pl=$("#welPart");if(pl)pl.textContent="Cargando parte "+(i+1)+" de "+WEL_PARTS.length+"…";
+  const load=async(i,t,play)=>{cur=i;const pl=$("#welPart");if(pl)pl.textContent=WEL_PARTS.length>1?"Cargando parte "+(i+1)+" de "+WEL_PARTS.length+"…":"Cargando video…";
     v.onloadedmetadata=()=>{if(t)v.currentTime=t;ui();if(play)v.play().catch(()=>{})};
     let src;try{src=await getPart(i)}catch(e){src=WEL_PARTS[i]}
     if(cur!==i)return;v.src=src;Object.keys(blobs).forEach(k=>{if(+k<i){blobs[k].then(u=>URL.revokeObjectURL(u)).catch(()=>{});delete blobs[k]}});
