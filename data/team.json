@@ -11,6 +11,42 @@
    "activaciones": 1,
    "volumen": 500,
    "actSemana": 0
+  },
+  {
+   "nombre": "Jadmin walberto Hernandez torres",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "jadmin-walberto-hernandez-torres",
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
+  },
+  {
+   "nombre": "Denia v Rivas rocha",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "denia-v-rivas-rocha",
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
+  },
+  {
+   "nombre": "Josue Gerardo Delgado Moran",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "josue-gerardo-delgado-moran",
+   "activaciones": 1,
+   "volumen": 200,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -51,7 +87,7 @@
    "nuevos": 0,
    "presentaciones": 0,
    "rango": "Marketing Director",
-   "volumen": 0,
+   "volumen": 200,
    "volumenDetalle": "",
    "id": "josue-delgado",
    "volumenHoja": 0,
@@ -315,7 +351,7 @@
    "nuevos": 0,
    "presentaciones": 0,
    "rango": "Team Leader",
-   "volumen": 0,
+   "volumen": 500,
    "volumenDetalle": "",
    "id": "denia-rocha",
    "volumenHoja": 0,
@@ -2694,6 +2730,36 @@
    "wk": "a8a348",
    "fuente": "gmail",
    "id": "ilian-ester-figueroa-bardales"
+  },
+  {
+   "socio": "Edwing isai Ayala paz",
+   "paquete": "Premium",
+   "patrocinador": "Jadmin walberto Hernandez torres",
+   "fecha": "2026-11-04T00:37:46Z",
+   "ek": "54d196",
+   "wk": "680310",
+   "fuente": "gmail",
+   "id": "edwing-isai-ayala-paz"
+  },
+  {
+   "socio": "Loren veronica Rivas ballesteros",
+   "paquete": "Premium",
+   "patrocinador": "Denia v Rivas rocha",
+   "fecha": "2026-11-03T23:38:10Z",
+   "ek": "30d4fc",
+   "wk": "16a9ac",
+   "fuente": "gmail",
+   "id": "loren-veronica-rivas-ballesteros"
+  },
+  {
+   "socio": "Roger Nunez orozco",
+   "paquete": "Classic",
+   "patrocinador": "Josue Gerardo Delgado Moran",
+   "fecha": "2026-11-04T04:55:07Z",
+   "ek": "118b89",
+   "wk": "b78e90",
+   "fuente": "gmail",
+   "id": "roger-nunez-orozco"
   }
  ],
  "academia": [],
@@ -2718,7 +2784,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-01T23:55:03Z",
+  "activacionesCorte": "2026-11-04T04:55:07Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
@@ -2728,7 +2794,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-02T18:56:00-06:00",
+  "rankingActualizado": "2026-11-03T23:28:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -3607,7 +3673,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-11-03T15:56:19Z",
+   "v": "2026-11-04T05:28:03Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "0225a9": "2026-10-27T10:09:44Z",
@@ -3622,7 +3688,6 @@
     "202cbf": "2026-10-30T19:40:38Z",
     "2051ad": "2026-11-05T23:07:59Z",
     "214d63": "2026-10-21T19:10:36Z",
-    "219e7f": "2026-11-02T00:55:05Z",
     "22983b": "2026-10-30T19:40:38Z",
     "23ab00": "2026-10-31T23:15:42Z",
     "24b834": "2026-10-24T20:44:30Z",
@@ -3674,7 +3739,6 @@
     "811595": "2026-11-06T10:08:01Z",
     "83a83d": "2026-10-31T22:45:55Z",
     "8495fe": "2026-10-30T06:38:51Z",
-    "85783b": "2026-11-02T00:55:05Z",
     "866efb": "2026-10-26T21:08:59Z",
     "87c762": "2026-11-02T05:59:47Z",
     "8941f8": "2026-11-02T19:45:41Z",
@@ -3712,12 +3776,10 @@
     "be31d7": "2026-10-31T22:45:55Z",
     "bf2c48": "2026-10-24T23:08:55Z",
     "c02061": "2026-10-28T11:41:24Z",
-    "c0aae1": "2026-10-26T01:56:44Z",
     "c190e8": "2026-10-16T00:07:48Z",
     "c47039": "2026-11-05T23:07:57Z",
     "c5a9e7": "2026-10-24T04:09:05Z",
     "c7ab10": "2026-11-03T00:59:03Z",
-    "cb8016": "2026-10-26T01:56:44Z",
     "cc6f2b": "2026-10-23T06:09:12Z",
     "ce2260": "2026-10-26T21:08:59Z",
     "d264dd": "2026-10-31T03:09:09Z",
@@ -3762,9 +3824,9 @@
    "mes": "2026-11",
    "fin": "2026-12-01T00:00:00Z",
    "vol": {
-    "t": "Premio por anunciar",
-    "ic": "🚀",
-    "pend": true
+    "t": "Viaje a Roatán · 2 noches, 3 días",
+    "ic": "🏝️",
+    "min": 1500
    },
    "racha": {
     "t": "Libros Go Pro",
@@ -3978,6 +4040,12 @@
    "t": "🔔 Nuevo: active sus avisos",
    "sub": "La app le avisará antes de que pierda su racha y cuando entre un socio nuevo a su equipo. Toque «Activar» en Inicio o vaya a Perfil › Mis avisos.",
    "hasta": "2026-11-10T06:00:00Z"
+  },
+  "retoArranque": {
+   "id": "arr-nov26",
+   "desde": "2026-11-04T01:00:00Z",
+   "hasta": "2026-11-09T00:00:00Z",
+   "dias": 7
   }
  },
  "fotos": [

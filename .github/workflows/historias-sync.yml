@@ -1,0 +1,28 @@
+name: Fotos de historias (Drive)
+on:
+  schedule:
+    - cron: "17 10 * * *"   # 4:17 a.m. HN
+    - cron: "17 22 * * *"   # 4:17 p.m. HN
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["tools/hist/sync.py", ".github/workflows/historias-sync.yml"]
+concurrency: historias-sync
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install pillow
+      - run: python3 tools/hist/sync.py
+      - name: Guardar
+        run: |
+          git add -A media/hist data/hist.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "Nada nuevo"; exit 0; fi
+          git -c user.name="Action Leaders Bot" -c user.email="actions@users.noreply.github.com" commit -q -m "Historias: fotos nuevas de Drive"
+          for i in 1 2 3; do git pull -q --rebase && git push -q && break; sleep 5; done
