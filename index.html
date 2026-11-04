@@ -4136,9 +4136,9 @@ function presDatos(e){const d=parseK(e.fecha),eu=/europa/i.test(e.titulo||"");
   return{dia:DAYS_L[d.getDay()].toUpperCase(),num:String(d.getDate()).padStart(2,"0"),mes:MONTHS[d.getMonth()].slice(0,3).toUpperCase(),hora:hz("America/Tegucigalpa")||h12(e.hora).toUpperCase(),Z,
     p:e.responsable||"",ed:e.edifica||"",edL:(typeof edLbl==="function"?edLbl(e):"Edifica").toUpperCase(),fondo:PRES_DIA[d.getDay()]}}
 const PRES_L={
-  h:{W:1080,H:1920,logo:[68,209,36],live:[823,200,189,54],kick:[179,302,722,50],a:[366,203,236],m:[575,43,34],b:[628,225,262],sub:[877,86,32,"#e3e9f2"],
-     card:{y:1024,h:390,x:[68,551],w:461,ph:[1047,220],col:1,small:[1281,28,22],name:[1315,42,40],rk:[1361,32,25]},
-     when:[68,1458,944,203],day:[210,24,124,27],hn:[301,1484,86,96,27],ch:[1585,50,27],ft:[1695,57],tag:1798},
+  h:{W:1080,H:1920,logo:[68,206,36],live:[823,197,189,54],kick:[189,292,702,48],a:[354,172,196],m:[528,50,40],b:[582,196,220],sub:[790,100,36,"#e3e9f2"],
+     card:{y:926,h:334,x:[68,551],w:461,ph:[946,184],col:1,small:[1142,30,24],name:[1174,46,42],rk:[1220,30,27]},
+     when:[68,1286,944,184],day:[200,24,112,26],hn:[296,1300,92,104,30],ch:[1398,52,29],ft:[1500,58],tag:1580},
   p:{W:1080,H:1350,logo:[64,65,36],live:[827,56,189,54],kick:[179,196,722,50],a:[260,182,212],m:[448,43,34],b:[501,200,232],sub:[721,81,30,"#c9d2df"],
      card:{y:846,h:166,x:[64,551],w:465,ph:[865,128],col:0,small:[883,21,17],name:[910,35,33],rk:[949,26,21]},
      when:[64,1042,952,187],day:[230,22,112,24],hn:[321,1074,68,76,22],ch:[1156,41,20],ft:[1255,62],tag:0}};
@@ -4195,10 +4195,10 @@ async function presCanvas(e,fmt,fondo){fmt=fmt==="p"?"p":"h";const L=PRES_L[fmt]
    const[cy,ch,cs]=L.ch;let cx=hx;g.font="700 "+cs+"px ALO, Figtree, sans-serif";
    for(const z of D.Z){const tw=g.measureText(z).width+cs*1.05;if(cx+tw>x+w-14)break;rr(cx,cy,tw,ch,12);g.fillStyle="rgba(255,255,255,.08)";g.fill();tx(z,cx+tw/2,cy,ch,"700 "+cs+"px ALO, Figtree, sans-serif","#e6ebf2","center");cx+=tw+8}}
   // Zoom + pida su enlace
-  {const[y,h]=L.ft;g.font="700 "+(fmt==="h"?26:25)+"px ALO, Figtree, sans-serif";const zt="🎥 Por Zoom",zw=g.measureText(zt).width+48;
+  {const[y,h]=L.ft;g.font="700 "+(fmt==="h"?28:25)+"px ALO, Figtree, sans-serif";const zt="🎥 Por Zoom",zw=g.measureText(zt).width+48;
    const pz=x=>{sombra("rgba(45,140,255,.45)",26,()=>{rr(x,y,zw,h,h/2);g.fillStyle="#2D8CFF";g.fill()});tx(zt,x+zw/2,y,h,g.font,"#fff","center")};
-   if(fmt==="h"){const fa="400 27px ALOR, Figtree, sans-serif",fb="700 27px ALO, Figtree, sans-serif";g.font=fa;const wa=g.measureText("Pida su enlace a ").width;g.font=fb;const wb=g.measureText("quien le invitó").width;
-     const tot=zw+22+wa+wb,x0=C-tot/2;g.font="700 26px ALO, Figtree, sans-serif";pz(x0);tx2("Pida su enlace a ","quien le invitó",x0+zw+22,y,h,fa,fb,"#aeb8c6",FL_GOLD,"left")}
+   if(fmt==="h"){const fa="400 29px ALOR, Figtree, sans-serif",fb="700 29px ALO, Figtree, sans-serif";g.font=fa;const wa=g.measureText("Pida su enlace a ").width;g.font=fb;const wb=g.measureText("quien le invitó").width;
+     const tot=zw+22+wa+wb,x0=C-tot/2;g.font="700 28px ALO, Figtree, sans-serif";pz(x0);tx2("Pida su enlace a ","quien le invitó",x0+zw+22,y,h,fa,fb,"#aeb8c6",FL_GOLD,"left")}
    else{pz(64);tx("Pida su enlace a",1016,y+2,h/2,"400 23px ALOR, Figtree, sans-serif","#aeb8c6","right");tx("quien le invitó",1016,y+h/2,h/2,"700 23px ALO, Figtree, sans-serif",FL_GOLD,"right")}}
   if(L.tag)tx("#HASTAQUEFUNCIONE",C,L.tag,30,"700 24px ALO, Figtree, sans-serif","rgba(242,195,91,.75)","center","10px");
   return cv}
