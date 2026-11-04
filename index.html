@@ -3909,7 +3909,7 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo){n=nv(n);pat=nv(p
   const P=String(n||"").trim().toUpperCase().split(/\s+/),l1=P[0]||"",R=P.slice(1);
   const wr=(z,mw)=>{g.font="400 "+z+"px "+BB;const L=[];let cur="";R.forEach(w=>{const t=cur?cur+" "+w:w;if(cur&&g.measureText(t).width>mw){L.push(cur);cur=w}else cur=t});if(cur)L.push(cur);return L};
   let z=76,RL=wr(z,920);const ZS=[184,172,160,150,140,132,124,116,108,100,92,84,76];
-  const L2T=yo?(window._L2T||"Elegí viajar más, conocer el mundo y construir algo propio al mismo tiempo."):(f?"Bienvenida":"Bienvenido")+" al equipo donde los sueños se trabajan juntos.";g.font="700 40px "+BF;const NL=Math.min(3,wrap(L2T,860).length),FIN=1360,est=(zz,L)=>(1+L.length)*zz*.86+90+128+56*NL;
+  const L2T=yo?(window._L2T||"Elegí viajar más, conocer el mundo y construir algo propio al mismo tiempo."):(f?"Bienvenida":"Bienvenido")+" a bordo. El viaje apenas comienza.";g.font="700 40px "+BF;const NL=Math.min(3,wrap(L2T,860).length),FIN=1360,est=(zz,L)=>(1+L.length)*zz*.86+90+128+56*NL;
   pick:for(const zz of ZS)for(const mw of [920,640,460]){const L=wr(zz,mw);g.font="400 "+zz+"px "+BB;if(1+L.length<=3&&785+est(zz,L)<=FIN&&g.measureText(l1).width<=920&&L.every(x=>g.measureText(x).width<=920)){z=zz;RL=L;break pick}}
   g.font="400 "+z+"px "+BB;const lh=z*.86;const slk=Math.max(0,FIN-785-(1+RL.length)*lh-90-128-56*NL),G1=90+slk*.3,G2=128+slk*.3;let yy=785+slk*.4+lh;g.textAlign="left";g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=6;g.fillStyle="#fff";g.fillText(l1,76,yy);
   RL.forEach(t=>{yy+=lh;const w2=g.measureText(t).width;g.fillStyle=grad(76,76+w2);g.fillText(t,76,yy)});g.restore();
