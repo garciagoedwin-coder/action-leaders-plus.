@@ -6096,10 +6096,17 @@ function subscribeTeam(db){
   loadTeamJSON();setInterval(loadTeamJSON,10*60*1000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)loadTeamJSON()});
   cargarFotos(false);
 }
+// Fotos cambiadas desde la última copia del teléfono: 1 lectura (+1 por foto nueva) en vez de esperar 6 h.
+async function fotosDelta(A){fdT=Date.now();try{const mx=Math.max(0,...A.map(x=>+x.t||0));if(!mx)return;const q=await store.db.collection("fotos").where("t",mx,">").get();if(!q.docs.length)return;
+  const N=docs0(q),M={};(fotosFs||[]).concat((fotosOc||[]).map(id=>({id,oculto:true}))).forEach(x=>M[x.id]=x);N.forEach(x=>M[x.id]=Object.assign({},M[x.id]||{},x));const all=Object.values(M);
+  fotosOc=all.filter(x=>x.oculto).map(x=>x.id);fotosFs=all.filter(x=>!x.oculto);T.fotos=fotosRepo.concat(fotosFs);try{window._nvT=Date.now()}catch(e){}try{renderWho();renderEquipo();renderHist()}catch(e){}try{renderPremios()}catch(e){}try{renderMeBtn()}catch(e){}}catch(e){}}
+const docs0=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));
+let fdT=0;document.addEventListener("visibilitychange",()=>{if(document.hidden||!store.db||!fotosFs||!fotosFs.length||Date.now()-fdT<10*6e4)return;fdT=Date.now();fotosDelta(fotosFs)});
 async function cargarFotos(force){if(!store.db)return;const docs=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));let t=0,s=null;try{t=+localStorage.getItem("alp:fotosT")||0}catch(e){}
   if(!force&&Date.now()-t<6*36e5){try{s=await store.db.collection("fotos").getCache()}catch(e){s=null}}
   if(!s||!s.docs.length){try{s=await store.db.collection("fotos").get();try{localStorage.setItem("alp:fotosT",String(Date.now()))}catch(e){}}catch(e){return}}
-  {const A=docs(s);fotosOc=A.filter(x=>x.oculto).map(x=>x.id);fotosFs=A.filter(x=>!x.oculto)}try{if(esSoloAdminYo()&&store.uid&&!LS.get("ocultoOk"))store.db.doc("fotos/"+store.uid).set({oculto:true},{merge:true}).then(()=>LS.set("ocultoOk",1)).catch(()=>{})}catch(e){}T.fotos=fotosRepo.concat(fotosFs);try{renderWho();renderEquipo();renderHist()}catch(e){}try{renderPremios()}catch(e){}}
+  const deCache=!!(s&&s.metadata&&s.metadata.fromCache)||(!force&&Date.now()-t<6*36e5);
+  {const A=docs(s);fotosOc=A.filter(x=>x.oculto).map(x=>x.id);fotosFs=A.filter(x=>!x.oculto);if(deCache)fotosDelta(A)}try{if(esSoloAdminYo()&&store.uid&&!LS.get("ocultoOk"))store.db.doc("fotos/"+store.uid).set({oculto:true},{merge:true}).then(()=>LS.set("ocultoOk",1)).catch(()=>{})}catch(e){}T.fotos=fotosRepo.concat(fotosFs);try{renderWho();renderEquipo();renderHist()}catch(e){}try{renderPremios()}catch(e){}}
 async function loadMine(){
   const lun0=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7)),m0=new Date(now.getFullYear(),now.getMonth(),1),st0=lun0<m0?lun0:m0;
   const nk=Math.max(7,Math.round((new Date(now.getFullYear(),now.getMonth(),now.getDate())-st0)/864e5)+1);
