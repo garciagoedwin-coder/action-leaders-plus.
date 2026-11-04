@@ -256,4 +256,11 @@ if(P){const nm=P.nombre||"Tu invitador",first=nm.split(" ")[0];$("sNm").textCont
     catch(x){b.disabled=false;b.textContent="Quiero que me contacten";alert("No se pudo enviar. Intenta de nuevo o escríbenos por WhatsApp.")}}}
 else{document.querySelector(".inv").style.display="none";$("wa").style.display="none";$("wa2").style.display="none";$("ref").style.display="none";document.querySelectorAll(".mid-cta").forEach(a=>a.style.display="none");$("sNm2").textContent="un líder del equipo";$("noLink").style.display="block";$("leadBox").style.display="none"}
 </script>
+<script>
+// Videos: miniatura + ▶; el reproductor de YouTube se carga dentro de la página solo al tocar
+(function(){document.querySelectorAll(".yt iframe").forEach(function(f){var src=f.getAttribute("src")||"",m=src.match(/embed\/([\w-]{6,})/);if(!m)return;var id=m[1],box=f.parentNode;
+  box.innerHTML='<img src="https://i.ytimg.com/vi/'+id+'/hqdefault.jpg" alt="" loading="lazy" decoding="async"><span class="play" aria-hidden="true">▶</span>';box.setAttribute("role","button");box.setAttribute("aria-label","Reproducir video");box.tabIndex=0;
+  var abrir=function(){if(box.dataset.on)return;box.dataset.on=1;var u=src+(src.indexOf("?")<0?"?":"&")+"autoplay=1";box.innerHTML='<iframe src="'+u+'" title="Video" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen></iframe>';box.style.cursor="default"};
+  box.addEventListener("click",abrir);box.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();abrir()}})})})();
+</script>
 </body></html>
