@@ -4040,6 +4040,12 @@
    "t": "🔔 Nuevo: active sus avisos",
    "sub": "La app le avisará antes de que pierda su racha y cuando entre un socio nuevo a su equipo. Toque «Activar» en Inicio o vaya a Perfil › Mis avisos.",
    "hasta": "2026-11-10T06:00:00Z"
+  },
+  "retoArranque": {
+   "id": "arr-nov26",
+   "desde": "2026-11-04T01:00:00Z",
+   "hasta": "2026-11-09T00:00:00Z",
+   "dias": 7
   }
  },
  "fotos": [
