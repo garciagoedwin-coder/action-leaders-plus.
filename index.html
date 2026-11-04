@@ -1576,15 +1576,15 @@ const FLY_CTA=[h=>`Hoy ${h} ¿Le interesa? Respóndame este estado 🙋`,h=>`¿Q
 let flyHoyF=null,flyHoyK="";
 async function abrirFlyHoy(){const e=presHoyPend()||presHoyL()[0];if(!e){toast("Hoy no hay presentación");return}
   const D=presDatos(e),eu=/europa/i.test(e.titulo||""),hz=eu&&D.Z[0]?hHN(e)+" 🇭🇳 · "+D.Z[0].slice(D.Z[0].indexOf(" ")+1).replace(" PM"," p.m.").replace(" AM"," a.m.")+" 🇪🇸":hHN(e)+" 🇭🇳";
-  let k=(Number(TODAY.replace(/-/g,""))+String(store.uid||"").length)%FLY_CTA.length;const txt=()=>FLY_CTA[k%FLY_CTA.length](hz);
+  let k=Number(TODAY.replace(/-/g,""))%FLY_CTA.length;const txt=()=>FLY_CTA[k%FLY_CTA.length](hz);
   openSheet(`<h2 style="margin:0">🎤 Flyer de la presentación de hoy</h2><p class="small muted" style="margin:0">${esc(e.titulo)} · ${esc(hz)}. Publíquelo en sus estados con el texto de abajo.</p>
    <div id="fhImg" style="border-radius:14px;overflow:hidden;background:#0b0b10;aspect-ratio:9/16;max-height:56vh;margin:0 auto;width:100%;max-width:290px;display:flex;align-items:center;justify-content:center"><span class="small" style="color:#fff">Creando su flyer…</span></div>
-   <div class="card" style="gap:8px"><b class="small">✍️ Texto para su estado</b><div id="fhTxt" style="font-weight:600;line-height:1.35"></div><div class="row" style="gap:8px"><button type="button" class="btn sm ghost grow" id="fhOtro">🔄 Otro texto</button><button type="button" class="btn sm ghost grow" id="fhCopy">📋 Copiar texto</button></div></div>
+   <div class="card" style="gap:8px"><b class="small">✍️ Texto para su estado</b><div id="fhTxt" style="font-weight:600;line-height:1.35"></div><div class="row" style="gap:8px"><button type="button" class="btn sm ghost grow" id="fhCopy">📋 Copiar texto</button></div></div>
    <button class="btn" id="fhPub" style="width:100%">📤 Publicar en mis estados</button><p class="small muted" style="margin:0;text-align:center">Al publicar, el texto se copia solo: péguelo en su estado antes de enviarlo.</p>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     const pinta=()=>{const t=$("#fhTxt");if(t)t.textContent=txt()};pinta();
     const cop=async(q)=>{try{await navigator.clipboard.writeText(txt());if(!q)toast("Texto copiado ✅")}catch(x){if(!q)toast("No se pudo copiar")}};
-    $("#fhOtro").onclick=()=>{k++;pinta()};$("#fhCopy").onclick=()=>cop();
+    $("#fhCopy").onclick=()=>cop();
     $("#fhPub").onclick=async()=>{if(!flyHoyF){toast("El flyer aún se está creando");return}await cop(1);
       const marcar=()=>{day.hFly=1;try{renderTasks();saveDay()}catch(x){}toast("¡Flyer publicado! 🔥");closeSheet()};
       if(navigator.canShare&&navigator.canShare({files:[flyHoyF]})){try{await navigator.share({files:[flyHoyF]});marcar();return}catch(x){if(x&&x.name==="AbortError")return}}
@@ -3482,7 +3482,7 @@ async function flyerCanvas(e){const W=1080,H=1350,cv=document.createElement("can
   const hh=h12(e.hora).replace(" am"," AM").replace(" pm"," PM")+(F.hsuf!=null?F.hsuf:" HN");fit(hh,"italic 500 {s}px Figtree, Arial, sans-serif",24,F.h[2]);g.fillText(hh,F.h[0],F.h[1]);
   return cv}
 async function abrirCompartir(e){const sp=espDe(e),msg=sp&&sp.msg?sp.msg:evMsg(e),fl=esFlyer(e),pr=fl&&!sp&&flyerCfg(e)===FLYERS.presentacion;let file=null;
-  openSheet(`<h2>Compartir actividad</h2>${pr?`<div class="seg" id="prFmtS"><button type="button" data-f="p">🖼️ Publicación</button><button type="button" data-f="h">📱 Historia</button></div><div class="row wrap" id="prFoS" style="gap:6px">${PRES_FONDOS.map(x=>`<button type="button" class="btn sm ghost" data-fo="${x.k}">${x.n}</button>`).join("")}</div>`:""}${fl?`<div id="flyBox" style="aspect-ratio:4/5;border-radius:14px;background:#0b1a36;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Creando flyer…</span></div>`:""}
+  openSheet(`<h2>Compartir actividad</h2>${pr?`<div class="seg" id="prFmtS"><button type="button" data-f="p">🖼️ Publicación</button><button type="button" data-f="h">📱 Historia</button></div>`:""}${fl?`<div id="flyBox" style="aspect-ratio:4/5;border-radius:14px;background:#0b1a36;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Creando flyer…</span></div>`:""}
     <pre class="small" style="white-space:pre-wrap;background:var(--bg);border-radius:12px;padding:10px;margin:0;font-family:inherit">${esc(msg)}</pre>
     <button class="btn" id="shGo" style="width:100%">📤 Compartir${fl?" flyer y mensaje":" mensaje"}</button>
     <div class="row" style="gap:8px"><button class="btn ghost grow" id="shCopy">Copiar mensaje</button>${fl?`<button class="btn ghost grow" id="shDl">Descargar flyer</button>`:""}</div>
@@ -3588,11 +3588,9 @@ function renderHist(){const c=$("#histCard");if(c)c.hidden=true}
 async function abrirHist(){if(!fbUser)return;const hecho=(profile.historias||{})[TODAY];
   openSheet(`<h2 style="margin:0">📸 Su historia de hoy</h2><p class="small muted" style="margin:0">Publíquela en sus estados de WhatsApp o Instagram.</p>
    <div id="histImg" style="border-radius:14px;overflow:hidden;background:#0b0b10;aspect-ratio:9/16;max-height:60vh;margin:0 auto;width:100%;max-width:300px;display:flex;align-items:center;justify-content:center"><span class="small" style="color:#fff">Creando su historia…</span></div>
-   <button class="btn" id="histShare" style="width:100%">📤 ${hecho?"Compartir otra vez":"Compartir en mis historias"}</button><button class="btn ghost" id="histOtra" style="width:100%" hidden>🔄 Ver otra opción</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`);
+   <button class="btn" id="histShare" style="width:100%">📤 ${hecho?"Compartir otra vez":"Compartir en mis historias"}</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`);
   $("#histShare").onclick=compartirHist;
-  $("#histOtra").onclick=()=>{hgMas++;histFile=null;const b=$("#histImg");if(b)b.innerHTML='<span class="small" style="color:#fff">Creando otra opción…</span>';abrirHist()};
-  if(histKey!==TODAY+miNombreCorto()+miFotoUrl()+"|"+hgMas||!histFile){histKey=TODAY+miNombreCorto()+miFotoUrl()+"|"+hgMas;let cv=null;try{cv=await hgCanvas(TODAY,hgMas)}catch(x){cv=null}const ot=$("#histOtra");if(ot)ot.hidden=!cv;if(!cv)cv=await histCanvas(TODAY);try{const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));histFile=new File([b],"historia-"+TODAY+".jpg",{type:"image/jpeg"})}catch(x){histFile=null}}
-  {const ot=$("#histOtra");if(ot)ot.hidden=!(HG&&hgDia(TODAY,hgMas))}
+  if(histKey!==TODAY+miNombreCorto()+miFotoUrl()+"|"+hgMas||!histFile){histKey=TODAY+miNombreCorto()+miFotoUrl()+"|"+hgMas;let cv=null;try{cv=await hgCanvas(TODAY,hgMas)}catch(x){cv=null}if(!cv)cv=await histCanvas(TODAY);try{const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));histFile=new File([b],"historia-"+TODAY+".jpg",{type:"image/jpeg"})}catch(x){histFile=null}}
   const box=$("#histImg");if(box&&histFile){box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(histFile);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im)}}
 async function compartirHist(){if(!histFile){toast("La historia aún se está creando");return}
   const marcar=()=>{day.hAtr=1;try{renderTasks();saveDay()}catch(e){}profile.historias=Object.assign({},profile.historias||{},{[TODAY]:true});store.set("perfil",profile);pushResumen();toast(presHoyPend()&&!day.hFly?"¡Historia lista! ✅ Ahora publique el flyer de la presentación 🎤":"¡Historia de hoy completada! 🔥 Mañana tendrá una nueva.");closeSheet()};
@@ -3671,7 +3669,7 @@ const HG_DIA=["vi","vi","ev","vi","ev","vi","ev"]; // domingo..sábado
 let HG=null,hgP=null,hgMas=0;
 function hgCargar(){if(!hgP)hgP=fetch("data/hist.json?d="+TODAY,{cache:"no-cache"}).then(r=>r.ok?r.json():null).then(d=>{HG=d||{};return HG}).catch(()=>{hgP=null;HG={};return HG});return hgP}
 function hgHash(s){let h=7;for(const c of String(s||""))h=(h*31+c.charCodeAt(0))>>>0;return h}
-function hgDia(k,mas){if(!HG)return null;const n=Math.floor(parseK(k).getTime()/864e5),dw=(n+4)%7,m=mas||0,o0=hgHash(store.uid||"")%997,o=o0+m;
+function hgDia(k,mas){if(!HG)return null;const n=Math.floor(parseK(k).getTime()/864e5),dw=(n+4)%7,m=mas||0,o0=0,o=o0+m; // 4 nov: la misma historia para todo el equipo (sin desfase por socio)
   let cp=HG_DIA[dw];if(!(HG[cp]||[]).length)cp=cp==="vi"?"ev":"vi";const L=HG[cp]||[];if(!L.length)return null;
   // c = cuántos días de esta carpeta van (para no repetir foto ni diseño en días seguidos)
   const pw=HG_DIA.filter(x=>x===cp).length,c=HG_DIA[dw]===cp?Math.floor((n+4)/7)*pw+HG_DIA.slice(0,dw).filter(x=>x===cp).length:n;
@@ -4298,17 +4296,16 @@ async function abrirLanz(){if(ahGate())return;if(!store.db||!(regDoc&&regDoc.reg
 async function lzVer(ci){const o=lzDatos(ci);let file=null;
   openSheet(`<h2>🚀 ${ci.lzE?"Lanzamiento de "+esc((ci.lzSN||"").split(" ")[0]):"Su lanzamiento"}</h2><p class="small muted" style="margin:0">${ci.lzE?"Usted es el líder":"Con "+esc(nv(ci.lzN))} · ${esc(citaCuando(ci))}</p>
    <div class="seg" id="lzFmtS"><button type="button" data-f="p">🖼️ Publicación</button><button type="button" data-f="h">📱 Historia</button></div>
-   <div class="row wrap" id="lzFoS" style="gap:6px">${LZ_FONDOS.map(x=>`<button type="button" class="btn sm ghost" data-fo="${x.k}">${x.n}</button>`).join("")}</div>
    <div id="lzBox" style="aspect-ratio:1080/1350;border-radius:14px;overflow:hidden;background:#070B14;display:grid;place-items:center;position:relative"><img id="lzImg" alt="Flyer del lanzamiento" style="width:100%;display:block;grid-area:1/1"><span id="lzWait" class="small" style="color:#fff;grid-area:1/1">Creando su flyer…</span></div>
    ${ci.lzR3?"":ci.l3?`<button class="btn" id="lzAv" style="width:100%;background:#25D366;color:#fff">💬 Avisar a ${esc(((ci.lzE?ci.lzSN:ci.lzN)||"").split(" ")[0])} por WhatsApp</button>`:`<button class="btn" id="lzLd" style="width:100%">📩 Enviar invitación a ${esc(((ci.lzE?ci.lzSN:ci.lzN)||"").split(" ")[0])}</button>`}
    <button class="btn" id="lzInv" style="width:100%;background:#25D366;color:#fff">👥 Invitar a mis prospectos${(ci.inv||[]).length?" ("+ci.inv.length+" invitados)":""}</button>${(ci.inv||[]).length?`<button class="btn ghost" id="lzRec" style="width:100%">⏰ Recordar a mis invitados</button>`:""}
    <div class="row" style="gap:8px"><button class="btn ghost grow" id="lzDl">⬇️ Guardar flyer</button><button class="btn ghost grow" data-close>Cerrar</button></div>`,()=>{
-    let fmt=LS.get("lzFmt")||"p",fo=LS.get("lzFondo")||"ny",nv=0;
+    let fmt=LS.get("lzFmt")||"p",fo="ny",nv=0;
     const pinta=()=>{document.querySelectorAll("#lzFmtS [data-f]").forEach(b=>b.setAttribute("aria-selected",b.dataset.f===fmt));document.querySelectorAll("#lzFoS [data-fo]").forEach(b=>{const on=b.dataset.fo===fo;b.setAttribute("aria-pressed",on);b.style.outline=on?"2px solid var(--brand)":""});
       const bx=$("#lzBox"),w=$("#lzWait");if(bx)bx.style.aspectRatio=fmt==="h"?"1080/1920":"1080/1350";if(w){w.hidden=false}file=null;const my=++nv;
       lzFile(o,fmt,fo).then(f=>{if(my!==nv)return;file=f;const im=$("#lzImg"),w2=$("#lzWait");if(im)im.src=URL.createObjectURL(f);if(w2)w2.hidden=true}).catch(()=>toast("No se pudo crear el flyer"))};
     $("#lzFmtS").onclick=e=>{const b=e.target.closest("[data-f]");if(!b||b.dataset.f===fmt)return;fmt=b.dataset.f;LS.set("lzFmt",fmt);pinta()};
-    $("#lzFoS").onclick=e=>{const b=e.target.closest("[data-fo]");if(!b||b.dataset.fo===fo)return;fo=b.dataset.fo;LS.set("lzFondo",fo);pinta()};pinta();
+    pinta();
     const ld=$("#lzLd");if(ld)ld.onclick=()=>lzInvitarLider(ci);const av=$("#lzAv");if(av)av.onclick=()=>citaAvisar(ci);
     $("#lzInv").onclick=()=>{closeSheet();setTimeout(()=>lzInvitados(ci),250)};const lr=$("#lzRec");if(lr)lr.onclick=()=>{closeSheet();setTimeout(()=>recLista(recLz(ci)),250)};
     $("#lzDl").onclick=async()=>{if(!file){toast("El flyer aún se está creando");return}if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file]});return}catch(x){if(x&&x.name==="AbortError")return}}const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download="Lanzamiento.jpg";a.click()}})}
