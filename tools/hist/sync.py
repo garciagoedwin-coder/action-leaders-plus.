@@ -4,6 +4,10 @@ Corre en GitHub Actions (allí sí hay salida a Google). Sin claves: usa la vist
 data/hist.json = {"v":ISO,"ev":[{"id","w","h"}],"vi":[...],"tx":{id:{"n","l","f"}}}  (tx lo mantiene el ciclo del ranking)."""
 import json, os, re, sys, io, html, urllib.request, datetime
 from PIL import Image, ImageOps
+try:
+    from pillow_heif import register_heif_opener; register_heif_opener()  # fotos de iPhone (.HEIC)
+except Exception:
+    pass
 
 CARPETAS = {"ev": "1Lk5vMZ2hNUxHmFhvLsNffF1kk3TtF1kt", "vi": "14o0vxerCDS3CB7RVL2l-Kl6JoVNmnvrQ"}
 RAIZ = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
