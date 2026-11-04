@@ -461,3 +461,4 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Frase de los flyers: "Descubra cómo viajar más, gastar menos y emprender desde su celular" (sin "generar ingresos"); también en evaScript.
 - Fuentes de los fondos: tools/flyer/evento/v2 (n1-3 = Gran evento, j1_2/j1_5/j1_6 = Juntas; p1-p5 fotos).
 - (4 nov, tarde) Fotos al día: cargarFotos sigue usando la copia local de 6 h, pero además fotosDelta() pide solo fotos/{uid} con t > la más nueva de la copia (1 lectura + 1 por foto cambiada) al abrir la app y al volver a ella (máx. cada 10 min). Así una foto nueva se ve en flyers, buscadores y ranking de todos sin esperar 6 h.
+- (4 nov, tarde) Círculo del testimonio: caras.rostros(path, una) y sync.py calculan también fz de media/hist/caras (solo la cara más grande); hgCara() recorta alrededor de la cara (lado = 2.3× la cara). Sin fz usa circFoto como antes.

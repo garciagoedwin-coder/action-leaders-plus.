@@ -111,10 +111,10 @@ def main():
     # caja de las caras para que la app encuadre (solo las fotos que aún no la tienen)
     try:
         sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import caras
-        for k in ("ev", "vi"):
+        for k in ("ev", "vi", "caras"):
             for x in man.get(k, []):
                 if "fz" in x or x.get("nf"): continue
-                fz = caras.rostros(os.path.join(RAIZ, "media", "hist", k, x["id"] + ".jpg"))
+                fz = caras.rostros(os.path.join(RAIZ, "media", "hist", k, x["id"] + ".jpg"), k == "caras")
                 if fz: x["fz"] = fz
                 else: x["nf"] = 1
                 cambio = True

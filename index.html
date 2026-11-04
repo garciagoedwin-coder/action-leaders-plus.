@@ -3708,7 +3708,7 @@ async function hgQuien(g,t,x,y,dark){const nm=t&&t.n||"",lu=t&&t.l||"";if(!nm)re
   g.save();g.beginPath();g.arc(x+R,y+R,R,0,Math.PI*2);g.fillStyle=dark?"#14213D":"#141a26";g.fill();g.lineWidth=3;g.strokeStyle=HGA;g.stroke();
   g.fillStyle=HGA;g.font="700 32px ALBG, Figtree, sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText(initials(nm),x+R,y+R+2);g.restore();
   // cara del testimonio (formulario › "Una foto de su cara"), si ya se sincronizó
-  if(t.c&&((HG&&HG.caras)||[]).some(z=>z.id===t.c)){try{await circFoto(g,"media/hist/caras/"+t.c+".jpg",x+R,y+R,R-3)}catch(e){}g.save();g.beginPath();g.arc(x+R,y+R,R,0,Math.PI*2);g.lineWidth=3;g.strokeStyle=HGA;g.stroke();g.restore()}
+  const cz=t.c&&((HG&&HG.caras)||[]).find(z=>z.id===t.c);if(cz){try{if(cz.fz)await hgCara(g,"media/hist/caras/"+t.c+".jpg",cz.fz,x+R,y+R,R-3);else await circFoto(g,"media/hist/caras/"+t.c+".jpg",x+R,y+R,R-3)}catch(e){}g.save();g.beginPath();g.arc(x+R,y+R,R,0,Math.PI*2);g.lineWidth=3;g.strokeStyle=HGA;g.stroke();g.restore()}
   g.textAlign="left";g.textBaseline="alphabetic";g.font="700 34px ALO, Figtree, sans-serif";g.fillStyle=dark?"#14213D":"#fff";g.fillText(nm,x+R*2+18,y+38);
   if(lu){const K=flKit(g);K.sp("4px");g.font="700 22px ALO, Figtree, sans-serif";g.fillStyle=dark?HGA2:HGA;g.fillText((t.sin?"":"📍 ")+lu.toUpperCase(),x+R*2+18,y+74);K.sp("0px")}}
 async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)return null;
@@ -3904,6 +3904,10 @@ function fotoFoco(im){try{const S=72,c=document.createElement("canvas");c.width=
     if(Y>45&&cr>=134&&cr<=180&&cb>=80&&cb<=132&&r>gg&&r>b){n++;sx+=k;sy+=y;fil[y]++}}
   if(n<S*S*.012)return null;const fy=sy/n;let top=Math.round(fy);while(top>0&&fil[top-1]>=2)top--;
   return{fx:sx/n/S,fy:fy/S,top:top/S}}catch(e){return null}}
+// Círculo del testimonio: recorta alrededor de la cara (fz de tools/hist/caras.py) con un poco de hombros
+async function hgCara(g,src,fz,cx,cy,r){const im=await imgLoad(src,true);if(!im)return;const W=im.naturalWidth||im.width,H=im.naturalHeight||im.height;
+  const fx=fz[0]*W,fy=fz[1]*H,fw=fz[2]*W,fh=fz[3]*H,sd=Math.min(Math.max(fw,fh)*2.3,W,H),mx=fx+fw/2,my=fy+fh/2+sd*.08;
+  const l=Math.max(0,Math.min(W-sd,mx-sd/2)),t=Math.max(0,Math.min(H-sd,my-sd/2));g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();g.drawImage(im,l,t,sd,sd,cx-r,cy-r,2*r,2*r);g.restore()}
 async function circFoto(g,src,cx,cy,r,ph,vacio){const im=src?await imgLoad(src,!/^(data|blob):/.test(src)):null;
   g.save();g.imageSmoothingEnabled=true;g.imageSmoothingQuality="high";g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();
   if(!im){if(vacio)vacio();g.restore();return}
