@@ -3677,8 +3677,11 @@ function hgDia(k,mas){if(!HG)return null;const n=Math.floor(parseK(k).getTime()/
   if(cp==="ev")return{cp,f,d,fr:HG_EV[(c*7+o)%HG_EV.length],cta:HG_EV_CTA[(c+o)%HG_EV_CTA.length]};
   const t=(HG.tx||{})[f.id]||null;return{cp,f,d,t,fr:t?null:HG_VI[(c*3+o)%HG_VI.length],cta:HG_VI_CTA[d]}}
 // foto con ajustes (saturación, brillo, contraste, gris) hechos a mano: igual en todos los teléfonos
-function hgFx(im,w,h,px,py,o){const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");const s=Math.max(w/im.width,h/im.height),iw=im.width*s,ih=im.height*s;
-  x.drawImage(im,(w-iw)*px,(h-ih)*py,iw,ih);if(!o)return c;
+// fz = caja de las caras [x,y,w,h] (0..1, la calcula tools/hist/caras.py); ty = a qué altura del recuadro debe quedar el centro de las caras (arriba del texto)
+function hgFx(im,w,h,px,py,o,fz,ty){const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");const s=Math.max(w/im.width,h/im.height);let iw=im.width*s,ih=im.height*s,ox=(w-iw)*px,oy=(h-ih)*py;
+  if(fz&&ty){const fx=fz[0]+fz[2]/2,fy=fz[1]+fz[3]/2;let z=1;if(fy<1){const need=(h-ty*h)/((1-fy)*ih);if(need>1)z=need}z=Math.min(z,1.8,Math.max(1,.42*h/(fz[3]*ih||1)));iw*=z;ih*=z;
+    const cl=(v,a,b)=>Math.max(a,Math.min(b,v));oy=cl(ty*h-fy*ih,h-ih,0);ox=cl(w/2-fx*iw,w-iw,0)}
+  x.drawImage(im,ox,oy,iw,ih);if(!o)return c;
   try{const D=x.getImageData(0,0,w,h),a=D.data,sa=o.sat==null?1:o.sat,br=o.br==null?1:o.br,co=o.con==null?1:o.con;
     for(let i=0;i<a.length;i+=4){let r=a[i],g=a[i+1],b=a[i+2];const l=.2126*r+.7152*g+.0722*b;r=l+(r-l)*sa;g=l+(g-l)*sa;b=l+(b-l)*sa;
       r=((r*br)-128)*co+128;g=((g*br)-128)*co+128;b=((b*br)-128)*co+128;a[i]=r;a[i+1]=g;a[i+2]=b}x.putImageData(D,0,0)}catch(e){}return c}
@@ -3704,6 +3707,8 @@ function hgSegs(t,oro){t=String(t||"").trim();let m=t.match(/^(.*[.!?…])\s+([^
 async function hgQuien(g,t,x,y,dark){const nm=t&&t.n||"",lu=t&&t.l||"";if(!nm)return;const R=42;
   g.save();g.beginPath();g.arc(x+R,y+R,R,0,Math.PI*2);g.fillStyle=dark?"#14213D":"#141a26";g.fill();g.lineWidth=3;g.strokeStyle=HGA;g.stroke();
   g.fillStyle=HGA;g.font="700 32px ALBG, Figtree, sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText(initials(nm),x+R,y+R+2);g.restore();
+  // cara del testimonio (formulario › "Una foto de su cara"), si ya se sincronizó
+  if(t.c&&((HG&&HG.caras)||[]).some(z=>z.id===t.c)){try{await circFoto(g,"media/hist/caras/"+t.c+".jpg",x+R,y+R,R-3)}catch(e){}g.save();g.beginPath();g.arc(x+R,y+R,R,0,Math.PI*2);g.lineWidth=3;g.strokeStyle=HGA;g.stroke();g.restore()}
   g.textAlign="left";g.textBaseline="alphabetic";g.font="700 34px ALO, Figtree, sans-serif";g.fillStyle=dark?"#14213D":"#fff";g.fillText(nm,x+R*2+18,y+38);
   if(lu){const K=flKit(g);K.sp("4px");g.font="700 22px ALO, Figtree, sans-serif";g.fillStyle=dark?HGA2:HGA;g.fillText((t.sin?"":"📍 ")+lu.toUpperCase(),x+R*2+18,y+74);K.sp("0px")}}
 async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)return null;
@@ -3713,7 +3718,7 @@ async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)retur
   g.fillStyle="#05070c";g.fillRect(0,0,W,H);
   if(D.cp==="ev"){const[a,b,s]=D.fr;
     if(D.d===0){ // V1 · Escenario
-      g.drawImage(hgFx(im,W,H,.55,.2,{sat:.55,br:.8,con:1.15}),0,0);
+      g.drawImage(hgFx(im,W,H,.55,.2,{sat:.55,br:.8,con:1.15},D.f.fz,.3),0,0);
       const rg=g.createRadialGradient(648,672,0,648,672,1100);rg.addColorStop(0,"rgba(0,0,0,0)");rg.addColorStop(1,"rgba(0,0,0,.55)");g.fillStyle=rg;g.fillRect(0,0,W,H);
       g.fillStyle=hgLin(g,0,H,[[0,"rgba(5,7,12,.75)"],[.16,"rgba(5,7,12,0)"],[.42,"rgba(5,7,12,0)"],[.62,"rgba(5,7,12,.88)"],[.8,"#05070c"]]);g.fillRect(0,0,W,H);hgGrain(g);
       await hgLogo(g,72,250,34);
@@ -3723,7 +3728,7 @@ async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)retur
       if(s)hgDraw(g,{f:"400 36px ALOR, Figtree, sans-serif",z:36,ls:sl},72,1530-sh,1.36);
       hgCta(g,K,D.cta,"🙋 Respóndame EQUIPO",1560)}
     else if(D.d===1){ // V2 · Cita
-      g.drawImage(hgFx(im,W,1250,.55,.22,{sat:0,br:.85,con:1.25}),0,0);
+      g.drawImage(hgFx(im,W,1250,.55,.22,{sat:0,br:.85,con:1.25},D.f.fz,.4),0,0);
       g.fillStyle=hgLin(g,0,1252,[[0,"rgba(5,7,12,.7)"],[.18,"rgba(5,7,12,0)"],[.55,"rgba(5,7,12,0)"],[1,"#05070c"]]);g.fillRect(0,0,W,1252);
       const lx=g.createLinearGradient(0,0,W,0);lx.addColorStop(0,"rgba(5,7,12,.5)");lx.addColorStop(.45,"rgba(5,7,12,0)");g.fillStyle=lx;g.fillRect(0,0,W,1252);hgGrain(g);
       await hgLogo(g,72,250,34);
@@ -3733,7 +3738,7 @@ async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)retur
       g.fillStyle=HGA;g.fillRect(72,1510,70,3);K.sp("4px");g.font="700 26px ALO, Figtree, sans-serif";g.fillStyle="#c9d2df";g.textBaseline="middle";g.fillText("ACTION LEADERS PLUS",160,1512);K.sp("0px");
       hgCta(g,K,D.cta,"🙋 Respóndame EQUIPO",1570)}
     else{ // V3 · Titular dorado
-      const ph=hgFx(im,W,H-560,.55,.15,{sat:0,br:.8,con:1.2});g.drawImage(ph,0,560);
+      const ph=hgFx(im,W,H-560,.55,.15,{sat:0,br:.8,con:1.2},D.f.fz,.27);g.drawImage(ph,0,560);
       g.save();g.globalCompositeOperation="soft-light";g.globalAlpha=.9;g.fillStyle=hgLin(g,560,H,[[0,"#0A7DAD"],[1,"#062B3A"]]);g.fillRect(0,560,W,H-560);g.restore();
       g.fillStyle=hgLin(g,558,H,[[0,"#05070c"],[.18,"rgba(5,7,12,.6)"],[.34,"rgba(5,7,12,0)"],[.55,"rgba(5,7,12,0)"],[.78,"rgba(5,7,12,.9)"],[1,"#05070c"]]);g.fillRect(0,558,W,H-558);hgGrain(g);
       await hgLogo(g,0,240,34,true);
@@ -3744,7 +3749,7 @@ async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)retur
   const t=D.t,segs=t?hgSegs(t.f):[[D.fr[0],"#fff"],[D.fr[1],HGA]],[cp,cpill]=D.cta;
   const ciudad=t&&t.l?t.l.split(",")[0].trim():"";
   if(D.d===0){ // T1 · Testimonio clásico
-    g.drawImage(hgFx(im,W,H,.5,.22),0,0);
+    g.drawImage(hgFx(im,W,H,.5,.22,null,D.f.fz,.3),0,0);
     g.fillStyle=hgLin(g,0,H,[[0,"rgba(5,7,12,.6)"],[.15,"rgba(5,7,12,0)"],[.4,"rgba(5,7,12,0)"],[.58,"rgba(5,7,12,.85)"],[.75,"#05070c"]]);g.fillRect(0,0,W,H);hgGrain(g);
     await hgLogo(g,72,250,34);
     const yq=t&&t.n?1300:1440,T=hgFit(g,segs,BG,66,46,936,5,330,1.12),ty=yq-T.ls.length*T.z*1.12;
@@ -3752,7 +3757,7 @@ async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)retur
     hgDraw(g,T,72,ty,1.12);if(t&&t.n)await hgQuien(g,t,72,1340);
     hgCta(g,K,cp,cpill,1500)}
   else if(D.d===1){ // T4 · Sello de pasaporte
-    g.drawImage(hgFx(im,W,H,.5,.22,{sat:1.05}),0,0);
+    g.drawImage(hgFx(im,W,H,.5,.22,{sat:1.05},D.f.fz,.3),0,0);
     g.fillStyle=hgLin(g,0,H,[[0,"rgba(5,7,12,.6)"],[.15,"rgba(5,7,12,0)"],[.42,"rgba(5,7,12,0)"],[.6,"rgba(5,7,12,.88)"],[.76,"#05070c"]]);g.fillRect(0,0,W,H);hgGrain(g);
     await hgLogo(g,72,250,34);
     const yq=t&&t.n?1340:1460,T=hgFit(g,t?[["“"+segs[0][0],"#fff"]].concat(segs.slice(1)).map((x,i,A)=>i===A.length-1?[x[0]+"”",x[1]]:x):segs,BG,60,44,936,5,330,1.12),ty=yq-T.ls.length*T.z*1.12;
@@ -3761,18 +3766,18 @@ async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)retur
       g.fillStyle=HGA;g.textAlign="center";g.textBaseline="middle";K.sp("4px");g.font="700 18px ALO, Figtree, sans-serif";g.fillText("VISITADO",2,-56);K.sp("0px");g.font="34px sans-serif";g.fillText("✈️",0,-20);
       const z=K.fit(ciudad.toUpperCase(),"400 {s}px 'Bebas Neue', Impact, sans-serif",50,180,26);g.fillText(ciudad.toUpperCase(),0,24);
       const pa=(t.l.split(",")[1]||"").trim().toUpperCase();if(pa){K.sp("3px");K.fit(pa,"700 {s}px ALO, Figtree, sans-serif",18,170,12);g.fillText(pa,2,60);K.sp("0px")}g.restore()}
-    hgDraw(g,T,72,ty,1.12);if(t&&t.n)await hgQuien(g,{n:t.n,l:(t.l||"").split(",").slice(1).join(",").trim()||t.l},72,1370);
+    hgDraw(g,T,72,ty,1.12);if(t&&t.n)await hgQuien(g,{n:t.n,c:t.c,l:(t.l||"").split(",").slice(1).join(",").trim()||t.l},72,1370);
     hgCta(g,K,"¿Su pasaporte sigue vacío?",cpill,1520)}
   else{ // T5 · Editorial claro
     g.fillStyle="#F3F6F9";g.fillRect(0,0,W,H);
     K.rr(110,330,898,800,36);g.lineWidth=4;g.strokeStyle=HGA;g.stroke();
     K.sombra("rgba(20,33,61,.3)",70,()=>{K.rr(72,300,898,800,36);g.fillStyle="#ccc";g.fill()});
-    g.save();K.rr(72,300,898,800,36);g.clip();g.drawImage(hgFx(im,898,800,.5,.25),72,300);g.restore();
+    g.save();K.rr(72,300,898,800,36);g.clip();g.drawImage(hgFx(im,898,800,.5,.25,null,D.f.fz,.42),72,300);g.restore();
     await hgLogo(g,72,230,34,false,true);
     if(t&&t.l){K.sp("4px");g.font="700 22px ALO, Figtree, sans-serif";const tx="📍 "+t.l.toUpperCase(),w=g.measureText(tx).width+40;K.rr(100,1040,w,46,23);g.fillStyle="#14213D";g.fill();g.fillStyle=HGA;g.textAlign="left";g.textBaseline="middle";g.fillText(tx,120,1064);K.sp("0px")}
     g.font="700 220px ALBG, Figtree, sans-serif";g.fillStyle=HGA;g.textAlign="right";g.textBaseline="alphabetic";g.fillText("”",1008,1250);
     const T=hgFit(g,segs.map(x=>[x[0],x[1]==="#fff"?"#14213D":HGA2]),BG,60,44,900,4,260,1.12);hgDraw(g,T,72,1150,1.12);
-    if(t&&t.n)await hgQuien(g,{n:t.n,l:"SOCIO VIAJERO",sin:1},72,1410,true);
+    if(t&&t.n)await hgQuien(g,{n:t.n,c:t.c,l:"SOCIO VIAJERO",sin:1},72,1410,true);
     hgCta(g,K,cp,cpill,1530,{pc:"#14213D",bg:"#14213D",tc:HGA})}
   return cv}
 window.__hgCanvas=hgCanvas;
@@ -3880,17 +3885,17 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto){n=nv(n);pat=nv(pat)
   const wrap=(t,mw)=>{const L=[];let c="";String(t).split(/\s+/).forEach(w=>{const z=c?c+" "+w:w;if(c&&g.measureText(z).width>mw){L.push(c);c=w}else c=z});if(c)L.push(c);return L};
   const lg=await imgLoad("media/logo-plus.png");if(lg){const h=52,w=lg.width*h/lg.height;g.drawImage(lg,80,104,w,h)}
   g.font="700 22px "+BF;g.fillStyle=T.a;sp(T.top,1000,142,6.4,"right");
-  g.fillStyle=grad(80,150);g.fillRect(80,262,78,3);g.font="700 27px "+BF;g.fillStyle=T.a;sp(f?"BIENVENIDA A LA FAMILIA":"BIENVENIDO A LA FAMILIA",178,274,7.6);
+  g.fillStyle=grad(80,150);g.fillRect(80,242,78,3);g.font="700 27px "+BF;g.fillStyle=T.a;sp(f?"BIENVENIDA A LA FAMILIA":"BIENVENIDO A LA FAMILIA",178,254,7.6);
   const ring=async(src,cx,cy,r,b,glow,ph,pad)=>{g.save();if(glow){g.shadowColor=T.glow;g.shadowBlur=80}g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.fillStyle=grad(cx-r,cx+r);g.fill();g.restore();
     g.beginPath();g.arc(cx,cy,r-pad,0,Math.PI*2);g.fillStyle="#05070c";g.fill();const ri=r-pad-b;
     await circFoto(g,src,cx,cy,ri,ph,()=>{g.fillStyle=grad(cx-ri,cx+ri);g.fillRect(cx-ri,cy-ri,2*ri,2*ri);g.fillStyle=T.pill?"#111":"#05253a";g.font="800 "+Math.round(ri*.62)+"px "+BF;g.textAlign="center";g.fillText(initials(ph||"AL"),cx,cy+ri*.22)})};
-  await ring(fotoSrc,300,590,222,7,true,n,8);
+  await ring(fotoSrc,300,528,222,7,true,n,8);
   const P=String(n||"").trim().toUpperCase().split(/\s+/),l1=P[0]||"",R=P.slice(1);
   const wr=(z,mw)=>{g.font="400 "+z+"px "+BB;const L=[];let cur="";R.forEach(w=>{const t=cur?cur+" "+w:w;if(cur&&g.measureText(t).width>mw){L.push(cur);cur=w}else cur=t});if(cur)L.push(cur);return L};
   let z=76,RL=wr(z,920);const ZS=[184,172,160,150,140,132,124,116,108,100,92,84,76];
-  g.font="700 40px "+BF;const NL=Math.min(3,wrap("Bienvenida al equipo donde los sueños se trabajan juntos.",860).length),FIN=1452,est=(zz,L)=>(1+L.length)*zz*.86+90+128+56*NL;
-  pick:for(const zz of ZS)for(const mw of [920,640,460]){const L=wr(zz,mw);g.font="400 "+zz+"px "+BB;if(1+L.length<=3&&850+est(zz,L)<=FIN&&g.measureText(l1).width<=920&&L.every(x=>g.measureText(x).width<=920)){z=zz;RL=L;break pick}}
-  g.font="400 "+z+"px "+BB;const lh=z*.86;const slk=Math.max(0,FIN-850-(1+RL.length)*lh-90-128-56*NL),G1=90+slk*.3,G2=128+slk*.3;let yy=850+slk*.4+lh;g.textAlign="left";g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=6;g.fillStyle="#fff";g.fillText(l1,76,yy);
+  g.font="700 40px "+BF;const NL=Math.min(3,wrap("Bienvenida al equipo donde los sueños se trabajan juntos.",860).length),FIN=1360,est=(zz,L)=>(1+L.length)*zz*.86+90+128+56*NL;
+  pick:for(const zz of ZS)for(const mw of [920,640,460]){const L=wr(zz,mw);g.font="400 "+zz+"px "+BB;if(1+L.length<=3&&785+est(zz,L)<=FIN&&g.measureText(l1).width<=920&&L.every(x=>g.measureText(x).width<=920)){z=zz;RL=L;break pick}}
+  g.font="400 "+z+"px "+BB;const lh=z*.86;const slk=Math.max(0,FIN-785-(1+RL.length)*lh-90-128-56*NL),G1=90+slk*.3,G2=128+slk*.3;let yy=785+slk*.4+lh;g.textAlign="left";g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=6;g.fillStyle="#fff";g.fillText(l1,76,yy);
   RL.forEach(t=>{yy+=lh;const w2=g.measureText(t).width;g.fillStyle=grad(76,76+w2);g.fillText(t,76,yy)});g.restore();
   let yb=yy+G1;g.font="800 26px "+BF;const lw=(()=>{let w=0;for(const ch of T.lab)w+=g.measureText(ch).width+5;return w-5})()+60;
   g.beginPath();g.roundRect(80,yb-40,lw,60,30);if(T.pill){g.fillStyle=grad(80,80+lw);g.fill()}else{g.fillStyle="rgba(42,193,241,.14)";g.fill();g.lineWidth=2;g.strokeStyle=T.a;g.stroke()}
@@ -3900,13 +3905,13 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto){n=nv(n);pat=nv(pat)
   g.font="700 40px "+BF;g.fillStyle=T.a;wrap((f?"Bienvenida":"Bienvenido")+" al equipo donde los sueños se trabajan juntos.",860).slice(0,3).forEach((t,i)=>g.fillText(t,80,yq+56*(i+1)));
   // tarjetas
   const card=(x,w,b,s)=>{g.beginPath();g.roundRect(x,1530,w,104,20);g.fillStyle="rgba(255,255,255,.07)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.15)";g.stroke();g.textAlign="left";g.fillStyle="#fff";g.font="700 30px "+BF;g.fillText(b,x+20,1576);g.fillStyle=T.a;g.font="700 14px "+BF;sp(s,x+20,1608,2.8)};
-  const now=new Date(),mm=MONTHS[now.getMonth()].toUpperCase()+" "+now.getFullYear();card(80,453,mm,"SE UNIÓ");card(547,453,"Action Leaders","SU EQUIPO");
+  // (4 nov) sin tarjetas: todo termina antes de la zona que tapan WhatsApp e Instagram (últimos ~330 px)
   // patrocinador y cierre
   let ps=30;g.font="700 "+ps+"px "+BF;while(g.measureText(pat).width>360&&ps>18){ps--;g.font="700 "+ps+"px "+BF}const pw=Math.max(g.measureText(pat).width,210)+138;
-  g.beginPath();g.roundRect(80,1700,pw,100,50);g.fillStyle="rgba(255,255,255,.07)";g.fill();g.lineWidth=1.5;g.strokeStyle=T.a;g.stroke();
-  await ring(patFoto,130,1750,36,0,false,pat,3);
-  g.textAlign="left";g.fillStyle=T.a;g.font="700 15px "+BF;sp("SU PATROCINADOR",184,1738,3.3);g.fillStyle="#fff";g.font="700 "+ps+"px "+BF;g.fillText(pat,184,1774);
-  g.font="400 56px "+BB;g.fillStyle="#fff";sp("HASTA QUE FUNCIONE",1000,1762,3,"right");g.font="600 20px "+BF;g.fillStyle=T.a;sp("actionleadersplus.com",1000,1792,1.2,"right");
+  const PY=1452;g.beginPath();g.roundRect(80,PY,pw,100,50);g.fillStyle="rgba(255,255,255,.07)";g.fill();g.lineWidth=1.5;g.strokeStyle=T.a;g.stroke();
+  await ring(patFoto,130,PY+50,36,0,false,pat,3);
+  g.textAlign="left";g.fillStyle=T.a;g.font="700 15px "+BF;sp("SU PATROCINADOR",184,PY+38,3.3);g.fillStyle="#fff";g.font="700 "+ps+"px "+BF;g.fillText(pat,184,PY+74);
+  g.font="400 56px "+BB;g.fillStyle="#fff";sp("HASTA QUE FUNCIONE",1000,PY+62,3,"right");g.font="600 20px "+BF;g.fillStyle=T.a;sp("actionleadersplus.com",1000,PY+92,1.2,"right");
   return cv}
 function fotoReduce400(file){return new Promise((ok,ko)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const M=1200,k=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext("2d");x.imageSmoothingEnabled=true;x.imageSmoothingQuality="high";x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL("image/jpeg",.93))};im.onerror=()=>{URL.revokeObjectURL(u);ko(new Error("img"))};im.src=u})}
 let bienPatP=null;const bienPat=()=>bienPatP||(bienPatP=bienFotoPat());
@@ -5488,7 +5493,8 @@ const REG_F=[{k:"nombre",e:"1500475489",t:"Nombre completo",ty:"text",ac:"name"}
   {k:"plan",e:"771484550",t:"Plan",ty:"select",opts:["Classic","Premium"]},{k:"pais",e:"987456673",t:"País",ty:"text",ac:"country-name"},{k:"ciudad",e:"1482142378",t:"Ciudad",ty:"text",ac:"address-level2"}];
 const AVISO_FORM="https://forms.gle/YNAGLjLTv9VTk33bA";
 const WEL_DEF={video:"6ySNnmhDjwk",whatsapp:"https://chat.whatsapp.com/H2qNlABTfsAAuZ12JqCiKi",caja:"https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"};
-const WEL_PARTS=[0,1,2,3,4,5].map(i=>"media/bienvenida-"+i+".mp4?v=720"),WEL_DUR=[180,180,180,180,180,173],WEL_TOT=WEL_DUR.reduce((a,b)=>a+b,0);
+// 4 nov: solo la parte donde Edwin habla (4:41); la pantalla compartida se quitó
+const WEL_PARTS=["media/bienvenida-corto.mp4?v=1"],WEL_DUR=[281],WEL_TOT=WEL_DUR.reduce((a,b)=>a+b,0);
 let welVidFail=false,welUnl=false;
 const welVidPct=()=>{let m=0;try{m=(JSON.parse(localStorage.getItem("alp:welpos")||"{}").max)||0}catch(e){}return Math.min(100,Math.round(m/WEL_TOT*100))};
 let welState={},welName="",welTimer=null,welOpenedAt=0;
@@ -5523,7 +5529,7 @@ function renderWel(){const el=$("#wel");
    <p class="muted">Es un gusto tenerte en el equipo.<br>Desde hoy no caminas solo: vamos a crecer juntos.</p>
    <p><b>Lo más importante ahora es tomar acción ya.</b><br>Completa ${steps.length===1?"este paso":"estos "+steps.length+" pasos"} para entrar a la app.</p>`;
   const vh=`<div class="wel-h">${badge("video")}<h3>Mira tu video de bienvenida</h3></div>`;
-  const vbtn=`<button class="btn pill dark" id="welVidOk" ${welState.video||!manualOk?"disabled":""}>${welState.video?"Video visto ✓":manualOk?"Ya vi mi video":"🔒 Mira el video para continuar · "+welVidPct()+"%"}</button>`;
+  const vbtn=`<button class="btn pill dark" id="welVidOk" ${welState.video||!manualOk?"disabled":""}>${welState.video?"Video visto ✓":manualOk?"Ya vi mi video":"🔒 Vea el video para continuar · "+welVidPct()+"%"}</button>`;
   const rest=`${n("whatsapp")?`<div class="wel-step"><div class="wel-h">${badge("whatsapp")}<h3>Únete al grupo del equipo</h3></div>
     <p class="small muted">En nuestro grupo de WhatsApp compartimos los entrenamientos de la semana, avisos importantes y el apoyo de todo el equipo. Al solicitar el ingreso, te aprobamos en breve.</p>
     <a class="btn pill wa" href="${esc(c.whatsapp)}" target="_blank" rel="noopener" data-wel="whatsapp">${welState.whatsapp?"Grupo de WhatsApp ✓":"Unirme al grupo de WhatsApp"}</a></div>`:""}
@@ -5582,16 +5588,16 @@ function renderWel(){const el=$("#wel");
   clearTimeout(welTimer);if(!manualOk)welTimer=setTimeout(renderWel,Math.max(1000,120000-(Date.now()-welOpenedAt)+200))}
 function welVideo(){const box=$("#welVid");if(!box)return;
   let pos={i:0,t:0,max:0};try{pos=Object.assign(pos,JSON.parse(localStorage.getItem("alp:welpos")||"{}"))}catch(e){}
-  if(welState.video)pos={i:0,t:0,max:WEL_TOT};
+  if(welState.video)pos={i:0,t:0,max:WEL_TOT};if(!(pos.i>=0&&pos.i<WEL_PARTS.length)||pos.t>WEL_DUR[pos.i||0])pos={i:0,t:0,max:Math.min(pos.max||0,WEL_TOT)};pos.max=Math.min(pos.max||0,WEL_TOT);
   const v=document.createElement("video");v.controls=true;v.playsInline=true;v.setAttribute("playsinline","");v.preload="metadata";v.poster="media/poster.jpg?v=720";
   v.setAttribute("controlsList","nodownload noplaybackrate");box.appendChild(v);
   const base=i=>WEL_DUR.slice(0,i).reduce((a,b)=>a+b,0);
   let cur=pos.i,maxG=pos.max||0,resumeT=pos.t||0,seekFix=false,lastSave=0;
-  const ui=()=>{const g=base(cur)+(v.currentTime||0);$("#welPart").textContent="Parte "+(cur+1)+" de "+WEL_PARTS.length;const pc=Math.min(100,Math.round(Math.max(maxG,g)/WEL_TOT*100));$("#welPct").textContent=pc+"% visto";$("#welBar").style.width=pc+"%";
-    if(!welState.video&&!welUnl){const b=$("#welVidOk");if(pc>=90){welUnl=true;try{save()}catch(e){}renderWel();toast("¡Muy bien! Ya puedes tocar «Ya vi mi video» ✅")}else if(b)b.textContent="🔒 Mira el video para continuar · "+pc+"%"}};
+  const ui=()=>{const g=base(cur)+(v.currentTime||0);$("#welPart").textContent=WEL_PARTS.length>1?"Parte "+(cur+1)+" de "+WEL_PARTS.length:"Video de bienvenida · 4 min";const pc=Math.min(100,Math.round(Math.max(maxG,g)/WEL_TOT*100));$("#welPct").textContent=pc+"% visto";$("#welBar").style.width=pc+"%";
+    if(!welState.video&&!welUnl){const b=$("#welVidOk");if(pc>=90){welUnl=true;try{save()}catch(e){}renderWel();toast("¡Muy bien! Ya puede tocar «Ya vi mi video» ✅")}else if(b)b.textContent="🔒 Vea el video para continuar · "+pc+"%"}};
   const save=()=>{try{localStorage.setItem("alp:welpos",JSON.stringify({i:cur,t:v.currentTime||0,max:maxG}))}catch(e){}};
   const blobs={},getPart=i=>Promise.resolve(WEL_PARTS[i]);
-  const load=async(i,t,play)=>{cur=i;const pl=$("#welPart");if(pl)pl.textContent="Cargando parte "+(i+1)+" de "+WEL_PARTS.length+"…";
+  const load=async(i,t,play)=>{cur=i;const pl=$("#welPart");if(pl)pl.textContent=WEL_PARTS.length>1?"Cargando parte "+(i+1)+" de "+WEL_PARTS.length+"…":"Cargando video…";
     v.onloadedmetadata=()=>{if(t)v.currentTime=t;ui();if(play)v.play().catch(()=>{})};
     let src;try{src=await getPart(i)}catch(e){src=WEL_PARTS[i]}
     if(cur!==i)return;v.src=src;Object.keys(blobs).forEach(k=>{if(+k<i){blobs[k].then(u=>URL.revokeObjectURL(u)).catch(()=>{});delete blobs[k]}});
