@@ -1,0 +1,21 @@
+// ===== Confirmaciones de asistencia a juntas y eventos (evento.html) =====
+// Pegar DENTRO de "match /databases/{database}/documents { ... }", junto al bloque de agendaEv.
+// La página pública crea la confirmación SIN cuenta; nadie de afuera puede leerla.
+// Leen: quien invitó (de), el creador, los anfitriones (lidU), los líderes Team Leader+ de arriba del creador (vL) y los admins.
+    match /agendaEv/{eid}/rsvp/{rid} {
+      allow create: if request.resource.data.keys().hasOnly(['n','w','cc','de','dn','t'])
+        && request.resource.data.n is string && request.resource.data.n.size() >= 2 && request.resource.data.n.size() <= 60
+        && request.resource.data.w is string && request.resource.data.w.size() >= 7 && request.resource.data.w.size() <= 15
+        && request.resource.data.cc is string && request.resource.data.cc.size() <= 4
+        && request.resource.data.de is string && request.resource.data.de.size() <= 64
+        && request.resource.data.dn is string && request.resource.data.dn.size() <= 60
+        && request.resource.data.t is number
+        && exists(/databases/$(database)/documents/agendaEv/$(eid));
+      allow read: if request.auth != null && (
+        resource.data.de == request.auth.uid
+        || request.auth.uid == get(/databases/$(database)/documents/agendaEv/$(eid)).data.cre
+        || request.auth.uid in get(/databases/$(database)/documents/agendaEv/$(eid)).data.get('lidU', [])
+        || request.auth.uid in get(/databases/$(database)/documents/agendaEv/$(eid)).data.get('vL', [])
+        || isAdmin());
+      allow update, delete: if false;
+    }
