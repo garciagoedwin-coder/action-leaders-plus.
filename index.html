@@ -3831,6 +3831,44 @@ function raAdmin(){const c=raCfg();if(!c)return;const M=Object.assign({Classic:"
     const sv=()=>{LS.set("raMon",{Classic:$("#raMC").value,Premium:$("#raMP").value});raAdmin()};$("#raMC").onchange=sv;$("#raMP").onchange=sv;
     document.querySelectorAll("[data-raen]").forEach(i=>i.onchange=()=>{const E2=LS.get("raEnt")||{};E2[i.dataset.raen]=i.checked?Date.now():0;LS.set("raEnt",E2);raAdmin()})})}
 
+// ---------- Lanzamiento del socio nuevo en redes (4 nov) ----------
+// Mismo flyer de bienvenida (bienCanvas yo=1): sin patrocinador, "Nueva etapa", "Este es mi nuevo comienzo" + "¿Le cuento cómo?".
+// Paso obligatorio de la Semana 1 solo para quien se registró desde LZS_DESDE (los anteriores lo pueden usar, pero no cuenta).
+const LZS_DESDE="2026-11-04T18:00:00Z";
+function irLzsReq(){try{if(irSimM())return true;const f=Date.parse((miRegistro()||{}).fecha||"");return !isNaN(f)&&f>=Date.parse(LZS_DESDE)}catch(e){return false}}
+const LZS_TX=[["📸 Instagram",`Este es mi nuevo comienzo. ✈️
+
+Elegí viajar más, conocer el mundo y construir algo propio al mismo tiempo. Y lo estoy haciendo con un equipo que me acompaña paso a paso.
+
+Apenas empieza el viaje, y viene algo grande. 🚀
+
+¿Le cuento cómo? Respóndame esta historia o escríbame por mensaje. 👇
+
+#NuevaEtapa #Viajes #Emprendimiento #ActionLeaders`],["👍 Facebook",`Hoy quiero compartirles algo importante para mí. 🙌
+
+Este es mi nuevo comienzo. Hace tiempo venía pensando en viajar más, conocer nuevos lugares con mi familia y, al mismo tiempo, construir algo propio. Esta semana dejé de pensarlo y di el paso.
+
+Empecé una nueva etapa junto a un equipo que viaja, crece y no deja a nadie atrás. Estoy aprendiendo y estoy muy emocionado. ✈️
+
+Si le da curiosidad saber cómo se pueden unir los viajes y el emprendimiento, escríbame por mensaje o comente "CÓMO" y con gusto le cuento, sin compromiso.`],["💬 Estado de WhatsApp",`✈️ Este es mi nuevo comienzo: elegí viajar más y construir algo propio al mismo tiempo. ¿Le cuento cómo? Respóndame este estado 👇`]];
+const LZS_RESP=`¡Qué bueno que me escribe! 😊 Le cuento: empecé con un equipo que nos enseña a viajar más y, al mismo tiempo, a construir algo propio. ¿Tiene 10 minutos hoy o mañana para explicarle bien? Así ve si es para usted.`;
+let lzsFile=null;
+async function abrirLanzSocio(){if(!fbUser)return;const r=miRegistro()||{},n=r.nombre||miNombreFull()||"",plan=/premium/i.test(r.plan||"")?"premium":"classic";
+  openSheet(`<h2 style="margin:0">📣 Lance su negocio en redes</h2><p class="small muted" style="margin:0">Publique su flyer de nueva etapa en sus historias y use el texto de la red donde lo publique.</p>
+   <div id="lzsImg" style="border-radius:14px;overflow:hidden;background:#0b0b10;aspect-ratio:9/16;max-height:56vh;margin:0 auto;width:100%;max-width:290px;display:flex;align-items:center;justify-content:center"><span class="small" style="color:#fff">Creando su flyer…</span></div>
+   <button class="btn" id="lzsShare" style="width:100%">📤 Compartir en mis historias</button>
+   ${LZS_TX.map(([t,x],i)=>`<div class="card" style="gap:8px"><div class="row between"><b class="small">${t}</b><button type="button" class="btn sm ghost" data-lzc="${i}">📋 Copiar</button></div><div class="small" style="white-space:pre-wrap;line-height:1.4">${esc(x)}</div></div>`).join("")}
+   <div class="card" style="gap:8px"><div class="row between"><b class="small">💬 Cuando alguien le responda</b><button type="button" class="btn sm ghost" data-lzc="r">📋 Copiar</button></div><div class="small" style="white-space:pre-wrap;line-height:1.4">${esc(LZS_RESP)}</div><p class="small muted" style="margin:0">Agréguelo a su CRM y agende una presentación.</p></div>
+   <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
+    document.querySelectorAll("[data-lzc]").forEach(b=>b.onclick=async()=>{const t=b.dataset.lzc==="r"?LZS_RESP:LZS_TX[+b.dataset.lzc][1];try{await navigator.clipboard.writeText(t);toast("Texto copiado ✅")}catch(e){toast("No se pudo copiar")}});
+    $("#lzsShare").onclick=async()=>{if(!lzsFile){toast("El flyer aún se está creando");return}
+      const marcar=()=>{try{const st=irSt();if(!(st.mk||{}).lzs){irSave({mk:Object.assign({},st.mk||{},{lzs:Date.now()})});setTimeout(()=>{try{irRender()}catch(e){}},300)}}catch(e){}toast("¡Su nueva etapa ya está en sus redes! 🚀")};
+      try{await navigator.clipboard.writeText(LZS_TX[2][1])}catch(e){}
+      if(navigator.canShare&&navigator.canShare({files:[lzsFile]})){try{await navigator.share({files:[lzsFile]});marcar();return}catch(x){if(x&&x.name==="AbortError")return}}
+      const a=document.createElement("a");a.href=URL.createObjectURL(lzsFile);a.download=lzsFile.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);marcar()}});
+  try{const foto=await bienPat(),cv=await bienCanvas(n,false,"",plan,foto,r.pais||"Honduras","",1);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));lzsFile=new File([b],"Nueva-etapa.jpg",{type:"image/jpeg"});
+    const box=$("#lzsImg");if(box){box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im)}}catch(e){const box=$("#lzsImg");if(box)box.innerHTML='<span class="small" style="color:#fff">No se pudo crear el flyer</span>'}}
+
 // ---------- bienvenida a socio nuevo ----------
 const BIEN_MSG=(n,f,pat,lk)=>`🎉 *¡Felicidades, ${n}! ${f?"Bienvenida":"Bienvenido"} a Action Leaders*
 
@@ -5677,6 +5715,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     ${irSimple()?`<div class="pf-h">Mis datos</div>`:""}<button class="pf-it" id="pfFoto"><span class="ic">📷</span>Cambiar mi foto</button>
     <button class="pf-it" id="pfNombre"><span class="ic">👤</span>Mis datos <span class="small muted" style="font-weight:500">· nombre y WhatsApp</span></button><button class="pf-it" id="pfAvisos"><span class="ic">🔔</span>Mis avisos</button>
     ${irSimple()?`<div class="pf-h">Mis páginas</div>`:""}<button class="pf-it" id="pfPag"><span class="ic">🌐</span>Mi página para prospectos</button>
+    <button class="pf-it" id="pfLzs"><span class="ic">📣</span>Mi flyer de nueva etapa</button>
     <button class="pf-it" id="pfMem"><span class="ic">🛳️</span>Compartir página de membresía</button>
     <button class="pf-it" id="pfMemV"><span class="ic">👀</span>Quién vio mi página de membresía</button>
     ${salaOk()?`<button class="pf-it" id="pfSala"><span class="ic">🎬</span>Mi presentación virtual</button>`:""}
@@ -5689,7 +5728,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
     $("#pfNombre").onclick=abrirMisDatos;$("#pfAvisos").onclick=()=>{closeSheet();setTimeout(misAvisos,250)};{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const cz=$("#pfCie");if(cz)cz.onclick=()=>{closeSheet();eqTab="cierre";go("equipo");renderEquipo()}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
-    $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfMem").onclick=()=>memCompartir();$("#pfMemV").onclick=()=>memVisitas();
+    $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfMem").onclick=()=>memCompartir();$("#pfLzs").onclick=()=>{closeSheet();setTimeout(abrirLanzSocio,250)};$("#pfMemV").onclick=()=>memVisitas();
     $("#pfInv").onclick=()=>{if(!(regDoc&&regDoc.registro)){toast("Completa tu registro primero");return}const u=miEnlace();openSheet(`<h2>🔗 Tu enlace de invitación</h2><p class="small muted">Compártelo solo con tus socios nuevos. Al registrarse, aparecerás como su patrocinador.</p>
       <div class="card" style="word-break:break-all;font-weight:600">${esc(u)}</div><button class="btn" id="invCp" style="width:100%">Copiar enlace</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#invCp").onclick=async()=>{try{await navigator.clipboard.writeText(u);toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})};
     $("#pfInst").onclick=()=>openSheet(`<h2>Instala la app</h2>
@@ -5756,6 +5795,7 @@ function irItems(n){const its={
     {k:"pat",g:"Prepare su negocio",t:"Conectado con su patrocinador",a:x=>x.pat},
     {k:"ref",g:"Prepare su negocio",t:"Su link de referido listo",a:x=>x.ref,b:["Agregar",()=>{closeSheet();abrirMiPagina()}]},
     {k:"herr",g:"Prepare su negocio",t:"Sus herramientas listas",s:"App Action Leaders PLUS, avisos, YessMovement y la presentación",a:x=>x.herrV||x.herrN>=IR_HERR.length,p:x=>x.herrV?"":x.herrN+" de "+IR_HERR.length,m:1,b:["Ver",()=>irHerr()]},
+    ...(irLzsReq()?[{k:"lzs",g:"Prepare su negocio",t:"Lance su negocio en redes",s:"Comparta su flyer de nueva etapa en sus historias",a:x=>!!x.mk.lzs,b:["Compartir",()=>{closeSheet();abrirLanzSocio()}]}]:[]),
     {k:"act1",g:"Prepare su negocio",t:"Su primera actividad con su patrocinador",s:"Lo que no tiene día y hora, probablemente no suceda",a:x=>x.lid>0||!!x.mk.act1,b:["Agendar",()=>irAct1()],f:1},
     {k:"l30",g:"Su lista y primeras presentaciones",t:"30 contactos en su lista",s:"No seleccione quién cree que dirá que sí: primero escriba nombres",a:x=>x.nC>=30,p:x=>Math.min(x.nC,30)+" de 30",b:["Agregar",irGoCRM]},
     {k:"c10",g:"Su lista y primeras presentaciones",t:"Contactar a 10 personas",a:x=>x.cont>=10,p:x=>Math.min(x.cont,10)+" de 10",b:["Contactar",irGoCRM]},

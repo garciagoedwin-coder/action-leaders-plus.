@@ -449,3 +449,8 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Bienvenida: sin el paso "caja de herramientas" (config.bienvenida.caja = ""); la caja sigue en los accesos directos.
 - Flyer de bienvenida (historia): sin tarjetas, todo más arriba; patrocinador y "Hasta que funcione" en y 1452–1552 (zona segura).
 - Ranking: config.rankingUnir {"Gloria Stephanie Aranda Midence": "Edwin Alexander Garcia Gomez"} (la cuenta de la esposa de Edwin suma a Edwin).
+
+## Lance su negocio en redes (4 nov 2026)
+- Paso IR `lzs` en Semana 1 solo para registros con fecha ≥ LZS_DESDE (2026-11-04T18:00Z) → 12 pasos. Antiguos: botón Perfil "📣 Mi flyer de nueva etapa" (no cuenta).
+- abrirLanzSocio(): bienCanvas(...,yo=1) versión "yo" (sin patrocinador, NUEVA ETAPA, ✈️ ¿Le cuento cómo?). Compartir marca mk.lzs. Copies LZS_TX (IG/FB/WA) + LZS_RESP.
+- Versión patrocinador (grupo/privado): frase "Bienvenido/a a bordo. El viaje apenas comienza."
