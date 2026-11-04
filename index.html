@@ -3677,8 +3677,11 @@ function hgDia(k,mas){if(!HG)return null;const n=Math.floor(parseK(k).getTime()/
   if(cp==="ev")return{cp,f,d,fr:HG_EV[(c*7+o)%HG_EV.length],cta:HG_EV_CTA[(c+o)%HG_EV_CTA.length]};
   const t=(HG.tx||{})[f.id]||null;return{cp,f,d,t,fr:t?null:HG_VI[(c*3+o)%HG_VI.length],cta:HG_VI_CTA[d]}}
 // foto con ajustes (saturación, brillo, contraste, gris) hechos a mano: igual en todos los teléfonos
-function hgFx(im,w,h,px,py,o){const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");const s=Math.max(w/im.width,h/im.height),iw=im.width*s,ih=im.height*s;
-  x.drawImage(im,(w-iw)*px,(h-ih)*py,iw,ih);if(!o)return c;
+// fz = caja de las caras [x,y,w,h] (0..1, la calcula tools/hist/caras.py); ty = a qué altura del recuadro debe quedar el centro de las caras (arriba del texto)
+function hgFx(im,w,h,px,py,o,fz,ty){const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");const s=Math.max(w/im.width,h/im.height);let iw=im.width*s,ih=im.height*s,ox=(w-iw)*px,oy=(h-ih)*py;
+  if(fz&&ty){const fx=fz[0]+fz[2]/2,fy=fz[1]+fz[3]/2;let z=1;if(fy<1){const need=(h-ty*h)/((1-fy)*ih);if(need>1)z=need}z=Math.min(z,1.8,Math.max(1,.42*h/(fz[3]*ih||1)));iw*=z;ih*=z;
+    const cl=(v,a,b)=>Math.max(a,Math.min(b,v));oy=cl(ty*h-fy*ih,h-ih,0);ox=cl(w/2-fx*iw,w-iw,0)}
+  x.drawImage(im,ox,oy,iw,ih);if(!o)return c;
   try{const D=x.getImageData(0,0,w,h),a=D.data,sa=o.sat==null?1:o.sat,br=o.br==null?1:o.br,co=o.con==null?1:o.con;
     for(let i=0;i<a.length;i+=4){let r=a[i],g=a[i+1],b=a[i+2];const l=.2126*r+.7152*g+.0722*b;r=l+(r-l)*sa;g=l+(g-l)*sa;b=l+(b-l)*sa;
       r=((r*br)-128)*co+128;g=((g*br)-128)*co+128;b=((b*br)-128)*co+128;a[i]=r;a[i+1]=g;a[i+2]=b}x.putImageData(D,0,0)}catch(e){}return c}
@@ -3704,6 +3707,8 @@ function hgSegs(t,oro){t=String(t||"").trim();let m=t.match(/^(.*[.!?…])\s+([^
 async function hgQuien(g,t,x,y,dark){const nm=t&&t.n||"",lu=t&&t.l||"";if(!nm)return;const R=42;
   g.save();g.beginPath();g.arc(x+R,y+R,R,0,Math.PI*2);g.fillStyle=dark?"#14213D":"#141a26";g.fill();g.lineWidth=3;g.strokeStyle=HGA;g.stroke();
   g.fillStyle=HGA;g.font="700 32px ALBG, Figtree, sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText(initials(nm),x+R,y+R+2);g.restore();
+  // cara del testimonio (formulario › "Una foto de su cara"), si ya se sincronizó
+  if(t.c&&((HG&&HG.caras)||[]).some(z=>z.id===t.c)){try{await circFoto(g,"media/hist/caras/"+t.c+".jpg",x+R,y+R,R-3)}catch(e){}g.save();g.beginPath();g.arc(x+R,y+R,R,0,Math.PI*2);g.lineWidth=3;g.strokeStyle=HGA;g.stroke();g.restore()}
   g.textAlign="left";g.textBaseline="alphabetic";g.font="700 34px ALO, Figtree, sans-serif";g.fillStyle=dark?"#14213D":"#fff";g.fillText(nm,x+R*2+18,y+38);
   if(lu){const K=flKit(g);K.sp("4px");g.font="700 22px ALO, Figtree, sans-serif";g.fillStyle=dark?HGA2:HGA;g.fillText((t.sin?"":"📍 ")+lu.toUpperCase(),x+R*2+18,y+74);K.sp("0px")}}
 async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)return null;
@@ -3713,7 +3718,7 @@ async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)retur
   g.fillStyle="#05070c";g.fillRect(0,0,W,H);
   if(D.cp==="ev"){const[a,b,s]=D.fr;
     if(D.d===0){ // V1 · Escenario
-      g.drawImage(hgFx(im,W,H,.55,.2,{sat:.55,br:.8,con:1.15}),0,0);
+      g.drawImage(hgFx(im,W,H,.55,.2,{sat:.55,br:.8,con:1.15},D.f.fz,.3),0,0);
       const rg=g.createRadialGradient(648,672,0,648,672,1100);rg.addColorStop(0,"rgba(0,0,0,0)");rg.addColorStop(1,"rgba(0,0,0,.55)");g.fillStyle=rg;g.fillRect(0,0,W,H);
       g.fillStyle=hgLin(g,0,H,[[0,"rgba(5,7,12,.75)"],[.16,"rgba(5,7,12,0)"],[.42,"rgba(5,7,12,0)"],[.62,"rgba(5,7,12,.88)"],[.8,"#05070c"]]);g.fillRect(0,0,W,H);hgGrain(g);
       await hgLogo(g,72,250,34);
@@ -3723,7 +3728,7 @@ async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)retur
       if(s)hgDraw(g,{f:"400 36px ALOR, Figtree, sans-serif",z:36,ls:sl},72,1530-sh,1.36);
       hgCta(g,K,D.cta,"🙋 Respóndame EQUIPO",1560)}
     else if(D.d===1){ // V2 · Cita
-      g.drawImage(hgFx(im,W,1250,.55,.22,{sat:0,br:.85,con:1.25}),0,0);
+      g.drawImage(hgFx(im,W,1250,.55,.22,{sat:0,br:.85,con:1.25},D.f.fz,.4),0,0);
       g.fillStyle=hgLin(g,0,1252,[[0,"rgba(5,7,12,.7)"],[.18,"rgba(5,7,12,0)"],[.55,"rgba(5,7,12,0)"],[1,"#05070c"]]);g.fillRect(0,0,W,1252);
       const lx=g.createLinearGradient(0,0,W,0);lx.addColorStop(0,"rgba(5,7,12,.5)");lx.addColorStop(.45,"rgba(5,7,12,0)");g.fillStyle=lx;g.fillRect(0,0,W,1252);hgGrain(g);
       await hgLogo(g,72,250,34);
@@ -3733,7 +3738,7 @@ async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)retur
       g.fillStyle=HGA;g.fillRect(72,1510,70,3);K.sp("4px");g.font="700 26px ALO, Figtree, sans-serif";g.fillStyle="#c9d2df";g.textBaseline="middle";g.fillText("ACTION LEADERS PLUS",160,1512);K.sp("0px");
       hgCta(g,K,D.cta,"🙋 Respóndame EQUIPO",1570)}
     else{ // V3 · Titular dorado
-      const ph=hgFx(im,W,H-560,.55,.15,{sat:0,br:.8,con:1.2});g.drawImage(ph,0,560);
+      const ph=hgFx(im,W,H-560,.55,.15,{sat:0,br:.8,con:1.2},D.f.fz,.27);g.drawImage(ph,0,560);
       g.save();g.globalCompositeOperation="soft-light";g.globalAlpha=.9;g.fillStyle=hgLin(g,560,H,[[0,"#0A7DAD"],[1,"#062B3A"]]);g.fillRect(0,560,W,H-560);g.restore();
       g.fillStyle=hgLin(g,558,H,[[0,"#05070c"],[.18,"rgba(5,7,12,.6)"],[.34,"rgba(5,7,12,0)"],[.55,"rgba(5,7,12,0)"],[.78,"rgba(5,7,12,.9)"],[1,"#05070c"]]);g.fillRect(0,558,W,H-558);hgGrain(g);
       await hgLogo(g,0,240,34,true);
@@ -3744,7 +3749,7 @@ async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)retur
   const t=D.t,segs=t?hgSegs(t.f):[[D.fr[0],"#fff"],[D.fr[1],HGA]],[cp,cpill]=D.cta;
   const ciudad=t&&t.l?t.l.split(",")[0].trim():"";
   if(D.d===0){ // T1 · Testimonio clásico
-    g.drawImage(hgFx(im,W,H,.5,.22),0,0);
+    g.drawImage(hgFx(im,W,H,.5,.22,null,D.f.fz,.3),0,0);
     g.fillStyle=hgLin(g,0,H,[[0,"rgba(5,7,12,.6)"],[.15,"rgba(5,7,12,0)"],[.4,"rgba(5,7,12,0)"],[.58,"rgba(5,7,12,.85)"],[.75,"#05070c"]]);g.fillRect(0,0,W,H);hgGrain(g);
     await hgLogo(g,72,250,34);
     const yq=t&&t.n?1300:1440,T=hgFit(g,segs,BG,66,46,936,5,330,1.12),ty=yq-T.ls.length*T.z*1.12;
@@ -3752,7 +3757,7 @@ async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)retur
     hgDraw(g,T,72,ty,1.12);if(t&&t.n)await hgQuien(g,t,72,1340);
     hgCta(g,K,cp,cpill,1500)}
   else if(D.d===1){ // T4 · Sello de pasaporte
-    g.drawImage(hgFx(im,W,H,.5,.22,{sat:1.05}),0,0);
+    g.drawImage(hgFx(im,W,H,.5,.22,{sat:1.05},D.f.fz,.3),0,0);
     g.fillStyle=hgLin(g,0,H,[[0,"rgba(5,7,12,.6)"],[.15,"rgba(5,7,12,0)"],[.42,"rgba(5,7,12,0)"],[.6,"rgba(5,7,12,.88)"],[.76,"#05070c"]]);g.fillRect(0,0,W,H);hgGrain(g);
     await hgLogo(g,72,250,34);
     const yq=t&&t.n?1340:1460,T=hgFit(g,t?[["“"+segs[0][0],"#fff"]].concat(segs.slice(1)).map((x,i,A)=>i===A.length-1?[x[0]+"”",x[1]]:x):segs,BG,60,44,936,5,330,1.12),ty=yq-T.ls.length*T.z*1.12;
@@ -3761,18 +3766,18 @@ async function hgCanvas(k,mas){await hgCargar();const D=hgDia(k,mas);if(!D)retur
       g.fillStyle=HGA;g.textAlign="center";g.textBaseline="middle";K.sp("4px");g.font="700 18px ALO, Figtree, sans-serif";g.fillText("VISITADO",2,-56);K.sp("0px");g.font="34px sans-serif";g.fillText("✈️",0,-20);
       const z=K.fit(ciudad.toUpperCase(),"400 {s}px 'Bebas Neue', Impact, sans-serif",50,180,26);g.fillText(ciudad.toUpperCase(),0,24);
       const pa=(t.l.split(",")[1]||"").trim().toUpperCase();if(pa){K.sp("3px");K.fit(pa,"700 {s}px ALO, Figtree, sans-serif",18,170,12);g.fillText(pa,2,60);K.sp("0px")}g.restore()}
-    hgDraw(g,T,72,ty,1.12);if(t&&t.n)await hgQuien(g,{n:t.n,l:(t.l||"").split(",").slice(1).join(",").trim()||t.l},72,1370);
+    hgDraw(g,T,72,ty,1.12);if(t&&t.n)await hgQuien(g,{n:t.n,c:t.c,l:(t.l||"").split(",").slice(1).join(",").trim()||t.l},72,1370);
     hgCta(g,K,"¿Su pasaporte sigue vacío?",cpill,1520)}
   else{ // T5 · Editorial claro
     g.fillStyle="#F3F6F9";g.fillRect(0,0,W,H);
     K.rr(110,330,898,800,36);g.lineWidth=4;g.strokeStyle=HGA;g.stroke();
     K.sombra("rgba(20,33,61,.3)",70,()=>{K.rr(72,300,898,800,36);g.fillStyle="#ccc";g.fill()});
-    g.save();K.rr(72,300,898,800,36);g.clip();g.drawImage(hgFx(im,898,800,.5,.25),72,300);g.restore();
+    g.save();K.rr(72,300,898,800,36);g.clip();g.drawImage(hgFx(im,898,800,.5,.25,null,D.f.fz,.42),72,300);g.restore();
     await hgLogo(g,72,230,34,false,true);
     if(t&&t.l){K.sp("4px");g.font="700 22px ALO, Figtree, sans-serif";const tx="📍 "+t.l.toUpperCase(),w=g.measureText(tx).width+40;K.rr(100,1040,w,46,23);g.fillStyle="#14213D";g.fill();g.fillStyle=HGA;g.textAlign="left";g.textBaseline="middle";g.fillText(tx,120,1064);K.sp("0px")}
     g.font="700 220px ALBG, Figtree, sans-serif";g.fillStyle=HGA;g.textAlign="right";g.textBaseline="alphabetic";g.fillText("”",1008,1250);
     const T=hgFit(g,segs.map(x=>[x[0],x[1]==="#fff"?"#14213D":HGA2]),BG,60,44,900,4,260,1.12);hgDraw(g,T,72,1150,1.12);
-    if(t&&t.n)await hgQuien(g,{n:t.n,l:"SOCIO VIAJERO",sin:1},72,1410,true);
+    if(t&&t.n)await hgQuien(g,{n:t.n,c:t.c,l:"SOCIO VIAJERO",sin:1},72,1410,true);
     hgCta(g,K,cp,cpill,1530,{pc:"#14213D",bg:"#14213D",tc:HGA})}
   return cv}
 window.__hgCanvas=hgCanvas;
