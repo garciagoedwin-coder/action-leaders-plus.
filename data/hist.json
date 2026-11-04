@@ -223,11 +223,6 @@
    "h": 1536
   },
   {
-   "id": "1qBYDTNOlkFYwVrEANU3pXEOkISnk-MA6",
-   "w": 1440,
-   "h": 1920
-  },
-  {
    "id": "1y7r9SVt1gfpaW-JErZjkjQD2s98hddo8",
    "w": 1440,
    "h": 1920
@@ -338,12 +333,6 @@
   "1Xy-NwDpu5_hjNXcFBWW1fZGYuw928ap_": {
    "n": "Jonathan Rodriguez",
    "l": "Savona, Italia",
-   "f": "Dejé de vivir en automático y comencé a vivir con propósito.",
-   "c": "1n0nuhGij11T4ktkcu9Qx3DRz08BhGSle"
-  },
-  "1qBYDTNOlkFYwVrEANU3pXEOkISnk-MA6": {
-   "n": "Jonathan Rodriguez",
-   "l": "Isla Catalina, República Dominicana",
    "f": "Dejé de vivir en automático y comencé a vivir con propósito.",
    "c": "1n0nuhGij11T4ktkcu9Qx3DRz08BhGSle"
   },
@@ -504,5 +493,8 @@
    "w": 270,
    "h": 480
   }
+ ],
+ "fuera": [
+  "1qBYDTNOlkFYwVrEANU3pXEOkISnk-MA6"
  ]
 }

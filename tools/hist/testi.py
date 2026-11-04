@@ -42,7 +42,7 @@ def main():
                 cs = ids(r[9])
                 if cs: e["c"] = cs[0]
                 e.update({k: v for k, v in (aj.get(i) or {}).items()})
-                tx[i] = e
+                if i not in man.get("fuera", []): tx[i] = e
     man["tx"] = tx
     json.dump(man, open(MAN, "w"), ensure_ascii=False, indent=1)
     print("testimonios:", len(tx), "(nuevos/actualizados desde", n0, ")")
