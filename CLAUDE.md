@@ -442,3 +442,10 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 ## Un solo flyer (4 nov, 00:30)
 - Historias: colores del logo (HGA celeste #2AC1F1, HGA2 #0A7DAD, HGT #062B3A) en vez de dorado. La historia del día es LA MISMA para todo el equipo (hgDia sin desfase por uid) y sin "Ver otra opción".
 - Flyer de presentación (historia): proporciones nuevas (PRES_L.h), sin EN VIVO ni #HastaQueFuncione, logo centrado abajo (y 1598), fondos de media/flyers/pres desenfocados (GaussianBlur 6, ?v=2). Fondo = el del día (PRES_DIA), ya no se elige. Flyer de hoy (abrirFlyHoy): un solo texto por día, sin "Otro texto". Lanzamiento: fondo fijo Nueva York. Se mantiene elegir Publicación / Historia.
+
+## 4 nov (mañana)
+- Historias: encuadre por caras (data/hist.json fz = caja de caras de tools/hist/caras.py, YuNet; hgFx(...,fz,ty) acerca/mueve la foto para que la cara quede arriba del texto) y cara real en el círculo del testimonio (tx.c → media/hist/caras/ID.jpg). Viajeros toma las fotos del formulario (carpetas Foto 1/2/3 y caras, públicas) — solo las autorizadas en tx; `fuera` = fotos excluidas por Edwin. tools/hist/testi.py CSV [tools/hist/ajustes.json] arma tx desde la hoja 1nR6KPRZOUab2FSp9WcZ4FTbCgjE7aNmK8ST8UfQ73T4.
+- Video de bienvenida: un solo archivo media/bienvenida-corto.mp4 (4:41, solo Edwin hablando). Los bienvenida-0..5.mp4 ya no se usan.
+- Bienvenida: sin el paso "caja de herramientas" (config.bienvenida.caja = ""); la caja sigue en los accesos directos.
+- Flyer de bienvenida (historia): sin tarjetas, todo más arriba; patrocinador y "Hasta que funcione" en y 1452–1552 (zona segura).
+- Ranking: config.rankingUnir {"Gloria Stephanie Aranda Midence": "Edwin Alexander Garcia Gomez"} (la cuenta de la esposa de Edwin suma a Edwin).
