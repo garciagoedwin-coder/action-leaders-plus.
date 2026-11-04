@@ -3893,7 +3893,7 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo){n=nv(n);pat=nv(p
   const P=String(n||"").trim().toUpperCase().split(/\s+/),l1=P[0]||"",R=P.slice(1);
   const wr=(z,mw)=>{g.font="400 "+z+"px "+BB;const L=[];let cur="";R.forEach(w=>{const t=cur?cur+" "+w:w;if(cur&&g.measureText(t).width>mw){L.push(cur);cur=w}else cur=t});if(cur)L.push(cur);return L};
   let z=76,RL=wr(z,920);const ZS=[184,172,160,150,140,132,124,116,108,100,92,84,76];
-  const L2T=yo?"Elegí viajar más y emprender al mismo tiempo.":(f?"Bienvenida":"Bienvenido")+" al equipo donde los sueños se trabajan juntos.";g.font="700 40px "+BF;const NL=Math.min(3,wrap(L2T,860).length),FIN=1360,est=(zz,L)=>(1+L.length)*zz*.86+90+128+56*NL;
+  const L2T=yo?(window._L2T||"Elegí viajar más, conocer el mundo y construir algo propio al mismo tiempo."):(f?"Bienvenida":"Bienvenido")+" al equipo donde los sueños se trabajan juntos.";g.font="700 40px "+BF;const NL=Math.min(3,wrap(L2T,860).length),FIN=yo?1290:1360,est=(zz,L)=>(1+L.length)*zz*.86+90+128+56*NL;
   pick:for(const zz of ZS)for(const mw of [920,640,460]){const L=wr(zz,mw);g.font="400 "+zz+"px "+BB;if(1+L.length<=3&&785+est(zz,L)<=FIN&&g.measureText(l1).width<=920&&L.every(x=>g.measureText(x).width<=920)){z=zz;RL=L;break pick}}
   g.font="400 "+z+"px "+BB;const lh=z*.86;const slk=Math.max(0,FIN-785-(1+RL.length)*lh-90-128-56*NL),G1=90+slk*.3,G2=128+slk*.3;let yy=785+slk*.4+lh;g.textAlign="left";g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=6;g.fillStyle="#fff";g.fillText(l1,76,yy);
   RL.forEach(t=>{yy+=lh;const w2=g.measureText(t).width;g.fillStyle=grad(76,76+w2);g.fillText(t,76,yy)});g.restore();
@@ -3903,6 +3903,7 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo){n=nv(n);pat=nv(p
   if(pais){let x=80+lw+18;const fl=bandera(pais);if(fl){g.font="36px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";g.fillText(fl,x,yb+1);x+=g.measureText(fl).width+14}g.font="600 28px "+BF;g.fillStyle="#E5E7EB";sp(pais.toUpperCase(),x,yb-2,3.8)}
   let yq=yb+G2;g.font="500 40px "+BF;g.textAlign="left";g.fillStyle="rgba(255,255,255,.9)";g.fillText(yo?"Este es mi nuevo comienzo.":"Hoy empieza su nueva historia.",80,yq);
   g.font="700 40px "+BF;g.fillStyle=T.a;wrap(L2T,860).slice(0,3).forEach((t,i)=>g.fillText(t,80,yq+56*(i+1)));
+  if(yo){let cx=80;const cy=yq+56*NL+44;g.font="700 26px "+BF;["✈️ Viajes","🚀 Emprendimiento","🤝 Equipo"].forEach(t=>{const w=g.measureText(t).width+40;g.beginPath();g.roundRect(cx,cy,w,52,26);g.fillStyle="rgba(255,255,255,.08)";g.fill();g.lineWidth=1.5;g.strokeStyle=T.a;g.stroke();g.fillStyle="#fff";g.textAlign="left";g.textBaseline="middle";g.fillText(t,cx+20,cy+27);g.textBaseline="alphabetic";cx+=w+12})}
   // tarjetas
   const card=(x,w,b,s)=>{g.beginPath();g.roundRect(x,1530,w,104,20);g.fillStyle="rgba(255,255,255,.07)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.15)";g.stroke();g.textAlign="left";g.fillStyle="#fff";g.font="700 30px "+BF;g.fillText(b,x+20,1576);g.fillStyle=T.a;g.font="700 14px "+BF;sp(s,x+20,1608,2.8)};
   // (4 nov) sin tarjetas: todo termina antes de la zona que tapan WhatsApp e Instagram (últimos ~330 px)
