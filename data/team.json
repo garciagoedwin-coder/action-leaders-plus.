@@ -2777,17 +2777,12 @@
     "i": "🎧",
     "t": "Audios en Spotify",
     "u": "https://open.spotify.com/show/2rpLxUc9jiXVhB2ItVicbp"
-   },
-   {
-    "i": "🧰",
-    "t": "Caja de herramientas",
-    "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
   "activacionesCorte": "2026-11-04T04:55:07Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
-   "caja": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link",
+   "caja": "",
    "video": "https://youtu.be/6ySNnmhDjwk",
    "whatsapp": "https://chat.whatsapp.com/H2qNlABTfsAAuZ12JqCiKi"
   },
