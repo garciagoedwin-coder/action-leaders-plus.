@@ -330,7 +330,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .metas .bar{margin:2px 0 0;background:var(--surface)}.metas .ok{color:var(--good);font-weight:800}
 #ptr{position:fixed;top:calc(env(safe-area-inset-top,0px) + 96px);left:50%;transform:translate(-50%,-60px);opacity:0;z-index:70;background:var(--surface);color:var(--ink);border-radius:99px;padding:8px 14px 8px 10px;display:flex;align-items:center;gap:8px;font:700 13px Figtree,system-ui,sans-serif;box-shadow:0 8px 20px -6px rgba(0,0,0,.35);pointer-events:none}
 #ptr i{width:18px;height:18px;border-radius:50%;border:2.5px solid #2AC1F1;border-top-color:transparent;flex:none}#ptr.gira i{animation:ptrG .7s linear infinite}@keyframes ptrG{to{transform:rotate(360deg)}}#ptr.vuelve{transition:transform .25s,opacity .25s}
-.mqCard.mini{gap:6px;padding:13px 15px;cursor:pointer}.mqCard .mq-big{font:800 22px/1.1 'Bricolage Grotesque',Figtree,sans-serif}
+.mq-lg{color:#FDE047}.mqCard .mq-big small,.mqCard h3 small{font:600 15px Figtree,sans-serif;opacity:.7}.mq-brw{display:flex;align-items:center;gap:10px}.mq-brw .mq-bar{flex:1}.mq-pc{font:800 13px Figtree,sans-serif;color:#FDE047;white-space:nowrap}.mqCard.mini{gap:6px;padding:13px 15px;cursor:pointer}.mqCard .mq-big{font:800 22px/1.1 'Bricolage Grotesque',Figtree,sans-serif}
 .mq-stk{display:flex;align-items:center}.mq-stk .av{width:30px;height:30px;margin-left:-9px;box-shadow:0 0 0 2px #0b1020;font-size:11px}.mq-stk .av:first-child{margin-left:0}.mq-stk .av.badge{box-shadow:none}.mq-stk em{font-style:normal;font-size:12px;font-weight:800;margin-left:6px;color:#FDE047}
 .mq-dual{position:relative;height:9px}.mq-dual i{position:absolute;left:0;top:0;bottom:0}.mq-dual i.c{opacity:.55}
 .mq-bar i.c{background-size:200% 100%!important;animation:mqSh 2.4s linear infinite}@keyframes mqSh{0%{background-position:100% 0}100%{background-position:-100% 0}}
@@ -2020,14 +2020,14 @@ function renderMetaEq(cargado){const c=$("#metaEq");if(!c)return;const M=mqCfg()
   let open=false;try{open=LS.get("mqOpen")==="1"}catch(e){}clearInterval(mqTick);c.hidden=false;c.classList.toggle("mini",!open);
   if(!open){const tk=[`🤝 <b>${fmt(comp)}</b> comprometidos · ⚡ <b>${fmt(log)}</b> logrados`].concat(L.slice(0,6).map(x=>`🎉 <b>${esc(dtFirst(x.n))}</b> se comprometió con ${fmt(x.v)} pts`)).concat(puede?["👉 Toque aquí y haga su compromiso"]:[]);
     c.innerHTML=`<div class="row between" style="align-items:center"><span class="mq-k">🎯 META DEL EQUIPO · ${esc(mesNom().toUpperCase())}</span><span class="mq-d">⏳ ${dias}d ▾</span></div>
-     <div class="row between" style="align-items:center;gap:10px"><b class="mq-big">${fmt(meta)} pts</b><span class="mq-stk">${L.slice(0,5).map(x=>avHTML(x.n,false,false)).join("")}${L.length>5?`<em>+${L.length-5}</em>`:""}</span></div>
-     <div class="mq-bar mq-dual"><i class="c" style="width:${pc(comp)}%"></i><i class="l" style="width:${pc(log)}%"></i></div>
+     <div class="row between" style="align-items:center;gap:10px"><b class="mq-big"><span class="mq-lg">${fmt(log)}</span> <small>de ${fmt(meta)} pts</small></b><span class="mq-stk">${L.slice(0,5).map(x=>avHTML(x.n,false,false)).join("")}${L.length>5?`<em>+${L.length-5}</em>`:""}</span></div>
+     <div class="mq-brw"><div class="mq-bar mq-dual"><i class="c" style="width:${pc(comp)}%"></i><i class="l" style="width:${pc(log)}%"></i></div><span class="mq-pc">${Math.floor(log*100/meta)} %</span></div>
      <div class="mq-tk"><span>${tk[0]}</span></div>`;
     let i=0;const sp=c.querySelector(".mq-tk span");if(tk.length>1)mqTick=setInterval(()=>{if(!document.body.contains(sp)){clearInterval(mqTick);return}sp.classList.remove("in");void sp.offsetWidth;i=(i+1)%tk.length;sp.innerHTML=tk[i];sp.classList.add("in")},3500);
     c.onclick=()=>{try{LS.set("mqOpen","1")}catch(e){}renderMetaEq()};return}
   c.onclick=null;
   c.innerHTML=`<div class="row between" style="align-items:center;cursor:pointer" data-mqc><span class="mq-k">🎯 META DEL EQUIPO · ${esc(mesNom().toUpperCase())}</span><span class="mq-d">⏳ ${dias} ${dias===1?"día":"días"} ▴</span></div>
-   <h3>${fmt(meta)} pts</h3>
+   <h3><span class="mq-lg">${fmt(log)}</span> <small>de ${fmt(meta)} pts</small></h3>
    <div class="mq-row"><span>🤝 Comprometido</span><b>${fmt(comp)} <small>de ${fmt(meta)}</small></b></div><div class="mq-bar"><i class="c" style="width:${pc(comp)}%"></i></div>
    <div class="mq-row"><span>⚡ Logrado</span><b>${fmt(log)} <small>de ${fmt(meta)}</small></b></div><div class="mq-bar"><i class="l" style="width:${pc(log)}%"></i></div>
    ${L.length?`<div class="mq-who"><small>${L.length} ${L.length===1?"socio comprometido":"socios comprometidos"}</small><div class="mq-av">${L.slice(0,40).map(x=>`<span class="mq-p" title="${esc(x.n)}">${avHTML(x.n,false,false)}<b>${esc(dtFirst(x.n))}</b><i>${fmt(x.v)}</i></span>`).join("")}</div></div>`:`<p class="mq-p0">Sea el primero en hacer su compromiso 💪</p>`}
@@ -6297,7 +6297,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261104120517";var busy=false,pend=null;
+(function(){var V="20261104121312";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
