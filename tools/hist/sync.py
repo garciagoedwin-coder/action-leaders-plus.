@@ -108,6 +108,18 @@ def main():
             cambio = True
         man[k] = lista
     man.setdefault("tx", {})
+    # caja de las caras para que la app encuadre (solo las fotos que aún no la tienen)
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import caras
+        for k in ("ev", "vi"):
+            for x in man.get(k, []):
+                if "fz" in x or x.get("nf"): continue
+                fz = caras.rostros(os.path.join(RAIZ, "media", "hist", k, x["id"] + ".jpg"))
+                if fz: x["fz"] = fz
+                else: x["nf"] = 1
+                cambio = True
+    except Exception as e:
+        print("Sin detección de caras:", e)
     if cambio:
         man["v"] = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
         json.dump(man, open(MAN, "w"), ensure_ascii=False, indent=1)
