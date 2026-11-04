@@ -40,6 +40,12 @@ for a in nuevas:
         if a['fecha'] > cfg.get('activacionesCorte', ''): cfg['activacionesCorte'] = a['fecha']
 
 VOL = {"Starter": 50, "Classic": 200, "Premium": 500}
+# config.rankingUnir {"Nombre en inCruises": "Nombre al que se suma"}: cuentas que trabaja otra persona (ej. la cuenta de la esposa de Edwin suma a Edwin)
+UNIR = cfg.get('rankingUnir', {})
+def un(nm):
+    for k, v in UNIR.items():
+        if same(k, nm): return v
+    return nm
 import os
 _fz = os.environ.get('RK_NOW') or cfg.get('rankingCongelado')  # config.rankingCongelado (UTC) congela el mes hasta que el admin lo quite
 now = datetime.datetime.fromisoformat(_fz.rstrip('Z')) if _fz else datetime.datetime.now(datetime.UTC).replace(tzinfo=None)  # RK_NOW=AAAA-MM-DDTHH:MM:SS (UTC) congela la fecha (cierre de mes)
@@ -55,6 +61,7 @@ for ln in open(reg_file, encoding='utf-8'):
     if not ln: continue
     sid, nom, f = [x.strip() for x in ln.split('|')]
     if f < mes0: continue
+    nom = un(nom); sid = 'u:' + slug(nom) if UNIR and nom in UNIR.values() else sid
     g = G.setdefault(sid, {'nom': nom, 'r': 0, 'w': 0}); g['r'] += 1
     if P(f) >= wk0: g['w'] += 1
 
@@ -83,7 +90,7 @@ for g in G.values():
     if dup: dup['registros'] += g['r']; dup['regSemana'] += g['w']; continue
     e['registros'] = g['r']; e['regSemana'] = g['w']; put(e)
 
-acts = [a for a in d['activaciones'] if a['fecha'] >= mes0]
+acts = [dict(a, patrocinador=un(a['patrocinador'])) for a in d['activaciones'] if a['fecha'] >= mes0]
 for a in acts:
     if not any(same(e['nombre'], a['patrocinador']) for e in new):
         o = next((y for y in old if same(y['nombre'], a['patrocinador'])), None)
