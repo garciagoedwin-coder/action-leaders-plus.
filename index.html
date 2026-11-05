@@ -962,6 +962,19 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .incS .cd span i{font:600 10px/1 Figtree,sans-serif;font-style:normal;color:#BDEBFB;text-transform:uppercase}
 .incS.ult{background:linear-gradient(120deg,#5a0f0f,#c0392b)}.incS.ult .tx small,.incS.ult .cd span i{color:#ffd6d0}
 @media (prefers-reduced-motion:reduce){.incS:after,.incS .ic{animation:none}}
+
+#v-inicio.simple>#urgStrip{order:1}
+.urgS{background:linear-gradient(120deg,#5a0f0f,#b42318);color:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 10px 24px -14px #b42318;display:flex;flex-direction:column;gap:8px}
+.urgS .uh{display:flex;align-items:center;gap:10px}.urgS .uh .ic{font-size:24px;animation:incF 1.2s ease-in-out infinite}
+.urgS .uh b{display:block;font-size:15px;line-height:1.2}.urgS .uh small{display:block;font-size:12px;color:#ffd6d0;margin-top:2px}
+.urgS .ur{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border-radius:12px;padding:8px 10px}
+.urgS .ur .nm{flex:1;min-width:0}.urgS .ur .nm b{display:block;font-size:14px}.urgS .ur .nm small{display:block;font-size:11.5px;color:#ffd6d0}
+.urgS .ur .q{font:800 12px Figtree,sans-serif;background:#fff;color:#b42318;border-radius:999px;padding:3px 8px;white-space:nowrap}
+.urgS .ur .q.w{background:rgba(255,255,255,.2);color:#fff}
+.urgS .ur button{border:0;border-radius:10px;padding:7px 10px;font:700 12.5px Figtree,sans-serif;cursor:pointer;background:#25D366;color:#fff;white-space:nowrap}
+.urgS .ur button.g{background:rgba(255,255,255,.18)}
+.urgS .ur.ok{opacity:.55}.urgS .mas{align-self:flex-start;background:none;border:0;color:#ffd6d0;font:700 12.5px Figtree,sans-serif;cursor:pointer;padding:0}
+@media (prefers-reduced-motion:reduce){.urgS .uh .ic{animation:none}}
 </style>
 
 </head>
@@ -1317,6 +1330,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
       <div id="compStrip" hidden></div>
       <div class="pendStrip" id="pendStrip" hidden></div>
       <div id="pushStrip" hidden></div>
+      <div class="urgS" id="urgStrip" hidden></div>
       <div class="incS" id="incStrip" hidden></div>
       <div class="ra" id="raStrip" hidden></div>
       <div class="irCard" id="irCard" hidden></div>
@@ -3876,6 +3890,28 @@ function raAdmin(){const c=raCfg();if(!c)return;const M=Object.assign({Classic:"
     const sv=()=>{LS.set("raMon",{Classic:$("#raMC").value,Premium:$("#raMP").value});raAdmin()};$("#raMC").onchange=sv;$("#raMP").onchange=sv;
     document.querySelectorAll("[data-raen]").forEach(i=>i.onchange=()=>{const E2=LS.get("raEnt")||{};E2[i.dataset.raen]=i.checked?Date.now():0;LS.set("raEnt",E2);raAdmin()})})}
 
+// ---------- Miembros por inactivarse (5 nov) ----------
+// El servidor (avisos-inactivar.yml, 8:30 a.m.) deja en push/{uid}.urg {t, l:[{n,x,s,k,w,d}]} los miembros con ahorro pendiente que se
+// inactivan en ≤7 días, para su patrocinador (d:1) y los líderes TL+ de arriba (d:0). Franja roja #urgStrip arriba en Inicio.
+let urgMas=false;
+const urgCuando=x=>{const h=TODAY,d=dkey(new Date(x)),n=Math.round((Date.parse(d)-Date.parse(h))/864e5);return n<=0?"hoy":n===1?"mañana":"el "+["domingo","lunes","martes","miércoles","jueves","viernes","sábado"][new Date(x).getDay()]};
+function urgLista(){const u=(pushDoc||{}).urg;if(!u||!u.l||Date.now()-(u.t||0)>36*36e5)return[];return u.l.filter(m=>Date.parse(m.x)>Date.now())}
+function urgSocio(m){return (mios||[]).find(x=>{const r=x.registro||{};return (m.k&&[ahKe(x.email),ahKe(r.correo)].includes(m.k))||(m.w&&ahKw(r.whatsapp)===m.w)})||null}
+function urgStrip(){const el=$("#urgStrip");if(!el)return;const L=urgLista();if(!L.length){el.hidden=true;return}
+  const ok=LS.get("urgOk:"+TODAY)||{},hoy=L.filter(m=>Date.parse(m.x)-Date.now()<2*864e5).length,V=urgMas?L:L.slice(0,3);
+  el.innerHTML=`<div class="uh"><span class="ic">🚨</span><span><b>${L.length===1?"1 de su equipo se inactiva pronto":L.length+" de su equipo se inactivan pronto"}</b><small>Ahorro pendiente · llámeles hoy para que no pierdan su cuenta ni sus puntos dobles</small></span></div>
+   ${V.map((m,i)=>{const c=urgCuando(m.x),u=Date.parse(m.x)-Date.now()<2*864e5;return `<div class="ur${ok[m.k||m.n]?" ok":""}"><span class="nm"><b>${esc(m.n)}</b><small>${m.d?"⭐ Su directo":"Equipo de "+esc(m.s)}${ok[m.k||m.n]?" · ✓ contactado hoy":""}</small></span><span class="q${u?"":" w"}">${esc(c.replace("el ",""))}</span><button data-urw="${i}">💬</button>${m.d?"":`<button class="g" data-urs="${i}" title="Avisar a ${esc(m.s)}">👤 ${esc(m.s.split(" ")[0])}</button>`}</div>`}).join("")}
+   ${L.length>3?`<button class="mas" id="urgMas">${urgMas?"Ver menos ▴":"Ver los "+L.length+" ▾"}</button>`:""}`;
+  el.hidden=false;
+  const mm=$("#urgMas");if(mm)mm.onclick=()=>{urgMas=!urgMas;urgStrip()};
+  el.querySelectorAll("[data-urw]").forEach(b=>b.onclick=async()=>{const m=V[+b.dataset.urw],x=urgSocio(m),n=m.n.split(" ")[0],c=urgCuando(m.x),yo=miNombreCorto()||"";
+    const t=`¡Hola, ${n}! 👋\n\nLe escribo porque su membresía de inCruises tiene un pago pendiente y su cuenta se inactiva ${c}.\n\nNo queremos que pierda su cuenta ni sus puntos dobles. ¿Le ayudo a ponerse al día ahora mismo? 🙌${yo?"\n\n*"+yo+"*":""}`;
+    const o=LS.get("urgOk:"+TODAY)||{};o[m.k||m.n]=1;LS.set("urgOk:"+TODAY,o);let w=x?waSocio(x):"";if(x&&!w)w=await dtWa(x.uid);
+    location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t);setTimeout(urgStrip,800)});
+  el.querySelectorAll("[data-urs]").forEach(b=>b.onclick=async()=>{const m=V[+b.dataset.urs],p=(mios||[]).find(y=>sameN((y.registro||{}).nombre||"",m.s)||parecidoN((y.registro||{}).nombre||"",m.s)),c=urgCuando(m.x),yo=miNombreCorto()||"";
+    const t=`¡Hola, ${m.s.split(" ")[0]}! 🚨\n\n${m.n} se inactiva ${c} por su ahorro pendiente.\n\n¿Ya pudo hablar con ${m.n.split(" ")[0]}? Si necesita apoyo con la llamada, aquí estoy. 💪${yo?"\n\n*"+yo+"*":""}`;
+    let w=p?waSocio(p):"";if(p&&!w)w=await dtWa(p.uid);location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t)})}
+
 // ---------- Incentivo con contador (5 nov) ----------
 // config.incentivo {id, desde, hasta (UTC), t, sub, fin}: franja #incStrip arriba en Inicio con cuenta regresiva; se oculta sola al pasar `hasta`.
 function incCfg(){const c=(T.config||{}).incentivo;return c&&c.hasta&&Date.now()<Date.parse(c.hasta)&&(!c.desde||Date.now()>=Date.parse(c.desde))?c:null}
@@ -6085,7 +6121,7 @@ async function irFlyer(w){const g=!w,W=1080,H=1350,c=document.createElement("can
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],g?"graduado-inicio-rapido.jpg":"inicio-rapido-semana-"+w.n+".jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
-let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{incStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
+let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{incStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
   const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
   if(m==="actual"&&!st.ini){const no=LS.get("irNo:"+store.uid);if(no&&Date.now()<no){el.hidden=true;return}
     el.hidden=false;el.className="irMini";el.innerHTML=`<span class="ic">🚀</span><span class="tx"><b>Plan de Inicio Rápido</b> · Aprenda a duplicar en 30 días</span><button type="button" class="go" id="irEmp">Empezar ›</button><button type="button" class="x" id="irNo" aria-label="Quitar">✕</button>`;
@@ -6332,7 +6368,7 @@ async function loadMine(){
   if(profile.nombrePila)$("#hello").textContent="Hola, "+profile.nombrePila.split(" ")[0];
   try{const b=bw;if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}catch(e){}
   if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
-  welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();setTimeout(()=>{pushRefrescar();pushPinta();badgePinta();if(typeof Notification!=="undefined"&&Notification.permission==="granted")pushCargarDoc().then(()=>bellPinta()).catch(()=>{})},6000);
+  welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();setTimeout(()=>{pushRefrescar();pushPinta();badgePinta();pushCargarDoc().then(()=>{try{bellPinta()}catch(e){}try{urgStrip()}catch(e){}}).catch(()=>{})},6000);
   contacts=await store.contacts();setTimeout(importarProspectos,1500);setTimeout(()=>loadSala(),2500);setTimeout(()=>loadL3(),1800);setTimeout(()=>{try{renderDT();dtCargar(false)}catch(e){}},2600);setTimeout(lcRevisar,6000);setTimeout(()=>loadEvA(),2200);loadCitas();setTimeout(irRevisar,1500);
   renderAll()}
 
@@ -6510,7 +6546,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261105082640";var busy=false,pend=null;
+(function(){var V="20261105102432";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

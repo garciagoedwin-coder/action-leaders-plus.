@@ -12,7 +12,8 @@ Usos:
         mobile_phone, sponsor_name, plan_name, level, invoices_due_date, whatsapp_url).
         GRACIA_ISO por defecto = fecha de vencimiento de cada factura.
   python3 tools/ahorro.py falla 'email|Nombre|fecha_correo_ISO|plan|patrocinador'
-        Correo "Tu pago de Membresía inCruises no se realizó con éxito." → pendiente, gracia 5 días.
+        Correo "Tu pago de Membresía inCruises no se realizó con éxito." → pendiente, gracia 5 días
+        (x = fecha de inactivación estimada: +30 días; el reporte trae la real en invoices_expiration_date).
   python3 tools/ahorro.py pago 'email o nombre completo'
         Correo de pago exitoso → sale de la lista.
   python3 tools/ahorro.py lideres LIDERES.txt
@@ -129,7 +130,8 @@ def main():
             w = x.get('whatsapp_url', '').split('phone=')[-1] or x.get('mobile_phone', '')
             rows.append({'n': bonito(x['first_name'] + ' ' + x['last_name']), 's': bonito(x.get('sponsor_name', '')),
                          'p': x.get('plan_name', '').replace(' Member', ''), 'lv': x.get('level', ''),
-                         'k': [ke(x['email']), kw(w), kw(x.get('mobile_phone', ''))], 'g': iso(g), 'f': 'reporte'})
+                         'k': [ke(x['email']), kw(w), kw(x.get('mobile_phone', ''))], 'g': iso(g), 'f': 'reporte',
+                         'x': iso(fecha(x['invoices_expiration_date'])) if x.get('invoices_expiration_date') else ''})
         st['rows'] = rows
         if len(a) > 2 and a[2] and os.path.exists(a[2]): lideres(st, a[2])
     elif a[0] == 'falla':
@@ -138,7 +140,8 @@ def main():
         g = iso(fecha(f) + datetime.timedelta(days=5))
         r = next((r for r in st['rows'] if h and h in r['k']), None)
         if r: r['g'] = min(r['g'], g) if r.get('f') == 'correo' else g; r['f'] = 'correo'
-        else: st['rows'].append({'n': bonito(nom), 's': bonito(sp), 'p': plan, 'lv': '', 'k': [h, None, None], 'g': g, 'f': 'correo'})
+        else: st['rows'].append({'n': bonito(nom), 's': bonito(sp), 'p': plan, 'lv': '', 'k': [h, None, None], 'g': g, 'f': 'correo',
+                                 'x': iso(fecha(f) + datetime.timedelta(days=30))})
     elif a[0] == 'pago':
         q = a[1].strip(); h = ke(q)
         antes = len(st['rows'])

@@ -2,6 +2,7 @@
 // Corre en GitHub Actions con el secreto FIREBASE_SA (clave de la cuenta de servicio; NUNCA en el repo).
 //   node enviar.mjs racha            → 7:00 p.m. HN: a quien no ha completado su rutina hoy
 //   node enviar.mjs racha2           → 9:30 p.m. HN: solo racha de 3+ días que está por perderse
+//   node enviar.mjs inact            → 8:30 a.m. HN: miembros con ahorro pendiente que se inactivan en ≤7 días (patrocinador + líderes TL+ arriba)
 //   node enviar.mjs inc1|inc2         → incentivo (config.incentivo): 9:00 a.m. y 7:05 p.m. HN
 //   node enviar.mjs act VIEJO NUEVO  → socios nuevos (compara dos versiones de data/team.json)
 // DRY=1 → no manda nada, solo imprime. Nunca incluye teléfonos, notas ni dinero.
@@ -127,6 +128,52 @@ export function msgInc(modo, cfg, ms = Date.now()) {
     : { title: `⏳ El incentivo cierra ${q}`, body: "¿A quién le presenta hoy? Un Classic o un Premium y el incentivo es suyo." };
 }
 
+
+// ---------- Miembros por inactivarse (ahorro pendiente con fecha de inactivación) ----------
+// data/ahorro.enc (cifrado) → filas {n, s (patrocinador), x (inactivación ISO), k:[ek,wk,..]}. La clave se lee de Firestore.
+const DIAS = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+export const cuandoHN = (x, ms = Date.now()) => { const h = hoyHN(ms), d = hoyHN(Date.parse(x)), n = Math.round((Date.parse(d) - Date.parse(h)) / 864e5);
+  return n <= 0 ? "HOY" : n === 1 ? "mañana" : "el " + DIAS[new Date(Date.parse(x) - 6 * 3600e3).getUTCDay()]; };
+const RG_TL = /team\s*leader|marketing|director|regional|national|international|executive|board/i;
+export function rangoUsr(u, team) {
+  const r = (u.registro || {}), n = r.nombre || ""; if (r.rango) return r.rango;
+  const cr = (team.config || {}).rangos || {}; for (const k in cr) if (mismoNombre(k, n)) return cr[k];
+  const L = (team.liderazgo || []).find(l => mismoNombre(l.nombre, n) || (r.nombreRanking && mismoNombre(l.nombre, r.nombreRanking))); return L ? String(L.rango || "") : "";
+}
+const corto = n => { const w = String(n || "").trim().split(/\s+/).filter(Boolean); return (w.length >= 4 ? [w[0], w[2]] : w.slice(0, 2)).map(x => x[0].toUpperCase() + x.slice(1).toLowerCase()).join(" "); };
+// destinos: {uid: [{n,x,s,k,w,d}]}
+export function destinosInact(rows, users, team, ms = Date.now()) {
+  const D = {}, lim = ms + 7 * 864e5, alias = (team.config || {}).alias || {};
+  for (const r of rows) {
+    if (!r.x) continue; const t = Date.parse(r.x); if (!(t > ms && t <= lim)) continue;
+    const spN = alias[r.s] || r.s;
+    const sp = users.filter(u => u.registro && (mismoNombre(u.registro.nombre, spN) || (u.registro.nombreRanking && mismoNombre(u.registro.nombreRanking, spN))));
+    const base = { n: corto(r.n), x: r.x, s: corto(r.s), k: (r.k || [])[0] || "", w: (r.k || [])[1] || (r.k || [])[2] || "" };
+    if (sp.length !== 1) { console.log("Patrocinador no encontrado en la app:", r.s); continue; }
+    const s = sp[0]; (D[s.uid] = D[s.uid] || []).push({ ...base, d: 1 });
+    for (const uid of (s.registro.linea || [])) { const u = users.find(v => v.uid === uid); if (!u || uid === s.uid) continue;
+      if (RG_TL.test(rangoUsr(u, team))) (D[uid] = D[uid] || []).push({ ...base, d: 0 }); }
+  }
+  for (const k in D) D[k].sort((a, b) => Date.parse(a.x) - Date.parse(b.x));
+  return D;
+}
+export function msgInact(L, ms = Date.now()) {
+  if (!L || !L.length) return null; const urg = L.some(m => Date.parse(m.x) - ms < 2 * 864e5);
+  if (L.length === 1) { const m = L[0], c = cuandoHN(m.x, ms);
+    return { title: `${urg ? "🚨" : "⚠️"} ${m.n} se inactiva ${c}`,
+      body: m.d ? `Llámele hoy para que no pierda su cuenta ni sus puntos dobles. Es de su equipo directo.`
+                : `Es del equipo de ${m.s}. Llámele o apoye a ${m.s.split(" ")[0]} para que no pierda su cuenta ni sus puntos dobles.` }; }
+  return { title: `${urg ? "🚨" : "⚠️"} ${L.length} de su equipo se inactivan pronto`,
+    body: L.slice(0, 4).map(m => `${m.n.split(" ")[0]} (${cuandoHN(m.x, ms).replace("el ", "")})`).join(", ") + ". Llámeles hoy; la lista está en su app." };
+}
+async function leerAhorro(db) {
+  const crypto = await import("node:crypto");
+  const k = ((await db.doc("evento/sps26/priv/llave").get()).data() || {}).k; if (!k) throw new Error("sin llave");
+  const key = Buffer.from(k.replace(/-/g, "+").replace(/_/g, "/"), "base64"), raw = Buffer.from(fs.readFileSync("../../data/ahorro.enc", "utf8").trim(), "base64");
+  const dc = crypto.createDecipheriv("aes-256-gcm", key, raw.subarray(0, 12)); dc.setAuthTag(raw.subarray(raw.length - 16));
+  return JSON.parse(Buffer.concat([dc.update(raw.subarray(12, raw.length - 16)), dc.final()]).toString("utf8")).rows || [];
+}
+
 async function main() {
   const [modo, viejoP, nuevoP] = process.argv.slice(2);
   const DRY = !!process.env.DRY;
@@ -152,6 +199,21 @@ async function main() {
     if (!m) { console.log("Sin incentivo vigente para este aviso."); return; }
     const P = (await db.collection("push").get()).docs.map(d => ({ uid: d.id, ...d.data() })).filter(p => p.tk);
     P.forEach(p => { hist[p.uid] = p.h || []; salida.push([p.uid, p.tk, m]); });
+  } else if (modo === "inact") {
+    vista = "inicio";
+    const team = JSON.parse(fs.readFileSync("../../data/team.json", "utf8"));
+    const rows = await leerAhorro(db);
+    const users = (await db.collection("users").get()).docs.map(d => ({ uid: d.id, ...d.data() }));
+    const D = destinosInact(rows, users, team);
+    const P = {}; (await db.collection("push").get()).docs.forEach(d => P[d.id] = d.data());
+    const t = Date.now();
+    // lista para el aviso rojo de Inicio (push/{uid}.urg); se limpia a quien ya no tiene a nadie
+    const W = []; for (const uid in D) W.push([uid, { urg: { t, l: D[uid] } }]);
+    for (const uid in P) if (!D[uid] && P[uid].urg && (P[uid].urg.l || []).length) W.push([uid, { urg: { t, l: [] } }]);
+    console.log(`Miembros por inactivarse → ${Object.keys(D).length} líderes con aviso.`);
+    for (const uid in D) { const p = P[uid] || {}; hist[uid] = p.h || []; const m = msgInact(D[uid]); if (m && p.tk && (p.pr || {}).inact !== false) salida.push([uid, p.tk, m]);
+      if (DRY) console.log("·", uid.slice(0, 5) + "…", D[uid].map(x => x.n + " " + cuandoHN(x.x) + (x.d ? " (directo)" : "")).join(" | ")); }
+    if (!DRY) for (const [uid, data] of W) await db.doc("push/" + uid).set(data, { merge: true });
   } else if (modo === "agenda") {
     let cal = []; try { cal = JSON.parse(fs.readFileSync(viejoP || "../../data/team.json", "utf8")).calendario || []; } catch {}
     const E = agendaPendientes(cal);
