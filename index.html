@@ -3882,17 +3882,17 @@ function snvDatos(o){if(o===undefined)o=snvM;const ini=snvIni(o),fin=snvIni(o-1)
   return A.map(a=>{const x=snvUsr(a,U),pu=(mios||[]).find(y=>snvNom(y).some(n=>snvIgual(n,a.patrocinador))),yo=snvSoyYo(a.patrocinador);
     if(!isAdmin&&!yo&&!pu&&!x)return null;
     const ir=x?(x.ir||{}):{},p=ir.p||{},m1=!!(ir.med&&ir.med[1])||(p.w||1)>1||!!p.g,E=raActs().includes(a)?raEstado(a,ir):null;
-    return{a,x,pu,yo,app:!!x,ver:!!(a.ek||a.wk),m1,ir:p,E}}).filter(Boolean)}
+    const inc=!!x&&!((x.registro||{}).nombre);return{a,x,pu,yo,app:!!x&&!inc,inc,ver:!!(a.ek||a.wk),m1,ir:p,E}}).filter(Boolean)}
 function snvFiltra(L){return snvF==="sin"?L.filter(f=>!f.app):snvF==="s1"?L.filter(f=>f.app&&!f.m1):snvF==="ok"?L.filter(f=>f.m1):L}
 function snvFila(f){const a=f.a,E=f.E,id=esc(a.id||a.socio),pl=/premium/i.test(a.paquete||"")?"Premium":/starter/i.test(a.paquete||"")?"Starter":"Classic";
-  const ap=(f.app?`<span class="chip c-good">✅ En la app</span>`:f.ver?`<span class="chip c-bad">📵 Sin app</span>`:`<span class="chip">❔ Sin verificar</span>`)+(a.ps?`<span class="chip c-brand">🔄 Pasó a socio</span>`:"");
+  const ap=(f.app?`<span class="chip c-good">✅ En la app</span>`:f.inc?`<span class="chip c-gold">⏳ Registro incompleto</span>`:f.ver?`<span class="chip c-bad">📵 Sin app</span>`:`<span class="chip">❔ Sin verificar</span>`)+(a.ps?`<span class="chip c-brand">🔄 Pasó a socio</span>`:"");
   const irT=!f.app||(!f.m1&&!f.ir.w)?"":f.m1?`<span class="chip" style="background:linear-gradient(120deg,#FBEFC0,#D4AF37);color:#3b2a00;font-weight:800">🏅 Completó la primera fase</span>`:`<span class="chip c-brand">🚀 Semana 1 · ${f.ir.n||0}/${f.ir.tot||12}</span>`;
   const rt=!E?"":E.gano?`<span class="chip" style="background:#FBEFC0;color:#3b2a00;font-weight:800">🏆 Ganó el reto</span>`:E.venc?`<span class="chip">⌛ Venció el reto</span>`:`<span class="chip c-gold">⏳ Reto: quedan ${raQueda(E.lim-Date.now())}</span>`;
   let bt="";
-  if(!f.app&&f.ver){if(f.yo)bt=`<button class="btn sm" style="background:var(--brand);color:#fff" data-snl="${id}">📲 Mandarle el link de la app</button>`;else if(f.pu)bt=`<button class="btn sm" style="background:#25D366;color:#fff" data-snp="${id}">💬 Avisarle al patrocinador</button>`}
+  if(!f.app&&f.ver){if(f.yo)bt=`<button class="btn sm" style="background:var(--brand);color:#fff" data-snl="${id}">${f.inc?"📲 Ayudarle a terminar su registro":"📲 Mandarle el link de la app"}</button>`;else if(f.pu)bt=`<button class="btn sm" style="background:#25D366;color:#fff" data-snp="${id}">💬 Avisarle al patrocinador</button>`}
   else bt=f.m1?`<button class="btn sm" style="background:#25D366;color:#fff" data-snw="${id}">👏 Felicitar</button>`:`<button class="btn sm" style="background:#25D366;color:#fff" data-snw="${id}">💪 Motivar</button>`;
   if(isAdmin)bt+=`<button class="btn sm ghost" data-snc="${id}">📇 Contacto</button>`;
-  return `<div class="snv-r">${f.x?avHTML((f.x.registro||{}).nombre||a.socio,false,true,f.x.uid):`<div class="av">${esc(initials(a.socio))}</div>`}<div class="grow" style="min-width:0"><div class="row between" style="gap:6px"><b>${esc(nv(bonitoN(a.socio)))}</b><span class="small muted">${pl}</span></div>
+  return `<div class="snv-r">${f.app?avHTML((f.x.registro||{}).nombre,false,true,f.x.uid):`<div class="av">${esc(initials(a.socio))}</div>`}<div class="grow" style="min-width:0"><div class="row between" style="gap:6px"><b>${esc(nv(bonitoN(a.socio)))}</b><span class="small muted">${pl}</span></div>
     <div class="small muted">${f.yo?"⭐ Su directo":"Patrocinador: "+esc(nv(bonitoN(a.patrocinador||"")))} · ${niceDate(dkey(new Date(a.fecha)))}</div>
     <div class="row wrap" style="gap:4px;margin-top:4px">${ap}${irT}${rt}</div>${bt?`<div class="row wrap" style="gap:6px;margin-top:6px">${bt}</div>`:""}</div></div>`}
 const bonitoN=t=>String(t||"").split(/\s+/).filter(Boolean).map(w=>w.length>1?w[0].toUpperCase()+w.slice(1).toLowerCase():w.toUpperCase()).join(" ");
@@ -3908,10 +3908,10 @@ function snvBind(b){const d=b.querySelector("#snvCard");if(!d)return;d.ontoggle=
   d.querySelectorAll("[data-snm]").forEach(x=>x.onclick=e=>{e.preventDefault();snvM=+x.dataset.snm;snvF="";LS.set("snvOpen",1);renderEquipo()});
   d.querySelectorAll("[data-snf]").forEach(x=>x.onclick=e=>{e.preventDefault();snvF=x.dataset.snf;LS.set("snvOpen",1);renderEquipo()});
   d.querySelectorAll("[data-snl]").forEach(x=>x.onclick=()=>{const f=de(x.dataset.snl);if(!f)return;
-    const t=`¡Hola, ${pn(f.a.socio)}! 🎉\n\nBienvenido/a al equipo. Para empezar con todo, descargue nuestra app *Action Leaders+*: ahí tiene su Plan de Inicio Rápido, su rutina y todas las herramientas.\n\n👉 Regístrese aquí con mi enlace:\n${miEnlace()}\n\nCualquier duda, aquí estoy. 💪`;
+    const t=f.inc?`¡Hola, ${pn(f.a.socio)}! 👋\n\nVi que ya entró a la app *Action Leaders+*, pero le falta terminar su registro.\n\n👉 Entre con este enlace y complete sus datos (toma 1 minuto):\n${miEnlace()}\n\nAsí empieza su Plan de Inicio Rápido. Cualquier duda, aquí estoy. 💪`:`¡Hola, ${pn(f.a.socio)}! 🎉\n\nBienvenido/a al equipo. Para empezar con todo, descargue nuestra app *Action Leaders+*: ahí tiene su Plan de Inicio Rápido, su rutina y todas las herramientas.\n\n👉 Regístrese aquí con mi enlace:\n${miEnlace()}\n\nCualquier duda, aquí estoy. 💪`;
     location.href="https://wa.me/?text="+encodeURIComponent(firma(t))});
   d.querySelectorAll("[data-snp]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snp);if(!f||!f.pu)return;const w=waSocio(f.pu)||await dtWa(f.pu.uid);
-    const t=`¡Hola, ${pn((f.pu.registro||{}).nombre||"")}! 🙌\n\nFelicidades por la activación de ${pn(f.a.socio)}. 🎉\n\nVeo que todavía no ha entrado a la app Action Leaders+. ¿Le puede mandar su enlace de la app para que empiece su Plan de Inicio Rápido?\n\nSi necesita apoyo, aquí estoy. 💪`;
+    const t=`¡Hola, ${pn((f.pu.registro||{}).nombre||"")}! 🙌\n\nFelicidades por la activación de ${pn(f.a.socio)}. 🎉\n\n${f.inc?"Veo que entró a la app Action Leaders+ pero no ha terminado su registro.":"Veo que todavía no ha entrado a la app Action Leaders+."} ¿Le puede mandar su enlace de la app para que empiece su Plan de Inicio Rápido?\n\nSi necesita apoyo, aquí estoy. 💪`;
     location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(firma(t))});
   d.querySelectorAll("[data-snw]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snw);if(!f||!f.x)return;const w=waSocio(f.x)||await dtWa(f.x.uid),n=pn(f.a.socio);
     const t=f.m1?`¡Hola, ${n}! 🏅\n\nVi que ya completó la primera fase de su Plan de Inicio Rápido. ¡Felicidades! Así se arranca.\n\nVamos por la Semana 2. Cuente conmigo. 🚀`
@@ -6486,7 +6486,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261105002621";var busy=false,pend=null;
+(function(){var V="20261105003459";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

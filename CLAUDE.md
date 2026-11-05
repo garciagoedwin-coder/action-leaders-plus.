@@ -487,3 +487,4 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Imagen única: media/logo-mas.png (770×101, texto blanco). Reemplaza a logo-plus.png y logo-blanco.png en app, páginas (evento, membresía), canvases de flyers y plantillas tools/flyer/*. Los archivos viejos siguen en media/ por si acaso.
 - Texto: "Action Leaders+" (y "ACTION LEADERS+") en mensajes, títulos y páginas; encabezado, bienvenida (.wel-k), portada (.lm-brand .lp) y conoce.html (.brand span) muestran el + con degradado por CSS.
 - Socios nuevos: la foto solo sale si el socio se reconoce por huella (f.x); si no, iniciales.
+- (5 nov) Socios nuevos: cuenta reconocida por huella pero sin registro.nombre = "⏳ Registro incompleto" (f.inc; cuenta como sin app; botón "📲 Ayudarle a terminar su registro"). Solo el admin lo ve (las cuentas sin registro no tienen linea, así que los líderes ven "Sin app"). La foto solo sale de una cuenta con registro completo.
