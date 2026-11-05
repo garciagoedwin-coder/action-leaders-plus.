@@ -975,6 +975,13 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .urgS .ur button.g{background:rgba(255,255,255,.18)}
 .urgS .ur.ok{opacity:.55}.urgS .mas{align-self:flex-start;background:none;border:0;color:#ffd6d0;font:700 12.5px Figtree,sans-serif;cursor:pointer;padding:0}
 @media (prefers-reduced-motion:reduce){.urgS .uh .ic{animation:none}}
+
+.urgS .uh{border:0;background:none;color:inherit;font:inherit;text-align:left;width:100%;padding:0;cursor:pointer}
+.urgS .uh .tg{font:800 12.5px Figtree,sans-serif;color:#ffd6d0;white-space:nowrap}
+.urgS .ud{margin:0;font-size:12.5px;color:#ffd6d0}
+.urgS .ur .nm small.gs{color:#b7f5c8;font-weight:700}
+.urgS .ur.pg{background:rgba(22,163,74,.28)}.urgS .ur .q.g{background:#16A34A;color:#fff}
+.urgS.ok{background:linear-gradient(120deg,#0b4d2a,#16A34A);box-shadow:0 10px 24px -14px #16A34A}.urgS.ok .uh small,.urgS.ok .uh .tg{color:#d3f9df}
 </style>
 
 </head>
@@ -3893,24 +3900,31 @@ function raAdmin(){const c=raCfg();if(!c)return;const M=Object.assign({Classic:"
 // ---------- Miembros por inactivarse (5 nov) ----------
 // El servidor (avisos-inactivar.yml, 8:30 a.m.) deja en push/{uid}.urg {t, l:[{n,x,s,k,w,d}]} los miembros con ahorro pendiente que se
 // inactivan en ≤7 días, para su patrocinador (d:1) y los líderes TL+ de arriba (d:0). Franja roja #urgStrip arriba en Inicio.
-let urgMas=false;
+let urgAb=false;
 const urgCuando=x=>{const h=TODAY,d=dkey(new Date(x)),n=Math.round((Date.parse(d)-Date.parse(h))/864e5);return n<=0?"hoy":n===1?"mañana":"el "+["domingo","lunes","martes","miércoles","jueves","viernes","sábado"][new Date(x).getDay()]};
-function urgLista(){const u=(pushDoc||{}).urg;if(!u||!u.l||Date.now()-(u.t||0)>36*36e5)return[];return u.l.filter(m=>Date.parse(m.x)>Date.now())}
+const urgK=m=>"u:"+(m.k||m.n);
+function urgLista(){const u=(pushDoc||{}).urg;if(!u||!u.l||Date.now()-(u.t||0)>36*36e5)return[];return u.l.filter(m=>m.p?Date.now()-m.p<3*864e5:Date.parse(m.x)>Date.now()).sort((a,b)=>(!!a.p-!!b.p)||(Date.parse(a.x)-Date.parse(b.x)))}
 function urgSocio(m){return (mios||[]).find(x=>{const r=x.registro||{};return (m.k&&[ahKe(x.email),ahKe(r.correo)].includes(m.k))||(m.w&&ahKw(r.whatsapp)===m.w)})||null}
+// quién ya lo gestionó hoy (constancia.gs, igual que "Hoy llame a estos")
+function urgGest(m){const g=(profile.gest||{})[urgK(m)];if(g&&g.d===TODAY)return "Usted";try{if(!constL)return null;const hh=gestH(urgK(m));for(const c of constL){if(c.uid===store.uid||!c.gs||c.gs.d!==TODAY)continue;if((c.gs.h||[]).includes(hh))return String(c.nombre||"").split(" ")[0]||"Alguien"}}catch(e){}return null}
+function urgMarcar(m){profile.gest=profile.gest||{};const g=profile.gest[urgK(m)]||{};profile.gest[urgK(m)]={d:TODAY,n:(g.d===TODAY?+g.n||1:(+g.n||0)+1),k:"urg",t:Date.now(),a:""};try{pushResumen()}catch(e){}try{store.set("perfil",profile)}catch(e){}}
 function urgStrip(){const el=$("#urgStrip");if(!el)return;const L=urgLista();if(!L.length){el.hidden=true;return}
-  const ok=LS.get("urgOk:"+TODAY)||{},hoy=L.filter(m=>Date.parse(m.x)-Date.now()<2*864e5).length,V=urgMas?L:L.slice(0,3);
-  el.innerHTML=`<div class="uh"><span class="ic">🚨</span><span><b>${L.length===1?"1 de su equipo se inactiva pronto":L.length+" de su equipo se inactivan pronto"}</b><small>Ahorro pendiente · llámeles hoy para que no pierdan su cuenta ni sus puntos dobles</small></span></div>
-   ${V.map((m,i)=>{const c=urgCuando(m.x),u=Date.parse(m.x)-Date.now()<2*864e5;return `<div class="ur${ok[m.k||m.n]?" ok":""}"><span class="nm"><b>${esc(m.n)}</b><small>${m.d?"⭐ Su directo":"Equipo de "+esc(m.s)}${ok[m.k||m.n]?" · ✓ contactado hoy":""}</small></span><span class="q${u?"":" w"}">${esc(c.replace("el ",""))}</span><button data-urw="${i}">💬</button>${m.d?"":`<button class="g" data-urs="${i}" title="Avisar a ${esc(m.s)}">👤 ${esc(m.s.split(" ")[0])}</button>`}</div>`}).join("")}
-   ${L.length>3?`<button class="mas" id="urgMas">${urgMas?"Ver menos ▴":"Ver los "+L.length+" ▾"}</button>`:""}`;
+  const pend=L.filter(m=>!m.p),pag=L.filter(m=>m.p),hoy=pend.filter(m=>urgCuando(m.x)==="hoy").length,man=pend.filter(m=>urgCuando(m.x)==="mañana").length,ges=pend.filter(m=>urgGest(m)).length;
+  const tit=pend.length?`${pend.length===1?"1 de su equipo se inactiva pronto":pend.length+" de su equipo se inactivan pronto"}`:`${pag.length===1?"¡1 de su equipo ya pagó!":"¡"+pag.length+" de su equipo ya pagaron!"} 🎉`;
+  const sub=[hoy?hoy+" hoy":"",man?man+" mañana":"",pag.length&&pend.length?"✅ "+pag.length+" ya pagó":"",ges?"✓ "+ges+" gestionado"+(ges>1?"s":"")+" hoy":""].filter(Boolean).join(" · ")||(pend.length?"Ahorro pendiente · llámeles hoy":"Buena gestión: sus cuentas siguen activas");
+  el.classList.toggle("ok",!pend.length);
+  el.innerHTML=`<button class="uh" id="urgTg" aria-expanded="${urgAb}"><span class="ic">${pend.length?"🚨":"✅"}</span><span class="grow"><b>${tit}</b><small>${esc(sub)}</small></span><span class="tg">${urgAb?"▴":"Ver ▾"}</span></button>
+   ${urgAb?`${pend.length?`<p class="ud">Ahorro pendiente: llámeles hoy para que no pierdan su cuenta ni sus puntos dobles.</p>`:""}${L.map((m,i)=>{if(m.p)return `<div class="ur pg"><span class="nm"><b>${esc(m.n)}</b><small>${m.d?"⭐ Su directo":"Equipo de "+esc(m.s)}</small></span><span class="q g">✅ Ya pagó</span></div>`;
+     const c=urgCuando(m.x),u=Date.parse(m.x)-Date.now()<2*864e5,gx=urgGest(m);return `<div class="ur"><span class="nm"><b>${esc(m.n)}</b><small>${m.d?"⭐ Su directo":"Equipo de "+esc(m.s)}</small>${gx?`<small class="gs">✓ ${gx==="Usted"?"Usted le escribió hoy":esc(gx)+" ya le escribió hoy"}</small>`:""}</span><span class="q${u?"":" w"}">${esc(c.replace("el ",""))}</span><button data-urw="${i}" class="${gx?"g":""}">💬</button>${m.d?"":`<button class="g" data-urs="${i}" title="Avisar a ${esc(m.s)}">👤 ${esc(m.s.split(" ")[0])}</button>`}</div>`}).join("")}`:""}`;
   el.hidden=false;
-  const mm=$("#urgMas");if(mm)mm.onclick=()=>{urgMas=!urgMas;urgStrip()};
-  el.querySelectorAll("[data-urw]").forEach(b=>b.onclick=async()=>{const m=V[+b.dataset.urw],x=urgSocio(m),n=m.n.split(" ")[0],c=urgCuando(m.x),yo=miNombreCorto()||"";
+  $("#urgTg").onclick=()=>{urgAb=!urgAb;urgStrip();if(urgAb&&!constL)loadConst().then(()=>{if(urgAb)urgStrip()}).catch(()=>{})};
+  el.querySelectorAll("[data-urw]").forEach(b=>b.onclick=async()=>{const m=L[+b.dataset.urw],x=urgSocio(m),n=m.n.split(" ")[0],c=urgCuando(m.x),yo=miNombreCorto()||"";
     const t=`¡Hola, ${n}! 👋\n\nLe escribo porque su membresía de inCruises tiene un pago pendiente y su cuenta se inactiva ${c}.\n\nNo queremos que pierda su cuenta ni sus puntos dobles. ¿Le ayudo a ponerse al día ahora mismo? 🙌${yo?"\n\n*"+yo+"*":""}`;
-    const o=LS.get("urgOk:"+TODAY)||{};o[m.k||m.n]=1;LS.set("urgOk:"+TODAY,o);let w=x?waSocio(x):"";if(x&&!w)w=await dtWa(x.uid);
+    urgMarcar(m);let w=x?waSocio(x):"";if(x&&!w)w=await dtWa(x.uid);
     location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t);setTimeout(urgStrip,800)});
-  el.querySelectorAll("[data-urs]").forEach(b=>b.onclick=async()=>{const m=V[+b.dataset.urs],p=(mios||[]).find(y=>sameN((y.registro||{}).nombre||"",m.s)||parecidoN((y.registro||{}).nombre||"",m.s)),c=urgCuando(m.x),yo=miNombreCorto()||"";
+  el.querySelectorAll("[data-urs]").forEach(b=>b.onclick=async()=>{const m=L[+b.dataset.urs],p=(mios||[]).find(y=>sameN((y.registro||{}).nombre||"",m.s)||parecidoN((y.registro||{}).nombre||"",m.s)),c=urgCuando(m.x),yo=miNombreCorto()||"";
     const t=`¡Hola, ${m.s.split(" ")[0]}! 🚨\n\n${m.n} se inactiva ${c} por su ahorro pendiente.\n\n¿Ya pudo hablar con ${m.n.split(" ")[0]}? Si necesita apoyo con la llamada, aquí estoy. 💪${yo?"\n\n*"+yo+"*":""}`;
-    let w=p?waSocio(p):"";if(p&&!w)w=await dtWa(p.uid);location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t)})}
+    urgMarcar(m);let w=p?waSocio(p):"";if(p&&!w)w=await dtWa(p.uid);location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t);setTimeout(urgStrip,800)})}
 
 // ---------- Incentivo con contador (5 nov) ----------
 // config.incentivo {id, desde, hasta (UTC), t, sub, fin}: franja #incStrip arriba en Inicio con cuenta regresiva; se oculta sola al pasar `hasta`.
@@ -6546,7 +6560,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261105102432";var busy=false,pend=null;
+(function(){var V="20261105105457";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

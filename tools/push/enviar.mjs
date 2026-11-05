@@ -142,8 +142,11 @@ export function rangoUsr(u, team) {
 }
 const corto = n => { const w = String(n || "").trim().split(/\s+/).filter(Boolean); return (w.length >= 4 ? [w[0], w[2]] : w.slice(0, 2)).map(x => x[0].toUpperCase() + x.slice(1).toLowerCase()).join(" "); };
 // destinos: {uid: [{n,x,s,k,w,d}]}
+const ADMINS = ["garciagoedwin@gmail.com", "actionleadersoficial@gmail.com", "edwing.go@gmail.com"];
 export function destinosInact(rows, users, team, ms = Date.now()) {
   const D = {}, lim = ms + 7 * 864e5, alias = (team.config || {}).alias || {};
+  const adm = users.filter(u => ADMINS.includes(String(u.email || "").toLowerCase())).map(u => u.uid);
+  const add = (uid, e) => { const L = (D[uid] = D[uid] || []); const i = L.findIndex(m => (m.k || m.n) === (e.k || e.n)); if (i < 0) L.push(e); else if (e.d) L[i] = e; };
   for (const r of rows) {
     if (!r.x) continue; const t = Date.parse(r.x); if (!(t > ms && t <= lim)) continue;
     const spN = alias[r.s] || r.s;
@@ -151,10 +154,11 @@ export function destinosInact(rows, users, team, ms = Date.now()) {
     const base = { n: corto(r.n), x: r.x, s: corto(r.s), k: (r.k || [])[0] || "", w: (r.k || [])[1] || (r.k || [])[2] || "" };
     let cand = sp.filter(u => String(u.email || "").toLowerCase() !== "garciagoedwin@gmail.com");
     if (cand.length > 1) { const cnt = u => users.filter(v => (v.registro && v.registro.linea || []).includes(u.uid)).length; cand.sort((a, b) => cnt(b) - cnt(a)); cand = [cand[0]]; }
+    for (const uid of adm) add(uid, { ...base, d: 0 });
     if (cand.length !== 1) { console.log("Patrocinador no encontrado en la app:", r.s, sp.length); continue; }
-    const s = cand[0]; (D[s.uid] = D[s.uid] || []).push({ ...base, d: 1 });
+    const s = cand[0]; add(s.uid, { ...base, d: 1 });
     for (const uid of (s.registro.linea || [])) { const u = users.find(v => v.uid === uid); if (!u || uid === s.uid) continue;
-      if (RG_TL.test(rangoUsr(u, team))) (D[uid] = D[uid] || []).push({ ...base, d: 0 }); }
+      if (RG_TL.test(rangoUsr(u, team))) add(uid, { ...base, d: 0 }); }
   }
   for (const k in D) D[k].sort((a, b) => Date.parse(a.x) - Date.parse(b.x));
   return D;
@@ -167,6 +171,19 @@ export function msgInact(L, ms = Date.now()) {
                 : `Es del equipo de ${m.s}. Llámele o apoye a ${m.s.split(" ")[0]} para que no pierda su cuenta ni sus puntos dobles.` }; }
   return { title: `${urg ? "🚨" : "⚠️"} ${L.length} de su equipo se inactivan pronto`,
     body: L.slice(0, 4).map(m => `${m.n.split(" ")[0]} (${cuandoHN(m.x, ms).replace("el ", "")})`).join(", ") + ". Llámeles hoy; la lista está en su app." };
+}
+export function msgPago(L) {
+  if (!L || !L.length) return null;
+  if (L.length === 1) return { title: `✅ ¡${L[0].n} ya pagó! 🎉`, body: "Buena gestión: su cuenta y sus puntos dobles siguen activos." };
+  return { title: `✅ ${L.length} de su equipo ya pagaron 🎉`, body: L.slice(0, 5).map(m => m.n).join(", ") + ". ¡Buena gestión!" };
+}
+// Une la lista nueva con la anterior: los que estaban y ya no están pendientes (y no se vencieron) = pagaron (p = fecha), se quedan 3 días.
+export function unirUrg(prev, nuevo, pendKeys, ms = Date.now()) {
+  const key = m => m.k || m.n, out = [...(nuevo || [])], ya = new Set(out.map(key)), pagos = [];
+  for (const m of (prev || [])) { const k = key(m); if (ya.has(k)) continue;
+    if (m.p) { if (ms - m.p < 3 * 864e5) { out.push(m); ya.add(k); } continue; }
+    if (!pendKeys.has(k) && Date.parse(m.x) > ms) { const q = { ...m, p: ms }; out.push(q); ya.add(k); pagos.push(q); } }
+  return { l: out, pagos };
 }
 async function leerAhorro(db) {
   const crypto = await import("node:crypto");
@@ -201,20 +218,24 @@ async function main() {
     if (!m) { console.log("Sin incentivo vigente para este aviso."); return; }
     const P = (await db.collection("push").get()).docs.map(d => ({ uid: d.id, ...d.data() })).filter(p => p.tk);
     P.forEach(p => { hist[p.uid] = p.h || []; salida.push([p.uid, p.tk, m]); });
-  } else if (modo === "inact") {
+  } else if (modo === "inact" || modo === "inact-sync") {
     vista = "inicio";
     const team = JSON.parse(fs.readFileSync("../../data/team.json", "utf8"));
     const rows = await leerAhorro(db);
+    const pendKeys = new Set(); for (const r of rows) { if ((r.k || [])[0]) pendKeys.add(r.k[0]); pendKeys.add(corto(r.n)); }
     const users = (await db.collection("users").get()).docs.map(d => ({ uid: d.id, ...d.data() }));
     const D = destinosInact(rows, users, team);
     const P = {}; (await db.collection("push").get()).docs.forEach(d => P[d.id] = d.data());
-    const t = Date.now();
-    // lista para el aviso rojo de Inicio (push/{uid}.urg); se limpia a quien ya no tiene a nadie
-    const W = []; for (const uid in D) W.push([uid, { urg: { t, l: D[uid] } }]);
-    for (const uid in P) if (!D[uid] && P[uid].urg && (P[uid].urg.l || []).length) W.push([uid, { urg: { t, l: [] } }]);
+    const t = Date.now(), W = [], uids = new Set([...Object.keys(D), ...Object.keys(P).filter(u => P[u].urg && (P[u].urg.l || []).length)]);
+    for (const uid of uids) {
+      const p = P[uid] || {}, { l, pagos } = unirUrg((p.urg || {}).l, D[uid], pendKeys, t);
+      W.push([uid, { urg: { t, l } }]); hist[uid] = p.h || [];
+      const ok = p.tk && (p.pr || {}).inact !== false;
+      if (ok && pagos.length) salida.push([uid, p.tk, msgPago(pagos)]);
+      if (ok && modo === "inact" && D[uid]) { const m = msgInact(D[uid]); if (m) salida.push([uid, p.tk, m]); }
+      if (DRY) console.log("·", uid.slice(0, 5) + "…", l.map(x => x.n + (x.p ? " ✅pagó" : " " + cuandoHN(x.x)) + (x.d ? " (directo)" : "")).join(" | "));
+    }
     console.log(`Miembros por inactivarse → ${Object.keys(D).length} líderes con aviso.`);
-    for (const uid in D) { const p = P[uid] || {}; hist[uid] = p.h || []; const m = msgInact(D[uid]); if (m && p.tk && (p.pr || {}).inact !== false) salida.push([uid, p.tk, m]);
-      if (DRY) console.log("·", uid.slice(0, 5) + "…", D[uid].map(x => x.n + " " + cuandoHN(x.x) + (x.d ? " (directo)" : "")).join(" | ")); }
     if (!DRY) for (const [uid, data] of W) await db.doc("push/" + uid).set(data, { merge: true });
   } else if (modo === "agenda") {
     let cal = []; try { cal = JSON.parse(fs.readFileSync(viejoP || "../../data/team.json", "utf8")).calendario || []; } catch {}

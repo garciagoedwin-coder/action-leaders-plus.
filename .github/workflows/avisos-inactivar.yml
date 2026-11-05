@@ -2,8 +2,14 @@ name: Avisos de miembros por inactivarse
 on:
   schedule:
     - cron: "30 14 * * *"   # 8:30 a.m. Honduras
+  push:
+    branches: [main]
+    paths: ["data/ahorro.enc"]
   workflow_dispatch:
     inputs:
+      modo:
+        description: "inact (aviso completo) o inact-sync (solo pagos)"
+        default: "inact"
       dry:
         description: "1 = solo mostrar, no enviar ni guardar"
         default: "1"
@@ -23,4 +29,7 @@ jobs:
         env:
           FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
           DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry == '1' && '1' || '' }}
-        run: node enviar.mjs inact
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then M="${{ inputs.modo }}";
+          elif [ "${{ github.event_name }}" = "push" ]; then M=inact-sync; else M=inact; fi
+          node enviar.mjs "$M"
