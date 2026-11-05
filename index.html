@@ -950,6 +950,18 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .top-t b em{background:none!important;padding:0!important;font-family:var(--f-body);font-size:21px!important;font-weight:900!important;letter-spacing:0!important;line-height:1;margin-left:-4px;transform:translateY(-6px);display:inline-block;background-image:linear-gradient(135deg,#2AC1F1,#0A7DAD)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
 .wel-k em{background:none!important;padding:0!important;font-size:18px!important;font-weight:900!important;letter-spacing:0!important;margin-left:2px!important;vertical-align:6px!important;background-image:linear-gradient(135deg,#2AC1F1,#0A7DAD)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
 .lm-brand .lp{font-size:.95em!important;letter-spacing:0!important;padding:0!important;border:0!important;background:linear-gradient(135deg,#2AC1F1,#0A7DAD)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;box-shadow:none!important;margin-left:-.22em;position:relative;top:-.4em;font-weight:900!important}
+
+#v-inicio.simple>#incStrip{order:2}
+.incS{position:relative;overflow:hidden;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;background:linear-gradient(120deg,#062B3A,#0A7DAD);color:#fff;border-radius:16px;padding:11px 14px;box-shadow:0 10px 24px -14px #0A7DAD}
+.incS:after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.18) 50%,transparent 65%);transform:translateX(-100%);animation:incBr 3.2s ease-in-out 3}
+@keyframes incBr{to{transform:translateX(100%)}}
+.incS .ic{font-size:24px;animation:incF 1.4s ease-in-out infinite}
+@keyframes incF{50%{transform:scale(1.15)}}
+.incS .tx{flex:1;min-width:0}.incS .tx b{display:block;font-size:14.5px;line-height:1.2}.incS .tx small{display:block;font-size:12px;color:#BDEBFB;margin-top:2px}
+.incS .cd{display:flex;gap:4px;align-items:center;width:100%;padding-left:36px}.incS .cd em{font-style:normal;font-size:11.5px;color:#BDEBFB;margin-left:6px}.incS .cd span{display:flex;align-items:baseline;gap:2px;background:rgba(255,255,255,.14);border-radius:7px;padding:4px 6px;font:800 15px/1 "Barlow Condensed",Figtree,sans-serif}
+.incS .cd span i{font:600 10px/1 Figtree,sans-serif;font-style:normal;color:#BDEBFB;text-transform:uppercase}
+.incS.ult{background:linear-gradient(120deg,#5a0f0f,#c0392b)}.incS.ult .tx small,.incS.ult .cd span i{color:#ffd6d0}
+@media (prefers-reduced-motion:reduce){.incS:after,.incS .ic{animation:none}}
 </style>
 
 </head>
@@ -1305,6 +1317,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
       <div id="compStrip" hidden></div>
       <div class="pendStrip" id="pendStrip" hidden></div>
       <div id="pushStrip" hidden></div>
+      <div class="incS" id="incStrip" hidden></div>
       <div class="ra" id="raStrip" hidden></div>
       <div class="irCard" id="irCard" hidden></div>
       <div class="lzStrip" id="lzCallStrip" hidden></div>
@@ -3863,6 +3876,17 @@ function raAdmin(){const c=raCfg();if(!c)return;const M=Object.assign({Classic:"
     const sv=()=>{LS.set("raMon",{Classic:$("#raMC").value,Premium:$("#raMP").value});raAdmin()};$("#raMC").onchange=sv;$("#raMP").onchange=sv;
     document.querySelectorAll("[data-raen]").forEach(i=>i.onchange=()=>{const E2=LS.get("raEnt")||{};E2[i.dataset.raen]=i.checked?Date.now():0;LS.set("raEnt",E2);raAdmin()})})}
 
+// ---------- Incentivo con contador (5 nov) ----------
+// config.incentivo {id, desde, hasta (UTC), t, sub, fin}: franja #incStrip arriba en Inicio con cuenta regresiva; se oculta sola al pasar `hasta`.
+function incCfg(){const c=(T.config||{}).incentivo;return c&&c.hasta&&Date.now()<Date.parse(c.hasta)&&(!c.desde||Date.now()>=Date.parse(c.desde))?c:null}
+function incStrip(){const el=$("#incStrip");if(!el)return;const c=incCfg();if(!c){el.hidden=true;return}
+  const ms=Math.max(0,Date.parse(c.hasta)-Date.now()),d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4),sg=Math.floor(ms%6e4/1e3),z=n=>String(n).padStart(2,"0");
+  const cd=`${d?`<span>${d}<i>d</i></span>`:""}<span>${z(h)}<i>h</i></span><span>${z(m)}<i>m</i></span><span>${z(sg)}<i>s</i></span>${c.fin?`<em>${esc(c.fin)}</em>`:""}`;
+  el.classList.toggle("ult",ms<36e5);
+  if(!el.dataset.ok||el.dataset.ok!==c.id){el.dataset.ok=c.id;el.innerHTML=`<span class="ic">🔥</span><span class="tx"><b>${esc(c.t||"¡Aproveche!")}</b><small>${esc(c.sub||"")}</small></span><span class="cd"></span>`}
+  el.querySelector(".cd").innerHTML=cd;el.hidden=false}
+setInterval(()=>{try{if(document.visibilityState==="visible")incStrip()}catch(e){}},1000);
+
 // ---------- Socios nuevos del mes (4 nov) ----------
 // Equipo › Mi equipo, arriba. Activaciones del mes inCruises (T.activaciones, 0 lecturas) que le tocan a quien mira:
 // patrocinador = yo, patrocinador en mi línea descendente, o el socio nuevo ya está en mi línea. Admin ve todo.
@@ -6061,7 +6085,7 @@ async function irFlyer(w){const g=!w,W=1080,H=1350,c=document.createElement("can
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],g?"graduado-inicio-rapido.jpg":"inicio-rapido-semana-"+w.n+".jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
-let irAbierto=false;function irRender(){try{raStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
+let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{incStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
   const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
   if(m==="actual"&&!st.ini){const no=LS.get("irNo:"+store.uid);if(no&&Date.now()<no){el.hidden=true;return}
     el.hidden=false;el.className="irMini";el.innerHTML=`<span class="ic">🚀</span><span class="tx"><b>Plan de Inicio Rápido</b> · Aprenda a duplicar en 30 días</span><button type="button" class="go" id="irEmp">Empezar ›</button><button type="button" class="x" id="irNo" aria-label="Quitar">✕</button>`;
@@ -6486,7 +6510,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261105003459";var busy=false,pend=null;
+(function(){var V="20261105082640";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

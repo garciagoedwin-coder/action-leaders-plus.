@@ -2,6 +2,7 @@
 // Corre en GitHub Actions con el secreto FIREBASE_SA (clave de la cuenta de servicio; NUNCA en el repo).
 //   node enviar.mjs racha            → 7:00 p.m. HN: a quien no ha completado su rutina hoy
 //   node enviar.mjs racha2           → 9:30 p.m. HN: solo racha de 3+ días que está por perderse
+//   node enviar.mjs inc1|inc2         → incentivo (config.incentivo): 9:00 a.m. y 7:05 p.m. HN
 //   node enviar.mjs act VIEJO NUEVO  → socios nuevos (compara dos versiones de data/team.json)
 // DRY=1 → no manda nada, solo imprime. Nunca incluye teléfonos, notas ni dinero.
 import fs from "node:fs";
@@ -113,6 +114,19 @@ export function msgAgenda(e) {
 }
 
 // ---------- envío ----------
+
+// Incentivo (config.incentivo en team.json): "inc1" 9:00 a.m. y "inc2" 7:05 p.m. HN mientras esté vigente.
+export function msgInc(modo, cfg, ms = Date.now()) {
+  if (!cfg || !cfg.hasta) return null; const fin = Date.parse(cfg.hasta), ini = cfg.desde ? Date.parse(cfg.desde) : 0;
+  if (ms >= fin || ms < ini) return null;
+  const finHN = hoyHN(fin - 1), hoy = hoyHN(ms), dias = Math.round((Date.parse(finHN) - Date.parse(hoy)) / 864e5);
+  if (dias <= 0) return modo === "inc1" ? { title: "🔥 ¡Último día del incentivo!", body: "Hoy cierra a las 6:00 p.m. Cierre un Classic o un Premium y gánese el incentivo. ¡Usted puede!" } : null;
+  const q = dias === 1 ? "mañana domingo" : `en ${dias} días`;
+  return modo === "inc1"
+    ? { title: "🔥 Hoy es buen día para cerrar", body: `Cierre un Classic o un Premium antes del domingo a las 6:00 p.m. y gánese el incentivo.` }
+    : { title: `⏳ El incentivo cierra ${q}`, body: "¿A quién le presenta hoy? Un Classic o un Premium y el incentivo es suyo." };
+}
+
 async function main() {
   const [modo, viejoP, nuevoP] = process.argv.slice(2);
   const DRY = !!process.env.DRY;
@@ -132,6 +146,12 @@ async function main() {
     if (!P.length) { console.log("Nadie con avisos activos."); return; }
     const C = {}; (await db.collection("constancia").get()).docs.forEach(d => C[d.id] = d.data());
     for (const p of P) { const m = modo === "fin" ? msgFin(p.uid, C[p.uid], hoy, ayer) : modo === "manana" ? msgManana(p.uid, C[p.uid], hoy, ayer) : msgRacha(modo, p.uid, C[p.uid], hoy, ayer); if (m) salida.push([p.uid, p.tk, m]); }
+  } else if (modo === "inc1" || modo === "inc2") {
+    let cfg = null; try { cfg = (JSON.parse(fs.readFileSync(viejoP || "../../data/team.json", "utf8")).config || {}).incentivo; } catch {}
+    const m = msgInc(modo, cfg);
+    if (!m) { console.log("Sin incentivo vigente para este aviso."); return; }
+    const P = (await db.collection("push").get()).docs.map(d => ({ uid: d.id, ...d.data() })).filter(p => p.tk);
+    P.forEach(p => { hist[p.uid] = p.h || []; salida.push([p.uid, p.tk, m]); });
   } else if (modo === "agenda") {
     let cal = []; try { cal = JSON.parse(fs.readFileSync(viejoP || "../../data/team.json", "utf8")).calendario || []; } catch {}
     const E = agendaPendientes(cal);

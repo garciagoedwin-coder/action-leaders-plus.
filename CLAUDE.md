@@ -488,3 +488,7 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Texto: "Action Leaders+" (y "ACTION LEADERS+") en mensajes, títulos y páginas; encabezado, bienvenida (.wel-k), portada (.lm-brand .lp) y conoce.html (.brand span) muestran el + con degradado por CSS.
 - Socios nuevos: la foto solo sale si el socio se reconoce por huella (f.x); si no, iniciales.
 - (5 nov) Socios nuevos: cuenta reconocida por huella pero sin registro.nombre = "⏳ Registro incompleto" (f.inc; cuenta como sin app; botón "📲 Ayudarle a terminar su registro"). Solo el admin lo ve (las cuentas sin registro no tienen linea, así que los líderes ven "Sin app"). La foto solo sale de una cuenta con registro completo.
+
+## Incentivo con contador (5 nov)
+- `config.incentivo` {id, desde, hasta (UTC), t, sub, fin} en team.json → franja #incStrip arriba en Inicio (order 2; incStrip(), se repinta cada segundo con la app visible; roja la última hora). Se oculta sola al pasar `hasta`. Primer incentivo: activaciones desde el martes 3 nov 8 p.m. HN hasta el domingo 8 nov 6 p.m. HN; "Cierre un Classic o un Premium y gánese el incentivo" (sin decir qué incentivo). Para otro: cambiar config.incentivo (id nuevo) sin publicar.
+- Avisos: `.github/workflows/avisos-incentivo.yml` 9:00 a.m. (inc1) y 7:05 p.m. (inc2) HN, solo si config.incentivo está vigente (revisa antes de instalar nada). enviar.mjs msgInc: el último día solo el de la mañana ("¡Último día!"). A todos los que tienen avisos activos. Prueba: workflow_dispatch con dry=1.

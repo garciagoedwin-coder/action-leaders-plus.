@@ -4127,6 +4127,14 @@
   "rankingUnir": {
    "Gloria Stephanie Aranda Midence": "Edwin García Go",
    "Edwin Alexander Garcia Gomez": "Edwin García Go"
+  },
+  "incentivo": {
+   "id": "inc-2026-11-08",
+   "desde": "2026-11-04T02:00:00Z",
+   "hasta": "2026-11-09T00:00:00Z",
+   "t": "¡Aproveche! Cierre un Classic o un Premium",
+   "sub": "y gánese el incentivo",
+   "fin": "cierra el domingo 6:00 p.m."
   }
  },
  "fotos": [

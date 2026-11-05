@@ -1,0 +1,40 @@
+name: Avisos del incentivo
+on:
+  schedule:
+    - cron: "0 15 * * *"   # 9:00 a.m. Honduras
+    - cron: "5 1 * * *"    # 7:05 p.m. Honduras
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "inc1 (mañana) o inc2 (noche)"
+        default: "inc1"
+      dry:
+        description: "1 = solo mostrar, no enviar"
+        default: "1"
+concurrency: avisos-incentivo
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: ¿Hay incentivo vigente?
+        id: chk
+        run: |
+          node -e 'const c=(require("./data/team.json").config||{}).incentivo;const n=Date.now();const ok=c&&c.hasta&&n<Date.parse(c.hasta)&&(!c.desde||n>=Date.parse(c.desde));console.log(ok?"vigente":"no");require("fs").appendFileSync(process.env.GITHUB_OUTPUT,"ok="+(ok?1:0)+"\n")'
+      - uses: actions/setup-node@v4
+        if: steps.chk.outputs.ok == '1'
+        with: { node-version: 20 }
+      - run: npm install --no-audit --no-fund
+        if: steps.chk.outputs.ok == '1'
+        working-directory: tools/push
+      - name: Enviar
+        if: steps.chk.outputs.ok == '1'
+        working-directory: tools/push
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+          DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry == '1' && '1' || '' }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then M="${{ inputs.modo }}";
+          elif [ "${{ github.event.schedule }}" = "0 15 * * *" ]; then M=inc1; else M=inc2; fi
+          node enviar.mjs "$M"
