@@ -456,7 +456,7 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Versión patrocinador (grupo/privado): frase "Bienvenido/a a bordo. El viaje apenas comienza."
 
 ## Eventos y juntas v2 (4 nov, tarde)
-- Gran evento: 1 a 3 invitados especiales (selector #evNE, nE; rol "esp" para los primeros nE; máx. 4 personas en total). evaCanvas dibuja los anillos dorados (ringG) y la frase EVA_SUB; los fondos media/eventos/g1-3.jpg (fotos reales del evento de SPS: escenario, salón, salón 2) ya NO traen anillo ni frase. Se cargan con ?v=2.
+- Gran evento: 1 a 3 invitados especiales (selector #evNE, nE; rol "esp" para los primeros nE) + hasta 4 acompañantes siempre (max = nE+4; fila de 4 en el flyer). evaCanvas dibuja los anillos dorados (ringG) y la frase EVA_SUB; los fondos media/eventos/g1-3.jpg (fotos reales del evento de SPS: escenario, salón, salón 2) ya NO traen anillo ni frase. Se cargan con ?v=2.
 - Junta de negocios: un solo diseño (el 1) con 3 fotos reales: j1 Salón, j2 Café, j3 Sala (botones "Foto del flyer"). Juntas viejas con dis 2/3 salen con ese diseño y esa foto.
 - Frase de los flyers: "Descubra cómo viajar más, gastar menos y emprender desde su celular" (sin "generar ingresos"); también en evaScript.
 - Fuentes de los fondos: tools/flyer/evento/v2 (n1-3 = Gran evento, j1_2/j1_5/j1_6 = Juntas; p1-p5 fotos).
