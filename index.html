@@ -3864,15 +3864,17 @@ function raAdmin(){const c=raCfg();if(!c)return;const M=Object.assign({Classic:"
 // patrocinador = yo, patrocinador en mi línea descendente, o el socio nuevo ya está en mi línea. Admin ve todo.
 // Estado: en la app (huella ek/wk o nombre contra mios/socios), Inicio Rápido (ir.p / ir.med[1]) y reto de arranque (raEstado).
 // Correo y WhatsApp de los nuevos: SOLO admin, cifrados en data/nuevos.enc (tools/nuevos.py, misma clave que ahorro.enc).
-let snvF="",snvC=null;
-const snvIni=()=>{const d=new Date();return Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1)};
+let snvF="",snvC=null,snvM=0;
+const SNV_MES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const snvIni=(o)=>{const d=new Date();return Date.UTC(d.getUTCFullYear(),d.getUTCMonth()-(o||0),1)};
+const snvMesN=o=>{const d=new Date(snvIni(o));return SNV_MES[d.getUTCMonth()]};
 function snvIgual(a,b){if(!a||!b)return false;if(sameN(a,b)||parecidoN(a,b))return true;const A=nrmN(a).split(" ").filter(Boolean),B=nrmN(b).split(" ").filter(Boolean),[S,L]=A.length<=B.length?[A,B]:[B,A];
   return S.length>=2&&S[0]===L[0]&&S.every(w=>L.some(v=>v===w||(w.length===1&&v[0]===w)||(v.length===1&&w[0]===v)))}
 function snvNom(x){const r=x.registro||{};return [r.nombre,r.nombreRanking].filter(Boolean)}
 function snvUsr(a,U){const ke=a.ek,kw=a.wk;return (U||[]).find(x=>{const r=x.registro||{};return (ke&&[ahKe(x.email),ahKe(r.correo)].includes(ke))||(kw&&ahKw(r.whatsapp)===kw)})||(U||[]).find(x=>snvNom(x).some(n=>snvIgual(n,a.socio)))||null}
 function snvSoyYo(n){const r=miRegistro()||{};return [r.nombre,r.nombreRanking,miNombreFull()].filter(Boolean).some(m=>snvIgual(m,n))}
-function snvDatos(){const ini=snvIni(),U=isAdmin&&socios?socios:(mios||[]);
-  const A=(T.activaciones||[]).filter(a=>Date.parse(a.fecha||"")>=ini).sort((p,q)=>Date.parse(q.fecha)-Date.parse(p.fecha));
+function snvDatos(o){if(o===undefined)o=snvM;const ini=snvIni(o),fin=snvIni(o-1),U=isAdmin&&socios?socios:(mios||[]);
+  const A=(T.activaciones||[]).filter(a=>{const t=Date.parse(a.fecha||"");return t>=ini&&t<fin}).sort((p,q)=>Date.parse(q.fecha)-Date.parse(p.fecha));
   return A.map(a=>{const x=snvUsr(a,U),pu=(mios||[]).find(y=>snvNom(y).some(n=>snvIgual(n,a.patrocinador))),yo=snvSoyYo(a.patrocinador);
     if(!isAdmin&&!yo&&!pu&&!x)return null;
     const ir=x?(x.ir||{}):{},p=ir.p||{},m1=!!(ir.med&&ir.med[1])||(p.w||1)>1||!!p.g,E=raActs().includes(a)?raEstado(a,ir):null;
@@ -3880,7 +3882,7 @@ function snvDatos(){const ini=snvIni(),U=isAdmin&&socios?socios:(mios||[]);
 function snvFiltra(L){return snvF==="sin"?L.filter(f=>!f.app):snvF==="s1"?L.filter(f=>f.app&&!f.m1):snvF==="ok"?L.filter(f=>f.m1):L}
 function snvFila(f){const a=f.a,E=f.E,id=esc(a.id||a.socio),pl=/premium/i.test(a.paquete||"")?"Premium":"Classic";
   const ap=f.app?`<span class="chip c-good">✅ En la app</span>`:`<span class="chip c-bad">📵 Sin app</span>`;
-  const irT=!f.app?"":f.m1?`<span class="chip" style="background:linear-gradient(120deg,#FBEFC0,#D4AF37);color:#3b2a00;font-weight:800">🏅 Completó la primera fase</span>`:`<span class="chip c-brand">🚀 Semana 1 · ${f.ir.n||0}/${f.ir.tot||12}</span>`;
+  const irT=!f.app||(!f.m1&&!f.ir.w)?"":f.m1?`<span class="chip" style="background:linear-gradient(120deg,#FBEFC0,#D4AF37);color:#3b2a00;font-weight:800">🏅 Completó la primera fase</span>`:`<span class="chip c-brand">🚀 Semana 1 · ${f.ir.n||0}/${f.ir.tot||12}</span>`;
   const rt=!E?"":E.gano?`<span class="chip" style="background:#FBEFC0;color:#3b2a00;font-weight:800">🏆 Ganó el reto</span>`:E.venc?`<span class="chip">⌛ Venció el reto</span>`:`<span class="chip c-gold">⏳ Reto: quedan ${raQueda(E.lim-Date.now())}</span>`;
   let bt="";
   if(!f.app){if(f.yo)bt=`<button class="btn sm" style="background:var(--brand);color:#fff" data-snl="${id}">📲 Mandarle el link de la app</button>`;else if(f.pu)bt=`<button class="btn sm" style="background:#25D366;color:#fff" data-snp="${id}">💬 Avisarle al patrocinador</button>`}
@@ -3890,14 +3892,16 @@ function snvFila(f){const a=f.a,E=f.E,id=esc(a.id||a.socio),pl=/premium/i.test(a
     <div class="small muted">${f.yo?"⭐ Su directo":"Patrocinador: "+esc(nv(bonitoN(a.patrocinador||"")))} · ${niceDate(dkey(new Date(a.fecha)))}</div>
     <div class="row wrap" style="gap:4px;margin-top:4px">${ap}${irT}${rt}</div>${bt?`<div class="row wrap" style="gap:6px;margin-top:6px">${bt}</div>`:""}</div></div>`}
 const bonitoN=t=>String(t||"").split(/\s+/).filter(Boolean).map(w=>w.length>1?w[0].toUpperCase()+w.slice(1).toLowerCase():w.toUpperCase()).join(" ");
-function snvCard(){try{const L=snvDatos();if(!L.length)return"";const sin=L.filter(f=>!f.app).length,s1=L.filter(f=>f.app&&!f.m1).length,ok=L.filter(f=>f.m1).length,V=snvFiltra(L);
+function snvCard(){try{const L0=snvDatos(0),L1=snvDatos(1);if(!L0.length&&!L1.length)return"";if(snvM===0&&!L0.length)snvM=1;const L=snvM?L1:L0;const sin=L.filter(f=>!f.app).length,s1=L.filter(f=>f.app&&!f.m1).length,ok=L.filter(f=>f.m1).length,V=snvFiltra(L);
   const ch=(k,t,n)=>`<button type="button" class="chip${snvF===k?" on":""}" data-snf="${k}">${t} · ${n}</button>`;
-  return `<details class="card snv" id="snvCard" ${LS.get("snvOpen")?"open":""}><summary><span class="snv-ic">🆕</span><span class="grow"><b>Socios nuevos del mes · ${L.length}</b><small>${sin?`📵 ${sin} sin app · `:""}⏳ ${s1} en Semana 1 · 🏅 ${ok} completaron</small></span><span class="snv-go">›</span></summary>
+  return `<details class="card snv" id="snvCard" ${LS.get("snvOpen")?"open":""}><summary><span class="snv-ic">🆕</span><span class="grow"><b>Socios nuevos · ${snvMesN(snvM)} · ${L.length}</b><small>${sin?`📵 ${sin} sin app · `:""}⏳ ${s1} en Semana 1 · 🏅 ${ok} completaron</small></span><span class="snv-go">›</span></summary>
+   ${L1.length&&L0.length?`<div class="seg" id="snvMs" style="width:auto;align-self:flex-start"><button aria-selected="${!snvM}" data-snm="0">${snvMesN(0)[0].toUpperCase()+snvMesN(0).slice(1)} · ${L0.length}</button><button aria-selected="${!!snvM}" data-snm="1">${snvMesN(1)[0].toUpperCase()+snvMesN(1).slice(1)} · ${L1.length}</button></div>`:""}
    <div class="row wrap" style="gap:6px">${ch("","Todos",L.length)}${ch("sin","📵 Sin app",sin)}${ch("s1","⏳ En Semana 1",s1)}${ch("ok","🏅 Completó la primera fase",ok)}</div>
    <div class="snv-l">${V.map(snvFila).join("")||`<p class="small muted" style="margin:6px 0">No hay socios en este filtro.</p>`}</div>
-   <p class="small muted" style="margin:0">Activados desde el día 1 del mes de inCruises.${isAdmin?"":" Ve a sus directos y a los de su línea."}</p></details>`}catch(e){return""}}
+   <p class="small muted" style="margin:0">Activados en el mes de inCruises de ${snvMesN(snvM)}.${isAdmin?"":" Ve a sus directos y a los de su línea."}</p></details>`}catch(e){return""}}
 function snvBind(b){const d=b.querySelector("#snvCard");if(!d)return;d.ontoggle=()=>LS.set("snvOpen",d.open?1:0);
   const L=snvDatos(),de=id=>L.find(f=>(f.a.id||f.a.socio)===id),pn=n=>bonitoN(n).split(" ")[0],yo=miNombreCorto()||"",firma=t=>t+(yo?"\n\n*"+yo+"*":"");
+  d.querySelectorAll("[data-snm]").forEach(x=>x.onclick=e=>{e.preventDefault();snvM=+x.dataset.snm;snvF="";LS.set("snvOpen",1);renderEquipo()});
   d.querySelectorAll("[data-snf]").forEach(x=>x.onclick=e=>{e.preventDefault();snvF=x.dataset.snf;LS.set("snvOpen",1);renderEquipo()});
   d.querySelectorAll("[data-snl]").forEach(x=>x.onclick=()=>{const f=de(x.dataset.snl);if(!f)return;
     const t=`¡Hola, ${pn(f.a.socio)}! 🎉\n\nBienvenido/a al equipo. Para empezar con todo, descargue nuestra app *Action Leaders PLUS*: ahí tiene su Plan de Inicio Rápido, su rutina y todas las herramientas.\n\n👉 Regístrese aquí con mi enlace:\n${miEnlace()}\n\nCualquier duda, aquí estoy. 💪`;
