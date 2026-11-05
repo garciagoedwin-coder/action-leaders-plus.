@@ -3817,7 +3817,7 @@ window.__hgCanvas=hgCanvas;
 const raN=s=>{try{return typeof nv==="function"?nv(s):s}catch(e){return s}};
 function raCfg(){const c=(T.config||{}).retoArranque;return c&&c.desde&&c.hasta?c:null}
 function raActs(){const c=raCfg();if(!c)return[];const a=Date.parse(c.desde),b=Date.parse(c.hasta);return (T.activaciones||[]).filter(x=>{const t=Date.parse(x.fecha||"");return t>=a&&t<b})}
-function raActDe(email,correo,wa,nombre){const ke=[ahKe(email),ahKe(correo)].filter(Boolean),kw=ahKw(wa);return raActs().find(a=>(a.ek&&ke.includes(a.ek))||(a.wk&&kw&&a.wk===kw)||(nombre&&sameN(nombre,a.socio)))||null}
+function raActDe(email,correo,wa,nombre){const ke=[ahKe(email),ahKe(correo)].filter(Boolean),kw=ahKw(wa);return raActs().find(a=>(a.ek&&ke.includes(a.ek))||(a.wk&&kw&&a.wk===kw))||null}
 // estado de un socio: {a, lim, med1, gano, venc, n, tot}
 function raEstado(a,ir){const c=raCfg();if(!a||!c)return null;const lim=Date.parse(a.fecha)+(+c.dias||7)*864e5,m=ir&&ir.med&&ir.med[1]||0,p=(ir&&ir.p)||{};
   return{a,lim,med1:m,gano:!!m&&m<=lim,venc:!m&&Date.now()>lim,n:(p.w||1)===1?(p.n||0):(m?11:0),tot:(p.w||1)===1?(p.tot||11):11,w:p.w||1}}
@@ -3871,21 +3871,21 @@ const snvMesN=o=>{const d=new Date(snvIni(o));return SNV_MES[d.getUTCMonth()]};
 function snvIgual(a,b){if(!a||!b)return false;if(sameN(a,b)||parecidoN(a,b))return true;const A=nrmN(a).split(" ").filter(Boolean),B=nrmN(b).split(" ").filter(Boolean),[S,L]=A.length<=B.length?[A,B]:[B,A];
   return S.length>=2&&S[0]===L[0]&&S.every(w=>L.some(v=>v===w||(w.length===1&&v[0]===w)||(v.length===1&&w[0]===v)))}
 function snvNom(x){const r=x.registro||{};return [r.nombre,r.nombreRanking].filter(Boolean)}
-function snvUsr(a,U){const ke=a.ek,kw=a.wk;return (U||[]).find(x=>{const r=x.registro||{};return (ke&&[ahKe(x.email),ahKe(r.correo)].includes(ke))||(kw&&ahKw(r.whatsapp)===kw)})||(U||[]).find(x=>snvNom(x).some(n=>snvIgual(n,a.socio)))||null}
+function snvUsr(a,U){const ke=a.ek,kw=a.wk;if(!ke&&!kw)return null;return (U||[]).find(x=>{const r=x.registro||{};return (ke&&[ahKe(x.email),ahKe(r.correo)].includes(ke))||(kw&&ahKw(r.whatsapp)===kw)})||null}
 function snvSoyYo(n){const r=miRegistro()||{};return [r.nombre,r.nombreRanking,miNombreFull()].filter(Boolean).some(m=>snvIgual(m,n))}
 function snvDatos(o){if(o===undefined)o=snvM;const ini=snvIni(o),fin=snvIni(o-1),U=isAdmin&&socios?socios:(mios||[]);
   const A=(T.activaciones||[]).filter(a=>{const t=Date.parse(a.fecha||"");return t>=ini&&t<fin}).sort((p,q)=>Date.parse(q.fecha)-Date.parse(p.fecha));
   return A.map(a=>{const x=snvUsr(a,U),pu=(mios||[]).find(y=>snvNom(y).some(n=>snvIgual(n,a.patrocinador))),yo=snvSoyYo(a.patrocinador);
     if(!isAdmin&&!yo&&!pu&&!x)return null;
     const ir=x?(x.ir||{}):{},p=ir.p||{},m1=!!(ir.med&&ir.med[1])||(p.w||1)>1||!!p.g,E=raActs().includes(a)?raEstado(a,ir):null;
-    return{a,x,pu,yo,app:!!x,m1,ir:p,E}}).filter(Boolean)}
+    return{a,x,pu,yo,app:!!x,ver:!!(a.ek||a.wk),m1,ir:p,E}}).filter(Boolean)}
 function snvFiltra(L){return snvF==="sin"?L.filter(f=>!f.app):snvF==="s1"?L.filter(f=>f.app&&!f.m1):snvF==="ok"?L.filter(f=>f.m1):L}
-function snvFila(f){const a=f.a,E=f.E,id=esc(a.id||a.socio),pl=/premium/i.test(a.paquete||"")?"Premium":"Classic";
-  const ap=f.app?`<span class="chip c-good">✅ En la app</span>`:`<span class="chip c-bad">📵 Sin app</span>`;
+function snvFila(f){const a=f.a,E=f.E,id=esc(a.id||a.socio),pl=/premium/i.test(a.paquete||"")?"Premium":/starter/i.test(a.paquete||"")?"Starter":"Classic";
+  const ap=(f.app?`<span class="chip c-good">✅ En la app</span>`:f.ver?`<span class="chip c-bad">📵 Sin app</span>`:`<span class="chip">❔ Sin verificar</span>`)+(a.ps?`<span class="chip c-brand">🔄 Pasó a socio</span>`:"");
   const irT=!f.app||(!f.m1&&!f.ir.w)?"":f.m1?`<span class="chip" style="background:linear-gradient(120deg,#FBEFC0,#D4AF37);color:#3b2a00;font-weight:800">🏅 Completó la primera fase</span>`:`<span class="chip c-brand">🚀 Semana 1 · ${f.ir.n||0}/${f.ir.tot||12}</span>`;
   const rt=!E?"":E.gano?`<span class="chip" style="background:#FBEFC0;color:#3b2a00;font-weight:800">🏆 Ganó el reto</span>`:E.venc?`<span class="chip">⌛ Venció el reto</span>`:`<span class="chip c-gold">⏳ Reto: quedan ${raQueda(E.lim-Date.now())}</span>`;
   let bt="";
-  if(!f.app){if(f.yo)bt=`<button class="btn sm" style="background:var(--brand);color:#fff" data-snl="${id}">📲 Mandarle el link de la app</button>`;else if(f.pu)bt=`<button class="btn sm" style="background:#25D366;color:#fff" data-snp="${id}">💬 Avisarle al patrocinador</button>`}
+  if(!f.app&&f.ver){if(f.yo)bt=`<button class="btn sm" style="background:var(--brand);color:#fff" data-snl="${id}">📲 Mandarle el link de la app</button>`;else if(f.pu)bt=`<button class="btn sm" style="background:#25D366;color:#fff" data-snp="${id}">💬 Avisarle al patrocinador</button>`}
   else bt=f.m1?`<button class="btn sm" style="background:#25D366;color:#fff" data-snw="${id}">👏 Felicitar</button>`:`<button class="btn sm" style="background:#25D366;color:#fff" data-snw="${id}">💪 Motivar</button>`;
   if(isAdmin)bt+=`<button class="btn sm ghost" data-snc="${id}">📇 Contacto</button>`;
   return `<div class="snv-r">${avHTML(a.socio,false,true,f.x&&f.x.uid)}<div class="grow" style="min-width:0"><div class="row between" style="gap:6px"><b>${esc(nv(bonitoN(a.socio)))}</b><span class="small muted">${pl}</span></div>
@@ -6482,7 +6482,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261104225733";var busy=false,pend=null;
+(function(){var V="20261105001237";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
