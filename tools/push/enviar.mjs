@@ -149,8 +149,10 @@ export function destinosInact(rows, users, team, ms = Date.now()) {
     const spN = alias[r.s] || r.s;
     const sp = users.filter(u => u.registro && (mismoNombre(u.registro.nombre, spN) || (u.registro.nombreRanking && mismoNombre(u.registro.nombreRanking, spN))));
     const base = { n: corto(r.n), x: r.x, s: corto(r.s), k: (r.k || [])[0] || "", w: (r.k || [])[1] || (r.k || [])[2] || "" };
-    if (sp.length !== 1) { console.log("Patrocinador no encontrado en la app:", r.s); continue; }
-    const s = sp[0]; (D[s.uid] = D[s.uid] || []).push({ ...base, d: 1 });
+    let cand = sp.filter(u => String(u.email || "").toLowerCase() !== "garciagoedwin@gmail.com");
+    if (cand.length > 1) { const cnt = u => users.filter(v => (v.registro && v.registro.linea || []).includes(u.uid)).length; cand.sort((a, b) => cnt(b) - cnt(a)); cand = [cand[0]]; }
+    if (cand.length !== 1) { console.log("Patrocinador no encontrado en la app:", r.s, sp.length); continue; }
+    const s = cand[0]; (D[s.uid] = D[s.uid] || []).push({ ...base, d: 1 });
     for (const uid of (s.registro.linea || [])) { const u = users.find(v => v.uid === uid); if (!u || uid === s.uid) continue;
       if (RG_TL.test(rangoUsr(u, team))) (D[uid] = D[uid] || []).push({ ...base, d: 0 }); }
   }
