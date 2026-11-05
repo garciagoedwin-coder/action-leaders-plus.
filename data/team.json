@@ -59,6 +59,30 @@
    "activaciones": 1,
    "volumen": 200,
    "actSemana": 1
+  },
+  {
+   "nombre": "Joel enrrique Salgado moradel",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "joel-enrrique-salgado-moradel",
+   "activaciones": 1,
+   "volumen": 200,
+   "actSemana": 1
+  },
+  {
+   "nombre": "Jorge enrique Turcios Garcia",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "jorge-enrique-turcios-garcia",
+   "activaciones": 1,
+   "volumen": 200,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -249,7 +273,7 @@
    "nuevos": 0,
    "presentaciones": 0,
    "rango": "Senior Marketing Director",
-   "volumen": 0,
+   "volumen": 200,
    "volumenDetalle": "",
    "id": "jorge-turcios",
    "volumenHoja": 0,
@@ -264,7 +288,7 @@
    "nuevos": 0,
    "presentaciones": 0,
    "rango": "Team Leader",
-   "volumen": 0,
+   "volumen": 200,
    "volumenDetalle": "",
    "id": "joel-salgado",
    "volumenHoja": 0,
@@ -2839,6 +2863,26 @@
    "wk": "22688b",
    "fuente": "gmail",
    "id": "nelson-mauricio-fajardo-escobar"
+  },
+  {
+   "socio": "Denis josue Reyes",
+   "paquete": "Classic",
+   "patrocinador": "Joel enrrique Salgado moradel",
+   "fecha": "2026-11-05T22:55:02Z",
+   "ek": "3bde43",
+   "wk": "d70f3a",
+   "fuente": "gmail",
+   "id": "denis-josue-reyes"
+  },
+  {
+   "socio": "Francia waldina Flores mejia",
+   "paquete": "Classic",
+   "patrocinador": "Jorge enrique Turcios Garcia",
+   "fecha": "2026-11-05T22:55:02Z",
+   "ek": "f74aed",
+   "wk": "cc06f8",
+   "fuente": "gmail",
+   "id": "francia-waldina-flores-mejia"
   }
  ],
  "academia": [],
@@ -2863,7 +2907,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-04T14:55:07Z",
+  "activacionesCorte": "2026-11-05T22:55:02Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -2873,7 +2917,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-04T09:58:00-06:00",
+  "rankingActualizado": "2026-11-05T17:38:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -3752,7 +3796,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-11-05T21:55:40Z",
+   "v": "2026-11-05T23:38:50Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "0225a9": "2026-10-27T10:09:44Z",
@@ -3876,7 +3920,9 @@
     "d77749": "2026-11-09T02:22:30Z",
     "d8c27f": "2026-10-30T01:44:23Z",
     "db24b4": "2026-11-09T22:45:25Z",
+    "dd3188": "2026-11-10T22:09:27Z",
     "dd635f": "2026-10-28T00:30:12Z",
+    "ddc126": "2026-11-10T23:08:01Z",
     "df3510": "2026-11-02T19:46:49Z",
     "e0f64b": "2026-10-30T06:38:51Z",
     "e31852": "2026-10-28T00:30:12Z",
