@@ -938,6 +938,14 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .evaBand b{display:block;font-size:17px}.evaBand small{font-size:12.5px;opacity:.9}.evaBand .evD{background:rgba(255,255,255,.18);color:#fff}
 .rsRow{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line)}
 @media (prefers-reduced-motion:reduce){.evCh.hoy i,.evHoy .dot{animation:none}}
+
+.snv{gap:10px}.snv>summary{list-style:none;cursor:pointer;display:flex;gap:10px;align-items:center}.snv>summary::-webkit-details-marker{display:none}
+.snv-ic{font-size:22px;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--brand) 14%,transparent);flex:none}
+.snv>summary b{display:block;font-size:15px}.snv>summary small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.snv-go{color:var(--brand);font-weight:800;font-size:20px;transition:transform .2s}.snv[open] .snv-go{transform:rotate(90deg)}
+.snv [data-snf]{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:12.5px;cursor:pointer}
+.snv [data-snf].on{background:var(--brand);border-color:var(--brand);color:#fff}
+.snv-l{display:flex;flex-direction:column}.snv-r{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.snv-r:first-child{border-top:0}
 </style>
 
 </head>
@@ -2286,8 +2294,8 @@ function renderAhorro(){const c=$("#ahCard");if(!c)return;const a=ahYo(),pa=$("#
   const dias=Math.ceil((a.lim-Date.now())/864e5);
   c.className="ahCard pend";c.innerHTML=`<div><b>⚠️ Su ahorro está pendiente</b><p>${a.bloq?"Sus herramientas del equipo están en pausa hasta que se ponga al día.":`Tiene hasta el <b>${esc(ahFecha(a.lim))}</b> para ponerse al día y mantener activas sus herramientas${dias<=5?` (${dias<=1?"último día":"quedan "+dias+" días"})`:""}.`}</p><small>Si ya pagó, este aviso se quita solo cuando inCruises lo confirme.</small></div><button class="btn sm" id="ahSp" style="background:#25D366;color:#fff;align-self:flex-start">💬 Hablar con mi patrocinador</button>`;
   $("#ahSp").onclick=ahHablarSp}
-async function ahCargarAdm(){if(!entKey){const d=await store.db.doc("evento/"+ENT.id+"/priv/llave").get();entKey=d.exists?d.data().k:null}if(!entKey)throw new Error("sin-llave");
-  const r=await fetch("data/ahorro.enc?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("red");const raw=b64u((await r.text()).trim());
+async function ahCargarAdm(f){if(!entKey){const d=await store.db.doc("evento/"+ENT.id+"/priv/llave").get();entKey=d.exists?d.data().k:null}if(!entKey)throw new Error("sin-llave");
+  const r=await fetch((f||"data/ahorro.enc")+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error("red");const raw=b64u((await r.text()).trim());
   const key=await crypto.subtle.importKey("raw",b64u(entKey),"AES-GCM",false,["decrypt"]);
   return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:raw.slice(0,12)},key,raw.slice(12))))}
 async function ahRevisar(){if(!isAdmin)return;openSheet(`<h2>💰 Ahorro pendiente</h2><p class="small muted" id="ahRv">Cargando…</p>`);
@@ -2822,7 +2830,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
   const bind=()=>{b.querySelectorAll("[data-mcp]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mcp);if(!x)return;const w=waSocio(x);location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(compMsg(x))});b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=waSocio(x);
     if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});b.querySelectorAll("[data-wnum]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.wnum);if(x)cambiarNumSocio(x)});b.querySelectorAll("[data-gst]").forEach(bt=>bt.onclick=()=>{const [u,k]=bt.dataset.gst.split("|"),x=(mios||[]).find(y=>y.uid===u);if(x)gestHoja(x,k)});b.querySelectorAll("[data-mah]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mah);if(!x)return;const nm=((x.registro||{}).nombre||"").split(" ")[0],ah=ahSoc(x)||{},t=`¡Hola${nm?", "+nm:""}! 🙌 Vi que su ahorro de este mes en inCruises quedó pendiente. Póngase al día${ah.lim&&!ah.bloq?" antes del "+ahFecha(ah.lim):""} para que no se le inactive la cuenta ni pierda sus puntos dobles 🛳️ ¿Le ayudo con algo?`,w=waSocio(x);if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});b.querySelectorAll("[data-ip]").forEach(x=>x.onclick=()=>{idxPer=x.dataset.ip;renderEquipo()});b.querySelectorAll("[data-idxv]").forEach(x=>x.onclick=()=>{idxStk=[""];idxSheet("")});b.querySelectorAll("[data-reac]").forEach(x=>x.onclick=abrirReactivar);const c=$("#miosCopy");if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(miEnlace());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
   if(miosErr){b.innerHTML=emptyCard("No se pudo cargar tu equipo","Revisa tu conexión e intenta de nuevo. Si sigue igual, avisa al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
-  if(!mios.length){b.innerHTML=idxCard()+`<div class="card empty"><h3>Aún no tienes socios en la app</h3><p class="small muted">Cuando firmes a alguien, mándale tu mensaje de bienvenida desde el CRM o comparte tu enlace. Al registrarse aparecerá aquí.</p></div>`+inv;bind();return}
+  if(!mios.length){b.innerHTML=snvCard()+idxCard()+`<div class="card empty"><h3>Aún no tienes socios en la app</h3><p class="small muted">Cuando firmes a alguien, mándale tu mensaje de bienvenida desde el CRM o comparte tu enlace. Al registrarse aparecerá aquí.</p></div>`+inv;bind();snvBind(b);return}
   const lin=true;const V=miosVista==="dir"?mios.filter(x=>x.nivel===1):mios.slice().sort((a,b)=>a.nivel-b.nivel||byAct(a,b));
   const seg=lin?`<div class="seg" id="miosSeg"><button aria-selected="${miosVista==="dir"}" data-mv="dir">⭐ Directos · ${mios.filter(x=>x.nivel===1).length}</button><button aria-selected="${miosVista==="todo"}" data-mv="todo">🌳 Mi línea · ${mios.length}</button>${pipeOk()?`<button aria-selected="${miosVista==="pros"}" data-mv="pros">🎯 Prospectos</button>`:""}</div>`:"";
   if(miosVista==="pros"&&pipeOk()){b.innerHTML=idxCard()+seg+pipeLider()+inv;bind();pipeBind(b);return}
@@ -2835,12 +2843,12 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
     return Dr.map(({d,M,ac,nv})=>{const r=d.registro||{},nm=r.nombre||"Socio",g=dtRg({u:d.uid,n:nm,rg:r.rango||""}),pc=M.length?Math.round(ac/M.length*100):0;
       return `<details class="card pi" data-pi="${esc(d.uid)}" style="gap:8px"><summary style="list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:8px"><div class="row" style="gap:10px;align-items:center">${avHTML(nm,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:700">Línea de ${esc(nm)}</b><div class="small muted">⭐ Directo${g?` · <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${g.c};vertical-align:middle"></span> ${esc(DT_RGTX[g.n]||g.n)}`:""} · ${M.length} ${M.length===1?"socio":"socios"} · ${nv} ${nv===1?"nivel":"niveles"}</div></div><span class="chip ${pc>=50?"c-good":pc>0?"c-gold":"c-brand"}">${ac} de ${M.length} activos</span></div>
        <div class="bar" style="height:6px"><i style="width:${pc}%"></i></div><span class="small" style="color:var(--brand);font-weight:700">Ver su línea ›</span></summary><div class="pi-b"></div></details>`}).join("")||emptyCard("Aún no tiene directos","Cuando un socio se registre con su enlace, aquí verá su línea.")};
-  b.innerHTML=irSimple()?`${hoyLlamar()}${seg}<details class="card mnum"><summary>📊 Mis números <span>Índice de Duplicación${miosVista==="dir"&&DTP.h?" y Dream Team":""} ›</span></summary>${idxCard()}${miosVista==="dir"&&DTP.h?`<div class="card dtin" style="gap:10px">${DTP.h}</div>`:""}</details>`:`${idxCard()}${seg}${miosVista==="dir"&&DTP.h?`<div class="card dtin" style="gap:10px">${DTP.h}</div>`:""}`;b.innerHTML+=`<div class="grid2">${st(n,miosVista==="todo"?"Socios en toda tu línea":n===1?"Socio directo":"Socios directos")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}${st(pres,"Presentaciones esta semana")}</div>
+  b.innerHTML=irSimple()?`${snvCard()}${hoyLlamar()}${seg}<details class="card mnum"><summary>📊 Mis números <span>Índice de Duplicación${miosVista==="dir"&&DTP.h?" y Dream Team":""} ›</span></summary>${idxCard()}${miosVista==="dir"&&DTP.h?`<div class="card dtin" style="gap:10px">${DTP.h}</div>`:""}</details>`:`${snvCard()}${idxCard()}${seg}${miosVista==="dir"&&DTP.h?`<div class="card dtin" style="gap:10px">${DTP.h}</div>`:""}`;b.innerHTML+=`<div class="grid2">${st(n,miosVista==="todo"?"Socios en toda tu línea":n===1?"Socio directo":"Socios directos")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}${st(pres,"Presentaciones esta semana")}</div>
    ${miosVista==="dir"?`<p class="eyebrow" style="margin:6px 0 0">Detalle de mis directos</p>`:""}
    ${miosVista==="todo"?`<div class="seg" id="miosLin" style="width:auto;align-self:flex-start"><button aria-selected="${miosLin==="pi"}" data-ml="pi">🌳 Por piernas</button><button aria-selected="${miosLin==="li"}" data-ml="li">☰ Lista por nivel</button></div>`:""}
    ${miosVista==="todo"&&miosLin==="pi"?piernas():`<div class="card" style="gap:0">${V.map(x=>fila(x)).join("")}</div>`}
    <p class="small muted" style="margin:0">Presentaciones, contactos y días activos son de los últimos 7 días.${bien<n?" "+(n-bien)+" aún no ha"+(n-bien>1?"n":"")+" completado la bienvenida.":""}</p>
-   <button class="btn sm ghost" id="miosReload" style="align-self:flex-start">Actualizar lista</button>${inv}`;bind();
+   <button class="btn sm ghost" id="miosReload" style="align-self:flex-start">Actualizar lista</button>${inv}`;bind();snvBind(b);
   if(DTP.bind0)DTP.bind0();
   const ml=$("#miosLin");if(ml)ml.onclick=e=>{const x=e.target.closest("button");if(!x)return;miosLin=x.dataset.ml;renderEquipo()};
   b.querySelectorAll("details[data-pi]").forEach(d=>d.ontoggle=()=>{const c=d.querySelector(".pi-b");if(d.open&&!c.dataset.ok){c.dataset.ok=1;c.innerHTML=mios.filter(y=>y.pierna===d.dataset.pi).sort((p,q)=>p.nivel-q.nivel||byAct(p,q)).map(y=>fila(y,1)).join("");bind()}})}
@@ -3850,6 +3858,65 @@ function raAdmin(){const c=raCfg();if(!c)return;const M=Object.assign({Classic:"
    ${F.length?F.map(fila).join(""):`<p class="muted small">Todavía no hay socios activados en el reto.</p>`}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     const sv=()=>{LS.set("raMon",{Classic:$("#raMC").value,Premium:$("#raMP").value});raAdmin()};$("#raMC").onchange=sv;$("#raMP").onchange=sv;
     document.querySelectorAll("[data-raen]").forEach(i=>i.onchange=()=>{const E2=LS.get("raEnt")||{};E2[i.dataset.raen]=i.checked?Date.now():0;LS.set("raEnt",E2);raAdmin()})})}
+
+// ---------- Socios nuevos del mes (4 nov) ----------
+// Equipo › Mi equipo, arriba. Activaciones del mes inCruises (T.activaciones, 0 lecturas) que le tocan a quien mira:
+// patrocinador = yo, patrocinador en mi línea descendente, o el socio nuevo ya está en mi línea. Admin ve todo.
+// Estado: en la app (huella ek/wk o nombre contra mios/socios), Inicio Rápido (ir.p / ir.med[1]) y reto de arranque (raEstado).
+// Correo y WhatsApp de los nuevos: SOLO admin, cifrados en data/nuevos.enc (tools/nuevos.py, misma clave que ahorro.enc).
+let snvF="",snvC=null;
+const snvIni=()=>{const d=new Date();return Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1)};
+function snvIgual(a,b){if(!a||!b)return false;if(sameN(a,b)||parecidoN(a,b))return true;const A=nrmN(a).split(" ").filter(Boolean),B=nrmN(b).split(" ").filter(Boolean),[S,L]=A.length<=B.length?[A,B]:[B,A];
+  return S.length>=2&&S[0]===L[0]&&S.every(w=>L.some(v=>v===w||(w.length===1&&v[0]===w)||(v.length===1&&w[0]===v)))}
+function snvNom(x){const r=x.registro||{};return [r.nombre,r.nombreRanking].filter(Boolean)}
+function snvUsr(a,U){const ke=a.ek,kw=a.wk;return (U||[]).find(x=>{const r=x.registro||{};return (ke&&[ahKe(x.email),ahKe(r.correo)].includes(ke))||(kw&&ahKw(r.whatsapp)===kw)})||(U||[]).find(x=>snvNom(x).some(n=>snvIgual(n,a.socio)))||null}
+function snvSoyYo(n){const r=miRegistro()||{};return [r.nombre,r.nombreRanking,miNombreFull()].filter(Boolean).some(m=>snvIgual(m,n))}
+function snvDatos(){const ini=snvIni(),U=isAdmin&&socios?socios:(mios||[]);
+  const A=(T.activaciones||[]).filter(a=>Date.parse(a.fecha||"")>=ini).sort((p,q)=>Date.parse(q.fecha)-Date.parse(p.fecha));
+  return A.map(a=>{const x=snvUsr(a,U),pu=(mios||[]).find(y=>snvNom(y).some(n=>snvIgual(n,a.patrocinador))),yo=snvSoyYo(a.patrocinador);
+    if(!isAdmin&&!yo&&!pu&&!x)return null;
+    const ir=x?(x.ir||{}):{},p=ir.p||{},m1=!!(ir.med&&ir.med[1])||(p.w||1)>1||!!p.g,E=raActs().includes(a)?raEstado(a,ir):null;
+    return{a,x,pu,yo,app:!!x,m1,ir:p,E}}).filter(Boolean)}
+function snvFiltra(L){return snvF==="sin"?L.filter(f=>!f.app):snvF==="s1"?L.filter(f=>f.app&&!f.m1):snvF==="ok"?L.filter(f=>f.m1):L}
+function snvFila(f){const a=f.a,E=f.E,id=esc(a.id||a.socio),pl=/premium/i.test(a.paquete||"")?"Premium":"Classic";
+  const ap=f.app?`<span class="chip c-good">✅ En la app</span>`:`<span class="chip c-bad">📵 Sin app</span>`;
+  const irT=!f.app?"":f.m1?`<span class="chip" style="background:linear-gradient(120deg,#FBEFC0,#D4AF37);color:#3b2a00;font-weight:800">🏅 Completó la primera fase</span>`:`<span class="chip c-brand">🚀 Semana 1 · ${f.ir.n||0}/${f.ir.tot||12}</span>`;
+  const rt=!E?"":E.gano?`<span class="chip" style="background:#FBEFC0;color:#3b2a00;font-weight:800">🏆 Ganó el reto</span>`:E.venc?`<span class="chip">⌛ Venció el reto</span>`:`<span class="chip c-gold">⏳ Reto: quedan ${raQueda(E.lim-Date.now())}</span>`;
+  let bt="";
+  if(!f.app){if(f.yo)bt=`<button class="btn sm" style="background:var(--brand);color:#fff" data-snl="${id}">📲 Mandarle el link de la app</button>`;else if(f.pu)bt=`<button class="btn sm" style="background:#25D366;color:#fff" data-snp="${id}">💬 Avisarle al patrocinador</button>`}
+  else bt=f.m1?`<button class="btn sm" style="background:#25D366;color:#fff" data-snw="${id}">👏 Felicitar</button>`:`<button class="btn sm" style="background:#25D366;color:#fff" data-snw="${id}">💪 Motivar</button>`;
+  if(isAdmin)bt+=`<button class="btn sm ghost" data-snc="${id}">📇 Contacto</button>`;
+  return `<div class="snv-r">${avHTML(a.socio,false,true,f.x&&f.x.uid)}<div class="grow" style="min-width:0"><div class="row between" style="gap:6px"><b>${esc(nv(bonitoN(a.socio)))}</b><span class="small muted">${pl}</span></div>
+    <div class="small muted">${f.yo?"⭐ Su directo":"Patrocinador: "+esc(nv(bonitoN(a.patrocinador||"")))} · ${niceDate(dkey(new Date(a.fecha)))}</div>
+    <div class="row wrap" style="gap:4px;margin-top:4px">${ap}${irT}${rt}</div>${bt?`<div class="row wrap" style="gap:6px;margin-top:6px">${bt}</div>`:""}</div></div>`}
+const bonitoN=t=>String(t||"").split(/\s+/).filter(Boolean).map(w=>w.length>1?w[0].toUpperCase()+w.slice(1).toLowerCase():w.toUpperCase()).join(" ");
+function snvCard(){try{const L=snvDatos();if(!L.length)return"";const sin=L.filter(f=>!f.app).length,s1=L.filter(f=>f.app&&!f.m1).length,ok=L.filter(f=>f.m1).length,V=snvFiltra(L);
+  const ch=(k,t,n)=>`<button type="button" class="chip${snvF===k?" on":""}" data-snf="${k}">${t} · ${n}</button>`;
+  return `<details class="card snv" id="snvCard" ${LS.get("snvOpen")?"open":""}><summary><span class="snv-ic">🆕</span><span class="grow"><b>Socios nuevos del mes · ${L.length}</b><small>${sin?`📵 ${sin} sin app · `:""}⏳ ${s1} en Semana 1 · 🏅 ${ok} completaron</small></span><span class="snv-go">›</span></summary>
+   <div class="row wrap" style="gap:6px">${ch("","Todos",L.length)}${ch("sin","📵 Sin app",sin)}${ch("s1","⏳ En Semana 1",s1)}${ch("ok","🏅 Completó la primera fase",ok)}</div>
+   <div class="snv-l">${V.map(snvFila).join("")||`<p class="small muted" style="margin:6px 0">No hay socios en este filtro.</p>`}</div>
+   <p class="small muted" style="margin:0">Activados desde el día 1 del mes de inCruises.${isAdmin?"":" Ve a sus directos y a los de su línea."}</p></details>`}catch(e){return""}}
+function snvBind(b){const d=b.querySelector("#snvCard");if(!d)return;d.ontoggle=()=>LS.set("snvOpen",d.open?1:0);
+  const L=snvDatos(),de=id=>L.find(f=>(f.a.id||f.a.socio)===id),pn=n=>bonitoN(n).split(" ")[0],yo=miNombreCorto()||"",firma=t=>t+(yo?"\n\n*"+yo+"*":"");
+  d.querySelectorAll("[data-snf]").forEach(x=>x.onclick=e=>{e.preventDefault();snvF=x.dataset.snf;LS.set("snvOpen",1);renderEquipo()});
+  d.querySelectorAll("[data-snl]").forEach(x=>x.onclick=()=>{const f=de(x.dataset.snl);if(!f)return;
+    const t=`¡Hola, ${pn(f.a.socio)}! 🎉\n\nBienvenido/a al equipo. Para empezar con todo, descargue nuestra app *Action Leaders PLUS*: ahí tiene su Plan de Inicio Rápido, su rutina y todas las herramientas.\n\n👉 Regístrese aquí con mi enlace:\n${miEnlace()}\n\nCualquier duda, aquí estoy. 💪`;
+    location.href="https://wa.me/?text="+encodeURIComponent(firma(t))});
+  d.querySelectorAll("[data-snp]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snp);if(!f||!f.pu)return;const w=waSocio(f.pu)||await dtWa(f.pu.uid);
+    const t=`¡Hola, ${pn((f.pu.registro||{}).nombre||"")}! 🙌\n\nFelicidades por la activación de ${pn(f.a.socio)}. 🎉\n\nVeo que todavía no ha entrado a la app Action Leaders PLUS. ¿Le puede mandar su enlace de la app para que empiece su Plan de Inicio Rápido?\n\nSi necesita apoyo, aquí estoy. 💪`;
+    location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(firma(t))});
+  d.querySelectorAll("[data-snw]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snw);if(!f||!f.x)return;const w=waSocio(f.x)||await dtWa(f.x.uid),n=pn(f.a.socio);
+    const t=f.m1?`¡Hola, ${n}! 🏅\n\nVi que ya completó la primera fase de su Plan de Inicio Rápido. ¡Felicidades! Así se arranca.\n\nVamos por la Semana 2. Cuente conmigo. 🚀`
+      :`¡Hola, ${n}! 💪\n\nVi que va en ${f.ir.n||0} de ${f.ir.tot||12} pasos de su Semana 1 del Plan de Inicio Rápido.${f.E&&!f.E.venc&&!f.E.gano?"\n\nLe quedan "+raQueda(f.E.lim-Date.now())+" para completarla a tiempo.":""}\n\n¿Le ayudo con el siguiente paso? 🚀`;
+    location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(firma(t))});
+  d.querySelectorAll("[data-snc]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snc);if(!f)return;let c=null;
+    try{if(!snvC)snvC=(await ahCargarAdm("data/nuevos.enc")).c||{};c=snvC[f.a.id||f.a.socio]||null}catch(e){c=null}
+    const w=c&&String(c.w||"").replace(/\D/g,"");
+    openSheet(`<h2 style="margin:0">📇 ${esc(nv(bonitoN(f.a.socio)))}</h2><p class="small muted" style="margin:0">🔒 Solo usted ve estos datos (cifrados).</p>
+     ${c?`<div class="card" style="gap:8px">${c.e?`<div><span class="small muted">Correo</span><br><b style="word-break:break-all">${esc(c.e)}</b></div>`:""}${w?`<div><span class="small muted">WhatsApp</span><br><b>+${esc(w)}</b></div>`:""}</div>
+      <div class="row" style="gap:8px">${w?`<a class="btn grow" style="background:#25D366;color:#fff" href="https://wa.me/${w}">💬 WhatsApp</a>`:""}${c.e?`<a class="btn ghost grow" href="mailto:${esc(c.e)}">✉️ Correo</a>`:""}</div>`
+      :`<p class="small">Todavía no hay correo ni WhatsApp guardados para este socio. Se guardan desde el ciclo del ranking.</p>`}
+     <button class="btn ghost" data-close style="width:100%">Cerrar</button>`)})}
 
 // ---------- Lanzamiento del socio nuevo en redes (4 nov) ----------
 // Mismo flyer de bienvenida (bienCanvas yo=1): sin patrocinador, "Nueva etapa", "Este es mi nuevo comienzo" + "¿Le cuento cómo?".
