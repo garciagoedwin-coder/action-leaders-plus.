@@ -982,7 +982,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .wel-k em{background:none!important;padding:0!important;font-size:18px!important;font-weight:900!important;letter-spacing:0!important;margin-left:2px!important;vertical-align:6px!important;background-image:linear-gradient(135deg,#2AC1F1,#0A7DAD)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
 .lm-brand .lp{font-size:.95em!important;letter-spacing:0!important;padding:0!important;border:0!important;background:linear-gradient(135deg,#2AC1F1,#0A7DAD)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;box-shadow:none!important;margin-left:-.22em;position:relative;top:-.4em;font-weight:900!important}
 
-#v-inicio.simple>#incStrip{order:2}
+#v-inicio.simple>#incStrip{order:2}#v-inicio.simple>#lzgStrip{order:2}
 .incS{position:relative;overflow:hidden;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;background:linear-gradient(120deg,#062B3A,#0A7DAD);color:#fff;border-radius:16px;padding:11px 14px;box-shadow:0 10px 24px -14px #0A7DAD}
 .incS:after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.18) 50%,transparent 65%);transform:translateX(-100%);animation:incBr 3.2s ease-in-out 3}
 @keyframes incBr{to{transform:translateX(100%)}}
@@ -1014,6 +1014,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .urgS .ur.pg{background:rgba(22,163,74,.28)}.urgS .ur .q.g{background:#16A34A;color:#fff}
 .urgS.ok{background:linear-gradient(120deg,#0b4d2a,#16A34A);box-shadow:0 10px 24px -14px #16A34A}.urgS.ok .uh small,.urgS.ok .uh .tg{color:#d3f9df}
 .lzbL{display:flex;flex-direction:column;gap:8px}.lzbB{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;color:var(--ink);font:inherit}.lzbB>span:first-child{font-size:22px}.lzbB b{display:block;font-size:14px}.lzbB small{display:block;color:var(--muted);font-size:12px;line-height:1.3}.lzbB i{margin-left:auto;font-style:normal;color:var(--brand);font-size:20px}
+#lzgStrip{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:18px;background:linear-gradient(135deg,#0b1d33,#123a5c);color:#fff;border:1px solid rgba(42,193,241,.45);box-shadow:0 6px 20px rgba(10,125,173,.25)}#lzgStrip[hidden]{display:none}.lzgI{font-size:30px;line-height:1}.lzgT{flex:1;min-width:0}.lzgT b{display:block;font-size:15px}.lzgT span{display:block;font-size:13px;opacity:.85;margin-top:2px}.lzgB{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.lzgB button{flex:1;min-width:130px;border:0;border-radius:12px;padding:10px 8px;font:inherit;font-weight:700;font-size:13px;background:#25D366;color:#053b1d}.lzgB button.ok{background:rgba(255,255,255,.15);color:#fff}.lzgB button.pr{background:linear-gradient(135deg,#B07D00,#F5B700);color:#2a1c00}
 </style>
 
 </head>
@@ -1371,6 +1372,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
       <div id="pushStrip" hidden></div>
       <div class="urgS" id="urgStrip" hidden></div>
       <div class="incS" id="incStrip" hidden></div>
+      <div class="lzgS" id="lzgStrip" hidden></div>
       <div class="ra" id="raStrip" hidden></div>
       <div class="irCard" id="irCard" hidden></div>
       <div class="lzStrip" id="lzCallStrip" hidden></div>
@@ -2482,7 +2484,7 @@ async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas
   await bienFonts();try{await Promise.all(["700 30px Figtree","600 30px Figtree","500 30px Figtree","400 30px Figtree","italic 700 40px 'Libre Baskerville'","400 60px 'Bebas Neue'"].map(x=>document.fonts.load(x)))}catch(x){}
   const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', 'Bricolage Grotesque', Arial, sans-serif",LB="'Libre Baskerville', Georgia, serif";
   const C=esp?{a:"#E8C766",g:["#FBEFC0","#D4AF37","#8C6A12"],t:["#FFF6D6","#E8C766","#A57F1C"],glow:"rgba(212,175,55,.38)",img:"media/flyers/lc-espartano.jpg?v=1",sello:"⚔️",tit:"LÍDER ESPARTANO"}
-    :{a:"#D9DEE7",g:["#FFFFFF","#C0C7D2","#6B7280"],t:["#FFFFFF","#D9DEE7","#8A93A3"],glow:"rgba(200,210,225,.32)",img:"media/flyers/lc-lider.jpg?v=1",sello:"🛡️",tit:"LÍDER DEL MES"};
+    :{a:"#D9DEE7",g:["#FFFFFF","#C0C7D2","#6B7280"],t:["#FFFFFF","#D9DEE7","#8A93A3"],glow:"rgba(200,210,225,.32)",img:"media/flyers/lc-lider.jpg?v=1",sello:"🛡️",tit:"LÍDER DEL MES"};if(q.tit)C.tit=q.tit;if(q.sello)C.sello=q.sello;
   g.fillStyle="#04060d";g.fillRect(0,0,W,H);const bg=await imgLoad(C.img);if(bg)g.drawImage(bg,0,0,W,H);
   let gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,"rgba(4,6,13,.45)");gr.addColorStop(.25,"rgba(4,6,13,.15)");gr.addColorStop(.5,"rgba(4,6,13,.5)");gr.addColorStop(.8,"rgba(4,6,13,.9)");gr.addColorStop(1,"#04060d");g.fillStyle=gr;g.fillRect(0,0,W,H);
   const grad=(x0,x1,c)=>{const z=g.createLinearGradient(x0,0,x1,0);z.addColorStop(0,c[0]);z.addColorStop(.5,c[1]);z.addColorStop(1,c[2]);return z};
@@ -2492,7 +2494,7 @@ async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas
   g.font="600 19px "+BF;g.fillStyle=C.a;const kw=sp("SISTEMA DE LIDERAZGO",540,172,8,"center");
   const ln=(x0,x1)=>{const z=g.createLinearGradient(x0,0,x1,0);z.addColorStop(0,"rgba(0,0,0,0)");z.addColorStop(1,C.a);g.fillStyle=z;g.fillRect(Math.min(x0,x1),165,Math.abs(x1-x0),1.5)};
   ln(540-kw/2-90,540-kw/2-24);{const z=g.createLinearGradient(540+kw/2+24,0,540+kw/2+90,0);z.addColorStop(0,C.a);z.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=z;g.fillRect(540+kw/2+24,165,66,1.5)}
-  const f1=String(q.n).trim().split(/\s+/)[0];g.textAlign="center";g.fillStyle="#fff";let fz=44;g.font="italic 700 "+fz+"px "+LB;while(g.measureText("¡Felicidades, "+f1+"!").width>900&&fz>28){fz--;g.font="italic 700 "+fz+"px "+LB}g.fillText("¡Felicidades, "+f1+"!",540,300);
+  const f1=String(q.n).trim().split(/\s+/)[0];g.textAlign="center";g.fillStyle="#fff";let fz=44;g.font="italic 700 "+fz+"px "+LB;const hT=q.pres?"¡Hola, equipo! Soy "+f1:"¡Felicidades, "+f1+"!";while(g.measureText(hT).width>900&&fz>28){fz--;g.font="italic 700 "+fz+"px "+LB}g.fillText(hT,540,300);
   // foto
   const cx=540,cy=640,R=222;g.save();g.shadowColor=C.glow;g.shadowBlur=110;g.beginPath();g.arc(cx,cy,R+16,0,Math.PI*2);g.fillStyle="rgba(4,6,13,.7)";g.fill();g.restore();
   g.beginPath();g.arc(cx,cy,R+16,0,Math.PI*2);g.lineWidth=1.5;g.strokeStyle=esp?"rgba(232,199,102,.45)":"rgba(217,222,231,.45)";g.stroke();
@@ -2501,7 +2503,7 @@ async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas
   g.beginPath();g.arc(cx,cy+R,34,0,Math.PI*2);g.fillStyle=grad(cx-34,cx+34,C.g);g.fill();g.lineWidth=4;g.strokeStyle="#070a14";g.stroke();
   g.font="32px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";g.textAlign="center";g.fillText(C.sello,cx,cy+R+11);
   // título
-  g.fillStyle="rgba(255,255,255,.8)";g.font="500 20px "+BF;sp("CALIFICÓ COMO",540,962,10,"center");
+  g.fillStyle="rgba(255,255,255,.8)";g.font="500 20px "+BF;sp(q.pres?"ME UNO AL SISTEMA COMO":"CALIFICÓ COMO",540,962,10,"center");
   let tz=122;g.font="400 "+tz+"px "+BB;let tw=0;const tws=()=>{tw=0;for(const ch of C.tit)tw+=g.measureText(ch).width+tz*.07;return tw-tz*.07};while(tws()>940&&tz>80){tz-=4;g.font="400 "+tz+"px "+BB}
   {const z=g.createLinearGradient(0,1080-tz,0,1080);z.addColorStop(.1,C.t[0]);z.addColorStop(.5,C.t[1]);z.addColorStop(.95,C.t[2]);g.fillStyle=z;sp(C.tit,540,1086,tz*.07,"center")}
   {const z=g.createLinearGradient(470,0,610,0);z.addColorStop(0,"rgba(0,0,0,0)");z.addColorStop(.5,C.a);z.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=z;g.fillRect(470,1126,140,1.5)}
@@ -2510,13 +2512,14 @@ async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas
   const rgN=lcRgTx(q.n)||(()=>{try{const i=rangoActualIdx({},q.n);return i===1?"Team Leader":""}catch(e){return ""}})();
   const c3=esp?(lcTL(q.n)?["TL","TEAM LEADER"]:[LC_RG_ABR[rgN]||"⭐",(rgN||"").toUpperCase().replace("MARKETING DIRECTOR","MARKETING DIR.").replace("INTERNATIONAL DIRECTOR","INTERNAT. DIR.")])
     :(rgN?[LC_RG_ABR[rgN]||"⭐",rgN.toUpperCase().replace("MARKETING DIRECTOR","MARKETING DIR.")]:["LÍDER","DEL SISTEMA"]);
-  const mp=String(q.mes||lcMes()).split(" "),cards=[[esp?"500+":"200+","PUNTOS"],[(mp[0]||"").toUpperCase(),mp[1]||""],c3],cw=(920-32)/3;
+  const mp=String(q.mes||lcMes()).split(" "),cards=[q.c1||[esp?"500+":"200+","PUNTOS"],[(mp[0]||"").toUpperCase(),mp[1]||""],c3],cw=(920-32)/3;
   cards.forEach(([b,s2],i)=>{const x=80+i*(cw+16);g.beginPath();g.roundRect(x,1262,cw,124,20);g.fillStyle="rgba(255,255,255,.06)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.14)";g.stroke();
     let bz=52;g.font="400 "+bz+"px "+BB;while(g.measureText(b).width>cw-24&&bz>30){bz-=2;g.font="400 "+bz+"px "+BB}g.fillStyle=C.a;g.textAlign="center";g.fillText(b,x+cw/2,1330);
     g.font="600 15px "+BF;let ls=3.3;while(ls>.5){let w=0;for(const ch of s2)w+=g.measureText(ch).width+ls;if(w<cw-20)break;ls-=.5}g.fillStyle="rgba(255,255,255,.75)";sp(s2,x+cw/2,1364,ls,"center")});
   // frase
+  if(q.pres){g.textAlign="center";let lz2=46;g.font="700 "+lz2+"px "+BF;const lt="📍 "+q.lugar;while(g.measureText(lt).width>900&&lz2>28){lz2--;g.font="700 "+lz2+"px "+BF}g.fillStyle="#fff";g.fillText(lt,540,1478);g.font="italic 400 30px "+BF;g.fillStyle="rgba(255,255,255,.85)";g.fillText("Gracias por recibirme en el equipo.",540,1546)}else{
   const L=LC_FR[esp?"esp":"lid"],fr=L[parseInt(ahF(q.n+(q.mes||"")),16)%L.length];g.font="italic 400 31px "+BF;const FL=wrap(fr,800).slice(0,3);g.fillStyle="rgba(255,255,255,.88)";g.textAlign="center";
-  const y0=1490-((FL.length-1)*45)/2;FL.forEach((t,i)=>g.fillText(t,540,y0+i*45));const w0=g.measureText(FL[0]).width,wl=g.measureText(FL[FL.length-1]).width;g.fillStyle=C.a;g.font="700 64px Georgia, serif";g.fillText("“",540-w0/2-30,y0+14);g.fillText("”",540+wl/2+30,y0+(FL.length-1)*45+14);
+  const y0=1490-((FL.length-1)*45)/2;FL.forEach((t,i)=>g.fillText(t,540,y0+i*45));const w0=g.measureText(FL[0]).width,wl=g.measureText(FL[FL.length-1]).width;g.fillStyle=C.a;g.font="700 64px Georgia, serif";g.fillText("“",540-w0/2-30,y0+14);g.fillText("”",540+wl/2+30,y0+(FL.length-1)*45+14)}
   // hashtag y pie
   g.font="400 42px "+BB;g.fillStyle="rgba(255,255,255,.92)";sp("#HASTAQUEFUNCIONE",540,1690,7,"center");
   const lg=await imgLoad("media/logo-mas.png");if(lg){const h=38,w=lg.width*h/lg.height;g.drawImage(lg,80,1770,w,h)}
@@ -2613,7 +2616,7 @@ function lcVentana(L,titulo){if(!L.length)return;let i=0;
       confeti($("#lcCel"),esp?60:40);const fe=$("#lcFel");if(fe)fe.onclick=()=>lcFelicitar(q);const sh=$("#lcSh");if(sh)sh.onclick=()=>lcCompartir(q,sh);
       const p=$("#lcPrev");if(p)p.onclick=()=>{i--;pinta()};const n=$("#lcNext");if(n)n.onclick=()=>{if(i<L.length-1){i++;pinta()}else closeSheet()}})};
   pinta()}
-let lcTry=0;function lcRevisar(){try{if(!store.uid||!(regDoc&&regDoc.registro||isAdmin))return;const vi=$("#v-inicio");if(!$("#sheet").hidden||(vi&&vi.hidden)){if(++lcTry<8)setTimeout(lcRevisar,20000);return}lzSisSync();if(!lzBienYo())lcAvisoYo();const L=lcPendientes();if(!L.length)return;try{if(!popHoy("lc"))return}catch(e){}lcMarcar(L);lcVentana(L,L.every(r=>r.cie)?"🛡️ Líderes del mes de "+L[0].mes.split(" ")[0].toLowerCase():"🎉 Nuevos calificados del sistema de liderazgo")}catch(e){}}
+let lcTry=0;function lcRevisar(){try{if(!store.uid||!(regDoc&&regDoc.registro||isAdmin))return;const vi=$("#v-inicio");if(!$("#sheet").hidden||(vi&&vi.hidden)){if(++lcTry<8)setTimeout(lcRevisar,20000);return}lzSisSync();try{lzgRevisar()}catch(e){}if(!lzBienYo())lcAvisoYo();const L=lcPendientes();if(!L.length)return;try{if(!popHoy("lc"))return}catch(e){}lcMarcar(L);lcVentana(L,L.every(r=>r.cie)?"🛡️ Líderes del mes de "+L[0].mes.split(" ")[0].toLowerCase():"🎉 Nuevos calificados del sistema de liderazgo")}catch(e){}}
 function lzSisSync(){try{if(!LS.get("pushTk"))return;const s=lzSoyMiembro()?1:0;if(LS.get("pushSis")!==s)pushGuardar(null)}catch(e){}}
 const LZB_MER=["Su constancia es la que sostiene al equipo. Se lo ganó con trabajo, y ese ejemplo es el que hace crecer a los demás. ¡Siga así! 💪","Esto no fue suerte: fue trabajo de todos los días. Su ejemplo le enseña al equipo que sí se puede. ¡Siga así! 💪","Mes a mes usted demuestra que el compromiso da frutos. Gracias por poner el ejemplo. ¡Vamos por más! 💪"];
 function lzBienYo(){try{const yo=miRegistro().nombre||miNombreFull();if(!yo||!store.uid)return false;const r=lcLista0().find(x=>sameN(x.n,yo));if(!r)return false;
@@ -2643,6 +2646,57 @@ function lzBienYo(){try{const yo=miRegistro().nombre||miNombreFull();if(!yo||!st
     const t=$("#lzbT");if(t)t.onclick=()=>{closeSheet();setTimeout(()=>turAbrir(),250)};
     const fd=$("#lzbF");if(fd)fd.onclick=()=>{closeSheet();setTimeout(()=>fdAbrir(),250)};
     const a=$("#lzbA");if(a)a.onclick=()=>{closeSheet();setTimeout(()=>misAvisos(),250)}});return true}catch(e){return false}}
+// ===== Grupo de WhatsApp del Sistema de liderazgo (team/liderazgo.grupo {m, link}; users.lzG {m,t}; team/liderazgo.grp {m, n[]} lo escribe el servidor) =====
+function lzgMes(){const m=mesNom()||"";return m.charAt(0).toUpperCase()+m.slice(1)}
+function lzgCfg(){const G=liderRes&&liderRes.grupo;return G&&G.link&&G.m===mesMeta()?G:null}
+function lzgYa(){const z=regDoc&&regDoc.lzG;return !!(z&&z.m===mesMeta())}
+function lzgNo(){try{const yo=miRegistro().nombre||"";return ((T.config||{}).lzNoAuto||[]).some(x=>sameN(x,yo))}catch(e){return false}}
+function lzgDebe(){return !!store.uid&&lzSoyMiembro()&&!lzgNo()&&!!lzgCfg()&&!lzgYa()}
+async function lzgRevisar(){if(!store.uid||!lzSoyMiembro()||lzgNo()||lzgYa())return lzgStrip();try{await liderResCargar()}catch(e){}lzgStrip()}
+function lzgStrip(){const el=$("#lzgStrip");if(!el)return;if(!lzgDebe()){el.hidden=true;return}const ent=!!LS.get("lzgE:"+store.uid+":"+mesMeta());
+  el.hidden=false;el.innerHTML=`<div class="lzgI">⚔️</div><div class="lzgT"><b>Grupo del Sistema de liderazgo · ${esc(lzgMes())}</b><span>Entre al grupo de WhatsApp y preséntese: así el equipo le da la bienvenida.</span>
+   <div class="lzgB"><button type="button" class="${ent?"ok":""}" data-lzg="e">${ent?"✓ ":"1. "}💬 Entrar al grupo</button><button type="button" class="pr" data-lzg="p">2. 📣 Presentarme</button></div></div>`;
+  el.querySelectorAll("[data-lzg]").forEach(b=>b.onclick=()=>b.dataset.lzg==="e"?lzgEntrar():lzgPresentar())}
+function lzgEntrar(){const G=lzgCfg();if(!G)return;try{LS.set("lzgE:"+store.uid+":"+mesMeta(),1)}catch(e){}try{window.open(G.link,"_blank","noopener")}catch(e){location.href=G.link}setTimeout(()=>{try{lzgStrip()}catch(e){}},600)}
+function lzgAbrir(){const G=lzgCfg();if(!G)return;if(lzgYa()||lzgNo()){lzgEntrar();return}openSheet(`<p class="eyebrow">SISTEMA DE LIDERAZGO · ${esc(lzgMes().toUpperCase())}</p><h3 style="margin:4px 0 6px">💬 Grupo de WhatsApp</h3><p class="muted" style="margin:0 0 12px">Entre al grupo y preséntese con su flyer. Es parte de ser miembro del sistema.</p>
+  <button class="btn" id="lzgE1" style="width:100%">1. 💬 Entrar al grupo</button><button class="btn" id="lzgP1" style="width:100%;margin-top:8px;background:linear-gradient(135deg,#B07D00,#F5B700);color:#2a1c00">2. 📣 Presentarme en el grupo</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{$("#lzgE1").onclick=lzgEntrar;$("#lzgP1").onclick=()=>{closeSheet();setTimeout(lzgPresentar,250)}})}
+function lzgPaisDe(){const r=miRegistro(),p=String(r.pais||"").trim();if(p&&!/^\d+$/.test(p))return p;const cc=String(r.cc||p||"").replace(/\D/g,"");const f=PAISES.find(x=>x[1]===cc);return f?f[0]:""}
+function lzgQ(){const yo=miRegistro().nombre||miNombreFull()||"",yz=lzYo(),L=(T.lideres||[]).find(l=>lzNs(l).includes(yz))||{},r=lcLista0().find(x=>sameN(x.n,yo));
+  const pts=Math.max(Number(L.ptsBase)||0,Number(L.volumen)||0,r?r.v:0),k=pts>=500?"esp":pts>=200?"lid":"",q={n:yo,k:k||"lid",v:pts,mes:lcMes(),foto:miFotoUrl()||fotoDe(yo),pres:1};
+  if(!k){const rg=rangoTxt(L.rango||"")||"Líder";q.tit=String(rg).toUpperCase();q.sello="⭐";q.c1=["⭐","RANGO"]}else if(k==="lid")q.tit="LÍDER";return q}
+function lzgTexto(q,lugar){const f=String(nv(q.n)||q.n);const nivel=q.pres&&q.tit&&q.sello==="⭐"?q.tit.charAt(0)+q.tit.slice(1).toLowerCase():q.k==="esp"?"Líder Espartano ⚔️":"Líder 🛡️";
+  return `¡Hola, equipo! 👋\n\nSoy *${f}*, de *${lugar}*.\n\nEste mes me uno al *Sistema de liderazgo* como ${nivel}.\n\n¡Gracias por recibirme! Vamos con todo 💪\n\n#HastaQueFuncione`}
+async function lzgMarcar(){const z={m:mesMeta(),t:Date.now()};regDoc=regDoc||{};regDoc.lzG=z;try{await store.db.doc("users/"+store.uid).set({lzG:z},{merge:true})}catch(e){}try{lzgStrip()}catch(e){}try{if(eqTab==="ranking"&&rankMetric==="liderazgo")renderEquipo()}catch(e){}}
+function lzgPresentar(){const ciu=(regDoc&&regDoc.ciudad)||"",pa=(regDoc&&regDoc.ciudadPais)||lzgPaisDe();
+  if(!ciu){openSheet(`<p class="eyebrow">PRESÉNTESE EN EL GRUPO</p><h3 style="margin:4px 0 6px">📍 ¿De dónde es?</h3><p class="muted" style="margin:0 0 10px">Lo ponemos en su flyer de presentación. Solo se pregunta una vez.</p>
+    <label class="small muted">Ciudad</label><input id="lzgC" placeholder="Ej. San Pedro Sula" style="width:100%;margin:4px 0 10px">
+    <label class="small muted">País</label><input id="lzgPa" value="${esc(pa)}" placeholder="Ej. Honduras" style="width:100%;margin:4px 0 12px">
+    <button class="btn" id="lzgOk" style="width:100%">Ver mi flyer ›</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Ahora no</button>`,()=>{$("#lzgOk").onclick=async()=>{const c=$("#lzgC").value.trim(),p=$("#lzgPa").value.trim();if(c.length<2){toast("Escriba su ciudad");return}
+      regDoc=regDoc||{};regDoc.ciudad=c;regDoc.ciudadPais=p;try{await store.db.doc("users/"+store.uid).set({ciudad:c,ciudadPais:p},{merge:true})}catch(e){}closeSheet();setTimeout(lzgPresentar,250)}});return}
+  lzgFlyer(ciu+(pa?", "+pa:""))}
+async function lzgFlyer(lugar){const q=lzgQ();q.lugar=lugar;const tx=lzgTexto(q,lugar);
+  openSheet(`<p class="eyebrow">PRESÉNTESE EN EL GRUPO</p><div id="lzgPv" style="text-align:center;min-height:200px"><p class="muted">Preparando su flyer…</p></div>
+   <p class="small muted" style="margin:10px 0 4px">Texto para el grupo:</p><textarea id="lzgTx" rows="7" style="width:100%">${esc(tx)}</textarea>
+   <button class="btn" id="lzgSh" style="width:100%;margin-top:10px;background:#25D366;color:#053b1d">📣 Compartir en el grupo</button>
+   <button class="btn ghost" id="lzgCiu" style="width:100%;margin-top:8px">📍 Cambiar mi ciudad</button>
+   <button class="btn ghost" id="lzgYa" style="width:100%;margin-top:8px">✅ Ya me presenté en el grupo</button>`,async()=>{
+    $("#lzgCiu").onclick=()=>{regDoc.ciudad="";closeSheet();setTimeout(lzgPresentar,250)};
+    $("#lzgYa").onclick=async()=>{await lzgMarcar();closeSheet();toast("✅ ¡Listo! Bienvenido/a al grupo")};
+    let file=null;try{const cv=await lcCanvas(q);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));file=new File([b],"Me-uno-al-sistema-"+String(q.n).split(" ")[0]+".jpg",{type:"image/jpeg"});
+      const pv=$("#lzgPv");if(pv)pv.innerHTML=`<img src="${URL.createObjectURL(b)}" style="width:62%;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.25)">`}catch(e){const pv=$("#lzgPv");if(pv)pv.innerHTML=`<p class="muted">No se pudo crear la imagen. Puede compartir solo el texto.</p>`}
+    $("#lzgSh").onclick=async()=>{const t=($("#lzgTx")||{}).value||tx;try{await navigator.clipboard.writeText(t)}catch(e){}
+      try{if(file&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:t});await lzgMarcar();closeSheet();toast("✅ ¡Presentado! El equipo le dará la bienvenida");return}}catch(e){if(e&&e.name==="AbortError")return}
+      try{if(file){const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click()}}catch(e){}
+      toast("📋 Texto copiado. Pegue el flyer y el texto en el grupo");const G=lzgCfg();setTimeout(()=>{try{window.open(G?G.link:"https://wa.me/?text="+encodeURIComponent(t),"_blank","noopener")}catch(e){}},700);await lzgMarcar()}})}
+function lzgChip(l){if(!lzgCfg()||!(isAdmin||turPuede()))return"";const P=liderRes&&liderRes.grp;const n=(P&&P.m===mesMeta()&&P.n)||[];const ns=lzNs(l);
+  let ya=n.some(x=>ns.includes(nrmN(String(x).trim()))||ns.some(y=>sameN(y,x)));if(!ya&&lzNs(l).includes(lzYo())&&lzgYa())ya=true;
+  if(((T.config||{}).lzNoAuto||[]).some(x=>ns.some(y=>sameN(y,x))))return"";return ya?`<span class="chip c-good">💬 En el grupo</span>`:`<span class="chip c-warn">⏳ No ha entrado al grupo</span>`}
+function lzgAdmin(){const G=(liderRes&&liderRes.grupo)||{};openSheet(`<p class="eyebrow">ADMIN · SISTEMA DE LIDERAZGO</p><h3 style="margin:4px 0 6px">🔗 Link del grupo de ${esc(lzgMes())}</h3>
+  <p class="muted" style="margin:0 0 10px">Solo lo ven los miembros del sistema de este mes. El mes que viene, pegue el link del grupo nuevo.</p>
+  <input id="lzgL" value="${esc(G.m===mesMeta()?G.link||"":"")}" placeholder="https://chat.whatsapp.com/…" style="width:100%;margin-bottom:12px">
+  <button class="btn" id="lzgS" style="width:100%">Guardar</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cancelar</button>`,()=>{$("#lzgS").onclick=async()=>{let v=$("#lzgL").value.trim();
+    if(!/^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]+/.test(v)){toast("Pegue un link de grupo de WhatsApp (chat.whatsapp.com/…)");return}v=v.split("?")[0];
+    const z={m:mesMeta(),link:v,t:Date.now()};try{await store.db.doc("team/liderazgo").set({grupo:z},{merge:true});liderRes=liderRes||{};liderRes.grupo=z;closeSheet();toast("✅ Link guardado");try{renderEquipo()}catch(e){}}catch(e){toast("No se pudo guardar: "+(e.code||e.message))}}})}
 function lzBienMarcar(r){try{const S=lcSeen();S[lcMes()+"|"+nrmN(r.n)+"|"+r.k]=1;LS.set("lcSeen:"+store.uid,S);LS.set("lcAviso:"+store.uid+":"+lcMes(),1)}catch(e){}}
 function lcAvisoYo(){try{const yo=miRegistro().nombre||miNombreFull();if(!yo)return;const r=lcLista0().find(x=>sameN(x.n,yo));if(!r||r.k!=="lid")return;const k="lcAviso:"+store.uid+":"+lcMes();if(LS.get(k))return;LS.set(k,1);
   avisoTop("🛡️ ¡Ya es Líder del sistema!","Le faltan "+fmt(calCfg().esp-r.v)+" pts para Líder Espartano. ¡Vamos!",()=>{eqTab="ranking";rankMetric="liderazgo";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()})}catch(e){}}
@@ -3574,7 +3628,7 @@ function renderLiderazgo(b){{
     const L=T.lideres,C=calCfg(),cn={esp:0,lid:0,rango:0,pend:0};L.forEach(l=>cn[calLid(l).k]++);const nCal=cn.esp+cn.lid+cn.rango;if(!["cal","esp","lid","rango"].includes(leadCal))leadCal="cal";
     const per=(T.config&&T.config.liderazgoPeriodo)||C.mes||lcMes();
     const S=sisCfg();
-    const lzMini=!!(S&&irSimple()&&!LS.get("lzOpen"));b.innerHTML=rankSegsL()+`<div class="lz-hero${lzMini?" mini":""}"><div class="lz-k">${esc(String(per).toUpperCase())}</div><h2>⭐ ${S?"Sistema de liderazgo":"Calificados al sistema de liderazgo"}</h2>${S&&irSimple()?`<div class="lzMiniL">${mqL?`🤝 ${L.filter(l=>lzComp(l)).length}/${L.length} compromisos`:""}${lzAsis()?`${mqL?" · ":""}📞 ${lzAsis().ids.length}/${L.length} asistieron`:""}</div>`:""}${S&&irSimple()&&mqL?(()=>{const n=L.filter(l=>lzComp(l)).length;return `<div class="lz-cmp">🤝 <b>${n} de ${L.length}</b> ya hicieron su compromiso de ${esc(mesNom())}</div>`})():""}${S&&irSimple()&&lzAsis()?`<div class="lz-cmp">📞 Reunión del ${esc(niceDate(lzAsis().f))}: <b>${lzAsis().ids.length} de ${L.length}</b> asistieron</div>`:""}${S&&irSimple()&&turPuede()?`<button type="button" class="lz-fly" id="tuBtn" style="margin-top:10px;background:#2AC1F1;color:#06384F">📅 Turnos del sistema · apúntese a presentar o edificar</button>`:""}${S&&irSimple()&&turPuede()?`<button type="button" class="lz-fly" id="fdBtn" style="margin-top:10px;background:linear-gradient(135deg,#B07D00,#F5B700);color:#2a1c00">📣 Flyer del día · motive al equipo por WhatsApp</button>`:""}${S&&isAdmin?`<button type="button" class="lz-fly" id="lzLista" style="margin-top:10px;background:#fff;color:#0b3b57">✅ Pasar lista de la reunión</button>`:""}${S&&irSimple()&&!isAdmin&&!lzSoyMiembro()?`<div class="lz-invit">🚀 <b>¡Usted también puede entrar!</b> Califique este mes con <b>🛡️ 200 pts</b> (Líder) o <b>⚔️ 500 pts</b> (Líder Espartano). Estos son los que calificaron el mes pasado.</div>`:""}${S?`<p class="lz-sub">Calificados al sistema de liderazgo en ${esc(String(S.mes||per).split(" ")[0].toLowerCase())} con sus puntos de ${esc(String(S.base||"").split(" ")[0].toLowerCase())}</p>`:""}
+    const lzMini=!!(S&&irSimple()&&!LS.get("lzOpen"));b.innerHTML=rankSegsL()+`<div class="lz-hero${lzMini?" mini":""}"><div class="lz-k">${esc(String(per).toUpperCase())}</div><h2>⭐ ${S?"Sistema de liderazgo":"Calificados al sistema de liderazgo"}</h2>${S&&irSimple()?`<div class="lzMiniL">${mqL?`🤝 ${L.filter(l=>lzComp(l)).length}/${L.length} compromisos`:""}${lzAsis()?`${mqL?" · ":""}📞 ${lzAsis().ids.length}/${L.length} asistieron`:""}</div>`:""}${S&&irSimple()&&mqL?(()=>{const n=L.filter(l=>lzComp(l)).length;return `<div class="lz-cmp">🤝 <b>${n} de ${L.length}</b> ya hicieron su compromiso de ${esc(mesNom())}</div>`})():""}${S&&irSimple()&&lzAsis()?`<div class="lz-cmp">📞 Reunión del ${esc(niceDate(lzAsis().f))}: <b>${lzAsis().ids.length} de ${L.length}</b> asistieron</div>`:""}${S&&irSimple()&&turPuede()&&lzgCfg()?`<button type="button" class="lz-fly" id="lzgBtn" style="margin-top:10px;background:#25D366;color:#053b1d">💬 Grupo de WhatsApp del sistema · ${esc(lzgMes())}${lzgYa()?" ✓":""}</button>`:""}${S&&isAdmin?`<button type="button" class="lz-fly" id="lzgAdm" style="margin-top:10px;background:#fff;color:#0b3b57">🔗 Link del grupo del mes${lzgCfg()?" · ✓ puesto":" · sin poner"}</button>`:""}${S&&irSimple()&&turPuede()?`<button type="button" class="lz-fly" id="tuBtn" style="margin-top:10px;background:#2AC1F1;color:#06384F">📅 Turnos del sistema · apúntese a presentar o edificar</button>`:""}${S&&irSimple()&&turPuede()?`<button type="button" class="lz-fly" id="fdBtn" style="margin-top:10px;background:linear-gradient(135deg,#B07D00,#F5B700);color:#2a1c00">📣 Flyer del día · motive al equipo por WhatsApp</button>`:""}${S&&isAdmin?`<button type="button" class="lz-fly" id="lzLista" style="margin-top:10px;background:#fff;color:#0b3b57">✅ Pasar lista de la reunión</button>`:""}${S&&irSimple()&&!isAdmin&&!lzSoyMiembro()?`<div class="lz-invit">🚀 <b>¡Usted también puede entrar!</b> Califique este mes con <b>🛡️ 200 pts</b> (Líder) o <b>⚔️ 500 pts</b> (Líder Espartano). Estos son los que calificaron el mes pasado.</div>`:""}${S?`<p class="lz-sub">Calificados al sistema de liderazgo en ${esc(String(S.mes||per).split(" ")[0].toLowerCase())} con sus puntos de ${esc(String(S.base||"").split(" ")[0].toLowerCase())}</p>`:""}
       <div class="lz-cnt"><div><b>${cn.esp}</b><small>⚔️ Espartanos</small></div><div><b>${cn.lid}</b><small>🛡️ Líderes</small></div><div><b>${cn.rango}</b><small>✅ Por rango</small></div></div>
       ${lcLista0().length?`<button class="lz-fly" id="lcBtn" type="button">🎉 Ver flyers de los calificados (${lcLista0().length})</button>`:""}
       <p class="lz-req">${S?`Calificaron en ${esc(String(S.base||"").split(" ")[0].toLowerCase())} con su ahorro al día: 🛡️ Líder ${fmt(C.lider)}+ pts · ⚔️ Líder Espartano ${fmt(C.esp)}+ pts. De Marketing Director en adelante entran por su rango.`:`Requisitos: ahorro al día y puntos personales del mes (🛡️ Líder ${fmt(C.lider)} · ⚔️ Espartano ${fmt(C.esp)}). De Marketing Director en adelante califican al recalificar su rango.`}</p>${S&&irSimple()?`<button type="button" class="lzTog" id="lzTog">${lzMini?"Ver más ▾":"Ver menos ▴"}</button>`:""}</div>
@@ -3585,7 +3639,7 @@ function renderLiderazgo(b){{
      ${S&&!irSimple()?caminoHTML(L,C,S):""}${irSimple()?llamLzCard():""}
      <p class="small muted" style="margin:0">${S&&irSimple()?"Toque a un líder de su línea para ver su ficha. Solo su línea ascendente ve el detalle (🔒).":S?"Ordenados por sus puntos de "+esc(String(S.base||"").split(" ")[0].toLowerCase())+".":"Ordenados por volumen, del más alto al más bajo."} Toque a un líder para ver su ficha.</p>
      <p class="updated">${updatedTxt(T.config&&T.config.liderazgoActualizado)}</p>`;
-    bindRank();renderLeadList();liderResCargar();{const lb=$("#lcBtn");if(lb)lb.onclick=lcLista}{const ll=$("#lzLista");if(ll)ll.onclick=lzPasarLista}{const tb=$("#tuBtn");if(tb)tb.onclick=()=>turAbrir()}{const fb=$("#fdBtn");if(fb)fb.onclick=()=>fdAbrir()}{const tg=$("#lzTog");if(tg)tg.onclick=()=>{try{LS.set("lzOpen",LS.get("lzOpen")?"":1)}catch(e){}renderEquipo()}}
+    bindRank();renderLeadList();liderResCargar();{const lb=$("#lcBtn");if(lb)lb.onclick=lcLista}{const ll=$("#lzLista");if(ll)ll.onclick=lzPasarLista}{const tb=$("#tuBtn");if(tb)tb.onclick=()=>turAbrir()}{const gb=$("#lzgBtn");if(gb)gb.onclick=()=>lzgAbrir()}{const ga=$("#lzgAdm");if(ga)ga.onclick=()=>lzgAdmin()}{const fb=$("#fdBtn");if(fb)fb.onclick=()=>fdAbrir()}{const tg=$("#lzTog");if(tg)tg.onclick=()=>{try{LS.set("lzOpen",LS.get("lzOpen")?"":1)}catch(e){}renderEquipo()}}
     $("#leadQ").oninput=e=>{leadQ=e.target.value;renderLeadList()};
     $("#leadCal").onclick=e=>{const x=e.target.closest("button");if(!x)return;leadCal=x.dataset.c;renderEquipo()};
     {const pd=$("#leadPend");if(pd)pd.ontoggle=()=>{if(pd.open)renderLeadList()}}
@@ -6362,7 +6416,7 @@ async function irFlyer(w){const g=!w,W=1080,H=1350,c=document.createElement("can
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],g?"graduado-inicio-rapido.jpg":"inicio-rapido-semana-"+w.n+".jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
-let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
+let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
   const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
   if(m==="actual"&&!st.ini){const no=LS.get("irNo:"+store.uid);if(no&&Date.now()<no){el.hidden=true;return}
     el.hidden=false;el.className="irMini";el.innerHTML=`<span class="ic">🚀</span><span class="tx"><b>Plan de Inicio Rápido</b> · Aprenda a duplicar en 30 días</span><button type="button" class="go" id="irEmp">Empezar ›</button><button type="button" class="x" id="irNo" aria-label="Quitar">✕</button>`;
@@ -6481,7 +6535,7 @@ function leadFilaB(l,i){const c=calLid(l),R=liderDe(l),rg=RANGOS.find(g=>g.n===l
   const rgC=rg&&posRank(l.rango)<=POS_MD?`<span class="chip" style="background:${rg.c};color:#fff">${esc(rangoTxt(l.rango))}</span>`:"";
   const ins=c.k==="esp"?`<span class="chip lz-esp">⚔️ Líder Espartano</span>`:c.k==="lid"?`<span class="chip lz-lid">🛡️ Líder</span>`:c.k==="rango"?`<span class="chip c-good">✅ Calificado por rango</span>`:(c.ah&&mio?`<span class="chip c-bad">💰 Ahorro pendiente</span>`:`<span class="chip c-brand">⏳ Pendiente</span>`);
   return `<button type="button" class="lz-r${l.nombre===profile.miNombre?" rank-me":""}" data-li="${T.lideres.indexOf(l)}"${mio?"":' data-nomio="1"'}><span class="lz-av">${avHTML(l.nombre,l.nombre===profile.miNombre,true)}${rg?`<em style="background:${rg.n==="Board of Director"?"linear-gradient(120deg,#EA580C 50%,#7C2D12 50%)":rg.c}"></em>`:""}</span>
-   <span class="lz-g"><b>${esc(nv(l.nombre))}</b><span class="lz-t">${ins}${rgC}${lzCompChip(l)}${lzAsisChip(l)}${mio&&R&&R.idx!=null?`<span class="chip lz-ix" style="color:${IDX_C(R.idx)}">⚡ ${R.idx}%</span>`:""}</span>
+   <span class="lz-g"><b>${esc(nv(l.nombre))}</b><span class="lz-t">${ins}${rgC}${lzCompChip(l)}${lzAsisChip(l)}${lzgChip(l)}${mio&&R&&R.idx!=null?`<span class="chip lz-ix" style="color:${IDX_C(R.idx)}">⚡ ${R.idx}%</span>`:""}</span>
    ${mio?`<span class="lzBar"><i style="width:${Math.max(v?3:0,w)}%" class="${v>=C.esp?"e":v>=C.lider?"l":""}"></i><em style="left:${C.lider/C.esp*100}%"></em></span><span class="small muted">${fmt(v)} de ${fmt(C.esp)} pts este mes${v>=C.esp?" · ⚔️ ya volvió a calificar":v>=C.lider?" · 🛡️ ya es Líder":""}</span>`:""}</span>${mio?"":`<span class="small muted" style="flex:none">🔒</span>`}</button>`}
 function llamLz(){const L=(T.config||{}).llamadaLz;if(!L||!L.zoom)return null;return L}
 function llamLzCard(){const L=llamLz();if(!L)return"";const hoy=new Date().getDay()===(L.dia||0);
@@ -6789,7 +6843,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261106001627";var busy=false,pend=null;
+(function(){var V="20261106124903";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

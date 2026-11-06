@@ -321,6 +321,30 @@ async function main() {
       const upd = { solR: false }; L.forEach(s => upd["sol." + s.id + ".rt"] = Date.now()); W.push([d.id, upd]);
     }
     if (!DRY) for (const [uid, u] of W) await db.doc("users/" + uid).update(u);
+  } else if (modo === "lzg" || modo === "lzg-sync") {
+    // Grupo de WhatsApp del Sistema de liderazgo: quién ya se presentó (users.lzG.m == mes) → team/liderazgo.grp;
+    // modo lzg además avisa a los miembros (push.sis == 1) que aún no se presentan.
+    const mes = new Date().toISOString().slice(0, 7);
+    const T = await db.doc("team/liderazgo").get(), G = (T.exists && T.data().grupo) || {};
+    if (!G.link || G.m !== mes) { console.log("Sin link del grupo para", mes); return; }
+    const ya = (await db.collection("users").where("lzG.m", "==", mes).get()).docs;
+    const n = ya.map(d => ((d.data().registro || {}).nombre || "").trim()).filter(Boolean), yaU = new Set(ya.map(d => d.id));
+    console.log("Ya se presentaron:", n.length);
+    if (!DRY) await db.doc("team/liderazgo").set({ grp: { m: mes, n, t: Date.now() } }, { merge: true });
+    if (modo === "lzg") {
+      let J = {}; try { J = JSON.parse(fs.readFileSync(new URL("../../data/team.json", import.meta.url))); } catch (e) {}
+      const no = ((J.config || {}).lzNoAuto || []);
+      const P = (await db.collection("push").where("sis", "==", 1).get()).docs.filter(d => !yaU.has(d.id) && d.data().tk);
+      for (const d of P) {
+        const u = await db.doc("users/" + d.id).get(), nm = ((u.exists && u.data().registro) || {}).nombre || "";
+        if (!nm || no.some(x => mismoNombre(x, nm))) continue;
+        const x = d.data(); hist[d.id] = x.h || [];
+        salida.push([d.id, x.tk, pick([
+          { title: "⚔️ " + primer(nm) + ", su grupo lo espera", body: "Entre al grupo del Sistema de liderazgo y preséntese con su flyer. Está en Inicio de la app 👋" },
+          { title: "👋 Preséntese en el grupo del sistema", body: "El equipo quiere darle la bienvenida, " + primer(nm) + ". Abra la app y toque «Entrar al grupo»." },
+          { title: "⚔️ Falta un paso, " + primer(nm), body: "Entre al grupo de WhatsApp del Sistema de liderazgo y preséntese. Lo encuentra en Inicio de la app." }], d.id + new Date().toISOString().slice(0, 10))]);
+      }
+    }
   } else { console.log("Modo desconocido:", modo); process.exit(1); }
 
   console.log(`${salida.length} avisos para enviar${DRY ? " (prueba, no se envían)" : ""}.`);

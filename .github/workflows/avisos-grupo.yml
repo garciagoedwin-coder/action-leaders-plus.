@@ -1,0 +1,32 @@
+name: Grupo del Sistema de liderazgo
+on:
+  schedule:
+    - cron: "0 16 * * *"     # 10:00 a.m. HN: aviso a quien no se ha presentado
+    - cron: "20 19,22 * * *" # 1:20 y 4:20 p.m. HN: solo actualiza quién ya se presentó
+    - cron: "20 1,4 * * *"   # 7:20 y 10:20 p.m. HN
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "lzg (con aviso) o lzg-sync (solo lista)"
+        default: "lzg-sync"
+      dry:
+        description: "1 = solo mostrar, no enviar ni guardar"
+        default: "1"
+concurrency: avisos-grupo
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install --no-audit --no-fund
+        working-directory: tools/push
+      - name: Enviar
+        working-directory: tools/push
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+          DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry == '1' && '1' || '' }}
+          MODO: ${{ github.event_name == 'workflow_dispatch' && inputs.modo || (github.event.schedule == '0 16 * * *' && 'lzg' || 'lzg-sync') }}
+        run: node enviar.mjs "$MODO"
