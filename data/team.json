@@ -83,6 +83,18 @@
    "activaciones": 1,
    "volumen": 200,
    "actSemana": 1
+  },
+  {
+   "nombre": "Karen lizeth Paz escober",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "karen-lizeth-paz-escober",
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -2822,7 +2834,8 @@
    "ek": "0eab45",
    "wk": "a8a348",
    "fuente": "gmail",
-   "id": "ilian-ester-figueroa-bardales"
+   "id": "ilian-ester-figueroa-bardales",
+   "rv": 1
   },
   {
    "socio": "Edwing isai Ayala paz",
@@ -2832,7 +2845,8 @@
    "ek": "54d196",
    "wk": "680310",
    "fuente": "gmail",
-   "id": "edwing-isai-ayala-paz"
+   "id": "edwing-isai-ayala-paz",
+   "rv": 1
   },
   {
    "socio": "Loren veronica Rivas ballesteros",
@@ -2842,7 +2856,8 @@
    "ek": "30d4fc",
    "wk": "16a9ac",
    "fuente": "gmail",
-   "id": "loren-veronica-rivas-ballesteros"
+   "id": "loren-veronica-rivas-ballesteros",
+   "rv": 1
   },
   {
    "socio": "Roger Nunez orozco",
@@ -2852,7 +2867,8 @@
    "ek": "118b89",
    "wk": "b78e90",
    "fuente": "gmail",
-   "id": "roger-nunez-orozco"
+   "id": "roger-nunez-orozco",
+   "rv": 1
   },
   {
    "socio": "Nelson mauricio Fajardo escobar",
@@ -2862,7 +2878,8 @@
    "ek": "85e746",
    "wk": "22688b",
    "fuente": "gmail",
-   "id": "nelson-mauricio-fajardo-escobar"
+   "id": "nelson-mauricio-fajardo-escobar",
+   "rv": 1
   },
   {
    "socio": "Denis josue Reyes",
@@ -2872,7 +2889,8 @@
    "ek": "3bde43",
    "wk": "d70f3a",
    "fuente": "gmail",
-   "id": "denis-josue-reyes"
+   "id": "denis-josue-reyes",
+   "rv": 1
   },
   {
    "socio": "Francia waldina Flores mejia",
@@ -2882,7 +2900,19 @@
    "ek": "f74aed",
    "wk": "cc06f8",
    "fuente": "gmail",
-   "id": "francia-waldina-flores-mejia"
+   "id": "francia-waldina-flores-mejia",
+   "rv": 1
+  },
+  {
+   "socio": "Jeymi alexayda Reyes villeda",
+   "paquete": "Premium",
+   "patrocinador": "Karen lizeth Paz escober",
+   "fecha": "2026-11-06T01:55:02Z",
+   "ek": "22fad4",
+   "wk": "8d29f1",
+   "fuente": "gmail",
+   "id": "jeymi-alexayda-reyes-villeda",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -2907,7 +2937,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-05T22:55:02Z",
+  "activacionesCorte": "2026-11-06T01:55:02Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -2917,7 +2947,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-05T17:38:00-06:00",
+  "rankingActualizado": "2026-11-05T21:56:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -3796,7 +3826,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-11-06T00:55:34Z",
+   "v": "2026-11-06T03:56:23Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "0225a9": "2026-10-27T10:09:44Z",
@@ -3825,7 +3855,6 @@
     "2ccfa7": "2026-10-30T07:09:37Z",
     "2d9f2d": "2026-11-08T02:09:18Z",
     "334994": "2026-10-29T15:20:32Z",
-    "3444be": "2026-11-10T05:50:35Z",
     "35e4bf": "2026-10-24T04:09:14Z",
     "365b62": "2026-10-12T15:50:42Z",
     "37f24c": "2026-11-07T01:27:21Z",
@@ -3892,7 +3921,6 @@
     "a8e164": "2026-11-06T06:29:36Z",
     "a9f664": "2026-10-19T22:23:03Z",
     "abc4cf": "2026-11-01T04:25:48Z",
-    "b01710": "2026-11-10T05:50:35Z",
     "b08601": "2026-11-01T03:28:09Z",
     "b14b75": "2026-10-12T00:18:30Z",
     "b2f3fd": "2026-11-02T22:31:32Z",
