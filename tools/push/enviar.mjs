@@ -261,6 +261,31 @@ async function main() {
       const t1 = await pushDe(sp); if (t1) salida.push([sp, t1, msgAct(a, true)]);
       for (const u of arriba) { const t = await pushDe(u); if (t) salida.push([u, t, msgAct(a, false)]); }
     }
+  } else if (modo === "sol") {
+    // Solicitudes de cambio del Dream Team: users.solN (nueva, avisar a admins) / users.solR (respondida, avisar al socio)
+    vista = "equipo";
+    const K = { q: "Quitar de su Dream Team", p: "Patrocinador correcto", o: "Otro cambio" };
+    const nuevas = (await db.collection("users").where("solN", "==", true).get()).docs;
+    const resp = (await db.collection("users").where("solR", "==", true).get()).docs;
+    if (!nuevas.length && !resp.length) { console.log("Sin solicitudes."); return; }
+    const W = [], pushDe = async uid => { const d = await db.doc("push/" + uid).get(); const x = d.exists ? d.data() : {}; hist[uid] = x.h || []; return x.tk || null; };
+    if (nuevas.length) {
+      const adm = (await db.collection("users").where("email", "in", ADMINS).get()).docs.map(d => d.id), TK = {};
+      for (const u of adm) { const t = await pushDe(u); if (t) TK[u] = t; }
+      for (const d of nuevas) {
+        const x = d.data(), nm = corto((x.registro || {}).nombre || "Un socio"), L = Object.values(x.sol || {}).filter(s => s.st === "p" && !s.nt);
+        if (L.length) { const m = { title: "📝 " + nm + " pide un cambio", body: L.map(s => (K[s.k] || "Cambio") + ": " + corto(s.n)).join(" · ").slice(0, 160) + ". Revíselo en Admin del equipo." };
+          for (const u in TK) salida.push([u, TK[u], m]); console.log("Solicitud:", nm, L.length); }
+        const upd = { solN: false }; L.forEach(s => upd["sol." + s.id + ".nt"] = Date.now()); W.push([d.id, upd]);
+      }
+    }
+    for (const d of resp) {
+      const x = d.data(), L = Object.values(x.sol || {}).filter(s => (s.st === "ok" || s.st === "no") && !s.rt), tk = L.length ? await pushDe(d.id) : null;
+      for (const s of L) if (tk) salida.push([d.id, tk, { title: s.st === "ok" ? "✅ Su solicitud fue aprobada" : "📝 Revisamos su solicitud",
+        body: (s.st === "ok" ? "Aplicamos el cambio sobre " : "No aplicamos el cambio sobre ") + corto(s.n) + (s.r ? ": " + s.r : ".") }]);
+      const upd = { solR: false }; L.forEach(s => upd["sol." + s.id + ".rt"] = Date.now()); W.push([d.id, upd]);
+    }
+    if (!DRY) for (const [uid, u] of W) await db.doc("users/" + uid).update(u);
   } else { console.log("Modo desconocido:", modo); process.exit(1); }
 
   console.log(`${salida.length} avisos para enviar${DRY ? " (prueba, no se envían)" : ""}.`);
