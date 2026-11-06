@@ -4055,6 +4055,9 @@ function snvBind(b){const d=b.querySelector("#snvCard");if(!d)return;d.ontoggle=
 // Mismo flyer de bienvenida (bienCanvas yo=1): sin patrocinador, "Nueva etapa", "Este es mi nuevo comienzo" + "¿Le cuento cómo?".
 // Paso obligatorio de la Semana 1 solo para quien se registró desde LZS_DESDE (los anteriores lo pueden usar, pero no cuenta).
 const LZS_DESDE="2026-11-04T18:00:00Z";
+// Plan v2 (5 nov, Edwin): registros desde el viernes 6 nov 00:00 HN → Semana 1: lista 20, 3 presentaciones, Action Leaders Training; seguimiento 5 y lista 35 a la Semana 2; lista 50 a la Semana 3
+const IRV2_DESDE="2026-11-06T06:00:00Z";
+function irV2(){try{if(irSimM())return true;const f=Date.parse((miRegistro()||{}).fecha||"");return !isNaN(f)&&f>=Date.parse(IRV2_DESDE)}catch(e){return false}}
 function irLzsReq(){try{if(irSimM())return true;const f=Date.parse((miRegistro()||{}).fecha||"");return !isNaN(f)&&f>=Date.parse(LZS_DESDE)}catch(e){return false}}
 const LZS_TX=[["📸 Instagram",`Este es mi nuevo comienzo. ✈️
 
@@ -6107,7 +6110,11 @@ function irCtx(){const st=irSt(),ini=irIni(),iniD=dkey(new Date(ini)),C=contacts
    act1,soc:dir.length>0,ayu:!!mk.ayu||dir.some(x=>x.ir&&x.ir.ini)||(citas||[]).some(x=>x.lzE&&String(x.fecha||"")>=iniD),racha:irRacha(),sim}}
 function irRacha(){let r=0;try{for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const k=dkey(d),s=dayScore(k===TODAY?day:weekCache[k],k);if(i===0&&s<1)continue;if(s>=1)r++;else break}}catch(e){}return r}
 const irGoCRM=()=>{closeSheet();go("crm");try{const D=LS.get("tourOk")||{};if(!D.crm&&!LS.get("tourAskCrm")){LS.set("tourAskCrm",1);setTimeout(()=>avisoTop("🧭 ¿Le enseño a usar su CRM?","Guía de 2 minutos · toque Ver",()=>tourIr("crm")),700)}}catch(e){}};
-function irItems(n){const its={
+function irItems(n){const V2=irV2();
+  const IL=(n,g,sub)=>({k:"l"+n,g,t:(n===20?n+" contactos en su lista":"Lista de "+n+" contactos"),s:sub,a:x=>x.nC>=n,p:x=>Math.min(x.nC,n)+" de "+n,b:["Agregar",irGoCRM]});
+  const IP=(n,g,t)=>({k:"p"+n,g,t,a:x=>x.pres>=n,p:x=>Math.min(x.pres,n)+" de "+n,b:["Presentar",()=>{closeSheet();abrirPres();window._irV=1}]});
+  const IS=(n,g,t,sub)=>({k:"s"+n,g,t,s:sub,a:x=>x.seg>=n,p:x=>Math.min(x.seg,n)+" de "+n,b:["Registrar",()=>{closeSheet();abrirSeg();window._irV=1}]});
+  const its={
  1:[{k:"porque",g:"Define su meta",t:"Su “por qué”",s:"Lo más importante que quiere lograr con inCruises",a:x=>x.porque,b:["Escribir",()=>{closeSheet();go("suenos")}]},
     {k:"meta",g:"Define su meta",t:"Su meta y compromiso diario",s:"Tiempo, contactos y presentaciones al día",a:x=>x.meta,m:1,b:["Llenar",()=>irMeta()]},
     {k:"pago",g:"Prepare su negocio",t:"Configure su pago recurrente",s:"En su cuenta de inCruises: su ahorro se paga solo cada mes y su cuenta no se inactiva",a:x=>!!x.mk.pago,m:1,b:["Ya lo configuré",()=>irMk("pago")]},
@@ -6116,18 +6123,24 @@ function irItems(n){const its={
     {k:"herr",g:"Prepare su negocio",t:"Sus herramientas listas",s:"App Action Leaders+, avisos, YessMovement y la presentación",a:x=>x.herrV||x.herrN>=IR_HERR.length,p:x=>x.herrV?"":x.herrN+" de "+IR_HERR.length,m:1,b:["Ver",()=>irHerr()]},
     ...(irLzsReq()?[{k:"lzs",g:"Prepare su negocio",t:"Lance su negocio en redes",s:"Comparta su flyer de nueva etapa en sus historias",a:x=>!!x.mk.lzs,b:["Compartir",()=>{closeSheet();abrirLanzSocio()}]}]:[]),
     {k:"act1",g:"Prepare su negocio",t:"Su primera actividad con su patrocinador",s:"Lo que no tiene día y hora, probablemente no suceda",a:x=>x.lid>0||!!x.mk.act1,b:["Agendar",()=>irAct1()],f:1},
-    {k:"l30",g:"Su lista y primeras presentaciones",t:"30 contactos en su lista",s:"No seleccione quién cree que dirá que sí: primero escriba nombres",a:x=>x.nC>=30,p:x=>Math.min(x.nC,30)+" de 30",b:["Agregar",irGoCRM]},
+    ...(V2?[IL(20,"Su lista y primeras presentaciones","No seleccione quién cree que dirá que sí: primero escriba nombres"),
+      {k:"c10",g:"Su lista y primeras presentaciones",t:"Contactar a 10 personas",a:x=>x.cont>=10,p:x=>Math.min(x.cont,10)+" de 10",b:["Contactar",irGoCRM]},
+      IP(3,"Su lista y primeras presentaciones","3 presentaciones"),
+      {k:"ent",g:"Su lista y primeras presentaciones",t:"Conéctese a un Action Leaders Training",s:"Martes o jueves, 8:00 p.m. hora de Honduras",a:x=>!!x.mk.ent,m:1,b:["Ya me conecté",()=>irMk("ent")]}]
+    :[{k:"l30",g:"Su lista y primeras presentaciones",t:"30 contactos en su lista",s:"No seleccione quién cree que dirá que sí: primero escriba nombres",a:x=>x.nC>=30,p:x=>Math.min(x.nC,30)+" de 30",b:["Agregar",irGoCRM]},
     {k:"c10",g:"Su lista y primeras presentaciones",t:"Contactar a 10 personas",a:x=>x.cont>=10,p:x=>Math.min(x.cont,10)+" de 10",b:["Contactar",irGoCRM]},
     {k:"p5",g:"Su lista y primeras presentaciones",t:"5 presentaciones",a:x=>x.pres>=5,p:x=>Math.min(x.pres,5)+" de 5",b:["Presentar",()=>{closeSheet();abrirPres();window._irV=1}]},
-    {k:"s5",g:"Su lista y primeras presentaciones",t:"Seguimiento a 5 prospectos",s:"Cada presentación termina con una decisión o un siguiente paso con fecha",a:x=>x.seg>=5,p:x=>Math.min(x.seg,5)+" de 5",b:["Registrar",()=>{closeSheet();abrirSeg();window._irV=1}]}],
+    {k:"s5",g:"Su lista y primeras presentaciones",t:"Seguimiento a 5 prospectos",s:"Cada presentación termina con una decisión o un siguiente paso con fecha",a:x=>x.seg>=5,p:x=>Math.min(x.seg,5)+" de 5",b:["Registrar",()=>{closeSheet();abrirSeg();window._irV=1}]}]).slice(0)],
  2:[{k:"p10",g:"Presente acompañado",t:"10 presentaciones en total",a:x=>x.pres>=10,p:x=>Math.min(x.pres,10)+" de 10",b:["Presentar",()=>{closeSheet();abrirPres();window._irV=1}]},
     {k:"l3",g:"Presente acompañado",t:"2 llamadas de 3 con su líder",a:x=>x.l3>=2,p:x=>Math.min(x.l3,2)+" de 2",b:["Pedir",()=>{closeSheet();pedirL3(null)}],f:1},
-    {k:"ent",g:"Presente acompañado",t:"Conectarse a 1 entrenamiento del equipo",s:"Action Leaders Training o Llamada de Poder",a:x=>!!x.mk.ent,m:1,b:["Ya me conecté",()=>irMk("ent")]},
-    {k:"l50",g:"Presente acompañado",t:"Lista de 50 contactos",a:x=>x.nC>=50,p:x=>Math.min(x.nC,50)+" de 50",b:["Agregar",irGoCRM]}],
+    ...(V2?[IS(5,"Presente acompañado","Seguimiento a 5 prospectos","Cada presentación termina con una decisión o un siguiente paso con fecha"),IL(35,"Presente acompañado")]
+    :[{k:"ent",g:"Presente acompañado",t:"Conectarse a 1 entrenamiento del equipo",s:"Action Leaders Training o Llamada de Poder",a:x=>!!x.mk.ent,m:1,b:["Ya me conecté",()=>irMk("ent")]},
+    {k:"l50",g:"Presente acompañado",t:"Lista de 50 contactos",a:x=>x.nC>=50,p:x=>Math.min(x.nC,50)+" de 50",b:["Agregar",irGoCRM]}])],
  3:[{k:"s15",g:"Siga y cierre",t:"10 seguimientos más (15 en total)",a:x=>x.seg>=15,p:x=>Math.min(x.seg,15)+" de 15",b:["Registrar",()=>{closeSheet();abrirSeg();window._irV=1}]},
     {k:"pc3",g:"Siga y cierre",t:"3 prospectos en “Por cerrar”",a:x=>x.pc>=3,p:x=>Math.min(x.pc,3)+" de 3",b:["Ver CRM",irGoCRM]},
     {k:"val",g:"Siga y cierre",t:"Dar 1 presentación usted solo",s:"Su patrocinador confirma que ya puede presentar",a:x=>x.val,b:["Pedir validación",()=>irPedirVal()],f:1},
-    {k:"comp",g:"Siga y cierre",t:"Su compromiso del mes",a:x=>x.comp,b:["Hacerlo",()=>{closeSheet();try{compAbrir()}catch(e){}}]}],
+    {k:"comp",g:"Siga y cierre",t:"Su compromiso del mes",a:x=>x.comp,b:["Hacerlo",()=>{closeSheet();try{compAbrir()}catch(e){}}]},
+    ...(V2?[IL(50,"Siga y cierre")]:[])],
  4:[{k:"act",g:"El ciclo continúa",t:"Su primer socio o cliente activado",a:x=>x.act1},
     {k:"soc",g:"El ciclo continúa",t:"Su socio nuevo entra a la app",s:"Compártale su enlace de invitación",a:x=>x.soc,b:["Invitar",()=>irInvitar()]},
     {k:"ayu",g:"El ciclo continúa",t:"Ayudarlo a empezar su Inicio Rápido",s:"Agende su primera actividad con él",a:x=>x.ayu,m:1,b:["Ya lo hice",()=>irMk("ayu")]},
@@ -6145,6 +6158,7 @@ function irHerr(){const st=irSt(),mk=Object.assign({},st.mk||{});
   const fila=h=>{const on=!!mk[h[0]];const ck=`<span class="ck">${on?"✓":""}</span>`;
    if(h[0]==="alp")return `<div class="irTg${on?" on":""}" style="flex-wrap:wrap">${ck}<span class="grow">${esc(h[1])}${on?"":`<br><small class="muted">${ios?"Safari › Compartir › Agregar a inicio, y ábrala desde el ícono 🛡️":"Menú del navegador › Instalar app o Agregar a pantalla de inicio"}</small>`}</span><small class="muted">Automático</small></div>`;
    if(h[0]==="avisos"){const blq=!on&&(typeof Notification==="undefined"||Notification.permission==="denied"||LS.get("avFail"));return `<div class="irTg${on?" on":""}" style="flex-wrap:wrap">${ck}<span class="grow">${esc(h[1])}${blq?`<br><small class="muted">Su teléfono no dejó activarlos. Puede seguir sin avisos y activarlos después en Perfil › 🔔 Mis avisos.</small>`:""}</span>${on?`<small class="muted">${mk.avNo?"Sin avisos":"Automático"}</small>`:`<span class="row" style="gap:6px;${blq?"flex-basis:100%;justify-content:flex-end":"flex:none"}"><button type="button" class="btn pill" id="irHav" style="padding:6px 12px">Activar</button>${blq?`<button type="button" class="btn ghost" id="irHavNo" style="padding:6px 10px">Seguir sin avisos</button>`:""}</span>`}</div>`}
+   if(h[0]==="yess")return `<div class="irTg${on?" on":""}" style="flex-wrap:wrap">${ck}<span class="grow">${esc(h[1])}</span><span class="row" style="gap:6px;flex-basis:100%;justify-content:flex-end"><a class="btn pill" href="https://yessmovement.org" target="_blank" rel="noopener" style="padding:6px 12px;white-space:nowrap">🌐 Abrir YESSMovement.org</a><button type="button" class="btn ghost" data-h="yess" style="padding:6px 10px;white-space:nowrap">${on?"Quitar":"Ya me registré"}</button></span></div>`;
    if(h[0]==="pres")return `<div class="irTg${on?" on":""}">${ck}<span class="grow">${esc(h[1])}</span>${pu?`<a class="btn pill" id="irHpr" href="${esc(pu)}" target="_blank" rel="noopener" style="padding:6px 12px">Descargar</a>`:""}<button type="button" class="btn ghost" data-h="pres" style="padding:6px 10px">${on?"Quitar":"Ya la tengo"}</button></div>`;
    return `<button type="button" class="irTg${on?" on":""}" data-h="${h[0]}">${ck}${esc(h[1])}</button>`};
   openSheet(`<h2>🧰 Sus herramientas</h2><p class="small muted" style="margin:0">Lo esencial para trabajar con su equipo. Las automáticas se marcan solas.</p>
@@ -6624,7 +6638,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261105184735";var busy=false,pend=null;
+(function(){var V="20261105190548";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
