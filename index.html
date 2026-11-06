@@ -4298,7 +4298,8 @@ async function circFoto(g,src,cx,cy,r,ph,vacio){const im=src?await imgLoad(src,!
   let dx=f?cx-f.fx*iw:cx-iw/2,dy=f?(cy-.80*r)-Math.max(0,f.top-.08)*ih:cy-r;
   dx=cl(dx,cx+r-iw,cx-r);
   // 5 nov: si la cabeza viene pegada al borde de arriba de la foto, la bajamos (máx. 0.4 r) y rellenamos arriba con el color del borde de la foto
-  let gap=0,rgb=[43,47,54];if(f&&dy>cy-r){gap=Math.min(dy-(cy-r),.4*r);dy=cy-r+gap}else dy=cl(dy,cy+r-ih,cy-r);
+  // 6 nov (Edwin, opción A): ya NO se baja la foto ni se rellena arriba; si la cabeza viene cortada, la foto queda pegada al borde de arriba del círculo
+  let gap=0;dy=cl(dy,cy+r-ih,cy-r);
   if(gap>0){ // 6 nov: rellena arriba estirando la franja superior de la misma foto, muy suavizada (sin bloque de color), y funde la unión
     {const gv=g.createLinearGradient(0,cy-r,0,cy-r+gap+r*.3);gv.addColorStop(0,"#05070d");gv.addColorStop(1,"rgb("+rgbTop(im,w,h)+")");g.fillStyle=gv;g.fillRect(cx-r,cy-r,2*r,gap+r*.3)}
     try{const fd=Math.min(r*.45,ih*.16),oc=document.createElement("canvas");oc.width=Math.ceil(iw);oc.height=Math.ceil(ih);const o=oc.getContext("2d");o.imageSmoothingQuality="high";o.drawImage(im,0,0,iw,ih);
@@ -6857,7 +6858,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261106130340";var busy=false,pend=null;
+(function(){var V="20261106131113";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
