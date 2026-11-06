@@ -616,6 +616,20 @@
    "volumenHoja": 0,
    "ptsBase": 500,
    "auto": "2026-11"
+  },
+  {
+   "nombre": "Edwin García Go",
+   "nombreRanking": "Edwin García Go|Edwin Alexander Garcia Gomez|Edwin Garcia Go",
+   "rango": "National Director",
+   "linea": "",
+   "meta": 500,
+   "nuevos": 0,
+   "presentaciones": 0,
+   "volumen": 200,
+   "volumenDetalle": "",
+   "id": "edwin-garcia-go",
+   "volumenHoja": 0,
+   "ptsBase": 0
   }
  ],
  "calendario": [
