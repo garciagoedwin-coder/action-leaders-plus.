@@ -12,6 +12,11 @@ Activaciones nuevas: [{"socio","paquete","patrocinador","fecha"}] sacadas de los
 - regSemana   = los de la semana actual (lunes 00:00 Honduras)
 - activaciones/actSemana/volumen = de d["activaciones"] del mes (Starter 50, Classic 200, Premium 500)
 - La app muestra Registros inCruises = registros + activaciones.
+- SOLO SUMA VOLUMEN NUEVO DEL MES: no cuentan (ni activación ni volumen) las que traen
+  ps:1 (ya era miembro y solo pasó a socio) o sc:1 (solo activó el código de socio, correo "Partner" sin membresía).
+  sc:1 se pone al pasar la activación (tipo del correo). ps:1 se marca solo si su huella (ek/wk) está en
+  data/red.enc como miembro o socio (t c/s). Si está como pendiente de ahorro (t p) solo avisa "REVISAR".
+  Confirmar cada mes con el reporte de Compensación de inCruises (activaciones y volumen totales).
 """
 import re, json, sys, unicodedata, datetime
 
@@ -41,6 +46,34 @@ for a in nuevas:
     if not any(same(x['socio'], a['socio']) for x in d['activaciones']):
         a.setdefault('fuente', 'gmail'); a.setdefault('id', slug(a['socio'])); d['activaciones'].append(a)
         if a['fecha'] > cfg.get('activacionesCorte', ''): cfg['activacionesCorte'] = a['fecha']
+
+# Volumen nuevo: marca ps:1 a quien ya estaba en la red de inCruises como miembro/socio (data/red.enc)
+def _red():
+    try:
+        import base64, os as _o
+        from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+        k = open('/home/claude/.evk').read().strip(); k = base64.urlsafe_b64decode(k + '=' * (-len(k) % 4))
+        raw = base64.b64decode(open('data/red.enc').read().strip())
+        return json.loads(AESGCM(k).decrypt(raw[:12], raw[12:], None)).get('rows', [])
+    except Exception as x:
+        print('red.enc no disponible:', x); return []
+_mes = datetime.datetime.now(datetime.UTC).strftime('%Y-%m')
+_pend = [a for a in d['activaciones'] if a.get('fecha', '')[:7] >= _mes and not a.get('ps') and not a.get('sc') and not a.get('rv') and (a.get('ek') or a.get('wk'))]
+if _pend:
+    R = _red()
+    if R:
+        RK = {}
+        for r in R:
+            for h in (r.get('ek'), r.get('wk')):
+                if h: RK.setdefault(h, r)
+        for a in _pend:
+            r = RK.get(a.get('ek')) or RK.get(a.get('wk'))
+            if not r: a['rv'] = 1; continue
+            if r.get('t') in ('c', 's'):
+                a['ps'] = 1; a['rv'] = 1; print('YA ERA MIEMBRO (no suma volumen):', a['socio'])
+            else:
+                print('REVISAR con el reporte de Compensación:', a['socio'], '· en la red como', r.get('t'))
+NUEVO = lambda a: not a.get('ps') and not a.get('sc')
 
 VOL = {"Starter": 50, "Classic": 200, "Premium": 500}
 # config.rankingUnir {"Nombre en inCruises": "Nombre al que se suma"}: cuentas que trabaja otra persona (ej. la cuenta de la esposa de Edwin suma a Edwin)
@@ -93,7 +126,7 @@ for g in G.values():
     if dup: dup['registros'] += g['r']; dup['regSemana'] += g['w']; continue
     e['registros'] = g['r']; e['regSemana'] = g['w']; put(e)
 
-acts = [dict(a, patrocinador=un(a['patrocinador'])) for a in d['activaciones'] if a['fecha'] >= mes0]
+acts = [dict(a, patrocinador=un(a['patrocinador'])) for a in d['activaciones'] if a['fecha'] >= mes0 and NUEVO(a)]
 for a in acts:
     if not any(same(e['nombre'], a['patrocinador']) for e in new):
         o = next((y for y in old if same(y['nombre'], a['patrocinador'])), None)
@@ -118,5 +151,6 @@ for L in d.get('liderazgo', []):
 if cambio: cfg['rankingActualizado'] = (now - datetime.timedelta(hours=6)).strftime('%Y-%m-%dT%H:%M:00-06:00')
 cfg['rankingFuente'] = 'drive-csv'
 json.dump(d, open('data/team.json', 'w'), ensure_ascii=False, indent=1)
+print('volumen nuevo del mes', sum(VOL.get(a['paquete'], 0) for a in acts), '· sin volumen (ps/sc):', [a['socio'] for a in d['activaciones'] if a['fecha'] >= mes0 and not NUEVO(a)])
 print('socios', len(new), 'registros', sum(e['registros'] for e in new), 'semana', sum(e['regSemana'] for e in new), 'activaciones mes', len(acts))
 print(sorted([(e['nombre'], e['registros']) for e in new], key=lambda x: -x[1])[:8])

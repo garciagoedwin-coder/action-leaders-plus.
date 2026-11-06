@@ -3096,7 +3096,7 @@ function rcCfg(){const R=(T.config||{}).retoCierre;if(!R||!R.desde||!R.hasta)ret
 function rcEquiv(f){const p=Math.ceil(f/500),c=Math.ceil(f/200);return `≈ ${p} Premium o ${c} Classic`}
 function rcPrem(v){return v>=1500?"3+ Premium":v%500===0&&v>0?(v/500)+" Premium":v.toLocaleString("en-US")+" pts"}
 function rcDatos(){const R=rcCfg();if(!R)return null;const V={Starter:50,Classic:200,Premium:500};
-  const acts=(T.activaciones||[]).filter(a=>a.fecha>=R.desde&&a.fecha<R.hasta);
+  const acts=(T.activaciones||[]).filter(a=>a.fecha>=R.desde&&a.fecha<R.hasta&&!a.ps&&!a.sc);
   const rows=(R.comp||[]).map(c=>({n:c.n,k:[c.n].concat(c.k||[]),v:+c.v||0,l:0,pr:0}));
   (rcJ||[]).forEach(j=>{if(!j.n||rows.some(r=>r.k.some(k=>rcSame(k,j.n))))return;rows.push({n:j.n.split(/\s+/).slice(0,2).join(" "),k:[j.n],v:+j.v||500,l:0,pr:0,app:1})});
   let tot=0;acts.forEach(a=>{const v=V[a.paquete]||0;tot+=v;let r=rows.find(x=>x.k.some(k=>rcSame(k,a.patrocinador)));
@@ -3401,7 +3401,7 @@ function renderEquipo0(){const b=$("#eqBody");redProbe();redBtn();
     const PKV={Starter:50,Classic:200,Premium:500},nrm=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim();
     const same=(a,b)=>{a=nrm(a);b=nrm(b);if(!a||!b)return false;if(a===b)return true;const A=a.split(" "),B=b.split(" "),[S,L]=A.length<=B.length?[A,B]:[B,A];return S.length>=2&&S.every(w=>L.includes(w))};
     const wk0=(()=>{const h=new Date(Date.now()-216e5);const dw=(h.getUTCDay()+6)%7;return Date.UTC(h.getUTCFullYear(),h.getUTCMonth(),h.getUTCDate()-dw)+216e5})();
-    const acts=(T.activaciones||[]);
+    const acts=(T.activaciones||[]).filter(a=>!a.ps&&!a.sc);
     d.forEach(x=>{if(!sem&&x.volumen!=null&&x.volumen!==""){x.vol=num(x.volumen);return}
       const mine=acts.filter(a=>same(a.patrocinador,x.nombre)&&(!sem||Date.parse(a.fecha)>=wk0));x.vol=mine.reduce((t,a)=>t+(PKV[a.paquete]||0),0)});
     const vcls=v=>v>=500?"good":v>=200?"warn":"bad";
@@ -3959,7 +3959,7 @@ function snvDatos(o){if(o===undefined)o=snvM;const ini=snvIni(o),fin=snvIni(o-1)
     const inc=!!x&&!((x.registro||{}).nombre);return{a,x,pu,yo,app:!!x&&!inc,inc,ver:!!(a.ek||a.wk),m1,ir:p,E}}).filter(Boolean)}
 function snvFiltra(L){return snvF==="sin"?L.filter(f=>!f.app):snvF==="s1"?L.filter(f=>f.app&&!f.m1):snvF==="ok"?L.filter(f=>f.m1):L}
 function snvFila(f){const a=f.a,E=f.E,id=esc(a.id||a.socio),pl=/premium/i.test(a.paquete||"")?"Premium":/starter/i.test(a.paquete||"")?"Starter":"Classic";
-  const ap=(f.app?`<span class="chip c-good">✅ En la app</span>`:f.inc?`<span class="chip c-gold">⏳ Registro incompleto</span>`:f.ver?`<span class="chip c-bad">📵 Sin app</span>`:`<span class="chip">❔ Sin verificar</span>`)+(a.ps?`<span class="chip c-brand">🔄 Pasó a socio</span>`:"");
+  const ap=(f.app?`<span class="chip c-good">✅ En la app</span>`:f.inc?`<span class="chip c-gold">⏳ Registro incompleto</span>`:f.ver?`<span class="chip c-bad">📵 Sin app</span>`:`<span class="chip">❔ Sin verificar</span>`)+(a.ps?`<span class="chip c-brand">🔄 Pasó a socio · sin volumen</span>`:"")+(a.sc?`<span class="chip c-brand">🔑 Solo código · sin volumen</span>`:"");
   const irT=!f.app||(!f.m1&&!f.ir.w)?"":f.m1?`<span class="chip" style="background:linear-gradient(120deg,#FBEFC0,#D4AF37);color:#3b2a00;font-weight:800">🏅 Completó la primera fase</span>`:`<span class="chip c-brand">🚀 Semana 1 · ${f.ir.n||0}/${f.ir.tot||12}</span>`;
   const rt=!E?"":E.gano?`<span class="chip" style="background:#FBEFC0;color:#3b2a00;font-weight:800">🏆 Ganó el reto</span>`:E.venc?`<span class="chip">⌛ Venció el reto</span>`:`<span class="chip c-gold">⏳ Reto: quedan ${raQueda(E.lim-Date.now())}</span>`;
   let bt="";
@@ -6573,7 +6573,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261105114043";var busy=false,pend=null;
+(function(){var V="20261105180733";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
