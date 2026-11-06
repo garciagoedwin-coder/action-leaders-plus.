@@ -227,7 +227,27 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 #presOv .pv-note{background:rgba(236,169,72,.12);border:1px dashed rgba(236,169,72,.6);border-radius:12px;padding:10px 12px;font:inherit;font-size:12.5px;color:#F6DDB3;line-height:1.45;text-align:left;cursor:pointer}#presOv .pv-note b{color:#ECA948}#presOv .pv-note span{display:block;opacity:.7;font-size:11px;margin-top:4px}
 #presOv .pv-gs{align-self:flex-start;background:transparent;border:1px dashed rgba(236,169,72,.6);color:#ECA948;border-radius:99px;padding:6px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
 #presOv .pv-nav{display:flex;gap:10px;padding:10px 14px max(16px,env(safe-area-inset-bottom));position:sticky;bottom:0;background:linear-gradient(transparent,#0E2A4F 30%)}#presOv .pv-nav button{flex:1;border:0;border-radius:14px;padding:14px;font:inherit;font-weight:800;font-size:15px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}#presOv .pv-nav button:disabled{opacity:.4}#presOv .pv-nav .go{background:#ECA948;color:#0B2E57}
-@media (orientation:landscape) and (max-height:560px){#presOv .pv-sl{height:calc(100vh - 150px);aspect-ratio:auto;margin:0 auto;width:auto;max-width:calc(100vw - 20px)}#presOv .pv-sl img{width:auto;height:100%}}
+#presOv .pv-sl{position:relative}#presOv .pv-big{position:absolute;right:8px;bottom:8px;width:38px;height:38px;border-radius:10px;border:0;background:rgba(0,0,0,.45);color:#fff;font-size:19px;cursor:pointer}
+#presOv .pv-gs{width:40px;height:40px;padding:0;border-radius:50%;font-size:18px;align-self:flex-end;display:grid;place-items:center}
+#presOv .pv-note{font-style:italic;font-size:14px;color:#F6DDB3}
+#presOv .pv-qb,#presOv .pv-bn{display:none}
+/* B · pantalla completa sin girar el teléfono: la diapositiva se gira 90° */
+#presOv.big .pv-sl{position:fixed;inset:0;margin:0;border-radius:0;z-index:20;background:#000;aspect-ratio:auto}
+#presOv.big .pv-sl img{position:absolute;top:50%;left:50%;width:100vh;width:100dvh;height:100vw;max-width:none;transform:translate(-50%,-50%) rotate(90deg);object-fit:contain}
+#presOv.big .pv-big{display:none}#presOv.big .pv-bn{display:flex;position:fixed;z-index:21;right:10px;top:50%;transform:translateY(-50%);flex-direction:column;gap:12px}
+#presOv.big .pv-bn button{width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.18);color:#fff;font-size:22px;font-weight:800;transform:rotate(90deg);cursor:pointer}#presOv.big .pv-bn button:disabled{opacity:.3}
+/* A · teléfono de lado: la diapositiva ocupa toda la pantalla */
+@media (orientation:landscape) and (max-height:560px){#presOv{overflow:hidden}
+ #presOv .pv-top{position:absolute;top:0;left:0;right:0;z-index:3;padding:6px 12px;background:linear-gradient(rgba(0,0,0,.55),transparent)}
+ #presOv .pv-prog{position:absolute;left:0;right:0;bottom:0;margin:0;border-radius:0;z-index:3}
+ #presOv .pv-sl{position:absolute;inset:0;margin:0;border-radius:0;width:100%;height:100%;aspect-ratio:auto;background:#000;box-shadow:none}
+ #presOv .pv-sl img{width:100%;height:100%;object-fit:contain}#presOv .pv-big{display:none}
+ #presOv .pv-body{display:none}
+ #presOv.hasq .pv-qb{display:block;position:absolute;left:12px;bottom:14px;z-index:4;border:0;border-radius:99px;padding:8px 14px;background:#ECA948;color:#0B2E57;font:inherit;font-weight:800;font-size:13px}
+ #presOv.qOpen .pv-body{display:flex;position:absolute;left:10px;right:10px;bottom:60px;max-height:72vh;overflow:auto;z-index:4;background:rgba(14,42,79,.96);border-radius:16px;max-width:560px}
+ #presOv.qOpen .pv-body .pv-note,#presOv.qOpen .pv-body .pv-gs{display:none}
+ #presOv .pv-nav{position:absolute;right:10px;bottom:12px;left:auto;padding:0;background:none;z-index:3;gap:8px}
+ #presOv .pv-nav button{flex:none;padding:8px 14px;font-size:13px;opacity:.9}}
 .stpct{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex:none}.seg.rd-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px}.seg.rd-seg button{white-space:nowrap}.rd-h{display:flex;justify-content:space-between;align-items:center;margin:14px 0 2px;padding:6px 10px;border-radius:10px;background:#E0F2FE;color:#075985;font-weight:800;font-size:13px}.rd-h:first-child{margin-top:0}.rd-h span{background:#fff;border-radius:999px;padding:1px 8px;font-size:12px}.rd-ya{color:#15803D!important;border-color:#86EFAC!important;background:#F0FDF4!important;font-size:12.5px}.rd-f{padding:12px 0;border-bottom:1px solid var(--line,#e2e8f0)}.rd-f:last-child{border-bottom:0}.rd-f.ok{opacity:.65}.rd-hero{background:linear-gradient(135deg,#0A7DAD,#13447A);color:#fff;border:0}.crmord.rd-fl{flex-wrap:wrap}.crmord.rd-fl button{flex:none;padding:6px 10px}[data-rh][aria-pressed="true"]{background:#DCFCE7;color:#15803D;border-color:#86EFAC}.crmord{display:flex;align-items:center;gap:5px;margin:0 0 10px}.crmord button{border:1px solid var(--line,#e2e8f0);background:#fff;border-radius:999px;padding:6px 4px;flex:1;white-space:nowrap;font:inherit;font-size:12px;font-weight:600;color:#334155;cursor:pointer}.crmord button[aria-pressed="true"]{background:var(--brand,#0E7490);border-color:transparent;color:var(--brand-ink,#fff)}.stpct b{font-size:17px;line-height:1}.stpct em{font-style:normal;font-size:10.5px;font-weight:700;color:#B45309}
 .c-hot{background:#FFEDD5;color:#C2410C}
 .stsum{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}.stsum button{border:0;border-radius:12px;padding:8px 4px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}.stsum b{display:block;font-size:20px}
@@ -5700,32 +5720,33 @@ function tourCard(){const D=LS.get("tourOk")||{},K=Object.keys(TOURS).filter(k=>
    +K.map(k=>{const t=TOURS[k],ok=!!D[k];return `<button type="button" class="card row between" data-tour="${k}" style="gap:10px;text-align:left;cursor:pointer"><span class="grow"><b>${esc(t.t)}</b><small class="muted" style="display:block">${esc(t.d)} · ${t.min} min</small></span><span class="chip ${ok?"c-good":"c-gold"}">${ok?"✓ Visto":"Ver ›"}</span></button>`}).join("")}
 // ---------- Presentación interactiva (31 oct): el socio presenta desde la app ----------
 const PRES={n:21,img:i=>"media/pres/s"+String(i).padStart(2,"0")+".jpg",
-  q:{2:{k:"r1",t:"¿Qué tendría más valor para ti en este momento?",o:["✈️ Viajar más","💰 Generar ingresos","⭐ Ambas cosas"]},
+  q:{2:{k:"r1",t:"¿Qué tendría más valor para ti en este momento?",o:["✈️ Viajar más","💼 Emprender un negocio","⭐ Ambas cosas"]},
      3:{k:"dest",multi:1,t:"¿Qué destino te gustaría conocer?",h:"Puede elegir varios",o:["🌴 Caribe","🏛️ Europa","🏯 Asia","⛰️ Sudamérica"]},
-     20:{k:"r2",t:"¿Qué fue lo que más conectó contigo?",o:["✈️ Viajar más","💰 Generar ingresos","⭐ Ambas cosas"]},
+     20:{k:"r2",t:"¿Qué fue lo que más conectó contigo?",o:["✈️ Viajar más","💼 Emprender un negocio","⭐ Ambas cosas"]},
      21:{k:"n",num:1,t:"Del 1 al 10, ¿qué tan listo estás para comenzar hoy?"}},
-  g:{1:"Preséntese en 20 segundos y diga: \"Te voy a mostrar cómo viajar más y cómo esto puede convertirse en un negocio.\"",
-     2:"Deje que responda y toque su respuesta. La va a usar en el cierre.",
-     3:"Pregúntele cuál elige y por qué. Toque los destinos que diga: salen en su mensaje final.",
-     4:"inCruises es un club de membresía de viajes: hoteles, tours y cruceros en más de 190 países.",
-     5:"Pregúntele: \"¿Alguna vez te has ido de crucero?\" y escuche.",
-     6:"Solo nombre los 5 pasos. Así sabe a dónde va la presentación.",
-     7:"La idea clave: \"Tu dinero rinde el doble para viajar. $100 se convierten en 200 puntos.\"",
-     8:"Muestre cómo crecen los puntos mes a mes, sin apurarse.",
-     9:"Dos formas de reservar: mitad puntos y mitad efectivo, o todo con puntos (precio × 1.5).",
-     10:"Momento clave. Pregúntele: \"¿Cuál opción usarías para ese destino que elegiste?\"",
-     11:"Pagar a tiempo protege sus puntos y su viaje.",
-     12:"\"Ahora te muestro cómo esto también genera ingresos.\"",
-     13:"Refiriendo 5 Classic o 2 Premium, su membresía le sale con $100 de descuento.",
-     14:"Bonos en efectivo por cada activación y un bono extra al mes.",
-     15:"Son rangos que se logran construyendo un equipo. No prometa montos: dependen del trabajo de cada uno.",
-     16:"La Black Card permite reservar con el 100% de los puntos, uno a uno.",
-     17:"\"No estás solo: tienes formación, mentorías, comunidad y esta app.\"",
-     18:"\"Todo comienza con una decisión.\"",
-     19:"Presente los dos paquetes con calma y deje que pregunte.",
-     20:"Compare con lo que respondió al inicio: \"Al principio me dijiste ___. ¿Sigue siendo así?\"",
-     21:"Que toque su número. La app le dice qué hacer según lo que elija."},
-  val:["viajar más","generar ingresos","viajar y generar ingresos"],dest:["el Caribe","Europa","Asia","Sudamérica"],
+  // 5 nov: frases para decir (no instrucciones): el prospecto puede verlas si se comparte pantalla. {r1} = lo que respondió en la diapositiva 2.
+  g:{1:"Te voy a mostrar cómo viajar más y cómo esto también puede convertirse en un negocio.",
+     2:"¿Qué tendría más valor para ti en este momento?",
+     3:"¿Cuál de estos destinos te gustaría conocer primero? ¿Por qué?",
+     4:"inCruises es un club de viajes: hoteles, tours y cruceros en más de 190 países.",
+     5:"¿Alguna vez te has ido de crucero?",
+     6:"Te lo explico en 5 pasos sencillos.",
+     7:"Tu dinero rinde el doble: $100 se convierten en 200 puntos para viajar.",
+     8:"Mira cómo van creciendo tus puntos mes a mes.",
+     9:"Puedes reservar mitad puntos y mitad efectivo, o todo con puntos.",
+     10:"¿Cuál de estas opciones usarías para el destino que elegiste?",
+     11:"Pagando a tiempo, tus puntos y tu viaje están protegidos.",
+     12:"Ahora te muestro la otra parte: cómo compartirlo con otros.",
+     13:"Si recomiendas el club a 5 Classic o 2 Premium, tu membresía tiene $100 de descuento.",
+     14:"Cada vez que alguien se une con tu recomendación, recibes un bono.",
+     15:"Estos rangos se logran construyendo un equipo, paso a paso.",
+     16:"Con la Black Card puedes reservar con el 100% de tus puntos, uno a uno.",
+     17:"No estás solo: tienes formación, mentorías, comunidad y esta app.",
+     18:"Todo comienza con una decisión.",
+     19:"Estos son los dos paquetes. ¿Cuál va más contigo?",
+     20:"Al principio me dijiste que querías {r1}. ¿Sigue siendo así?",
+     21:"Del 1 al 10, ¿qué tan listo te sientes para empezar?"},
+  val:["viajar más","emprender un negocio","viajar y emprender"],dest:["el Caribe","Europa","Asia","Sudamérica"],
   dudas:[["¿Cuánto cuesta empezar?","Classic $200 o Premium $500 de inicio. Luego, desde $100 al mes, que se convierten en 200 puntos para viajar."],
     ["¿Y si un mes no puedo pagar?","Tiene hasta 60 días desde su último pago para mantener la cuenta activa. Pagando a tiempo duplica sus puntos."],
     ["¿Tengo que vender?","No. Puede solo viajar. Si recomienda el club, recibe bonos y descuentos."],
@@ -5736,7 +5757,7 @@ function presEl(){let o=$("#presOv");if(!o){o=document.createElement("div");o.id
   o.addEventListener("click",presClick);
   // 5 nov: el pellizco para hacer zoom (2 dedos) o mover la imagen ampliada ya no cambia de diapositiva; solo un deslizado rápido y horizontal
   let x0=null,y0=null,t0=0,multi=false;const zoomed=()=>{try{return window.visualViewport&&window.visualViewport.scale>1.05}catch(e){return false}};
-  o.addEventListener("touchstart",e=>{if(e.touches.length>1){multi=true;x0=null;return}if(multi)return;if(e.target.closest(".pv-sl")&&!zoomed()){x0=e.touches[0].clientX;y0=e.touches[0].clientY;t0=Date.now()}else x0=null},{passive:true});
+  o.addEventListener("touchstart",e=>{if(e.touches.length>1){multi=true;x0=null;return}if(multi)return;if(e.target.closest(".pv-sl")&&!zoomed()&&!o.classList.contains("big")){x0=e.touches[0].clientX;y0=e.touches[0].clientY;t0=Date.now()}else x0=null},{passive:true});
   o.addEventListener("touchmove",e=>{if(e.touches.length>1){multi=true;x0=null}},{passive:true});
   o.addEventListener("touchend",e=>{if(multi){if(!e.touches.length)multi=false;x0=null;return}if(x0==null)return;const d=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0,dt=Date.now()-t0;x0=null;
     if(zoomed()||dt>650)return;if(Math.abs(d)>70&&Math.abs(d)>2*Math.abs(dy))presIr(d<0?1:-1)},{passive:true});
@@ -5754,18 +5775,19 @@ function presElegir(){if(!presOk())return;let q="";
     $("#prOk").onclick=async()=>{const n=$("#prN").value.trim();if(!n){toast("Escriba el nombre");return}const t=$("#prW").value.replace(/[^\d+]/g,"");
       const c={name:n.slice(0,80),cc:"504",phone:t.slice(0,15),stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(c);if(!id)return;c.id=id;contacts.push(c);try{renderCRM()}catch(e){}closeSheet();presAbrir(c)}})}
 function presAbrir(c){if(!presOk())return;if(typeof ahGate==="function"&&ahGate())return;if(!c){presElegir();return}
-  PS={c,i:1,a:{},t0:Date.now(),g:LS.get("presG")!=="0",ok:false,xArm:0};const o=presEl();o.hidden=false;document.body.style.overflow="hidden";presPinta()}
-function presCerrar(){const o=$("#presOv");if(o)o.hidden=true;document.body.style.overflow="";PS=null}
+  PS={c,i:1,a:{},t0:Date.now(),g:LS.get("presG")==="1",ok:false,xArm:0};const o=presEl();o.hidden=false;document.body.style.overflow="hidden";presPinta()}
+function presCerrar(){const o=$("#presOv");if(o){o.hidden=true;o.classList.remove("big","qOpen")}document.body.style.overflow="";PS=null}
 function presIr(d){if(!PS)return;const i=Math.min(PRES.n,Math.max(1,PS.i+d));if(i===PS.i)return;PS.i=i;presPinta()}
 function presFirst(){return String((PS&&PS.c.name)||"").trim().split(/\s+/)[0]||""}
-function presPinta(){const o=presEl(),i=PS.i,q=PRES.q[i],A=PS.a,g=PRES.g[i];
+function presPinta(){const o=presEl(),i=PS.i,q=PRES.q[i],A=PS.a;let g=PRES.g[i];if(g&&g.includes("{r1}"))g=A.r1!=null?g.replace("{r1}",PRES.val[A.r1]):"Al principio hablamos de lo que tendría más valor para ti. ¿Sigue siendo así?";
+  o.classList.toggle("hasq",!!q);o.classList.remove("qOpen");
   const opt=(t,j,on)=>`<button type="button" class="pv-o${on?" on":""}" data-pv="o" data-v="${j}">${esc(t)}</button>`;
   let qh="";if(q){if(q.num){qh=`<div class="pv-q">${esc(q.t)}</div><div class="pv-nums">${Array.from({length:10},(_,j)=>{const n=j+1;return `<button type="button" class="${n>=8?"h":n>=6?"m":""}${A.n===n?" sel":""}" data-pv="num" data-v="${n}">${n}</button>`}).join("")}</div>`+(A.n?presCierre():"")}
     else{const v=A[q.k];qh=`<div class="pv-q">${esc(q.t)}</div>${q.h?`<div class="pv-h">${esc(q.h)}</div>`:""}<div class="pv-opts${q.o.length===4?" g2":""}">${q.o.map((t,j)=>opt(t,j,q.multi?(v||[]).includes(j):v===j)).join("")}</div>`}}
   o.innerHTML=`<div class="pv-top"><button type="button" class="pv-x" data-pv="x" aria-label="Salir">✕</button><span>Presentando a <b>${esc(presFirst())}</b></span><span>${i} / ${PRES.n}</span></div>
    <div class="pv-prog"><i style="width:${(i/PRES.n*100).toFixed(1)}%"></i></div>
-   <div class="pv-sl"><img src="${PRES.img(i)}" alt="Diapositiva ${i} de ${PRES.n}" decoding="async"></div>
-   <div class="pv-body">${qh}${g?(PS.g?`<button type="button" class="pv-note" data-pv="g"><b>🎙️ Su guion:</b> ${esc(g)}<span>Toque para ocultar</span></button>`:`<button type="button" class="pv-gs" data-pv="g">🎙️ Ver guion</button>`):""}</div>
+   <div class="pv-sl"><img src="${PRES.img(i)}" alt="Diapositiva ${i} de ${PRES.n}" decoding="async"><button type="button" class="pv-big" data-pv="big" aria-label="Ampliar">⛶</button></div><div class="pv-bn"><button type="button" data-pv="p" aria-label="Anterior" ${i===1?"disabled":""}>‹</button><button type="button" data-pv="big" aria-label="Salir de pantalla completa">✕</button><button type="button" data-pv="n" aria-label="Siguiente" ${i===PRES.n?"disabled":""}>›</button></div>
+   <div class="pv-body">${qh}${g?(PS.g?`<button type="button" class="pv-note" data-pv="g">💬 «${esc(g)}»</button>`:`<button type="button" class="pv-gs" data-pv="g" aria-label="Ver frase">💬</button>`):""}</div><button type="button" class="pv-qb" data-pv="qb">❓ Pregunta</button>
    <div class="pv-nav"><button type="button" data-pv="p" ${i===1?"disabled":""}>‹ Anterior</button>${i<PRES.n?`<button type="button" class="go" data-pv="n">Siguiente ›</button>`:`<button type="button" class="go" data-pv="fin">${PS.ok?"Cerrar":"Terminar y guardar"}</button>`}</div>`;
   if(i<PRES.n){const im=new Image();im.src=PRES.img(i+1)}o.scrollTop=0}
 function presCierre(){const n=PS.a.n,f=esc(presFirst()),wa=`<button type="button" class="btn pv-wa" data-pv="wa">📲 ${n>=8?"Enviar link + resumen":"Enviar resumen"} por WhatsApp</button>`,l3=`<button type="button" class="btn ghost pv-l3" data-pv="l3">📞 Agendar llamada de 3 con un líder</button>`;
@@ -5795,6 +5817,8 @@ async function presClick(e){const b=e.target.closest("[data-pv]");if(!b||!PS)ret
   if(k==="x"){if(PS.ok||PS.i<=2||Date.now()-PS.xArm<4000){presCerrar();return}PS.xArm=Date.now();toast("Toque ✕ otra vez para salir sin guardar");return}
   if(k==="n")return presIr(1);if(k==="p")return presIr(-1);
   if(k==="g"){PS.g=!PS.g;LS.set("presG",PS.g?"1":"0");presPinta();return}
+  if(k==="big"){const o=$("#presOv");o.classList.toggle("big");return}
+  if(k==="qb"){$("#presOv").classList.toggle("qOpen");b.textContent=$("#presOv").classList.contains("qOpen")?"✕ Cerrar":"❓ Pregunta";return}
   if(k==="o"&&q){const v=+b.dataset.v;if(q.multi){const a=PS.a[q.k]||[];PS.a[q.k]=a.includes(v)?a.filter(x=>x!==v):a.concat(v)}else PS.a[q.k]=v;presPinta();return}
   if(k==="num"){PS.a.n=+b.dataset.v;presPinta();const r=$("#presOv .pv-res");if(r)r.scrollIntoView({behavior:"smooth",block:"nearest"});return}
   if(k==="wa"){if(!profile.ref)toast("Tip: agregue su enlace de inCruises en Mi página para que salga en el mensaje");const m=presMsg(),w=waNum(PS.c.phone,PS.c.cc);await presGuardar();location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(m);return}
@@ -6700,7 +6724,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261105231536";var busy=false,pend=null;
+(function(){var V="20261105232929";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
