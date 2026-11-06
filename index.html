@@ -3862,25 +3862,26 @@ function raEstado(a,ir){const c=raCfg();if(!a||!c)return null;const lim=Date.par
 function raYo(){try{if(!fbUser||!regDoc)return null;const r=miRegistro()||{};const a=raActDe(fbUser.email,r.correo,r.whatsapp,r.nombre);return a?raEstado(a,regDoc.ir||{}):null}catch(e){return null}}
 function raDe(x){try{const r=x.registro||{};const a=raActDe(x.email,r.correo,r.whatsapp,r.nombre);return a?raEstado(a,x.ir||{}):null}catch(e){return null}}
 function raQueda(ms){ms=Math.max(0,ms);const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5);return d?`${d} ${d===1?"día":"días"} ${h} h`:`${h} h ${Math.floor(ms%36e5/6e4)} min`}
+const raCap=w=>w?w.charAt(0).toUpperCase()+w.slice(1):w;
 function raPat(){const r=miRegistro()||{};return raN(r.patrocinador||"")}
 function raStrip(){const el=$("#raStrip");if(!el)return;const E=raYo();if(!E||(E.venc&&!E.gano)){el.hidden=true;return}el.hidden=false;
-  if(E.gano){el.className="ra ok";el.innerHTML=`<span class="ic">🏆</span><span class="grow"><b>¡Ganó el incentivo de arranque!</b><small>Reclámelo con su patrocinador${raPat()?", "+esc(raPat().split(" ")[0]):""}</small></span>`;el.onclick=()=>raCelebrar(true);raCelebrar();return}
-  el.className="ra";el.innerHTML=`<span class="ic">🏆</span><span class="grow"><b>Reto de arranque</b><small>Complete su Semana 1 y gane un incentivo · le quedan <b>${raQueda(E.lim-Date.now())}</b></small></span><span class="go">Ver ›</span>`;
+  if(E.gano){el.className="ra ok";el.innerHTML=`<span class="ic">🚀</span><span class="grow"><b>¡Ganó su insignia de Despegue!</b><small>${raPat()?"Cuénteselo a "+esc(raPat().split(" ")[0]):"Cuénteselo a su patrocinador"}</small></span>`;el.onclick=()=>raCelebrar(true);raCelebrar();return}
+  el.className="ra";el.innerHTML=`<span class="ic">🚀</span><span class="grow"><b>Insignia de Despegue</b><small>Complete su Semana 1 · le quedan <b>${raQueda(E.lim-Date.now())}</b></small></span><span class="go">Ver ›</span>`;
   el.onclick=()=>{try{irLista()}catch(e){}}}
 function raCelebrar(forzar){const E=raYo();if(!E||!E.gano)return;const k="raCel:"+store.uid+":"+(raCfg().id||"");if(!forzar&&LS.get(k))return;LS.set(k,1);
-  const nm=(miRegistro().nombre||"").split(" ")[0],pt=raPat();
-  const abrir=()=>{if(!$("#sheet").hidden){setTimeout(abrir,4000);return}openSheet(`<div class="irCel g" id="raCel"><div class="irCelIc">🏆</div><div class="k">RETO DE ARRANQUE</div><h2>¡Felicidades${nm?", "+esc(nm):""}!</h2><p>Completó su Semana 1 a tiempo y <b>ganó el incentivo de arranque</b>.</p><p>👉 Reclámelo con su patrocinador${pt?": <b>"+esc(pt)+"</b>":""}.</p></div>
-   <button class="btn" id="raWa" style="width:100%">💬 Avisarle a mi patrocinador</button><button class="btn ghost" data-close style="width:100%">Seguir</button>`,()=>{confeti($("#raCel"),80);$("#raWa").onclick=raAvisarPat})};abrir()}
-async function raAvisarPat(){const r=miRegistro()||{},nm=(r.nombre||"").split(" ")[0],pt=(raPat()||"").split(" ")[0];
-  const t=`¡Hola${pt?" "+pt:""}! 🎉\n\nYa completé mi Semana 1 del Plan de Inicio Rápido y la app me dice que gané el incentivo de arranque. 🏆\n\n¿Cómo hacemos para reclamarlo?\n\n${nm}`;
+  const nm=raCap((miRegistro().nombre||"").split(" ")[0]),pt=raPat();
+  const abrir=()=>{if(!$("#sheet").hidden){setTimeout(abrir,4000);return}openSheet(`<div class="irCel g" id="raCel"><div class="irCelIc">🚀</div><div class="k">INSIGNIA DE DESPEGUE</div><h2>¡Felicidades${nm?", "+esc(nm):""}!</h2><p>Completó su Semana 1 del Plan de Inicio Rápido a tiempo. <b>¡Su negocio ya despegó!</b></p><p>👉 Cuéntele a su patrocinador${pt?", <b>"+esc(pt)+"</b>,":""} que ya cumplió su primera meta.</p></div>
+   <button class="btn" id="raWa" style="width:100%">💬 Contarle a mi patrocinador</button><button class="btn ghost" data-close style="width:100%">Seguir</button>`,()=>{confeti($("#raCel"),80);$("#raWa").onclick=raAvisarPat})};abrir()}
+async function raAvisarPat(){const r=miRegistro()||{},nm=raCap((r.nombre||"").split(" ")[0]),pt=(raPat()||"").split(" ")[0];
+  const t=`¡Hola${pt?" "+pt:""}! 🎉\n\nYa terminé mi Semana 1 del Plan de Inicio Rápido y gané mi insignia de Despegue 🚀\n\n¿Cuál es mi siguiente paso?\n\n${nm}`;
   let wa="";try{if(r.patrocinadorUid){const d=await store.db.doc("users/"+r.patrocinadorUid).get();wa=((d.data()||{}).registro||{}).whatsapp||""}}catch(e){}
   location.href="https://wa.me/"+(wa?String(wa).replace(/\D/g,""):"")+"?text="+encodeURIComponent(t)}
 // patrocinador / línea: aviso una vez por ganador
 function raAvisosPat(){try{if(!raCfg()||!mios||!mios.length)return;const me=store.uid;mios.forEach(x=>{const r=x.registro||{};if(r.patrocinadorUid!==me)return;const E=raDe(x);if(!E||!E.gano)return;
   const k="raPat:"+x.uid+":"+(raCfg().id||"");if(LS.get(k))return;LS.set(k,1);const n=raN(r.nombre||"").split(" ")[0];
-  const mostrar=(i)=>{if(document.querySelector(".avisoTop.on")&&i<8){setTimeout(()=>mostrar(i+1),4000);return}try{avisoTop("🏆 "+n+" ganó el incentivo de arranque","Completó su Semana 1 a tiempo · coordine la entrega",()=>{go("equipo")})}catch(e){}};setTimeout(()=>mostrar(0),2500)})}catch(e){}}
-function raChip(x){const E=raDe(x);if(!E)return"";if(E.gano)return `<span class="chip mk" style="background:linear-gradient(120deg,#FBEFC0,#D4AF37);color:#3b2a00;font-weight:800">🏆 Ganó el incentivo de arranque</span>`;
-  if(E.venc)return `<span class="chip mk">⌛ Reto de arranque: no llegó a tiempo</span>`;return `<span class="chip c-brand mk">🏆 Reto de arranque · le quedan ${raQueda(E.lim-Date.now())}</span>`}
+  const mostrar=(i)=>{if(document.querySelector(".avisoTop.on")&&i<8){setTimeout(()=>mostrar(i+1),4000);return}try{avisoTop("🚀 "+n+" ganó su insignia de Despegue","Completó su Semana 1 a tiempo · felicítelo",()=>{go("equipo")})}catch(e){}};setTimeout(()=>mostrar(0),2500)})}catch(e){}}
+function raChip(x){const E=raDe(x);if(!E)return"";if(E.gano)return `<span class="chip mk" style="background:linear-gradient(120deg,#FBEFC0,#D4AF37);color:#3b2a00;font-weight:800">🚀 Ganó su insignia de Despegue</span>`;
+  if(E.venc)return `<span class="chip mk">⌛ Despegue: no llegó a tiempo</span>`;return `<span class="chip c-brand mk">🚀 Despegue · le quedan ${raQueda(E.lim-Date.now())}</span>`}
 // admin
 function raAdminCard(){const c=raCfg();if(!c||!isAdmin)return"";const L=raActs();const g=L.filter(a=>{const x=(socios||[]).find(s=>raDe(s)&&raDe(s).a===a);return x&&raDe(x).gano}).length;
   return `<div class="card" style="gap:6px"><h3 style="margin:0">🏆 Reto de arranque</h3><p class="small muted" style="margin:0">${L.length} ${L.length===1?"socio activado":"socios activados"} en el reto · <b>${g} ${g===1?"ganador":"ganadores"}</b></p><button class="btn sm ghost" id="raAdm" style="align-self:flex-start">Ver ganadores y control</button></div>`}
@@ -3961,7 +3962,7 @@ function snvFiltra(L){return snvF==="sin"?L.filter(f=>!f.app):snvF==="s1"?L.filt
 function snvFila(f){const a=f.a,E=f.E,id=esc(a.id||a.socio),pl=/premium/i.test(a.paquete||"")?"Premium":/starter/i.test(a.paquete||"")?"Starter":"Classic";
   const ap=(f.app?`<span class="chip c-good">✅ En la app</span>`:f.inc?`<span class="chip c-gold">⏳ Registro incompleto</span>`:f.ver?`<span class="chip c-bad">📵 Sin app</span>`:`<span class="chip">❔ Sin verificar</span>`)+(a.ps?`<span class="chip c-brand">🔄 Pasó a socio · sin volumen</span>`:"")+(a.sc?`<span class="chip c-brand">🔑 Solo código · sin volumen</span>`:"");
   const irT=!f.app||(!f.m1&&!f.ir.w)?"":f.m1?`<span class="chip" style="background:linear-gradient(120deg,#FBEFC0,#D4AF37);color:#3b2a00;font-weight:800">🏅 Completó la primera fase</span>`:`<span class="chip c-brand">🚀 Semana 1 · ${f.ir.n||0}/${f.ir.tot||12}</span>`;
-  const rt=!E?"":E.gano?`<span class="chip" style="background:#FBEFC0;color:#3b2a00;font-weight:800">🏆 Ganó el reto</span>`:E.venc?`<span class="chip">⌛ Venció el reto</span>`:`<span class="chip c-gold">⏳ Reto: quedan ${raQueda(E.lim-Date.now())}</span>`;
+  const rt=!E?"":E.gano?`<span class="chip" style="background:#FBEFC0;color:#3b2a00;font-weight:800">🚀 Despegó</span>`:E.venc?`<span class="chip">⌛ Despegue vencido</span>`:`<span class="chip c-gold">⏳ Despegue: quedan ${raQueda(E.lim-Date.now())}</span>`;
   let bt="";
   if(!f.app&&f.ver){if(f.yo)bt=`<button class="btn sm" style="background:var(--brand);color:#fff" data-snl="${id}">${f.inc?"📲 Ayudarle a terminar su registro":"📲 Mandarle el link de la app"}</button>`;else if(f.pu)bt=`<button class="btn sm" style="background:#25D366;color:#fff" data-snp="${id}">💬 Avisarle al patrocinador</button>`}
   else bt=f.m1?`<button class="btn sm" style="background:#25D366;color:#fff" data-snw="${id}">👏 Felicitar</button>`:`<button class="btn sm" style="background:#25D366;color:#fff" data-snw="${id}">💪 Motivar</button>`;
@@ -6275,7 +6276,7 @@ function renderLzCall(){const el=$("#lzCallStrip");if(!el)return;try{const L=lla
   el.hidden=false;el.innerHTML=`<span>📞 <b>Hoy ${esc(h12(L.hora))}</b> · Reunión del sistema de liderazgo</span><a href="${esc(L.zoom)}" target="_blank" rel="noopener">Entrar</a>`;if(!window._lzAv){window._lzAv=1;setTimeout(()=>{try{avisoTop("📞 Hoy "+h12(L.hora)+" · Reunión de liderazgo","Toque aquí para entrar al Zoom",()=>{window.open(L.zoom,"_blank")})}catch(e){}},2500)}}catch(e){el.hidden=true}}
 let mfOpen=new Set();
 function mfSum(x){try{const a=actDe(x),ah=ahSoc(x),c=compPuede0()?compDe(x):null,p=(x.ir||{}).p;const t=[];
-  t.push(ah&&ah.pend?"🔴 Ahorro pendiente":"🚢 Ahorro al día");t.push("📅 "+a.d7+"/7 días");if(compPuede0())t.push(c&&!c.no?"🤝 Con compromiso":"🎯 Sin compromiso");if(p&&!p.g)t.push("🚀 Semana "+(p.w||1));{const R=raCfg()&&raDe(x);if(R)t.unshift(R.gano?"🏆 Ganó el incentivo":R.venc?"⌛ Reto vencido":"🏆 Reto: quedan "+raQueda(R.lim-Date.now()))}
+  t.push(ah&&ah.pend?"🔴 Ahorro pendiente":"🚢 Ahorro al día");t.push("📅 "+a.d7+"/7 días");if(compPuede0())t.push(c&&!c.no?"🤝 Con compromiso":"🎯 Sin compromiso");if(p&&!p.g)t.push("🚀 Semana "+(p.w||1));{const R=raCfg()&&raDe(x);if(R)t.unshift(R.gano?"🚀 Despegó":R.venc?"⌛ Despegue vencido":"🚀 Despegue: quedan "+raQueda(R.lim-Date.now()))}
   return t.map(z=>`<span>${esc(z)}</span>`).join("")+`<em>Ver más ›</em>`}catch(e){return""}}
 document.addEventListener("click",e=>{const r=e.target.closest(".mfRow");if(!r||!document.body.classList.contains("beta"))return;if(e.target.closest("button,a,.mfc,.mfBtns,.emCp,details,summary,input"))return;const u=r.dataset.mfr;if(!u)return;r.classList.toggle("open");r.classList.contains("open")?mfOpen.add(u):mfOpen.delete(u)});
 function actVacio(){return `<div class="actVac"><div style="font-size:44px">🏆</div><h3>Nadie ha activado todavía este mes</h3><p>¡Sea usted el primero! Compita y quédese en el primer lugar del ranking.</p><button class="btn" id="actVacGo" type="button" style="background:#2AC1F1;color:#06384F">🎯 Ir a mis prospectos</button></div>`}
@@ -6573,7 +6574,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261105180733";var busy=false,pend=null;
+(function(){var V="20261105183846";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
