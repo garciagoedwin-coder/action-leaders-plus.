@@ -227,6 +227,18 @@ async function leerAhorro(db) {
   return JSON.parse(Buffer.concat([dc.update(raw.subarray(12, raw.length - 16)), dc.final()]).toString("utf8")).rows || [];
 }
 
+// 6 nov: a dónde lleva cada aviso al tocarlo (campanita y notificación del teléfono)
+export function avDestino(modo, m) {
+  const t = (m && m.title) || "";
+  if (/^(racha|racha2|fin|manana)$/.test(modo)) return "rut";
+  if (/^inc/.test(modo)) return "inc";
+  if (modo === "agenda") return "agenda";
+  if (modo === "act") return /Sistema de liderazgo|Felicidades/i.test(t) ? "lz" : "snv";
+  if (modo === "sol") return /pide un cambio/i.test(t) ? "sol" : "dt";
+  if (/^inact/.test(modo)) return /ahorros? pendientes?/i.test(t) ? "ahp" : "urg";
+  if (/^lzg/.test(modo)) return /compromiso/i.test(t) ? "comp" : "lzg";
+  return "inicio";
+}
 async function main() {
   const [modo, viejoP, nuevoP] = process.argv.slice(2);
   const DRY = !!process.env.DRY;
@@ -364,14 +376,14 @@ async function main() {
   for (let i = 0; i < salida.length; i += 400) {
     const lote = salida.slice(i, i + 400);
     const r = await fcm.sendEach(lote.map(([, tk, m]) => ({ token: tk,
-      webpush: { notification: { title: m.title, body: m.body, icon: ICON, badge: ICON }, fcmOptions: { link: APP } } })));
+      webpush: { notification: { title: m.title, body: m.body, icon: ICON, badge: ICON }, fcmOptions: { link: APP + (APP.includes("?") ? "&" : "?") + "av=" + avDestino(modo, m) } } })));
     r.responses.forEach((x, j) => { if (!x.success) { const code = (x.error && x.error.code) || "";
       console.log("Falló", lote[j][0].slice(0, 5) + "…", code);
       if (/registration-token-not-registered|invalid-registration-token|invalid-argument/.test(code)) db.doc("push/" + lote[j][0]).set({ tk: FieldValue.delete() }, { merge: true }).catch(() => {}); } });
     console.log(`Enviados: ${r.successCount} · fallidos: ${r.failureCount}`);
     // Historial para el Centro de avisos de la app (últimos 15 por persona)
     const t = Date.now();
-    await Promise.all(lote.map(([uid, , m], j) => r.responses[j].success ? db.doc("push/" + uid).set({ h: (hist[uid] || []).concat([{ t, ti: m.title, b: m.body, v: vista }]).slice(-15) }, { merge: true }).catch(() => {}) : null));
+    await Promise.all(lote.map(([uid, , m], j) => r.responses[j].success ? db.doc("push/" + uid).set({ h: (hist[uid] || []).concat([{ t, ti: m.title, b: m.body, v: avDestino(modo, m) }]).slice(-30) }, { merge: true }).catch(() => {}) : null));
   }
 }
 if (import.meta.url === `file://${process.argv[1]}`) main().catch(e => { console.error(e); process.exit(1); });
