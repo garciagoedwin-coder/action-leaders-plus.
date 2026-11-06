@@ -1013,6 +1013,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .urgS .ur .nm small.gs{color:#b7f5c8;font-weight:700}
 .urgS .ur.pg{background:rgba(22,163,74,.28)}.urgS .ur .q.g{background:#16A34A;color:#fff}
 .urgS.ok{background:linear-gradient(120deg,#0b4d2a,#16A34A);box-shadow:0 10px 24px -14px #16A34A}.urgS.ok .uh small,.urgS.ok .uh .tg{color:#d3f9df}
+.lzbL{display:flex;flex-direction:column;gap:8px}.lzbB{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;color:var(--ink);font:inherit}.lzbB>span:first-child{font-size:22px}.lzbB b{display:block;font-size:14px}.lzbB small{display:block;color:var(--muted);font-size:12px;line-height:1.3}.lzbB i{margin-left:auto;font-style:normal;color:var(--brand);font-size:20px}
 </style>
 
 </head>
@@ -2612,7 +2613,37 @@ function lcVentana(L,titulo){if(!L.length)return;let i=0;
       confeti($("#lcCel"),esp?60:40);const fe=$("#lcFel");if(fe)fe.onclick=()=>lcFelicitar(q);const sh=$("#lcSh");if(sh)sh.onclick=()=>lcCompartir(q,sh);
       const p=$("#lcPrev");if(p)p.onclick=()=>{i--;pinta()};const n=$("#lcNext");if(n)n.onclick=()=>{if(i<L.length-1){i++;pinta()}else closeSheet()}})};
   pinta()}
-let lcTry=0;function lcRevisar(){try{if(!store.uid||!(regDoc&&regDoc.registro||isAdmin))return;const vi=$("#v-inicio");if(!$("#sheet").hidden||(vi&&vi.hidden)){if(++lcTry<8)setTimeout(lcRevisar,20000);return}lcAvisoYo();const L=lcPendientes();if(!L.length)return;try{if(!popHoy("lc"))return}catch(e){}lcMarcar(L);lcVentana(L,L.every(r=>r.cie)?"🛡️ Líderes del mes de "+L[0].mes.split(" ")[0].toLowerCase():"🎉 Nuevos calificados del sistema de liderazgo")}catch(e){}}
+let lcTry=0;function lcRevisar(){try{if(!store.uid||!(regDoc&&regDoc.registro||isAdmin))return;const vi=$("#v-inicio");if(!$("#sheet").hidden||(vi&&vi.hidden)){if(++lcTry<8)setTimeout(lcRevisar,20000);return}lzSisSync();if(!lzBienYo())lcAvisoYo();const L=lcPendientes();if(!L.length)return;try{if(!popHoy("lc"))return}catch(e){}lcMarcar(L);lcVentana(L,L.every(r=>r.cie)?"🛡️ Líderes del mes de "+L[0].mes.split(" ")[0].toLowerCase():"🎉 Nuevos calificados del sistema de liderazgo")}catch(e){}}
+function lzSisSync(){try{if(!LS.get("pushTk"))return;const s=lzSoyMiembro()?1:0;if(LS.get("pushSis")!==s)pushGuardar(null)}catch(e){}}
+const LZB_MER=["Su constancia es la que sostiene al equipo. Se lo ganó con trabajo, y ese ejemplo es el que hace crecer a los demás. ¡Siga así! 💪","Esto no fue suerte: fue trabajo de todos los días. Su ejemplo le enseña al equipo que sí se puede. ¡Siga así! 💪","Mes a mes usted demuestra que el compromiso da frutos. Gracias por poner el ejemplo. ¡Vamos por más! 💪"];
+function lzBienYo(){try{const yo=miRegistro().nombre||miNombreFull();if(!yo||!store.uid)return false;const r=lcLista0().find(x=>sameN(x.n,yo));if(!r)return false;
+  const yz=lzYo(),L=(T.lideres||[]).find(l=>lzNs(l).includes(yz));if(!L)return false;const m=mesMeta(),nuevo=L.auto===m;
+  const k="lzYo:"+store.uid+":"+m+":"+(nuevo?"bien":r.k);if(LS.get(k)){lzBienMarcar(r);return true}
+  if(nuevo&&LS.get("lzYo:"+store.uid+":"+m+":bien")&&r.k==="lid"){lzBienMarcar(r);return true}
+  try{if(!popHoy("lzb"))return true}catch(e){}LS.set(k,1);lzBienMarcar(r);
+  const f=String(nv(r.n)||r.n).split(" ")[0],esp=r.k==="esp",q=lcQ(r),img=q.foto,Z=llamLz();
+  const av=`<div class="dt-av" style="width:104px;height:104px;margin:8px auto;${esp?"background:conic-gradient(#F5B700,#FFF3C4,#F5B700)":""}">${img?`<s style="background-image:url('${esc(img)}')"></s>`:`<s style="font-size:30px">${esc(initials(r.n))}</s>`}</div>`;
+  const ben=(ic,t,d,id)=>`<button class="lzbB" ${id?`id="${id}"`:""}><span>${ic}</span><span><b>${t}</b><small>${d}</small></span>${id?"<i>›</i>":""}</button>`;
+  const html=nuevo?`<div class="dt-cel" id="lzbCel" style="padding-top:4px"><p class="eyebrow" style="margin:0">SISTEMA DE LIDERAZGO</p><div style="font-size:34px">${esp?"⚔️🎉✨":"🏅🎉✨"}</div>${av}
+      <div class="big" style="font-size:20px">¡Felicidades, ${esc(f)}! Ahora es parte del Sistema de liderazgo</div>
+      <p class="muted" style="margin:4px 0 0">Calificó como ${esp?"Líder Espartano":"Líder"} con ${fmt(r.v)} pts este mes. Bienvenido/a al equipo que lleva el ritmo.</p></div>
+      <p class="eyebrow" style="margin:12px 0 6px">Lo que ya tiene</p><div class="lzbL">
+      ${ben("🎥","Reunión de liderazgo","Domingos · "+esc(h12((Z&&Z.hora)||"21:15"))+" hora de Honduras · por Zoom",Z?"lzbZ":"")}
+      ${ben("📅","Turnos del sistema","Presente o edifique en las actividades del equipo","lzbT")}
+      ${ben("📣","Flyer del día","Comparta el avance del equipo cada día","lzbF")}
+      ${ben("🔔","Avisos del sistema","Recordatorios de la reunión y novedades de liderazgo","lzbA")}</div>
+      <button class="btn" id="lzbSh" style="width:100%;margin-top:12px">📣 Compartir mi flyer</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">¡Vamos!</button>`
+   :`<div class="dt-cel" id="lzbCel" style="padding-top:4px"><p class="eyebrow" style="margin:0">SISTEMA DE LIDERAZGO</p><div style="font-size:34px">${esp?"⚔️🎉":"🏅🎉"}</div>${av}
+      <div class="big" style="font-size:20px">${esp?"⚔️":"🏅"} ¡Felicidades, ${esc(f)}!</div>
+      <p style="margin:6px 0 0">${esp?"Ya es Líder Espartano este mes y calificó para seguir en el Sistema de liderazgo el próximo mes.":"Ya calificó para seguir en el Sistema de liderazgo el próximo mes."}</p>
+      <p class="muted" style="margin:6px 0 0">${LZB_MER[parseInt(ahF(store.uid+"|"+m+"|"+r.k),16)%LZB_MER.length]}</p></div>
+      <button class="btn" id="lzbSh" style="width:100%;margin-top:12px">📣 Compartir mi flyer</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">¡Gracias!</button>`;
+  openSheet(html,()=>{confeti($("#lzbCel"),esp?60:45);const sh=$("#lzbSh");if(sh)sh.onclick=()=>lcCompartir(q,sh);
+    const z=$("#lzbZ");if(z)z.onclick=()=>{try{window.open(Z.zoom,"_blank","noopener")}catch(e){}};
+    const t=$("#lzbT");if(t)t.onclick=()=>{closeSheet();setTimeout(()=>turAbrir(),250)};
+    const fd=$("#lzbF");if(fd)fd.onclick=()=>{closeSheet();setTimeout(()=>fdAbrir(),250)};
+    const a=$("#lzbA");if(a)a.onclick=()=>{closeSheet();setTimeout(()=>misAvisos(),250)}});return true}catch(e){return false}}
+function lzBienMarcar(r){try{const S=lcSeen();S[lcMes()+"|"+nrmN(r.n)+"|"+r.k]=1;LS.set("lcSeen:"+store.uid,S);LS.set("lcAviso:"+store.uid+":"+lcMes(),1)}catch(e){}}
 function lcAvisoYo(){try{const yo=miRegistro().nombre||miNombreFull();if(!yo)return;const r=lcLista0().find(x=>sameN(x.n,yo));if(!r||r.k!=="lid")return;const k="lcAviso:"+store.uid+":"+lcMes();if(LS.get(k))return;LS.set(k,1);
   avisoTop("🛡️ ¡Ya es Líder del sistema!","Le faltan "+fmt(calCfg().esp-r.v)+" pts para Líder Espartano. ¡Vamos!",()=>{eqTab="ranking";rankMetric="liderazgo";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()})}catch(e){}}
 function lcLista(){const L=lcLista0();
@@ -6758,7 +6789,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261105235823";var busy=false,pend=null;
+(function(){var V="20261106001020";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

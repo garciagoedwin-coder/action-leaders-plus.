@@ -586,6 +586,36 @@
    "id": "yeny-mariela-ramos-canelas",
    "volumenHoja": 0,
    "ptsBase": 500
+  },
+  {
+   "nombre": "Jadmin Walberto Hernandez Torres",
+   "nombreRanking": "Jadmin walberto Hernandez torres",
+   "rango": "",
+   "linea": "",
+   "meta": 500,
+   "nuevos": 0,
+   "presentaciones": 0,
+   "volumen": 500,
+   "volumenDetalle": "",
+   "id": "jadmin-walberto-hernandez-torres",
+   "volumenHoja": 0,
+   "ptsBase": 500,
+   "auto": "2026-11"
+  },
+  {
+   "nombre": "Karen Lizeth Paz Escober",
+   "nombreRanking": "Karen lizeth Paz escober",
+   "rango": "",
+   "linea": "",
+   "meta": 500,
+   "nuevos": 0,
+   "presentaciones": 0,
+   "volumen": 500,
+   "volumenDetalle": "",
+   "id": "karen-lizeth-paz-escober",
+   "volumenHoja": 0,
+   "ptsBase": 500,
+   "auto": "2026-11"
   }
  ],
  "calendario": [
@@ -2947,7 +2977,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-05T21:56:00-06:00",
+  "rankingActualizado": "2026-11-06T00:05:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -4223,7 +4253,11 @@
    "t": "¡Aproveche! Cierre un Classic o un Premium",
    "sub": "y gánese el incentivo",
    "fin": "cierra el domingo 6:00 p.m."
-  }
+  },
+  "lzNoAuto": [
+   "Edwin García Go",
+   "Edwin Alexander Garcia Gomez"
+  ]
  },
  "fotos": [
   {

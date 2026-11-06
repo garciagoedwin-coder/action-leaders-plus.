@@ -148,6 +148,27 @@ for L in d.get('liderazgo', []):
     if 'volumenHoja' not in L: L['volumenHoja'] = int(L.get('volumen') or 0)
     L['volumen'] = max(int(L.get('volumenHoja') or 0), rv)
 
+# Sistema de liderazgo automático (5 nov, Edwin): quien llega a 200+ (Líder) o 500+ (Líder Espartano) en el mes
+# y no está en d["liderazgo"] entra solo (auto = mes). Quien ya entró solo sube su ptsBase si sube de nivel.
+# config.lzNoAuto = nombres que nunca se agregan (Edwin). Imprime NUEVO EN SISTEMA para escribirlo en la hoja Calificados.
+NOAUTO = cfg.setdefault('lzNoAuto', ["Edwin García Go", "Edwin Alexander Garcia Gomez"])
+LZ = d.setdefault('liderazgo', [])
+def _lz_de(nm):
+    for L in LZ:
+        ns = [L['nombre']] + [z.strip() for z in str(L.get('nombreRanking') or '').split('|') if z.strip()]
+        if any(same(k, nm) for k in ns): return L
+    return None
+for e in new:
+    v = int(e.get('volumen') or 0)
+    if v < 200 or any(same(x, e['nombre']) for x in NOAUTO): continue
+    L = _lz_de(e['nombre'])
+    if L is None:
+        nb = bonito(e['nombre']); LZ.append({"nombre": nb, "nombreRanking": e['nombre'], "rango": "", "linea": "", "meta": 500, "nuevos": 0, "presentaciones": 0,
+            "volumen": v, "volumenDetalle": "", "id": slug(nb), "volumenHoja": 0, "ptsBase": v, "auto": mesK})
+        cambio = True; print('NUEVO EN SISTEMA:', nb, '|', e['nombre'], '|', v, 'pts')
+    elif L.get('auto') == mesK and v > int(L.get('ptsBase') or 0):
+        L['ptsBase'] = v; cambio = True; print('SUBE EN SISTEMA:', L['nombre'], v)
+
 if cambio: cfg['rankingActualizado'] = (now - datetime.timedelta(hours=6)).strftime('%Y-%m-%dT%H:%M:00-06:00')
 cfg['rankingFuente'] = 'drive-csv'
 json.dump(d, open('data/team.json', 'w'), ensure_ascii=False, indent=1)

@@ -96,6 +96,33 @@ export function msgAct(a, paraSponsor) {
     : { title: "🎉 ¡Nuevo socio en su equipo!", body: `${n} se unió con ${p}. Felicite a ${p} por su activación.` };
 }
 
+// Sistema de liderazgo: quien cruza 200 o 500 pts en este ciclo (mismo mes).
+// Nuevo en liderazgo (auto = mes) → bienvenida; ya era miembro → felicitación "sigue el próximo mes".
+const lzNivel = v => (v >= 500 ? 2 : v >= 200 ? 1 : 0);
+export function lzCambios(viejo, nuevo) {
+  const cv = (viejo.config || {}).lcMesClave, cn = (nuevo.config || {}).lcMesClave;
+  if (!cn || cv !== cn) return [];
+  const V = {}; (viejo.ranking || []).forEach(r => { V[nrm(r.nombre)] = +r.volumen || 0; });
+  const ns = l => [l.nombre].concat(String(l.nombreRanking || "").split("|")).filter(Boolean);
+  const enL = (L, n) => (L || []).find(l => ns(l).some(x => mismoNombre(x, n) || nrm(x) === nrm(n)));
+  const out = [];
+  for (const r of nuevo.ranking || []) {
+    const a = lzNivel(V[nrm(r.nombre)] || 0), b = lzNivel(+r.volumen || 0);
+    if (b <= a) continue;
+    const ln = enL(nuevo.liderazgo, r.nombre); if (!ln) continue;
+    const nuevoSis = ln.auto === cn && !enL(viejo.liderazgo, r.nombre);
+    out.push({ nombre: r.nombre, nivel: b, nuevo: nuevoSis, v: +r.volumen || 0 });
+  }
+  return out;
+}
+export function msgLz(c) {
+  const n = primer(c.nombre), esp = c.nivel === 2;
+  if (c.nuevo) return { title: `🎉 ¡Bienvenido/a al Sistema de liderazgo, ${n}!`, body: `Calificó como ${esp ? "Líder Espartano" : "Líder"}. Abra la app para ver sus beneficios: reunión de los domingos, turnos y flyer del día.` };
+  return esp
+    ? { title: `⚔️ ¡Felicidades, ${n}!`, body: "Ya es Líder Espartano este mes y sigue en el Sistema de liderazgo el próximo mes. ¡Siga así! 💪" }
+    : { title: `🏅 ¡Felicidades, ${n}!`, body: "Ya calificó para seguir en el Sistema de liderazgo el próximo mes. Su constancia sostiene al equipo. ¡Siga así! 💪" };
+}
+
 // ---------- agenda del equipo ----------
 // Entrenamientos y llamadas: 30 min antes. Presentaciones: 1 h antes (solo la primera del día). Liderazgo: solo miembros del sistema.
 export function agendaPendientes(cal, ms = Date.now()) {
@@ -250,8 +277,9 @@ async function main() {
     if (!DRY) await metaRef.set({ sent: [...ya, ...nuevos.map(e => e.id)].slice(-80), t: Date.now() });
   } else if (modo === "act") {
     const leer = f => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return {}; } };
-    const N = actNuevas(leer(viejoP), leer(nuevoP));
-    if (!N.length) { console.log("Sin activaciones nuevas."); return; }
+    const VJ = leer(viejoP), NJ = leer(nuevoP);
+    const N = actNuevas(VJ, NJ), LZ = lzCambios(VJ, NJ);
+    if (!N.length && !LZ.length) { console.log("Sin activaciones nuevas ni calificados nuevos."); return; }
     const users = (await db.collection("users").get()).docs.map(d => ({ uid: d.id, ...d.data() }));
     const tkDe = {}; const pushDe = async uid => { if (!(uid in tkDe)) { const d = await db.doc("push/" + uid).get(); const x = d.exists ? d.data() : {}; hist[uid] = x.h || []; tkDe[uid] = x.tk && (x.pr || {}).act !== false ? x.tk : null; } return tkDe[uid]; };
     for (const a of N) {
@@ -260,6 +288,13 @@ async function main() {
       if (!sp) continue;
       const t1 = await pushDe(sp); if (t1) salida.push([sp, t1, msgAct(a, true)]);
       for (const u of arriba) { const t = await pushDe(u); if (t) salida.push([u, t, msgAct(a, false)]); }
+    }
+    for (const c of LZ) {
+      const U = users.filter(u => u.registro && mismoNombre(u.registro.nombre, c.nombre));
+      console.log(`Liderazgo: ${c.nombre} · ${c.nivel === 2 ? "500" : "200"} · ${c.nuevo ? "NUEVO" : "miembro"} → ${U.length === 1 ? "encontrado" : "NO encontrado"}`);
+      if (U.length !== 1) continue;
+      const d = await db.doc("push/" + U[0].uid).get(); const x = d.exists ? d.data() : {}; hist[U[0].uid] = hist[U[0].uid] || x.h || [];
+      if (x.tk) salida.push([U[0].uid, x.tk, msgLz(c)]);
     }
   } else if (modo === "sol") {
     // Solicitudes de cambio del Dream Team: users.solN (nueva, avisar a admins) / users.solR (respondida, avisar al socio)
