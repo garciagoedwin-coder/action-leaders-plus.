@@ -524,3 +524,7 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - La tarjeta (#pbVol, clase pb-tg) sale CERRADA (.cl: franja .pb-mini "PREMIO DEL MES · título · 1.º X · pts · ⏳ · Ver ›"); al tocar se abre y "Toque para cerrar ▴" (.pb-close) la cierra. LS pbOpen. Listener global en document (.pb-tg).
 
 - (5 nov, noche) avisos-activaciones.yml espera 3 min (sleep 180) cuando hay activaciones nuevas, para que GitHub Pages publique el ranking antes de que llegue el aviso "¡Nuevo socio en su equipo!" (Edwin vio el aviso antes que el volumen).
+
+## Firma en la historia del día + mensajes de Mi Racha (5 nov, noche)
+- hgCanvas (historias con fotos del equipo) dibuja al final hgFirma(g,claro): línea fina, "COMPARTE", foto del socio (miFotoUrl, si no iniciales), nombre (nv) y su frase profile.histFrase (Perfil › 👤 Mis datos › "🏷️ Mi frase en mis historias", máx. 35, chips HIST_FRASES; por defecto "Action Leaders+"). y 1660–1800 (zona segura). histKey incluye la frase.
+- constMsg (botón de WhatsApp en Mi Racha): 8 versiones para quien no ha empezado (CM_CERO), 6 para quien va a medias (CM_MEDIO), 5 para felicitar (CM_LLENO). cmPick: semilla ahF(quién envía|a quién|día|cat) → distintos líderes mandan versiones distintas; LS cmV:uid:cat evita repetir la última que ese teléfono le mandó a esa persona. Firma solo con el nombre (sin "Att."). Tono natural, de usted, sin ingresos.
