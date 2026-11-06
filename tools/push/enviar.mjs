@@ -170,12 +170,12 @@ export function rangoUsr(u, team) {
 const corto = n => { const w = String(n || "").trim().split(/\s+/).filter(Boolean); return (w.length >= 4 ? [w[0], w[2]] : w.slice(0, 2)).map(x => x[0].toUpperCase() + x.slice(1).toLowerCase()).join(" "); };
 // destinos: {uid: [{n,x,s,k,w,d}]}
 const ADMINS = ["garciagoedwin@gmail.com", "actionleadersoficial@gmail.com", "edwing.go@gmail.com"];
-export function destinosInact(rows, users, team, ms = Date.now()) {
-  const D = {}, lim = ms + 7 * 864e5, alias = (team.config || {}).alias || {};
+export function destinosInact(rows, users, team, ms = Date.now(), todos = false) {
+  const D = {}, lim = todos ? Infinity : ms + 7 * 864e5, alias = (team.config || {}).alias || {};
   const adm = users.filter(u => ADMINS.includes(String(u.email || "").toLowerCase())).map(u => u.uid);
   const add = (uid, e) => { const L = (D[uid] = D[uid] || []); const i = L.findIndex(m => (m.k || m.n) === (e.k || e.n)); if (i < 0) L.push(e); else if (e.d) L[i] = e; };
   for (const r of rows) {
-    if (!r.x) continue; const t = Date.parse(r.x); if (!(t > ms && t <= lim)) continue;
+    if (!r.x && !todos) continue; const t = r.x ? Date.parse(r.x) : Infinity; if (!(t > ms && t <= lim)) continue;
     const spN = alias[r.s] || r.s;
     const sp = users.filter(u => u.registro && (mismoNombre(u.registro.nombre, spN) || (u.registro.nombreRanking && mismoNombre(u.registro.nombreRanking, spN))));
     const base = { n: corto(r.n), x: r.x, s: corto(r.s), k: (r.k || [])[0] || "", w: (r.k || [])[1] || (r.k || [])[2] || "" };
@@ -187,8 +187,15 @@ export function destinosInact(rows, users, team, ms = Date.now()) {
     for (const uid of (s.registro.linea || [])) { const u = users.find(v => v.uid === uid); if (!u || uid === s.uid) continue;
       if (RG_TL.test(rangoUsr(u, team))) add(uid, { ...base, d: 0 }); }
   }
-  for (const k in D) D[k].sort((a, b) => Date.parse(a.x) - Date.parse(b.x));
+  for (const k in D) D[k].sort((a, b) => (Date.parse(a.x) || 9e15) - (Date.parse(b.x) || 9e15));
   return D;
+}
+// 6 nov: aviso de la mañana con TODOS los ahorros pendientes del equipo (s7 = cuántos se inactivan en 7 días)
+export function msgAh(L, nombre, ms = Date.now()) {
+  if (!L || !L.length) return null; const s7 = L.filter(m => m.x && Date.parse(m.x) - ms <= 7 * 864e5).length, f = primer(nombre || "");
+  const urg = L.some(m => m.x && Date.parse(m.x) - ms < 2 * 864e5);
+  return { title: `${urg ? "🚨" : "💰"} ${f ? f + ", t" : "T"}iene ${L.length} ${L.length === 1 ? "ahorro pendiente" : "ahorros pendientes"} en su equipo`,
+    body: (s7 ? `${s7} se inactiva${s7 > 1 ? "n" : ""} esta semana. ` : "") + "Llámelos hoy: cada llamada protege su cuenta y sus puntos dobles 📞" };
 }
 export function msgInact(L, ms = Date.now()) {
   if (!L || !L.length) return null; const urg = L.some(m => Date.parse(m.x) - ms < 2 * 864e5);
@@ -251,15 +258,18 @@ async function main() {
     const rows = await leerAhorro(db);
     const pendKeys = new Set(); for (const r of rows) { if ((r.k || [])[0]) pendKeys.add(r.k[0]); pendKeys.add(corto(r.n)); }
     const users = (await db.collection("users").get()).docs.map(d => ({ uid: d.id, ...d.data() }));
-    const D = destinosInact(rows, users, team);
+    const D = destinosInact(rows, users, team), DA = modo === "inact" ? destinosInact(rows, users, team, Date.now(), true) : {};
     const P = {}; (await db.collection("push").get()).docs.forEach(d => P[d.id] = d.data());
-    const t = Date.now(), W = [], uids = new Set([...Object.keys(D), ...Object.keys(P).filter(u => P[u].urg && (P[u].urg.l || []).length)]);
+    const t = Date.now(), W = [], uids = new Set([...Object.keys(D), ...Object.keys(DA), ...Object.keys(P).filter(u => (P[u].urg && (P[u].urg.l || []).length) || (P[u].ahp && (P[u].ahp.l || []).length))]);
     for (const uid of uids) {
       const p = P[uid] || {}, { l, pagos } = unirUrg((p.urg || {}).l, D[uid], pendKeys, t);
-      W.push([uid, { urg: { t, l } }]); hist[uid] = p.h || [];
+      const w = { urg: { t, l } };
+      if (modo === "inact") { const A = DA[uid] || []; w.ahp = { t, n: A.length, s7: A.filter(m => m.x && Date.parse(m.x) - t <= 7 * 864e5).length, l: A.slice(0, 40) }; }
+      W.push([uid, w]); hist[uid] = p.h || [];
       const ok = p.tk && (p.pr || {}).inact !== false;
       if (ok && pagos.length) salida.push([uid, p.tk, msgPago(pagos)]);
-      if (ok && modo === "inact" && D[uid]) { const m = msgInact(D[uid]); if (m) salida.push([uid, p.tk, m]); }
+      if (ok && modo === "inact" && (DA[uid] || []).length) { const u = users.find(v => v.uid === uid), m = msgAh(DA[uid], ((u || {}).registro || {}).nombre); if (m) salida.push([uid, p.tk, m]); }
+      else if (ok && modo === "inact" && D[uid]) { const m = msgInact(D[uid]); if (m) salida.push([uid, p.tk, m]); }
       if (DRY) console.log("·", uid.slice(0, 5) + "…", l.map(x => x.n + (x.p ? " ✅pagó" : " " + cuandoHN(x.x)) + (x.d ? " (directo)" : "")).join(" | "));
     }
     console.log(`Miembros por inactivarse → ${Object.keys(D).length} líderes con aviso.`);
