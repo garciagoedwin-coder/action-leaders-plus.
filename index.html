@@ -1562,7 +1562,11 @@ async function pubGuardar(uid,v,base,rk){v=String(v||"").trim().replace(/\s+/g,"
   const f=(fotosFs||[]).find(x=>x.id===uid),d={pub:v};if(!f||!f.invNombre)d.invNombre=base||"";if(rk)d.rk=rk;
   await store.db.doc("fotos/"+uid).set(d,{merge:true});if(f)Object.assign(f,d);else fotosFs.push(Object.assign({id:uid},d));window._nvT=Date.now();T.fotos=fotosRepo.concat(fotosFs);try{localStorage.removeItem("alp:fotosT")}catch(e){}}
 const pubOk=(v,base)=>{const W=t=>nrmN(t).split(" ").filter(w=>w.length>=3);const B=W(base);return W(v).some(w=>B.includes(w))};
-function fotoDe(n,_r,uid){if(uid){const fu=(typeof fotosFs!=="undefined"&&fotosFs||[]).find(x=>x.id===uid&&x.img);if(fu)return fu.img}if(!n||!T.fotos||!T.fotos.length)return"";if(!_r){const a=(T.config&&T.config.alias)||{};for(const k in a)if(sameN(a[k],n)){const f=fotoDe(n,1)||fotoDe(k,1);return f}}{const M=T.fotos.filter(f=>f.img&&(sameN(f.nombre,n)||(f.alias&&sameN(f.alias,n))));if(M.length){const P=[...new Set(M.map(f=>nrmN(f.nombre)))];const rec=L=>L.sort((a,b)=>(b.t||0)-(a.t||0))[0].img;
+function fotoDe(n,_r,uid){let f=fotoDe0(n,_r,uid);if(f||_r)return f;try{
+  // 6 nov: si la cuenta (uid) no tiene foto o el nombre es corto ("Karla Calderon"), probar con el nombre completo de esa cuenta y de liderazgo
+  const D=uid?(typeof fotosFs!=="undefined"&&fotosFs||[]).find(x=>x.id===uid):null;for(const k of D?[D.invNombre,D.rk,D.nombre]:[])if(k&&k!==n){f=fotoDe0(k,0);if(f)return f}
+  if(n){const L=(T.lideres||[]).filter(l=>l.nombre!==n&&lzNs(l).some(y=>sameN(y,n)));if(L.length===1){f=fotoDe0(L[0].nombre,0);if(f)return f}}}catch(e){}return ""}
+function fotoDe0(n,_r,uid){if(uid){const fu=(typeof fotosFs!=="undefined"&&fotosFs||[]).find(x=>x.id===uid&&x.img);if(fu)return fu.img}if(!n||!T.fotos||!T.fotos.length)return"";if(!_r){const a=(T.config&&T.config.alias)||{};for(const k in a)if(sameN(a[k],n)){const f=fotoDe(n,1)||fotoDe(k,1);return f}}{const M=T.fotos.filter(f=>f.img&&(sameN(f.nombre,n)||(f.alias&&sameN(f.alias,n))));if(M.length){const P=[...new Set(M.map(f=>nrmN(f.nombre)))];const rec=L=>L.sort((a,b)=>(b.t||0)-(a.t||0))[0].img;
     if(P.length===1)return rec(M);
     // Dos personas distintas coinciden: primero la exacta; si no, la de más palabras en común; si empatan, mejor sin foto que la de otra persona.
     const nn=nrmN(n),exN=M.filter(f=>nrmN(f.nombre)===nn);if(exN.length)return rec(exN);const ex=M.filter(f=>f.alias&&nrmN(f.alias)===nn);if(ex.length&&new Set(ex.map(f=>nrmN(f.nombre))).size===1)return rec(ex);
@@ -4921,6 +4925,31 @@ function evaScript(e,first,lk){const[pais,fl]=lzTz(),yo=miNombreCorto()||"",ES=(
 // Fichas de visibilidad privada: junta = creador + línea de abajo + línea de arriba + anfitriones; evento cerrado = creador + línea de abajo + invitados.
 function evaVerPriv(visP,Lin,lidU){return ["d:"+store.uid,"u:"+store.uid].concat(visP==="junta"?Lin.map(u=>"u:"+u):[]).concat((lidU||[]).map(u=>"u:"+u))}
 function evaAbierta(e){return (e.ver||[]).includes("all")}
+// 6 nov: el creador cambia anfitriones (junta) o invitados (gran evento) de una junta/evento ya publicado. Reglas: agendaEv update lo permite al creador (cre no cambia).
+function evaEditLid(e){const gran=e.tipo==="gran";let sel=(e.lid||[]).map(x=>Object.assign({},x)),repl=null,q="";
+  const P=(fotosFs||[]).filter(f=>f.invNombre).map(f=>({uid:f.id,n:f.invNombre,r:lzRango(f.invNombre)})).sort((a,b)=>String(a.n).localeCompare(b.n,"es"));
+  const nE=()=>sel.filter(x=>x.rol==="esp").length,max=()=>gran?Math.max(1,nE())+4:3,rolTx=x=>x.rol==="esp"?"Invitado especial":x.rol==="acomp"?"Acompañante":"Anfitrión";
+  openSheet(`<p class="eyebrow">${gran?"GRAN EVENTO":"JUNTA DE NEGOCIOS"}</p><h3 style="margin:4px 0 6px">✏️ Cambiar ${gran?"invitados":"anfitriones"}</h3><p class="small muted" style="margin:0 0 10px">Toque 🔁 para poner a otra persona en el mismo lugar, ✕ para quitar, o busque para agregar. Al guardar, el flyer se actualiza y la persona nueva recibe la invitación en su app.</p>
+    <div id="elSel" style="display:flex;flex-direction:column;gap:6px"></div><p class="small" id="elMsg" style="margin:8px 0 4px;font-weight:700"></p>
+    <input class="inp" id="elQ" type="search" placeholder="🔍 Buscar líder por nombre"><div id="elSug" style="display:flex;flex-direction:column;gap:4px;margin-top:6px"></div>
+    <button class="btn" id="elOk" style="width:100%;margin-top:12px">Guardar cambios</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cancelar</button>`,()=>{
+    const pinta=()=>{$("#elSel").innerHTML=sel.map((x,i)=>`<div class="row between" style="gap:8px;border:1px solid ${repl===i?"var(--brand)":"var(--line)"};border-radius:12px;padding:6px 8px">${avHTML(x.n,false,false,x.uid)}<span class="grow" style="min-width:0"><b style="font-weight:600;display:block">${esc(nv(x.n))}</b><span class="small muted">${esc(rolTx(x))}${x.r?" · "+esc(x.r):""}</span></span><button type="button" class="btn sm ghost" data-elr="${i}" title="Cambiar por otra persona">🔁</button>${sel.length>1?`<button type="button" class="btn sm ghost" data-elx="${i}" aria-label="Quitar">✕</button>`:""}</div>`).join("");
+      $("#elMsg").textContent=repl!=null?"🔁 Busque a quién poner en lugar de "+nv(sel[repl].n)+":":sel.length<max()?"➕ Puede agregar a alguien más:":"";$("#elQ").hidden=repl==null&&sel.length>=max()};
+    const sug=()=>{const Q=nrmN(q);$("#elSug").innerHTML=Q.length<2?"":P.filter(x=>x.uid!==e.cre&&!sel.some(y=>y.uid===x.uid)&&nrmN(x.n).includes(Q)).slice(0,6).map(x=>`<button type="button" class="ep-it" data-elp="${esc(x.uid)}">${avHTML(x.n,false,false,x.uid)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(nv(x.n))}</b><span class="small muted">${esc(x.r)}</span></span></button>`).join("")||`<p class="small muted" style="margin:6px 0">No encontramos a esa persona en la app.</p>`};
+    pinta();$("#elQ").oninput=x=>{q=x.target.value;sug()};
+    $("#elSel").onclick=x=>{const r=x.target.closest("[data-elr]"),d=x.target.closest("[data-elx]");if(r){repl=+r.dataset.elr===repl?null:+r.dataset.elr;pinta();$("#elQ").focus()}
+      if(d){const i=+d.dataset.elx,was=sel[i];sel.splice(i,1);if(gran&&was.rol==="esp"&&!nE()&&sel.length)sel[0].rol="esp";repl=null;pinta()}};
+    $("#elSug").onclick=x=>{const b=x.target.closest("[data-elp]");if(!b)return;const p=P.find(y=>y.uid===b.dataset.elp);if(!p)return;
+      if(repl!=null){sel[repl]={uid:p.uid,n:p.n,r:p.r,rol:sel[repl].rol}}else if(sel.length<max())sel.push({uid:p.uid,n:p.n,r:p.r,rol:gran?(nE()?"acomp":"esp"):"anf"});
+      repl=null;q="";$("#elQ").value="";sug();pinta()};
+    $("#elOk").onclick=async()=>{if(!sel.length){toast("Deje al menos una persona");return}const b=$("#elOk");b.disabled=true;
+      const viejos=(e.lidU||[]),lidU=sel.map(x=>x.uid).filter(u=>u&&u!==e.cre),fuera=viejos.filter(u=>!lidU.includes(u)),nuevos=lidU.filter(u=>!viejos.includes(u));
+      const fix=L=>{if(!Array.isArray(L))return L;let o=L.filter(t=>!fuera.some(u=>t==="u:"+u));if(!o.includes("all"))nuevos.forEach(u=>{if(!o.includes("u:"+u))o.push("u:"+u)});return o};
+      const conf=Object.assign({},e.conf||{});fuera.forEach(u=>delete conf[u]);
+      const upd={lid:sel.map(x=>({uid:x.uid,n:x.n,r:x.r||"",rol:x.rol})),lidU,ver:fix(e.ver),conf,vL:rsvpVL(lidU)};if(e.verP)upd.verP=fix(e.verP);
+      try{await store.db.doc("agendaEv/"+e.id).update(upd)}catch(x){b.disabled=false;toast("No se pudo guardar: "+(x&&x.code||""));return}
+      Object.assign(e,upd);const E=(EVA||[]).find(y=>y.id===e.id);if(E)Object.assign(E,upd);try{renderEvA()}catch(x){}
+      toast(nuevos.length?"✅ Guardado. "+nuevos.length+(nuevos.length>1?" personas nuevas reciben":" persona nueva recibe")+" la invitación en su app":"✅ Guardado");closeSheet();setTimeout(()=>evaVer(e),300)}})}
 async function evaVisCambiar(e){const ab=evaAbierta(e),mio=e.cre===store.uid;let verP=e.verP,visP=e.visP||(e.tipo==="gran"?"cerrado":"junta");
   if(ab&&!verP){if(!mio){toast("Solo quien la creó puede volver a cerrarla");return}const r=miRegistro()||{},Lin=(Array.isArray(r.linea)?r.linea:[]).slice();if(r.patrocinadorUid&&!Lin.includes(r.patrocinadorUid))Lin.push(r.patrocinadorUid);verP=[...new Set(evaVerPriv(visP,Lin,e.lidU))]}
   if(!ab&&!verP)verP=(e.ver||[]).slice();
@@ -4938,10 +4967,10 @@ async function evaVer(e){let file=null;const o=evaDatos(e),mio=e.cre===store.uid
    <button class="btn" id="evaInvB" style="width:100%;background:#25D366;color:#fff">📣 Invitar a mis prospectos${(LS.get("evInv:"+e.id)||[]).length?" ("+(LS.get("evInv:"+e.id)||[]).length+" invitados)":""}</button>${(LS.get("evInv:"+e.id)||[]).length?`<button class="btn ${e.fecha===TODAY?"gold":"ghost"}" id="evaRec" style="width:100%">⏰ Recordar a mis invitados</button>`:""}
    <div class="row" style="gap:8px"><button class="btn ghost grow" id="evaDl">⬇️ Guardar flyer</button><button class="btn ghost grow" id="evaTx">📋 Copiar script</button></div>
    ${mio||(e.lidU||[]).includes(store.uid)?`<button class="btn ghost" id="evaVis" style="width:100%">${evaAbierta(e)?"🔒 Volver a solo mi línea":"🌎 Abrir para todos los socios"}</button>`:""}
-${mio?`<button class="btn ghost" id="evaDel" style="width:100%;color:var(--bad)">🗑️ Cancelar ${e.tipo==="gran"?"este evento":"esta junta"}</button>`:""}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
+${mio?`<button class="btn ghost" id="evaEdL" style="width:100%">✏️ Cambiar ${e.tipo==="gran"?"invitados":"anfitriones"}</button>`:""}${mio?`<button class="btn ghost" id="evaDel" style="width:100%;color:var(--bad)">🗑️ Cancelar ${e.tipo==="gran"?"este evento":"esta junta"}</button>`:""}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     evaFile(o).then(f=>{file=f;const im=$("#evaImg"),w=$("#evaW");if(im){im.src=URL.createObjectURL(f);if(w)w.remove()}}).catch(()=>toast("No se pudo crear el flyer"));
     $("#evaInvB").onclick=()=>{closeSheet();setTimeout(()=>evaInvitar(e),250)};$("#evaRsvp").onclick=()=>{closeSheet();setTimeout(()=>rsvpVer(e),250)};rsvpCuenta(e).then(n=>{const x=$("#evaRsvpN");if(x&&n!=null)x.textContent="· "+n;rsvpInline(e)}).catch(()=>{});
-    if(mio&&!e.vL)rsvpFixVL(e);const ev=$("#evaVis");if(ev)ev.onclick=()=>{if(!confirmar2(ev))return;evaVisCambiar(e)};const er=$("#evaRec");if(er)er.onclick=()=>{closeSheet();setTimeout(()=>recLista(recEva(e)),250)};
+    if(mio&&!e.vL)rsvpFixVL(e);{const el=$("#evaEdL");if(el)el.onclick=()=>{closeSheet();setTimeout(()=>evaEditLid(e),250)}}const ev=$("#evaVis");if(ev)ev.onclick=()=>{if(!confirmar2(ev))return;evaVisCambiar(e)};const er=$("#evaRec");if(er)er.onclick=()=>{closeSheet();setTimeout(()=>recLista(recEva(e)),250)};
     $("#evaTx").onclick=async()=>{let lk="";try{if(await rsvpPrep()){lk=rsvpLink(e);LS.set("rsvpI:"+e.id,1);if(!LS.get("rsvpSeen:"+e.id))LS.set("rsvpSeen:"+e.id,[])}}catch(x){}try{await navigator.clipboard.writeText(evaScript(e,"",lk));toast("Script copiado ✓")}catch(x){toast("No se pudo copiar")}};
     $("#evaDl").onclick=async()=>{if(!file){toast("El flyer aún se está creando");return}if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file]});return}catch(x){if(x&&x.name==="AbortError")return}}const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click()};
     const dl=$("#evaDel");if(dl)dl.onclick=()=>{closeSheet();setTimeout(()=>cancelarSheet(e.tipo==="gran"?"Cancelar evento":"Cancelar junta",((e.lid||[]).length>1?"Les avisamos a los líderes involucrados en su app. ":"")+"Escriba el motivo:",["Tuve un imprevisto","Cambio de fecha","No se consiguió el lugar","Pocos confirmados"],async m=>{const c={mot:m,por:(miRegistro().nombre||miNombreCorto()||""),t:Date.now()};try{await evCol().doc(e.id).set({cancel:c},{merge:true})}catch(x){toast("No se pudo cancelar. Revise su conexión.");return false}e.cancel=c;EVA=(EVA||[]).filter(x=>x.id!==e.id);renderEvA();try{renderRecCard()}catch(x){}toast("Cancelado. Ya les avisamos.");return true}),250)}})}
@@ -6858,7 +6887,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261106131113";var busy=false,pend=null;
+(function(){var V="20261106132615";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
