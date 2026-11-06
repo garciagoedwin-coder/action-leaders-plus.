@@ -2039,7 +2039,7 @@ function compDias(){const n=new Date(),f=new Date(n.getFullYear(),n.getMonth()+1
 async function compGuardar(o){const nm=Object.assign({mes:mesMeta(),t:Date.now()},o);
   await store.db.doc("users/"+store.uid).set({comp:nm},{merge:true});regDoc=Object.assign({},regDoc,{comp:nm});
   try{const nmb=miNombreFull()||miNombreCorto();if(nmb&&!yoPrueba())store.db.doc("constancia/"+store.uid).set({comp:nm.no?{mes:nm.mes,no:true}:{mes:nm.mes,rango:nm.rango,act:nm.act,ac:nm.ac,ap:nm.ap,vol:nm.vol,pres:nm.pres}},{merge:true}).catch(()=>{})}catch(e){}
-  renderComp();try{renderMetaEq()}catch(e){}}
+  renderComp();try{renderMetaEq()}catch(e){}try{lzgStrip()}catch(e){}}
 let compVisto=false;
 function compCheck(){if(compVisto||!compPuede()||miComp())return;try{if(irIntroPend())return}catch(e){}if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate"))return;compVisto=true;try{if(!popHoy("comp"))return}catch(e){}compIntro()}
 function compIntro(){const mn=mesNom();openSheet(`<div style="text-align:center;font-size:44px;line-height:1">🎯</div><h2 style="text-align:center">Mi compromiso de ${esc(mn)}</h2>
@@ -2494,7 +2494,7 @@ async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas
   g.font="600 19px "+BF;g.fillStyle=C.a;const kw=sp("SISTEMA DE LIDERAZGO",540,172,8,"center");
   const ln=(x0,x1)=>{const z=g.createLinearGradient(x0,0,x1,0);z.addColorStop(0,"rgba(0,0,0,0)");z.addColorStop(1,C.a);g.fillStyle=z;g.fillRect(Math.min(x0,x1),165,Math.abs(x1-x0),1.5)};
   ln(540-kw/2-90,540-kw/2-24);{const z=g.createLinearGradient(540+kw/2+24,0,540+kw/2+90,0);z.addColorStop(0,C.a);z.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=z;g.fillRect(540+kw/2+24,165,66,1.5)}
-  const f1=String(q.n).trim().split(/\s+/)[0];g.textAlign="center";g.fillStyle="#fff";let fz=44;g.font="italic 700 "+fz+"px "+LB;const hT=q.pres?"¡Hola, equipo! Soy "+f1:"¡Felicidades, "+f1+"!";while(g.measureText(hT).width>900&&fz>28){fz--;g.font="italic 700 "+fz+"px "+LB}g.fillText(hT,540,300);
+  const f1=String(q.n).trim().split(/\s+/)[0];g.textAlign="center";g.fillStyle="#fff";const NEW=esp&&!q.tit;let fz=NEW?66:44;g.font="italic 700 "+fz+"px "+LB;const hT=q.pres?"¡Hola, equipo! Soy "+f1:"¡Felicidades, "+f1+"!";while(g.measureText(hT).width>900&&fz>28){fz--;g.font="italic 700 "+fz+"px "+LB}g.fillText(hT,540,NEW?318:300);
   // foto
   const cx=540,cy=640,R=222;g.save();g.shadowColor=C.glow;g.shadowBlur=110;g.beginPath();g.arc(cx,cy,R+16,0,Math.PI*2);g.fillStyle="rgba(4,6,13,.7)";g.fill();g.restore();
   g.beginPath();g.arc(cx,cy,R+16,0,Math.PI*2);g.lineWidth=1.5;g.strokeStyle=esp?"rgba(232,199,102,.45)":"rgba(217,222,231,.45)";g.stroke();
@@ -2503,11 +2503,18 @@ async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas
   g.beginPath();g.arc(cx,cy+R,34,0,Math.PI*2);g.fillStyle=grad(cx-34,cx+34,C.g);g.fill();g.lineWidth=4;g.strokeStyle="#070a14";g.stroke();
   g.font="32px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";g.textAlign="center";g.fillText(C.sello,cx,cy+R+11);
   // título
+  if(NEW){ // 6 nov: título minimalista (Edwin eligió la propuesta "Romana")
+    try{await document.fonts.load("400 80px 'Cormorant Caps'")}catch(e){}
+    g.fillStyle="rgba(255,255,255,.7)";g.font="500 18px "+BF;sp(q.pres?"ME UNO AL SISTEMA COMO":"CALIFICÓ COMO",540,958,9,"center");
+    g.fillStyle="#E8C766";g.font="600 26px "+BF;const lw=sp("LÍDER",540,1006,14,"center");g.fillRect(540-lw/2-80,996,56,1.5);g.fillRect(540+lw/2+24,996,56,1.5);
+    let tz=120;g.font="400 "+tz+"px 'Cormorant Caps', Georgia, serif";const T2="ESPARTANO";const tw2=()=>{let w=0;for(const ch of T2)w+=g.measureText(ch).width+tz*.14;return w};while(tw2()>940){tz-=4;g.font="400 "+tz+"px 'Cormorant Caps', Georgia, serif"}g.fillStyle="#fff";sp(T2,540,1118,tz*.14,"center");
+  }else{
   g.fillStyle="rgba(255,255,255,.8)";g.font="500 20px "+BF;sp(q.pres?"ME UNO AL SISTEMA COMO":"CALIFICÓ COMO",540,962,10,"center");
   let tz=122;g.font="400 "+tz+"px "+BB;let tw=0;const tws=()=>{tw=0;for(const ch of C.tit)tw+=g.measureText(ch).width+tz*.07;return tw-tz*.07};while(tws()>940&&tz>80){tz-=4;g.font="400 "+tz+"px "+BB}
   {const z=g.createLinearGradient(0,1080-tz,0,1080);z.addColorStop(.1,C.t[0]);z.addColorStop(.5,C.t[1]);z.addColorStop(.95,C.t[2]);g.fillStyle=z;sp(C.tit,540,1086,tz*.07,"center")}
   {const z=g.createLinearGradient(470,0,610,0);z.addColorStop(0,"rgba(0,0,0,0)");z.addColorStop(.5,C.a);z.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=z;g.fillRect(470,1126,140,1.5)}
-  let nz=56;g.font="600 "+nz+"px "+BF;while(g.measureText(nv(q.n)).width>920&&nz>32){nz--;g.font="600 "+nz+"px "+BF}g.fillStyle="#fff";g.textAlign="center";g.fillText(nv(q.n),540,1210);
+  }
+  let nz=56;g.font="600 "+nz+"px "+BF;while(g.measureText(nv(q.n)).width>920&&nz>32){nz--;g.font="600 "+nz+"px "+BF}g.fillStyle="#fff";g.textAlign="center";g.fillText(nv(q.n),540,NEW?1226:1210);
   // tarjetas
   const rgN=lcRgTx(q.n)||(()=>{try{const i=rangoActualIdx({},q.n);return i===1?"Team Leader":""}catch(e){return ""}})();
   const c3=esp?(lcTL(q.n)?["TL","TEAM LEADER"]:[LC_RG_ABR[rgN]||"⭐",(rgN||"").toUpperCase().replace("MARKETING DIRECTOR","MARKETING DIR.").replace("INTERNATIONAL DIRECTOR","INTERNAT. DIR.")])
@@ -2650,15 +2657,18 @@ function lzBienYo(){try{const yo=miRegistro().nombre||miNombreFull();if(!yo||!st
 function lzgMes(){const m=mesNom()||"";return m.charAt(0).toUpperCase()+m.slice(1)}
 function lzgCfg(){const G=liderRes&&liderRes.grupo;return G&&G.link&&G.m===mesMeta()?G:null}
 function lzgYa(){const z=regDoc&&regDoc.lzG;return !!(z&&z.m===mesMeta())}
+function lzgComp(){const c=miComp();return !!(c&&!c.no)}
 function lzgNo(){try{const yo=miRegistro().nombre||"";return ((T.config||{}).lzNoAuto||[]).some(x=>sameN(x,yo))}catch(e){return false}}
 function lzgDebe(){return !!store.uid&&lzSoyMiembro()&&!lzgNo()&&!!lzgCfg()&&!lzgYa()}
 async function lzgRevisar(){if(!store.uid||!lzSoyMiembro()||lzgNo()||lzgYa())return lzgStrip();try{await liderResCargar()}catch(e){}lzgStrip()}
 function lzgStrip(){const el=$("#lzgStrip");if(!el)return;if(!lzgDebe()){el.hidden=true;return}const ent=!!LS.get("lzgE:"+store.uid+":"+mesMeta());
-  el.hidden=false;el.innerHTML=`<div class="lzgI">⚔️</div><div class="lzgT"><b>Grupo del Sistema de liderazgo · ${esc(lzgMes())}</b><span>Entre al grupo de WhatsApp y preséntese: así el equipo le da la bienvenida.</span>
+  el.hidden=false;if(!lzgComp()){el.innerHTML=`<div class="lzgI">⚔️</div><div class="lzgT"><b>Grupo del Sistema de liderazgo · ${esc(lzgMes())}</b><span>Para entrar al grupo, primero haga su compromiso del mes.</span>
+   <div class="lzgB"><button type="button" class="pr" data-lzg="c">🎯 Hacer mi compromiso</button></div></div>`;el.querySelector("[data-lzg]").onclick=()=>compAbrir();return}
+  el.innerHTML=`<div class="lzgI">⚔️</div><div class="lzgT"><b>Grupo del Sistema de liderazgo · ${esc(lzgMes())}</b><span>Entre al grupo de WhatsApp y preséntese: así el equipo le da la bienvenida.</span>
    <div class="lzgB"><button type="button" class="${ent?"ok":""}" data-lzg="e">${ent?"✓ ":"1. "}💬 Entrar al grupo</button><button type="button" class="pr" data-lzg="p">2. 📣 Presentarme</button></div></div>`;
   el.querySelectorAll("[data-lzg]").forEach(b=>b.onclick=()=>b.dataset.lzg==="e"?lzgEntrar():lzgPresentar())}
-function lzgEntrar(){const G=lzgCfg();if(!G)return;try{LS.set("lzgE:"+store.uid+":"+mesMeta(),1)}catch(e){}try{window.open(G.link,"_blank","noopener")}catch(e){location.href=G.link}setTimeout(()=>{try{lzgStrip()}catch(e){}},600)}
-function lzgAbrir(){const G=lzgCfg();if(!G)return;if(lzgYa()||lzgNo()){lzgEntrar();return}openSheet(`<p class="eyebrow">SISTEMA DE LIDERAZGO · ${esc(lzgMes().toUpperCase())}</p><h3 style="margin:4px 0 6px">💬 Grupo de WhatsApp</h3><p class="muted" style="margin:0 0 12px">Entre al grupo y preséntese con su flyer. Es parte de ser miembro del sistema.</p>
+function lzgEntrar(){const G=lzgCfg();if(!G)return;if(!lzgComp()&&!lzgNo()&&!isAdmin){lzgPideComp();return}try{LS.set("lzgE:"+store.uid+":"+mesMeta(),1)}catch(e){}try{window.open(G.link,"_blank","noopener")}catch(e){location.href=G.link}setTimeout(()=>{try{lzgStrip()}catch(e){}},600)}
+function lzgAbrir(){const G=lzgCfg();if(!G)return;if(!lzgComp()&&!lzgNo()&&!isAdmin){lzgPideComp();return}if(lzgYa()||lzgNo()){lzgEntrar();return}openSheet(`<p class="eyebrow">SISTEMA DE LIDERAZGO · ${esc(lzgMes().toUpperCase())}</p><h3 style="margin:4px 0 6px">💬 Grupo de WhatsApp</h3><p class="muted" style="margin:0 0 12px">Entre al grupo y preséntese con su flyer. Es parte de ser miembro del sistema.</p>
   <button class="btn" id="lzgE1" style="width:100%">1. 💬 Entrar al grupo</button><button class="btn" id="lzgP1" style="width:100%;margin-top:8px;background:linear-gradient(135deg,#B07D00,#F5B700);color:#2a1c00">2. 📣 Presentarme en el grupo</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{$("#lzgE1").onclick=lzgEntrar;$("#lzgP1").onclick=()=>{closeSheet();setTimeout(lzgPresentar,250)}})}
 function lzgPaisDe(){const r=miRegistro(),p=String(r.pais||"").trim();if(p&&!/^\d+$/.test(p))return p;const cc=String(r.cc||p||"").replace(/\D/g,"");const f=PAISES.find(x=>x[1]===cc);return f?f[0]:""}
 function lzgQ(){const yo=miRegistro().nombre||miNombreFull()||"",yz=lzYo(),L=(T.lideres||[]).find(l=>lzNs(l).includes(yz))||{},r=lcLista0().find(x=>sameN(x.n,yo));
@@ -2667,7 +2677,8 @@ function lzgQ(){const yo=miRegistro().nombre||miNombreFull()||"",yz=lzYo(),L=(T.
 function lzgTexto(q,lugar){const f=String(nv(q.n)||q.n);const nivel=q.pres&&q.tit&&q.sello==="⭐"?q.tit.charAt(0)+q.tit.slice(1).toLowerCase():q.k==="esp"?"Líder Espartano ⚔️":"Líder 🛡️";
   return `¡Hola, equipo! 👋\n\nSoy *${f}*, de *${lugar}*.\n\nEste mes me uno al *Sistema de liderazgo* como ${nivel}.\n\n¡Gracias por recibirme! Vamos con todo 💪\n\n#HastaQueFuncione`}
 async function lzgMarcar(){const z={m:mesMeta(),t:Date.now()};regDoc=regDoc||{};regDoc.lzG=z;try{await store.db.doc("users/"+store.uid).set({lzG:z},{merge:true})}catch(e){}try{lzgStrip()}catch(e){}try{if(eqTab==="ranking"&&rankMetric==="liderazgo")renderEquipo()}catch(e){}}
-function lzgPresentar(){const ciu=(regDoc&&regDoc.ciudad)||"",pa=(regDoc&&regDoc.ciudadPais)||lzgPaisDe();
+function lzgPideComp(){openSheet(`<p class="eyebrow">SISTEMA DE LIDERAZGO</p><h3 style="margin:4px 0 6px">🎯 Primero, su compromiso del mes</h3><p class="muted" style="margin:0 0 12px">Para entrar al grupo del Sistema de liderazgo de ${esc(lzgMes())}, haga su compromiso del mes. Le toma un minuto.</p><button class="btn" id="lzgCo" style="width:100%">🎯 Hacer mi compromiso</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Ahora no</button>`,()=>{$("#lzgCo").onclick=()=>{closeSheet();setTimeout(compAbrir,250)}})}
+function lzgPresentar(){if(!lzgComp()&&!lzgNo()&&!isAdmin){lzgPideComp();return}const ciu=(regDoc&&regDoc.ciudad)||"",pa=(regDoc&&regDoc.ciudadPais)||lzgPaisDe();
   if(!ciu){openSheet(`<p class="eyebrow">PRESÉNTESE EN EL GRUPO</p><h3 style="margin:4px 0 6px">📍 ¿De dónde es?</h3><p class="muted" style="margin:0 0 10px">Lo ponemos en su flyer de presentación. Solo se pregunta una vez.</p>
     <label class="small muted">Ciudad</label><input id="lzgC" placeholder="Ej. San Pedro Sula" style="width:100%;margin:4px 0 10px">
     <label class="small muted">País</label><input id="lzgPa" value="${esc(pa)}" placeholder="Ej. Honduras" style="width:100%;margin:4px 0 12px">
@@ -4264,7 +4275,7 @@ const PAIS_ISO={"Honduras":"HN","Estados Unidos":"US","España":"ES","Reino Unid
 const bandera=p=>{const c=PAIS_ISO[p];return c?String.fromCodePoint(...[...c].map(x=>127397+x.charCodeAt(0))):""};
 const BIEN_TH={classic:{img:"media/flyers/bienvenida-classic.jpg?v=7",a:"#5FD3F7",g:["#D7F4FE","#2AC1F1","#0A7DAD"],glow:"rgba(42,193,241,.55)",lab:"SOCIO CLASSIC",top:"CLASSIC",pill:0},
   premium:{img:"media/flyers/bienvenida-premium.jpg?v=7",a:"#E8C766",g:["#FBEFC0","#D4AF37","#8C6A12"],glow:"rgba(212,175,55,.5)",lab:"SOCIO PREMIUM",top:"PREMIUM",pill:1}};
-let bienFont=null;function bienFonts(){if(!bienFont)bienFont=Promise.all([["Bebas Neue","media/fonts/BebasNeue-Regular.ttf"]].map(([n,u])=>{try{const f=new FontFace(n,"url("+u+")");return f.load().then(x=>document.fonts.add(x)).catch(()=>{})}catch(e){return null}}));return bienFont}
+let bienFont=null;function bienFonts(){if(!bienFont)bienFont=Promise.all([["Bebas Neue","media/fonts/BebasNeue-Regular.ttf"],["Cormorant Caps","media/fonts/Cormorant-500-caps.ttf"]].map(([n,u])=>{try{const f=new FontFace(n,"url("+u+")");return f.load().then(x=>document.fonts.add(x)).catch(()=>{})}catch(e){return null}}));return bienFont}
 async function bienFotoPat(){try{if(fotosFs===null||fotosFs===undefined)await cargarFotos()}catch(e){}
   const mine=(fotosFs||[]).find(x=>x.id===store.uid&&x.img);const C=[fotoDe(miNombreFull()),fotoDe(miRegistro().nombre||""),fotoDe(miNombreCorto()),mine&&mine.img,fbUser&&fbUser.photoURL].filter(Boolean);
   for(const u of [...new Set(C)]){const im=await imgLoad(u,!/^(data|blob):/.test(u));if(im)return u}return ""}
@@ -4278,6 +4289,7 @@ function fotoFoco(im){try{const S=72,c=document.createElement("canvas");c.width=
 async function hgCara(g,src,fz,cx,cy,r){const im=await imgLoad(src,true);if(!im)return;const W=im.naturalWidth||im.width,H=im.naturalHeight||im.height;
   const fx=fz[0]*W,fy=fz[1]*H,fw=fz[2]*W,fh=fz[3]*H,sd=Math.min(Math.max(fw,fh)*2.3,W,H),mx=fx+fw/2,my=fy+fh/2+sd*.08;
   const l=Math.max(0,Math.min(W-sd,mx-sd/2)),t=Math.max(0,Math.min(H-sd,my-sd/2));g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();g.drawImage(im,l,t,sd,sd,cx-r,cy-r,2*r,2*r);g.restore()}
+function rgbTop(im,w,h){try{const c=document.createElement("canvas");c.width=8;c.height=2;const x=c.getContext("2d",{willReadFrequently:true});x.drawImage(im,0,0,w,Math.max(1,h*.04),0,0,8,2);const d=x.getImageData(0,0,8,2).data;let R=0,G=0,B=0;for(let i=0;i<d.length;i+=4){R+=d[i];G+=d[i+1];B+=d[i+2]}const n=d.length/4;return[(R/n*.55)|0,(G/n*.55)|0,(B/n*.55)|0]}catch(e){return[30,34,42]}}
 async function circFoto(g,src,cx,cy,r,ph,vacio){const im=src?await imgLoad(src,!/^(data|blob):/.test(src)):null;
   g.save();g.imageSmoothingEnabled=true;g.imageSmoothingQuality="high";g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();
   if(!im){if(vacio)vacio();g.restore();return}
@@ -4287,10 +4299,12 @@ async function circFoto(g,src,cx,cy,r,ph,vacio){const im=src?await imgLoad(src,!
   dx=cl(dx,cx+r-iw,cx-r);
   // 5 nov: si la cabeza viene pegada al borde de arriba de la foto, la bajamos (máx. 0.4 r) y rellenamos arriba con el color del borde de la foto
   let gap=0,rgb=[43,47,54];if(f&&dy>cy-r){gap=Math.min(dy-(cy-r),.4*r);dy=cy-r+gap}else dy=cl(dy,cy+r-ih,cy-r);
-  if(gap>0){try{const c=document.createElement("canvas");c.width=16;c.height=4;const x=c.getContext("2d",{willReadFrequently:true});x.drawImage(im,0,0,w,Math.max(1,h*.04),0,0,16,4);const d=x.getImageData(0,0,16,4).data;let R=0,G=0,B=0;for(let i=0;i<d.length;i+=4){R+=d[i];G+=d[i+1];B+=d[i+2]}const n=d.length/4;rgb=[R/n|0,G/n|0,B/n|0]}catch(e){}
-    g.fillStyle=`rgb(${rgb})`;g.fillRect(cx-r,cy-r,2*r,2*r)}
-  g.drawImage(im,dx,dy,iw,ih);
-  if(gap>0){try{const fd=Math.min(ih*.05,r*.15),gr=g.createLinearGradient(0,dy,0,dy+fd);gr.addColorStop(0,`rgba(${rgb},1)`);gr.addColorStop(1,`rgba(${rgb},0)`);g.fillStyle=gr;g.fillRect(cx-r,dy-1,2*r,fd+1)}catch(e){}}
+  if(gap>0){ // 6 nov: rellena arriba estirando la franja superior de la misma foto, muy suavizada (sin bloque de color), y funde la unión
+    {const gv=g.createLinearGradient(0,cy-r,0,cy-r+gap+r*.3);gv.addColorStop(0,"#05070d");gv.addColorStop(1,"rgb("+rgbTop(im,w,h)+")");g.fillStyle=gv;g.fillRect(cx-r,cy-r,2*r,gap+r*.3)}
+    try{const fd=Math.min(r*.45,ih*.16),oc=document.createElement("canvas");oc.width=Math.ceil(iw);oc.height=Math.ceil(ih);const o=oc.getContext("2d");o.imageSmoothingQuality="high";o.drawImage(im,0,0,iw,ih);
+      o.globalCompositeOperation="destination-in";const gm=o.createLinearGradient(0,0,0,ih);gm.addColorStop(0,"rgba(0,0,0,0)");gm.addColorStop(Math.min(.9,fd/ih),"rgba(0,0,0,1)");gm.addColorStop(1,"rgba(0,0,0,1)");o.fillStyle=gm;o.fillRect(0,0,iw,ih);
+      g.drawImage(oc,dx,dy,iw,ih)}catch(e){g.drawImage(im,dx,dy,iw,ih)}
+  }else g.drawImage(im,dx,dy,iw,ih);
   g.restore()}
 window.__circFoto=circFoto;
 async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo){n=nv(n);pat=nv(pat);const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");const T=BIEN_TH[plan]||BIEN_TH.classic;
@@ -6843,7 +6857,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261106124903";var busy=false,pend=null;
+(function(){var V="20261106130340";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

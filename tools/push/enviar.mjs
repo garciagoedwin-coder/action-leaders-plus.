@@ -336,9 +336,11 @@ async function main() {
       const no = ((J.config || {}).lzNoAuto || []);
       const P = (await db.collection("push").where("sis", "==", 1).get()).docs.filter(d => !yaU.has(d.id) && d.data().tk);
       for (const d of P) {
-        const u = await db.doc("users/" + d.id).get(), nm = ((u.exists && u.data().registro) || {}).nombre || "";
+        const u = await db.doc("users/" + d.id).get(), ud = u.exists ? u.data() : {}, nm = (ud.registro || {}).nombre || "";
         if (!nm || no.some(x => mismoNombre(x, nm))) continue;
         const x = d.data(); hist[d.id] = x.h || [];
+        const cp = ud.comp && ud.comp.mes === mes && !ud.comp.no;
+        if (!cp) { salida.push([d.id, x.tk, { title: "⚔️ " + primer(nm) + ", haga su compromiso del mes", body: "Es el primer paso para entrar al grupo de WhatsApp del Sistema de liderazgo. Hágalo en Inicio de la app 🎯" }]); continue; }
         salida.push([d.id, x.tk, pick([
           { title: "⚔️ " + primer(nm) + ", su grupo lo espera", body: "Entre al grupo del Sistema de liderazgo y preséntese con su flyer. Está en Inicio de la app 👋" },
           { title: "👋 Preséntese en el grupo del sistema", body: "El equipo quiere darle la bienvenida, " + primer(nm) + ". Abra la app y toque «Entrar al grupo»." },
