@@ -4577,6 +4577,16 @@ const LZP=x=>!!x&&x.lzT==="pres";
 // Invitados especiales de la Presentación de negocios (hasta 2 → máx. 4 personas en el flyer): ci.lzX=[{u,n,r}]
 const lzXs=ci=>(ci&&ci.lzX||[]).slice(0,2).map(x=>({n:x.n,r:x.r||"",foto:fotoDe(x.n,0,x.u)}));
 const LZW=x=>LZP(x)?{ic:"🎤",el:"la presentación de negocios",cor:"presentación",Cor:"Presentación",la:"la presentación"}:{ic:"🚀",el:"el lanzamiento",cor:"lanzamiento",Cor:"Lanzamiento",la:"el lanzamiento"};
+// Horarios en 4 zonas (Presentación de negocios): fecha AAAA-MM-DD + hora HH:MM de Honduras (UTC-6)
+const LZ_ZN=[["🇭🇳","HONDURAS","America/Tegucigalpa"],["🇺🇸","MIAMI","America/New_York"],["🇪🇸","ESPAÑA","Europe/Madrid"],["🇬🇧","REINO UNIDO","Europe/London"]];
+const lzZn=n=>({HONDURAS:"Honduras",MIAMI:"Miami","ESPAÑA":"España","REINO UNIDO":"Reino Unido"})[n]||n;
+window.__lzT=o=>({g:lzGrupoMsg(o),p:lzMsg(o,"")});
+function lzGrupoMsg(o){const N=[o.nA,o.nB].concat((o.extra||[]).map(e=>e.n)).filter(Boolean).map(n=>"*"+nv(n)+"*"),con=N.length>1?N.slice(0,-1).join(", ")+" y "+N[N.length-1]:N[0]||"";
+  return ["🎤 *PRESENTACIÓN DE NEGOCIOS*","","Descubra cómo viajar más, gastar menos y emprender desde su celular ✈️","",con?"👥 Con "+con:"","",`📅 *${o.fecha}*`].concat((o.zonas||[]).map(z=>`${z.fl} ${lzZn(z.n)} ${z.h}${z.sig?" (día siguiente)":""}`))
+   .concat(["",o.enlace?"🎥 Por Zoom:\n"+o.enlace:"🎥 Por Zoom","","Equipo, ¡invitemos a nuestros prospectos! Conéctese 10 minutos antes 🙌"]).concat(o.yo?["","*"+o.yo+"*"]:[]).join("\n").replace(/\n\n\n+/g,"\n\n")}
+function lzZonas(f,h){try{const[y,m,d]=f.split("-").map(Number),[hh,mm]=String(h).split(":").map(Number);const t=Date.UTC(y,m-1,d,hh+6,mm||0);
+  return LZ_ZN.map(([fl,n,tz])=>{const fm=new Intl.DateTimeFormat("es",{timeZone:tz,hour:"numeric",minute:"2-digit",hour12:true}).format(new Date(t)).replace(/\s?a\.?\s?m\.?/i," a.m.").replace(/\s?p\.?\s?m\.?/i," p.m.").replace(/\u00a0/g," ");
+    const dd=new Intl.DateTimeFormat("en-CA",{timeZone:tz,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(t));return{fl,n,h:fm,sig:dd>f}})}catch(e){return[]}}
 const LZ_L={
   h:{W:1080,H:1920,logo:[72,263,40],k:[682,260,326,45],a:[377,168,200],b:[545,138,164],sub:[736,83,32],card:{y:891,h:357,x:[72,549],w:459,ph:[912,200],small:[1128,20,16],name:[1152,42,38],rk:[1198,29,23]},chips:[1320,64,27],info:[72,1456,936,114]},
   p:{W:1080,H:1350,logo:[64,59,40],k:[690,56,326,45],a:[158,148,176],b:[305,123,146],sub:[459,75,29],card:{y:590,h:300,x:[64,549],w:467,ph:[611,150],small:[777,20,16],name:[799,37,34],rk:[841,29,23]},ul:[947,62,52],info:[64,1180,952,114]}};
@@ -4602,9 +4612,14 @@ async function lzCanvas(o,fmt,fondo){fmt=fmt==="h"?"h":"p";const L=LZ_L[fmt],cv=
     {const fs=NC>3?Math.round(cd.small[2]*.78):NC>2?Math.round(cd.small[2]*.9):cd.small[2];tx(lab,cx,cd.small[0],cd.small[1],"700 "+fs+"px ALO, Figtree, sans-serif",GO,"center",NC>3?"1px":"3px")}
     fit(nv(n),"700 {s}px ALO, Figtree, sans-serif",cd.name[2],w-30,20);tx(nv(n),cx,cd.name[0],cd.name[1],g.font,"#fff","center");
     if(rk){fit(rk,"400 {s}px ALOR, Figtree, sans-serif",cd.rk[2],w-30,14);tx(rk,cx,cd.rk[0],cd.rk[1],g.font,"rgba(255,255,255,.75)","center")}}
-  if(L.chips){const[y,h,s]=L.chips,f="700 "+s+"px ALO, Figtree, sans-serif";g.font=f;const ws=LZ_TXT.chips.map(t=>g.measureText(t).width+40);const tot=ws.reduce((a,b)=>a+b,0)+20;let x=C-tot/2;
+  if(PR&&o.zonas&&o.zonas.length){const Z=o.zonas,sg=Z.some(z=>z.sig),y=fmt==="h"?(sg?1278:1292):930,h=sg?170:150,x0=L.info[0],w=L.info[2],cw=w/Z.length;
+    rr(x0,y,w,h,26);g.fillStyle="rgba(255,255,255,.065)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(245,196,81,.35)";g.stroke();
+    Z.forEach((z,i)=>{const cx=x0+cw*i+cw/2;if(i){g.fillStyle="rgba(255,255,255,.12)";g.fillRect(x0+cw*i,y+24,1,h-48)}
+      tx(z.fl,cx,y+14,44,"38px sans-serif","#fff","center");tx(z.n,cx,y+60,24,"700 17px ALO, Figtree, sans-serif",GO,"center","2px");
+      fit(z.h+(z.sig?"*":""),"700 {s}px ALO, Figtree, sans-serif",34,cw-16,20);tx(z.h+(z.sig?"*":""),cx,y+88,44,g.font,"#fff","center")});if(sg)tx("* del día siguiente",x0+w/2,y+138,22,"400 15px ALOR, Figtree, sans-serif","rgba(255,255,255,.65)","center")}
+  else if(L.chips){const[y,h,s]=L.chips,f="700 "+s+"px ALO, Figtree, sans-serif";g.font=f;const ws=LZ_TXT.chips.map(t=>g.measureText(t).width+40);const tot=ws.reduce((a,b)=>a+b,0)+20;let x=C-tot/2;
     LZ_TXT.chips.forEach((t,i)=>{rr(x,y,ws[i],h,h/2);g.fillStyle="rgba(255,255,255,.09)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(245,194,79,.4)";g.stroke();tx(t,x+ws[i]/2,y,h,f,"#fff","center");x+=ws[i]+10})}
-  if(L.ul){const[y0,st,bx]=L.ul;LZ_TXT.ul.forEach(([ic,b,r],i)=>{const y=y0+i*st;rr(64,y,bx,bx,16);g.fillStyle="rgba(245,196,81,.12)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(245,196,81,.33)";g.stroke();
+  if(!(PR&&o.zonas&&o.zonas.length)&&L.ul){const[y0,st,bx]=L.ul;LZ_TXT.ul.forEach(([ic,b,r],i)=>{const y=y0+i*st;rr(64,y,bx,bx,16);g.fillStyle="rgba(245,196,81,.12)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(245,196,81,.33)";g.stroke();
     tx(ic,64+bx/2,y,bx,"28px sans-serif","#fff","center");tx2(b,r,130,y,bx,"700 26px ALO, Figtree, sans-serif","400 26px ALOR, Figtree, sans-serif","#fff","rgba(255,255,255,.9)","left")})}
   {const[x,y,w,h]=L.info;rr(x,y,w,h,26);g.fillStyle="rgba(255,255,255,.065)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(255,255,255,.14)";g.stroke();
    const zt=o.zoom===false?"📱 En vivo":"🎥 Por Zoom";g.font="700 24px ALO, Figtree, sans-serif";const zw=g.measureText(zt).width+40,zx=x+w-19-zw;
@@ -4613,7 +4628,7 @@ async function lzCanvas(o,fmt,fondo){fmt=fmt==="h"?"h":"p";const L=LZ_L[fmt],cv=
    while(fs>22){g.font="700 "+fs+"px ALO, Figtree, sans-serif";if(g.measureText(o.fecha).width+g.measureText(hT).width<=free)break;fs--}
    const w1=g.measureText(o.fecha).width,w2=g.measureText(hT).width;let cx=x+7;
    const col=(lab,val,ww)=>{g.fillStyle=GO;g.fillRect(cx,y+19,4,76);tx(lab,cx+22,y+23,21,"700 17px ALO, Figtree, sans-serif",GO,"left","3px");tx(val,cx+22,y+46,45,"700 "+fs+"px ALO, Figtree, sans-serif","#fff","left");cx+=4+18+ww+18+14};
-   col("FECHA",o.fecha,w1);col("HORA",hT,w2);
+   col("FECHA",o.fecha,w1);if(!(PR&&o.zonas&&o.zonas.length))col("HORA",hT,w2);
    rr(zx,y+(h-58)/2,zw,58,29);g.fillStyle="#2D8CFF";g.fill();tx(zt,zx+zw/2,y+(h-58)/2,58,"700 24px ALO, Figtree, sans-serif","#fff","center")}
   return cv}
 // ---------- Lanzamiento de negocio (flyer + invitación al líder + invitados) ----------
@@ -4622,8 +4637,8 @@ function lzTz(){let z="";try{z=Intl.DateTimeFormat().resolvedOptions().timeZone}
 function lzRango(n){try{const i=rangoActualIdx({},n);return i>=0&&RANGOS[i]?RANGOS[i].n:"Líder del equipo"}catch(e){return"Líder del equipo"}}
 function lzFechaTxt(f){const d=parseK(f),w=DAYS_L[d.getDay()];return w[0].toUpperCase()+w.slice(1)+" "+d.getDate()+" de "+MONTHS[d.getMonth()].toLowerCase()}
 async function lzFile(o,fmt,fondo){fmt=fmt||LS.get("lzFmt")||"p";fondo=fondo||LS.get("lzFondo")||"ny";const cv=await lzCanvas(o,fmt,fondo);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));return new File([b],(o.tipo==="pres"?"Presentacion":"Lanzamiento")+".jpg",{type:"image/jpeg"})}
-function lzMsg(o,first){const[pais,fl]=lzTz();return [`¡Hola${first?", "+first:""}! 👋`,"",o.tipo==="pres"?(o.lider?`Quiero invitarle a una *presentación de negocios* junto a *${o.nA}*, a quien acompaño como su líder.`:`Quiero invitarle a una *presentación de negocios* junto a mi líder *${o.nB}*. Va a conocer cómo viajar más, gastar menos y emprender desde su celular.`):o.lider?`Quiero invitarle a algo muy especial: *el lanzamiento de negocio de ${o.nA}*, a quien acompaño como su líder.`:`Quiero invitarle a algo muy especial para mí: *el lanzamiento de mi negocio*, junto a mi líder *${o.nB}*.`,"",`📅 *${o.fecha}*`,`🕖 ${o.hora} (hora de ${pais}${fl?" "+fl:""})`].concat(o.enlace?["","🎥 Entre por Zoom aquí:",o.enlace]:["","🎥 En vivo por Zoom"]).concat(["","Sería muy importante para mí contar con usted. ¿Me confirma? 🙏"]).concat(o.yo?["","*"+o.yo+"*"]:[]).join("\n")}
-function lzDatos(ci){const yo=miRegistro().nombre||miNombreFull()||"";if(ci.lzE){const nA=ci.lzSN||"";return{lider:1,nA,nB:yo,rB:lzRango(yo),fotoA:fotoDe(nA,0,ci.lzSU),fotoB:miFotoUrl(),fecha:lzFechaTxt(ci.fecha),hora:h12(ci.hora),flag:lzTz()[1],enlace:ci.enlace||"",yo:miNombreCorto()||"",tipo:ci.lzT||"",extra:lzXs(ci)}}const nB=ci.lzN||"";return{tipo:ci.lzT||"",extra:lzXs(ci),nA:yo,nB,rB:ci.lzR||lzRango(nB),fotoA:miFotoUrl(),fotoB:fotoDe(nB,0,ci.lzU),fecha:lzFechaTxt(ci.fecha),hora:h12(ci.hora),flag:lzTz()[1],enlace:ci.enlace||"",yo:miNombreCorto()||""}}
+function lzMsg(o,first){first=String(first||"").trim();if(!/\p{L}/u.test(first))first="";const[pais,fl]=lzTz();return [`¡Hola${first?", "+first:""}! 👋`,"",o.tipo==="pres"?(o.lider?`Quiero invitarle a una *presentación de negocios* junto a *${o.nA}*, a quien acompaño como su líder.`:`Quiero invitarle a una *presentación de negocios* junto a mi líder *${o.nB}*. Va a conocer cómo viajar más, gastar menos y emprender desde su celular.`):o.lider?`Quiero invitarle a algo muy especial: *el lanzamiento de negocio de ${o.nA}*, a quien acompaño como su líder.`:`Quiero invitarle a algo muy especial para mí: *el lanzamiento de mi negocio*, junto a mi líder *${o.nB}*.`,"",`📅 *${o.fecha}*`].concat(o.zonas&&o.zonas.length?o.zonas.map(z=>`${z.fl} ${lzZn(z.n)} ${z.h}${z.sig?" (día siguiente)":""}`):[`🕖 ${o.hora} (hora de ${pais}${fl?" "+fl:""})`]).concat(o.enlace?["","🎥 Entre por Zoom aquí:",o.enlace]:["","🎥 En vivo por Zoom"]).concat(["","Sería muy importante para mí contar con usted. ¿Me confirma? 🙏"]).concat(o.yo?["","*"+o.yo+"*"]:[]).join("\n")}
+function lzDatos(ci){const yo=miRegistro().nombre||miNombreFull()||"";if(ci.lzE){const nA=ci.lzSN||"";return{lider:1,nA,nB:yo,rB:lzRango(yo),fotoA:fotoDe(nA,0,ci.lzSU),fotoB:miFotoUrl(),fecha:lzFechaTxt(ci.fecha),hora:h12(ci.hora),flag:lzTz()[1],enlace:ci.enlace||"",yo:miNombreCorto()||"",tipo:ci.lzT||"",extra:lzXs(ci),zonas:LZP(ci)?lzZonas(ci.fecha,ci.hora):null}}const nB=ci.lzN||"";return{tipo:ci.lzT||"",extra:lzXs(ci),zonas:LZP(ci)?lzZonas(ci.fecha,ci.hora):null,nA:yo,nB,rB:ci.lzR||lzRango(nB),fotoA:miFotoUrl(),fotoB:fotoDe(nB,0,ci.lzU),fecha:lzFechaTxt(ci.fecha),hora:h12(ci.hora),flag:lzTz()[1],enlace:ci.enlace||"",yo:miNombreCorto()||""}}
 async function abrirLanz(tipo){if(ahGate())return;const PR=tipo==="pres",W=LZW({lzT:PR?"pres":""});if(!store.db||!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}
   if(!(fotosFs||[]).length)try{await cargarFotos()}catch(e){}
   if(mios===null)try{await loadMios()}catch(e){}
@@ -4669,6 +4684,7 @@ async function lzVer(ci){const o=lzDatos(ci);let file=null;
    <div class="seg" id="lzFmtS"><button type="button" data-f="p">🖼️ Publicación</button><button type="button" data-f="h">📱 Historia</button></div>
    <div id="lzBox" style="aspect-ratio:1080/1350;border-radius:14px;overflow:hidden;background:#070B14;display:grid;place-items:center;position:relative"><img id="lzImg" alt="Flyer del lanzamiento" style="width:100%;display:block;grid-area:1/1"><span id="lzWait" class="small" style="color:#fff;grid-area:1/1">Creando su flyer…</span></div>
    ${ci.lzR3?"":ci.l3?`<button class="btn" id="lzAv" style="width:100%;background:#25D366;color:#fff">💬 Avisar a ${esc(((ci.lzE?ci.lzSN:ci.lzN)||"").split(" ")[0])} por WhatsApp</button>`:`<button class="btn" id="lzLd" style="width:100%">📩 Enviar invitación a ${esc(((ci.lzE?ci.lzSN:ci.lzN)||"").split(" ")[0])}</button>`}
+   ${LZP(ci)?`<button class="btn" id="lzGr" style="width:100%;background:#0A7DAD;color:#fff">📣 Compartir en grupos</button>`:""}
    <button class="btn" id="lzInv" style="width:100%;background:#25D366;color:#fff">👥 Invitar a mis prospectos${(ci.inv||[]).length?" ("+ci.inv.length+" invitados)":""}</button>${(ci.inv||[]).length?`<button class="btn ghost" id="lzRec" style="width:100%">⏰ Recordar a mis invitados</button>`:""}
    <div class="row" style="gap:8px"><button class="btn ghost grow" id="lzDl">⬇️ Guardar flyer</button><button class="btn ghost grow" data-close>Cerrar</button></div>`,()=>{
     let fmt=LS.get("lzFmt")||"p",fo="ny",nv=0;
@@ -4678,7 +4694,10 @@ async function lzVer(ci){const o=lzDatos(ci);let file=null;
     $("#lzFmtS").onclick=e=>{const b=e.target.closest("[data-f]");if(!b||b.dataset.f===fmt)return;fmt=b.dataset.f;LS.set("lzFmt",fmt);pinta()};
     pinta();
     const ld=$("#lzLd");if(ld)ld.onclick=()=>lzInvitarLider(ci);const av=$("#lzAv");if(av)av.onclick=()=>citaAvisar(ci);
-    $("#lzInv").onclick=()=>{closeSheet();setTimeout(()=>lzInvitados(ci),250)};const lr=$("#lzRec");if(lr)lr.onclick=()=>{closeSheet();setTimeout(()=>recLista(recLz(ci)),250)};
+    $("#lzInv").onclick=()=>{closeSheet();setTimeout(()=>lzInvitados(ci),250)};
+    {const gr=$("#lzGr");if(gr)gr.onclick=async()=>{const t=lzGrupoMsg(o);if(!file){toast("El flyer aún se está creando");return}
+      if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.clipboard.writeText(t)}catch(x){}try{await navigator.share({files:[file],text:t});return}catch(x){if(x&&x.name==="AbortError")return}}
+      try{await navigator.clipboard.writeText(t);toast("📋 Texto copiado. Guarde el flyer y péguelo en su grupo.")}catch(x){}const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click();setTimeout(()=>{location.href="https://wa.me/?text="+encodeURIComponent(t)},600)}}const lr=$("#lzRec");if(lr)lr.onclick=()=>{closeSheet();setTimeout(()=>recLista(recLz(ci)),250)};
     $("#lzDl").onclick=async()=>{if(!file){toast("El flyer aún se está creando");return}if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file]});return}catch(x){if(x&&x.name==="AbortError")return}}const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=(LZP(ci)?"Presentacion":"Lanzamiento")+".jpg";a.click()}})}
 async function lzInvitarLider(ci){const bt=$("#lzLd");if(bt)bt.disabled=true;
   const pu=ci.lzE?ci.lzSU:ci.lzU,pn=ci.lzE?ci.lzSN:ci.lzN;const d={de:store.uid,deN:miRegistro().nombre||miNombreCorto(),para:pu,paraN:pn,pros:LZP(ci)?"Presentación de negocios":"Lanzamiento de negocio",cid:"",fecha:ci.fecha,hora:ci.hora,tipo:"zoom",enlace:ci.enlace||"",nota:"",lz:true,lzE:!!ci.lzE,lzT:ci.lzT||"",lzX:ci.lzX||[],estado:"pendiente",nP:true,nD:false,t:Date.now()};
@@ -6739,7 +6758,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261105234535";var busy=false,pend=null;
+(function(){var V="20261105235823";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
