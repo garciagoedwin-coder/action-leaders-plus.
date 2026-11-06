@@ -234,6 +234,9 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .pl-f{display:flex;align-items:center;gap:8px;font:inherit;font-size:12.5px;font-weight:700;border:0;background:none;color:inherit;padding:3px 0;width:100%;text-align:left;cursor:pointer}.pl-f em{font-style:normal;color:var(--muted)}.pl-f span{width:118px;flex:none}.pl-f i{flex:1;height:16px;border-radius:6px;background:var(--surface-2);overflow:hidden}.pl-f s{display:block;height:100%;border-radius:6px;text-decoration:none}.pl-f b{width:30px;text-align:right}
 .pl-r{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}.pl-r:last-child{border:0}.pl-p{font-size:17px;flex:none}
 .retoStrip{display:flex;align-items:center;gap:10px;border-radius:14px;padding:11px 13px;font-size:13.5px;cursor:pointer;color:#fff;background:linear-gradient(120deg,#06B6D4,#0A7DAD 60%,#0B4F7A)}
+.pban.cl>*:not(.pb-mini){display:none}.pban:not(.cl)>.pb-mini{display:none}.pban.cl{padding:12px 14px;cursor:pointer}.pb-tg:not(.cl) .pb-close{display:block}
+.pb-mini{display:flex;align-items:center;gap:10px;position:relative}.pb-mini .i{font-size:28px;flex:none}.pb-mini .t{flex:1;min-width:0}.pb-mini .t small{display:block;font-size:10.5px;letter-spacing:.14em;font-weight:800;opacity:.85}.pb-mini .t b{display:block;font-size:16px;line-height:1.15}.pb-mini .t span{display:block;font-size:12.5px;opacity:.92;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pb-mini .v{flex:none;background:#FDE68A;color:#3b2a00;font-weight:800;font-size:12.5px;padding:7px 11px;border-radius:999px;white-space:nowrap}
+.pb-close{display:none;text-align:center;font-weight:800;font-size:13px;opacity:.9;cursor:pointer;position:relative;padding-top:2px}
 .pban{position:relative;overflow:hidden;border-radius:22px;padding:16px;color:#fff;display:flex;flex-direction:column;gap:10px}
 .pb-rt{background:radial-gradient(120% 80% at 100% 0%,#FDE68A 0 14%,transparent 15%),linear-gradient(165deg,#22D3EE 0%,#0891B2 45%,#075985 100%)}
 .pb-bk{background:radial-gradient(90% 70% at 100% 0%,rgba(253,224,71,.35),transparent 60%),linear-gradient(160deg,#7C3AED 0%,#5B21B6 50%,#312E81 100%)}
@@ -2252,7 +2255,7 @@ const FEL_MSG=[
  (n,s,r)=>`¡Muy bien, ${n}! 💯\n\nFelicidades por la activación de ${s}. Su esfuerzo se nota.${r}\n\nAhora a duplicar: acompañe a ${s} en su rutina desde el primer día.`,
  (n,s,r)=>`${n}, ¡felicidades por su nuevo socio! 🥳\n\nLa llegada de ${s} es fruto de su trabajo diario.${r}\n\nMe llena de orgullo su avance. ¡Siga brillando!`];
 function felReto(nom){try{const P=(T.config||{}).premios;if(!P||!P.vol||Date.now()>=Date.parse(P.fin))return"";const rk=rankDe(nom),v=rk?rk.V:0,min=+P.vol.min||1000;if(!v)return"";
-  return v>=min?`\n\n🏝️ Ya lleva ${fmt(v)} pts: ¡va en camino a Roatán!`:`\n\n🏝️ Ya suma ${fmt(v)} pts para el reto de Roatán. Le faltan ${fmt(min-v)} para los ${fmt(min)}.`}catch(e){return""}}
+  return v>=min?`\n\n🎟️ Ya lleva ${fmt(v)} pts: ¡va en camino al incentivo de viaje!`:`\n\n🎟️ Ya suma ${fmt(v)} pts para el incentivo de viaje. Le faltan ${fmt(min-v)} para los ${fmt(min)}.`}catch(e){return""}}
 function felMsg(g,a){const n=(g.nom||"").trim().split(/\s+/)[0],s=String(a.socio||"").trim().split(/\s+/)[0].toLowerCase().replace(/^\S/,c=>c.toUpperCase()),
   i=parseInt(ahF((store.uid||"")+"|"+banK(a)),16)%FEL_MSG.length;return FEL_MSG[i](n,s,felReto(g.nom),a.paquete||"")}
 function banFelicitar(g){const L=g.F||[];if(!L.length||!g.sp)return;const a=L[L.length-1];banMarca("banFel",L);
@@ -3122,15 +3125,16 @@ function premBanner(k){const D=premDatos();if(!D)return"";const{P,min,yo,myV,myG
     return `<div class="pban pb-rt" id="pbVol"><div class="pb-wave"></div><div class="pb-ic">${esc(P.vol.ic||"🚀")}</div><div class="pb-top"><span class="pb-k">PREMIO DEL MES</span><span class="pb-cd">⏳ ${esc(cd)}</span></div>
      <h2>🚀 Más activaciones del mes</h2><p class="pb-p">Para el socio que más personas active este mes. <b>El premio se anuncia muy pronto.</b></p>
      ${x?`<div class="pb-lead">${avHTML(x.n,false,false)}<div style="flex:1;min-width:0"><b>${esc(nv(x.n))}</b><small>${x.A} ${x.A===1?"activación":"activaciones"} · 1.er lugar</small></div></div>`:`<div class="pb-lead"><b>¡Nadie ha activado aún! Sea el primero.</b></div>`}</div>`}
-  if(k==="vol"){const win=v1&&v1.V>=min?(empV?"¡Empatados!":"🏆 Va para Roatán"):"";
-    const me=yo?(v1&&v1.n===yo.n?(myV>=min?(empV?"¡Va empatado en primer lugar! Una activación más y se desempata 🔥":"🏆 <b>¡Usted va primero rumbo a Roatán!</b> Siga sumando para asegurarlo."):`<b>¡Usted va primero!</b> Le faltan <b>${fmt(min-myV)} pts</b> para el mínimo de ${fmt(min)}.`):
+  if(k==="vol"){const win=v1&&v1.V>=min?(empV?"¡Empatados!":"🏆 Va ganando"):"";let op=false;try{op=LS.get("pbOpen")===1}catch(e){}
+    const me=yo?(v1&&v1.n===yo.n?(myV>=min?(empV?"¡Va empatado en primer lugar! Una activación más y se desempata 🔥":"🏆 <b>¡Usted va primero por el incentivo de viaje!</b> Siga sumando para asegurarlo."):`<b>¡Usted va primero!</b> Le faltan <b>${fmt(min-myV)} pts</b> para el mínimo de ${fmt(min)}.`):
       `Usted lleva <b>${fmt(myV)} pts</b>. ${(()=>{const meta=Math.max(min,v1?v1.V+1:min),f=meta-myV;return `Le faltan <b>${fmt(f)} pts</b> para ${v1&&v1.V>=min?"pasar al primer lugar":"llegar a "+fmt(min)} (≈ ${Math.ceil(f/500)} Premium o ${Math.ceil(f/200)} Classic).`})()}`):"Active socios nuevos este mes y sume volumen personal.";
-    return `<div class="pban pb-rt" id="pbVol"><div class="pb-wave"></div><div class="pb-ic">${esc(P.vol.ic||"🏝️")}</div>
+    return `<div class="pban pb-rt pb-tg${op?"":" cl"}" id="pbVol"><div class="pb-mini"><span class="i">${esc(P.vol.ic||"🎟️")}</span><span class="t"><small>PREMIO DEL MES</small><b>${esc(P.vol.h||"¡Gánese un "+P.vol.t+"!")}</b><span>${v1?"1.º "+esc(nv(v1.n))+" · "+fmt(v1.V)+" pts · ":""}⏳ ${esc(cd)}</span></span><span class="v">Ver ›</span></div>
+     <div class="pb-wave"></div><div class="pb-ic">${esc(P.vol.ic||"🏝️")}</div>
      <div class="pb-top"><span class="pb-k">PREMIO DEL MES</span><span class="pb-cd">⏳ ${esc(cd)}</span></div>
-     <h2>¡Gánese un ${esc(P.vol.t)}!</h2><p class="pb-p">Gana <b>un solo socio</b>: el de más volumen personal del mes, con mínimo <b>${fmt(min)} pts</b>. Si hay empate, sigue el próximo mes.</p>
+     <h2>${esc(P.vol.h||"¡Gánese un "+P.vol.t+"!")}</h2>${P.vol.sub?`<p class="pb-p" style="font-size:16px;margin-top:-4px"><b>${esc(P.vol.sub)}</b></p>`:""}<p class="pb-p">Gana <b>un solo socio</b>: el de más volumen personal del mes, con mínimo <b>${fmt(min)} pts</b>. Si hay empate, sigue el próximo mes.</p>
      ${lead(v1,v1?v1.V:0,win,v1?v1.V*100/min:null).replace(" · 1.er lugar"," pts · 1.er lugar")}
      <div class="pb-me">${me}${yo?`<div class="pb-bar"><i style="width:${Math.max(2,Math.min(100,myV*100/min))}%"></i></div>`:""}</div>
-     <div class="pb-ch"><span>💎 500+: Membresía gratuita</span><span>⭐ 200+: Sistema de Líderes</span></div></div>`}
+     <div class="pb-ch"><span>💎 500+: Membresía gratuita</span><span>⭐ 200+: Sistema de Líderes</span></div><div class="pb-close">Toque para cerrar ▴</div></div>`}
   const win=g1?(empG?"¡Empatados!":"📚 Va ganando"):"";
   const me=yo?(g1&&g1.n===yo.n?(empG?"¡Va empatado en primer lugar en registros!":"📚 <b>¡Usted va primero en registros!</b>"):`Usted lleva <b>${myG}</b> ${myG===1?"registro":"registros"}. Le ${g1&&g1.G-myG+1===1?"falta":"faltan"} <b>${g1?g1.G-myG+1:1}</b> para pasar al primer lugar.`):"";
   return `<div class="pban pb-bk" id="pbReg"><div class="pb-wave"></div><div class="pb-ic">${esc(P.reg.ic||"📚")}</div>
@@ -3139,6 +3143,8 @@ function premBanner(k){const D=premDatos();if(!D)return"";const{P,min,yo,myV,myG
    ${lead(g1,g1?g1.G:0,win,null).replace(" · 1.er lugar",(g1&&g1.G===1?" registro":" registros")+" · 1.er lugar")}
    ${me?`<div class="pb-me">${me}${yo&&g1?`<div class="pb-bar"><i style="width:${Math.max(2,Math.min(100,myG*100/Math.max(1,g1.G)))}%"></i></div>`:""}</div>`:""}</div>`}
 function premConfeti(k){const el=$(k==="vol"?"#pbVol":"#pbReg");if(!el)return;const K="premConf:"+k+":"+TODAY;try{if(LS.get(K))return;LS.set(K,1)}catch(e){}const D=premDatos();if(D&&!D.cerrado)setTimeout(()=>confeti(el,64),400)}
+// Tarjeta del premio: cerrada por defecto (.cl); se abre al tocarla y se cierra con "Toque para cerrar" (LS pbOpen)
+document.addEventListener("click",e=>{const b=e.target.closest(".pb-tg");if(!b)return;if(b.classList.contains("cl")){b.classList.remove("cl");try{LS.set("pbOpen",1)}catch(x){}}else if(e.target.closest(".pb-close")){b.classList.add("cl");try{LS.set("pbOpen",0)}catch(x){}}});
 var RETO_STRIP_OFF=true; // franja del reto del mes (Roatán) quitada de Inicio el 31 oct
 let rcJ=null,rcJT=0,rcTick=null;
 function rcN(t){return String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z ]/g," ").replace(/\s+/g," ").trim()}
@@ -3461,7 +3467,7 @@ function renderEquipo0(){const b=$("#eqBody");redProbe();redBtn();
     if(rankMetric==="nuevos"){d.sort((a,b)=>(b.vol||0)-(a.vol||0)||b.A-a.A||b.R-a.R||b.P-a.P||String(a.nombre).localeCompare(b.nombre,"es"));d.forEach((x,i)=>x.rk=i+1)}
     if(rankMetric!=="nuevos"){d.sort((a,b)=>b.R-a.R||(b.vol||0)-(a.vol||0)||b.A-a.A||b.P-a.P||String(a.nombre).localeCompare(b.nombre,"es"));d.forEach((x,i)=>x.rk=i+1)}
     const tags=p=>{if(sem)return"";const t=[];
-      const PD=premDatos();if(rankMetric==="nuevos"){if(p.rk===1)t.push(PD?(p.v>=PD.min?'<span class="chip c-gold">🏝️ Roatán</span>':''):'<span class="chip c-gold">✈️ Viaje de incentivo</span>');if(p.v>=500)t.push('<span class="chip c-good">Membresía gratuita</span>');else if(p.v>=200)t.push('<span class="chip c-warn">Action Leader</span>')}
+      const PD=premDatos();if(rankMetric==="nuevos"){if(p.rk===1)t.push(PD?(p.v>=PD.min?'<span class="chip c-gold">🎟️ Incentivo</span>':''):'<span class="chip c-gold">✈️ Viaje de incentivo</span>');if(p.v>=500)t.push('<span class="chip c-good">Membresía gratuita</span>');else if(p.v>=200)t.push('<span class="chip c-warn">Action Leader</span>')}
       else if(p.rk===1)t.push(PD?'<span class="chip c-gold">📚 Libros</span>':'<span class="chip c-gold">📚 Pack de 3 libros</span>');
       return t.length?`<div class="row wrap" style="gap:4px;margin-top:4px;justify-content:center">${t.join("")}</div>`:""};
     const unit=rankMetric==="nuevos"?["socio nuevo","socios nuevos"]:["registro","registros"];
@@ -6641,7 +6647,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261105201114";var busy=false,pend=null;
+(function(){var V="20261105204449";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

@@ -3959,9 +3959,11 @@
    "mes": "2026-11",
    "fin": "2026-12-01T00:00:00Z",
    "vol": {
-    "t": "Viaje a Roatán · 2 noches, 3 días",
-    "ic": "🏝️",
-    "min": 1500
+    "t": "incentivo de viaje",
+    "ic": "🎟️",
+    "min": 1500,
+    "h": "¡Gánese su incentivo de viaje!",
+    "sub": "Su premio en dólares, listo para su próxima aventura."
    },
    "racha": {
     "t": "Libros Go Pro",
