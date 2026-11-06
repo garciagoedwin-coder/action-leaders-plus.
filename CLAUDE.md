@@ -522,3 +522,5 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 ## Premio del mes = "incentivo de viaje" (5 nov, noche · Edwin)
 - Ya NO se menciona Roatán ni un viaje pagado, NI "dólares" ni "efectivo" (Edwin: alguien podría reportar que se paga dinero aparte; la forma de entrega la explican los líderes en persona). config.premios.vol = {t:"incentivo de viaje", h:"¡Gánese su incentivo de viaje!", sub:"Usted elige su próxima aventura.", ic:"🎟️", min:1500}. premBanner usa vol.h (título) y vol.sub. Textos: "🏆 Va ganando", "¡Usted va primero por el incentivo de viaje!", chip del podio "🎟️ Incentivo", mensaje de felicitar "incentivo de viaje". Nunca decir "dinero en efectivo".
 - La tarjeta (#pbVol, clase pb-tg) sale CERRADA (.cl: franja .pb-mini "PREMIO DEL MES · título · 1.º X · pts · ⏳ · Ver ›"); al tocar se abre y "Toque para cerrar ▴" (.pb-close) la cierra. LS pbOpen. Listener global en document (.pb-tg).
+
+- (5 nov, noche) avisos-activaciones.yml espera 3 min (sleep 180) cuando hay activaciones nuevas, para que GitHub Pages publique el ranking antes de que llegue el aviso "¡Nuevo socio en su equipo!" (Edwin vio el aviso antes que el volumen).
