@@ -765,7 +765,8 @@ nav.tabs button{z-index:0;isolation:isolate}
 .irCard.inv{cursor:default}
 .irTop{background:linear-gradient(150deg,#0b1020,#0b3b57 70%,#0A7DAD);color:#fff;border-radius:18px;padding:14px 16px;margin-bottom:10px}
 .irWk{display:flex;gap:6px;margin-bottom:6px}.irWk button{flex:1;border:0;font:inherit;font-size:12.5px;font-weight:800;padding:8px 0;border-radius:11px;background:var(--soft,#E6ECF2);color:var(--muted,#55606b);cursor:pointer}
-.irWk button.ok{background:#FEF3C7;color:#8C6A12}.irWk button.on{background:#0A7DAD;color:#fff}
+.irWk button.ok{background:#FEF3C7;color:#8C6A12}
+.irMdl{display:flex;align-items:center;gap:10px;width:100%;border:0;font:inherit;text-align:left;cursor:pointer;margin:2px 0 8px;padding:10px 12px;border-radius:14px;background:linear-gradient(120deg,#FBEFC0,#D4AF37);color:#3b2a00;box-shadow:0 6px 16px rgba(212,175,55,.25)}.irMdl .ic{font-size:26px;flex:none}.irMdl b{display:block;font-size:14.5px}.irMdl small{display:block;font-size:12px;opacity:.85}.irMdl .go{margin-left:auto;font-weight:800;font-size:20px}.irWk button.on{background:#0A7DAD;color:#fff}
 .irG{background:var(--card,#fff);border-radius:16px;padding:6px 14px;margin-top:10px;border:1px solid var(--line,#E5ECF1)}.irG h4{margin:8px 0 2px;font-size:15px}
 .irIt{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line,#EDF1F5)}.irIt:nth-child(2){border-top:0}
 .irIt .ck{width:26px;height:26px;border-radius:8px;flex:none;display:grid;place-items:center;font-size:15px;border:2px solid #C9D4DE;color:#fff;font-weight:800}.irIt .ck.ok{background:#0A7DAD;border-color:#0A7DAD}
@@ -6242,7 +6243,8 @@ let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()
   el.onclick=e=>{if(e.target.closest("button"))return;irLista()}}catch(e){el.hidden=true;try{console.warn("irRender",e)}catch(x){}}}
 function irLista(n){const E=irEstado(),st=irSt();n=n||E.cur.n;const w=E.W[n-1],G={};w.L.forEach(i=>{(G[i.g]=G[i.g]||[]).push(i)});
   openSheet(`<div class="irTop"><div class="k">🚀 Plan de Inicio Rápido</div><div class="t">Semana ${w.n} · <em>${esc(w.k)}</em></div><div class="irBar"><i style="width:${Math.max(4,Math.round(w.n2/w.L.length*100))}%"></i></div><div class="irMeta"><span><b>${w.n2} de ${w.L.length}</b> listas</span><span>Día ${E.dia} · meta: día ${w.fin}</span></div></div>
-   <div class="irWk">${E.W.map(z=>`<button type="button" data-w="${z.n}" class="${z.n===n?"on":""}${(st.med||{})[z.n]?" ok":""}">${z.ic} Sem ${z.n}</button>`).join("")}</div>
+   <div class="irWk">${E.W.map(z=>`<button type="button" data-w="${z.n}" class="${z.n===n?"on":""}${(st.med||{})[z.n]?" ok":""}">${(st.med||{})[z.n]?"🏅":z.ic} Sem ${z.n}</button>`).join("")}</div>
+   ${(st.med||{})[n]?`<div role="button" tabindex="0" class="irMdl" id="irMedB"><span class="ic">🏅</span><span class="mt" style="flex:1;min-width:0"><b>Insignia ${esc(w.k)} ganada</b><small>${(()=>{try{return "El "+niceDate(dkey(new Date((st.med||{})[n])))+" · "}catch(e){return ""}})()}Toque para celebrar y compartir</small></span><span class="go">›</span></div>`:""}
    ${n>E.cur.n&&!E.grad?`<p class="small muted" style="margin:6px 2px">Esta semana se abre al terminar la semana ${E.cur.n}. Lo que ya tenga hecho se marca solo.</p>`:""}
    ${Object.keys(G).map(g=>`<div class="irG"><h4>${esc(g)}</h4>${G[g].map(i=>`<div class="irIt${i.ok?" d":""}"><span class="ck${i.ok?" ok":""}">${i.ok?"✓":""}</span><span class="tx">${esc(i.t)}${i.ok&&!i.m?` <span class="au">AUTOMÁTICO</span>`:""}${i.s||i.pt?`<small>${esc(i.pt?(i.pt+(i.s?" · "+i.s:"")):i.s)}</small>`:""}</span>${!i.ok&&i.b?`<button type="button" class="go${i.f?" f":""}" data-it="${i.k}">${esc(i.b[0])}</button>`:""}</div>`).join("")}</div>`).join("")}
    ${n===1?`<p class="small muted" style="margin:8px 2px 0;text-align:center">No necesita saberlo todo para comenzar. Comience acompañado y aprenda mientras avanza.</p>`:""}
@@ -6251,6 +6253,7 @@ function irLista(n){const E=irEstado(),st=irSt();n=n||E.cur.n;const w=E.W[n-1],G
     {const d=$("#irPD");if(d)d.onclick=()=>{const st=irSt();irSave({ini:(st.ini||Date.now())-7*864e5});closeSheet();setTimeout(()=>{irRender();toast("⏩ Día "+irDia())},400)}}
     {const r=$("#irPR");if(r)r.onclick=()=>{const f={ini:Date.now()};regDoc.ir=f;store.db.doc("users/"+store.uid).update({ir:f}).catch(()=>{});closeSheet();setTimeout(irRevisar,500)}}
     sh.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>irLista(+b.dataset.w));
+    {const mb=$("#irMedB");if(mb)mb.onclick=()=>{closeSheet();setTimeout(()=>{const R=n===1&&raYo();if(R&&R.gano)raCelebrar(true);else irCelebrar(w)},350)}}
     sh.querySelectorAll("[data-it]").forEach(b=>b.onclick=()=>{const i=w.L.find(z=>z.k===b.dataset.it);if(i&&i.b)i.b[1]()})})}
 function irIntro(){const nm=(miRegistro().nombre||profile.nombrePila||"").split(" ")[0];
   openSheet(`<div class="irHero"><div class="k">ACTION LEADER SYSTEM</div><div style="font-size:46px">🚀</div><h2>Su Plan de Inicio Rápido</h2><p>${nm?esc(nm)+", ":""}30 días para poner su negocio en movimiento, acompañado.</p></div>
@@ -6638,7 +6641,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261105190548";var busy=false,pend=null;
+(function(){var V="20261105201114";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
