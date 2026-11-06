@@ -1427,7 +1427,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 
     <!-- CRM -->
     <section class="view" id="v-crm" hidden>
-      <div class="row between"><div><p class="eyebrow">Tus contactos</p><h1>Mi CRM</h1></div><div class="row" style="gap:8px"><button class="btn ghost" id="bienBtn" title="Bienvenida a socio nuevo">🎉</button><button class="btn gold" id="addContact">+ Contacto</button></div></div>
+      <div class="row between"><div><p class="eyebrow">Tus contactos</p><h1>Mi CRM</h1></div><div class="row" style="gap:8px"><button class="btn ghost" id="presBtn" title="Dar presentación">🎤</button><button class="btn ghost" id="bienBtn" title="Bienvenida a socio nuevo">🎉</button><button class="btn gold" id="addContact">+ Contacto</button></div></div>
       <input class="inp" id="crmSearch" type="search" placeholder="Buscar por nombre o nota">
       <div class="stage-bar" id="stageBar"></div>
       <div class="card"><div class="list" id="contactList"></div></div>
@@ -1466,6 +1466,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
     <!-- ACADEMIA -->
     <section class="view" id="v-academia" hidden>
       <div class="row between"><div><p class="eyebrow">Aprende y crece</p><h1>Academia</h1></div><button class="btn sm ghost" id="goPrompts" type="button">🤖 Prompts IA</button></div>
+      <button type="button" class="irAca" id="goPres" style="margin-bottom:10px">🎤 <span><b>Dar presentación</b><small>A un prospecto o una presentación general</small></span><em>›</em></button>
       <button type="button" class="irAca" id="goIR">🚀 <span><b>Plan de Inicio Rápido</b><small>30 días · 4 insignias · aprenda a duplicar</small></span><em>›</em></button>
       <div class="seg" role="tablist" id="acaSeg">
         <button aria-selected="true" data-k="arranque">Arranque</button>
@@ -1903,7 +1904,7 @@ async function snCompartir(){if(!snList||!snList.length){toast("Agregue primero 
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(x){if(x&&x.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);toast("Imagen descargada 📲")}catch(e){toast("No se pudo crear la imagen")}}
 $("#snShare").onclick=snCompartir;
-$("#goPrompts").onclick=()=>go("ia");$("#goIR").onclick=()=>irDesdeAca();$("#iaBack").onclick=()=>go("academia");
+$("#goPrompts").onclick=()=>go("ia");$("#goIR").onclick=()=>irDesdeAca();{const gp=$("#goPres");if(gp)gp.onclick=()=>presElegir()}{const pb=$("#presBtn");if(pb)pb.onclick=()=>presElegir()}$("#iaBack").onclick=()=>go("academia");
 
 // ---------- mi constancia (mes) ----------
 function perfRankHtml(){let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}
@@ -5930,9 +5931,9 @@ function presEl(){let o=$("#presOv");if(!o){o=document.createElement("div");o.id
 function presElegir(){if(!presOk())return;let q="";
   const pinta=()=>{const L=(contacts||[]).filter(c=>c.stage!=="Socio"&&(!q||String(c.name||"").toLowerCase().includes(q))).sort((a,b)=>(b.updated||0)-(a.updated||0)).slice(0,40);
     $("#prL").innerHTML=L.map(c=>`<button type="button" class="pf-it" data-prc="${esc(c.id)}"><span class="ic">👤</span>${esc(c.name)}<span class="small muted" style="margin-left:auto">${esc(c.stage||"")}</span></button>`).join("")||`<p class="small muted">No hay contactos con ese nombre.</p>`};
-  openSheet(`<h2>🎤 ¿A quién le va a presentar?</h2><input class="inp" id="prQ" type="search" placeholder="Buscar en mi CRM"><div id="prL" style="display:flex;flex-direction:column;max-height:46vh;overflow:auto"></div>
+  openSheet(`<h2>🎤 ¿A quién le va a presentar?</h2><button class="btn" id="prGen" style="width:100%;background:linear-gradient(135deg,#0A7DAD,#2AC1F1)">🎤 Presentación general (sin prospecto)</button><p class="small muted" style="margin:-4px 0 4px">Para un grupo o un Zoom. No se guarda ni suma a la rutina.</p><input class="inp" id="prQ" type="search" placeholder="Buscar en mi CRM"><div id="prL" style="display:flex;flex-direction:column;max-height:46vh;overflow:auto"></div>
    <div class="card" style="gap:8px"><b>➕ Persona nueva</b><input class="inp" id="prN" placeholder="Nombre y apellido"><input class="inp" id="prW" type="tel" inputmode="tel" placeholder="WhatsApp (opcional)"><button class="btn" id="prOk" style="width:100%">Empezar presentación</button></div>
-   <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{pinta();
+   <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{pinta();$("#prGen").onclick=()=>{closeSheet();setTimeout(()=>presAbrir({general:1,name:""}),200)};
     $("#prQ").oninput=e=>{q=e.target.value.trim().toLowerCase();pinta()};
     $("#prL").onclick=e=>{const b=e.target.closest("[data-prc]");if(!b)return;const c=contacts.find(x=>x.id===b.dataset.prc);if(c){closeSheet();presAbrir(c)}};
     $("#prOk").onclick=async()=>{const n=$("#prN").value.trim();if(!n){toast("Escriba el nombre");return}const t=$("#prW").value.replace(/[^\d+]/g,"");
@@ -5947,13 +5948,13 @@ function presPinta(){const o=presEl(),i=PS.i,q=PRES.q[i],A=PS.a;let g=PRES.g[i];
   const opt=(t,j,on)=>`<button type="button" class="pv-o${on?" on":""}" data-pv="o" data-v="${j}">${esc(t)}</button>`;
   let qh="";if(q){if(q.num){qh=`<div class="pv-q">${esc(q.t)}</div><div class="pv-nums">${Array.from({length:10},(_,j)=>{const n=j+1;return `<button type="button" class="${n>=8?"h":n>=6?"m":""}${A.n===n?" sel":""}" data-pv="num" data-v="${n}">${n}</button>`}).join("")}</div>`+(A.n?presCierre():"")}
     else{const v=A[q.k];qh=`<div class="pv-q">${esc(q.t)}</div>${q.h?`<div class="pv-h">${esc(q.h)}</div>`:""}<div class="pv-opts${q.o.length===4?" g2":""}">${q.o.map((t,j)=>opt(t,j,q.multi?(v||[]).includes(j):v===j)).join("")}</div>`}}
-  o.innerHTML=`<div class="pv-top"><button type="button" class="pv-x" data-pv="x" aria-label="Salir">✕</button><span>Presentando a <b>${esc(presFirst())}</b></span><span>${i} / ${PRES.n}</span></div>
+  o.innerHTML=`<div class="pv-top"><button type="button" class="pv-x" data-pv="x" aria-label="Salir">✕</button><span>${PS.c.general?"🎤 <b>Presentación general</b>":`Presentando a <b>${esc(presFirst())}</b>`}</span><span>${i} / ${PRES.n}</span></div>
    <div class="pv-prog"><i style="width:${(i/PRES.n*100).toFixed(1)}%"></i></div>
    <div class="pv-sl"><img src="${PRES.img(i)}" alt="Diapositiva ${i} de ${PRES.n}" decoding="async"><button type="button" class="pv-big" data-pv="big" aria-label="Ampliar">⛶</button></div><div class="pv-bn"><button type="button" data-pv="p" aria-label="Anterior" ${i===1?"disabled":""}>‹</button><button type="button" data-pv="big" aria-label="Salir de pantalla completa">✕</button><button type="button" data-pv="n" aria-label="Siguiente" ${i===PRES.n?"disabled":""}>›</button></div>
    <div class="pv-body">${qh}${g?(PS.g?`<button type="button" class="pv-note" data-pv="g">💬 «${esc(g)}»</button>`:`<button type="button" class="pv-gs" data-pv="g" aria-label="Ver frase">💬</button>`):""}</div><button type="button" class="pv-qb" data-pv="qb">❓ Pregunta</button>
-   <div class="pv-nav"><button type="button" data-pv="p" ${i===1?"disabled":""}>‹ Anterior</button>${i<PRES.n?`<button type="button" class="go" data-pv="n">Siguiente ›</button>`:`<button type="button" class="go" data-pv="fin">${PS.ok?"Cerrar":"Terminar y guardar"}</button>`}</div>`;
+   <div class="pv-nav"><button type="button" data-pv="p" ${i===1?"disabled":""}>‹ Anterior</button>${i<PRES.n?`<button type="button" class="go" data-pv="n">Siguiente ›</button>`:`<button type="button" class="go" data-pv="fin">${PS.ok||PS.c.general?"Terminar":"Terminar y guardar"}</button>`}</div>`;
   if(i<PRES.n){const im=new Image();im.src=PRES.img(i+1)}o.scrollTop=0}
-function presCierre(){const n=PS.a.n,f=esc(presFirst()),wa=`<button type="button" class="btn pv-wa" data-pv="wa">📲 ${n>=8?"Enviar link + resumen":"Enviar resumen"} por WhatsApp</button>`,l3=`<button type="button" class="btn ghost pv-l3" data-pv="l3">📞 Agendar llamada de 3 con un líder</button>`;
+function presCierre(){if(PS.c.general)return `<div class="pv-res ok"><b>🎉 ¡Gracias por acompañarnos!</b><p>Pídale a cada invitado su número del 1 al 10 y escríbale por separado. Agregue a cada persona a su CRM para darle seguimiento.</p></div>`;const n=PS.a.n,f=esc(presFirst()),wa=`<button type="button" class="btn pv-wa" data-pv="wa">📲 ${n>=8?"Enviar link + resumen":"Enviar resumen"} por WhatsApp</button>`,l3=`<button type="button" class="btn ghost pv-l3" data-pv="l3">📞 Agendar llamada de 3 con un líder</button>`;
   if(n>=8)return `<div class="pv-res ok"><b>🔥 ¡${f} está listo! (${n}/10)</b><p>Envíele su link ahora y creen la cuenta juntos en este momento.</p>${wa}</div>`;
   if(n>=6)return `<div class="pv-res mid"><b>🤔 ${f} está cerca (${n}/10)</b><p>Pregúntele: <b>"¿Qué te falta para llegar a 10?"</b> Estas son las dudas más comunes:</p>${PRES.dudas.map(([a,b])=>`<details class="pv-d"><summary>${esc(a)}</summary><p>${esc(b)}</p></details>`).join("")}${wa}${l3}</div>`;
   return `<div class="pv-res low"><b>💭 ${f} lo está pensando (${n}/10)</b><p>No lo presione. Pregúntele qué le gustaría aclarar y agenden una llamada de 3 con un líder.</p>${l3}${wa}</div>`}
@@ -5986,7 +5987,7 @@ async function presClick(e){const b=e.target.closest("[data-pv]");if(!b||!PS)ret
   if(k==="num"){PS.a.n=+b.dataset.v;presPinta();const r=$("#presOv .pv-res");if(r)r.scrollIntoView({behavior:"smooth",block:"nearest"});return}
   if(k==="wa"){if(!profile.ref)toast("Tip: agregue su enlace de inCruises en Mi página para que salga en el mensaje");const m=presMsg(),w=waNum(PS.c.phone,PS.c.cc);await presGuardar();location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(m);return}
   if(k==="l3"){await presGuardar();const c=PS.c;presCerrar();pedirL3(c);return}
-  if(k==="fin"){if(!PS.ok)await presGuardar();toast("✅ Presentación guardada en el CRM");presCerrar()}}
+  if(k==="fin"){if(PS.c.general){toast("🎤 Presentación terminada");presCerrar();return}if(!PS.ok)await presGuardar();toast("✅ Presentación guardada en el CRM");presCerrar()}}
 function renderAca(){const b=$("#acaBody");if(ahBloqYo()){b.innerHTML=`<div class="card" style="gap:8px;text-align:center"><b style="font-size:17px">🔒 Academia en pausa</b><p class="small muted" style="margin:0">Su ahorro de inCruises está pendiente. Póngase al día para reactivar sus cursos y herramientas.</p><button class="btn" style="background:#25D366;color:#fff" onclick="ahHablarSp()">💬 Hablar con mi patrocinador</button></div>`;return}
   if(ACA_PRONTO){$("#acaSeg").hidden=true;const cv=profile.cursos||{};
     b.innerHTML=tourCard()+`<div><p class="eyebrow" style="margin:0">Cursos</p><p class="small muted" style="margin:2px 0 0">Aprenda paso a paso y descargue su material.</p></div>`+cursosL().map((c,i)=>{const ok=!!cv[c.k];if(ok&&!cursoOpen[c.k])return `<button type="button" class="card curso cursoMin" data-cabre="${c.k}"><span class="cmOk">${CHECK}</span><span class="grow" style="text-align:left"><span class="chip c-good">Curso ${i+1} · Completado</span><b>${esc(c.t)}</b><small class="muted">Toque para volver a ver el video</small></span><span class="cmGo">›</span></button>`;return `<div class="card curso">
@@ -6887,7 +6888,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261106132615";var busy=false,pend=null;
+(function(){var V="20261106145853";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
