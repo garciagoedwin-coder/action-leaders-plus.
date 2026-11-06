@@ -4179,8 +4179,15 @@ async function circFoto(g,src,cx,cy,r,ph,vacio){const im=src?await imgLoad(src,!
   const w=im.width,h=im.height,f=fotoFoco(im),s=Math.max(2*r/w,2*r/h),iw=w*s,ih=h*s,cl=(v,a,b)=>Math.min(Math.max(v,a),b);
   // la foto siempre cubre el círculo; se mueve para que la cara quede centrada y con aire arriba de la cabeza
   let dx=f?cx-f.fx*iw:cx-iw/2,dy=f?(cy-.80*r)-Math.max(0,f.top-.08)*ih:cy-r;
-  dx=cl(dx,cx+r-iw,cx-r);dy=cl(dy,cy+r-ih,cy-r);
-  g.drawImage(im,dx,dy,iw,ih);g.restore()}
+  dx=cl(dx,cx+r-iw,cx-r);
+  // 5 nov: si la cabeza viene pegada al borde de arriba de la foto, la bajamos (máx. 0.4 r) y rellenamos arriba con el color del borde de la foto
+  let gap=0,rgb=[43,47,54];if(f&&dy>cy-r){gap=Math.min(dy-(cy-r),.4*r);dy=cy-r+gap}else dy=cl(dy,cy+r-ih,cy-r);
+  if(gap>0){try{const c=document.createElement("canvas");c.width=16;c.height=4;const x=c.getContext("2d",{willReadFrequently:true});x.drawImage(im,0,0,w,Math.max(1,h*.04),0,0,16,4);const d=x.getImageData(0,0,16,4).data;let R=0,G=0,B=0;for(let i=0;i<d.length;i+=4){R+=d[i];G+=d[i+1];B+=d[i+2]}const n=d.length/4;rgb=[R/n|0,G/n|0,B/n|0]}catch(e){}
+    g.fillStyle=`rgb(${rgb})`;g.fillRect(cx-r,cy-r,2*r,2*r)}
+  g.drawImage(im,dx,dy,iw,ih);
+  if(gap>0){try{const fd=Math.min(ih*.05,r*.15),gr=g.createLinearGradient(0,dy,0,dy+fd);gr.addColorStop(0,`rgba(${rgb},1)`);gr.addColorStop(1,`rgba(${rgb},0)`);g.fillStyle=gr;g.fillRect(cx-r,dy-1,2*r,fd+1)}catch(e){}}
+  g.restore()}
+window.__circFoto=circFoto;
 async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo){n=nv(n);pat=nv(pat);const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");const T=BIEN_TH[plan]||BIEN_TH.classic;
   await bienFonts();try{await Promise.all(["800 30px Figtree","600 30px Figtree","500 30px Figtree","400 60px 'Bebas Neue'"].map(x=>document.fonts.load(x)))}catch(x){}
   const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', 'Bricolage Grotesque', Arial, sans-serif";
@@ -6685,7 +6692,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261105221859";var busy=false,pend=null;
+(function(){var V="20261105222944";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
