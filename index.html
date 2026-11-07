@@ -4939,7 +4939,7 @@ async function evaCirc(g,src,cx,cy,r,ring,rc,dark,nm){const im=src?await imgLoad
 function evaRR(g,x,y,w,h,r){g.beginPath();g.roundRect(x,y,w,h,r)}
 const EVA_SUB=["Descubra cómo viajar más, gastar menos","y emprender desde su celular"];
 async function evaCanvas(o){await evaFonts();const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
-  const bg=await imgLoad("media/eventos/"+(o.tipo==="gran"?"g":"j")+(o.dis||1)+".jpg?v=2");if(bg)g.drawImage(bg,0,0,W,H);else{g.fillStyle="#07101F";g.fillRect(0,0,W,H)}
+  const bg=await imgLoad("media/eventos/"+(o.tipo==="gran"?"g":"j")+(o.dis||1)+".jpg?v="+(o.tipo==="gran"?"2":"3"));if(bg)g.drawImage(bg,0,0,W,H);else{g.fillStyle="#07101F";g.fillRect(0,0,W,H)}
   const OB="ALO, Figtree, sans-serif",OR="ALOR, Figtree, sans-serif",BG="ALBG, 'Bricolage Grotesque', sans-serif",modo=o.modo==="virtual"?"VIRTUAL":"PRESENCIAL",city=String(o.ciudad||(o.modo==="virtual"?"EN LÍNEA":"")).toUpperCase();
   const lid=(o.lid||[]).filter(Boolean),hora=o.hora+(o.flag?" "+o.flag:""),lug=o.modo==="virtual"?"🎥 En vivo por Zoom":"📍 "+(o.lugar||"");
   const grad=(x0,x1)=>{const q=g.createLinearGradient(x0,0,x1,0);q.addColorStop(0,"#8FE3FF");q.addColorStop(.5,"#2AC1F1");q.addColorStop(1,"#FFFFFF");return q};
@@ -5072,7 +5072,7 @@ function rsvpInline(e){const c=$("#evaRsL"),R=rsvpN[e.id];if(!c||!R||!R.L||!R.L.
 function rsvpNum(r,L,e){if(!L||!e||!rsvpTodo(e))return 0;const A=L.slice().sort((a,b)=>(a.t||0)-(b.t||0));const i=A.findIndex(x=>x.id===r.id);return i>=0?i+1:0}
 async function rsvpTkCanvas(e,r,num){await flFonts();const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d"),gran=e.tipo==="gran",ds=[1,2,3].includes(+e.dis)?+e.dis:1;
   const OB="ALO, Figtree, sans-serif",OR="ALOR, Figtree, sans-serif",BE="'Bebas Neue', Impact, sans-serif";g.fillStyle="#071526";g.fillRect(0,0,W,H);
-  const bg=await imgLoad("media/eventos/f-"+(gran?"g":"j")+ds+".jpg");if(bg){const sc=Math.max(W/bg.width,H*.62/bg.height),bw=bg.width*sc,bh=bg.height*sc;g.drawImage(bg,(W-bw)/2,0,bw,bh)}
+  const bg=await imgLoad("media/eventos/f-"+(gran?"g":"j")+ds+".jpg"+(gran?"":"?v=3"));if(bg){const sc=Math.max(W/bg.width,H*.62/bg.height),bw=bg.width*sc,bh=bg.height*sc;g.drawImage(bg,(W-bw)/2,0,bw,bh)}
   let gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,"rgba(7,21,38,.55)");gr.addColorStop(.38,"rgba(7,21,38,.88)");gr.addColorStop(.62,"#071526");gr.addColorStop(1,"#071526");g.fillStyle=gr;g.fillRect(0,0,W,H);
   const lg=await imgLoad("media/logo-mas.png");if(lg){const lh=64,lw=lg.width*lh/lg.height;g.drawImage(lg,(W-lw)/2,150,lw,lh)}
   g.textAlign="center";g.font="700 34px "+OB;const okT="ASISTENCIA CONFIRMADA",okW=evaSpW(g,okT,8);g.fillStyle="#16A34A";g.beginPath();g.arc(W/2-okW/2-30,312,31,0,7);g.fill();g.fillStyle="#fff";g.font="700 36px "+OB;g.fillText("✓",W/2-okW/2-30,325);g.fillStyle="#4ADE80";g.font="700 34px "+OB;evaSp(g,okT,W/2+22,324,8,"center");
@@ -5128,7 +5128,7 @@ async function abrirCrearEva(){if(!store.db||!(regDoc&&regDoc.registro)){toast("
    <div class="field"><label for="evFo">Link del formulario de Google</label><input class="inp" id="evFo" placeholder="https://forms.gle/..."></div>
    <div id="evVisW" hidden><label class="small" style="font-weight:700">¿Quién lo ve?</label><div class="seg" id="evV"><button type="button" aria-selected="true" data-v="abierto">🔓 Abierto</button><button type="button" aria-selected="false" data-v="cerrado">🔒 Cerrado</button></div><p class="small muted" id="evVt" style="margin:4px 0 0">Todos los socios lo ven en su Agenda.</p></div>
    <div id="evJv"><label class="small" style="font-weight:700">¿Quién la ve?</label><div class="seg" id="evJV"><button type="button" aria-selected="true" data-v="junta">👥 Mi línea</button><button type="button" aria-selected="false" data-v="abierto">🌎 Todos los socios</button></div><p class="small muted" id="evJVt" style="margin:4px 0 0">La ven usted, su línea de arriba, su línea de abajo y los anfitriones.</p></div>
-   <div class="field"><label>Foto del flyer</label><div class="seg" id="evD"><button type="button" aria-selected="true" data-v="1">🏛️ Salón</button><button type="button" aria-selected="false" data-v="2">☕ Café</button><button type="button" aria-selected="false" data-v="3">🛋️ Sala</button></div></div>
+   <div class="field"><label>Foto del flyer</label><div class="seg" id="evD"><button type="button" aria-selected="true" data-v="1">Opción 1</button><button type="button" aria-selected="false" data-v="2">Opción 2</button><button type="button" aria-selected="false" data-v="3">Opción 3</button></div></div>
    <button class="btn ghost" id="evPrev" style="width:100%">👁️ Ver el flyer</button>
    <button class="btn" id="evOk" style="width:100%">Publicar y avisar a los líderes</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
     const segOn=(id,fn)=>{$("#"+id).onclick=x=>{const b=x.target.closest("[data-v]");if(!b||b.disabled)return;$("#"+id).querySelectorAll("button").forEach(y=>y.setAttribute("aria-selected",y===b));fn(b.dataset.v)}};
@@ -5136,7 +5136,7 @@ async function abrirCrearEva(){if(!store.db||!(regDoc&&regDoc.registro)){toast("
       $("#evSel").innerHTML=sel.map((x,i)=>`<div class="row between" style="gap:8px;border:1px solid var(--line);border-radius:12px;padding:6px 8px">${avHTML(x.n,false,false,x.uid)}<span class="grow" style="min-width:0"><b style="font-weight:600;display:block">${esc(nv(x.n))}</b><span class="small muted">${esc(lab(i))} · ${esc(x.r)}</span></span>${i>=nE&&tipo==="gran"?`<button type="button" class="btn sm ghost" data-evup="${i}" title="Hacer invitado especial">⭐</button>`:""}<button type="button" class="btn sm ghost" data-evx="${i}" aria-label="Quitar">✕</button></div>`).join("")||`<p class="small muted" style="margin:0">Agregue al menos una persona.</p>`;
       $("#evQ").hidden=sel.length>=max()};
     const sug=()=>{const Q=nrmN(q);$("#evSug").innerHTML=Q.length<2?"":P.filter(x=>!sel.some(y=>y.uid===x.uid)&&nrmN(x.n).includes(Q)).slice(0,6).map(x=>`<button type="button" class="ep-it" data-evp="${esc(x.uid)}">${avHTML(x.n,false,false,x.uid)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(nv(x.n))}</b><span class="small muted">${esc(x.r)}</span></span></button>`).join("")||`<p class="small muted" style="margin:6px 0">No encontramos a esa persona en la app.</p>`};
-    const evDLab=()=>{const L=tipo==="gran"?["🎤 Escenario","🏛️ Salón","✨ Salón 2"]:["🏛️ Salón","☕ Café","🛋️ Sala"];$("#evD").querySelectorAll("button").forEach((b,i)=>b.textContent=L[i])};
+    const evDLab=()=>{const L=tipo==="gran"?["🎤 Escenario","🏛️ Salón","✨ Salón 2"]:["Opción 1","Opción 2","Opción 3"];$("#evD").querySelectorAll("button").forEach((b,i)=>b.textContent=L[i])};
     segOn("evT",v=>{tipo=v;if(sel.length>max())sel=sel.slice(0,max());$("#evVisW").hidden=tipo!=="gran";$("#evJv").hidden=tipo==="gran";$("#evNEw").hidden=tipo!=="gran";evDLab();pintaSel()});segOn("evNE",v=>{nE=+v;if(sel.length>max())sel=sel.slice(0,max());pintaSel()});
     segOn("evM",v=>{modo=v;$("#evPres").hidden=v==="virtual";$("#evVir").hidden=v!=="virtual"});
     segOn("evJV",v=>{jvis=v;$("#evJVt").textContent=v==="abierto"?"Todos los socios la ven en su Agenda.":"La ven usted, su línea de arriba, su línea de abajo y los anfitriones."});
@@ -6937,7 +6937,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261107160310";var busy=false,pend=null;
+(function(){var V="20261107162156";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
