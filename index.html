@@ -1797,7 +1797,7 @@ let resT;function pushResumen(){if(!store.db||!store.uid)return;clearTimeout(res
       const top=(contacts||[]).filter(c=>["Nuevo","Contactado","Presentación","Seguimiento","Por cerrar"].includes(c.stage||"Nuevo")).map(c=>({n:String(c.name||"").trim().slice(0,60),s:c.stage||"Nuevo",d:c.stT||c.updated||0,p:(c.pres&&c.pres.n)||0})).sort((a,b)=>(ST_PCT[b.s]-ST_PCT[a.s])||(a.d-b.d)).slice(0,80);return{c:cnt,top}})(),historia:!!(profile.historias||{})[TODAY],bienvenida:!!profile.bienvenida,cursos:Object.keys(profile.cursos||{}).filter(k=>profile.cursos[k]),cons:constStats(),t:Date.now()};
   await store.db.doc("users/"+store.uid).set({actividad:a},{merge:true});
   const nm=(miRegistro().nombre||"").trim(),em=String((fbUser&&fbUser.email)||"").toLowerCase();
-  if(nm&&!SOLO_ADMIN.includes(em)&&!yoPrueba())await store.db.doc("constancia/"+store.uid).set(Object.assign({nombre:nm,hoy:a.hoy,fecha:TODAY,acc:Object.values(sum).reduce((x,y)=>x+(+y||0),0),t:Date.now(),gs:gestHoyC()},a.cons),{merge:true});if(constL){const vq=document.querySelector("#v-equipo");if(vq&&!vq.hidden&&eqTab==="ranking"&&rankMetric==="rutina")loadConst(true);else{const me=constL.find(y=>y.uid===store.uid);if(me){me.hoy=a.hoy;me.fecha=TODAY}}}}catch(e){}},3000)}
+  if(nm&&!SOLO_ADMIN.includes(em)&&!yoPrueba())await store.db.doc("constancia/"+store.uid).set(Object.assign({nombre:nm,hoy:a.hoy,fecha:TODAY,acc:Object.values(sum).reduce((x,y)=>x+(+y||0),0),t:Date.now(),gs:gestHoyC()},a.cons,{u:Date.now()}),{merge:true});if(constL){const vq=document.querySelector("#v-equipo");if(vq&&!vq.hidden&&eqTab==="ranking"&&rankMetric==="rutina")loadConst(true);else{const me=constL.find(y=>y.uid===store.uid);if(me){me.hoy=a.hoy;me.fecha=TODAY}}}}catch(e){}},3000)}
 function renderWeek(){const out=[];let streak=0;
   for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));
     out.push(`<div><i class="${s>=1?"full":s>0?"part":""} ${i===0?"today":""}">${d.getDate()}</i>${DAYS[d.getDay()]}</div>`)}
@@ -2045,7 +2045,7 @@ function compPuede(){const C=(T.config||{}).compromiso;if(!C||!fbUser||!regDoc||
 function compDias(){const n=new Date(),f=new Date(n.getFullYear(),n.getMonth()+1,1);return Math.max(0,Math.ceil((f-n)/864e5))}
 async function compGuardar(o){const nm=Object.assign({mes:mesMeta(),t:Date.now()},o);
   await store.db.doc("users/"+store.uid).set({comp:nm},{merge:true});regDoc=Object.assign({},regDoc,{comp:nm});
-  try{const nmb=miNombreFull()||miNombreCorto();if(nmb&&!yoPrueba())store.db.doc("constancia/"+store.uid).set({comp:nm.no?{mes:nm.mes,no:true}:{mes:nm.mes,rango:nm.rango,act:nm.act,ac:nm.ac,ap:nm.ap,vol:nm.vol,pres:nm.pres}},{merge:true}).catch(()=>{})}catch(e){}
+  try{const nmb=miNombreFull()||miNombreCorto();if(nmb&&!yoPrueba())store.db.doc("constancia/"+store.uid).set({u:Date.now(),comp:nm.no?{mes:nm.mes,no:true}:{mes:nm.mes,rango:nm.rango,act:nm.act,ac:nm.ac,ap:nm.ap,vol:nm.vol,pres:nm.pres}},{merge:true}).catch(()=>{})}catch(e){}
   renderComp();try{renderMetaEq()}catch(e){}try{lzgStrip()}catch(e){}}
 let compVisto=false;
 function compCheck(){if(compVisto||!compPuede()||miComp())return;try{if(irIntroPend())return}catch(e){}if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate"))return;compVisto=true;try{if(!popHoy("comp"))return}catch(e){}compIntro()}
@@ -2456,11 +2456,11 @@ const tsMs=v=>v&&v.toDate?v.toDate().getTime():v?new Date(v).getTime()||0:0;
 const actDe=x=>{const a=x.actividad||{};const fresh=a.t&&Date.now()-a.t<8*864e5;return{hist:a.fecha===TODAY&&!!a.historia,hoy:a.fecha===TODAY?(a.hoy||0):0,racha:fresh?(a.racha||0):0,d7:fresh?(a.dias7||0):0,sem:fresh?(a.semana||{}):{},crm:a.crm||0,bien:!!a.bienvenida,cursos:(a.cursos||[]).length,t:a.t||0}};
 const actScore=x=>{const a=actDe(x);return a.hoy+a.d7*40+(a.sem.contactos||0)*3+(a.sem.presentaciones||0)*15+a.racha*20+(a.hist?20:0)+(a.bien?10:0)+a.cursos*10+Math.min(a.crm,20)};
 const byAct=(a,b)=>actScore(b)-actScore(a)||tsMs(b.ultimoAcceso)-tsMs(a.ultimoAcceso);
-let constSync=false;async function syncConst(){if(constSync||!isAdmin||!socios)return;constSync=true;let n=0;
-  for(const x of socios){if(!x.registro||!x.registro.nombre||esSoloAdmin(x)||esPrueba(x))continue;const a=x.actividad||{},sm=a.semana||{};
-    try{await store.db.doc("constancia/"+x.uid).set(Object.assign({nombre:x.registro.nombre,hoy:+a.hoy||0,fecha:a.fecha||"",acc:Object.values(sm).reduce((p,q)=>p+(+q||0),0),t:a.t||0},a.cons||{}),{merge:true});n++}catch(e){break}}
-  if(n)loadConst(true)}
-async function loadSocios(){try{const q=await store.db.collection("users").get();socios=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.registro||x.email)
+let constSync=false;async function syncConst(){if(constSync||!isAdmin||!socios)return;constSync=true;let n=0;try{if(LS.get("constSyncD")===TODAY)return;LS.set("constSyncD",TODAY)}catch(e){}
+  for(const x of socios){if(!x.registro||!x.registro.nombre||esSoloAdmin(x)||esPrueba(x))continue;const a=x.actividad||{},sm=a.semana||{};if(!(+a.t>Date.now()-36*36e5))continue;
+    try{await store.db.doc("constancia/"+x.uid).set(Object.assign({nombre:x.registro.nombre,hoy:+a.hoy||0,fecha:a.fecha||"",acc:Object.values(sm).reduce((p,q)=>p+(+q||0),0),t:a.t||0},a.cons||{},{u:Date.now()}),{merge:true});n++}catch(e){break}}
+  if(n)loadConst()}
+async function loadSocios(force){try{const q=await rdCache("socios",15*60e3,force,()=>store.db.collection("users").getCache(),()=>store.db.collection("users").get());socios=q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.registro||x.email)
   .sort((a,b)=>String((b.registro&&b.registro.fecha)||"").localeCompare(String((a.registro&&a.registro.fecha)||"")))}catch(e){socios=[];toast("No se pudo cargar la lista de socios")}renderEquipo();syncConst();setTimeout(async()=>{try{await loadConst();liderResGuardar()}catch(e){}},8000);setTimeout(()=>{soloAdminFix().catch(()=>{})},5000);setTimeout(()=>{dtStatsGuardar().catch(()=>{})},12000)}
 // La cuenta solo-admin (garciagoedwin) nunca es líder ni patrocinador: sus socios pasan a la cuenta de equipo de Edwin (edwing.go)
 let soloFixHecho=false;
@@ -2940,7 +2940,7 @@ function pedirWaSocio(x,t){const nm=(x.registro||{}).nombre||"este socio";
       telSoc=Object.assign({},telSoc||{},{[x.uid]:{n,b:String((x.registro||{}).whatsapp||"").replace(/\D/g,"")}});store.set("telsocios",telSoc);LS.set("lastCC",$("#wsC").value);closeSheet();location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t)};
     $("#wsSh").onclick=async()=>{closeSheet();if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}})}
 async function loadMios(force){try{return await loadMios0(force)}finally{try{raAvisosPat()}catch(e){}}}
-async function loadMios0(force){miosErr=false;const me=store.uid,M={};const cMs=15*60e3;if(telSoc===null){try{telSoc=(await store.get("telsocios"))||{}}catch(e){telSoc={}}}
+async function loadMios0(force){miosErr=false;const me=store.uid,M={};const cMs=60*60e3;if(telSoc===null){try{telSoc=(await store.get("telsocios"))||{}}catch(e){telSoc={}}}
   try{const W=store.db.collection("users").where("registro.patrocinadorUid",me),q=await rdCache("mios1",cMs,force,()=>W.getCache(),()=>W.get());q.docs.forEach(d=>M[d.id]=Object.assign({uid:d.id},d.data()))}catch(e){miosErr=true}
   try{const W=store.db.collection("users").where("registro.linea",me,"array-contains"),q=await rdCache("mios2",cMs,force,()=>W.getCache(),()=>W.get());q.docs.forEach(d=>{if(!M[d.id])M[d.id]=Object.assign({uid:d.id},d.data())})}catch(e){}
   const L=Object.values(M).filter(x=>x.registro&&x.uid!==me&&(isAdmin||!esPrueba(x)));
@@ -3207,7 +3207,11 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
 let constL=null,constT=0;
 let constVista="sem";
 const constSort=L=>{const sem=constVista==="sem";L.sort((a,b)=>sem?(b.racha-a.racha||b.semPres-a.semPres||b.semPts-a.semPts):(b.mesMejor-a.mesMejor||b.mesPres-a.mesPres||b.mesPts-a.mesPts)||String(a.nombre).localeCompare(b.nombre,"es"));L.forEach((x,i)=>x.rk=i+1);return L};
-async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now()-constT<600000)return;try{const q=await rdCache("const",10*60e3,force,()=>store.db.collection("constancia").getCache(),()=>store.db.collection("constancia").get());constT=Date.now();
+async function constFuente(force){try{const s=await store.db.doc("team/constres").get();if(s.exists){const S=s.data()||{},m=Object.assign({},S.m||{});
+  if(+S.b&&Date.now()-S.b<6*36e5){try{const q=await store.db.collection("constancia").where("u",(+S.u||0)-30*6e4,">").get();q.docs.forEach(d=>{m[d.id]=d.data()})}catch(e){}
+  return{docs:Object.keys(m).map(k=>({id:k,data:()=>m[k]}))}}}}catch(e){}
+  return rdCache("const",10*60e3,force,()=>store.db.collection("constancia").getCache(),()=>store.db.collection("constancia").get())}
+async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now()-constT<600000)return;try{const q=await constFuente(force);constT=Date.now();
   const ay=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()-1)),lun=lunesK(),mes=TODAY.slice(0,7);
   const pl=(()=>{const d=parseK(lun);d.setDate(d.getDate()-7);return dkey(d)})();
   constL=constSort(q.docs.map(d=>Object.assign({uid:d.id},d.data())).filter(x=>x.nombre).map(x=>{x.prevPts=x.wk===pl?(+x.semPts||0):x.wk===lun?(x.pwk===pl&&x.pSemPts!=null?+x.pSemPts||0:null):0;const hoy=x.fecha===TODAY?(+x.hoy||0):0,okW=x.wk===lun&&x.fecha>=lun&&(semIni()===lun||x.si===semIni()),okM=x.mes===mes;
@@ -3410,7 +3414,7 @@ function rcUnirme(){const D=rcDatos();if(!D)return;
    <div class="rc-op">${[[500,"1 Premium"],[1000,"2 Premium"],[1500,"3 o más Premium"]].map(([v,t])=>`<button data-v="${v}">${t}<small>${v.toLocaleString("en-US")} pts de volumen</small></button>`).join("")}</div>
    <button class="btn ghost full" data-close>Ahora no</button>`,()=>{$("#sheetPanel .rc-op").onclick=async e=>{const b=e.target.closest("button[data-v]");if(!b)return;b.disabled=true;
      const nm=(miRegistro().nombre||miNombreFull()||"").trim();if(!nm||!store.db||!store.uid){toast("Inicie sesión para unirse");return}
-     try{await store.db.doc("constancia/"+store.uid).set({rc:{id:D.R.id,v:+b.dataset.v,n:nm,t:Date.now()}},{merge:true});rcJ=(rcJ||[]).concat([{n:nm,v:+b.dataset.v}]);
+     try{await store.db.doc("constancia/"+store.uid).set({u:Date.now(),rc:{id:D.R.id,v:+b.dataset.v,n:nm,t:Date.now()}},{merge:true});rcJ=(rcJ||[]).concat([{n:nm,v:+b.dataset.v}]);
        const R=(T.config||{}).retoCierre;if(R){R.comp=(R.comp||[]).concat([{n:nm.split(/\s+/).slice(0,2).join(" "),k:[nm],v:+b.dataset.v}])}
        closeSheet();toast("¡Ya está en el reto! 🔥");renderRC();const c=$("#rcCard");c&&confeti(c,70)}catch(x){b.disabled=false;toast("No se pudo guardar ("+(x.code||"error")+")")}}})}
 function renderPremios(){const c=$("#premCard");if(c)c.hidden=true;const s=$("#retoStrip");if(!s)return;if(RETO_STRIP_OFF){s.hidden=true;return}const D=premDatos();if(!D){s.hidden=true;return}
@@ -6584,7 +6588,7 @@ function irChip0(x){const s=x.ir||{},p=s.p;if(!p)return"";const nm=((x.registro|
 document.addEventListener("click",e=>{const m=e.target.closest("[data-mfall]");if(!m)return;const c=m.closest(".mfc");if(!c)return;c.classList.toggle("all");m.textContent=c.classList.contains("all")?"Ver menos ▴":"Ver todo ▾"});
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-irh],[data-irf],[data-irv]");if(!b)return;const uid=b.dataset.irh||b.dataset.irf||b.dataset.irv,x=(mios||[]).find(y=>y.uid===uid);if(!x)return;
   const nm=((x.registro||{}).nombre||"").split(" ")[0],p=((x.ir||{}).p)||{},w=waSocio(x);
-  if(b.dataset.irv){if(!confirm("¿Confirma que "+nm+" ya puede dar la presentación solo?"))return;try{await store.db.doc("constancia/"+store.uid).set({irVal:{[uid]:Date.now()}},{merge:true});irVals=Object.assign({},irVals||{},{[uid]:Date.now()});toast("✅ Validado: "+nm+" ya puede presentar");renderEquipo()}catch(err){toast("No se pudo guardar")}return}
+  if(b.dataset.irv){if(!confirm("¿Confirma que "+nm+" ya puede dar la presentación solo?"))return;try{await store.db.doc("constancia/"+store.uid).set({u:Date.now(),irVal:{[uid]:Date.now()}},{merge:true});irVals=Object.assign({},irVals||{},{[uid]:Date.now()});toast("✅ Validado: "+nm+" ya puede presentar");renderEquipo()}catch(err){toast("No se pudo guardar")}return}
   const t=b.dataset.irf?`¡Felicidades, ${nm}! 🏅\n\nYa ganó su insignia de la semana ${Math.max(...(p.med||[1]))} del Plan de Inicio Rápido.\n\nMe llena de orgullo su avance. ¡Vamos por la siguiente! 🚀`:`¡Hola, ${nm}! 🙌\n\nVi que va en la semana ${p.w||1} de su Plan de Inicio Rápido.\n\n¿Qué le está costando? Agendemos 15 minutos y lo hacemos juntos. 💪`;
   location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t)});
 // ---- Interruptor de prueba (solo admin) ----
@@ -6692,7 +6696,7 @@ try{const t=localStorage.getItem("alp:tab");if(t&&document.getElementById("v-"+t
 let fotosRepo=[],fotosFs=[],fotosOc=[];
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-refresh]");if(!b||b.disabled)return;b.disabled=true;const t=b.textContent;b.textContent="Actualizando…";
   if(b.dataset.refresh==="eq"&&eqTab==="mios"){mios=null;renderEquipo()}
-  if(b.dataset.refresh==="eq"){loadConst(true);try{mqCargar(true)}catch(x){}}
+  if(b.dataset.refresh==="eq"){loadConst(true);try{mqCargar(true)}catch(x){}if(isAdmin&&socios!==null)loadSocios(true).then(()=>{try{renderEquipo()}catch(x){}})}
   try{await loadTeamJSON();const c=T.config||{},k=b.dataset.refresh==="cal"?c.calendarioActualizado:c.rankingActualizado;
     toast((b.dataset.refresh==="cal"?"Agenda al día":"Ranking al día")+(k?" · actualizado "+new Date(k).toLocaleString("es",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):""))}catch(x){toast("No se pudo actualizar. Revisa tu conexión.")}
   b.disabled=false;b.textContent=t});
@@ -6706,7 +6710,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-refr
  m.addEventListener("touchend",async()=>{if(y0==null)return;const ok=act&&dy*.55>=ON;y0=null;act=false;if(!ok){fin();return}
   busy=true;ind.classList.add("gira");ind.querySelector("span").textContent="Actualizando…";ind.querySelector("i").style.transform="";ind.style.transform="translate(-50%,10px)";ind.style.opacity=1;
   const rec=Date.now()-ult<60000;
-  if(!rec){ult=Date.now();try{await loadTeamJSON()}catch(e){}try{mqCargar(true)}catch(e){}try{if(constL)await loadConst(true)}catch(e){}try{if(mios!==null&&store.uid)await loadMios(true)}catch(e){}}
+  if(!rec){ult=Date.now();try{await loadTeamJSON()}catch(e){}try{mqCargar(true)}catch(e){}try{if(constL)await loadConst(true)}catch(e){}try{if(mios!==null&&store.uid)await loadMios(true)}catch(e){}try{if(isAdmin&&socios!==null)await loadSocios(true)}catch(e){}}
   setTimeout(()=>{ind.classList.remove("gira");fin();busy=false;try{toast(rec?"✅ Ya está al día":"✅ Datos al día")}catch(e){}},rec?350:600)});
 })();
 let tjSello=null;async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
@@ -6737,9 +6741,9 @@ async function fotosDelta(A){fdT=Date.now();try{const mx=Math.max(0,...A.map(x=>
 const docs0=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));
 let fdT=0;document.addEventListener("visibilitychange",()=>{if(document.hidden||!store.db||!fotosFs||!fotosFs.length||Date.now()-fdT<10*6e4)return;fdT=Date.now();fotosDelta(fotosFs)});
 async function cargarFotos(force){if(!store.db)return;const docs=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));let t=0,s=null;try{t=+localStorage.getItem("alp:fotosT")||0}catch(e){}
-  if(!force&&Date.now()-t<6*36e5){try{s=await store.db.collection("fotos").getCache()}catch(e){s=null}}
+  if(!force&&Date.now()-t<24*36e5){try{s=await store.db.collection("fotos").getCache()}catch(e){s=null}}
   if(!s||!s.docs.length){try{s=await store.db.collection("fotos").get();try{localStorage.setItem("alp:fotosT",String(Date.now()))}catch(e){}}catch(e){return}}
-  const deCache=!!(s&&s.metadata&&s.metadata.fromCache)||(!force&&Date.now()-t<6*36e5);
+  const deCache=!!(s&&s.metadata&&s.metadata.fromCache)||(!force&&Date.now()-t<24*36e5);
   {const A=docs(s);fotosOc=A.filter(x=>x.oculto).map(x=>x.id);fotosFs=A.filter(x=>!x.oculto);if(deCache)fotosDelta(A)}try{if(esSoloAdminYo()&&store.uid&&!LS.get("ocultoOk"))store.db.doc("fotos/"+store.uid).set({oculto:true},{merge:true}).then(()=>LS.set("ocultoOk",1)).catch(()=>{})}catch(e){}T.fotos=fotosRepo.concat(fotosFs);try{renderWho();renderEquipo();renderHist()}catch(e){}try{renderPremios()}catch(e){}}
 async function loadMine(){
   const lun0=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7)),m0=new Date(now.getFullYear(),now.getMonth(),1),st0=lun0<m0?lun0:m0;
@@ -6930,7 +6934,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261106205516";var busy=false,pend=null;
+(function(){var V="20261107093543";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

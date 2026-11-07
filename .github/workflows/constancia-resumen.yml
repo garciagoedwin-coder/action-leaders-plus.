@@ -1,0 +1,25 @@
+name: Resumen de constancia
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+    - cron: "7 8 * * *" # 2:07 a.m. HN: completo (limpia los que ya no existen)
+  workflow_dispatch:
+    inputs:
+      full: { description: "Completo (1)", default: "1" }
+concurrency: constres
+jobs:
+  r:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install --no-audit --no-fund
+        working-directory: tools/push
+      - name: Resumen
+        working-directory: tools/push
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+          FULL: ${{ github.event.inputs.full || (github.event.schedule == '7 8 * * *' && '1' || '') }}
+        run: node constres.mjs
