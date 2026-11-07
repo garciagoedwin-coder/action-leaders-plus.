@@ -2526,7 +2526,7 @@ async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas
   const rgN=lcRgTx(q.n)||(()=>{try{const i=rangoActualIdx({},q.n);return i===1?"Team Leader":""}catch(e){return ""}})();
   const c3=esp?(lcTL(q.n)?["TL","TEAM LEADER"]:[LC_RG_ABR[rgN]||"⭐",(rgN||"").toUpperCase().replace("MARKETING DIRECTOR","MARKETING DIR.").replace("INTERNATIONAL DIRECTOR","INTERNAT. DIR.")])
     :(rgN?[LC_RG_ABR[rgN]||"⭐",rgN.toUpperCase().replace("MARKETING DIRECTOR","MARKETING DIR.")]:["LÍDER","DEL SISTEMA"]);
-  const mp=String(q.mes||lcMes()).split(" "),cards=[q.c1||[esp?"500+":"200+","PUNTOS"],[(mp[0]||"").toUpperCase(),mp[1]||""],c3],cw=(920-32)/3;
+  const mp=String(q.mes||lcMes()).split(" "),cards=[q.c1||(Number(q.v)>0?[fmt(Math.round(Number(q.v))),"PTS DE VOLUMEN"]:[esp?"500+":"200+","PUNTOS"]),[(mp[0]||"").toUpperCase(),mp[1]||""],c3],cw=(920-32)/3;
   cards.forEach(([b,s2],i)=>{const x=80+i*(cw+16);g.beginPath();g.roundRect(x,1262,cw,124,20);g.fillStyle="rgba(255,255,255,.06)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.14)";g.stroke();
     let bz=52;g.font="400 "+bz+"px "+BB;while(g.measureText(b).width>cw-24&&bz>30){bz-=2;g.font="400 "+bz+"px "+BB}g.fillStyle=C.a;g.textAlign="center";g.fillText(b,x+cw/2,1330);
     g.font="600 15px "+BF;let ls=3.3;while(ls>.5){let w=0;for(const ch of s2)w+=g.measureText(ch).width+ls;if(w<cw-20)break;ls-=.5}g.fillStyle="rgba(255,255,255,.75)";sp(s2,x+cw/2,1364,ls,"center")});
@@ -2541,11 +2541,13 @@ async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas
   return cv}
 async function lcFile(q){const cv=await lcCanvas(q);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));return new File([b],(q.k==="esp"?"Lider-Espartano-":"Lider-")+String(q.n).split(" ")[0]+".jpg",{type:"image/jpeg"})}
 function lcQ(r){return{n:r.n,k:r.k,v:r.v,mes:r.mes||lcMes(),foto:fotoDe(r.n)}}
-function lcTextoGrupo(q){const f=String(q.n).split(" ")[0],m=String(q.mes||lcMes()).split(" ")[0].toLowerCase();return q.k==="esp"?`🎉 ¡Felicitemos a *${q.n}*!\n\nCalificó como *⚔️ Líder Espartano de ${m}* en el sistema de liderazgo de Action Leaders.\n\n${lcTL(q.n)?"⭐ ¡Ya es Team Leader!\n\n":""}¡Felicidades, ${f}! Su ejemplo nos inspira 🔥`:`🎉 ¡Felicitemos a *${q.n}*!\n\nCalificó como *🏅 Líder de ${m}* en el sistema de liderazgo de Action Leaders.\n\n¡Felicidades, ${f}! ¡Bienvenido al sistema! 💪`}
+function lcTextoGrupo(q){const vt=Number(q.v)>0?"📊 *"+fmt(Math.round(Number(q.v)))+" pts* de volumen este mes.\n\n":"";return vt?lcTextoGrupo0(q).replace(/\n\n(?=[^\n]*$)/,"\n\n"+vt):lcTextoGrupo0(q)}
+function lcTextoGrupo0(q){const f=String(q.n).split(" ")[0],m=String(q.mes||lcMes()).split(" ")[0].toLowerCase();return q.k==="esp"?`🎉 ¡Felicitemos a *${q.n}*!\n\nCalificó como *⚔️ Líder Espartano de ${m}* en el sistema de liderazgo de Action Leaders.\n\n${lcTL(q.n)?"⭐ ¡Ya es Team Leader!\n\n":""}¡Felicidades, ${f}! Su ejemplo nos inspira 🔥`:`🎉 ¡Felicitemos a *${q.n}*!\n\nCalificó como *🏅 Líder de ${m}* en el sistema de liderazgo de Action Leaders.\n\n¡Felicidades, ${f}! ¡Bienvenido al sistema! 💪`}
 function lcTextoFelicitar(q){const f=String(q.n).split(" ")[0],m=String(q.mes||lcMes()).split(" ")[0].toLowerCase(),yo=miNombreCorto()||"",v=parseInt(ahF(q.n+m),16)%3;
   const t=q.k==="esp"?[`¡Felicidades, ${f}! ⚔️\n\nCalificó como *Líder Espartano de ${m}*.${lcTL(q.n)?" ¡Ya es Team Leader! ⭐":" ⚔️"}\n\nMe llena de orgullo ver su compromiso. ¡Vamos por más! 🚀`,`${f}, ¡qué mes el suyo! 🔥\n\n*Líder Espartano de ${m}*: 500 puntos o más.\n\nGracias por dar el ejemplo en el equipo. ¡A seguir construyendo! 💪`,`¡${f}, lo logró! 🏆\n\nYa es *Líder Espartano* ${lcTL(q.n)?"y Team Leader ":""}de ${m}.\n\nSu esfuerzo se nota. ¡Sigamos camino a nuestra libertad! ✨`]
     :[`¡Felicidades, ${f}! 🏅\n\nCalificó como *Líder de ${m}* en el sistema de liderazgo.\n\nSu compromiso marca la diferencia en el equipo. ¡Felicidades! 💪`,`${f}, ¡ya es parte del sistema de liderazgo! 🎉\n\n*Líder de ${m}* con 200 puntos o más.\n\nGracias por su compromiso. ¡Vamos por más! 🚀`,`¡Lo logró, ${f}! 🙌\n\nYa es *Líder de ${m}*.\n\nMe llena de orgullo su avance. ¡Siga así! 🔥`];
-  return t[v]+(yo?"\n\n*"+yo+"*":"")}
+  const vt=Number(q.v)>0?"📊 *"+fmt(Math.round(Number(q.v)))+" pts* de volumen este mes.":"";let x=t[v];if(vt){const i=x.lastIndexOf("\n\n");x=i>0?x.slice(0,i)+"\n\n"+vt+x.slice(i):x+"\n\n"+vt}
+  return x+(yo?"\n\n*"+yo+"*":"")}
 async function lcCompartir(q,bt){let file=null;if(bt){bt.disabled=true;bt.textContent="Creando flyer…"}try{file=await lcFile(q)}catch(e){}if(bt){bt.disabled=false;bt.textContent="📣 Compartir flyer"}
   const t=lcTextoGrupo(q);if(file&&navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(e){if(e&&e.name==="AbortError")return}}
   if(file){const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click()}location.href="https://wa.me/?text="+encodeURIComponent(t)}
@@ -2681,10 +2683,10 @@ function lzgPaisDe(){const r=miRegistro(),p=String(r.pais||"").trim();if(p&&!/^\
 function lzgQ(){const yo=miRegistro().nombre||miNombreFull()||"",yz=lzYo(),L=(T.lideres||[]).find(l=>lzNs(l).includes(yz))||{},r=lcLista0().find(x=>sameN(x.n,yo));
   const pts=Math.max(Number(L.ptsBase)||0,Number(L.volumen)||0,r?r.v:0),k=pts>=500?"esp":pts>=200?"lid":"",q={n:yo,k:k||"lid",v:pts,mes:lcMes(),foto:miFotoUrl()||fotoDe(yo),pres:1};
   let ri=-1;try{ri=miRangoIdx()}catch(e){}if(ri<2){const j=idxRango(rangoTxt(L.rango||""));if(j>=2)ri=j}
-  if(ri>=2){const rg=RANGOS[ri].n;q.rgN=rg;q.tit=rg.toUpperCase();q.sello="⭐";if(!k)q.c1=["⭐","RANGO"]}
-  else if(!k){const rg=rangoTxt(L.rango||"")||"Líder";q.tit=String(rg).toUpperCase();q.sello="⭐";q.c1=["⭐","RANGO"]}else if(k==="lid")q.tit="LÍDER";return q}
+  if(ri>=2){const rg=RANGOS[ri].n;q.rgN=rg;q.tit=rg.toUpperCase();q.sello="⭐";if(!(pts>0))q.c1=["⭐","RANGO"]}
+  else if(!k){const rg=rangoTxt(L.rango||"")||"Líder";q.tit=String(rg).toUpperCase();q.sello="⭐";if(!(pts>0))q.c1=["⭐","RANGO"]}else if(k==="lid")q.tit="LÍDER";return q}
 function lzgTexto(q,lugar){const f=String(nv(q.n)||q.n);const nivel=q.rgN?q.rgN+" ⭐":q.pres&&q.tit&&q.sello==="⭐"?q.tit.charAt(0)+q.tit.slice(1).toLowerCase():q.k==="esp"?"Líder Espartano ⚔️":"Líder 🛡️";
-  return `¡Hola, equipo! 👋\n\nSoy *${f}*, de *${lugar}*.\n\nEste mes me uno al *Sistema de liderazgo* como ${nivel}.\n\n¡Gracias por recibirme! Vamos con todo 💪\n\n#HastaQueFuncione`}
+  return `¡Hola, equipo! 👋\n\nSoy *${f}*, de *${lugar}*.\n\nEste mes me uno al *Sistema de liderazgo* como ${nivel}${Number(q.v)>0?" con *"+fmt(Math.round(Number(q.v)))+" pts* de volumen":""}.\n\n¡Gracias por recibirme! Vamos con todo 💪\n\n#HastaQueFuncione`}
 async function lzgMarcar(){const z={m:mesMeta(),t:Date.now()};regDoc=regDoc||{};regDoc.lzG=z;try{await store.db.doc("users/"+store.uid).set({lzG:z},{merge:true})}catch(e){}try{lzgStrip()}catch(e){}try{if(eqTab==="ranking"&&rankMetric==="liderazgo")renderEquipo()}catch(e){}}
 function lzgPideComp(){openSheet(`<p class="eyebrow">SISTEMA DE LIDERAZGO</p><h3 style="margin:4px 0 6px">🎯 Primero, su compromiso del mes</h3><p class="muted" style="margin:0 0 12px">Para entrar al grupo del Sistema de liderazgo de ${esc(lzgMes())}, haga su compromiso del mes. Le toma un minuto.</p><button class="btn" id="lzgCo" style="width:100%">🎯 Hacer mi compromiso</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Ahora no</button>`,()=>{$("#lzgCo").onclick=()=>{closeSheet();setTimeout(compAbrir,250)}})}
 function lzgPresentar(){if(!lzgComp()&&!lzgNo()&&!isAdmin){lzgPideComp();return}const ciu=(regDoc&&regDoc.ciudad)||"",pa=(regDoc&&regDoc.ciudadPais)||lzgPaisDe();
@@ -6928,7 +6930,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261106194453";var busy=false,pend=null;
+(function(){var V="20261106205516";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
