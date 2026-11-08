@@ -5286,7 +5286,7 @@ async function tarjetaFile(){try{const cv=await invCanvas();const bl=await new P
 async function compartirTarjeta(first){toast("Creando tu tarjeta…");const f=await tarjetaFile(),txt=msgPagina(first||"");
   if(f&&navigator.canShare&&navigator.canShare({files:[f],text:txt})){try{await navigator.share({files:[f],text:txt});return true}catch(x){if(x&&x.name==="AbortError")return false}}
   if(navigator.share){try{await navigator.share({text:txt});return true}catch(x){if(x&&x.name==="AbortError")return false}}location.href="https://wa.me/?text="+encodeURIComponent(txt);return true}
-function msgPagina(first){const yo=miNombreCorto()||"";return [`Hola${first?" *"+first+"*":""}, ¿cómo está? 😊`,"","Le comparto algo que me está cambiando la vida y creo que le puede interesar.","","En esta página puede ver un video corto, conocer lo que hacemos y, si gusta, *agendar una reunión conmigo* en el horario que mejor le quede 👇","",miPagina(),"","Cualquier pregunta, aquí estoy."].concat(yo?["*"+yo+"*"]:[]).join("\n")}
+function msgPagina(first){const yo=miNombreCorto()||"";return [`Hola${first?" *"+first+"*":""}, ¿cómo está? 😊`,"","Le comparto algo que me está cambiando la vida y creo que le puede interesar.","","En esta página puede ver un video corto, conocer lo que hacemos y, si gusta, *escribirme por WhatsApp* 👇","",miPagina(),"","Cualquier pregunta, aquí estoy."].concat(yo?["*"+yo+"*"]:[]).join("\n")}
 async function marcarEnvio(c){const marca="📩 Le envié mi página ("+niceDate(TODAY)+")";
   if(!String(c.note||"").includes("📩 Le envié mi página")){c.note=(c.note?c.note+" · ":"")+marca}else c.note=String(c.note).replace(/📩 Le envié mi página \([^)]*\)/,marca);
   if((c.stage||"Nuevo")==="Nuevo")c.stage="Contactado";const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+2);if(!c.next||c.next<TODAY)c.next=dkey(d);c.updated=Date.now();
@@ -5782,32 +5782,13 @@ function abrirReprog(c){if(!c)return;const pas=citaIni(c).getTime()<Date.now(),n
       openSheet(`<h2>✅ Cita reprogramada</h2><p style="margin:0"><b>${esc(nm||"Cita")}</b><br><span class="muted">Nuevo horario: ${esc(citaCuando(n))}</span></p><p class="small muted" style="margin:0">Avísele el nuevo horario con un clic:</p>
        <button class="btn" id="rpWa" style="width:100%;background:#25D366;color:#fff">💬 Avisar por WhatsApp</button><button class="btn ghost" id="rpCal" style="width:100%">➕ Actualizar mi calendario</button><button class="btn ghost" data-close style="width:100%">Listo</button>`,()=>{
         $("#rpWa").onclick=()=>citaWa(n,"rep");$("#rpCal").onclick=()=>citaIcs(n)})}})}
-const HOR_DEF={dias:[1,2,3,4,5],horas:["19:00","21:00"]};
-const miHorario=()=>Object.assign({},HOR_DEF,profile.horario||{});
-function calcSlots(){const H=miHorario(),out=[],busy=citas.map(c=>{const a=citaIni(c).getTime();return[a,a+(c.dur||60)*6e4]});
-  for(let i=1;i<=14;i++){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);if(!H.dias.includes(d.getDay()))continue;
-    for(const h of H.horas){const[hh,mm]=h.split(":").map(Number),a=new Date(d.getFullYear(),d.getMonth(),d.getDate(),hh,mm).getTime(),b=a+36e5;if(!busy.some(([x,y])=>x<b&&y>a))out.push(a)}}return out}
-let slotsT;function publicarSlots(){clearTimeout(slotsT);slotsT=setTimeout(async()=>{try{if(!store.db||!store.uid||!(regDoc&&regDoc.registro)||!citasOk)return;
-  await store.db.doc("perfiles/"+miPCode()).set({uid:store.uid,nombre:regDoc.registro.nombre||miNombreCorto(),slots:calcSlots(),dur:60,zoom:safeUrl(profile.zoom||"")||"",st:Date.now()},{merge:true})}catch(e){}},1200)}
-function abrirHorario(){const H=miHorario();let dias=H.dias.slice(),horas=H.horas.slice();const HS=["07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00"];
-  const dl=[[1,"Lun"],[2,"Mar"],[3,"Mié"],[4,"Jue"],[5,"Vie"],[6,"Sáb"],[0,"Dom"]];
-  openSheet(`<h2>⚙️ Mi horario de citas</h2><p class="small muted" style="margin:0">Estos son los espacios que tus prospectos pueden agendar desde tu página. Cada cita dura 1 hora y se puede agendar desde el día siguiente.</p>
-   <b style="font-size:14px">Días</b><div class="hor-ch" id="hD">${dl.map(([k,t])=>`<button type="button" data-d="${k}" aria-pressed="${dias.includes(k)}">${t}</button>`).join("")}</div>
-   <b style="font-size:14px">Horas de inicio</b><div class="hor-ch" id="hH">${HS.map(h=>`<button type="button" data-h="${h}" aria-pressed="${horas.includes(h)}">${h12(h)}</button>`).join("")}</div>
-   <p class="small muted" style="margin:0" id="hRes"></p>
-   <button class="btn" id="hOk" style="width:100%">Guardar horario</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
-    const res=()=>{$("#hRes").textContent=dias.length&&horas.length?"Tus prospectos verán "+horas.length*dias.length+" espacios por semana (menos los que ya tengas ocupados).":"Elige al menos un día y una hora."};res();
-    $("#hD").onclick=e=>{const b=e.target.closest("[data-d]");if(!b)return;const k=+b.dataset.d;dias=dias.includes(k)?dias.filter(x=>x!==k):dias.concat(k);b.setAttribute("aria-pressed",dias.includes(k));res()};
-    $("#hH").onclick=e=>{const b=e.target.closest("[data-h]");if(!b)return;const k=b.dataset.h;horas=horas.includes(k)?horas.filter(x=>x!==k):horas.concat(k).sort();b.setAttribute("aria-pressed",horas.includes(k));res()};
-    $("#hOk").onclick=()=>{if(!dias.length||!horas.length){toast("Elige al menos un día y una hora");return}profile.horario={dias,horas};store.set("perfil",profile);publicarSlots();closeSheet();toast("Horario guardado ✓");renderMiAgenda()}})}
+function publicarSlots(){} // 8 nov: se quitó "Agenda conmigo" (reservas desde la página)
 function renderMiAgenda(){const el=$("#agMia");if(!el||agVista!=="mia")return;if(!citasOk){el.innerHTML=`<p class="muted small">Cargando tu agenda…</p>`;loadCitas();return}
   const t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()+agWk*7), /* empieza HOY y sigue 7 días; las flechas mueven de 7 en 7 */ds=Array.from({length:7},(_,i)=>new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+i));
   const W=ds.map(d=>{const k=dkey(d);return{k,d,L:citas.filter(c=>c.fecha===k).sort(citaSort)}}),tot=W.reduce((a,x)=>a+x.L.length,0),hrs=W.reduce((a,x)=>a+x.L.reduce((b,c)=>b+(c.dur||60),0),0)/60;
   const mx=Math.max(4,...W.map(x=>x.L.reduce((b,c)=>b+(c.dur||60),0)/60));const lleno=W.filter(x=>x.L.reduce((b,c)=>b+(c.dur||60),0)>=240).map(x=>DAYS[x.d.getDay()]);
   const rango=ds[0].getDate()+" "+MONTHS[ds[0].getMonth()].slice(0,3)+" – "+ds[6].getDate()+" "+MONTHS[ds[6].getMonth()].slice(0,3);
-  const Hh=miHorario(),dn=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
-  el.innerHTML=`   <div class="card row between" style="gap:10px"><div style="min-width:0"><b style="font-size:14px">🌐 Agenda desde tu página</b><div class="small muted">${[1,2,3,4,5,6,0].filter(d=>Hh.dias.includes(d)).map(d=>dn[d]).join(", ")} · ${Hh.horas.map(h12).join(", ")}</div></div><button class="btn sm ghost" id="hEdit" style="flex:none">⚙️ Mi horario</button></div>
-   <div class="card" style="gap:10px"><div class="cal-head"><button id="wkPrev" aria-label="Semana anterior">‹</button><h3 style="margin:0">${agWk===0?"Próximos 7 días":agWk===1?"Siguientes 7 días":agWk===-1?"7 días anteriores":rango}</h3><button id="wkNext" aria-label="Semana siguiente">›</button></div>
+  el.innerHTML=`   <div class="card" style="gap:10px"><div class="cal-head"><button id="wkPrev" aria-label="Semana anterior">‹</button><h3 style="margin:0">${agWk===0?"Próximos 7 días":agWk===1?"Siguientes 7 días":agWk===-1?"7 días anteriores":rango}</h3><button id="wkNext" aria-label="Semana siguiente">›</button></div>
     <p class="small muted" style="margin:0;text-align:center">${rango} · <b style="color:var(--ink)">${tot} ${tot===1?"cita":"citas"}</b> · ${hrs%1?hrs.toFixed(1):hrs} h${lleno.length?` · <span style="color:var(--warn);font-weight:700">${lleno.join(", ")} lleno</span>`:""}</p>
     <div class="wkbars">${W.map(x=>{const h=x.L.reduce((b,c)=>b+(c.dur||60),0)/60;return `<div class="${x.k===TODAY?"hoy":""}"><span class="bw"><i style="height:${Math.round(h/mx*100)}%;background:${h>=4?"var(--warn)":"var(--brand)"}"></i></span><b>${x.L.length||""}</b><small>${DAYS[x.d.getDay()]} ${x.d.getDate()}</small></div>`}).join("")}</div></div>
    ${W.map(x=>{const man=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1)),nm=(x.k===TODAY?"Hoy · ":x.k===man?"Mañana · ":"")+DAYS_L[x.d.getDay()][0].toUpperCase()+DAYS_L[x.d.getDay()].slice(1)+" "+x.d.getDate();
@@ -5815,7 +5796,7 @@ function renderMiAgenda(){const el=$("#agMia");if(!el||agVista!=="mia")return;if
      return `<div class="card" style="gap:8px${x.k<TODAY?";opacity:.55":""}"><div class="row between"><h3 style="margin:0">${nm}</h3>${x.k>=TODAY?`<button class="btn sm ghost" data-cinew="${x.k}">+</button>`:""}</div>${x.L.map(citaCard).join("")}</div>`}).join("")}
    ${agWk===0?(()=>{const P=citas.filter(c=>c.fecha<TODAY&&c.fecha>=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()-7))).sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:citaSort(a,b));if(!P.length)return"";
      return `<details class="card agPas" style="gap:8px"><summary style="cursor:pointer;font-weight:700">🕘 Días anteriores <span class="small muted">(${P.length} ${P.length===1?"cita":"citas"})</span></summary>${P.map(c=>`<div class="small muted" style="margin-top:8px;font-weight:700">${(d=>DAYS_L[d.getDay()][0].toUpperCase()+DAYS_L[d.getDay()].slice(1)+" "+d.getDate())(parseK(c.fecha))}</div>${citaCard(c)}`).join("")}</details>`})():""}`;
-  $("#hEdit").onclick=abrirHorario;$("#wkPrev").onclick=()=>{agWk--;renderMiAgenda()};$("#wkNext").onclick=()=>{agWk++;renderMiAgenda()};
+  $("#wkPrev").onclick=()=>{agWk--;renderMiAgenda()};$("#wkNext").onclick=()=>{agWk++;renderMiAgenda()};
   el.querySelectorAll("[data-cinew]").forEach(b=>b.onclick=()=>abrirCita({fecha:b.dataset.cinew}));bindCitas(el)}
 function renderHoyCitas(){try{renderRecCard()}catch(e){}const c=$("#hoyCitas");if(!c)return;const L=citas.filter(x=>x.fecha===TODAY&&(citaIni(x).getTime()+(x.dur||60)*6e4>Date.now()||(x.tipo!=="lider"&&!x.hecha))).sort(citaSort);if(!L.length){c.hidden=true;return}c.hidden=false;
   const pend=L.filter(x=>citaIni(x).getTime()+(x.dur||60)*6e4>Date.now()).length;
@@ -6958,7 +6939,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261108100933";var busy=false,pend=null;
+(function(){var V="20261108102113";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
