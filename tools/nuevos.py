@@ -14,7 +14,7 @@ import sys, json, base64, os, re, datetime
 
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-KEYF = '/home/claude/.evk'
+KEYF = os.environ.get('EVK_FILE') or '/home/claude/.evk'  # en GitHub (buzón) la clave llega por EVK_FILE
 ENC = 'data/nuevos.enc'
 TEAM = 'data/team.json'
 

@@ -24,7 +24,7 @@ import sys, json, base64, os, re, unicodedata, datetime, csv
 
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-KEYF = '/home/claude/.evk'
+KEYF = os.environ.get('EVK_FILE') or '/home/claude/.evk'  # en GitHub (buzón) la clave llega por EVK_FILE
 ENC = 'data/ahorro.enc'
 TEAM = 'data/team.json'
 INI = '2026-11-01T06:00:00Z'   # nadie se bloquea antes del 1 de noviembre (hora de Honduras)

@@ -1,0 +1,50 @@
+name: Buzón del ranking (correos de inCruises)
+# Lee la hoja privada "Buzón del ranking" (la llena el Apps Script de tools/buzon/Codigo.gs desde el Gmail de Edwin)
+# y actualiza activaciones, ahorros pendientes y registros gratis. Reemplaza al ciclo del chat.
+# Los logs son públicos: buzon.py solo imprime conteos.
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"   # cada 15 min
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: "1 = prueba (no guarda, no marca la hoja, no avisa)"
+        default: "1"
+concurrency: buzon
+permissions:
+  contents: write
+jobs:
+  buzon:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q cryptography
+      - name: Procesar
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+          BUZON_ID: ${{ secrets.BUZON_ID }}
+          DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry == '1' && '1' || '' }}
+        run: |
+          cp data/team.json /tmp/viejo.json
+          python3 tools/buzon/buzon.py
+      # Lo que GitHub no dispara solo (un push del bot no activa otros workflows): avisos push
+      - uses: actions/setup-node@v4
+        if: always()
+        with: { node-version: 20 }
+      - name: Avisos
+        if: always()
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+        run: |
+          [ -f /tmp/buzon_out.json ] || exit 0
+          A=$(python3 -c "import json;print(json.load(open('/tmp/buzon_out.json')).get('acts',0))")
+          H=$(python3 -c "import json;print(json.load(open('/tmp/buzon_out.json')).get('ahorro',0))")
+          C=$(python3 -c "import json;print(json.load(open('/tmp/buzon_out.json')).get('commit',0))")
+          [ "$C" = "1" ] || exit 0
+          (cd tools/push && npm install --no-audit --no-fund >/dev/null)
+          if [ "$A" != "0" ]; then echo "Socios nuevos: espero 3 min a que se publique el ranking"; sleep 180; node tools/push/enviar.mjs act /tmp/viejo.json data/team.json; fi
+          if [ "$H" = "1" ]; then (cd tools/push && node enviar.mjs inact-sync); fi

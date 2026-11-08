@@ -52,7 +52,7 @@ def _red():
     try:
         import base64, os as _o
         from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-        k = open('/home/claude/.evk').read().strip(); k = base64.urlsafe_b64decode(k + '=' * (-len(k) % 4))
+        k = open(_o.environ.get('EVK_FILE') or '/home/claude/.evk').read().strip(); k = base64.urlsafe_b64decode(k + '=' * (-len(k) % 4))
         raw = base64.b64decode(open('data/red.enc').read().strip())
         return json.loads(AESGCM(k).decrypt(raw[:12], raw[12:], None)).get('rows', [])
     except Exception as x:
