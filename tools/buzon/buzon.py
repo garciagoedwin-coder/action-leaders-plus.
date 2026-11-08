@@ -218,6 +218,9 @@ def main():
     OUT['ahorro'] = int('data/ahorro.enc' in cambios)
     if DRY:
         log('DRY: cambios que se guardarían →', cambios.replace('\n', ' · ') or 'ninguno')
+        for f, r in pend:
+            e = estados.get(f, '')
+            if e not in ('repetido', 'no estaba', 'ya estaba', 'ok'): log('  fila', f, r[1], r[2], '→', e)
         log('DRY: estados →', json.dumps(sorted(set(estados.values()))), '· avisos para Edwin', len(salida))
         subprocess.run(['git', 'checkout', '--', 'data'])
         return
