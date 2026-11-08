@@ -97,6 +97,18 @@
    "actSemana": 1
   },
   {
+   "nombre": "Gabriela Castillo",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "gabriela-castillo",
+   "activaciones": 1,
+   "volumen": 50,
+   "actSemana": 1
+  },
+  {
    "nombre": "Josue antony Navarro rubio",
    "linea": "",
    "presentaciones": 0,
@@ -2979,7 +2991,6 @@
    "wk": "a21e2f",
    "fuente": "gmail",
    "id": "idalia-del-socorro-caceres-talavera",
-   "ps": 1,
    "rv": 1
   },
   {
@@ -3048,7 +3059,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-07T21:45:00-06:00",
+  "rankingActualizado": "2026-11-08T09:51:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {

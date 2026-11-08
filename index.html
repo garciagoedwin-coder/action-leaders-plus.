@@ -2493,6 +2493,12 @@ const LC_TX={lid:"🏅 Líder",esp:"⚔️ Líder Espartano"};
 const LC_FR={esp:["La disciplina de hoy es la libertad de mañana. Gracias por ser ejemplo para todo el equipo.","Los grandes líderes no esperan el momento: lo crean. ¡Felicidades por este logro!","Su esfuerzo inspira a todo el equipo. Así se construye el camino a la libertad.","Disciplina, enfoque y acción: eso es ser Espartano. ¡Gracias por marcar el paso!"],
   lid:["Liderar es dar el ejemplo. Este mes, usted lo hizo. ¡Gracias por su compromiso con el equipo!","Su constancia inspira a todo el equipo. ¡Felicidades por este logro!","Los grandes resultados se construyen con decisiones diarias. Hoy celebramos las suyas.","Cada mes que cumple, su camino a la libertad se hace más firme. ¡Siga así!"]};
 const LC_RG_ABR={"Marketing Director":"MD","SM Director":"SMD","Regional Director":"RD","National Director":"ND","International Director":"ID","Executive Director":"ED","Board of Director":"BOD","Team Leader":"TL"};
+// Sello del flyer dibujado (8 nov): ⭐ estrella, 🛡️ escudo, ⚔️ espadas. Antes era emoji y en Android salía el círculo vacío.
+function lcSello(g,k,x,y,col){g.save();g.translate(x,y);g.fillStyle=col;g.strokeStyle=col;g.lineJoin="round";g.lineCap="round";
+  if(/⚔/.test(k)){g.lineWidth=5;[-1,1].forEach(d=>{g.save();g.rotate(d*Math.PI/4);g.beginPath();g.moveTo(0,-19);g.lineTo(0,13);g.stroke();g.beginPath();g.moveTo(-7,9);g.lineTo(7,9);g.stroke();g.beginPath();g.moveTo(0,13);g.lineTo(0,19);g.lineWidth=6;g.stroke();g.lineWidth=5;g.restore()})}
+  else if(/🛡/.test(k)){g.beginPath();g.moveTo(0,-19);g.lineTo(16,-12);g.lineTo(15,4);g.quadraticCurveTo(12,15,0,21);g.quadraticCurveTo(-12,15,-15,4);g.lineTo(-16,-12);g.closePath();g.fill()}
+  else{g.beginPath();for(let i=0;i<10;i++){const r=i%2?8.5:20,a=-Math.PI/2+i*Math.PI/5;g.lineTo(Math.cos(a)*r,Math.sin(a)*r+1.5)}g.closePath();g.fill()}
+  g.restore()}
 async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d"),esp=q.k==="esp";
   await bienFonts();try{await Promise.all(["700 30px Figtree","600 30px Figtree","500 30px Figtree","400 30px Figtree","italic 700 40px 'Libre Baskerville'","400 60px 'Bebas Neue'"].map(x=>document.fonts.load(x)))}catch(x){}
   const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', 'Bricolage Grotesque', Arial, sans-serif",LB="'Libre Baskerville', Georgia, serif";
@@ -2514,7 +2520,7 @@ async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas
   g.beginPath();g.arc(cx,cy,R,0,Math.PI*2);g.fillStyle=grad(cx-R,cx+R,C.g);g.fill();g.beginPath();g.arc(cx,cy,R-5,0,Math.PI*2);g.fillStyle="#04060d";g.fill();
   await circFoto(g,q.foto,cx,cy,R-10,q.n,()=>{g.fillStyle="#141a26";g.fillRect(cx-R,cy-R,2*R,2*R);g.fillStyle=C.a;g.font="800 130px "+BF;g.textAlign="center";g.fillText(initials(q.n),cx,cy+46)});
   g.beginPath();g.arc(cx,cy+R,34,0,Math.PI*2);g.fillStyle=grad(cx-34,cx+34,C.g);g.fill();g.lineWidth=4;g.strokeStyle="#070a14";g.stroke();
-  g.font="32px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";g.textAlign="center";g.fillText(C.sello,cx,cy+R+11);
+  lcSello(g,C.sello,cx,cy+R,"#0b1220");
   // título
   if(NEW){ // 6 nov: título minimalista (Edwin eligió la propuesta "Romana")
     try{await document.fonts.load("400 80px 'Cormorant Caps'")}catch(e){}
@@ -2527,15 +2533,18 @@ async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas
   {const z=g.createLinearGradient(0,1080-tz,0,1080);z.addColorStop(.1,C.t[0]);z.addColorStop(.5,C.t[1]);z.addColorStop(.95,C.t[2]);g.fillStyle=z;sp(C.tit,540,1086,tz*.07,"center")}
   {const z=g.createLinearGradient(470,0,610,0);z.addColorStop(0,"rgba(0,0,0,0)");z.addColorStop(.5,C.a);z.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=z;g.fillRect(470,1126,140,1.5)}
   }
-  let nz=56;g.font="600 "+nz+"px "+BF;while(g.measureText(nv(q.n)).width>920&&nz>32){nz--;g.font="600 "+nz+"px "+BF}g.fillStyle="#fff";g.textAlign="center";g.fillText(nv(q.n),540,NEW?1226:1210);
+  const VG=!!(q.pres&&Number(q.v)>0),cy0=VG?1300:1262; // 8 nov: en la presentación del grupo el volumen va en grande bajo el título
+  if(VG){g.textAlign="center";const vt=fmt(Math.round(Number(q.v)))+" PTS DE VOLUMEN";let vz=50;g.font="400 "+vz+"px "+BB;while(g.measureText(vt).width>900&&vz>34){vz-=2;g.font="400 "+vz+"px "+BB}
+    const z=g.createLinearGradient(0,1150,0,1192);z.addColorStop(0,"#FBEFC0");z.addColorStop(.55,"#E8C766");z.addColorStop(1,"#A57F1C");g.fillStyle=z;sp(vt,540,1192,vz*.08,"center")}
+  let nz=56;g.font="600 "+nz+"px "+BF;while(g.measureText(nv(q.n)).width>920&&nz>32){nz--;g.font="600 "+nz+"px "+BF}g.fillStyle="#fff";g.textAlign="center";g.fillText(nv(q.n),540,VG?1262:NEW?1226:1210);
   // tarjetas
   const rgN=lcRgTx(q.n)||(()=>{try{const i=rangoActualIdx({},q.n);return i===1?"Team Leader":""}catch(e){return ""}})();
-  const c3=esp?(lcTL(q.n)?["TL","TEAM LEADER"]:[LC_RG_ABR[rgN]||"⭐",(rgN||"").toUpperCase().replace("MARKETING DIRECTOR","MARKETING DIR.").replace("INTERNATIONAL DIRECTOR","INTERNAT. DIR.")])
-    :(rgN?[LC_RG_ABR[rgN]||"⭐",rgN.toUpperCase().replace("MARKETING DIRECTOR","MARKETING DIR.")]:["LÍDER","DEL SISTEMA"]);
-  const mp=String(q.mes||lcMes()).split(" "),cards=[q.c1||(Number(q.v)>0?[fmt(Math.round(Number(q.v))),"PTS DE VOLUMEN"]:[esp?"500+":"200+","PUNTOS"]),[(mp[0]||"").toUpperCase(),mp[1]||""],c3],cw=(920-32)/3;
-  cards.forEach(([b,s2],i)=>{const x=80+i*(cw+16);g.beginPath();g.roundRect(x,1262,cw,124,20);g.fillStyle="rgba(255,255,255,.06)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.14)";g.stroke();
-    let bz=52;g.font="400 "+bz+"px "+BB;while(g.measureText(b).width>cw-24&&bz>30){bz-=2;g.font="400 "+bz+"px "+BB}g.fillStyle=C.a;g.textAlign="center";g.fillText(b,x+cw/2,1330);
-    g.font="600 15px "+BF;let ls=3.3;while(ls>.5){let w=0;for(const ch of s2)w+=g.measureText(ch).width+ls;if(w<cw-20)break;ls-=.5}g.fillStyle="rgba(255,255,255,.75)";sp(s2,x+cw/2,1364,ls,"center")});
+  const c3=esp?(lcTL(q.n)?["TL","TEAM LEADER"]:[LC_RG_ABR[rgN]||"★",(rgN||"").toUpperCase().replace("MARKETING DIRECTOR","MARKETING DIR.").replace("INTERNATIONAL DIRECTOR","INTERNAT. DIR.")])
+    :(rgN?[LC_RG_ABR[rgN]||"★",rgN.toUpperCase().replace("MARKETING DIRECTOR","MARKETING DIR.")]:["LÍDER","DEL SISTEMA"]);
+  const mp=String(q.mes||lcMes()).split(" "),c1=q.c1||(Number(q.v)>0?[fmt(Math.round(Number(q.v))),"PTS DE VOLUMEN"]:[esp?"500+":"200+","PUNTOS"]),cards=VG?[[(mp[0]||"").toUpperCase(),mp[1]||""],c3]:[c1,[(mp[0]||"").toUpperCase(),mp[1]||""],c3],cw=(920-16*(cards.length-1))/cards.length;
+  cards.forEach(([b,s2],i)=>{const x=80+i*(cw+16);g.beginPath();g.roundRect(x,cy0,cw,124,20);g.fillStyle="rgba(255,255,255,.06)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.14)";g.stroke();
+    let bz=52;g.font="400 "+bz+"px "+BB;while(g.measureText(b).width>cw-24&&bz>30){bz-=2;g.font="400 "+bz+"px "+BB}g.fillStyle=C.a;g.textAlign="center";g.fillText(b,x+cw/2,cy0+68);
+    g.font="600 15px "+BF;let ls=3.3;while(ls>.5){let w=0;for(const ch of s2)w+=g.measureText(ch).width+ls;if(w<cw-20)break;ls-=.5}g.fillStyle="rgba(255,255,255,.75)";sp(s2,x+cw/2,cy0+102,ls,"center")});
   // frase
   if(q.pres){g.textAlign="center";let lz2=46;g.font="700 "+lz2+"px "+BF;const lt="📍 "+q.lugar;while(g.measureText(lt).width>900&&lz2>28){lz2--;g.font="700 "+lz2+"px "+BF}g.fillStyle="#fff";g.fillText(lt,540,1478);g.font="italic 400 30px "+BF;g.fillStyle="rgba(255,255,255,.85)";g.fillText("Gracias por recibirme en el equipo.",540,1546)}else{
   const L=LC_FR[esp?"esp":"lid"],fr=L[parseInt(ahF(q.n+(q.mes||"")),16)%L.length];g.font="italic 400 31px "+BF;const FL=wrap(fr,800).slice(0,3);g.fillStyle="rgba(255,255,255,.88)";g.textAlign="center";
@@ -2689,8 +2698,8 @@ function lzgPaisDe(){const r=miRegistro(),p=String(r.pais||"").trim();if(p&&!/^\
 function lzgQ(){const yo=miRegistro().nombre||miNombreFull()||"",yz=lzYo(),L=(T.lideres||[]).find(l=>lzNs(l).includes(yz))||{},r=lcLista0().find(x=>sameN(x.n,yo));
   const pts=Math.max(Number(L.ptsBase)||0,Number(L.volumen)||0,r?r.v:0),k=pts>=500?"esp":pts>=200?"lid":"",q={n:yo,k:k||"lid",v:pts,mes:lcMes(),foto:miFotoUrl()||fotoDe(yo),pres:1};
   let ri=-1;try{ri=miRangoIdx()}catch(e){}if(ri<2){const j=idxRango(rangoTxt(L.rango||""));if(j>=2)ri=j}
-  if(ri>=2){const rg=RANGOS[ri].n;q.rgN=rg;q.tit=rg.toUpperCase();q.sello="⭐";if(!(pts>0))q.c1=["⭐","RANGO"]}
-  else if(!k){const rg=rangoTxt(L.rango||"")||"Líder";q.tit=String(rg).toUpperCase();q.sello="⭐";if(!(pts>0))q.c1=["⭐","RANGO"]}else if(k==="lid")q.tit="LÍDER";return q}
+  if(ri>=2){const rg=RANGOS[ri].n;q.rgN=rg;q.tit=rg.toUpperCase();q.sello="⭐";if(!(pts>0))q.c1=["★","RANGO"]}
+  else if(!k){const rg=rangoTxt(L.rango||"")||"Líder";q.tit=String(rg).toUpperCase();q.sello="⭐";if(!(pts>0))q.c1=["★","RANGO"]}else if(k==="lid")q.tit="LÍDER";return q}
 function lzgTexto(q,lugar){const f=String(nv(q.n)||q.n);const nivel=q.rgN?q.rgN+" ⭐":q.pres&&q.tit&&q.sello==="⭐"?q.tit.charAt(0)+q.tit.slice(1).toLowerCase():q.k==="esp"?"Líder Espartano ⚔️":"Líder 🛡️";
   return `¡Hola, equipo! 👋\n\nSoy *${f}*, de *${lugar}*.\n\nEste mes me uno al *Sistema de liderazgo* como ${nivel}${Number(q.v)>0?" con *"+fmt(Math.round(Number(q.v)))+" pts* de volumen":""}.\n\n¡Gracias por recibirme! Vamos con todo 💪\n\n#HastaQueFuncione`}
 async function lzgMarcar(){const z={m:mesMeta(),t:Date.now()};regDoc=regDoc||{};regDoc.lzG=z;try{await store.db.doc("users/"+store.uid).set({lzG:z},{merge:true})}catch(e){}try{lzgStrip()}catch(e){}try{if(eqTab==="ranking"&&rankMetric==="liderazgo")renderEquipo()}catch(e){}}
@@ -6953,7 +6962,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261107163842";var busy=false,pend=null;
+(function(){var V="20261108095248";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
