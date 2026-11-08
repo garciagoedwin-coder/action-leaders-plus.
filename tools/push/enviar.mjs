@@ -238,6 +238,7 @@ export function avDestino(modo, m) {
   if (/^inact/.test(modo)) return /ahorros? pendientes?/i.test(t) ? "ahp" : "urg";
   if (/^lzg/.test(modo)) return /compromiso/i.test(t) ? "comp" : "lzg";
   if (modo === "viaje") return "via";
+  if (modo === "rhito") return "rach";
   return "inicio";
 }
 async function main() {
@@ -370,6 +371,23 @@ async function main() {
           { title: "⚔️ Falta un paso, " + primer(nm), body: "Entre al grupo de WhatsApp del Sistema de liderazgo y preséntese. Lo encuentra en Inicio de la app." }], d.id + new Date().toISOString().slice(0, 10))]);
       }
     }
+  } else if (modo === "rhito") {
+    // 8 nov (Edwin): metas de racha 7/14/21/30. La app escribe constancia/{uid}.rh {m, ini, t} al celebrar; aquí se avisa a su línea de arriba (una vez).
+    const lim = Date.now() - 30 * 3600e3, M = (await db.doc("push_meta/rhito").get()).data() || {}, sent = new Set(M.s || []), nuevos = [];
+    const H = (await db.collection("constancia").where("rh.t", ">", lim).get()).docs;
+    for (const d of H) {
+      const rh = d.data().rh || {}, key = d.id + ":" + rh.ini + ":" + rh.m; if (!rh.m || sent.has(key)) continue;
+      const u = await db.doc("users/" + d.id).get(), ud = u.exists ? u.data() : {}, nm = (ud.registro || {}).nombre || "";
+      const up = [...new Set(((ud.registro || {}).linea || []).filter(Boolean))].slice(0, 6); if (!nm || !up.length) { nuevos.push(key); continue; }
+      for (const uid of up) {
+        const p = await db.doc("push/" + uid).get(), x = p.exists ? p.data() : {}; if (!x.tk) continue; hist[uid] = x.h || [];
+        salida.push([uid, x.tk, pick([
+          { title: "🔥 " + primer(nm) + " lleva " + rh.m + " días seguidos", body: "Su rutina diaria no se detiene. Felicítelo hoy desde Mi Racha 👏" },
+          { title: "🔥 ¡" + rh.m + " días de racha para " + primer(nm) + "!", body: "La constancia se celebra. Mándele un mensaje desde Mi Racha 💪" }], key + uid)]);
+      }
+      nuevos.push(key);
+    }
+    if (!DRY && nuevos.length) await db.doc("push_meta/rhito").set({ s: [...sent, ...nuevos].slice(-400), t: Date.now() }, { merge: true });
   } else if (modo === "viaje") {
     // 8 nov (Edwin): invitar a llenar el formulario de testimonios de viaje (cada semana) a quien NO ha respondido
     // (users.viaj = "Ya lo hice"/"No me interesa") y NO tiene testimonio publicado (data/hist.json tx[].n).

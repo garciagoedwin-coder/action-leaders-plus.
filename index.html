@@ -1721,7 +1721,7 @@ function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histS
       <span class="counter"><button data-dec="${r.k}" aria-label="Restar">−</button><span class="num">${v}</span><button data-inc="${r.k}" aria-label="Sumar">+</button></span></div>`}).join("");
   const p=Math.round(dayScore(day)*100),RL=ROUTINE.filter(r=>!r.desde||TODAY>=r.desde),hechas=RL.filter(r=>(day[r.k]||0)>=1).length;$("#dayPct").textContent=hechas+" de "+RL.length;$("#dayBar").style.width=p+"%";
   const pend=RL.filter(r=>!((day[r.k]||0)>=1)),falta=pend.length,ra=$("#rutAlert");
-  const rach=(()=>{let r=0;for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=i===0?dayScore(day):dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)r++;else break}return r})();
+  const rach=(()=>{let r=0;for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=i===0?dayScore(day):dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)r++;else break}return r})();try{rhRevisar(rach,!falta)}catch(e){}
   if(ra){const st=falta?"pend":"ok",hr=new Date().getHours(),nx=pend[0],key=st+"|"+falta+"|"+(hr>=18)+"|"+rach+"|"+(day.hAtr?1:0);if(ra.dataset.key!==key){
     let h;if(!falta)h=`<div class="rut-al ok rutDone" id="rutDoneB"><span class="rdChk">✓</span><span class="grow" style="min-width:0"><b>¡Felicidades! Su rutina de hoy está hecha 🎉</b><span class="rdS">🔥 Racha de ${rach} ${rach===1?"día":"días"} · mañana va por ${rach+1}</span></span><button type="button" class="rutTg" id="rutTg">${rutOpen?"▴":"▾"}</button></div>`;
     else{const tarde=hr>=18&&rach>0,txt=tarde?`⏰ <b>Le ${falta===1?"falta 1 paso":"faltan "+falta+" pasos"} para no perder su racha de ${rach} ${rach===1?"día":"días"}</b>`:hechas===0&&nx.k==="historia"&&!day.hAtr?`👉 <b>Empiece por lo fácil:</b> <span>publique su historia (1 minuto)</span>`:`👉 <b>Siguiente paso:</b> <span>${esc(nx.k==="historia"&&day.hAtr?"publique el flyer de la presentación de hoy":nx.nx||nx.t)}</span>`;
@@ -2610,6 +2610,66 @@ function lcTextoFelicitar(q){const f=String(q.n).split(" ")[0],m=String(q.mes||l
 async function lcCompartir(q,bt){let file=null;if(bt){bt.disabled=true;bt.textContent="Creando flyer…"}try{file=await lcFile(q)}catch(e){}if(bt){bt.disabled=false;bt.textContent="📣 Compartir flyer"}
   const t=lcTextoGrupo(q);if(file&&navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(e){if(e&&e.name==="AbortError")return}}
   if(file){const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click()}location.href="https://wa.me/?text="+encodeURIComponent(t)}
+// ---------- Metas de racha (8 nov, Edwin): 7, 14, 21 y 30 días seguidos → celebración una vez + flyer "MI RACHA" (anillo de 30 días con llamita) ----------
+const RH_METAS=[7,14,21,30];
+const RH_FR={7:"La constancia vence al talento.",14:"Los resultados llegan a quien se presenta todos los días.",21:"21 días forman un hábito. Este es el mío.",30:"Un mes entero sin fallar. Así se construye un negocio."};
+let rhT=0;function rhRevisar(rach,hoyOk){try{if(!store.uid||!(regDoc&&regDoc.registro&&regDoc.registro.nombre)||yoPrueba())return;
+  const m=[...RH_METAS].reverse().find(x=>rach>=x);if(!m)return;const ini=addD(TODAY,-(hoyOk?rach-1:rach)),K="rh:"+store.uid+":"+ini+":"+m;if(LS.get(K))return;
+  clearTimeout(rhT);rhT=setTimeout(()=>{if(LS.get(K))return;if(!$("#sheet").hidden||document.querySelector(".avisoTop.on")){rhT=0;setTimeout(()=>rhRevisar(rach,hoyOk),5000);return}
+    LS.set(K,1);try{if(store.db)store.db.doc("constancia/"+store.uid).set({rh:{m,ini,t:Date.now()},u:Date.now()},{merge:true}).catch(()=>{})}catch(e){}rhCelebrar(m,rach)},hoyOk?2200:3500)}catch(e){}}
+function rhCelebrar(m,rach){const sig=RH_METAS.find(x=>x>m),f1=String(nv(miNombreFull()||miNombreCorto())||"").split(" ")[0];
+  openSheet(`<div class="dt-cel" id="rhCel"><div style="font-size:42px">🔥</div><div class="big">¡${m} días seguidos!</div><p class="muted" style="margin:0">${esc(f1?f1+", ":"")}${esc(RH_FR[m]||"")}</p></div>
+   <div id="rhPrev" style="margin:12px auto 0;width:58%;aspect-ratio:9/16;border-radius:14px;background:#0b0f1a;display:grid;place-items:center;color:#fff;font-size:13px">Creando su flyer…</div>
+   <button class="btn" id="rhSh" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#FF8A2A,#E8380D);color:#fff">📣 Compartir mi flyer</button>
+   <button class="btn ghost" data-close style="width:100%">${sig?"¡Vamos por "+sig+"!":"¡A seguir así!"}</button>`,()=>{try{confeti($("#rhCel"),60)}catch(e){}
+    rhCanvas(m).then(cv=>{const b=$("#rhPrev");if(!b||!cv)return;cv.style.width="100%";cv.style.height="100%";cv.style.borderRadius="14px";b.innerHTML="";b.appendChild(cv)}).catch(()=>{});
+    $("#rhSh").onclick=()=>rhCompartir(m,$("#rhSh"))})}
+function rhTexto(m){const yo=nv(miNombreFull()||miNombreCorto())||"";return `🔥 *¡${m} días seguidos construyendo mi negocio!*\n\nTodos los días: presentar, dar seguimiento y agregar personas nuevas a mi lista.\n\n${RH_FR[m]||""}\n\n#HastaQueFuncione${yo?"\n\n*"+yo+"*":""}`}
+async function rhCompartir(m,bt){let file=null;if(bt){bt.disabled=true;bt.textContent="Creando flyer…"}
+  try{const cv=await rhCanvas(m);const bl=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));file=new File([bl],"mi-racha-"+m+".jpg",{type:"image/jpeg"})}catch(e){}
+  if(bt){bt.disabled=false;bt.textContent="📣 Compartir mi flyer"}const t=rhTexto(m);
+  if(file&&navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(e){if(e&&e.name==="AbortError")return}}
+  if(file){const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click()}try{copy(t)}catch(e){}}
+async function rhCanvas(m){const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
+  await bienFonts();try{await Promise.all(["700 30px Figtree","600 30px Figtree","400 30px Figtree","italic 400 40px Georgia","400 60px 'Bebas Neue'","400 80px 'Cormorant Caps'"].map(x=>document.fonts.load(x)))}catch(x){}
+  const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', Arial, sans-serif",CF="'Cormorant Caps', Georgia, serif",IT="italic 400 {s}px Georgia, 'Times New Roman', serif",OR="#FFB15C";
+  const sp=(t,x,y,ls,al)=>{let w=0;for(const ch of t)w+=g.measureText(ch).width+ls;w-=ls;let cx=al==="right"?x-w:al==="center"?x-w/2:x;g.textAlign="left";for(const ch of t){g.fillText(ch,cx,y);cx+=g.measureText(ch).width+ls}return w};
+  const ww=(t,ls)=>{let w=0;for(const ch of t)w+=g.measureText(ch).width+ls;return w-ls};
+  g.fillStyle="#05070d";g.fillRect(0,0,W,H);const bg=await imgLoad("media/flyers/lc-espartano.jpg?v=1");if(bg)g.drawImage(bg,0,0,W,H);
+  g.fillStyle="rgba(4,6,13,.62)";g.fillRect(0,0,W,H);
+  let gl=g.createRadialGradient(540,710,40,540,710,470);gl.addColorStop(0,"rgba(255,122,24,.30)");gl.addColorStop(.45,"rgba(255,60,0,.07)");gl.addColorStop(1,"rgba(255,60,0,0)");g.fillStyle=gl;g.fillRect(0,200,W,1100);
+  const fz=g.createLinearGradient(0,H*.7,0,H);fz.addColorStop(0,"rgba(4,6,13,0)");fz.addColorStop(1,"rgba(4,6,13,.85)");g.fillStyle=fz;g.fillRect(0,H*.7,W,H*.3);
+  // encabezado
+  g.font="600 22px "+BF;g.fillStyle=OR;sp("— MI RACHA —",540,118,10,"center");
+  const f1=String(nv(miNombreFull()||miNombreCorto())||"").trim().split(/\s+/)[0];g.fillStyle="#fff";g.textAlign="center";let hz=62;g.font=IT.replace("{s}",hz);const hT="¡Felicidades, "+f1+"!";while(g.measureText(hT).width>920&&hz>34){hz-=2;g.font=IT.replace("{s}",hz)}g.fillText(hT,540,222);
+  // anillo de 30 días
+  const cx=540,cy=710,R=300,N=Math.min(m,30),fg=g.createLinearGradient(cx-R,cy-R,cx+R,cy+R);fg.addColorStop(0,"#FFE3A3");fg.addColorStop(.5,"#FF8A2A");fg.addColorStop(1,"#E8380D");
+  g.lineCap="round";g.lineWidth=16;for(let i=0;i<30;i++){const a0=(-90+i*12+1.6)*Math.PI/180,a1=(-90+i*12+12-1.6)*Math.PI/180;g.beginPath();g.arc(cx,cy,R,a0,a1);g.strokeStyle=i<N?fg:"rgba(255,255,255,.16)";g.stroke()}
+  // foto
+  g.save();g.beginPath();g.arc(cx,cy,206,0,Math.PI*2);g.fillStyle="#05070d";g.fill();g.restore();
+  try{await circFoto(g,miFotoUrl()||"",cx,cy,200)}catch(e){}
+  if(!miFotoUrl()){g.save();g.beginPath();g.arc(cx,cy,200,0,Math.PI*2);g.fillStyle="#141a26";g.fill();g.fillStyle=OR;g.font="700 120px "+BF;g.textAlign="center";g.textBaseline="middle";g.fillText(initials(miNombreFull()||miNombreCorto()||"?"),cx,cy+6);g.restore();g.textBaseline="alphabetic"}
+  g.beginPath();g.arc(cx,cy,203,0,Math.PI*2);g.lineWidth=2;g.strokeStyle="rgba(255,177,92,.55)";g.stroke();
+  // llamita al final del avance
+  {const a=(-90+N*12-1.6)*Math.PI/180,x=cx+R*Math.cos(a),y=cy+R*Math.sin(a);g.save();g.translate(x,y);
+    let h=g.createRadialGradient(0,0,10,0,0,58);h.addColorStop(0,"rgba(255,122,24,.55)");h.addColorStop(1,"rgba(255,122,24,0)");g.fillStyle=h;g.beginPath();g.arc(0,0,58,0,Math.PI*2);g.fill();
+    g.beginPath();g.arc(0,0,32,0,Math.PI*2);g.fillStyle="#120a08";g.fill();g.lineWidth=4;g.strokeStyle=fg;g.stroke();
+    const P=new Path2D("M0,-18 C6,-10 14,-4 14,6 C14,14 7,20 0,20 C-7,20 -14,14 -14,6 C-14,-2 -8,-6 -6,-12 C-3,-7 -1,-5 1,-5 C2,-10 0,-14 0,-18 Z");
+    const fl=g.createLinearGradient(0,20,0,-18);fl.addColorStop(0,"#E8380D");fl.addColorStop(.6,"#FF8A2A");fl.addColorStop(1,"#FFD27A");
+    g.save();g.translate(0,3);g.scale(1.25,1.25);g.fillStyle=fl;g.fill(P);g.restore();g.save();g.translate(0,9);g.scale(.62,.62);g.fillStyle="#FFF1C2";g.fill(P);g.restore();g.restore()}
+  // número + DÍAS / SEGUIDOS
+  const ns=String(m);g.font="400 250px "+BB;const nw=ww(ns,4);g.font="400 92px "+CF;const dw=ww("DÍAS",10);g.font="600 24px "+BF;const sw=ww("SEGUIDOS",12);
+  const lw=Math.max(dw,sw),x0=540-(nw+22+lw)/2,yb=1235;g.font="400 250px "+BB;const ng=g.createLinearGradient(0,yb-200,0,yb);ng.addColorStop(0,"#FFF1D6");ng.addColorStop(.5,OR);ng.addColorStop(1,"#E8380D");g.fillStyle=ng;sp(ns,x0,yb,4,"left");
+  g.fillStyle="#fff";g.font="400 92px "+CF;sp("DÍAS",x0+nw+22,yb-85,10,"left");g.fillStyle=OR;g.font="600 24px "+BF;sp("SEGUIDOS",x0+nw+26,yb-38,12,"left");
+  g.fillStyle="#fff";g.textAlign="center";g.font=IT.replace("{s}",50);g.fillText("construyendo mi negocio",540,1340);
+  {const z=g.createLinearGradient(495,0,585,0);z.addColorStop(0,"rgba(255,177,92,0)");z.addColorStop(.5,OR);z.addColorStop(1,"rgba(255,177,92,0)");g.fillStyle=z;g.fillRect(495,1393,90,2)}
+  const nm=nv(miNombreFull()||miNombreCorto())||"";let nz=52;g.font="700 "+nz+"px "+BF;while(g.measureText(nm).width>940&&nz>30){nz-=2;g.font="700 "+nz+"px "+BF}g.fillStyle="#fff";g.fillText(nm,540,1490);
+  g.font="italic 400 30px "+BF;g.fillStyle="rgba(255,255,255,.72)";const q="“"+(RH_FR[m]||"")+"”",L=[];let c="";q.split(" ").forEach(w=>{const z=c?c+" "+w:w;if(c&&g.measureText(z).width>900){L.push(c);c=w}else c=z});if(c)L.push(c);L.forEach((l,i)=>g.fillText(l,540,1548+i*40));
+  g.font="400 38px "+BB;g.fillStyle="rgba(255,255,255,.9)";sp("#HASTAQUEFUNCIONE",540,1682,9,"center");
+  g.fillStyle="rgba(255,255,255,.16)";g.fillRect(80,1720,920,1);
+  const lg=await imgLoad("media/logo-mas.png");if(lg){const h=42,w=lg.width*h/lg.height;g.drawImage(lg,80,1748,w,h)}
+  g.font="600 18px "+BF;g.fillStyle=OR;sp("CAMINO A MI LIBERTAD",1000,1782,6,"right");
+  return cv}
 // ---------- Flyer del día (sistema de liderazgo): imagen + texto de WhatsApp, distinto por día, líder y modo ----------
 let fdM=null,fdK=0,fdD=null;
 const fdRnd=s=>{let a=parseInt(ahF(s),16)||1;return()=>{a=(a+0x6D2B79F5)|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}};
@@ -4643,6 +4703,7 @@ function avIr(k){try{
   if(k==="dt"){LS.set("dtHeroOpen",1);avEq("mios");avScroll("#dtHero");return}
   if(k==="sol"){avEq(isAdmin?"socios":"mios");avScroll("#solAdm");return}
   if(k==="lz"){rankMetric="liderazgo";avEq("ranking");return}
+  if(k==="rach"){rankMetric="rutina";avEq("ranking");return}
   if(k==="eq"){go("equipo");return}
   go("inicio");setTimeout(()=>{const r=$("#rutCard");if(r)r.scrollIntoView({behavior:"smooth",block:"center"})},250)}catch(e){try{go("inicio")}catch(x){}}}
 function avParam(){try{const u=new URL(location.href),k=u.searchParams.get("av");if(!k)return false;u.searchParams.delete("av");try{window.history.replaceState(null,"",u.pathname+(u.search||"")+u.hash)}catch(e){}setTimeout(()=>avIr(k),400);return true}catch(e){return false}}
@@ -6412,7 +6473,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     ${irSimple()?`<div class="pf-h">Ayuda</div>`:""}<button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
     <button class="pf-it" id="pfFront"><span class="ic">🏠</span>Ver la portada de la app</button>
-    ${isAdmin&&irSimple()?`<div class="pf-h">Admin</div><button class="pf-it" id="pfCie"><span class="ic">💰</span>Cierre de mes</button>`:""}${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
+    ${isAdmin&&irSimple()?`<div class="pf-h">Admin</div><button class="pf-it" id="pfCie"><span class="ic">💰</span>Cierre de mes</button>`:""}${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfRh"><span class="ic">🔥</span>Ver celebración de racha (admin)</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
@@ -6426,7 +6487,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
       <button class="btn" data-close style="width:100%">Listo</button>`);
     const pfr=$("#pfFront");if(pfr)pfr.onclick=()=>{closeSheet();if(window.verPortada)verPortada();else toast("Vuelva a abrir la app e intente de nuevo")};
     {const pa=$("#pfAdm");if(pa)pa.onclick=()=>{closeSheet();eqTab="socios";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()}}
-    const pv=$("#pfPrev");if(pv)pv.onclick=()=>{closeSheet();welPreview=true;welSigned=false;$("#welC").dataset.v="";renderWel()};
+    const prh=$("#pfRh");if(prh)prh.onclick=()=>{closeSheet();setTimeout(()=>rhCelebrar(14,14),300)};const pv=$("#pfPrev");if(pv)pv.onclick=()=>{closeSheet();welPreview=true;welSigned=false;$("#welC").dataset.v="";renderWel()};
     $("#pfOut").onclick=async()=>{const b=$("#pfOut");if(b.dataset.ok!=="1"){b.dataset.ok="1";b.innerHTML='<span class="ic">🚪</span>Toca otra vez para confirmar';return}closeSheet();try{await window.FB.logout()}catch(e){}setTimeout(()=>location.reload(),300)};
   })}
 $("#meBtn").onclick=abrirPerfil;
@@ -7008,7 +7069,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261108130537";var busy=false,pend=null;
+(function(){var V="20261108131911";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
