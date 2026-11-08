@@ -2513,7 +2513,7 @@ async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas
   g.font="600 19px "+BF;g.fillStyle=C.a;const kw=sp("SISTEMA DE LIDERAZGO",540,172,8,"center");
   const ln=(x0,x1)=>{const z=g.createLinearGradient(x0,0,x1,0);z.addColorStop(0,"rgba(0,0,0,0)");z.addColorStop(1,C.a);g.fillStyle=z;g.fillRect(Math.min(x0,x1),165,Math.abs(x1-x0),1.5)};
   ln(540-kw/2-90,540-kw/2-24);{const z=g.createLinearGradient(540+kw/2+24,0,540+kw/2+90,0);z.addColorStop(0,C.a);z.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=z;g.fillRect(540+kw/2+24,165,66,1.5)}
-  const f1=String(q.n).trim().split(/\s+/)[0];g.textAlign="center";g.fillStyle="#fff";const NEW=esp&&!q.tit;let fz=NEW?66:44;g.font="italic 700 "+fz+"px "+LB;const hT=q.pres?"¡Hola, equipo! Soy "+f1:"¡Felicidades, "+f1+"!";while(g.measureText(hT).width>900&&fz>28){fz--;g.font="italic 700 "+fz+"px "+LB}g.fillText(hT,540,NEW?318:300);
+  const f1=String(q.n).trim().split(/\s+/)[0];g.textAlign="center";g.fillStyle="#fff";const NEW=true;let fz=66;g.font="italic 700 "+fz+"px "+LB;const hT=q.pres?"¡Hola, equipo! Soy "+f1:"¡Felicidades, "+f1+"!";while(g.measureText(hT).width>900&&fz>28){fz--;g.font="italic 700 "+fz+"px "+LB}g.fillText(hT,540,318);
   // foto
   const cx=540,cy=640,R=222;g.save();g.shadowColor=C.glow;g.shadowBlur=110;g.beginPath();g.arc(cx,cy,R+16,0,Math.PI*2);g.fillStyle="rgba(4,6,13,.7)";g.fill();g.restore();
   g.beginPath();g.arc(cx,cy,R+16,0,Math.PI*2);g.lineWidth=1.5;g.strokeStyle=esp?"rgba(232,199,102,.45)":"rgba(217,222,231,.45)";g.stroke();
@@ -2522,21 +2522,17 @@ async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas
   g.beginPath();g.arc(cx,cy+R,34,0,Math.PI*2);g.fillStyle=grad(cx-34,cx+34,C.g);g.fill();g.lineWidth=4;g.strokeStyle="#070a14";g.stroke();
   lcSello(g,C.sello,cx,cy+R,"#0b1220");
   // título
-  if(NEW){ // 6 nov: título minimalista (Edwin eligió la propuesta "Romana")
-    try{await document.fonts.load("400 80px 'Cormorant Caps'")}catch(e){}
+  // título (8 nov): TODOS con el estilo minimalista de Espartano y el mismo tamaño: "— LÍDER —" + "ESPARTANO", "— MARKETING —" + "DIRECTOR", "— LÍDER —" + "DEL MES"
+  {try{await document.fonts.load("400 80px 'Cormorant Caps'")}catch(e){}
+    const tt=String(C.tit||"").trim().toUpperCase(),w=tt.split(/\s+/),pr=tt==="LÍDER DEL MES"?["LÍDER","DEL MES"]:w.length>1?[w.slice(0,-1).join(" "),w[w.length-1]]:["",tt];
     g.fillStyle="rgba(255,255,255,.7)";g.font="500 18px "+BF;sp(q.pres?"ME UNO AL SISTEMA COMO":"CALIFICÓ COMO",540,958,9,"center");
-    g.fillStyle="#E8C766";g.font="600 26px "+BF;const lw=sp("LÍDER",540,1006,14,"center");g.fillRect(540-lw/2-80,996,56,1.5);g.fillRect(540+lw/2+24,996,56,1.5);
-    let tz=120;g.font="400 "+tz+"px 'Cormorant Caps', Georgia, serif";const T2="ESPARTANO";const tw2=()=>{let w=0;for(const ch of T2)w+=g.measureText(ch).width+tz*.14;return w};while(tw2()>940){tz-=4;g.font="400 "+tz+"px 'Cormorant Caps', Georgia, serif"}g.fillStyle="#fff";sp(T2,540,1118,tz*.14,"center");
-  }else{
-  g.fillStyle="rgba(255,255,255,.8)";g.font="500 20px "+BF;sp(q.pres?"ME UNO AL SISTEMA COMO":"CALIFICÓ COMO",540,962,10,"center");
-  let tz=122;g.font="400 "+tz+"px "+BB;let tw=0;const tws=()=>{tw=0;for(const ch of C.tit)tw+=g.measureText(ch).width+tz*.07;return tw-tz*.07};while(tws()>940&&tz>80){tz-=4;g.font="400 "+tz+"px "+BB}
-  {const z=g.createLinearGradient(0,1080-tz,0,1080);z.addColorStop(.1,C.t[0]);z.addColorStop(.5,C.t[1]);z.addColorStop(.95,C.t[2]);g.fillStyle=z;sp(C.tit,540,1086,tz*.07,"center")}
-  {const z=g.createLinearGradient(470,0,610,0);z.addColorStop(0,"rgba(0,0,0,0)");z.addColorStop(.5,C.a);z.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=z;g.fillRect(470,1126,140,1.5)}
+    if(pr[0]){g.fillStyle=C.a;g.font="600 26px "+BF;const lw=sp(pr[0],540,1006,14,"center");g.fillRect(540-lw/2-80,996,56,1.5);g.fillRect(540+lw/2+24,996,56,1.5)}
+    const CF="'Cormorant Caps', Georgia, serif",ancho=(t,z)=>{g.font="400 "+z+"px "+CF;let x=0;for(const ch of t)x+=g.measureText(ch).width+z*.14;return x};
+    let tz=120;while(ancho("ESPARTANO",tz)>940)tz-=4;while(ancho(pr[1],tz)>940&&tz>60)tz-=4; // mismo tamaño que ESPARTANO para todos
+    g.font="400 "+tz+"px "+CF;g.fillStyle="#fff";sp(pr[1],540,1118,tz*.14,"center");
   }
-  const VG=!!(q.pres&&Number(q.v)>0),cy0=VG?1300:1262; // 8 nov: en la presentación del grupo el volumen va en grande bajo el título
-  if(VG){g.textAlign="center";const vt=fmt(Math.round(Number(q.v)))+" PTS DE VOLUMEN";let vz=50;g.font="400 "+vz+"px "+BB;while(g.measureText(vt).width>900&&vz>34){vz-=2;g.font="400 "+vz+"px "+BB}
-    const z=g.createLinearGradient(0,1150,0,1192);z.addColorStop(0,"#FBEFC0");z.addColorStop(.55,"#E8C766");z.addColorStop(1,"#A57F1C");g.fillStyle=z;sp(vt,540,1192,vz*.08,"center")}
-  let nz=56;g.font="600 "+nz+"px "+BF;while(g.measureText(nv(q.n)).width>920&&nz>32){nz--;g.font="600 "+nz+"px "+BF}g.fillStyle="#fff";g.textAlign="center";g.fillText(nv(q.n),540,VG?1262:NEW?1226:1210);
+  const VG=false,cy0=1262;
+  let nz=56;g.font="600 "+nz+"px "+BF;while(g.measureText(nv(q.n)).width>920&&nz>32){nz--;g.font="600 "+nz+"px "+BF}g.fillStyle="#fff";g.textAlign="center";g.fillText(nv(q.n),540,1226);
   // tarjetas
   const rgN=lcRgTx(q.n)||(()=>{try{const i=rangoActualIdx({},q.n);return i===1?"Team Leader":""}catch(e){return ""}})();
   const c3=esp?(lcTL(q.n)?["TL","TEAM LEADER"]:[LC_RG_ABR[rgN]||"★",(rgN||"").toUpperCase().replace("MARKETING DIRECTOR","MARKETING DIR.").replace("INTERNATIONAL DIRECTOR","INTERNAT. DIR.")])
