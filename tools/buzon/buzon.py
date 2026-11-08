@@ -52,9 +52,9 @@ def api(url, data=None, method=None):
     try:
         return json.load(urllib.request.urlopen(req))
     except urllib.error.HTTPError as e:
-        msg = e.read().decode()[:300]
+        msg = e.read().decode()[:600]
         if 'has not been used' in msg or 'SERVICE_DISABLED' in msg:
-            log('FALTA ACTIVAR una API de Google:', re.sub(r'[\w.+-]+@[\w.-]+', '<correo>', msg)[:300])
+            log('FALTA ACTIVAR una API de Google:', re.sub(r'[^A-Za-z0-9 .:/_-]', ' ', re.sub(r'[\w.+-]+@[\w.-]+', ' correo ', msg))[:300])
         elif e.code == 403:
             log('SIN PERMISO: comparta la hoja "Buzón del ranking" con la cuenta de servicio:', SA['client_email'])
         raise SystemExit('Error %s de Google' % e.code)
