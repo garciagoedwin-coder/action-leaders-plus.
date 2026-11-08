@@ -20,7 +20,7 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.chdir(ROOT)
 sys.path.insert(0, os.path.join(ROOT, 'tools'))
-DRY = os.environ.get('DRY') == '1'
+DRY = os.environ.get('DRY') == '1' or not os.path.exists('tools/buzon/activo')  # sin tools/buzon/activo solo prueba (lado a lado con el chat)
 SA = json.loads(os.environ['FIREBASE_SA'])
 HOJA = (os.environ.get('BUZON_ID') or '').strip() or (open('tools/buzon/hoja.txt').read().strip() if os.path.exists('tools/buzon/hoja.txt') else '')
 PROJ = SA.get('project_id', 'action-leaders-plus-8f1b8')
