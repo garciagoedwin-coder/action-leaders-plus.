@@ -1773,7 +1773,7 @@ function segPaso(c){if(!c||["Socio","Cliente","No interesado"].includes(c.stage|
     $("#spSg").onclick=()=>{closeSheet();irVolver()}}),250)}
 // 8 nov (Edwin): "¿Ya viajó con inCruises?" → formulario de testimonios. Sale hasta que toque "Ya lo hice" o "No me interesa" (users.viaj {r,t});
 // no sale a quien ya tiene testimonio publicado (data/hist.json tx[].n), ni a la cuenta de prueba ni a la solo-admin. ✕ = solo por hoy.
-const VIA_FORM="https://forms.gle/hZKTxUX7AMSgoyHR";let viaTx=null;
+const VIA_FORM="https://forms.gle/a6r99fDHP6NyoABV6";let viaTx=null;
 function viaYa(){if(viaTx===null){viaTx=[];hgCargar().then(H=>{viaTx=Object.values((H&&H.tx)||{}).map(x=>x&&x.n).filter(Boolean);try{viaStrip()}catch(e){}});return true}
   const yo=miNombreFull()||miNombreCorto()||"";return !!yo&&viaTx.some(n=>sameN(n,yo))}
 function viaStrip(){const el=$("#viaStrip");if(!el)return;
@@ -7002,7 +7002,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261108125051";var busy=false,pend=null;
+(function(){var V="20261108125453";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
