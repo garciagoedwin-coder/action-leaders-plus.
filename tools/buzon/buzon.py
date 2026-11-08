@@ -163,8 +163,15 @@ def main():
                 st = A.cargar(); h = A.ke(q) if q else None
                 hay = any(h and h in x['k'] for x in st['rows']) if h else False
                 if not hay and d.get('nombre'):
-                    hay = any(nrm(x['n']) == nrm(d['nombre']) for x in st['rows'])   # nombre EXACTO (madre e hija con nombres parecidos)
-                    q = d['nombre'] if hay else q
+                    # nombre: exacto, o todas las palabras de uno dentro del otro (mín. 2) y UNA sola coincidencia.
+                    # Así "Carmen Cecilia" = "Carmen Cecilia Lagos", pero "Irma yolanda Torres castillo" ≠ "Irma Yolanda Hernandez Torres".
+                    P = set(nrm(d['nombre']).split())
+                    ex = [x for x in st['rows'] if nrm(x['n']) == nrm(d['nombre'])]
+                    sub = [x for x in st['rows'] if len(P) >= 2 and (P <= set(nrm(x['n']).split()) or (len(nrm(x['n']).split()) >= 2 and set(nrm(x['n']).split()) <= P))]
+                    c = ex if ex else (sub if len(sub) == 1 else [])
+                    hay = bool(c)
+                    if hay: q = c[0]['n']
+                    elif len(sub) > 1: salida.append(['aviso', '💰 Pagó %s pero hay %d personas con nombre parecido en pendientes: revíselo.' % (d['nombre'], len(sub))])
                 if hay:
                     out = py('tools/ahorro.py', 'pago', q)
                     estados[fila] = 'pagó: quitado' if 'quitados 0' not in out else 'no estaba'
