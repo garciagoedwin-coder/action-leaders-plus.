@@ -95,6 +95,18 @@
    "activaciones": 1,
    "volumen": 500,
    "actSemana": 1
+  },
+  {
+   "nombre": "Josue antony Navarro rubio",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "josue-antony-navarro-rubio",
+   "activaciones": 3,
+   "volumen": 1500,
+   "actSemana": 3
   }
  ],
  "liderazgo": [
@@ -427,7 +439,7 @@
    "nuevos": 0,
    "presentaciones": 0,
    "rango": "",
-   "volumen": 0,
+   "volumen": 1500,
    "volumenDetalle": "",
    "id": "josue-antony-navarro-rubio",
    "volumenHoja": 0,
@@ -2957,6 +2969,51 @@
    "fuente": "gmail",
    "id": "jeymi-alexayda-reyes-villeda",
    "rv": 1
+  },
+  {
+   "socio": "Idalia del socorro Caceres talavera",
+   "paquete": "Starter",
+   "patrocinador": "Gabriela Castillo",
+   "fecha": "2026-11-03T02:55:01Z",
+   "ek": "df2d55",
+   "wk": "a21e2f",
+   "fuente": "gmail",
+   "id": "idalia-del-socorro-caceres-talavera",
+   "ps": 1,
+   "rv": 1
+  },
+  {
+   "socio": "Elisa carolina Navarro rubio",
+   "paquete": "Premium",
+   "patrocinador": "Josue antony Navarro rubio",
+   "fecha": "2026-11-08T02:55:07Z",
+   "ek": "25a3b6",
+   "wk": "3b5195",
+   "fuente": "gmail",
+   "id": "elisa-carolina-navarro-rubio",
+   "rv": 1
+  },
+  {
+   "socio": "Adela izamara Zelaya",
+   "paquete": "Premium",
+   "patrocinador": "Josue antony Navarro rubio",
+   "fecha": "2026-11-08T02:55:07Z",
+   "ek": "2bb6fa",
+   "wk": "9c9c24",
+   "fuente": "gmail",
+   "id": "adela-izamara-zelaya",
+   "rv": 1
+  },
+  {
+   "socio": "Sergio mauricio Garcia lopez",
+   "paquete": "Premium",
+   "patrocinador": "Josue antony Navarro rubio",
+   "fecha": "2026-11-08T02:55:07Z",
+   "ek": "912035",
+   "wk": "924ced",
+   "fuente": "gmail",
+   "id": "sergio-mauricio-garcia-lopez",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -2981,7 +3038,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-06T01:55:02Z",
+  "activacionesCorte": "2026-11-08T02:55:07Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -2991,7 +3048,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-07T12:56:00-06:00",
+  "rankingActualizado": "2026-11-07T21:45:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
