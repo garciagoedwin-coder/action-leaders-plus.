@@ -645,7 +645,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 .bell-btn i{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:#E11D48;color:#fff;font-style:normal;font-size:11.5px;font-weight:800;display:grid;place-items:center;padding:0 5px;border:2px solid #1b2130}
 @keyframes bellW{0%,100%{transform:rotate(0)}20%{transform:rotate(-14deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(5deg)}}
 .avisoTop{position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:99998;background:#111827;color:#fff;border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 16px 40px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.12);transform:translateY(-140%);transition:transform .35s cubic-bezier(.2,.8,.2,1);max-width:520px;margin:0 auto}
-.avisoTop.on{transform:translateY(0)}.avisoTop b{font-size:14.5px;display:block}.avisoTop small{opacity:.75;font-size:12.5px}.avisoTop button{flex:none;background:#2AC1F1;color:#06101F;border:0;border-radius:10px;padding:8px 12px;font:inherit;font-weight:800}
+.avisoTop.on{transform:translateY(0)}.avisoTop .atX{background:transparent!important;color:rgba(255,255,255,.7)!important;padding:6px 4px!important;font-size:16px!important}.avisoTop b{font-size:14.5px;display:block}.avisoTop small{opacity:.75;font-size:12.5px}.avisoTop button{flex:none;background:#2AC1F1;color:#06101F;border:0;border-radius:10px;padding:8px 12px;font:inherit;font-weight:800}
 .me-btn{flex:none;width:42px;height:42px;border-radius:50%;border:2px solid rgba(42,193,241,.85);background:#2AC1F1 center/cover no-repeat;color:#10222b;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 0 0 3px rgba(42,193,241,.18)}
 .me-btn:active{transform:scale(.95)}
 .pf-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
@@ -2844,7 +2844,7 @@ function renderDT(){if(!dtSum){try{dtSum=LS.get("dtSum:"+store.uid)}catch(e){}}
   c.onclick=()=>{if(!D.length){dtMas();return}dtCuadro()};
   dtHito(n)}
 function dtHito(n){if(!dtSum)return;const K="dtHito:"+store.uid,h=[...DT_HITOS].reverse().find(x=>n>=x)||0;let last=LS.get(K);
-  if(last==null){LS.set(K,h);return}last=+last||0;if(h<=last){if(h<last)LS.set(K,h);return}LS.set(K,h);
+  if(last==null){LS.set(K,h);return}last=+last||0;if(h<=last)return;LS.set(K,h); // 8 nov: guarda el MÁXIMO alcanzado (si bajaba a 9 y volvía a 10 celebraba cada vez)
   const t=h===30?"🏆 ¡Completó su Dream Team!":h===20?"🚀 ¡20 directos activos!":h===10?"🔥 ¡10 directos activos!":"🎉 ¡5 directos activos!",
     s=h===30?"30 directos activos. ¡Va camino a su libertad!":h===20?"Ya lleva dos tercios de su Dream Team. ¡Por los 30!":h===10?"Ya lleva un tercio de su Dream Team. ¡Siga formando líderes!":"Su Dream Team ya está tomando forma. ¡Vamos por 10!";
   setTimeout(()=>{openSheet(`<div class="dt-cel" id="dtCel"><div style="font-size:40px">${h===30?"🏆🎉🚀":"🎉✨🎊"}</div><div class="big">${t}</div><p class="muted" style="margin:0">${esc(s)}</p></div>
@@ -4546,8 +4546,14 @@ async function pedirL3(c){if(ahGate())return;if(!store.db||!(regDoc&&regDoc.regi
        <button class="btn" id="l3Wa" style="width:100%;background:#25D366;color:#fff">💬 Avisarle por WhatsApp</button><button class="btn ghost" data-close style="width:100%">Listo</button>`,()=>{
         $("#l3Wa").onclick=async()=>{if(navigator.share){try{await navigator.share({text:msg});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(msg)}})}})}
 let l3Un=[],l3First={p:true,d:true},l3Seen=null;
-function avisoTop(t,sub,fn){try{if(navigator.vibrate)navigator.vibrate([60,40,60])}catch(e){}const d=document.createElement("div");d.className="avisoTop";d.innerHTML=`<span style="font-size:22px">🔔</span><span class="grow" style="min-width:0"><b>${esc(t)}</b>${sub?`<small>${esc(sub)}</small>`:""}</span><button type="button">Ver</button>`;
-  document.body.appendChild(d);requestAnimationFrame(()=>d.classList.add("on"));const bye=()=>{d.classList.remove("on");setTimeout(()=>d.remove(),400)};d.querySelector("button").onclick=e=>{e.stopPropagation();bye();if(fn)fn()};d.onclick=bye;setTimeout(bye,8000)}
+function avisoTop(t,sub,fn){try{if(navigator.vibrate)navigator.vibrate([60,40,60])}catch(e){}const d=document.createElement("div");d.className="avisoTop";d.innerHTML=`<span style="font-size:22px">🔔</span><span class="grow" style="min-width:0"><b>${esc(t)}</b>${sub?`<small>${esc(sub)}</small>`:""}</span><button type="button">Ver</button><button type="button" class="atX" aria-label="Cerrar">✕</button>`;
+  document.body.appendChild(d);requestAnimationFrame(()=>d.classList.add("on"));let fue=0;const bye=()=>{if(fue)return;fue=1;d.classList.remove("on");d.style.transform="";setTimeout(()=>d.remove(),400)};
+  d.querySelector("button").onclick=e=>{e.stopPropagation();bye();if(fn)fn()};d.querySelector(".atX").onclick=e=>{e.stopPropagation();bye()};d.onclick=bye;setTimeout(bye,8000);
+  // 8 nov (Edwin): se quita deslizándolo hacia arriba o a un lado, o al hacer scroll en la app
+  let x0=null,y0=null;d.addEventListener("touchstart",e=>{const p=e.touches[0];x0=p.clientX;y0=p.clientY},{passive:true});
+  d.addEventListener("touchmove",e=>{if(x0==null)return;const p=e.touches[0],dx=p.clientX-x0,dy=p.clientY-y0;d.style.transition="none";d.style.transform=`translate(${dx}px,${Math.min(0,dy)}px)`;d.style.opacity=String(Math.max(.2,1-Math.max(Math.abs(dx),-dy)/220))},{passive:true});
+  d.addEventListener("touchend",e=>{if(x0==null)return;const p=e.changedTouches[0],dx=p.clientX-x0,dy=p.clientY-y0;x0=null;d.style.transition="";d.style.opacity="";if(Math.abs(dx)>60||dy<-30)bye();else d.style.transform=""},{passive:true});
+  const sc=()=>{window.removeEventListener("scroll",sc);const m=document.getElementById("main");if(m)m.removeEventListener("scroll",sc);setTimeout(bye,150)};setTimeout(()=>{window.addEventListener("scroll",sc,{passive:true});const m=document.getElementById("main");if(m)m.addEventListener("scroll",sc,{passive:true})},600)}
 // Novedad de config (config.novedad {id,t,sub,u,hasta}): aviso arriba una sola vez por persona, sin publicar la app
 let novHecho=false;function novedadAviso(){if(novHecho)return;const N=(T.config||{}).novedad;if(!N||!N.id||!N.t||!fbUser)return;if(N.hasta&&Date.now()>Date.parse(N.hasta))return;
   const K="nov:"+N.id;try{if(LS.get(K))return}catch(e){}novHecho=true;setTimeout(()=>{try{if(document.querySelector(".avisoTop.on")){novHecho=false;setTimeout(novedadAviso,6000);return}LS.set(K,1);avisoTop(N.t,N.sub||"",N.u&&safeUrl(N.u)?()=>window.open(N.u,"_blank","noopener"):null)}catch(e){}},4500)}
@@ -6397,7 +6403,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
    <div class="pf-list">
     ${irSimple()?`<div class="pf-h">Mis datos</div>`:""}<button class="pf-it" id="pfFoto"><span class="ic">📷</span>Cambiar mi foto</button>
     <button class="pf-it" id="pfNombre"><span class="ic">👤</span>Mis datos <span class="small muted" style="font-weight:500">· nombre y WhatsApp</span></button><button class="pf-it" id="pfAvisos"><span class="ic">🔔</span>Mis avisos</button>
-    ${irSimple()?`<div class="pf-h">Mis páginas</div>`:""}<button class="pf-it" id="pfPag"><span class="ic">🌐</span>Mi página para prospectos</button>
+    ${irSimple()?`<div class="pf-h">Mis páginas</div>`:""}<button class="pf-it" id="pfPag"><span class="ic">🌐</span>Mi página para prospectos</button><button class="pf-it" id="pfVia"><span class="ic">✈️</span>Compartir mi viaje (fotos y testimonio)</button>
     <button class="pf-it" id="pfLzs"><span class="ic">📣</span>Mi flyer de nueva etapa</button>
     <button class="pf-it" id="pfMem"><span class="ic">🛳️</span>Compartir página de membresía</button>
     <button class="pf-it" id="pfMemV"><span class="ic">👀</span>Quién vio mi página de membresía</button>
@@ -6411,7 +6417,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
     $("#pfNombre").onclick=abrirMisDatos;$("#pfAvisos").onclick=()=>{closeSheet();setTimeout(misAvisos,250)};{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const cz=$("#pfCie");if(cz)cz.onclick=()=>{closeSheet();eqTab="cierre";go("equipo");renderEquipo()}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
-    $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfMem").onclick=()=>memCompartir();$("#pfLzs").onclick=()=>{closeSheet();setTimeout(abrirLanzSocio,250)};$("#pfMemV").onclick=()=>memVisitas();
+    $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfVia").onclick=()=>window.open(VIA_FORM,"_blank","noopener");$("#pfMem").onclick=()=>memCompartir();$("#pfLzs").onclick=()=>{closeSheet();setTimeout(abrirLanzSocio,250)};$("#pfMemV").onclick=()=>memVisitas();
     $("#pfInv").onclick=()=>{if(!(regDoc&&regDoc.registro)){toast("Completa tu registro primero");return}const u=miEnlace();openSheet(`<h2>🔗 Tu enlace de invitación</h2><p class="small muted">Compártelo solo con tus socios nuevos. Al registrarse, aparecerás como su patrocinador.</p>
       <div class="card" style="word-break:break-all;font-weight:600">${esc(u)}</div><button class="btn" id="invCp" style="width:100%">Copiar enlace</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#invCp").onclick=async()=>{try{await navigator.clipboard.writeText(u);toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})};
     $("#pfInst").onclick=()=>openSheet(`<h2>Instala la app</h2>
@@ -7002,7 +7008,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261108125453";var busy=false,pend=null;
+(function(){var V="20261108130537";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
