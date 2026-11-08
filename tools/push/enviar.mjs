@@ -237,6 +237,7 @@ export function avDestino(modo, m) {
   if (modo === "sol") return /pide un cambio/i.test(t) ? "sol" : "dt";
   if (/^inact/.test(modo)) return /ahorros? pendientes?/i.test(t) ? "ahp" : "urg";
   if (/^lzg/.test(modo)) return /compromiso/i.test(t) ? "comp" : "lzg";
+  if (modo === "viaje") return "via";
   return "inicio";
 }
 async function main() {
@@ -368,6 +369,21 @@ async function main() {
           { title: "👋 Preséntese en el grupo del sistema", body: "El equipo quiere darle la bienvenida, " + primer(nm) + ". Abra la app y toque «Entrar al grupo»." },
           { title: "⚔️ Falta un paso, " + primer(nm), body: "Entre al grupo de WhatsApp del Sistema de liderazgo y preséntese. Lo encuentra en Inicio de la app." }], d.id + new Date().toISOString().slice(0, 10))]);
       }
+    }
+  } else if (modo === "viaje") {
+    // 8 nov (Edwin): invitar a llenar el formulario de testimonios de viaje (cada semana) a quien NO ha respondido
+    // (users.viaj = "Ya lo hice"/"No me interesa") y NO tiene testimonio publicado (data/hist.json tx[].n).
+    let tx = []; try { tx = Object.values(JSON.parse(fs.readFileSync(new URL("../../data/hist.json", import.meta.url))).tx || {}).map(x => x && x.n).filter(Boolean); } catch (e) {}
+    const resp = new Set((await db.collection("users").where("viaj.t", ">", 0).get()).docs.map(d => d.id));
+    const P = (await db.collection("push").get()).docs.filter(d => d.data().tk && !resp.has(d.id));
+    for (const d of P) {
+      const u = await db.doc("users/" + d.id).get(), ud = u.exists ? u.data() : {}, nm = (ud.registro || {}).nombre || "";
+      if (!nm || /garciagoedwin@gmail\.com/i.test(ud.email || "") || tx.some(x => mismoNombre(x, nm))) continue;
+      const x = d.data(); hist[d.id] = x.h || [];
+      salida.push([d.id, x.tk, pick([
+        { title: "✈️ " + primer(nm) + ", ¿ya viajó con inCruises?", body: "Comparta sus fotos y su experiencia: puede salir en la historia del día de todo el equipo. Toque aquí 📸" },
+        { title: "📸 Su viaje puede inspirar al equipo", body: primer(nm) + ", si ya viajó con inCruises, suba sus fotos y cuéntenos cómo le fue. Es rápido." },
+        { title: "🌴 ¡Queremos ver sus fotos de viaje!", body: "Si ya disfrutó su membresía, " + primer(nm) + ", compártala con el equipo desde la app." }], d.id + new Date().toISOString().slice(0, 10))]);
     }
   } else { console.log("Modo desconocido:", modo); process.exit(1); }
 

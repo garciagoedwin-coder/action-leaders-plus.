@@ -1010,6 +1010,8 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .urgS.ok{border-left-color:#16A34A}.urgS.ok .uh .tg{color:#16A34A}
 .lzbL{display:flex;flex-direction:column;gap:8px}.lzbB{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;color:var(--ink);font:inherit}.lzbB>span:first-child{font-size:22px}.lzbB b{display:block;font-size:14px}.lzbB small{display:block;color:var(--muted);font-size:12px;line-height:1.3}.lzbB i{margin-left:auto;font-style:normal;color:var(--brand);font-size:20px}
 #lzgStrip{display:flex;gap:12px;align-items:flex-start;padding:14px 40px 14px 14px;border-radius:18px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:5px solid var(--brand);box-shadow:0 4px 14px rgba(20,33,61,.06)}#lzgStrip[hidden]{display:none}.lzgI{font-size:30px;line-height:1}.lzgT{flex:1;min-width:0}.lzgT b{display:block;font-size:15px}.lzgT span{display:block;font-size:13px;opacity:.85;margin-top:2px}.lzgB{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.lzgB button{flex:1;min-width:130px;border:0;border-radius:12px;padding:10px 8px;font:inherit;font-weight:700;font-size:13px;background:#25D366;color:#053b1d}.lzgB button.ok{background:var(--surface-2);color:var(--ink);border:1px solid var(--line)}.lzgB button.pr{background:linear-gradient(135deg,#B07D00,#F5B700);color:#2a1c00}
+#viaStrip{display:flex;gap:12px;align-items:flex-start;padding:14px 40px 14px 14px;border-radius:18px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:5px solid #2AC1F1;box-shadow:0 4px 14px rgba(20,33,61,.06)}#viaStrip[hidden]{display:none}
+#viaStrip .lzgB button.vf{background:var(--brand);color:var(--bg)}.viaB{display:flex;gap:8px;margin-top:8px}.viaB button{flex:1;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:12px;padding:9px 6px;font:inherit;font-size:13px;font-weight:700}.viaB button+button{color:var(--muted);font-weight:600}
 #olvStrip{display:flex;gap:12px;align-items:flex-start;padding:14px 40px 14px 14px;border-radius:18px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:5px solid #e8862a;box-shadow:0 4px 14px rgba(20,33,61,.06)}#olvStrip[hidden]{display:none}
 .olvL{display:flex;flex-direction:column;gap:6px;margin-top:10px}.olvR{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:7px 8px 7px 10px;background:var(--surface-2)}.olvN{flex:1;min-width:0}.olvN b{display:block;font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.olvN small{display:block;font-size:12px;color:var(--muted)}
 .olvW{flex:none;display:grid;place-items:center;min-width:40px;height:36px;border-radius:10px;background:#25D366;color:#fff;text-decoration:none;font-size:17px;border:0;font:inherit;font-weight:700;padding:0 10px}.olvW.o{background:var(--brand);color:var(--bg);font-size:13px}
@@ -1383,6 +1385,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
         <div class="avSl" data-k="urgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="urgS" id="urgStrip" hidden></div></div>
         <div class="avSl" data-k="lzgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="lzgS" id="lzgStrip" hidden></div></div>
         <div class="avSl" data-k="olvStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="olvS" id="olvStrip" hidden></div></div>
+        <div class="avSl" data-k="viaStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="viaS" id="viaStrip" hidden></div></div>
         <div class="avSl" data-k="evHoy" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div id="evHoy" hidden></div></div>
       </div><div class="avDots" id="avDots"></div></div>
       <div class="incS" id="incStrip" hidden></div>
@@ -1768,6 +1771,19 @@ function segPaso(c){if(!c||["Socio","Cliente","No interesado"].includes(c.stage|
     $("#spSo").onclick=async()=>{closeSheet();const prev=c.stage;c.stage="Socio";c.stT=Date.now();c.stAuto="se inscribió (seguimiento)";c.updated=Date.now();const id=await store.saveContact(Object.assign({},c));if(!id){c.stage=prev;return}
       try{renderCRM()}catch(e){}irVolver();setTimeout(()=>abrirBienvenida(c),300)};
     $("#spSg").onclick=()=>{closeSheet();irVolver()}}),250)}
+// 8 nov (Edwin): "¿Ya viajó con inCruises?" → formulario de testimonios. Sale hasta que toque "Ya lo hice" o "No me interesa" (users.viaj {r,t});
+// no sale a quien ya tiene testimonio publicado (data/hist.json tx[].n), ni a la cuenta de prueba ni a la solo-admin. ✕ = solo por hoy.
+const VIA_FORM="https://forms.gle/hZKTxUX7AMSgoyHR";let viaTx=null;
+function viaYa(){if(viaTx===null){viaTx=[];hgCargar().then(H=>{viaTx=Object.values((H&&H.tx)||{}).map(x=>x&&x.n).filter(Boolean);try{viaStrip()}catch(e){}});return true}
+  const yo=miNombreFull()||miNombreCorto()||"";return !!yo&&viaTx.some(n=>sameN(n,yo))}
+function viaStrip(){const el=$("#viaStrip");if(!el)return;let no=!fbUser||!store.uid||!(regDoc&&regDoc.registro&&regDoc.registro.nombre)||!!(regDoc&&regDoc.viaj);
+  try{no=no||yoPrueba()||SOLO_ADMIN.includes(String(fbUser.email||"").toLowerCase())}catch(e){}
+  if(no||viaYa()){el.hidden=true;return}
+  el.innerHTML=`<div class="lzgI">✈️</div><div class="lzgT"><b>¿Ya viajó con inCruises?</b><span>Comparta sus fotos y su experiencia: puede salir en la historia del día de todo el equipo.</span>
+   <div class="lzgB"><button type="button" class="vf" data-via="f">📝 Compartir mi viaje</button></div><div class="viaB"><button type="button" data-via="si">✅ Ya lo hice</button><button type="button" data-via="no">No me interesa</button></div></div>`;el.hidden=false;
+  el.querySelectorAll("[data-via]").forEach(b=>b.onclick=()=>{const v=b.dataset.via;if(v==="f"){window.open(VIA_FORM,"_blank","noopener");setTimeout(()=>{try{toast("Cuando lo envíe, toque «✅ Ya lo hice»")}catch(e){}},800);return}viaResp(v)})}
+async function viaResp(r){const z={r,t:Date.now()};regDoc=Object.assign({},regDoc,{viaj:z});const el=$("#viaStrip");if(el)el.hidden=true;
+  try{await store.db.doc("users/"+store.uid).set({viaj:z},{merge:true})}catch(e){}toast(r==="si"?"¡Gracias por compartir su viaje! ✈️":"Listo, no le volveremos a preguntar")}
 // 8 nov: "Prospectos olvidados" en Avisos de hoy: los que llevan más de 7 días en Seguimiento
 function olvLista(){const hoy=new Set((day.segL||[]).map(x=>x.cid));return (contacts||[]).filter(c=>c.stage==="Seguimiento"&&stDias(c)>7&&!stAtendido(c)&&!hoy.has(c.id)&&LS.get("olv:"+c.id)!==TODAY).sort((a,b)=>stDias(b)-stDias(a))}
 function olvStrip(){const el=$("#olvStrip");if(!el)return;const L=fbUser&&store.uid?olvLista():[];if(!L.length){el.hidden=true;return}
@@ -3908,7 +3924,7 @@ async function abrirHist(){if(!fbUser)return;const hecho=(profile.historias||{})
    <div id="histImg" style="border-radius:14px;overflow:hidden;background:#0b0b10;aspect-ratio:9/16;max-height:60vh;margin:0 auto;width:100%;max-width:300px;display:flex;align-items:center;justify-content:center"><span class="small" style="color:#fff">Creando su historia…</span></div>
    <button class="btn" id="histShare" style="width:100%">📤 ${hecho?"Compartir otra vez":"Compartir en mis historias"}</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`);
   $("#histShare").onclick=compartirHist;
-  if(histKey!==TODAY+miNombreCorto()+miFotoUrl()+"|"+hgMas+"|"+(profile.histFrase||"")||!histFile){histKey=TODAY+miNombreCorto()+miFotoUrl()+"|"+hgMas+"|"+(profile.histFrase||"");let cv=null;try{cv=await hgCanvas(TODAY,hgMas)}catch(x){cv=null}if(!cv)cv=await histCanvas(TODAY);try{const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));histFile=new File([b],"historia-"+TODAY+".jpg",{type:"image/jpeg"})}catch(x){histFile=null}}
+  if(histKey!==TODAY+miNombreCorto()+miFotoUrl()+"|"+hgMas+"|"+hgBio()||!histFile){histKey=TODAY+miNombreCorto()+miFotoUrl()+"|"+hgMas+"|"+hgBio();let cv=null;try{cv=await hgCanvas(TODAY,hgMas)}catch(x){cv=null}if(!cv)cv=await histCanvas(TODAY);try{const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));histFile=new File([b],"historia-"+TODAY+".jpg",{type:"image/jpeg"})}catch(x){histFile=null}}
   const box=$("#histImg");if(box&&histFile){box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(histFile);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im)}}
 async function compartirHist(){if(!histFile){toast("La historia aún se está creando");return}
   const marcar=()=>{day.hAtr=1;try{renderTasks();saveDay()}catch(e){}profile.historias=Object.assign({},profile.historias||{},{[TODAY]:true});store.set("perfil",profile);pushResumen();toast(presHoyPend()&&!day.hFly?"¡Historia lista! ✅ Ahora publique el flyer de la presentación 🎤":"¡Historia de hoy completada! 🔥 Mañana tendrá una nueva.");closeSheet()};
@@ -4022,16 +4038,17 @@ async function hgLogo(g,x,y,h,cx,inv){const lg=await imgLoad("media/logo-mas.png
 function hgGrain(g){try{const c=document.createElement("canvas");c.width=c.height=160;const q=c.getContext("2d"),D=q.createImageData(160,160);for(let i=0;i<D.data.length;i+=4){const v=Math.random()*255;D.data[i]=D.data[i+1]=D.data[i+2]=v;D.data[i+3]=18}q.putImageData(D,0,0);g.fillStyle=g.createPattern(c,"repeat");g.fillRect(0,0,1080,1920)}catch(e){}}
 // frase de testimonio: la última oración (o lo que va después de la última coma) va en dorado
 function hgSegs(t,oro){t=String(t||"").trim();let m=t.match(/^(.*[.!?…])\s+([^.!?…]+[.!?…]?)$/);if(!m)m=t.match(/^(.*,)\s+(.+)$/);return m?[[m[1],"#fff"],[m[2],oro||HGA]]:[[t,"#fff"]]}
-async function hgQuien(g,t,x,y,dark){const nm=t&&t.n||"",lu=t&&t.l||"";if(!nm)return;const R=42;
-  g.save();g.beginPath();g.arc(x+R,y+R,R,0,Math.PI*2);g.fillStyle=dark?"#14213D":"#141a26";g.fill();g.lineWidth=3;g.strokeStyle=HGA;g.stroke();
-  g.fillStyle=HGA;g.font="700 32px ALBG, Figtree, sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText(initials(nm),x+R,y+R+2);g.restore();
-  // cara del testimonio (formulario › "Una foto de su cara"), si ya se sincronizó
-  const cz=t.c&&((HG&&HG.caras)||[]).find(z=>z.id===t.c);if(cz){try{if(cz.fz)await hgCara(g,"media/hist/caras/"+t.c+".jpg",cz.fz,x+R,y+R,R-3);else await circFoto(g,"media/hist/caras/"+t.c+".jpg",x+R,y+R,R-3)}catch(e){}g.save();g.beginPath();g.arc(x+R,y+R,R,0,Math.PI*2);g.lineWidth=3;g.strokeStyle=HGA;g.stroke();g.restore()}
-  g.textAlign="left";g.textBaseline="alphabetic";g.font="700 34px ALO, Figtree, sans-serif";g.fillStyle=dark?"#14213D":"#fff";g.fillText(nm,x+R*2+18,y+38);
-  if(lu){const K=flKit(g);K.sp("4px");g.font="700 22px ALO, Figtree, sans-serif";g.fillStyle=dark?HGA2:HGA;g.fillText((t.sin?"":"📍 ")+lu.toUpperCase(),x+R*2+18,y+74);K.sp("0px")}}
+// 8 nov (Edwin): quien da el testimonio va MINIMALISTA (sin círculo ni foto): rayita, nombre y lugar. El círculo con foto queda solo para el socio que comparte (hgFirma).
+async function hgQuien(g,t,x,y,dark){const nm=t&&t.n||"",lu=t&&t.l||"";if(!nm)return;
+  g.save();g.fillStyle=dark?HGA2:HGA;g.fillRect(x,y+28,34,3);
+  g.textAlign="left";g.textBaseline="alphabetic";g.font="600 32px ALO, Figtree, sans-serif";g.fillStyle=dark?"#14213D":"#fff";g.fillText(nm,x+52,y+40);
+  if(lu){const K=flKit(g);K.sp("4px");g.font="600 20px ALO, Figtree, sans-serif";g.fillStyle=dark?"rgba(20,33,61,.6)":"rgba(255,255,255,.62)";g.fillText(lu.toUpperCase(),x+52,y+72);K.sp("0px")}
+  g.restore()}
 // Firma del socio abajo de la historia del día (7 nov): línea, foto, nombre y su bio "Título · Action Leaders+" (profile.histFrase; Perfil › Mis datos). Sin "COMPARTE".
-const HIST_FRASES=["Emprendedor digital","Emprendedora digital","Empresario digital","Empresaria digital","Constructor de sistemas","Constructora de sistemas","Líder de equipo"];
-function hgBio(){const f=String((profile&&profile.histFrase)||"").trim();if(!f)return"Negocio digital · Action Leaders+";return /action leaders/i.test(f)?f:f+" · Action Leaders+"}
+const HIST_FRASES=["Viajes & Negocios","Emprendedor digital","Emprendedora digital","Empresario digital","Empresaria digital","Constructor de sistemas","Constructora de sistemas","Líder de equipo"];
+// 8 nov (Edwin): por defecto "Viajes & Negocios"; si tiene rango Marketing Director o más, su rango. Lo que elija en su perfil manda.
+function hgBioDef(){try{const ri=miRangoIdx();if(ri>=2&&RANGOS[ri])return RANGOS[ri].n}catch(e){}return "Viajes & Negocios"}
+function hgBio(){const f=String((profile&&profile.histFrase)||"").trim();if(!f)return hgBioDef()+" · Action Leaders+";return /action leaders/i.test(f)?f:f+" · Action Leaders+"}
 async function hgFirma(g,claro){const W=1080,y0=1688,cx=124,cy=y0+52,r=52;let nm="";try{nm=nv(miNombreFull())||miNombreCorto()||""}catch(e){nm=miNombreCorto()||""}if(!nm)nm="Action Leaders+";
   const fr=hgBio(),src=miFotoUrl();
   g.fillStyle=claro?"rgba(20,33,61,.15)":"rgba(255,255,255,.18)";g.fillRect(72,y0-28,W-144,2);
@@ -4606,6 +4623,7 @@ function avFila(x,v){return `<button type="button" class="avIt avRow${(x.t||0)>v
 function avScroll(id,n){n=n||0;setTimeout(()=>{const r=$(id);if(r&&!r.hidden){r.scrollIntoView({behavior:"smooth",block:"center"});r.classList.add("avFlash");setTimeout(()=>r.classList.remove("avFlash"),1600)}else if(n<12)avScroll(id,n+1)},350)}
 function avEq(t){eqTab=t;try{setSeg("eqSeg",eqTab)}catch(e){}go("equipo");try{renderEquipo()}catch(e){}}
 function avIr(k){try{
+  if(k==="via"){go("inicio");try{avBoxMostrar("viaStrip")}catch(e){}avScroll("#viaStrip");return}
   if(k==="ag"||k==="agenda"){avisosVer();return}
   if(k==="ahp"){if(ahpLista())ahpVentana();else{go("inicio");avScroll("#urgStrip")}return}
   if(k==="urg"){go("inicio");try{avBoxMostrar("urgStrip")}catch(e){}urgAb=true;try{urgStrip()}catch(e){}avScroll("#urgStrip");return}
@@ -6334,7 +6352,7 @@ function abrirMisDatos(){const r=(regDoc&&regDoc.registro)||null,w=String((r&&r.
   openSheet(`<h2>👤 Mis datos</h2><span data-nofocus hidden></span>
   <div class="field"><label for="mdN">Mi nombre <span class="muted">(así le saluda la app)</span></label><input class="inp" id="mdN" maxlength="30" value="${esc(profile.nombrePila||"")}" placeholder="Ej.: Edwin"></div>
   ${store.db&&store.uid?`<div class="field"><label for="mdP">📛 Cómo aparece mi nombre</label><input class="inp" id="mdP" maxlength="40" value="${esc(pubDe(store.uid)||nv(miNombreFull()))}" placeholder="Ej.: Juan Carlos Granados"><span class="small muted">En rankings, flyers, turnos y agenda. Use su nombre real, más corto si quiere.</span></div>`:""}
-  <div class="field"><label for="mdF">🏷️ Mi título en mis historias</label><input class="inp" id="mdF" maxlength="35" value="${esc(profile.histFrase||"")}" placeholder="Negocio digital"><div class="row wrap" id="mdFs" style="gap:6px;margin-top:6px">${HIST_FRASES.map(f=>`<button type="button" class="chip" data-f="${esc(f)}" style="border:0;cursor:pointer">${esc(f)}</button>`).join("")}</div><span class="small muted">Sale debajo de su nombre en la historia del día: «Su título · Action Leaders+».</span></div>
+  <div class="field"><label for="mdF">🏷️ Mi título en mis historias</label><input class="inp" id="mdF" maxlength="35" value="${esc(profile.histFrase||"")}" placeholder="${esc(hgBioDef())}"><div class="row wrap" id="mdFs" style="gap:6px;margin-top:6px">${[...new Set([hgBioDef()].concat(HIST_FRASES))].map(f=>`<button type="button" class="chip" data-f="${esc(f)}" style="border:0;cursor:pointer">${esc(f)}</button>`).join("")}</div><span class="small muted">Sale debajo de su nombre en la historia del día: «Su título · Action Leaders+».</span></div>
   ${r&&store.db?`<div class="field"><label for="mdT">📱 Mi WhatsApp</label><div class="row" style="gap:8px"><select class="inp" id="mdC" style="max-width:110px">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===cc0?"selected":""}>+${k}</option>`).join("")}</select><input class="inp grow" id="mdT" type="tel" inputmode="tel" autocomplete="tel-national" value="${esc(sp.num||(sp.cc?"":w))}" placeholder="Su número" style="min-width:0"></div><span class="small muted">Su patrocinador y su equipo le escriben a este número desde la app.</span></div>`:""}
   ${T.ranking.length?`<details style="border-top:1px solid var(--line);padding-top:10px"><summary class="small" style="cursor:pointer;color:var(--brand);font-weight:700">¿No aparece en el ranking? Elíjase aquí</summary><div class="field" style="margin-top:8px"><label for="rkI">Mi nombre en el ranking</label><select class="inp" id="rkI"><option value="">No aparezco todavía</option>${[...new Set(T.ranking.map(x=>x.nombre).filter(Boolean).concat(profile.miNombre?[profile.miNombre]:[]))].sort((a,b)=>a.localeCompare(b,"es")).map(n=>`<option ${n===profile.miNombre?"selected":""}>${esc(n)}</option>`).join("")}</select><p class="small muted" style="margin:4px 0 0">Normalmente la app lo encuentra sola. Úselo solo si no aparece o aparece con otro nombre.</p></div></details>`:""}
   <p class="small" id="mdErr" style="color:var(--bad);margin:0" hidden></p>
@@ -6554,7 +6572,7 @@ async function irFlyer(w){const g=!w,W=1080,H=1350,c=document.createElement("can
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],g?"graduado-inicio-rapido.jpg":"inicio-rapido-semana-"+w.n+".jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
-let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
+let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
   const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
   if(m==="actual"&&!st.ini){const no=LS.get("irNo:"+store.uid);if(no&&Date.now()<no){el.hidden=true;return}
     el.hidden=false;el.className="irMini";el.innerHTML=`<span class="ic">🚀</span><span class="tx"><b>Plan de Inicio Rápido</b> · Aprenda a duplicar en 30 días</span><button type="button" class="go" id="irEmp">Empezar ›</button><button type="button" class="x" id="irNo" aria-label="Quitar">✕</button>`;
@@ -6981,7 +6999,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261108105032";var busy=false,pend=null;
+(function(){var V="20261108123242";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

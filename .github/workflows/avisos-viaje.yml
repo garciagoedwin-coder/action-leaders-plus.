@@ -1,0 +1,28 @@
+name: Aviso de testimonios de viaje
+# Cada sábado 11:00 a.m. HN: invita a llenar el formulario de viaje a quien no ha respondido en la app
+# ("Ya lo hice" / "No me interesa") y no tiene testimonio publicado.
+on:
+  schedule:
+    - cron: "0 17 * * 6"
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: "1 = solo mostrar, no enviar"
+        default: "1"
+concurrency: avisos-viaje
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install --no-audit --no-fund
+        working-directory: tools/push
+      - name: Enviar
+        working-directory: tools/push
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+          DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry == '1' && '1' || '' }}
+        run: node enviar.mjs viaje

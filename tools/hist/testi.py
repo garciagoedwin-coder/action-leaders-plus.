@@ -13,6 +13,7 @@ def limpia(t):
     return t
 def frase(t):
     t = limpia(t).strip('"“”').strip()
+    t = re.sub(r"([,;:])(?=[A-Za-zÁÉÍÓÚáéíóúÑñ¿¡])", r"\1 ", t)  # "pasaporte,colecciono" → "pasaporte, colecciono"
     if t and t[-1] not in ".!?…": t += "."
     return t[:1].upper() + t[1:]
 def lugar(t):
