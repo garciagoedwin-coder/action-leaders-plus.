@@ -119,6 +119,18 @@
    "activaciones": 3,
    "volumen": 1500,
    "actSemana": 3
+  },
+  {
+   "nombre": "Erick Rolando Miranda Dominguez",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "erick-rolando-miranda-dominguez",
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -409,7 +421,7 @@
    "nuevos": 0,
    "presentaciones": 0,
    "rango": "Team Leader",
-   "volumen": 0,
+   "volumen": 500,
    "volumenDetalle": "",
    "id": "erick-miranda",
    "volumenHoja": 0,
@@ -3025,6 +3037,17 @@
    "fuente": "gmail",
    "id": "sergio-mauricio-garcia-lopez",
    "rv": 1
+  },
+  {
+   "socio": "Keyla Garcia",
+   "paquete": "Premium",
+   "patrocinador": "Erick Rolando Miranda Dominguez",
+   "fecha": "2026-11-08T19:55:11Z",
+   "ek": "bf5cc6",
+   "wk": "5e978c",
+   "fuente": "gmail",
+   "id": "keyla-garcia",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3049,7 +3072,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-08T02:55:07Z",
+  "activacionesCorte": "2026-11-08T19:55:11Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3059,7 +3082,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-08T09:51:00-06:00",
+  "rankingActualizado": "2026-11-08T14:14:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
