@@ -54,7 +54,7 @@ def api(url, data=None, method=None):
     except urllib.error.HTTPError as e:
         msg = e.read().decode()[:300]
         if 'has not been used' in msg or 'SERVICE_DISABLED' in msg:
-            log('FALTA ACTIVAR una API de Google en el proyecto (Sheets o Firestore).')
+            log('FALTA ACTIVAR una API de Google:', re.sub(r'[\w.+-]+@[\w.-]+', '<correo>', msg)[:300])
         elif e.code == 403:
             log('SIN PERMISO: comparta la hoja "Buzón del ranking" con la cuenta de servicio:', SA['client_email'])
         raise SystemExit('Error %s de Google' % e.code)
