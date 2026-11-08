@@ -1,0 +1,68 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:BB;src:url(../../../media/fonts/BebasNeue-Regular.ttf)}
+@font-face{font-family:CC;src:url(../../../media/fonts/Cormorant-500-caps.ttf)}
+@font-face{font-family:OU;src:url(../../../media/fonts/Outfit-Regular.ttf)}
+@font-face{font-family:OB;src:url(../../../media/fonts/Outfit-Bold.ttf)}
+@font-face{font-family:KS;src:url(KaushanScript-Regular.ttf)}
+@font-face{font-family:MD;src:url(MrDafoe-Regular.ttf)}
+*{box-sizing:border-box}
+body{margin:0;width:1080px;height:1920px;overflow:hidden;font-family:OU;color:#fff;background:#020614;position:relative}
+.bg{position:absolute;inset:0;background:radial-gradient(ellipse 75% 35% at 50% 22%,rgba(30,110,255,.30),transparent 70%),radial-gradient(ellipse 60% 30% at 50% 58%,rgba(42,193,241,.16),transparent 70%),linear-gradient(#01030b,#04122e 50%,#020614)}
+.grid{position:absolute;inset:0;background:linear-gradient(rgba(60,140,255,.07) 1px,transparent 1px) 0 0/72px 72px,linear-gradient(90deg,rgba(60,140,255,.07) 1px,transparent 1px) 0 0/72px 72px;-webkit-mask:radial-gradient(ellipse 70% 55% at 50% 40%,#000 30%,transparent 75%)}
+.beam{position:absolute;top:120px;right:-120px;width:900px;height:3px;background:linear-gradient(90deg,transparent,#FFD58A 60%,#fff);transform:rotate(-24deg);opacity:.55;filter:blur(.5px);box-shadow:0 0 18px #FFB84D}
+.top{position:absolute;top:240px;left:0;right:0;display:flex;justify-content:center}
+.live{display:flex;align-items:center;gap:10px;font:600 16px OB;letter-spacing:5px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:99px;padding:8px 18px}
+.live i{width:10px;height:10px;border-radius:50%;background:#FF3B3B;box-shadow:0 0 14px #FF3B3B}
+.logo{position:absolute;top:310px;left:0;right:0;height:380px}
+.a1{position:absolute;left:0;right:0;top:0;text-align:center;font:400 138px/0.9 BB;letter-spacing:4px;white-space:nowrap}
+.a1 .w{color:#fff;text-shadow:0 0 40px rgba(120,170,255,.25)}
+.a1 .b{background:linear-gradient(180deg,#8EC5FF 0%,#3D8BFF 45%,#1452D9 100%);-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 0 26px rgba(40,110,255,.45))}
+.tr{position:absolute;left:0;right:0;top:122px;text-align:center;font:400 140px/1 var(--sf,KS);color:#fff;transform:rotate(-7deg);text-shadow:0 6px 24px rgba(0,0,0,.6)}
+.sw{position:absolute;left:260px;top:254px;width:560px;height:40px}
+.tag{position:absolute;top:624px;left:0;right:0;text-align:center;font:600 19px OB;letter-spacing:9px;color:rgba(255,255,255,.82);padding-left:9px}
+.tag b{color:#3D8BFF;font-weight:600}
+.tema{position:absolute;top:680px;left:0;right:0;display:flex;flex-direction:column;align-items:center}
+.tema small{display:flex;align-items:center;gap:16px;font:700 15px OB;letter-spacing:7px;color:#E8C766}
+.tema small:before,.tema small:after{content:"";width:60px;height:1px;background:linear-gradient(90deg,transparent,#E8C766)}
+.tema small:after{transform:scaleX(-1)}
+.tema div{margin-top:6px;font:400 74px/1 CC;letter-spacing:10px;color:#FBEFC0;padding-left:10px;white-space:nowrap;text-shadow:0 0 30px rgba(232,199,102,.35)}
+.host{position:absolute;left:50%;transform:translateX(-50%);top:822px;display:flex;flex-direction:column;align-items:center}
+.ring{width:260px;height:260px;border-radius:50%;padding:5px;background:conic-gradient(from 200deg,#BFE0FF,#3D8BFF,#1452D9,#3D8BFF,#BFE0FF);box-shadow:0 0 46px rgba(61,139,255,.45),0 0 0 10px rgba(61,139,255,.07)}
+.ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:6px solid #020614}
+.ht{margin-top:-20px;position:relative;font:700 14px OB;letter-spacing:5px;color:#fff;background:linear-gradient(90deg,#3D8BFF,#1452D9);border-radius:99px;padding:8px 18px;box-shadow:0 4px 18px rgba(20,82,217,.5)}
+.hn{margin-top:16px;font:700 38px OB}
+.hr{margin-top:2px;font:400 28px CC;letter-spacing:7px;color:#E8C766;white-space:nowrap}
+.row{position:absolute;left:0;right:0;top:1210px;display:flex;justify-content:center;gap:36px}
+.p{width:240px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.p .r2{width:150px;height:150px;border-radius:50%;padding:4px;background:linear-gradient(135deg,#BFE0FF,#3D8BFF,#1452D9);box-shadow:0 0 26px rgba(61,139,255,.35)}
+.p img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid #020614}
+.p b{margin-top:12px;font:700 24px/1.1 OB}
+.p span{margin-top:5px;font:600 12px OB;letter-spacing:3px;color:#8EC5FF}
+.when{position:absolute;left:110px;right:110px;top:1450px;display:flex;align-items:center;border:1px solid rgba(61,139,255,.4);border-radius:22px;background:rgba(4,14,36,.8);overflow:hidden}
+.dia{padding:16px 24px;background:linear-gradient(135deg,#3D8BFF,#1452D9);text-align:center;min-width:180px}
+.dia small{display:block;font:700 15px OB;letter-spacing:5px;color:#E6F0FF}
+.dia b{display:block;font:400 66px/0.9 BB;color:#fff}
+.dia em{display:block;font:700 15px OB;letter-spacing:4px;color:#E6F0FF;font-style:normal}
+.hrs{flex:1;padding:14px 24px}
+.hrs .big{font:400 54px/1 BB;letter-spacing:2px}.hrs .big small{font:600 18px OB;letter-spacing:3px;color:#8EC5FF;margin-left:10px}
+.z{margin-top:8px;font:500 16px OU;color:rgba(255,255,255,.75);display:flex;gap:16px;flex-wrap:wrap}
+.ft{position:absolute;left:110px;right:110px;top:1612px;display:flex;justify-content:space-between;align-items:center}
+.ft img{height:30px}.ft span{font:600 14px OB;letter-spacing:4px;color:#8EC5FF}
+</style></head><body><div class="bg"></div><div class="grid"></div><div class="beam"></div>
+<div class="top"><div class="live"><i></i>EN VIVO POR ZOOM · PARA SOCIOS</div></div>
+<div class="logo"><div class="a1"><span class="w">ACTION</span> <span class="b">LEADERS</span></div><div class="tr">Training!</div>
+<svg class="sw" viewBox="0 0 560 40"><defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#1452D9" stop-opacity="0"/><stop offset=".25" stop-color="#3D8BFF"/><stop offset="1" stop-color="#8EC5FF"/></linearGradient></defs><path d="M4 30 C150 12 330 6 556 10 C360 16 190 24 30 38 Z" fill="url(#g)"/></svg></div>
+<div class="tag">LIDERA<b>.</b> FORMA<b>.</b> IMPACTA<b>.</b> TRASCIENDE<b>.</b></div>
+<div class="tema"><small>TEMA DE HOY</small><div id="tema"></div></div>
+<div class="host" id="host"></div><div class="row" id="row"></div>
+<div class="when"><div class="dia"><small id="dd"></small><b id="dn"></b><em id="dm"></em></div><div class="hrs"><div class="big">8:00 PM<small>🇭🇳 HONDURAS</small></div><div class="z"><span>🇺🇸 Miami 9:00 PM</span><span>🇲🇽 México 8:00 PM</span><span>🇨🇴 Colombia 9:00 PM</span><span>🇪🇸 España 3:00 AM*</span></div></div></div>
+<div class="ft"><img src="../../../media/logo-mas.png"><span>PIDA SU ENLACE A QUIEN LE INVITÓ</span></div>
+<script>
+const D=JSON.parse(decodeURIComponent(location.hash.slice(1)||"%7B%7D"));const P=D.p||[];
+if(D.sf)document.body.style.setProperty("--sf",D.sf);
+tema.textContent=D.tema||"MENTALIDAD";dd.textContent=D.dia||"MARTES";dn.textContent=D.n||"10";dm.textContent=D.mes||"NOVIEMBRE";
+const F=n=>"../../../media/fotos/"+n+".jpg";
+const h=P[0];host.innerHTML=`<div class="ring"><img src="${F(h.f)}"></div><div class="ht">PRESENTA</div><div class="hn">${h.n}</div><div class="hr">${h.r}</div>`;
+const R=P.slice(1);row.innerHTML=R.map(p=>`<div class="p"><div class="r2"><img src="${F(p.f)}"></div><b>${p.n}</b><span>${p.r}</span></div>`).join("");
+if(!R.length){host.style.top="900px"}
+</script></body></html>
