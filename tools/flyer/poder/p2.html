@@ -1,0 +1,53 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:BB;src:url(../../../media/fonts/BebasNeue-Regular.ttf)}
+@font-face{font-family:CC;src:url(../../../media/fonts/Cormorant-500-caps.ttf)}
+@font-face{font-family:OU;src:url(../../../media/fonts/Outfit-Regular.ttf)}
+@font-face{font-family:OB;src:url(../../../media/fonts/Outfit-Bold.ttf)}
+*{box-sizing:border-box}
+body{margin:0;width:1080px;height:1920px;overflow:hidden;font-family:OU;color:#fff;background:#03050b;position:relative}
+.bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 45% at 50% 34%,rgba(42,193,241,.30),transparent 70%),radial-gradient(ellipse 70% 40% at 50% 100%,rgba(232,199,102,.18),transparent 70%),linear-gradient(#02040a,#061021 55%,#03050b)}
+.grid{position:absolute;inset:0;background:linear-gradient(rgba(42,193,241,.07) 1px,transparent 1px) 0 0/72px 72px,linear-gradient(90deg,rgba(42,193,241,.07) 1px,transparent 1px) 0 0/72px 72px;-webkit-mask:radial-gradient(ellipse 70% 55% at 50% 40%,#000 30%,transparent 75%)}
+.giant{position:absolute;top:250px;left:-30px;right:-30px;text-align:center;font:400 400px/0.8 BB;color:transparent;-webkit-text-stroke:2px rgba(42,193,241,.10);letter-spacing:10px}
+.bolt{position:absolute;opacity:.9}
+.top{position:absolute;top:212px;left:0;right:0;display:flex;justify-content:center;gap:16px;align-items:center}
+.live{display:flex;align-items:center;gap:10px;font:600 17px OB;letter-spacing:5px;color:#fff;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:99px;padding:8px 18px}
+.live i{width:10px;height:10px;border-radius:50%;background:#FF3B3B;box-shadow:0 0 14px #FF3B3B}
+.t1{position:absolute;top:296px;left:0;right:0;text-align:center;font:600 26px OB;letter-spacing:18px;color:#BFEFFF;padding-left:22px}
+.t2{position:absolute;top:326px;left:0;right:0;text-align:center;font:400 210px/1 BB;letter-spacing:8px;background:linear-gradient(180deg,#FFFFFF 0%,#BFEFFF 35%,#2AC1F1 70%,#0A7DAD 100%);-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 0 30px rgba(42,193,241,.55))}
+.host{position:absolute;left:50%;transform:translateX(-50%);top:610px;display:flex;flex-direction:column;align-items:center}
+.ring{width:300px;height:300px;border-radius:50%;padding:6px;background:conic-gradient(from 200deg,#FBEFC0,#E8C766,#A57F1C,#E8C766,#FBEFC0);box-shadow:0 0 46px rgba(232,199,102,.40),0 0 0 10px rgba(232,199,102,.07)}
+.ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:6px solid #03050b}
+.tag{margin-top:-22px;position:relative;font:700 15px OB;letter-spacing:5px;color:#1b1300;background:linear-gradient(90deg,#FBEFC0,#E8C766);border-radius:99px;padding:8px 18px}
+.hn{margin-top:20px;font:700 42px OB}
+.hr{margin-top:2px;font:400 32px CC;letter-spacing:7px;color:#E8C766;white-space:nowrap}
+.row{position:absolute;left:0;right:0;top:1110px;display:flex;justify-content:center;gap:40px}
+.p{width:250px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.p .r2{width:160px;height:160px;border-radius:50%;padding:4px;background:linear-gradient(135deg,#BFEFFF,#2AC1F1,#0A7DAD);box-shadow:0 0 30px rgba(42,193,241,.35)}
+.p img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid #03050b}
+.p b{margin-top:14px;font:700 26px/1.1 OB}
+.p span{margin-top:6px;font:600 13px OB;letter-spacing:3px;color:#7FDBFF}
+.when{position:absolute;left:110px;right:110px;top:1418px;display:flex;align-items:center;border:1px solid rgba(42,193,241,.35);border-radius:22px;background:rgba(6,16,33,.75);overflow:hidden}
+.dia{padding:18px 26px;background:linear-gradient(135deg,#2AC1F1,#0A7DAD);text-align:center;min-width:190px}
+.dia small{display:block;font:700 16px OB;letter-spacing:5px;color:#022}
+.dia b{display:block;font:400 70px/0.9 BB;color:#02101a}
+.dia em{display:block;font:700 16px OB;letter-spacing:4px;color:#022;font-style:normal}
+.hrs{flex:1;padding:16px 26px}
+.hrs .big{font:400 58px/1 BB;letter-spacing:2px}.hrs .big small{font:600 19px OB;letter-spacing:3px;color:#7FDBFF;margin-left:10px}
+.z{margin-top:8px;font:500 17px OU;color:rgba(255,255,255,.75);display:flex;gap:16px;flex-wrap:wrap}
+.ft{position:absolute;left:110px;right:110px;bottom:270px;display:flex;justify-content:space-between;align-items:center}
+.ft img{height:32px}.ft span{font:600 15px OB;letter-spacing:4px;color:#E8C766}
+</style></head><body><div class="bg"></div><div class="grid"></div><div class="giant">PODER</div>
+<svg class="bolt" style="left:120px;top:350px" width="80" height="175" viewBox="0 0 60 130"><path d="M38 0 L6 72 H28 L18 130 L56 50 H32 Z" fill="none" stroke="#2AC1F1" stroke-width="2.5" opacity=".7"/></svg>
+<svg class="bolt" style="right:120px;top:380px" width="70" height="152" viewBox="0 0 60 130"><path d="M38 0 L6 72 H28 L18 130 L56 50 H32 Z" fill="rgba(232,199,102,.18)" stroke="#E8C766" stroke-width="2.5" opacity=".8"/></svg>
+<div class="top"><div class="live"><i></i>EN VIVO POR ZOOM</div></div>
+<div class="t1">LLAMADA DE</div><div class="t2">PODER</div>
+<div class="host" id="host"></div><div class="row" id="row"></div>
+<div class="when"><div class="dia"><small>DOMINGO</small><b>15</b><em>NOVIEMBRE</em></div><div class="hrs"><div class="big">8:00 PM<small>🇭🇳 HONDURAS</small></div><div class="z"><span>🇺🇸 Miami 9:00 PM</span><span>🇲🇽 México 8:00 PM</span><span>🇨🇴 Colombia 9:00 PM</span></div></div></div>
+<div class="ft"><img src="../../../media/logo-mas.png"><span>PIDA SU ENLACE A QUIEN LE INVITÓ</span></div>
+<script>
+const P=JSON.parse(decodeURIComponent(location.hash.slice(1)||"%5B%5D"));
+const F=n=>"../../../media/fotos/"+n+".jpg";
+const h=P[0];document.getElementById("host").innerHTML=`<div class="ring"><img src="${F(h.f)}"></div><div class="tag">⚡ ANFITRIÓN</div><div class="hn">${h.n}</div><div class="hr">${h.r}</div>`;
+const R=P.slice(1);document.getElementById("row").innerHTML=R.map(p=>`<div class="p"><div class="r2"><img src="${F(p.f)}"></div><b>${p.n}</b><span>${p.r}</span></div>`).join("");
+if(!R.length){document.getElementById("host").style.top="720px"}
+</script></body></html>
