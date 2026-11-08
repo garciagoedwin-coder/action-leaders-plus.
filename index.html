@@ -1010,6 +1010,10 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .urgS.ok{border-left-color:#16A34A}.urgS.ok .uh .tg{color:#16A34A}
 .lzbL{display:flex;flex-direction:column;gap:8px}.lzbB{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;color:var(--ink);font:inherit}.lzbB>span:first-child{font-size:22px}.lzbB b{display:block;font-size:14px}.lzbB small{display:block;color:var(--muted);font-size:12px;line-height:1.3}.lzbB i{margin-left:auto;font-style:normal;color:var(--brand);font-size:20px}
 #lzgStrip{display:flex;gap:12px;align-items:flex-start;padding:14px 40px 14px 14px;border-radius:18px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:5px solid var(--brand);box-shadow:0 4px 14px rgba(20,33,61,.06)}#lzgStrip[hidden]{display:none}.lzgI{font-size:30px;line-height:1}.lzgT{flex:1;min-width:0}.lzgT b{display:block;font-size:15px}.lzgT span{display:block;font-size:13px;opacity:.85;margin-top:2px}.lzgB{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.lzgB button{flex:1;min-width:130px;border:0;border-radius:12px;padding:10px 8px;font:inherit;font-weight:700;font-size:13px;background:#25D366;color:#053b1d}.lzgB button.ok{background:var(--surface-2);color:var(--ink);border:1px solid var(--line)}.lzgB button.pr{background:linear-gradient(135deg,#B07D00,#F5B700);color:#2a1c00}
+#olvStrip{display:flex;gap:12px;align-items:flex-start;padding:14px 40px 14px 14px;border-radius:18px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:5px solid #e8862a;box-shadow:0 4px 14px rgba(20,33,61,.06)}#olvStrip[hidden]{display:none}
+.olvL{display:flex;flex-direction:column;gap:6px;margin-top:10px}.olvR{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:7px 8px 7px 10px;background:var(--surface-2)}.olvN{flex:1;min-width:0}.olvN b{display:block;font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.olvN small{display:block;font-size:12px;color:var(--muted)}
+.olvW{flex:none;display:grid;place-items:center;min-width:40px;height:36px;border-radius:10px;background:#25D366;color:#fff;text-decoration:none;font-size:17px;border:0;font:inherit;font-weight:700;padding:0 10px}.olvW.o{background:var(--brand);color:var(--bg);font-size:13px}
+.snFr{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.snFr button{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;font-weight:600}.snFr button.on{border-color:var(--brand);color:var(--brand)}
 .avAnt{margin-top:10px}.avAnt summary{font-size:13px;color:var(--brand);font-weight:700;cursor:pointer;padding:8px 0}.avGo{margin-left:auto;color:var(--muted);font-size:20px;padding-left:6px}
 .avBox{display:flex;flex-direction:column;gap:6px}.avBox[hidden],.avSl[hidden]{display:none!important}#v-inicio.simple>#avBox{order:1}#v-inicio.simple>#incStrip{order:2}
 .avHd{font:800 10.5px Figtree,sans-serif;letter-spacing:1.6px;color:var(--muted);padding-left:4px}
@@ -1378,6 +1382,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
       <div class="avBox" id="avBox" hidden><div class="avHd" id="avBoxN">AVISOS DE HOY</div><div class="avTrack" id="avTrack">
         <div class="avSl" data-k="urgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="urgS" id="urgStrip" hidden></div></div>
         <div class="avSl" data-k="lzgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="lzgS" id="lzgStrip" hidden></div></div>
+        <div class="avSl" data-k="olvStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="olvS" id="olvStrip" hidden></div></div>
         <div class="avSl" data-k="evHoy" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div id="evHoy" hidden></div></div>
       </div><div class="avDots" id="avDots"></div></div>
       <div class="incS" id="incStrip" hidden></div>
@@ -1753,7 +1758,25 @@ function abrirSeg(){window._irV=0;let q="";const hoy=new Set((day.segL||[]).map(
    <button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
     const draw=()=>{const R=L();$("#sgL").innerHTML=R.length?R.map(c=>`<button type="button" class="ep-it" data-sg="${esc(c.id)}">${avHTML(c.name,false,false)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(c.name)}</b><span class="small muted">${esc(c.stage||"Nuevo")}${c.ultSeg?" · último seguimiento "+esc(c.ultSeg.slice(8)+"/"+c.ultSeg.slice(5,7)):""}</span></span><span style="color:var(--brand);font-weight:800">+</span></button>`).join(""):`<p class="small muted" style="margin:8px 0">${q?"No hay contactos con ese nombre.":contacts.length?"Ya registró seguimiento a todos hoy 👏":"Aún no tiene personas en su CRM. Primero agregue personas nuevas a la lista."}</p>`};draw();
     $("#sgQ").oninput=()=>{q=$("#sgQ").value.trim();draw()};
-    $("#sgL").onclick=async e=>{const b=e.target.closest("[data-sg]");if(!b)return;if(await sumarSeg(contacts.find(c=>c.id===b.dataset.sg))){closeSheet();irVolver()}}})}
+    $("#sgL").onclick=async e=>{const b=e.target.closest("[data-sg]");if(!b)return;const c=contacts.find(c=>c.id===b.dataset.sg);if(await sumarSeg(c)){closeSheet();segPaso(c)}}})}
+// 8 nov: al registrar un seguimiento se pregunta cómo quedó, para usar la etapa "Por cerrar" sin pensarlo
+function segPaso(c){if(!c||["Socio","Cliente","No interesado"].includes(c.stage||"")){irVolver();return}const f=esc(String(c.name||"").trim().split(/\s+/)[0]||"");
+  setTimeout(()=>openSheet(`<h2>¿Cómo va ${f}?</h2><p class="small muted" style="margin:0">Marque cómo quedó después de su seguimiento.</p>
+   <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">${c.stage!=="Por cerrar"?`<button class="btn" id="spPc" style="background:#EA580C;color:#fff">🔥 Está listo para cerrar</button>`:""}
+   <button class="btn" id="spSo" style="background:#22a35a;color:#fff">✅ Ya se inscribió</button><button class="btn ghost" id="spSg">🔁 Sigue en seguimiento</button></div>`,()=>{
+    const pc=$("#spPc");if(pc)pc.onclick=async()=>{closeSheet();if(await stAvanza(c,"Por cerrar","listo para cerrar (seguimiento)"))toast("🔥 "+c.name.split(" ")[0]+" pasó a Por cerrar");try{olvStrip()}catch(e){}irVolver()};
+    $("#spSo").onclick=async()=>{closeSheet();const prev=c.stage;c.stage="Socio";c.stT=Date.now();c.stAuto="se inscribió (seguimiento)";c.updated=Date.now();const id=await store.saveContact(Object.assign({},c));if(!id){c.stage=prev;return}
+      try{renderCRM()}catch(e){}irVolver();setTimeout(()=>abrirBienvenida(c),300)};
+    $("#spSg").onclick=()=>{closeSheet();irVolver()}}),250)}
+// 8 nov: "Prospectos olvidados" en Avisos de hoy: los que llevan más de 7 días en Seguimiento
+function olvLista(){const hoy=new Set((day.segL||[]).map(x=>x.cid));return (contacts||[]).filter(c=>c.stage==="Seguimiento"&&stDias(c)>7&&!hoy.has(c.id)&&LS.get("olv:"+c.id)!==TODAY).sort((a,b)=>stDias(b)-stDias(a))}
+function olvStrip(){const el=$("#olvStrip");if(!el)return;const L=fbUser&&store.uid?olvLista():[];if(!L.length){el.hidden=true;return}
+  el.innerHTML=`<div class="lzgI">🔁</div><div class="lzgT"><b>${L.length===1?"1 prospecto espera":L.length+" prospectos esperan"} su seguimiento</b><span>Llevan más de 7 días sin avanzar. Escríbales hoy.</span>
+   <div class="olvL">${L.slice(0,3).map(c=>{const w=waLink(c);return `<div class="olvR"><span class="olvN"><b>${esc(c.name)}</b><small>${stDias(c)} días en Seguimiento</small></span>${w?`<a class="olvW" href="${esc(w)}" target="_blank" rel="noopener" data-olv="${esc(c.id)}">💬</a>`:`<button type="button" class="olvW o" data-olvc="${esc(c.id)}">Ver</button>`}</div>`}).join("")}</div>
+   ${L.length>3?`<div class="lzgB"><button type="button" class="ok" data-olvt>Ver los ${L.length} en mi CRM</button></div>`:""}</div>`;el.hidden=false;
+  el.querySelectorAll("[data-olv]").forEach(a=>a.onclick=()=>{LS.set("olv:"+a.dataset.olv,TODAY);setTimeout(olvStrip,900)});
+  el.querySelectorAll("[data-olvc]").forEach(b=>b.onclick=()=>{openC=b.dataset.olvc;go("crm");try{renderCRM()}catch(e){}});
+  const t=el.querySelector("[data-olvt]");if(t)t.onclick=()=>{stageF="Seguimiento";go("crm");try{renderCRM()}catch(e){}}}
 // ---------- presentaciones con nombre ----------
 const semIni=()=>{const a=[lunesK(),TODAY.slice(0,7)+"-01",CONST_INI].sort();return a[2]}; // la semana empieza el lunes, pero nunca antes del día 1 del mes (todo lo de la app reinicia el día 1)
 const presSemana=()=>{const l=semIni(),o=[];for(let d=parseK(l);dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=k===TODAY?day:weekCache[k];((v&&v.presL)||[]).forEach(x=>o.push(Object.assign({f:k},x)))}return o};
@@ -1869,9 +1892,15 @@ function snVer(i){const SL=snItems();if(i<0||!SL[i])return;document.querySelecto
   let x0=null;v.addEventListener("touchstart",e=>{x0=e.touches[0].clientX},{passive:true});
   v.addEventListener("touchend",e=>{if(x0==null)return;const d=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(d)<50)return;const n=i+(d<0?1:-1);if(SL[n])snVer(n)});
   v.querySelector(".im").onclick=()=>{if(SL.length>1)snVer((i+1)%SL.length)}}
-function snEditWhy(){openSheet(`<h2>💭 Mi por qué</h2><p class="small muted" style="margin:0">¿Por qué hace este negocio? Escríbalo con el corazón. Ej.: "Para que mis hijos estudien sin deudas y mis papás descansen".</p>
+// 8 nov: frases de ejemplo para tocar (el 1.er paso del Inicio Rápido que más se traba)
+const SN_FRASES=["Pasar más tiempo con mi familia","Que mis hijos estudien sin deudas","Que mis papás descansen y viajen","Ser dueño de mi tiempo","Conocer el mundo con quien amo","Ayudar a otros a cumplir sus sueños"];
+async function snWhyIr(){if(snInfo===null&&store.db){try{snInfo=(await store.get("suenosInfo"))||{}}catch(e){snInfo={}}}snEditWhy()}
+function snEditWhy(){openSheet(`<h2>💭 Mi por qué</h2><p class="small muted" style="margin:0">¿Por qué hace este negocio? Toque las frases que van con usted o escríbalo con sus palabras.</p>
+  <div class="snFr" id="snFr">${SN_FRASES.map(f=>`<button type="button">${esc(f)}</button>`).join("")}</div>
   <textarea class="inp" id="snWhyT" rows="4" maxlength="180" placeholder="Lo hago para…">${esc((snInfo||{}).porque||"")}</textarea><button class="btn" id="snWhyOk" style="width:100%">Guardar</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`);
-  $("#snWhyOk").onclick=async()=>{snInfo=Object.assign({},snInfo,{porque:$("#snWhyT").value.trim().slice(0,180)});closeSheet();await snSaveInfo();toast("Guardado 💙")}}
+  $("#snFr").onclick=e=>{const b=e.target.closest("button");if(!b)return;const t=$("#snWhyT"),f=b.textContent,v=t.value.trim();if(v.toLowerCase().includes(f.toLowerCase()))return;
+    t.value=(v?v.replace(/[.\s]+$/,"")+", "+f.charAt(0).toLowerCase()+f.slice(1):"Lo hago para "+f.charAt(0).toLowerCase()+f.slice(1)).slice(0,180);b.classList.add("on")};
+  $("#snWhyOk").onclick=async()=>{const v=$("#snWhyT").value.trim().slice(0,180);if(!v){toast("Toque una frase o escriba su por qué");return}snInfo=Object.assign({},snInfo,{porque:v});closeSheet();await snSaveInfo();toast("Guardado 💙");try{irRender()}catch(e){}}}
 function snEditCru(){const C=Object.assign({},(snInfo||{}).crucero||{});
   openSheet(`<h2>🚢 Mi próximo crucero</h2><div class="snPh" id="snCruPh" style="${C.img?`background-image:url('${C.img}');border-style:solid`:""}">${C.img?"":"📷 Elegir foto del destino o del barco"}</div>
    <div class="field"><label for="snCruD">Destino</label><input class="inp" id="snCruD" maxlength="60" placeholder="Ej.: Caribe Occidental con mi esposa" value="${esc(C.dest||"")}"></div>
@@ -4515,15 +4544,25 @@ async function pushActivar(){if(!PUSH_VAPID||!pushSop()){toast("Este teléfono n
   if(p!=="granted"){toast("Sin permiso no le podemos avisar. Puede activarlo en Perfil › Mis avisos.");pushPinta();return false}
   try{const tk=await window.FB.pushToken(PUSH_VAPID);if(!tk)throw new Error("tk");await pushGuardar(tk,{pr:Object.assign({racha:true,act:true,agenda:true},(pushDoc&&pushDoc.pr)||{})});toast("🔔 ¡Listo! Sus avisos están activos");pushPinta();return true}
   catch(e){toast("No se pudieron activar los avisos. Intente otra vez.");return false}}
-async function pushRefrescar(){try{if(!PUSH_VAPID||!pushSop()||Notification.permission!=="granted"||!store.uid)return;try{const si=lzSoyMiembro()?1:0;if(LS.get("pushTk")&&LS.get("pushSis")!==si)await pushGuardar(null)}catch(e){}const t=+LS.get("pushT")||0;if(Date.now()-t<3*864e5&&LS.get("pushTk"))return;
-  const tk=await window.FB.pushToken(PUSH_VAPID);if(tk&&tk!==LS.get("pushTk"))await pushGuardar(tk);else LS.set("pushT",Date.now())}catch(e){}}
+async function pushRefrescar(){try{if(!PUSH_VAPID||!pushSop()||Notification.permission!=="granted"||!store.uid)return;try{const si=lzSoyMiembro()?1:0;if(LS.get("pushTk")&&LS.get("pushSis")!==si)await pushGuardar(null)}catch(e){}const t=+LS.get("pushT")||0;if(Date.now()-t<864e5&&LS.get("pushTk"))return;
+  const tk=await window.FB.pushToken(PUSH_VAPID),D=await pushCargarDoc();if(tk&&(tk!==LS.get("pushTk")||!(D&&D.tk)))await pushGuardar(tk);else LS.set("pushT",Date.now());try{pushPinta()}catch(e){}}catch(e){}}
+// 8 nov: tarjeta para TODO el que no tiene avisos: nunca activados, bloqueados, iPhone sin instalar o token perdido. ✕ = 3 días.
+function pushEstado(){if(!PUSH_VAPID)return "";if(pushIOS()&&!pushStandalone())return "ios";if(!pushSop())return "";const p=Notification.permission;
+  if(p==="default")return "act";if(p==="denied")return "blq";if(p==="granted"&&!LS.get("pushTk"))return "rea";if(p==="granted"&&pushDoc&&!pushDoc.tk)return "rea";return ""}
 function pushPinta(){const el=$("#pushStrip");if(!el)return;let no=0;try{no=+LS.get("pushNo")||0}catch(e){}
-  if(!PUSH_VAPID||!fbUser||!store.uid||Date.now()-no<14*864e5){el.hidden=true;return}
-  const iosNav=pushIOS()&&!pushStandalone();
-  if(!iosNav&&(!pushSop()||Notification.permission!=="default")){el.hidden=true;return}
-  el.hidden=false;el.innerHTML=iosNav?`<span class="pi">🔔</span><div class="grow" style="min-width:0"><b>¿Quiere recibir avisos?</b><small>En iPhone, abra la app desde el ícono 🛡️ de su pantalla de inicio (Compartir › Agregar a inicio) y actívelos ahí.</small></div><button class="px" aria-label="Cerrar">✕</button>`
-   :`<span class="pi">🔔</span><div class="grow" style="min-width:0"><b>Active sus avisos</b><small>Le avisamos de su racha, sus entrenamientos y cuando entra un socio nuevo a su equipo.</small></div><button class="pb">Activar</button><button class="px" aria-label="Cerrar">✕</button>`;
-  const b=el.querySelector(".pb");if(b)b.onclick=()=>pushActivar();el.querySelector(".px").onclick=()=>{LS.set("pushNo",Date.now());el.hidden=true}}
+  const e=fbUser&&store.uid&&Date.now()-no>=3*864e5?pushEstado():"";if(!e){el.hidden=true;return}
+  const M={act:["Active sus avisos","Le avisamos de su racha, sus entrenamientos y cuando entra un socio nuevo a su equipo.","Activar"],
+    rea:["Sus avisos se desactivaron","Pasa al cambiar de teléfono o borrar datos. Toque para activarlos de nuevo.","Activar"],
+    blq:["Sus avisos están bloqueados","Así no le llegan sus felicitaciones ni sus recordatorios.","Ver cómo"],
+    ios:["Active sus avisos en su iPhone","Primero agregue la app a su pantalla de inicio. Le enseñamos en 3 pasos.","Ver cómo"]}[e];
+  el.hidden=false;el.innerHTML=`<span class="pi">🔔</span><div class="grow" style="min-width:0"><b>${M[0]}</b><small>${M[1]}</small></div><button class="pb">${M[2]}</button><button class="px" aria-label="Cerrar">✕</button>`;
+  el.querySelector(".pb").onclick=()=>e==="act"||e==="rea"?pushActivar():pushGuia(e);el.querySelector(".px").onclick=()=>{LS.set("pushNo",Date.now());el.hidden=true}}
+function pushGuia(e){const P=e==="ios"?[["1","Abra esta app en <b>Safari</b>","Si la abrió desde otra app, copie el enlace actionleadersplus.com y péguelo en Safari."],["2","Toque <b>Compartir</b> <span style='font-size:18px'>⬆️</span>","Es el cuadrito con flecha, abajo en el centro de la pantalla."],["3","Elija <b>Agregar a inicio</b>","Baje en la lista hasta verlo y toque <b>Agregar</b>."],["4","Abra la app desde el ícono 🛡️","En su pantalla de inicio. Ahí toque <b>Activar</b> en sus avisos."]]
+   :/Android/i.test(navigator.userAgent||"")?[["1","Toque los <b>3 puntitos ⋮</b>","Arriba a la derecha de Chrome (o mantenga presionado el ícono 🛡️ de la app)."],["2","Entre a <b>Configuración › Notificaciones</b>","O en <b>Información del sitio › Permisos</b>."],["3","Active las <b>notificaciones</b>","Para actionleadersplus.com."],["4","Vuelva a la app","Y toque <b>Activar</b> en la tarjeta de avisos."]]
+   :[["1","Abra <b>Ajustes</b> del teléfono","El ícono del engranaje ⚙️."],["2","Entre a <b>Notificaciones</b>","Busque <b>Action Leaders</b> en la lista."],["3","Active <b>Permitir notificaciones</b>",""],["4","Vuelva a la app","Y toque <b>Activar</b> en la tarjeta de avisos."]];
+  openSheet(`<h2>🔔 ${e==="ios"?"Avisos en iPhone":"Desbloquee sus avisos"}</h2><p class="small muted" style="margin:0">${e==="ios"?"En iPhone los avisos solo llegan si la app está en su pantalla de inicio.":"Su teléfono tiene bloqueados los avisos de la app. Así se activan:"}</p>
+   <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">${P.map(x=>`<div class="row" style="gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--surface-2)"><span style="flex:none;width:28px;height:28px;border-radius:50%;background:var(--brand);color:var(--bg);display:grid;place-items:center;font-weight:800">${x[0]}</span><span style="min-width:0"><b style="font-weight:600">${x[1]}</b>${x[2]?`<span class="small muted" style="display:block;margin-top:2px">${x[2]}</span>`:""}</span></div>`).join("")}</div>
+   <button class="btn" data-close style="width:100%;margin-top:6px">Entendido</button>`)}
 async function pushCargarDoc(){if(pushDoc||!store.db||!store.uid)return pushDoc;try{const d=await store.db.doc("push/"+store.uid).get();pushDoc=d.exists?d.data():{}}catch(e){pushDoc={}}return pushDoc}
 async function misAvisos(){const D=await pushCargarDoc()||{},pr=Object.assign({racha:true,act:true,agenda:true},D.pr||{});const perm=pushSop()?Notification.permission:"x",iosNav=pushIOS()&&!pushStandalone();
   const est=!PUSH_VAPID?"Muy pronto podrá activarlos.":iosNav?"En iPhone: abra la app desde el ícono 🛡️ de su pantalla de inicio para activarlos.":perm==="x"?"Este navegador no permite avisos.":perm==="denied"?"Los avisos están bloqueados. Actívelos en los ajustes del teléfono: Notificaciones › Action Leaders.":perm==="granted"&&D.tk?"✅ Activos en este teléfono.":"Todavía no están activos en este teléfono.";
@@ -5422,7 +5461,7 @@ const STAGE_COL={"Nuevo":"#2AC1F1","Contactado":"#2AC1F1","Presentación":"#d4a0
 const PAISES=[["Honduras","504"],["Estados Unidos","1"],["España","34"],["Reino Unido","44"],["Guatemala","502"],["El Salvador","503"],["Nicaragua","505"],["Costa Rica","506"],["Panamá","507"],["México","52"],["Colombia","57"],["Venezuela","58"],["Perú","51"],["Ecuador","593"],["Chile","56"],["Argentina","54"],["República Dominicana","1"],["Canadá","1"],["Italia","39"],["Francia","33"],["Alemania","49"]];
 const waNum=(t,cc)=>{const raw=String(t||"").trim();let d=raw.replace(/\D/g,"");if(!d)return"";if(raw.startsWith("+")||raw.startsWith("00"))return d.replace(/^00/,"");cc=cc||"504";if(d.startsWith(cc)&&d.length>cc.length+6)return d;return cc+d.replace(/^0+/,"")};
 function msgPara(c,first){const nt=c.note||"";if((c.stage||"Nuevo")==="Nuevo"&&nt.includes("Desde tu página")){const yo=miNombreCorto().split(" ")[0]||"yo";
-  const i=/Viajar/i.test(nt)?["que le interesa viajar ✈️","cómo estamos viajando más gastando menos"]:/Ingresos/i.test(nt)?["que le interesa generar un ingreso extra 💰","cómo lo estamos haciendo desde el celular"]:["que le interesa viajar y generar ingresos ✈️💰","cómo funciona"];
+  const i=/Viajar/i.test(nt)?["que le interesa viajar ✈️","cómo estamos viajando más gastando menos"]:/Negocio|Ingresos/i.test(nt)?["que le interesa emprender un negocio 💼","cómo lo estamos haciendo desde el celular"]:["que le interesa viajar y emprender ✈️💼","cómo funciona"];
   return `Hola ${first}, ¿cómo está? 😊\n\nSoy ${yo}, de Action Leaders.\n\nVi que dejó sus datos en mi página y ${i[0]}\n\n¿Le parece si hoy le muestro en 10 minutos ${i[1]}?`}
   return (WA_MSG[c.stage]||WA_MSG.Nuevo).replace("{n}",first)}
 const WA_MSG={"Nuevo":"Hola {n}, ¿cómo está? Quería saludarle y contarle algo que estoy haciendo y creo que le puede interesar.","Contactado":"Hola {n}, ¿cómo está? ¿Tiene unos minutos esta semana para mostrarle lo que le comenté?","Presentación":"Hola {n}, ¡gracias por su tiempo en la presentación! ¿Qué fue lo que más le gustó?","Seguimiento":"Hola {n}, ¿cómo está? Le escribo para saber si pudo revisar la información y si tiene alguna pregunta.","Por cerrar":"Hola {n}, ¿cómo está? 😊 Le escribo para ayudarle a crear su cuenta. ¿Le parece si lo hacemos hoy juntos? Solo toma unos minutos.","Socio":"Hola {n}, ¿cómo va todo? Aquí estoy para apoyarle en lo que necesite.","Cliente":"Hola {n}, ¿cómo está? Quería saber cómo le ha ido.","No interesado":"Hola {n}, ¿cómo está? Solo quería saludarle."};
@@ -5533,7 +5572,7 @@ async function flResp(c,v){c.fl=Object.assign({h:{},r:""},c.fl||{});
   if(v==="re2"){flEnviar(c,"re2");return}
   c.fl.r=v;if(v==="nr")c.fl.h=Object.assign({},c.fl.h,{resal:Date.now()});if(v==="pen")c.fl.h=Object.assign({},c.fl.h,{rinv:Date.now()});await flGuardar(c)}
 const CERR=["Socio","Cliente"];let crmV=(()=>{try{return LS.get("crmV")||"proc"}catch(e){return "proc"}})();
-function renderCRM(){pushResumen();const q=$("#crmSearch").value.trim().toLowerCase();
+function renderCRM(){pushResumen();try{olvStrip()}catch(e){}const q=$("#crmSearch").value.trim().toLowerCase();
   if(stageF!=="Todos")crmV=CERR.includes(stageF)?"cer":"proc";
   const nCer=contacts.filter(c=>CERR.includes(c.stage)).length,nPro=contacts.length-nCer,enV=c=>!!q||(crmV==="cer"?CERR.includes(c.stage):!CERR.includes(c.stage)),VS=STAGES.filter(s=>crmV==="cer"?CERR.includes(s):!CERR.includes(s));
   {let t=$("#crmVseg");if(!t){t=document.createElement("div");t.id="crmVseg";t.className="seg";t.setAttribute("role","tablist");$("#crmSearch").before(t);t.onclick=e=>{const b=e.target.closest("button");if(!b)return;crmV=b.dataset.k;stageF="Todos";openC=null;try{LS.set("crmV",crmV)}catch(x){}renderCRM()}}
@@ -6414,7 +6453,7 @@ function irItems(n){const V2=irV2();
   const IP=(n,g,t)=>({k:"p"+n,g,t,a:x=>x.pres>=n,p:x=>Math.min(x.pres,n)+" de "+n,b:["Presentar",()=>{closeSheet();abrirPres();window._irV=1}]});
   const IS=(n,g,t,sub)=>({k:"s"+n,g,t,s:sub,a:x=>x.seg>=n,p:x=>Math.min(x.seg,n)+" de "+n,b:["Registrar",()=>{closeSheet();abrirSeg();window._irV=1}]});
   const its={
- 1:[{k:"porque",g:"Define su meta",t:"Su “por qué”",s:"Lo más importante que quiere lograr con inCruises",a:x=>x.porque,b:["Escribir",()=>{closeSheet();go("suenos")}]},
+ 1:[{k:"porque",g:"Define su meta",t:"Su “por qué”",s:"Lo más importante que quiere lograr con inCruises",a:x=>x.porque,b:["Escribir",()=>{closeSheet();setTimeout(snWhyIr,250)}]},
     {k:"meta",g:"Define su meta",t:"Su meta y compromiso diario",s:"Tiempo, contactos y presentaciones al día",a:x=>x.meta,m:1,b:["Llenar",()=>irMeta()]},
     {k:"pago",g:"Prepare su negocio",t:"Configure su pago recurrente",s:"En su cuenta de inCruises: su ahorro se paga solo cada mes y su cuenta no se inactiva",a:x=>!!x.mk.pago,m:1,b:["Ya lo configuré",()=>irMk("pago")]},
     {k:"pat",g:"Prepare su negocio",t:"Conectado con su patrocinador",a:x=>x.pat},
@@ -6426,7 +6465,8 @@ function irItems(n){const V2=irV2();
       {k:"c10",g:"Su lista y primeras presentaciones",t:"Contactar a 10 personas",a:x=>x.cont>=10,p:x=>Math.min(x.cont,10)+" de 10",b:["Contactar",irGoCRM]},
       IP(3,"Su lista y primeras presentaciones","3 presentaciones"),
       {k:"ent",g:"Su lista y primeras presentaciones",t:"Conéctese a un Action Leaders Training",s:"Martes o jueves, 8:00 p.m. hora de Honduras",a:x=>!!x.mk.ent,m:1,b:["Ya me conecté",()=>irMk("ent")]}]
-    :[{k:"l30",g:"Su lista y primeras presentaciones",t:"30 contactos en su lista",s:"No seleccione quién cree que dirá que sí: primero escriba nombres",a:x=>x.nC>=30,p:x=>Math.min(x.nC,30)+" de 30",b:["Agregar",irGoCRM]},
+    :[IL(20,"Su lista y primeras presentaciones","No seleccione quién cree que dirá que sí: primero escriba nombres"), // 8 nov: 20 para todos (antes 30)
+    
     {k:"c10",g:"Su lista y primeras presentaciones",t:"Contactar a 10 personas",a:x=>x.cont>=10,p:x=>Math.min(x.cont,10)+" de 10",b:["Contactar",irGoCRM]},
     {k:"p5",g:"Su lista y primeras presentaciones",t:"5 presentaciones",a:x=>x.pres>=5,p:x=>Math.min(x.pres,5)+" de 5",b:["Presentar",()=>{closeSheet();abrirPres();window._irV=1}]},
     {k:"s5",g:"Su lista y primeras presentaciones",t:"Seguimiento a 5 prospectos",s:"Cada presentación termina con una decisión o un siguiente paso con fecha",a:x=>x.seg>=5,p:x=>Math.min(x.seg,5)+" de 5",b:["Registrar",()=>{closeSheet();abrirSeg();window._irV=1}]}]).slice(0)],
@@ -6512,7 +6552,7 @@ async function irFlyer(w){const g=!w,W=1080,H=1350,c=document.createElement("can
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],g?"graduado-inicio-rapido.jpg":"inicio-rapido-semana-"+w.n+".jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
-let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
+let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
   const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
   if(m==="actual"&&!st.ini){const no=LS.get("irNo:"+store.uid);if(no&&Date.now()<no){el.hidden=true;return}
     el.hidden=false;el.className="irMini";el.innerHTML=`<span class="ic">🚀</span><span class="tx"><b>Plan de Inicio Rápido</b> · Aprenda a duplicar en 30 días</span><button type="button" class="go" id="irEmp">Empezar ›</button><button type="button" class="x" id="irNo" aria-label="Quitar">✕</button>`;
@@ -6939,7 +6979,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261108102113";var busy=false,pend=null;
+(function(){var V="20261108103754";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
