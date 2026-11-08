@@ -68,9 +68,9 @@
    "registros": 0,
    "regSemana": 0,
    "id": "joel-enrrique-salgado-moradel",
-   "activaciones": 1,
-   "volumen": 200,
-   "actSemana": 1
+   "activaciones": 2,
+   "volumen": 400,
+   "actSemana": 2
   },
   {
    "nombre": "Jorge enrique Turcios Garcia",
@@ -336,7 +336,7 @@
    "nuevos": 0,
    "presentaciones": 0,
    "rango": "Team Leader",
-   "volumen": 200,
+   "volumen": 400,
    "volumenDetalle": "",
    "id": "joel-salgado",
    "volumenHoja": 0,
@@ -3048,6 +3048,17 @@
    "fuente": "gmail",
    "id": "keyla-garcia",
    "rv": 1
+  },
+  {
+   "socio": "Ana ruth Rivera villatoro",
+   "paquete": "Classic",
+   "patrocinador": "Joel enrrique Salgado moradel",
+   "fecha": "2026-11-08T22:55:02Z",
+   "ek": "f939e3",
+   "wk": "aebb13",
+   "fuente": "gmail",
+   "id": "ana-ruth-rivera-villatoro",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3072,7 +3083,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-08T19:55:11Z",
+  "activacionesCorte": "2026-11-08T22:55:02Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3082,7 +3093,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-08T14:14:00-06:00",
+  "rankingActualizado": "2026-11-08T17:12:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
