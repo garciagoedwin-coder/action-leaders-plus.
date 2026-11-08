@@ -1769,9 +1769,9 @@ function segPaso(c){if(!c||["Socio","Cliente","No interesado"].includes(c.stage|
       try{renderCRM()}catch(e){}irVolver();setTimeout(()=>abrirBienvenida(c),300)};
     $("#spSg").onclick=()=>{closeSheet();irVolver()}}),250)}
 // 8 nov: "Prospectos olvidados" en Avisos de hoy: los que llevan más de 7 días en Seguimiento
-function olvLista(){const hoy=new Set((day.segL||[]).map(x=>x.cid));return (contacts||[]).filter(c=>c.stage==="Seguimiento"&&stDias(c)>7&&!hoy.has(c.id)&&LS.get("olv:"+c.id)!==TODAY).sort((a,b)=>stDias(b)-stDias(a))}
+function olvLista(){const hoy=new Set((day.segL||[]).map(x=>x.cid));return (contacts||[]).filter(c=>c.stage==="Seguimiento"&&stDias(c)>7&&!stAtendido(c)&&!hoy.has(c.id)&&LS.get("olv:"+c.id)!==TODAY).sort((a,b)=>stDias(b)-stDias(a))}
 function olvStrip(){const el=$("#olvStrip");if(!el)return;const L=fbUser&&store.uid?olvLista():[];if(!L.length){el.hidden=true;return}
-  el.innerHTML=`<div class="lzgI">🔁</div><div class="lzgT"><b>${L.length===1?"1 prospecto espera":L.length+" prospectos esperan"} su seguimiento</b><span>Llevan más de 7 días sin avanzar. Escríbales hoy.</span>
+  el.innerHTML=`<div class="lzgI">🔁</div><div class="lzgT"><b>${L.length===1?"1 prospecto espera":L.length+" prospectos esperan"} su seguimiento</b><span>Más de 7 días sin avanzar y sin seguimiento. Escríbales hoy.</span>
    <div class="olvL">${L.slice(0,3).map(c=>{const w=waLink(c);return `<div class="olvR"><span class="olvN"><b>${esc(c.name)}</b><small>${stDias(c)} días en Seguimiento</small></span>${w?`<a class="olvW" href="${esc(w)}" target="_blank" rel="noopener" data-olv="${esc(c.id)}">💬</a>`:`<button type="button" class="olvW o" data-olvc="${esc(c.id)}">Ver</button>`}</div>`}).join("")}</div>
    ${L.length>3?`<div class="lzgB"><button type="button" class="ok" data-olvt>Ver los ${L.length} en mi CRM</button></div>`:""}</div>`;el.hidden=false;
   el.querySelectorAll("[data-olv]").forEach(a=>a.onclick=()=>{LS.set("olv:"+a.dataset.olv,TODAY);setTimeout(olvStrip,900)});
@@ -5447,7 +5447,9 @@ const ST_IC={"Nuevo":"🆕","Contactado":"💬","Presentación":"🎤","Seguimie
 function pipeOk(){return true}
 function stPct(c){return ST_PCT[(c&&c.stage)||"Nuevo"]??10}
 function stDias(c){const t=(c&&(c.stT||c.updated))||0;return t?Math.floor((Date.now()-t)/864e5):0}
-function stFrio(c){return ["Seguimiento","Por cerrar"].includes(c.stage)&&stDias(c)>7}
+// 8 nov: "atendido" = tiene próximo seguimiento agendado (hoy o después) o le dio seguimiento/nota en los últimos 7 días
+function stAtendido(c){if(!c)return false;if(c.next&&c.next>=TODAY)return true;if(c.ultSeg&&c.ultSeg>=addD(TODAY,-7))return true;const d7=Date.now()-7*864e5;return (c.seg||[]).some(x=>(+x.t||0)>d7)}
+function stFrio(c){return ["Seguimiento","Por cerrar"].includes(c.stage)&&stDias(c)>7&&!stAtendido(c)}
 async function stAvanza(c,s,por){if(!c||!c.id)return false;const cur=c.stage||"Nuevo";if(["Socio","Cliente","No interesado"].includes(cur))return false;
   if(FLOW.indexOf(s)<=FLOW.indexOf(cur))return false;c.stage=s;c.stT=Date.now();c.stAuto=por||"";c.updated=Date.now();
   try{await store.saveContact(Object.assign({},c));renderCRM()}catch(e){}return true}
@@ -5586,7 +5588,7 @@ function renderCRM(){pushResumen();try{olvStrip()}catch(e){}const q=$("#crmSearc
   if(!list.length){$("#contactList").innerHTML=crmV==="cer"&&!q?`<div class="empty"><h3>🏁 Aún no tiene cierres</h3><p class="small muted">Cuando un contacto pase a Cliente o Socio, aparece aquí. ¡Vamos por el primero!</p></div>`:`<p class="muted small">No hay contactos en esta vista.</p>`;return}
   const nCl=contacts.filter(c=>c.stage==="Cliente").length,nSo=contacts.filter(c=>c.stage==="Socio").length;
   const cerHead=crmV==="cer"&&!q?`<div style="background:linear-gradient(135deg,#065F46,#10B981);color:#fff;border-radius:16px;padding:14px 16px;margin-bottom:8px"><div style="font-size:12px;font-weight:800;letter-spacing:.12em;opacity:.85">MI MARCADOR</div><div style="font-size:22px;font-weight:800;margin-top:2px">✅ ${nCer} ${nCer===1?"cierre":"cierres"}</div><div class="small" style="opacity:.9">${nCl} ${nCl===1?"cliente":"clientes"} · ${nSo} ${nSo===1?"socio":"socios"}. Cuídelos: un cliente feliz le da referidos.</div></div>`:"";
-  const pipeSum=crmV==="cer"&&!q?"":pipeOk()?(()=>{const n=s=>contacts.filter(c=>c.stage===s).length,fr=contacts.filter(stFrio).length;return `<div class="stsum"><button type="button" data-sf="Por cerrar" style="background:#FFEDD5;color:#C2410C"><b>${n("Por cerrar")}</b>🔥 Por cerrar</button><button type="button" data-sf="Seguimiento" style="background:#FEF3C7;color:#B45309"><b>${n("Seguimiento")}</b>🔁 Seguimiento</button><button type="button" data-sf="Presentación" style="background:#E0F2FE;color:#0369A1"><b>${n("Presentación")}</b>🎤 Presentados</button></div>${fr?`<p class="small" style="margin:0 0 6px;color:#B45309;font-weight:700">⚠️ ${fr} ${fr===1?"prospecto lleva":"prospectos llevan"} más de 7 días sin avanzar</p>`:""}`})():"";
+  const pipeSum=crmV==="cer"&&!q?"":pipeOk()?(()=>{const n=s=>contacts.filter(c=>c.stage===s).length,fr=contacts.filter(stFrio).length;return `<div class="stsum"><button type="button" data-sf="Por cerrar" style="background:#FFEDD5;color:#C2410C"><b>${n("Por cerrar")}</b>🔥 Por cerrar</button><button type="button" data-sf="Seguimiento" style="background:#FEF3C7;color:#B45309"><b>${n("Seguimiento")}</b>🔁 Seguimiento</button><button type="button" data-sf="Presentación" style="background:#E0F2FE;color:#0369A1"><b>${n("Presentación")}</b>🎤 Presentados</button></div>${fr?`<p class="small" style="margin:0 0 6px;color:#B45309;font-weight:700">⚠️ ${fr} ${fr===1?"prospecto lleva":"prospectos llevan"} más de 7 días sin avanzar ni seguimiento</p>`:""}`})():"";
   const ordUI=pipeOk()?`<div class="crmord" role="group" aria-label="Ordenar contactos">${[["seg","📅 Seguimiento"],["rec","🆕 Recientes"],["pct","📈 Mayor %"]].map(([k,t])=>`<button type="button" data-ord="${k}" aria-pressed="${crmOrd===k}">${t}</button>`).join("")}</div>`:"";
   $("#contactList").innerHTML=cerHead+(crmV==="cer"&&!q?"":ordUI)+pipeSum+list.map(c=>{const cer=CERR.includes(c.stage),late=!cer&&c.next&&c.next<TODAY,today=!cer&&c.next===TODAY,op=openC===c.id;
     const k=c.stage==="Cliente"?FLOW.length:c.stage==="No interesado"?0:FLOW.indexOf(c.stage)+1,pc=STAGE_COL[c.stage]||"var(--brand)";
@@ -6979,7 +6981,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261108103754";var busy=false,pend=null;
+(function(){var V="20261108105032";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
