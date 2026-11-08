@@ -1776,13 +1776,16 @@ function segPaso(c){if(!c||["Socio","Cliente","No interesado"].includes(c.stage|
 const VIA_FORM="https://forms.gle/hZKTxUX7AMSgoyHR";let viaTx=null;
 function viaYa(){if(viaTx===null){viaTx=[];hgCargar().then(H=>{viaTx=Object.values((H&&H.tx)||{}).map(x=>x&&x.n).filter(Boolean);try{viaStrip()}catch(e){}});return true}
   const yo=miNombreFull()||miNombreCorto()||"";return !!yo&&viaTx.some(n=>sameN(n,yo))}
-function viaStrip(){const el=$("#viaStrip");if(!el)return;let no=!fbUser||!store.uid||!(regDoc&&regDoc.registro&&regDoc.registro.nombre)||!!(regDoc&&regDoc.viaj);
+function viaStrip(){const el=$("#viaStrip");if(!el)return;
+  // Edwin: los ADMIN siempre ven cada tarjeta nueva para revisarla (sus respuestas no se guardan; ✕ = solo por hoy)
+  const adm=!!isAdmin&&!!fbUser;let no=!fbUser||!store.uid||!(regDoc&&regDoc.registro&&regDoc.registro.nombre)||!!(regDoc&&regDoc.viaj);
   try{no=no||yoPrueba()||SOLO_ADMIN.includes(String(fbUser.email||"").toLowerCase())}catch(e){}
-  if(no||viaYa()){el.hidden=true;return}
+  if(!adm&&(no||viaYa())){el.hidden=true;return}
   el.innerHTML=`<div class="lzgI">✈️</div><div class="lzgT"><b>¿Ya viajó con inCruises?</b><span>Comparta sus fotos y su experiencia: puede salir en la historia del día de todo el equipo.</span>
    <div class="lzgB"><button type="button" class="vf" data-via="f">📝 Compartir mi viaje</button></div><div class="viaB"><button type="button" data-via="si">✅ Ya lo hice</button><button type="button" data-via="no">No me interesa</button></div></div>`;el.hidden=false;
   el.querySelectorAll("[data-via]").forEach(b=>b.onclick=()=>{const v=b.dataset.via;if(v==="f"){window.open(VIA_FORM,"_blank","noopener");setTimeout(()=>{try{toast("Cuando lo envíe, toque «✅ Ya lo hice»")}catch(e){}},800);return}viaResp(v)})}
-async function viaResp(r){const z={r,t:Date.now()};regDoc=Object.assign({},regDoc,{viaj:z});const el=$("#viaStrip");if(el)el.hidden=true;
+async function viaResp(r){const el=$("#viaStrip");if(isAdmin){if(el)el.hidden=true;toast("👀 Vista de admin: no se guarda (vuelve a salir mañana)");return}
+  const z={r,t:Date.now()};regDoc=Object.assign({},regDoc,{viaj:z});if(el)el.hidden=true;
   try{await store.db.doc("users/"+store.uid).set({viaj:z},{merge:true})}catch(e){}toast(r==="si"?"¡Gracias por compartir su viaje! ✈️":"Listo, no le volveremos a preguntar")}
 // 8 nov: "Prospectos olvidados" en Avisos de hoy: los que llevan más de 7 días en Seguimiento
 function olvLista(){const hoy=new Set((day.segL||[]).map(x=>x.cid));return (contacts||[]).filter(c=>c.stage==="Seguimiento"&&stDias(c)>7&&!stAtendido(c)&&!hoy.has(c.id)&&LS.get("olv:"+c.id)!==TODAY).sort((a,b)=>stDias(b)-stDias(a))}
@@ -6999,7 +7002,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261108123242";var busy=false,pend=null;
+(function(){var V="20261108125051";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

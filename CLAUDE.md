@@ -52,6 +52,8 @@ App web móvil (PWA) del equipo de Edwin García Go (Director Nacional, inCruise
 
 ## 4. Reglas del negocio (no romper)
 
+- **(8 nov, Edwin) Las cuentas ADMIN siempre ven cada tarjeta/aviso nuevo para revisarlo**, aunque no aplique a ellas (solo-admin, ya respondió, etc.). Sus respuestas en esas tarjetas no se guardan (solo se oculta por hoy). Hacerlo así en toda función nueva.
+
 - **Todos los mensajes a personas se escriben de "usted".**
 - **Nunca guardar correos ni teléfonos de socios en `team.json`.**
 - **Admins:** garciagoedwin@gmail.com, actionleadersoficial@gmail.com y edwing.go@gmail.com.
