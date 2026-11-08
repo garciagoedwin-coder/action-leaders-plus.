@@ -62,7 +62,7 @@ const D=JSON.parse(decodeURIComponent(location.hash.slice(1)||"%7B%7D"));const P
 if(D.sf)document.body.style.setProperty("--sf",D.sf);
 tema.textContent=D.tema||"MENTALIDAD";dd.textContent=D.dia||"MARTES";dn.textContent=D.n||"10";dm.textContent=D.mes||"NOVIEMBRE";
 const F=n=>"../../../media/fotos/"+n+".jpg";
-const h=P[0];host.innerHTML=`<div class="ring"><img src="${F(h.f)}"></div><div class="ht">PRESENTA</div><div class="hn">${h.n}</div><div class="hr">${h.r}</div>`;
+const h=P[0];host.innerHTML=`<div class="ring"><img src="${F(h.f)}"></div><div class="ht">⭐ INVITADO ESPECIAL</div><div class="hn">${h.n}</div><div class="hr">${h.r}</div>`;
 const R=P.slice(1);row.innerHTML=R.map(p=>`<div class="p"><div class="r2"><img src="${F(p.f)}"></div><b>${p.n}</b><span>${p.r}</span></div>`).join("");
 if(!R.length){host.style.top="900px"}
 </script></body></html>
