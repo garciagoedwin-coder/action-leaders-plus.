@@ -873,6 +873,8 @@ header.top #hello,header.top .pv{display:none!important}
 .hiH{font-family:var(--f-display);font-size:33px;line-height:1.05;letter-spacing:-.8px;margin:2px 0 8px}
 #hiNm{background:linear-gradient(90deg,var(--brand),#2AC1F1);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hiPills{display:flex;gap:8px;flex-wrap:wrap}
+#pillP .dot,#pillE .dot{box-shadow:none}.hiPills .hiPill{padding:6px 10px;gap:6px;font-size:12.5px}.hiPills{flex-wrap:nowrap!important;gap:6px!important}.hiPills .hiPill{white-space:nowrap}@media (max-width:400px){.hiPills{flex-wrap:wrap!important}}
+button.hiPill{font:inherit;font-size:13px;font-weight:700;cursor:pointer}.hiPill b{font-weight:800}
 .hiPill{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:13px;font-weight:700;color:var(--ink)}
 .hiPill .dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 0 3px var(--good-soft)}
 #streak.hiPill::before{content:"🔥"}
@@ -1377,7 +1379,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
     <section class="view" id="v-inicio">
       <div class="hiBox">
         <p class="eyebrow" id="todayLbl">Hoy</p><h1 class="hiH">Hola, <span id="hiNm">líder</span> 👋</h1><p class="hiSpar" hidden>¡Vamos, líder! 🛡️</p><h1 class="motto" hidden><span id="motto">Haz que suceda.</span></h1>
-        <div class="hiPills"><span class="hiPill" id="pillAh" hidden><i class="dot"></i>Ahorro al día</span><span class="hiPill" id="streak">Racha 0 días</span><span class="hiPill" id="pillRg" hidden></span></div>
+        <div class="hiPills"><span class="hiPill" id="pillAh" hidden><i class="dot"></i>Ahorro al día</span><span class="hiPill" id="streak" hidden>Racha 0 días</span><span class="hiPill" id="pillRg" hidden></span><button type="button" class="hiPill" id="pillP" hidden></button><button type="button" class="hiPill" id="pillE" hidden></button></div>
       </div>
       <div class="card" id="avisoCard" hidden></div>
       <div class="miwa" id="miWaCard" hidden></div>
@@ -1858,7 +1860,7 @@ function renderWeek(){const out=[];let streak=0;
     out.push(`<div><i class="${s>=1?"full":s>0?"part":""} ${i===0?"today":""}">${d.getDate()}</i>${DAYS[d.getDay()]}</div>`)}
   for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)streak++;else break}
   {let r=0;for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)r++;else break}const rr=$("#rutRacha");if(rr){rr.hidden=!r;rr.textContent="🔥 "+r+(r===1?" día":" días")}}
-  pushResumen();$("#week").innerHTML=out.join("");$("#streak").textContent="Racha "+streak+(streak===1?" día":" días")}
+  pushResumen();$("#week").innerHTML=out.join("");$("#streak").textContent="Racha "+streak+(streak===1?" día":" días");pillIdx()}
 
 
 // ---------- mapa de sueños (privado) ----------
@@ -2423,7 +2425,10 @@ function rkInicio(){const c=$("#rkCard");if(!c)return;try{
   $("#rkVer").onclick=()=>{eqTab="ranking";rankMetric=rkTab==="rac"?"rutina":"nuevos";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()};
   {const g=$("#rkGan");if(g)g.onclick=()=>{window._ganOpen=1;window._ganConf=1;renderGan();const gc=$("#ganCard");if(gc)gc.scrollIntoView({behavior:"smooth",block:"center"})}}
  }catch(e){c.hidden=true}}
-function pillsPinta(){try{const pr=$("#pillRg");if(pr){const i=rangoActualIdx(miRegistro(),miNombreFull());const n=i>=1&&RANGOS[i]?RANGOS[i].n:"";pr.hidden=!n;if(n)pr.textContent="⚡ "+(LC_RG_ABR[n]||n)}}catch(e){}
+// 8 nov (Edwin): las pastillas de Inicio muestran ⚡ Productividad personal (rutina de la semana, sin lecturas) y 👥 Índice de duplicación (el último que se calculó en Mi equipo, guardado en el teléfono). La racha y el rango ya salen más abajo.
+function pillIdx(){try{const p=$("#pillP");if(p&&store.uid){const c=constStats(),pos=ROUTINE.length*diasSem(),v=pos>0?Math.min(100,Math.round((+c.semPts||0)*100/pos)):0;p.hidden=false;p.innerHTML=`<i class="dot" style="background:${IDX_C(v)}"></i>Personal <b style="color:${IDX_C(v)}">${v}%</b>`;p.onclick=()=>avIr("rach")}
+  const e=$("#pillE"),o=store.uid&&LS.get("idxEqYo:"+store.uid);if(e){e.hidden=!(o&&o.n>0);if(o&&o.n>0){e.innerHTML=`<i class="dot" style="background:${IDX_C(o.v)}"></i>Equipo <b style="color:${IDX_C(o.v)}">${o.v}%</b>`;e.onclick=()=>{eqTab="mios";go("equipo")}}}}catch(x){}}
+function pillsPinta(){try{const pr=$("#pillRg");if(pr)pr.hidden=true}catch(e){}pillIdx();
   try{const h=$("#hello"),nm=$("#hiNm");if(h&&nm){const t=(h.textContent||"").replace(/^Hola,?\s*/,"").trim();nm.textContent=t||"líder"}}catch(e){}}
 (function(){try{const mn=$("#main"),hd=document.querySelector("header.top");if(!mn||!hd)return;let y0=0;
   mn.addEventListener("scroll",()=>{const y=mn.scrollTop;hd.classList.toggle("sc",y>6);if(y>y0+6&&y>90){hd.classList.add("hid");hd.style.marginTop=-hd.offsetHeight+"px"}else if(y<y0-4||y<40){hd.style.marginTop="";hd.classList.remove("hid")}y0=y},{passive:true});
@@ -3092,6 +3097,7 @@ function idxEq(L){L=L.filter(idxCuenta);return L.length?Math.round(L.reduce((t,x
 function idxDesc(uid,P){return P.filter(y=>{const r=y.registro||{};return y.uid!==uid&&((Array.isArray(r.linea)&&r.linea.includes(uid))||r.patrocinadorUid===uid)})}
 function idxCard(){const P=idxPool();if(!P.length)return"";if(!constL){if(!window._ldC){window._ldC=1;loadConst().then(()=>{try{renderEquipo()}catch(e){}})}return`<div class="card"><b>⚡ Índice de Duplicación</b><span class="small muted">Calculando…</span></div>`}
   const v=idxEq(P)||0,act=P.filter(x=>idxHoy(x.uid)).length,me=isAdmin?null:idxPers(store.uid),PA=P.filter(idxCuenta),PI=P.filter(x=>!idxActivo(x));
+  if(idxPer==="sem"){try{LS.set("idxEqYo:"+store.uid,{v,n:PA.length,t:Date.now()});pillIdx()}catch(x){}}
   return `<div class="card" style="gap:10px"><div class="row between" style="gap:8px;flex-wrap:wrap"><b style="font-size:17px">⚡ Índice de Duplicación</b><div class="seg" style="width:auto;margin:0"><button aria-selected="${idxPer==="sem"}" data-ip="sem">Semana</button><button aria-selected="${idxPer==="mes"}" data-ip="mes">Mes</button></div></div>
    <div class="row" style="gap:14px;align-items:center"><b class="num" style="font-size:54px;line-height:1;color:${IDX_C(v)}">${v}%</b><span class="small muted">Promedio de la rutina de ${isAdmin?"todo el equipo":"su equipo"} activo ${idxPer==="sem"?"esta semana":"este mes"}. Quien tiene ahorro pendiente cuenta siempre.</span></div>
    <div style="height:10px;border-radius:99px;background:var(--line);overflow:hidden"><i style="display:block;height:100%;width:${v}%;background:${IDX_C(v)}"></i></div>
@@ -7188,7 +7194,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261108182248";var busy=false,pend=null;
+(function(){var V="20261108211451";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
