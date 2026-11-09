@@ -62,7 +62,7 @@ async function fb(){if(db)return;const {initializeApp}=await import("https://www
 let PX=null;
 (async()=>{
 // 9 nov: link corto ?p=CODIGO&e=CLAVE → los datos están en la página pública del socio (perfiles/{p}.ev[e]); 1 lectura (la misma que ya se hacía para la foto)
-if(!E){const q=new URLSearchParams(location.search),p=q.get("p"),k=q.get("e");if(p&&k){try{await fb();const d=await fs.getDoc(fs.doc(db,"perfiles",p));if(d.exists()){PX=d.data()||{};const o=(PX.ev||{})[k];if(o&&typeof o==="object"){E=Object.assign({},o,{p})}}}catch(e){}}}
+if(!E){const q=new URLSearchParams(location.search),p=q.get("p"),k=q.get("e");if(p&&k){try{await fb();const d=await fs.getDoc(fs.doc(db,"perfiles",p));if(d.exists()){PX=d.data()||{};const o=(PX.ev||{})[k];if(o&&typeof o==="object"){E=Object.assign({},o,{p,a:(o.a||[]).map(x=>Array.isArray(x)?x:String(x).split("|"))})}}}catch(e){}}}
 if(!E||!E.e||!E.f){$("#app").innerHTML=`<div class="bad"><h2>Enlace incompleto</h2><p>Pídale de nuevo la invitación a la persona que se la envió.</p></div>`;return}
 const gran=E.tp==="gran",tipo=gran?"Gran evento de negocios":"Junta de negocios",[Y,M,D]=E.f.split("-").map(Number),fd=new Date(Y,M-1,D);
 const [hh,mm]=String(E.h||"00:00").split(":").map(Number),h12=(hh%12||12)+":"+String(mm).padStart(2,"0")+(hh<12?" a.m.":" p.m.");
