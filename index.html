@@ -1021,6 +1021,12 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .lzbL{display:flex;flex-direction:column;gap:8px}.lzbB{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;color:var(--ink);font:inherit}.lzbB>span:first-child{font-size:22px}.lzbB b{display:block;font-size:14px}.lzbB small{display:block;color:var(--muted);font-size:12px;line-height:1.3}.lzbB i{margin-left:auto;font-style:normal;color:var(--brand);font-size:20px}
 #lzgStrip{display:flex;gap:12px;align-items:flex-start;padding:14px 40px 14px 14px;border-radius:18px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:5px solid var(--brand);box-shadow:0 4px 14px rgba(20,33,61,.06)}#lzgStrip[hidden]{display:none}.lzgI{font-size:30px;line-height:1}.lzgT{flex:1;min-width:0}.lzgT b{display:block;font-size:15px}.lzgT span{display:block;font-size:13px;opacity:.85;margin-top:2px}.lzgB{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.lzgB button{flex:1;min-width:130px;border:0;border-radius:12px;padding:10px 8px;font:inherit;font-weight:700;font-size:13px;background:#25D366;color:#053b1d}.lzgB button.ok{background:var(--surface-2);color:var(--ink);border:1px solid var(--line)}.lzgB button.pr{background:linear-gradient(135deg,#B07D00,#F5B700);color:#2a1c00}
 #viaStrip{display:flex;gap:12px;align-items:flex-start;padding:14px 40px 14px 14px;border-radius:18px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:5px solid #2AC1F1;box-shadow:0 4px 14px rgba(20,33,61,.06)}#viaStrip[hidden]{display:none}
+#eqzStrip{display:flex;gap:12px;align-items:flex-start;padding:14px 40px 14px 14px;border-radius:18px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:5px solid #7C3AED;box-shadow:0 4px 14px rgba(20,33,61,.06)}#eqzStrip[hidden]{display:none}
+#eqzStrip .lzgB a{flex:1;min-width:130px;text-align:center;text-decoration:none;border-radius:12px;padding:10px 8px;font-weight:700;font-size:13px;background:#2D8CFF;color:#fff}
+.eqzR{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line)}.eqzR>div{flex:1;min-width:0}.eqzR b{display:block;font-size:14.5px}.eqzR small{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.eqzR a,.eqzR button{flex:none;text-decoration:none;border:0;border-radius:99px;padding:8px 14px;font:inherit;font-size:13px;font-weight:800;background:#2D8CFF;color:#fff;cursor:pointer}.eqzR button.gh{background:var(--surface);color:var(--ink);border:1px solid var(--line)}.eqzR .vivo{background:#DC2626}
+.eqzH{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--muted);margin:6px 0 0}
+.eqzDs{display:flex;gap:6px;flex-wrap:wrap}.eqzDs button{flex:1;min-width:44px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:9px 4px;font:inherit;font-weight:700;font-size:13px}.eqzDs button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
 #viaStrip .lzgB button.vf{background:var(--brand);color:var(--bg)}.viaB{display:flex;gap:8px;margin-top:8px}.viaB button{flex:1;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:12px;padding:9px 6px;font:inherit;font-size:13px;font-weight:700}.viaB button+button{color:var(--muted);font-weight:600}
 #olvStrip{display:flex;gap:12px;align-items:flex-start;padding:14px 40px 14px 14px;border-radius:18px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:5px solid #e8862a;box-shadow:0 4px 14px rgba(20,33,61,.06)}#olvStrip[hidden]{display:none}
 .olvL{display:flex;flex-direction:column;gap:6px;margin-top:10px}.olvR{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:7px 8px 7px 10px;background:var(--surface-2)}.olvN{flex:1;min-width:0}.olvN b{display:block;font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.olvN small{display:block;font-size:12px;color:var(--muted)}
@@ -1395,6 +1401,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
         <div class="avSl" data-k="urgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="urgS" id="urgStrip" hidden></div></div>
         <div class="avSl" data-k="lzgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="lzgS" id="lzgStrip" hidden></div></div>
         <div class="avSl" data-k="olvStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="olvS" id="olvStrip" hidden></div></div>
+        <div class="avSl" data-k="eqzStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div id="eqzStrip" hidden></div></div>
         <div class="avSl" data-k="viaStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="viaS" id="viaStrip" hidden></div></div>
         <div class="avSl" data-k="evHoy" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div id="evHoy" hidden></div></div>
       </div><div class="avDots" id="avDots"></div></div>
@@ -1473,6 +1480,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
       <div id="agMia" hidden style="display:flex;flex-direction:column;gap:12px"></div>
       <div id="agEquipo" style="display:flex;flex-direction:column;gap:12px">
       <div class="row between"><div><p class="eyebrow">Actividades del equipo</p><h1>Calendario</h1></div><button class="btn sm ghost" data-refresh="cal" type="button">↻ Actualizar</button><a class="btn gold sm" id="addEvent" href="https://docs.google.com/spreadsheets/d/1-0ct30l0fcn8rtzgfOcrkLTGmgRHOa2xEmm2X0izvG4/edit" target="_blank" rel="noopener" hidden>Editar en Google Sheets</a></div>
+      <div class="card" id="eqzCard" hidden style="gap:8px"></div>
       <div class="card" id="evAg" style="gap:8px"></div>
       <div class="card">
         <div class="cal-head"><button id="calPrev" aria-label="Mes anterior">‹</button><h2 id="calTitle">Mes</h2><button id="calNext" aria-label="Mes siguiente">›</button></div>
@@ -5129,17 +5137,75 @@ async function lzInvitados(ci){const o=lzDatos(ci);let file=null;lzFile(o).then(
 // Gran evento: solo Team Leader en adelante. Junta: cualquier socio activo (ahorro al día).
 // Visibilidad por fichas en ver[]: "all" (abierto), "u:UID" (esa persona), "d:UID" (línea descendente de UID).
 const evCol=()=>store.db.collection("agendaEv");
+// ---------- 📞 Reuniones de equipo de los líderes (9 nov) ----------
+// agendaEv tipo "equipo" (misma colección y reglas de las juntas): {cre, creN, tit, dias:[0-6], hora, zoom, extra:[{f,h}], skip:[f], act, fecha:"2099-12-31", ver:["d:cre","u:cre","adm", "u:"+líderes de arriba con rango MD+], lidU:[cre]}.
+// Solo crean rangos (Marketing Director+) y admins. Su línea la ve en Agenda y en Avisos de hoy el día de la reunión; los rangos de arriba la ven en "De líderes de mi equipo". Aviso al teléfono 30 min antes (enviar.mjs equipo).
+let EVQ=[];
+const EQZ_D=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"],EQZ_DL=["domingos","lunes","martes","miércoles","jueves","viernes","sábados"];
+function eqzPuede(){if(isAdmin)return true;try{return miRangoIdx()>=2}catch(e){return false}}
+function eqzMia(){return (EVQ||[]).find(e=>e.cre===store.uid)||null}
+function eqzArriba(){const r=miRegistro()||{},L=(Array.isArray(r.linea)?r.linea:[]).slice();if(r.patrocinadorUid)L.push(r.patrocinadorUid);return L}
+function eqzOcur(e){const R=[];for(let i=-1;i<15;i++){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i),k=dkey(d),hs=[];
+    if((e.dias||[]).includes(d.getDay())&&!(e.skip||[]).includes(k)&&e.hora)hs.push(e.hora);(e.extra||[]).forEach(x=>{if(x&&x.f===k&&x.h)hs.push(x.h)});
+    [...new Set(hs)].forEach(h=>R.push({f:k,h,t:citaIni({fecha:k,hora:h}).getTime()}))}return R.sort((a,b)=>a.t-b.t)}
+function eqzProx(e){if(!e||e.act===false)return null;const n=Date.now();return eqzOcur(e).find(x=>x.t+90*6e4>n)||null}
+function eqzVivo(x){const n=Date.now();return !!x&&n>=x.t-15*6e4&&n<=x.t+90*6e4}
+function eqzCuando(x){if(!x)return "Sin fecha próxima";return (x.f===TODAY?"Hoy":x.f===addD(TODAY,1)?"Mañana":niceDate(x.f))+" · "+h12(x.h)}
+function eqzDias(e){const D=(e.dias||[]).slice().sort((a,b)=>((a+6)%7)-((b+6)%7));return D.length?D.map(d=>EQZ_DL[d]).join(", ").replace(/, ([^,]*)$/," y $1"):"Sin día fijo"}
+function eqzFila(e,yo){const x=eqzProx(e),v=eqzVivo(x),z=safeUrl(e.zoom||"");
+  return `<div class="eqzR"><div><b>${esc(e.tit||"Reunión de equipo")}</b><small>${yo?"Usted":"📞 "+esc(nv(e.creN||""))} · ${esc(eqzDias(e))} · ${esc(h12(e.hora||"20:00"))}</small><small>${e.act===false?"⏸ En pausa":(v?"🔴 En vivo ahora":"Próxima: "+esc(eqzCuando(x)))}</small></div>${yo?`<button type="button" class="gh" data-eqze>✏️ Editar</button>`:z&&e.act!==false?`<a href="${esc(z)}" target="_blank" rel="noopener" class="${v?"vivo":""}">${v?"Entrar":"Zoom"}</a>`:""}</div>`}
+function eqzPinta(){const el=$("#eqzCard");if(!el)return;if(!fbUser||!store.uid){el.hidden=true;return}
+  const M=eqzMia(),up=eqzArriba(),Lm=(EVQ||[]).filter(e=>e.cre!==store.uid&&up.includes(e.cre)&&e.act!==false),Eq=(EVQ||[]).filter(e=>e.cre!==store.uid&&!up.includes(e.cre));
+  if(!eqzPuede()&&!Lm.length){el.hidden=true;return}
+  el.innerHTML=`<h3 style="margin:0">📞 Reuniones de equipo</h3>${eqzPuede()?(M?eqzFila(M,1):`<button type="button" class="btn" data-eqze style="width:100%">➕ Crear la reunión semanal de mi equipo</button><p class="small muted" style="margin:0">Su Zoom fijo con su gente: elige los días y la hora una vez y se repite cada semana. Su equipo lo ve en la app y recibe un aviso 30 min antes.</p>`):""}
+   ${Lm.length?`<p class="eqzH">DE MIS LÍDERES</p>${Lm.map(e=>eqzFila(e)).join("")}`:""}${Eq.length?`<p class="eqzH">👀 DE LÍDERES DE MI EQUIPO</p>${Eq.map(e=>eqzFila(e)).join("")}`:""}`;
+  el.hidden=false;el.querySelectorAll("[data-eqze]").forEach(b=>b.onclick=eqzAbrir);try{eqzStrip()}catch(e){}}
+function eqzStrip(){const el=$("#eqzStrip");if(!el)return;if(!fbUser||!store.uid){el.hidden=true;return}
+  const up=eqzArriba(),H=(EVQ||[]).filter(e=>(up.includes(e.cre)||e.cre===store.uid)&&e.act!==false).map(e=>({e,x:eqzProx(e)})).filter(o=>o.x&&o.x.f===TODAY).sort((a,b)=>a.x.t-b.x.t);
+  if(!H.length){el.hidden=true;return}const {e,x}=H[0],v=eqzVivo(x),yo=e.cre===store.uid,z=safeUrl(e.zoom||"");
+  el.innerHTML=`<div class="lzgI">📞</div><div class="lzgT"><b>${v?"🔴 En vivo · ":"Hoy "+esc(h12(x.h))+" · "}${esc(e.tit||"Reunión de equipo")}</b><span>${yo?"Su reunión semanal con su equipo. Ya les llega el aviso 30 min antes.":"Su líder "+esc(nv(e.creN||"").split(" ")[0])+" tiene Zoom programado con el equipo. ¡Conéctese!"}</span>${z?`<div class="lzgB"><a href="${esc(z)}" target="_blank" rel="noopener">🎥 ${v?"Entrar ahora":"Entrar al Zoom"}</a></div>`:""}</div>`;el.hidden=false}
+function eqzAbrir(){if(!eqzPuede()){toast("Solo los rangos pueden crear la reunión de equipo");return}
+  const M=eqzMia(),yo=miRegistro().nombre||miNombreCorto()||"";let D=M?(M.dias||[]).slice():[],X=M?(M.extra||[]).filter(x=>x.f>=TODAY):[],K=M?(M.skip||[]).filter(f=>f>=TODAY):[];
+  const pinta=()=>{const ds=$("#eqzDs");if(ds)ds.querySelectorAll("[data-d]").forEach(b=>b.setAttribute("aria-pressed",D.includes(+b.dataset.d)));
+    const xl=$("#eqzXl");if(xl)xl.innerHTML=X.map((x,i)=>`<span class="chip c-brand">➕ ${esc(niceDate(x.f))} ${esc(h12(x.h))} <button type="button" data-xr="${i}" style="border:0;background:none;color:inherit;font-weight:800;cursor:pointer">✕</button></span>`).join("")+K.map((f,i)=>`<span class="chip c-warn">✖ ${esc(niceDate(f))} sin reunión <button type="button" data-kr="${i}" style="border:0;background:none;color:inherit;font-weight:800;cursor:pointer">↩️</button></span>`).join("")};
+  const pr=M?eqzProx(Object.assign({},M,{skip:K,extra:X})):null;
+  openSheet(`<h2>📞 Reunión de mi equipo</h2><p class="small muted" style="margin:0">Se repite cada semana. Toda su línea la ve en la app y recibe un aviso 30 min antes. Los rangos de arriba también la ven.</p>
+   <div class="field"><label for="eqzT">Nombre</label><input class="inp" id="eqzT" maxlength="60" value="${esc(M?M.tit:"Llamada del equipo de "+(yo.split(" ")[0]||""))}"></div>
+   <div class="field"><label>Días de cada semana</label><div class="eqzDs" id="eqzDs">${[1,2,3,4,5,6,0].map(d=>`<button type="button" data-d="${d}" aria-pressed="false">${EQZ_D[d]}</button>`).join("")}</div></div>
+   <div class="grid2"><div class="field"><label for="eqzH">Hora (Honduras)</label><input class="inp" type="time" id="eqzH" value="${esc(M?M.hora:"20:00")}"></div><div class="field"><label for="eqzZ">Link de Zoom</label><input class="inp" id="eqzZ" value="${esc(M?M.zoom:(profile.zoom||""))}" placeholder="https://zoom.us/j/..."></div></div>
+   ${M?`<div class="card" style="gap:8px"><b class="small">Cambios de una semana</b><div id="eqzXl" class="row wrap" style="gap:6px"></div>
+     <div class="grid2"><input class="inp" type="date" id="eqzXf" min="${TODAY}"><input class="inp" type="time" id="eqzXh" value="${esc(M.hora||"20:00")}"></div>
+     <button type="button" class="btn ghost" id="eqzXa" style="width:100%">➕ Agregar otro día</button>
+     ${pr?`<button type="button" class="btn ghost" id="eqzK" style="width:100%">✖ No hay reunión el ${esc(eqzCuando(pr))}</button>`:""}</div>`:""}
+   <button class="btn" id="eqzOk" style="width:100%">${M?"Guardar cambios":"Crear mi reunión"}</button>
+   ${M?`<button class="btn ghost" id="eqzP" style="width:100%">${M.act===false?"▶️ Volver a activar":"⏸ Pausar mi reunión"}</button><button class="btn ghost" id="eqzDel" style="width:100%;color:var(--bad)">🗑️ Eliminar</button>`:""}
+   <button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
+    pinta();$("#eqzDs").onclick=e=>{const b=e.target.closest("[data-d]");if(!b)return;const d=+b.dataset.d;D=D.includes(d)?D.filter(x=>x!==d):D.concat([d]);pinta()};
+    const xl=$("#eqzXl");if(xl)xl.onclick=e=>{const a=e.target.closest("[data-xr]"),k=e.target.closest("[data-kr]");if(a)X.splice(+a.dataset.xr,1);if(k)K.splice(+k.dataset.kr,1);pinta()};
+    const xa=$("#eqzXa");if(xa)xa.onclick=()=>{const f=$("#eqzXf").value,h=$("#eqzXh").value;if(!f||!h){toast("Elija la fecha y la hora");return}if(f<TODAY){toast("Elija una fecha futura");return}X.push({f,h});$("#eqzXf").value="";pinta()};
+    const kb=$("#eqzK");if(kb)kb.onclick=()=>{if(pr&&!K.includes(pr.f)){K.push(pr.f);kb.disabled=true;kb.textContent="✖ Marcada sin reunión (guarde los cambios)"}pinta()};
+    const guardar=async(extra)=>{const tit=$("#eqzT").value.trim().slice(0,60)||"Reunión de equipo",h=$("#eqzH").value,z=safeUrl($("#eqzZ").value.trim())||"";
+      if(!D.length&&!X.length){toast("Elija al menos un día");return false}if(!h){toast("Elija la hora");return false}if(!z){toast("Pegue el link de Zoom");return false}
+      const up=miLinea().filter(x=>{try{return rangoActualIdx({},x.n)>=2}catch(e){return false}}).map(x=>"u:"+x.uid);
+      const d=Object.assign({tipo:"equipo",cre:store.uid,creN:yo,tit,dias:D.slice().sort(),hora:h,zoom:z,extra:X.slice(0,10),skip:K.slice(0,20),act:M?M.act!==false:true,fecha:"2099-12-31",ver:[...new Set(["d:"+store.uid,"u:"+store.uid,"adm",...up])].slice(0,40),lidU:[store.uid],t:Date.now()},extra||{});
+      try{if(M)await store.db.doc("agendaEv/"+M.id).set(d,{merge:true});else{const r=await evCol().add(d);d.id=r.id}
+        if(z&&!profile.zoom){profile.zoom=z;store.set("perfil",profile)}
+        const i=EVQ.findIndex(e=>e.cre===store.uid);const nd=Object.assign({},M||{},d,{id:M?M.id:d.id});if(i>=0)EVQ[i]=nd;else EVQ.push(nd);return true}catch(x){toast("No se pudo guardar. Revise su conexión.");return false}};
+    $("#eqzOk").onclick=async()=>{const b=$("#eqzOk");b.disabled=true;if(await guardar()){closeSheet();eqzPinta();toast(M?"✅ Reunión actualizada":"✅ ¡Listo! Su equipo ya ve su reunión")}else b.disabled=false};
+    const p=$("#eqzP");if(p)p.onclick=async()=>{if(await guardar({act:M.act===false})){closeSheet();eqzPinta();toast(M.act===false?"▶️ Reunión activa":"⏸ Reunión en pausa")}};
+    const del=$("#eqzDel");if(del)del.onclick=async()=>{if(!confirmar2(del))return;try{await store.db.doc("agendaEv/"+M.id).delete();EVQ=EVQ.filter(e=>e.id!==M.id);closeSheet();eqzPinta();toast("🗑️ Reunión eliminada")}catch(x){toast("No se pudo eliminar")}}})}
+
 let EVA=null,EVAt=0,evaFont=null;
 function evaFonts(){if(!evaFont){evaFont=Promise.all([["ALO","media/fonts/Outfit-Bold.ttf"],["ALOR","media/fonts/Outfit-Regular.ttf"],["ALBG","media/fonts/BricolageGrotesque-Bold.ttf"]].map(([n,u])=>{try{const f=new FontFace(n,"url("+u+")");return f.load().then(x=>document.fonts.add(x)).catch(()=>{})}catch(e){return null}}))}return evaFont}
 function evaFichas(){const r=miRegistro()||{},L=(Array.isArray(r.linea)?r.linea:[]).slice();if(r.patrocinadorUid&&!L.includes(r.patrocinadorUid))L.push(r.patrocinadorUid);return ["all","u:"+store.uid].concat(L.filter(Boolean).map(u=>"d:"+u)).concat(isAdmin?["adm"]:[]).slice(0,30)}
 let evaUn=null,evaFirst=true;
-function evaListen(){if(evaUn||!store.db||!store.uid)return;try{evaUn=evCol().where("ver",evaFichas(),"array-contains-any").onSnapshot(q=>{EVAt=Date.now();const A=q.docs.map(d=>Object.assign({id:d.id},d.data())).filter(e=>e.fecha>=dkey(new Date(Date.now()-864e5)));EVA=A.filter(e=>!e.cancel);
+function evaListen(){if(evaUn||!store.db||!store.uid)return;try{evaUn=evCol().where("ver",evaFichas(),"array-contains-any").onSnapshot(q=>{EVAt=Date.now();const A0=q.docs.map(d=>Object.assign({id:d.id},d.data())),A=A0.filter(e=>e.tipo!=="equipo"&&e.fecha>=dkey(new Date(Date.now()-864e5)));EVQ=A0.filter(e=>e.tipo==="equipo");EVA=A.filter(e=>!e.cancel);
   A.filter(e=>e.cancel&&e.cre!==store.uid&&((e.lidU||[]).includes(store.uid)||(LS.get("evInv:"+e.id)||[]).length)&&l3Nuevo("evc"+e.id,e.cancel.t||0)).forEach(e=>{if(!evaFirst||e.fecha>=TODAY)avisoTop("✖ "+String(e.cancel.por||e.creN||"").split(" ")[0]+" canceló "+(e.tipo==="gran"?"el Gran evento":"la Junta")+(e.ciudad?" de "+e.ciudad:""),"Motivo: "+(e.cancel.mot||"—")+((LS.get("evInv:"+e.id)||[]).length?" · Avise a sus invitados":""),()=>go("agenda"))});
   const P=EVA.filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid);
   if(!evaFirst)P.filter(e=>l3Nuevo("ev"+e.id,e.t||0)).forEach(e=>avisoTop((e.tipo==="gran"?"🎤 ":"🤝 ")+(e.creN||"").split(" ")[0]+" le incluyó en "+(e.tipo==="gran"?"un Gran evento":"una Junta"),(e.ciudad||"En línea")+" · "+evaCuando(e),avisosVer));else P.forEach(e=>l3Nuevo("ev"+e.id,e.t||0));
   evaFirst=false;renderEvA();bellPinta()},()=>{})}catch(e){evaUn=null}}
 async function loadEvA(force){if(!store.db||!store.uid)return;if(force&&EVC)evcCargar(true);evaListen();if(evaUn&&EVA){renderEvA();return}if(!force&&EVA&&Date.now()-EVAt<6e5){renderEvA();return}
-  try{const q=await evCol().where("ver",evaFichas(),"array-contains-any").get();EVAt=Date.now();EVA=q.docs.map(d=>Object.assign({id:d.id},d.data())).filter(e=>e.fecha>=dkey(new Date(Date.now()-864e5))&&!e.cancel)}catch(e){EVA=EVA||[]}
+  try{const q=await evCol().where("ver",evaFichas(),"array-contains-any").get();EVAt=Date.now();const A0=q.docs.map(d=>Object.assign({id:d.id},d.data()));EVQ=A0.filter(e=>e.tipo==="equipo");EVA=A0.filter(e=>e.tipo!=="equipo"&&e.fecha>=dkey(new Date(Date.now()-864e5))&&!e.cancel)}catch(e){EVA=EVA||[]}
   renderEvA()}
 const EVA_TIPO={gran:"🎤 Gran evento de negocios",junta:"🤝 Junta de negocios"};
 function evaPuedeGran(){if(isAdmin)return true;try{return miRangoIdx()>=1}catch(e){return false}}
@@ -5167,7 +5233,7 @@ async function evcSet(id,v){try{await store.db.doc("team/evCancel").set({c:{[id]
 function evxPinta(){const box=$("#evAg");if(!box)return;const X=Object.values(EVXm).filter(e=>e.fecha>=addD(TODAY,-1));if(!X.length)return;
   box.insertAdjacentHTML("beforeend",`<div class="evX"><div class="small muted" style="font-weight:800;margin:10px 0 6px">🚫 Canceladas por un administrador</div>${X.map(e=>`<div class="evXr"><div><b>${e.tipo==="gran"?"🎤 Gran evento":"🤝 Junta"}${e.ciudad?" · "+esc(e.ciudad):""} · ${esc(niceDate(e.fecha))}</b><small>Cancelada por ${esc(String(e._evc.por||"admin").split(" ").slice(0,2).join(" "))} (admin)${e._evc.t?" · "+esc(new Date(e._evc.t).toLocaleString("es",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})):""}${e._evc.mot?" · "+esc(e._evc.mot):""}</small></div>${isAdmin?`<button type="button" class="btn sm ghost" data-evre="${esc(e.id)}">↩️ Activar</button>`:""}</div>`).join("")}</div>`);
   box.querySelectorAll("[data-evre]").forEach(b=>b.onclick=()=>{if(!confirmar2(b))return;evcSet(b.dataset.evre,null).then(ok=>{if(ok)toast("↩️ Volvió a la agenda")})})}
-function renderEvA(){if(EVC===null&&store.db&&store.uid){EVC={};evcCargar(true).then(()=>{evcAplicar();renderEvA0();evxPinta()})}else evcAplicar();renderEvA0();evxPinta()}
+function renderEvA(){try{eqzPinta()}catch(x){}if(EVC===null&&store.db&&store.uid){EVC={};evcCargar(true).then(()=>{evcAplicar();renderEvA0();evxPinta()})}else evcAplicar();renderEvA0();evxPinta()}
 function renderEvA0(){setTimeout(()=>{try{rsvpRevisar()}catch(e){}},2000);try{evaHoyStrip(EVA)}catch(e){}try{renderRecCard()}catch(e){}const L=(EVA||[]).slice().sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora));
   const box=$("#evAg");if(box){const L2=L.filter(e=>!evaFin(e)).concat(L.filter(e=>evaFin(e))),all=!!LS.get("evaAll"),V=all?L2:L2.slice(0,3),nH=L.filter(e=>e.fecha===TODAY&&!evaFin(e)).length,nG=L.filter(e=>e.tipo==="gran").length,nJ=L.length-nG;
     box.innerHTML=`<div class="row between" style="gap:8px"><div><b style="font-size:17px">🎤 Eventos y juntas</b>${L.length?"":`<div class="small muted">Planee una junta o un evento con su flyer</div>`}</div><button class="btn sm gold" id="evaNew" style="flex:none">➕ Crear</button></div>
@@ -6767,7 +6833,7 @@ async function irFlyer(w){const g=!w,W=1080,H=1350,c=document.createElement("can
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],g?"graduado-inicio-rapido.jpg":"inicio-rapido-semana-"+w.n+".jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
-let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
+let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{eqzStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
   const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
   if(m==="actual"&&!st.ini){const no=LS.get("irNo:"+store.uid);if(no&&Date.now()<no){el.hidden=true;return}
     el.hidden=false;el.className="irMini";el.innerHTML=`<span class="ic">🚀</span><span class="tx"><b>Plan de Inicio Rápido</b> · Aprenda a duplicar en 30 días</span><button type="button" class="go" id="irEmp">Empezar ›</button><button type="button" class="x" id="irNo" aria-label="Quitar">✕</button>`;
@@ -7212,7 +7278,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261109153029";var busy=false,pend=null;
+(function(){var V="20261109163551";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

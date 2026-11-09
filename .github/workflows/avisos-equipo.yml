@@ -1,0 +1,25 @@
+name: Avisos de reuniones de equipo de los líderes
+# Cada 15 min: si un líder tiene reunión de equipo (agendaEv tipo "equipo") en ~30 min, avisa a toda su línea. Logs: solo conteos.
+on:
+  schedule:
+    - cron: "4,19,34,49 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry: { description: "1 = prueba", default: "1" }
+concurrency: avisos-equipo
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install --no-audit --no-fund
+        working-directory: tools/push
+      - name: Enviar
+        working-directory: tools/push
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+          DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry == '1' && '1' || '' }}
+        run: node enviar.mjs equipo

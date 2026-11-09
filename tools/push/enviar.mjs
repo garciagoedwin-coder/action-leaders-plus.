@@ -227,12 +227,30 @@ async function leerAhorro(db) {
   return JSON.parse(Buffer.concat([dc.update(raw.subarray(12, raw.length - 16)), dc.final()]).toString("utf8")).rows || [];
 }
 
+// ---------- reuniones de equipo de los líderes (9 nov) ----------
+// agendaEv tipo "equipo": {cre, creN, tit, dias:[0-6], hora, zoom, extra:[{f,h}], skip:[f], act}. Aviso 30 min antes a toda la línea del líder (registro.linea).
+export function eqzPendientes(Q, ms = Date.now()) {
+  const hn = new Date(ms - 6 * 3600e3), hoy = hn.toISOString().slice(0, 10), ahora = hn.getUTCHours() * 60 + hn.getUTCMinutes(), wd = hn.getUTCDay(), R = [];
+  for (const e of Q || []) {
+    if (e.act === false || e.cancel) continue;
+    const V = [];
+    if ((e.dias || []).includes(wd) && !(e.skip || []).includes(hoy) && /^\d\d:\d\d$/.test(e.hora || "")) V.push(e.hora);
+    for (const x of e.extra || []) if (x && x.f === hoy && /^\d\d:\d\d$/.test(x.h || "")) V.push(x.h);
+    for (const h of [...new Set(V)]) { const falta = +h.slice(0, 2) * 60 + +h.slice(3) - ahora; if (falta >= 5 && falta <= 40) R.push({ ...e, hora: h, falta, key: e.id + "|" + hoy + "|" + h }); }
+  }
+  return R;
+}
+export function msgEqz(e) {
+  const n = String(e.creN || "su líder").split(" ")[0], mi = Math.max(5, Math.round((e.falta || 30) / 5) * 5);
+  return { title: `📞 En ${mi} min: reunión de equipo con ${n}`, body: `${e.tit || "Reunión de equipo"} · ${h12(e.hora)} hora de Honduras. Toque para ver el Zoom.` };
+}
+
 // 6 nov: a dónde lleva cada aviso al tocarlo (campanita y notificación del teléfono)
 export function avDestino(modo, m) {
   const t = (m && m.title) || "";
   if (/^(racha|racha2|fin|manana)$/.test(modo)) return "rut";
   if (/^inc/.test(modo)) return "inc";
-  if (modo === "agenda") return "agenda";
+  if (modo === "agenda" || modo === "equipo") return "agenda";
   if (modo === "act") return /Sistema de liderazgo|Felicidades/i.test(t) ? "lz" : "snv";
   if (modo === "sol") return /pide un cambio/i.test(t) ? "sol" : "dt";
   if (/^inact/.test(modo)) return /ahorros? pendientes?/i.test(t) ? "ahp" : "urg";
@@ -251,7 +269,7 @@ async function main() {
   const db = getFirestore(), fcm = getMessaging();
   const salida = []; // [uid, tk, {title, body}]
   const hist = {}; // uid → historial actual (h) para guardar los últimos 15 avisos
-  let vista = modo === "act" ? "equipo" : modo === "agenda" ? "agenda" : "inicio";
+  let vista = modo === "act" ? "equipo" : modo === "agenda" || modo === "equipo" ? "agenda" : "inicio";
 
   if (modo === "racha" || modo === "racha2" || modo === "fin" || modo === "manana") {
     const hoy = hoyHN(), ayer = ayerHN();
@@ -299,6 +317,20 @@ async function main() {
     P.forEach(p => hist[p.uid] = p.h || []);
     for (const e of nuevos) { const m = msgAgenda(e); for (const p of P) { if (e.k === "lid" && !p.sis) continue; salida.push([p.uid, p.tk, m]); } console.log("Aviso:", e.titulo, e.hora); }
     if (!DRY) await metaRef.set({ sent: [...ya, ...nuevos.map(e => e.id)].slice(-80), t: Date.now() });
+  } else if (modo === "equipo") {
+    const Q = (await db.collection("agendaEv").where("tipo", "==", "equipo").get()).docs.map(d => ({ id: d.id, ...d.data() }));
+    const E = eqzPendientes(Q);
+    if (!E.length) { console.log("Sin reuniones de equipo próximas (" + Q.length + " programadas)."); return; }
+    const metaRef = db.doc("push_meta/equipo"), meta = (await metaRef.get()).data() || {}, ya = new Set(meta.sent || []);
+    const nuevos = E.filter(e => !ya.has(e.key));
+    if (!nuevos.length) { console.log("Ya se avisó."); return; }
+    for (const e of nuevos) {
+      const U = (await db.collection("users").where("registro.linea", "array-contains", e.cre).get()).docs.map(d => d.id).filter(u => u !== e.cre);
+      let n = 0;
+      for (const u of U) { const d = await db.doc("push/" + u).get(); const x = d.exists ? d.data() : {}; hist[u] = x.h || []; if (x.tk && (x.pr || {}).agenda !== false) { salida.push([u, x.tk, msgEqz(e)]); n++; } }
+      console.log("Reunión de equipo:", U.length, "en la línea,", n, "con avisos");
+    }
+    if (!DRY) await metaRef.set({ sent: [...ya, ...nuevos.map(e => e.key)].slice(-200), t: Date.now() });
   } else if (modo === "act") {
     const leer = f => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return {}; } };
     const VJ = leer(viejoP), NJ = leer(nuevoP);
