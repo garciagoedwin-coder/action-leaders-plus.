@@ -5208,7 +5208,8 @@ async function loadEvA(force){if(!store.db||!store.uid)return;if(force&&EVC)evcC
   try{const q=await evCol().where("ver",evaFichas(),"array-contains-any").get();EVAt=Date.now();const A0=q.docs.map(d=>Object.assign({id:d.id},d.data()));EVQ=A0.filter(e=>e.tipo==="equipo");EVA=A0.filter(e=>e.tipo!=="equipo"&&e.fecha>=dkey(new Date(Date.now()-864e5))&&!e.cancel)}catch(e){EVA=EVA||[]}
   renderEvA()}
 const EVA_TIPO={gran:"🎤 Gran evento de negocios",junta:"🤝 Junta de negocios"};
-function evaPuedeGran(){if(isAdmin)return true;try{return miRangoIdx()>=1}catch(e){return false}}
+// 9 nov (Edwin): Líder Espartano (500+ pts en el Sistema de liderazgo) cuenta como Team Leader para crear Gran evento
+function evaPuedeGran(){if(isAdmin)return true;try{if(miRangoIdx()>=1)return true;const l=lzMiL(),e=(calCfg()||{}).esp||500;return !!l&&((+l.ptsBase||0)>=e||(+l.volumen||0)>=e)}catch(e){return false}}
 function evaCuando(e){return citaCuando({fecha:e.fecha,hora:e.hora})}
 function evaMio(e){return e.cre===store.uid||(e.lidU||[]).includes(store.uid)}
 // Fila de la tarjeta Eventos y juntas: color por tipo (dorado = Gran evento, celeste = Junta), bloque de fecha y etiquetas
@@ -5447,8 +5448,8 @@ async function abrirCrearEva(){if(!store.db||!(regDoc&&regDoc.registro)){toast("
   const man=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+3));
   const max=()=>tipo==="gran"?nE+4:3,lab=i=>tipo==="gran"?(i<nE?"Invitado especial":"Acompañante"):"Anfitrión";
   openSheet(`<h2>➕ Crear evento o junta</h2><span data-nofocus hidden></span>
-   <div class="seg" id="evT"><button type="button" aria-selected="true" data-v="junta">🤝 Junta de negocios</button><button type="button" aria-selected="false" data-v="gran" ${G?"":"disabled title='Desde Team Leader'"}>🎤 Gran evento</button></div>
-   ${G?"":`<p class="small muted" style="margin:0">El Gran evento de negocios se habilita desde el rango Team Leader.</p>`}
+   <div class="seg" id="evT"><button type="button" aria-selected="true" data-v="junta">🤝 Junta de negocios</button><button type="button" aria-selected="false" data-v="gran" ${G?"":"disabled title='Desde Team Leader o Líder Espartano'"}>🎤 Gran evento</button></div>
+   ${G?"":`<p class="small muted" style="margin:0">El Gran evento de negocios se habilita desde el rango Team Leader o como Líder Espartano (500 pts).</p>`}
    <div class="seg" id="evM"><button type="button" aria-selected="true" data-v="presencial">📍 Presencial</button><button type="button" aria-selected="false" data-v="virtual">💻 Virtual</button></div>
    <div class="field"><label for="evC">Ciudad</label><input class="inp" id="evC" maxlength="30" placeholder="Ej.: San Pedro Sula"></div>
    <div id="evPres"><div class="grid2"><div class="field"><label for="evL">Lugar</label><input class="inp" id="evL" maxlength="40" placeholder="Ej.: Hotel Copantl"></div><div class="field"><label for="evLs">Detalle</label><input class="inp" id="evLs" maxlength="30" placeholder="Ej.: Salón Ejecutivo"></div></div>
@@ -7278,7 +7279,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261109163551";var busy=false,pend=null;
+(function(){var V="20261109164604";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
