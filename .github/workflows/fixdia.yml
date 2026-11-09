@@ -4,6 +4,7 @@ on:
     inputs:
       fecha: { description: "AAAA-MM-DD", required: true }
       dry: { description: "1 = solo revisar", default: "1" }
+      pres: { description: "1 = anotar también una presentación", default: "0" }
 jobs:
   fix:
     runs-on: ubuntu-latest
@@ -16,3 +17,4 @@ jobs:
           FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
           FECHA: ${{ inputs.fecha }}
           DRY: ${{ inputs.dry }}
+          PRES: ${{ inputs.pres }}
