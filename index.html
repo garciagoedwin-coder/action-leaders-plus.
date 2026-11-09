@@ -5274,12 +5274,12 @@ ${mio?`<button class="btn ghost" id="evaEdL" style="width:100%">✏️ Cambiar $
     evaFile(o).then(f=>{file=f;const im=$("#evaImg"),w=$("#evaW");if(im){im.src=URL.createObjectURL(f);if(w)w.remove()}}).catch(()=>toast("No se pudo crear el flyer"));
     $("#evaInvB").onclick=()=>{closeSheet();setTimeout(()=>evaInvitar(e),250)};$("#evaRsvp").onclick=()=>{closeSheet();setTimeout(()=>rsvpVer(e),250)};rsvpCuenta(e).then(n=>{const x=$("#evaRsvpN");if(x&&n!=null)x.textContent="· "+n;rsvpInline(e)}).catch(()=>{});
     if(mio&&!e.vL)rsvpFixVL(e);{const el=$("#evaEdL");if(el)el.onclick=()=>{closeSheet();setTimeout(()=>evaEditLid(e),250)}}const ev=$("#evaVis");if(ev)ev.onclick=()=>{if(!confirmar2(ev))return;evaVisCambiar(e)};const er=$("#evaRec");if(er)er.onclick=()=>{closeSheet();setTimeout(()=>recLista(recEva(e)),250)};
-    $("#evaTx").onclick=async()=>{let lk="";try{if(await rsvpPrep()){lk=rsvpLink(e);LS.set("rsvpI:"+e.id,1);if(!LS.get("rsvpSeen:"+e.id))LS.set("rsvpSeen:"+e.id,[])}}catch(x){}try{await navigator.clipboard.writeText(evaScript(e,"",lk));toast("Script copiado ✓")}catch(x){toast("No se pudo copiar")}};
+    $("#evaTx").onclick=async()=>{let lk="";try{if(await rsvpPrep(e)){lk=rsvpLink(e);LS.set("rsvpI:"+e.id,1);if(!LS.get("rsvpSeen:"+e.id))LS.set("rsvpSeen:"+e.id,[])}}catch(x){}try{await navigator.clipboard.writeText(evaScript(e,"",lk));toast("Script copiado ✓")}catch(x){toast("No se pudo copiar")}};
     $("#evaDl").onclick=async()=>{if(!file){toast("El flyer aún se está creando");return}if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file]});return}catch(x){if(x&&x.name==="AbortError")return}}const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click()};
     const da=$("#evaDelA");if(da)da.onclick=()=>{closeSheet();setTimeout(()=>cancelarSheet(e.tipo==="gran"?"Cancelar evento (admin)":"Cancelar junta (admin)","Deja de salir en la agenda de los socios. El creador y los anfitriones la verán como cancelada por usted. Escriba el motivo:",["Datos incorrectos","Duplicada","No autorizada","Ya pasó"],async m=>{const ok=await evcSet(e.id,{mot:m,por:(miRegistro().nombre||miNombreCorto()||"Admin"),u:store.uid,t:Date.now()});if(ok)toast("🚫 Cancelada. Ya no sale en la agenda de los socios.");return ok}),250)};
     const dl=$("#evaDel");if(dl)dl.onclick=()=>{closeSheet();setTimeout(()=>cancelarSheet(e.tipo==="gran"?"Cancelar evento":"Cancelar junta",((e.lid||[]).length>1?"Les avisamos a los líderes involucrados en su app. ":"")+"Escriba el motivo:",["Tuve un imprevisto","Cambio de fecha","No se consiguió el lugar","Pocos confirmados"],async m=>{const c={mot:m,por:(miRegistro().nombre||miNombreCorto()||""),t:Date.now()};try{await evCol().doc(e.id).set({cancel:c},{merge:true})}catch(x){toast("No se pudo cancelar. Revise su conexión.");return false}e.cancel=c;EVA=(EVA||[]).filter(x=>x.id!==e.id);renderEvA();try{renderRecCard()}catch(x){}toast("Cancelado. Ya les avisamos.");return true}),250)}})}
 function confirmar2(b){if(b.dataset.ok)return true;b.dataset.ok=1;b.textContent="Toque otra vez para confirmar";setTimeout(()=>{delete b.dataset.ok},4000);return false}
-async function evaInvitar(e){const o=evaDatos(e);let file=null;evaFile(o).then(f=>file=f).catch(()=>{});const k="evInv:"+e.id,ya=LS.get(k)||[];let q="",lk="";if(await rsvpPrep()){lk=rsvpLink(e);LS.set("rsvpI:"+e.id,1);if(!LS.get("rsvpSeen:"+e.id))LS.set("rsvpSeen:"+e.id,[])}
+async function evaInvitar(e){const o=evaDatos(e);let file=null;evaFile(o).then(f=>file=f).catch(()=>{});const k="evInv:"+e.id,ya=LS.get(k)||[];let q="",lk="";if(await rsvpPrep(e)){lk=rsvpLink(e);LS.set("rsvpI:"+e.id,1);if(!LS.get("rsvpSeen:"+e.id))LS.set("rsvpSeen:"+e.id,[])}
   const lista=()=>{const Q=nrmN(q),M=(contacts||[]).filter(c=>!Q||nrmN(c.name).includes(Q)).sort((a,b)=>(ya.includes(a.id)?1:0)-(ya.includes(b.id)?1:0)||String(a.name).localeCompare(b.name,"es")).slice(0,60);
     return M.map(c=>{const s=ya.includes(c.id);return `<div class="row between" style="gap:8px;padding:8px 0;border-bottom:1px solid var(--line)"><div style="min-width:0"><b class="small">${esc(c.name)}</b><div class="small muted">${s?"✅ Invitado":esc(c.stage||"Nuevo")}</div></div><button class="btn sm ${s?"ghost":""}" data-evi="${esc(c.id)}" style="flex:none;${s?"":"background:#25D366;color:#fff"}">${s?"Reenviar":"💬 Enviar"}</button></div>`}).join("")||`<p class="small muted">No hay contactos con ese nombre.</p>`};
   openSheet(`<h2>📣 Invitar</h2><span data-nofocus hidden></span><p class="small muted" style="margin:0">Se comparte el flyer con el script y <b>su link para confirmar asistencia</b>. Quien confirme le aparece aquí en la app y en su CRM.</p>
@@ -5296,11 +5296,20 @@ async function evaInvitar(e){const o=evaDatos(e);let file=null;evaFile(o).then(f
 // El link lleva los datos de la junta (la página no lee el evento). Cada confirmación = agendaEv/{id}/rsvp/{auto} {n,w,cc,de,dn,t}.
 // Lista completa: creador, anfitriones (lidU), su línea de arriba con rango ≥ Team Leader (vL) y admin. Cada socio ve los suyos (de == uid).
 const b64e=s=>btoa(unescape(encodeURIComponent(s))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
-async function rsvpPrep(){if(!(regDoc&&regDoc.registro))return false;if(LS.get("salaPerf"))return true;
+async function rsvpPrep(e){const ok=await rsvpPrep0();if(ok&&e)await rsvpPub(e);return ok}
+async function rsvpPrep0(){if(!(regDoc&&regDoc.registro))return false;if(LS.get("salaPerf"))return true;
   try{const r=regDoc.registro;let foto=miFotoUrl()||"";if(foto&&/^https?:/.test(foto)){const d=await urlADataUrl(foto,240);foto=d||""}
     const b={uid:store.uid,nombre:r.nombre||miNombreCorto(),waS:String(r.whatsapp||"").replace(/\D/g,""),t:Date.now()};if(foto&&foto.length<400000)b.foto=foto;
     await store.db.doc("perfiles/"+miPCode()).set(b,{merge:true});LS.set("salaPerf",1)}catch(x){}return true}
-function rsvpLink(e){const o={e:e.id,d:store.uid,p:miPCode(),dn:nv(miRegistro().nombre||miNombreCorto()||""),tp:e.tipo,ds:+e.dis||1,c:e.ciudad||"",l:e.lugar||"",ls:e.lugarSub||"",m:safeUrl(e.maps||"")||"",z:e.modo==="virtual"?1:0,f:e.fecha,h:e.hora,a:(e.lid||[]).slice(0,7).map(x=>[nv(x.n),x.rol==="esp"?"esp":""])};
+// 9 nov: link CORTO actionleadersplus.com/j?p=CODIGO&e=CLAVE. Los datos de la junta se guardan en la página pública del socio (perfiles/{code}.ev[clave], ya pública y escrita por su dueño): 0 lecturas extra y sin reglas nuevas. Si no se pudo guardar, link largo de respaldo.
+function rsvpObj(e){return {e:e.id,d:store.uid,dn:nv(miRegistro().nombre||miNombreCorto()||""),tp:e.tipo,ds:+e.dis||1,c:e.ciudad||"",l:e.lugar||"",ls:e.lugarSub||"",m:safeUrl(e.maps||"")||"",z:e.modo==="virtual"?1:0,f:e.fecha,h:e.hora,a:(e.lid||[]).slice(0,7).map(x=>[nv(x.n),x.rol==="esp"?"esp":""])}}
+const rsvpK=e=>ahF("ev:"+e.id).slice(0,6);
+async function rsvpPub(e){try{if(!store.db||!miPCode())return false;const o=rsvpObj(e),k=rsvpK(e),h=ahF(JSON.stringify(o)),P=LS.get("evPub")||{};if(P[k]&&P[k].h===h)return true;
+  const ev={[k]:o};Object.keys(P).forEach(q=>{if(q!==k&&P[q].f<addD(TODAY,-2)){ev[q]=null;delete P[q]}});
+  await store.db.doc("perfiles/"+miPCode()).set({uid:store.uid,ev},{merge:true});P[k]={h,f:e.fecha};LS.set("evPub",P);return true}catch(x){return false}}
+function rsvpLink(e){const k=rsvpK(e),P=LS.get("evPub")||{};if(P[k]&&P[k].h===ahF(JSON.stringify(rsvpObj(e)))&&miPCode())return "https://actionleadersplus.com/j?p="+encodeURIComponent(miPCode())+"&e="+k;
+  return rsvpLinkL(e)}
+function rsvpLinkL(e){const o={e:e.id,d:store.uid,p:miPCode(),dn:nv(miRegistro().nombre||miNombreCorto()||""),tp:e.tipo,ds:+e.dis||1,c:e.ciudad||"",l:e.lugar||"",ls:e.lugarSub||"",m:safeUrl(e.maps||"")||"",z:e.modo==="virtual"?1:0,f:e.fecha,h:e.hora,a:(e.lid||[]).slice(0,7).map(x=>[nv(x.n),x.rol==="esp"?"esp":""])};
   return "https://actionleadersplus.com/evento.html?i="+b64e(JSON.stringify(o))}
 function rsvpVL(lidU){const R=miRegistro()||{},S=new Set([store.uid,...(lidU||[])]);
   (Array.isArray(R.linea)?R.linea:[]).forEach(u=>{const f=(fotosFs||[]).find(x=>x.id===u),n=f&&(f.invNombre||f.nombre);if(n&&rangoActualIdx({},n)>=1)S.add(u)});return [...S].filter(Boolean)}
@@ -7194,7 +7203,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261108211451";var busy=false,pend=null;
+(function(){var V="20261109123915";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

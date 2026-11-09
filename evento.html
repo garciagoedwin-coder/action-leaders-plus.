@@ -56,7 +56,14 @@ const $=s=>document.querySelector(s),esc=s=>String(s==null?"":s).replace(/[&<>"'
 const ini=n=>String(n||"").trim().split(/\s+/).slice(0,2).map(w=>w[0]||"").join("").toUpperCase();
 const MES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],DIA=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
 let E=null;try{let s=new URLSearchParams(location.search).get("i")||"";s=s.replace(/-/g,"+").replace(/_/g,"/");while(s.length%4)s+="=";const b=atob(s),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);E=JSON.parse(new TextDecoder().decode(u))}catch(e){E=null}
-if(!E||!E.e||!E.f){$("#app").innerHTML=`<div class="bad"><h2>Enlace incompleto</h2><p>Pídale de nuevo la invitación a la persona que se la envió.</p></div>`;throw 0}
+let db=null,fs=null;
+async function fb(){if(db)return;const {initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");fs=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+  const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});db=fs.getFirestore(app)}
+let PX=null;
+(async()=>{
+// 9 nov: link corto ?p=CODIGO&e=CLAVE → los datos están en la página pública del socio (perfiles/{p}.ev[e]); 1 lectura (la misma que ya se hacía para la foto)
+if(!E){const q=new URLSearchParams(location.search),p=q.get("p"),k=q.get("e");if(p&&k){try{await fb();const d=await fs.getDoc(fs.doc(db,"perfiles",p));if(d.exists()){PX=d.data()||{};const o=(PX.ev||{})[k];if(o&&typeof o==="object"){E=Object.assign({},o,{p})}}}catch(e){}}}
+if(!E||!E.e||!E.f){$("#app").innerHTML=`<div class="bad"><h2>Enlace incompleto</h2><p>Pídale de nuevo la invitación a la persona que se la envió.</p></div>`;return}
 const gran=E.tp==="gran",tipo=gran?"Gran evento de negocios":"Junta de negocios",[Y,M,D]=E.f.split("-").map(Number),fd=new Date(Y,M-1,D);
 const [hh,mm]=String(E.h||"00:00").split(":").map(Number),h12=(hh%12||12)+":"+String(mm).padStart(2,"0")+(hh<12?" a.m.":" p.m.");
 const fechaL=DIA[fd.getDay()]+" "+D+" de "+MES[M-1],fechaC=DIA[fd.getDay()].slice(0,3).replace(/^./,c=>c.toUpperCase())+" "+D+" de "+MES[M-1].slice(0,3)+".";
@@ -84,9 +91,6 @@ function form(){$("#F").innerHTML=`<h3>Confirme su asistencia</h3><p>Solo le tom
  <label for="t">Su WhatsApp</label><div class="row2"><select id="cc"><option value="504">🇭🇳 +504</option><option value="502">🇬🇹 +502</option><option value="503">🇸🇻 +503</option><option value="505">🇳🇮 +505</option><option value="506">🇨🇷 +506</option><option value="507">🇵🇦 +507</option><option value="52">🇲🇽 +52</option><option value="1">🇺🇸 +1</option><option value="34">🇪🇸 +34</option><option value="44">🇬🇧 +44</option></select><input id="t" type="tel" inputmode="tel" autocomplete="tel" placeholder="Número"></div>
  <button class="btn" id="ok">✅ Confirmo mi asistencia</button><div class="err" id="er"></div>`;
  $("#ok").onclick=enviar}
-let db=null,fs=null;
-async function fb(){if(db)return;const {initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");fs=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
-  const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});db=fs.getFirestore(app)}
 async function enviar(){const n=$("#n").value.trim().replace(/\s+/g," "),cc=$("#cc").value,t=$("#t").value.replace(/\D/g,""),er=$("#er");er.textContent="";
   if(n.length<2){er.textContent="Escriba su nombre.";$("#n").focus();return}if(t.length<7){er.textContent="Escriba su número de WhatsApp.";$("#t").focus();return}
   const b=$("#ok");b.disabled=true;b.textContent="Confirmando…";
@@ -96,8 +100,9 @@ async function enviar(){const n=$("#n").value.trim().replace(/\s+/g," "),cc=$("#
 let ya=null;try{ya=localStorage.getItem(K)}catch(e){}
 if(ya)listo(ya);else form();
 // Foto y WhatsApp de quien invita (página pública del socio): 1 lectura, opcional
-if(E.p){(async()=>{try{await fb();const d=await fs.getDoc(fs.doc(db,"perfiles",E.p));if(!d.exists())return;const x=d.data()||{};
+if(E.p){(async()=>{try{let x=PX;if(!x){await fb();const d=await fs.getDoc(fs.doc(db,"perfiles",E.p));if(!d.exists())return;x=d.data()||{}}
   if(x.foto&&/^(data:image|https:)/.test(x.foto)){const a=$("#dav");if(a){a.style.backgroundImage="url('"+x.foto.replace(/'/g,"")+"')";a.textContent=""}}
   WA=String(x.wa||x.waS||"").replace(/\D/g,"");if(WA&&$(".ok"))listo(ya||(()=>{try{return localStorage.getItem(K)}catch(e){return""}})())}catch(e){}})()}
+})();
 </script>
 </body></html>
