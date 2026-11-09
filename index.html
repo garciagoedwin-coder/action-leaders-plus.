@@ -197,6 +197,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .miwa{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--gold-soft);color:var(--gold-ink);font-size:13.5px;line-height:1.3}
 .miwa span{flex:1}.miwa .x{background:none;border:0;color:inherit;font-size:14px;padding:4px;cursor:pointer;opacity:.7}
 .evXr{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;background:var(--surface-2);opacity:.85;margin-top:6px}.evXr>div{flex:1;min-width:0}.evXr b{display:block;font-size:13.5px;text-decoration:line-through;color:var(--muted)}.evXr small{display:block;font-size:12px;color:var(--muted)}
+#simBar{position:fixed;left:0;right:0;top:0;z-index:9000;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:calc(env(safe-area-inset-top) + 6px) 12px 6px;background:#7C3AED;color:#fff;font-size:12.5px;box-shadow:0 2px 10px rgba(0,0,0,.2)}#simBar button{border:0;background:#fff;color:#5B21B6;font:inherit;font-weight:800;border-radius:99px;padding:5px 12px;cursor:pointer;flex:none}body.simOn header.top{margin-top:30px}
 .lz-hero.v2{background:radial-gradient(120% 60% at 100% 0%,rgba(42,193,241,.18),transparent 60%),linear-gradient(165deg,#0A1A2E,#0B2A45);box-shadow:0 10px 30px rgba(6,20,40,.22);gap:12px}.lz-hero.v2 .lz-k{color:#F2C35B;opacity:1}
 .lzSt{display:flex;gap:8px}.lzSt div{flex:1;min-width:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:10px 12px}.lzSt b{display:block;font-size:22px;font-weight:800;line-height:1.1}.lzSt b i{font-style:normal;font-size:14px;opacity:.6}.lzSt span{font-size:12px;opacity:.72}
 .lzWa{border:0;background:#25D366;color:#06311A;border-radius:14px;padding:13px;font:inherit;font-weight:800;font-size:15px;cursor:pointer;width:100%}
@@ -6590,7 +6591,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     ${irSimple()?`<div class="pf-h">Ayuda</div>`:""}<button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
     <button class="pf-it" id="pfFront"><span class="ic">🏠</span>Ver la portada de la app</button>
-    ${isAdmin&&irSimple()?`<div class="pf-h">Admin</div><button class="pf-it" id="pfCie"><span class="ic">💰</span>Cierre de mes</button>`:""}${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfRh"><span class="ic">🔥</span>Ver celebración de racha (admin)</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
+    ${isAdmin&&irSimple()?`<div class="pf-h">Admin</div><button class="pf-it" id="pfCie"><span class="ic">💰</span>Cierre de mes</button>`:""}${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)${irSimM()?` <b style="margin-left:auto;font-size:11px;background:#7C3AED;color:#fff;border-radius:99px;padding:3px 8px">ENCENDIDO</b>`:""}</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfRh"><span class="ic">🔥</span>Ver celebración de racha (admin)</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
@@ -6629,7 +6630,14 @@ const IR_HERR_V=["pago","app","arr","work","yess","caja"]; // lista vieja (6): q
 const IR_HERR=[["alp","Instalé la app Action Leaders+",1],["avisos","Activé mis avisos",1],["yess","Me registré en YessMovement"],["pres","Descargué la presentación"]];
 function irHerrAuto(k){try{if(k==="alp")return pushStandalone();if(k==="avisos")return typeof Notification!=="undefined"&&Notification.permission==="granted"&&!!LS.get("pushTk")}catch(e){}return false}
 function irPresUrl(){const A=(T.config&&T.config.accesos)||[];const p=A.find(a=>/presentaci/i.test(a.t||""));return p&&safeUrl(p.u)?p.u:""}
-function irSimM(){try{return isAdmin&&store.uid?LS.get("irSim:"+store.uid):null}catch(e){return null}}
+function irSimM(){try{if(!(isAdmin&&store.uid))return null;const v=LS.get("irSim:"+store.uid);if(!v)return null;
+  // 9 nov: la prueba se apaga sola a las 24 h (antes se quedaba prendida y el admin no sabía si veía su cuenta o la prueba)
+  const t=+LS.get("irSimT:"+store.uid)||0;if(!t){LS.set("irSimT:"+store.uid,Date.now());return v}if(Date.now()-t>864e5){try{localStorage.removeItem("alp:irSim:"+store.uid);localStorage.removeItem("alp:irSimT:"+store.uid)}catch(e){}return null}return v}catch(e){return null}}
+// Franja fija "🧪 MODO PRUEBA" mientras el admin ve la app como socio
+function simBar(){try{const m=irSimM();let b=document.getElementById("simBar");if(!m){if(b)b.remove();document.body.classList.remove("simOn");return}
+  if(!b){b=document.createElement("div");b.id="simBar";document.body.appendChild(b)}document.body.classList.add("simOn");
+  b.innerHTML=`<span>🧪 <b>MODO PRUEBA</b> · ${m==="nuevo"?"Socio nuevo":"Socio actual"} · no es su cuenta real</span><button type="button" id="simBarX">Salir</button>`;
+  b.querySelector("#simBarX").onclick=()=>{try{localStorage.removeItem("alp:irSim:"+store.uid);localStorage.removeItem("alp:irSimT:"+store.uid)}catch(e){}simBar();irInicio();irRender();try{renderEquipo()}catch(e){}toast("✅ Volvió a su cuenta real")}}catch(e){}}
 function irSt(){const s=irSimM();return Object.assign({},(regDoc&&(s?regDoc.irSim:regDoc.ir))||{})}
 let irSaveT=null,irPend={};
 function irSave(patch){const s=irSimM(),f=s?"irSim":"ir";regDoc=regDoc||{};regDoc[f]=Object.assign({},regDoc[f]||{},patch);irPend[f]=regDoc[f];
@@ -6815,7 +6823,7 @@ function popHoy(k){try{if(!irSimple())return true;const p=LS.get("popDia")||{};i
 let irRevT=0;function irRevisar(){try{turCargar()}catch(e){}try{if(yoPrueba()&&store.db&&store.uid&&!window._prOc){window._prOc=1;store.db.doc("fotos/"+store.uid).set({oculto:true},{merge:true}).catch(()=>{});store.db.doc("constancia/"+store.uid).delete().catch(()=>{})}irRender();irInicio();if(!irIntroPend())return;if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate")){if(++irRevT<6)setTimeout(irRevisar,8000);return}if(!popHoy("ir"))return;irIntro()}catch(e){}}
 // ---- Inicio simple (beta) ----
 function irSimple(){return irBeta()||!!irSimM()}
-function irInicio(){const v=$("#v-inicio");if(!v)return;const on=irSimple();v.classList.toggle("simple",on);document.body.classList.toggle("beta",on);try{renderLzCall()}catch(e){}
+function irInicio(){simBar();const v=$("#v-inicio");if(!v)return;const on=irSimple();v.classList.toggle("simple",on);document.body.classList.toggle("beta",on);try{renderLzCall()}catch(e){}
   if(on&&!window._agMia){window._agMia=1;try{setAgVista("mia")}catch(e){}}
   const pf=document.querySelector(".card.perf"),sn=$("#v-suenos"),ini=$("#rutCard");if(!pf)return;
   const am=$("#agMia");if(on&&am&&pf.previousElementSibling!==am)am.insertAdjacentElement("afterend",pf);
@@ -6850,12 +6858,12 @@ function simAbrir(){const s=irSimM();openSheet(`<h2>🧪 Ver como socio</h2><p c
     <button class="btn${s==="actual"?"":" ghost"}" id="smA">👀 Ver como socio actual (invitación)${s==="actual"?" · activo":""}</button>
     ${s?`<button class="btn ghost" id="smD">⏩ Adelantar 7 días</button><button class="btn ghost" id="smR">🔄 Reiniciar la prueba</button><button class="btn ghost" id="smOff" style="color:#B42335">Apagar · volver a mi vista de admin</button>`:""}</div>
    <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{
-    const set=v=>{LS.set("irSim:"+store.uid,v);closeSheet();irInicio();irRender();try{renderEquipo()}catch(e){}go("inicio")};
+    const set=v=>{LS.set("irSim:"+store.uid,v);LS.set("irSimT:"+store.uid,Date.now());closeSheet();irInicio();irRender();try{renderEquipo()}catch(e){}go("inicio")};
     $("#smN").onclick=()=>{set("nuevo");const st=irSt();if(!st.ini)irSave({ini:Date.now()});setTimeout(irRevisar,600)};
     $("#smA").onclick=()=>{set("actual");try{localStorage.removeItem("alp:irNo:"+store.uid)}catch(e){}};
     {const d=$("#smD");if(d)d.onclick=()=>{const st=irSt();irSave({ini:(st.ini||Date.now())-7*864e5});closeSheet();setTimeout(irRender,300);toast("⏩ +7 días · Día "+irDia())}}
     {const r=$("#smR");if(r)r.onclick=()=>{const f={ini:irSimM()==="nuevo"?Date.now():null};regDoc=regDoc||{};regDoc.irSim=f;store.db.doc("users/"+store.uid).update({irSim:f}).catch(()=>{});closeSheet();setTimeout(irRevisar,500)}}
-    {const o=$("#smOff");if(o)o.onclick=()=>{try{localStorage.removeItem("alp:irSim:"+store.uid)}catch(e){}closeSheet();irInicio();irRender();try{renderEquipo()}catch(e){}}}})}
+    {const o=$("#smOff");if(o)o.onclick=()=>{try{localStorage.removeItem("alp:irSim:"+store.uid);localStorage.removeItem("alp:irSimT:"+store.uid)}catch(e){}closeSheet();irInicio();irRender();try{renderEquipo()}catch(e){}}}})}
 
 
 // ---- Segunda tanda (beta): privacidad, insignias, llamada de liderazgo, fichas cerradas ----
@@ -7204,7 +7212,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261109151334";var busy=false,pend=null;
+(function(){var V="20261109153029";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
