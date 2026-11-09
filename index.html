@@ -5042,9 +5042,9 @@ async function abrirLanz(tipo){if(ahGate())return;const PR=tipo==="pres",W=LZW({
   if(mios===null)try{await loadMios()}catch(e){}
   const L=miLinea(),E=(mios||[]).filter(x=>x.registro&&x.registro.nombre&&x.uid!==store.uid).sort((a,b)=>String(a.registro.nombre).localeCompare(b.registro.nombre,"es")),mis=citas.filter(c=>c.lz&&c.fecha>=TODAY&&LZP(c)===PR).sort(citaSort);
   if(!L.length&&!E.length){toast("Aún no hay líderes ni socios en su línea para hacer "+(PR?"una presentación de negocios.":"un lanzamiento."));return}
-  let modo=L.length?"yo":"eq",sel=null,q="";
+  let modo=L.length?"yo":"eq",sel=L.length?L[0].uid:null,q="";// 9 nov: el patrocinador ya viene elegido (antes nadie quedaba elegido y "Ver el flyer" no avanzaba)
   const man=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+2));
-  const it=(uid,n,sub,on)=>`<button type="button" class="ep-it" data-lzl="${esc(uid)}" aria-pressed="${on}" style="border-radius:12px;${on?"outline:2px solid var(--brand)":""}">${avHTML(n,false,false)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(n)}</b><span class="small muted">${esc(sub)}</span></span></button>`;
+  const it=(uid,n,sub,on)=>`<button type="button" class="ep-it" data-lzl="${esc(uid)}" aria-pressed="${on}" style="border-radius:12px;${on?"outline:2px solid var(--brand)":""}">${avHTML(n,false,false)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(n)}</b><span class="small muted">${esc(sub)}</span></span>${on?'<span aria-hidden="true" style="flex:none;width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:800">✓</span>':""}</button>`;
   const lista=()=>{if(modo==="yo")return L.map((x,i)=>it(x.uid,x.n,lzRango(x.n)+(i===0?" · su patrocinador":""),sel===x.uid)).join("");
     const Q=nrmN(q),M=E.filter(x=>!Q||nrmN(x.registro.nombre).includes(Q)).slice(0,40);return M.map(x=>it(x.uid,x.registro.nombre,x.registro.patrocinadorUid===store.uid?"Socio directo":"De su línea",sel===x.uid)).join("")||`<p class="small muted">Nadie con ese nombre en su línea.</p>`};
   openSheet(`<h2>${PR?"🎤 Presentación de negocios":"🚀 Lanzamiento de negocio"}</h2><span data-nofocus hidden></span><p class="small muted" style="margin:0">La app arma el flyer con las dos fotos para invitar a los prospectos.</p>
@@ -5064,7 +5064,7 @@ async function abrirLanz(tipo){if(ahGate())return;const PR=tipo==="pres",W=LZW({
       l.innerHTML=M.map(x=>`<button type="button" class="ep-it" data-lzx="${esc(x.u)}" style="border-radius:12px">${avHTML(x.n,false,false)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(x.n)}</b><span class="small muted">${esc(lzRango(x.n))}</span></span></button>`).join("")||`<p class="small muted" style="margin:0">Nadie con ese nombre.</p>`};
     {const xi=$("#lzXq");if(xi)xi.oninput=e=>{xq=e.target.value;pintaX()};const xl=$("#lzXl");if(xl)xl.onclick=e=>{const b=e.target.closest("[data-lzx]");if(!b)return;const x=XC.find(y=>y.u===b.dataset.lzx);if(x&&X.length<2){X.push(x);xq="";$("#lzXq").value=""}pintaX()};
      const xc=$("#lzXc");if(xc)xc.onclick=e=>{const b=e.target.closest("[data-lzxr]");if(!b)return;X=X.filter(y=>y.u!==b.dataset.lzxr);pintaX()}}
-    const m=$("#lzM");if(m)m.onclick=e=>{const b=e.target.closest("[data-m]");if(!b)return;modo=b.dataset.m;sel=null;m.querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));$("#lzLab").textContent=modo==="yo"?"¿Con qué líder?":(PR?"¿Qué socio presenta?":"¿Qué socio lanza su negocio?");$("#lzQ").hidden=modo!=="eq";pinta()};
+    const m=$("#lzM");if(m)m.onclick=e=>{const b=e.target.closest("[data-m]");if(!b)return;modo=b.dataset.m;sel=modo==="yo"&&L.length?L[0].uid:null;m.querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));$("#lzLab").textContent=modo==="yo"?"¿Con qué líder?":(PR?"¿Qué socio presenta?":"¿Qué socio lanza su negocio?");$("#lzQ").hidden=modo!=="eq";pinta()};
     $("#lzQ").oninput=e=>{q=e.target.value;pinta()};
     $("#lzL").onclick=e=>{const b=e.target.closest("[data-lzl]");if(!b)return;sel=b.dataset.lzl;pinta()};
     document.querySelectorAll("[data-lzo]").forEach(b=>b.onclick=()=>{const c=citas.find(x=>x.id===b.dataset.lzo);if(c){closeSheet();setTimeout(()=>lzVer(c),250)}});
@@ -7204,7 +7204,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261109145347";var busy=false,pend=null;
+(function(){var V="20261109151334";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
