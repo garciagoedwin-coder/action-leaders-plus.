@@ -5296,7 +5296,7 @@ async function evaInvitar(e){const o=evaDatos(e);let file=null;evaFile(o).then(f
 // El link lleva los datos de la junta (la página no lee el evento). Cada confirmación = agendaEv/{id}/rsvp/{auto} {n,w,cc,de,dn,t}.
 // Lista completa: creador, anfitriones (lidU), su línea de arriba con rango ≥ Team Leader (vL) y admin. Cada socio ve los suyos (de == uid).
 const b64e=s=>btoa(unescape(encodeURIComponent(s))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
-async function rsvpPrep(e){const ok=await rsvpPrep0();if(ok&&e)await rsvpPub(e);return ok}
+async function rsvpPrep(e){const ok=await rsvpPrep0();if(e){if(ok)await rsvpPub(e);else toast("Link corto no disponible (sin registro). Se usó el link normal.")}return ok}
 async function rsvpPrep0(){if(!(regDoc&&regDoc.registro))return false;if(LS.get("salaPerf"))return true;
   try{const r=regDoc.registro;let foto=miFotoUrl()||"";if(foto&&/^https?:/.test(foto)){const d=await urlADataUrl(foto,240);foto=d||""}
     const b={uid:store.uid,nombre:r.nombre||miNombreCorto(),waS:String(r.whatsapp||"").replace(/\D/g,""),t:Date.now()};if(foto&&foto.length<400000)b.foto=foto;
@@ -5307,7 +5307,7 @@ const rsvpK=e=>ahF("ev:"+e.id).slice(0,6);
 async function rsvpPub(e){// Firestore no acepta listas dentro de listas: los anfitriones se guardan como "Nombre|esp"
   try{if(!store.db||!miPCode())return false;const o=rsvpObj(e),k=rsvpK(e),h=ahF(JSON.stringify(o)),P=LS.get("evPub")||{};if(P[k]&&P[k].h===h)return true;
   const ev={[k]:Object.assign({},o,{a:(o.a||[]).map(x=>x.join("|"))})};Object.keys(P).forEach(q=>{if(q!==k&&P[q].f<addD(TODAY,-2)){ev[q]=null;delete P[q]}});
-  await store.db.doc("perfiles/"+miPCode()).set({uid:store.uid,ev},{merge:true});P[k]={h,f:e.fecha};LS.set("evPub",P);return true}catch(x){return false}}
+  await store.db.doc("perfiles/"+miPCode()).set({uid:store.uid,ev},{merge:true});P[k]={h,f:e.fecha};LS.set("evPub",P);return true}catch(x){try{toast("Link corto no disponible ("+String(x&&(x.code||x.message)||x).slice(0,80)+"). Se usó el link normal.")}catch(_){}return false}}
 function rsvpLink(e){const k=rsvpK(e),P=LS.get("evPub")||{};if(P[k]&&P[k].h===ahF(JSON.stringify(rsvpObj(e)))&&miPCode())return "https://actionleadersplus.com/j?p="+encodeURIComponent(miPCode())+"&e="+k;
   return rsvpLinkL(e)}
 function rsvpLinkL(e){const o={e:e.id,d:store.uid,p:miPCode(),dn:nv(miRegistro().nombre||miNombreCorto()||""),tp:e.tipo,ds:+e.dis||1,c:e.ciudad||"",l:e.lugar||"",ls:e.lugarSub||"",m:safeUrl(e.maps||"")||"",z:e.modo==="virtual"?1:0,f:e.fecha,h:e.hora,a:(e.lid||[]).slice(0,7).map(x=>[nv(x.n),x.rol==="esp"?"esp":""])};
@@ -7204,7 +7204,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261109125915";var busy=false,pend=null;
+(function(){var V="20261109131537";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
