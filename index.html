@@ -1336,11 +1336,11 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
  var cols=[[0,5,9,13,17,2],[4,1,8,12,16,19,10],[6,3,11,15,18,7,14]],wide={1:1,2:1,3:1};
  var sp=[70,85,62];
  cols.forEach(function(c,k){var d=document.createElement("div");d.className="l-col"+(k===1?" rev":"");d.style.setProperty("--d",sp[k]+"s");
-  var h="";c.concat(c).forEach(function(n,j){var f=("0"+n).slice(-2);h+='<img '+(wide[n]?'class="w" ':'')+'src="media/comunidad/c'+f+'.webp" alt="" '+(j<3?'':'loading="lazy" ')+'decoding="async">'});
+  var h="";c.concat(c).forEach(function(n,j){var f=("0"+n).slice(-2);h+='<img '+(wide[n]?'class="w" ':'')+'src="media/comunidad/c'+f+'.webp" alt="" '+'decoding="async">'});
   d.innerHTML=h;W.appendChild(d)});
  var M=L.querySelector(".l-main"),K=L.querySelector(".l-kick");
  function fit(){M.style.setProperty("--sh",(M.clientHeight-K.offsetTop+150)+"px")}
- fit();addEventListener("resize",fit);
+ fit();addEventListener("resize",fit);addEventListener("load",fit);try{document.fonts&&document.fonts.ready.then(fit)}catch(e){}
  function count(){[].forEach.call(L.querySelectorAll("[data-n]"),function(b){var n=+b.dataset.n,s=b.dataset.s||"",t0=null;
   function f(t){if(!t0)t0=t;var p=Math.min(1,(t-t0)/1600),e=1-Math.pow(1-p,3);b.textContent=Math.round(n*e).toLocaleString("es")+(p===1?s:"");if(p<1)requestAnimationFrame(f)}
   setTimeout(function(){requestAnimationFrame(f)},900)})}
@@ -4827,7 +4827,7 @@ function trRango(p){return (p.ri>=0&&RANGOS[p.ri]?RANGOS[p.ri].n:tituloFlyer(p.n
 function trZonas(e){const[y,m,dd]=e.fecha.split("-").map(Number),[h,mi]=(e.hora||"20:00").split(":").map(Number),t=new Date(Date.UTC(y,m-1,dd,h+6,mi||0));
   const f=(tz,o)=>{try{return new Intl.DateTimeFormat("en-US",Object.assign({timeZone:tz},o)).format(t)}catch(_){return""}};const hr=tz=>f(tz,{hour:"numeric",minute:"2-digit",hour12:true}).replace(/\s/g," ");
   const dHN=f("America/Tegucigalpa",{day:"numeric"});
-  return{hn:hr("America/Tegucigalpa")||h12(e.hora).toUpperCase(),Z:[["🇺🇸","Miami","America/New_York"],["🇲🇽","México","America/Mexico_City"],["🇨🇴","Colombia","America/Bogota"],["🇪🇸","España","Europe/Madrid"]].map(([b,n,z])=>{const x=hr(z);return x?b+" "+n+" "+x+(f(z,{day:"numeric"})!==dHN?" (+1)":""):""}).filter(Boolean)}}
+  return{hn:hr("America/Tegucigalpa")||h12(e.hora).toUpperCase(),Z:[["🇺🇸","Miami","America/New_York"],["🇪🇸","España","Europe/Madrid"],["🇬🇧","Reino Unido","Europe/London"]].map(([b,n,z])=>{const x=hr(z);return x?b+" "+n+" "+x+(f(z,{day:"numeric"})!==dHN?" (+1)":""):""}).filter(Boolean)}}
 async function trFoto(g,src,n,cx,cy,R,aro){g.save();g.shadowColor="rgba(61,139,255,.55)";g.shadowBlur=R*.35;g.beginPath();g.arc(cx,cy,R,0,Math.PI*2);const cg=g.createLinearGradient(cx-R,cy-R,cx+R,cy+R);cg.addColorStop(0,"#BFE0FF");cg.addColorStop(.5,"#3D8BFF");cg.addColorStop(1,"#1452D9");g.fillStyle=cg;g.fill();g.restore();
   g.beginPath();g.arc(cx,cy,R-aro,0,Math.PI*2);g.fillStyle="#020614";g.fill();const r=R-aro*2.2;let vacio=false;await circFoto(g,src,cx,cy,r,null,()=>{vacio=true});
   if(vacio){g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.fillStyle="#0b1a36";g.fill();g.fillStyle="#8EC5FF";g.font="700 "+Math.round(r*.72)+"px ALBG, Figtree, sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText(initials(n||"AL"),cx,cy+r*.04);g.restore()}}
@@ -5010,14 +5010,14 @@ async function lzCanvas(o,fmt,fondo){fmt=fmt==="h"?"h":"p";const L=LZ_L[fmt],cv=
     {const fs=NC>3?Math.round(cd.small[2]*.78):NC>2?Math.round(cd.small[2]*.9):cd.small[2];tx(lab,cx,cd.small[0],cd.small[1],"700 "+fs+"px ALO, Figtree, sans-serif",GO,"center",NC>3?"1px":"3px")}
     fit(nv(n),"700 {s}px ALO, Figtree, sans-serif",cd.name[2],w-30,20);tx(nv(n),cx,cd.name[0],cd.name[1],g.font,"#fff","center");
     if(rk){fit(rk,"400 {s}px ALOR, Figtree, sans-serif",cd.rk[2],w-30,14);tx(rk,cx,cd.rk[0],cd.rk[1],g.font,"rgba(255,255,255,.75)","center")}}
-  if(PR&&o.zonas&&o.zonas.length){const Z=o.zonas,sg=Z.some(z=>z.sig),y=fmt==="h"?(sg?1278:1292):930,h=sg?170:150,x0=L.info[0],w=L.info[2],cw=w/Z.length;
+  if(o.zonas&&o.zonas.length){const Z=o.zonas,sg=Z.some(z=>z.sig),y=fmt==="h"?(sg?1278:1292):930,h=sg?170:150,x0=L.info[0],w=L.info[2],cw=w/Z.length;
     rr(x0,y,w,h,26);g.fillStyle="rgba(255,255,255,.065)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(245,196,81,.35)";g.stroke();
     Z.forEach((z,i)=>{const cx=x0+cw*i+cw/2;if(i){g.fillStyle="rgba(255,255,255,.12)";g.fillRect(x0+cw*i,y+24,1,h-48)}
       tx(z.fl,cx,y+14,44,"38px sans-serif","#fff","center");tx(z.n,cx,y+60,24,"700 17px ALO, Figtree, sans-serif",GO,"center","2px");
       fit(z.h+(z.sig?"*":""),"700 {s}px ALO, Figtree, sans-serif",34,cw-16,20);tx(z.h+(z.sig?"*":""),cx,y+88,44,g.font,"#fff","center")});if(sg)tx("* del día siguiente",x0+w/2,y+138,22,"400 15px ALOR, Figtree, sans-serif","rgba(255,255,255,.65)","center")}
   else if(L.chips){const[y,h,s]=L.chips,f="700 "+s+"px ALO, Figtree, sans-serif";g.font=f;const ws=LZ_TXT.chips.map(t=>g.measureText(t).width+40);const tot=ws.reduce((a,b)=>a+b,0)+20;let x=C-tot/2;
     LZ_TXT.chips.forEach((t,i)=>{rr(x,y,ws[i],h,h/2);g.fillStyle="rgba(255,255,255,.09)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(245,194,79,.4)";g.stroke();tx(t,x+ws[i]/2,y,h,f,"#fff","center");x+=ws[i]+10})}
-  if(!(PR&&o.zonas&&o.zonas.length)&&L.ul){const[y0,st,bx]=L.ul;LZ_TXT.ul.forEach(([ic,b,r],i)=>{const y=y0+i*st;rr(64,y,bx,bx,16);g.fillStyle="rgba(245,196,81,.12)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(245,196,81,.33)";g.stroke();
+  if(!(o.zonas&&o.zonas.length)&&L.ul){const[y0,st,bx]=L.ul;LZ_TXT.ul.forEach(([ic,b,r],i)=>{const y=y0+i*st;rr(64,y,bx,bx,16);g.fillStyle="rgba(245,196,81,.12)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(245,196,81,.33)";g.stroke();
     tx(ic,64+bx/2,y,bx,"28px sans-serif","#fff","center");tx2(b,r,130,y,bx,"700 26px ALO, Figtree, sans-serif","400 26px ALOR, Figtree, sans-serif","#fff","rgba(255,255,255,.9)","left")})}
   {const[x,y,w,h]=L.info;rr(x,y,w,h,26);g.fillStyle="rgba(255,255,255,.065)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(255,255,255,.14)";g.stroke();
    const zt=o.zoom===false?"📱 En vivo":"🎥 Por Zoom";g.font="700 24px ALO, Figtree, sans-serif";const zw=g.measureText(zt).width+40,zx=x+w-19-zw;
@@ -5026,7 +5026,7 @@ async function lzCanvas(o,fmt,fondo){fmt=fmt==="h"?"h":"p";const L=LZ_L[fmt],cv=
    while(fs>22){g.font="700 "+fs+"px ALO, Figtree, sans-serif";if(g.measureText(o.fecha).width+g.measureText(hT).width<=free)break;fs--}
    const w1=g.measureText(o.fecha).width,w2=g.measureText(hT).width;let cx=x+7;
    const col=(lab,val,ww)=>{g.fillStyle=GO;g.fillRect(cx,y+19,4,76);tx(lab,cx+22,y+23,21,"700 17px ALO, Figtree, sans-serif",GO,"left","3px");tx(val,cx+22,y+46,45,"700 "+fs+"px ALO, Figtree, sans-serif","#fff","left");cx+=4+18+ww+18+14};
-   col("FECHA",o.fecha,w1);if(!(PR&&o.zonas&&o.zonas.length))col("HORA",hT,w2);
+   col("FECHA",o.fecha,w1);if(!(o.zonas&&o.zonas.length))col("HORA",hT,w2);
    rr(zx,y+(h-58)/2,zw,58,29);g.fillStyle="#2D8CFF";g.fill();tx(zt,zx+zw/2,y+(h-58)/2,58,"700 24px ALO, Figtree, sans-serif","#fff","center")}
   return cv}
 // ---------- Lanzamiento de negocio (flyer + invitación al líder + invitados) ----------
@@ -5036,7 +5036,7 @@ function lzRango(n){try{const i=rangoActualIdx({},n);return i>=0&&RANGOS[i]?RANG
 function lzFechaTxt(f){const d=parseK(f),w=DAYS_L[d.getDay()];return w[0].toUpperCase()+w.slice(1)+" "+d.getDate()+" de "+MONTHS[d.getMonth()].toLowerCase()}
 async function lzFile(o,fmt,fondo){fmt=fmt||LS.get("lzFmt")||"p";fondo=fondo||LS.get("lzFondo")||"ny";const cv=await lzCanvas(o,fmt,fondo);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));return new File([b],(o.tipo==="pres"?"Presentacion":"Lanzamiento")+".jpg",{type:"image/jpeg"})}
 function lzMsg(o,first){first=String(first||"").trim();if(!/\p{L}/u.test(first))first="";const[pais,fl]=lzTz();return [`¡Hola${first?", "+first:""}! 👋`,"",o.tipo==="pres"?(o.lider?`Quiero invitarle a una *presentación de negocios* junto a *${o.nA}*, a quien acompaño como su líder.`:`Quiero invitarle a una *presentación de negocios* junto a mi líder *${o.nB}*. Va a conocer cómo viajar más, gastar menos y emprender desde su celular.`):o.lider?`Quiero invitarle a algo muy especial: *el lanzamiento de negocio de ${o.nA}*, a quien acompaño como su líder.`:`Quiero invitarle a algo muy especial para mí: *el lanzamiento de mi negocio*, junto a mi líder *${o.nB}*.`,"",`📅 *${o.fecha}*`].concat(o.zonas&&o.zonas.length?o.zonas.map(z=>`${z.fl} ${lzZn(z.n)} ${z.h}${z.sig?" (día siguiente)":""}`):[`🕖 ${o.hora} (hora de ${pais}${fl?" "+fl:""})`]).concat(o.enlace?["","🎥 Entre por Zoom aquí:",o.enlace]:["","🎥 En vivo por Zoom"]).concat(["","Sería muy importante para mí contar con usted. ¿Me confirma? 🙏"]).concat(o.yo?["","*"+o.yo+"*"]:[]).join("\n")}
-function lzDatos(ci){const yo=miRegistro().nombre||miNombreFull()||"";if(ci.lzE){const nA=ci.lzSN||"";return{lider:1,nA,nB:yo,rB:lzRango(yo),fotoA:fotoDe(nA,0,ci.lzSU),fotoB:miFotoUrl(),fecha:lzFechaTxt(ci.fecha),hora:h12(ci.hora),flag:lzTz()[1],enlace:ci.enlace||"",yo:miNombreCorto()||"",tipo:ci.lzT||"",extra:lzXs(ci),zonas:LZP(ci)?lzZonas(ci.fecha,ci.hora):null}}const nB=ci.lzN||"";return{tipo:ci.lzT||"",extra:lzXs(ci),zonas:LZP(ci)?lzZonas(ci.fecha,ci.hora):null,nA:yo,nB,rB:ci.lzR||lzRango(nB),fotoA:miFotoUrl(),fotoB:fotoDe(nB,0,ci.lzU),fecha:lzFechaTxt(ci.fecha),hora:h12(ci.hora),flag:lzTz()[1],enlace:ci.enlace||"",yo:miNombreCorto()||""}}
+function lzDatos(ci){const yo=miRegistro().nombre||miNombreFull()||"";if(ci.lzE){const nA=ci.lzSN||"";return{lider:1,nA,nB:yo,rB:lzRango(yo),fotoA:fotoDe(nA,0,ci.lzSU),fotoB:miFotoUrl(),fecha:lzFechaTxt(ci.fecha),hora:h12(ci.hora),flag:lzTz()[1],enlace:ci.enlace||"",yo:miNombreCorto()||"",tipo:ci.lzT||"",extra:lzXs(ci),zonas:lzZonas(ci.fecha,ci.hora)}}const nB=ci.lzN||"";return{tipo:ci.lzT||"",extra:lzXs(ci),zonas:lzZonas(ci.fecha,ci.hora),nA:yo,nB,rB:ci.lzR||lzRango(nB),fotoA:miFotoUrl(),fotoB:fotoDe(nB,0,ci.lzU),fecha:lzFechaTxt(ci.fecha),hora:h12(ci.hora),flag:lzTz()[1],enlace:ci.enlace||"",yo:miNombreCorto()||""}}
 async function abrirLanz(tipo){if(ahGate())return;const PR=tipo==="pres",W=LZW({lzT:PR?"pres":""});if(!store.db||!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}
   if(!(fotosFs||[]).length)try{await cargarFotos()}catch(e){}
   if(mios===null)try{await loadMios()}catch(e){}
@@ -7204,7 +7204,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261109131537";var busy=false,pend=null;
+(function(){var V="20261109145347";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
