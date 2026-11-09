@@ -1,0 +1,18 @@
+name: Corregir día (solo cuenta del creador)
+on:
+  workflow_dispatch:
+    inputs:
+      fecha: { description: "AAAA-MM-DD", required: true }
+      dry: { description: "1 = solo revisar", default: "1" }
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: cd tools/push && npm install --no-audit --no-fund >/dev/null && node fixdia.mjs
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+          FECHA: ${{ inputs.fecha }}
+          DRY: ${{ inputs.dry }}
