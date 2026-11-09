@@ -1,0 +1,38 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:LB;src:url(LBI.ttf);font-style:italic;font-weight:400 700}
+body{margin:0;font-family:system-ui;background:#e9edf2;width:1200px}
+.row{display:flex}.cell{width:600px;height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.d{background:#0b1220;color:#fff;--bgc:#0b1220}.l{background:#F3F6F9;color:#2B2A2D;--bgc:#F3F6F9}
+.tag{position:absolute;left:16px;top:12px;font:700 13px system-ui;letter-spacing:.1em;opacity:.55}
+.lg{position:relative;font:italic 700 64px/1 LB;letter-spacing:-.02em;white-space:nowrap}
+.pl{font:900 54px/1 system-ui;background:linear-gradient(135deg,#2AC1F1,#0A7DAD);-webkit-background-clip:text;color:transparent}
+svg.h{position:absolute}
+.small .lg{font-size:26px}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FE0FF"/><stop offset=".5" stop-color="#2AC1F1"/><stop offset="1" stop-color="#0A7DAD"/></linearGradient>
+<symbol id="casco" viewBox="0 0 100 100">
+ <!-- penacho -->
+ <path d="M14 50 C10 22 36 5 64 7 C81 8 93 17 99 29 C90 24 80 22 70 23 C50 25 35 33 28 47 Z" fill="url(#g)"/>
+ <path d="M24 30 L30 37 M33 20 L38 30 M44 13 L47 25 M56 9 L57 22 M68 9 L66 22 M80 12 L76 23" stroke="#000" stroke-opacity=".22" stroke-width="2.4" stroke-linecap="round"/>
+ <!-- casco (perfil, mira a la derecha) con ojo y abertura huecos -->
+ <path fill="url(#g)" fill-rule="evenodd" d="M22 88 C16 80 17 64 20 54 C24 38 38 28 56 28 C73 28 85 39 87 54 L87 70 L81 72 L81 91 C74 96 64 96 58 91 C53 87 50 83 47 80 C39 85 30 91 22 88 Z
+  M63 52 C69 48 79 48 87.5 52 L87.5 58 C79 61 69 61 63 58 Z
+  M74 63 L82 63 L82 70 L76 71 Z"/>
+ <!-- filo del borde -->
+ <path d="M24 64 C34 66 46 64 56 60" stroke="#000" stroke-opacity=".2" stroke-width="2" fill="none" stroke-linecap="round"/>
+</symbol>
+<symbol id="cascoP" viewBox="0 0 100 100">
+ <use href="#casco"/>
+</symbol>
+</defs></svg>
+<script>
+const V=[
+ ["A · casco espartano arriba de la «s» + signo",()=>`<div class="lg">Action Leaders<svg class="h" style="right:-20px;top:-50px;width:58px;height:58px"><use href="#casco"/></svg><span class="pl" style="position:absolute;right:-56px;top:-40px;font-size:40px">+</span></div>`],
+ ["B · casco en lugar del +, con + pequeño",()=>`<div class="lg" style="padding-right:66px">Action Leaders<svg class="h" style="right:2px;top:-34px;width:62px;height:62px"><use href="#casco"/></svg><span class="pl" style="position:absolute;right:-20px;top:-40px;font-size:30px">+</span></div>`],
+ ["C · casco chico sobre la «s», + igual que hoy",()=>`<div class="lg">Action Leaders<svg class="h" style="right:2px;top:-38px;width:40px;height:40px"><use href="#casco"/></svg><span class="pl" style="position:absolute;right:-40px;top:-14px;font-size:46px">+</span></div>`]
+];
+let h="";V.forEach(([t,f])=>{h+=`<div class="row"><div class="cell d"><span class="tag">${t}</span>${f()}</div><div class="cell l"><span class="tag">${t}</span>${f()}</div></div>`});
+h+=`<div class="row"><div class="cell d"><span class="tag">ACTUAL</span><img src="../../../media/logo-mas.png" style="height:62px"></div><div class="cell l" style="background:#0b1220"><span class="tag" style="color:#fff">ACTUAL</span><img src="../../../media/logo-mas.png" style="height:24px"></div></div>`;
+document.body.insertAdjacentHTML("beforeend",h);
+</script></body></html>
