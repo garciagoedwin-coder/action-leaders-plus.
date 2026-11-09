@@ -619,3 +619,4 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Aviso al teléfono 30 min antes: .github/workflows/avisos-equipo.yml (cada 15 min) → enviar.mjs equipo (eqzPendientes/msgEqz; users where registro.linea array-contains cre; respeta pr.agenda; dedupe push_meta/equipo.sent; destino "agenda"). Lecturas: ~N reuniones por corrida + la línea del líder solo cuando hay aviso.
 - (9 nov) evaPuedeGran: además de rango Team Leader+, el Líder Espartano del Sistema de liderazgo (lzMiL con ptsBase o volumen ≥ calCfg().esp, 500) puede crear Gran evento. Caso Karen Lizeth Paz Escober (Espartana sin Posición en la hoja).
 - (9 nov, 5 p.m.) Edwin: CUALQUIER socio con ahorro al día puede crear Junta y Gran evento (evaPuedeGran() = true).
+- (9 nov) Mi equipo SIN socios en la app: igual muestra My Dream Team (dtHeroHTML + dtPanel "dtq") para poder agregar CLIENTES con el +; textos del estado vacío de usted.
