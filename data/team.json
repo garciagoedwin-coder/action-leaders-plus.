@@ -44,9 +44,9 @@
    "registros": 0,
    "regSemana": 0,
    "id": "josue-gerardo-delgado-moran",
-   "activaciones": 1,
-   "volumen": 200,
-   "actSemana": 1
+   "activaciones": 2,
+   "volumen": 700,
+   "actSemana": 2
   },
   {
    "nombre": "Edwin García Go",
@@ -171,7 +171,7 @@
    "nuevos": 0,
    "presentaciones": 0,
    "rango": "Marketing Director",
-   "volumen": 200,
+   "volumen": 700,
    "volumenDetalle": "",
    "id": "josue-delgado",
    "volumenHoja": 0,
@@ -3059,6 +3059,17 @@
    "fuente": "gmail",
    "id": "ana-ruth-rivera-villatoro",
    "rv": 1
+  },
+  {
+   "socio": "Santos cecilio Garcia morales",
+   "paquete": "Premium",
+   "patrocinador": "Josue Gerardo Delgado Moran",
+   "fecha": "2026-11-08T23:55:05Z",
+   "ek": "64aec8",
+   "wk": "cceca8",
+   "fuente": "gmail",
+   "id": "santos-cecilio-garcia-morales",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3083,7 +3094,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-08T22:55:02Z",
+  "activacionesCorte": "2026-11-08T23:55:05Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3093,7 +3104,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-08T17:12:00-06:00",
+  "rankingActualizado": "2026-11-08T19:07:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
