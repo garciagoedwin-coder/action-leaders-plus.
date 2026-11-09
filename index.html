@@ -6848,7 +6848,10 @@ const lzYo=()=>nrmN(miNombreFull()||miRegistro().nombre||"");
 function lzMio(l){if(isAdmin)return true;const ns=lzNs(l),yo=lzYo();if(yo&&ns.includes(yo))return true;if(lzMiL()===l)return true;const f=(fotosFs||[]).find(x=>ns.includes(nrmN(x.invNombre||x.nombre||"")));return !!(f&&store.uid&&(f.linea||[]).includes(store.uid))}
 // Mi fila en liderazgo: nombre exacto (registro, "mi nombre en el ranking", fotos rk/invNombre, alias) o, si no, UN solo líder cuyo nombre contenga todas las palabras del mío (mín. 2)
 function lzRow(id,ic,t,sub,cl){return `<button type="button" class="lzRow${cl?" "+cl:""}" id="${id}"><i>${ic}</i><span><b>${esc(t)}</b><small>${esc(sub)}</small></span><em>›</em></button>`}
-function lzMiL(){try{const R=miRegistro()||{},f=((typeof fotosFs!=="undefined"&&fotosFs)||[]).find(x=>x.id===store.uid)||{};const C0=[miNombreFull(),R.nombre,profile&&profile.miNombre,f.rk,f.invNombre,f.nombre].filter(Boolean).map(x=>String(x).trim());
+function lzMiL(){try{const R=miRegistro()||{},f=((typeof fotosFs!=="undefined"&&fotosFs)||[]).find(x=>x.id===store.uid)||{};
+  // 8 nov: también por huella de correo / WhatsApp de su activación (el nombre de inCruises), no solo por el nombre con que se registró en la app
+  const ke=[ahKe(fbUser&&fbUser.email),ahKe(R.correo),ahKe(R.email)].filter(Boolean),kw=ahKw(R.whatsapp),A=(T.activaciones||[]).filter(a=>(a.ek&&ke.includes(a.ek))||(a.wk&&kw&&a.wk===kw)).map(a=>a.socio);
+  const C0=[miNombreFull(),R.nombre,profile&&profile.miNombre,f.rk,f.invNombre,f.nombre].concat(A).filter(Boolean).map(x=>String(x).trim());
   const C=[...new Set(C0.concat(C0.map(aliasRank)))].filter(Boolean),L=T.lideres||[],k=C.join("|")+"#"+L.length;if(lzMiL._k===k)return lzMiL._v;
   const N=C.map(nrmN);let v=L.find(l=>lzNs(l).some(n=>N.includes(n)))||null;
   if(!v){const M=L.filter(l=>lzNs(l).some(n=>C.some(c=>lzMismo(c,n))));if(M.length===1)v=M[0]}
@@ -7185,7 +7188,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261108172801";var busy=false,pend=null;
+(function(){var V="20261108182248";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
