@@ -627,7 +627,8 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Texto con casco (clase .alC, alto .69em entre las palabras; .alH = versión un poco más grande para tamaños chicos): encabezado (.top-t b), bienvenida (.wel-k), portada (.lm-brand) y conoce.html (.brand). Maquetas en tools/flyer/logo/ (l4.html = 6 ubicaciones; gen.html genera el PNG).
 - Los TEXTOS siguen diciendo "Action Leaders+" (mensajes, títulos, bio de historias): pendiente que Edwin decida si se quita el +.
 
-## Business Experience (maqueta, 9 nov, sin programar aún)
-- Flyer especial elegido: tools/flyer/especial/p4.html (azul moderno: foto subida arriba con corte diagonal, "BUSINESS EXPERIENCE" título, subtítulo "Taller exclusivo de liderazgo", invitado especial al centro + 4 ponentes, fecha/hora/lugar, "Solo con invitación").
-- GUARDADAS PARA EL FUTURO (Edwin): p1.html (gala negro/dorado) y p2.html (claro ejecutivo). e1–e5 = versiones anteriores.
-- Pendiente de Edwin para programarlo: quién lo crea (todos con ahorro al día o solo rangos) y la foto (A: cada quien la suya / B: la del creador para todos).
+## 💼 Business Experience (9 nov, EN LA APP)
+- Tercera opción en Crear evento (abrirCrearEva, data-v="bx"): se guarda como Gran evento (tipo "gran", mismas reglas, visibilidad Abierto/Cerrado, confirmaciones y ticket) + bx:1, bxT (título, por defecto "Business Experience"), bxS (subtítulo, "Taller exclusivo de liderazgo"), bxF (foto subida por el creador, JPEG dataURL ≤420 KB dentro del doc; vacío = foto de ejemplo media/eventos/bx.jpg). Cualquier socio con ahorro al día lo crea (Edwin).
+- 1 invitado especial (rol esp) + hasta 4 ponentes (rol acomp, etiqueta "Ponente"); el ⭐ cambia quién es el especial.
+- Flyer bxCanvas (historia 1080×1920, diseño tools/flyer/especial/p4.html): foto con corte diagonal y franja celeste, logo, "SOLO CON INVITACIÓN", ACTION LEADERS, título en 1–2 líneas (Bebas, la 2.ª en degradado celeste), subtítulo en Cormorant, especial al centro con anillo, ponentes 2 y 2 a los lados, barra fecha/hora/lugar, "ACCESO SOLO CON INVITACIÓN PERSONAL". evaCanvas(o) llama bxCanvas si o.bx. evaNom(e) da el nombre en listas/franja; evaScript tiene intro propia.
+- GUARDADAS PARA EL FUTURO (Edwin): tools/flyer/especial/p1.html (gala negro/dorado) y p2.html (claro ejecutivo).
