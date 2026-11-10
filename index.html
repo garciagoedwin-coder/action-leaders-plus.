@@ -1063,7 +1063,8 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
 .presIni small{font-size:10.5px;font-weight:800;letter-spacing:2px;opacity:.9}.presIni b{display:block;font-size:22px;font-weight:900;margin:4px 0 2px}.presIni p{margin:0 0 14px;font-size:13px;opacity:.92;max-width:240px}
 .presIni .pbs{display:flex;gap:8px}.presIni .pbs button{flex:1;border:0;border-radius:14px;padding:12px 6px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;background:#fff;color:#0A4D73}.presIni .pbs button+button{background:rgba(255,255,255,.2);color:#fff}
 @media (prefers-reduced-motion:reduce){.presIni,.presIni .pmic{animation:none}}
-#v-inicio.simple>#presIni{order:2}
+/* 10 nov (Edwin): el banner vive en Agenda, compacto */
+#presIni{padding:12px 14px 12px 70px;border-radius:20px;box-shadow:0 6px 16px rgba(10,125,173,.22)}#presIni .pmic{left:14px;right:auto;top:14px;width:44px;height:44px;font-size:22px}#presIni b{font-size:17px;margin:0}#presIni p{margin:1px 0 9px;font-size:12px;max-width:none}#presIni .pbs{margin-left:-56px}#presIni .pbs button{padding:9px 6px;font-size:13px;border-radius:12px}
 .acaHero{gap:14px!important}.acaHero .ahR{--p:0;flex:none;width:66px;height:66px;border-radius:50%;background:conic-gradient(#2AC1F1 calc(var(--p)*1%),rgba(255,255,255,.15) 0);display:grid;place-items:center;position:relative}.acaHero .ahR:before{content:"";position:absolute;inset:7px;border-radius:50%;background:#0b2a47}.acaHero .ahR b{position:relative;font-size:16px;font-weight:900}
 .acaHero>span:nth-child(2){display:flex;flex-direction:column;gap:2px;flex:1}.acaHero small{font-size:10.5px;letter-spacing:1.5px;font-weight:800;color:#7FDBFF}.acaHero #acaHT{font-size:17px}.acaHero .ahS{letter-spacing:0;font-weight:600;color:#cfe3f2;font-size:12.5px}
 .acaSec{display:flex;justify-content:space-between;align-items:center;margin-top:4px}.acaSec b{font-size:16px}.acaSec em{font-style:normal;font-weight:800;color:var(--brand,#0A7DAD);font-size:13px}
@@ -1464,7 +1465,6 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
         <div class="hiPills"><span class="hiPill" id="pillAh" hidden><i class="dot"></i>Ahorro al día</span><span class="hiPill" id="streak" hidden>Racha 0 días</span><span class="hiPill" id="pillRg" hidden></span><button type="button" class="hiPill" id="pillP" hidden></button><button type="button" class="hiPill" id="pillE" hidden></button></div>
       </div>
       <div id="trHoy" hidden></div>
-      <div class="presIni" id="presIni" hidden><span class="pmic">🎤</span><small>ACCESO DIRECTO</small><b>Dar presentación</b><p>Lleve a su prospecto paso a paso, con la presentación del equipo.</p><div class="pbs"><button type="button" id="piPro">👤 A un prospecto</button><button type="button" id="piGen">👥 General</button></div></div>
       <div class="card" id="avisoCard" hidden></div>
       <div class="miwa" id="miWaCard" hidden></div>
       <div class="ahCard" id="ahCard" hidden></div>
@@ -1550,6 +1550,7 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
     <section class="view" id="v-agenda" hidden>
       <div><p class="eyebrow">Planee y dé seguimiento</p><h1>Agenda</h1></div>
       <div class="ag-big" id="agBig"><button type="button" data-ab="l3" style="background:linear-gradient(135deg,#0A7DAD,#2AC1F1)">📞 Llamada de 3<small>Pídala a un líder</small></button><button type="button" data-ab="lz" style="background:linear-gradient(135deg,#B07D00,#F5B700)">🚀 Lanzamiento<small>Planee con su líder</small></button><button type="button" data-ab="ev" style="background:linear-gradient(135deg,#6D28D9,#A855F7)">🤝 Junta / Evento<small>Con flyer y script</small></button><button type="button" data-ab="ci" style="background:linear-gradient(135deg,#15803D,#22C55E)">➕ Cita<small>Con un prospecto</small></button><button type="button" data-ab="mas" class="agMas"><span class="agMi">🚀🎤🤝</span><span class="agMt"><b>Crear actividad</b><small>Lanzamiento, presentación, junta o evento</small></span><em>›</em></button></div>
+      <div class="presIni" id="presIni" hidden><span class="pmic">🎤</span><b>Dar presentación</b><p>Paso a paso, con la presentación del equipo</p><div class="pbs"><button type="button" id="piPro">👤 A un prospecto</button><button type="button" id="piGen">👥 General</button></div></div>
       <div class="card" id="l3Card" hidden></div>
       <div class="card" id="evaInv" hidden style="border:1.5px solid #7C3AED"></div>
       <div class="card" id="recCard" hidden></div>
@@ -7904,7 +7905,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110163555";var busy=false,pend=null;
+(function(){var V="20261110164420";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
