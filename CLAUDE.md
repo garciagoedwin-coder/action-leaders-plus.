@@ -647,4 +647,4 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - GRAND=1 (workflow_dispatch) ya se corrió el 10 nov: 153 registrados aprobados, 31 miembros, 5 filas de liderazgo sin cuenta.
 - App: pantalla «Su cuenta está en revisión» (#apGate) si token ap=false o apE p/no; revisa el token cada 1–3 min y recarga al aprobarse. Tarjeta «📝 Por aprobar» arriba de Mi equipo (admin siempre la ve).
 - Link del grupo del sistema: sisPriv/grupo {m, link, t} (solo sis/admin); team/liderazgo.grupo = {m, si:true, t} sin link.
-- Reglas: respaldo/firestore.rules.fase3 (socio(), sis(), sisPriv, aprob). Cuando Edwin las pegue, pasa a ser respaldo/firestore.rules.
+- Reglas fase 3 (socio(), sis(), sisPriv, aprob) en producción desde el 10 nov 12:04 UTC = respaldo/firestore.rules (la anterior: firestore.rules.fase2). Link del grupo ya migrado a sisPriv.
