@@ -1049,6 +1049,23 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
 .snvK{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.snvK span{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;border-radius:14px;font-size:12px;font-weight:700;text-align:center}.snvK b{font-size:24px;font-weight:900;line-height:1}
 .snvK .r{background:color-mix(in srgb,#EF4444 12%,transparent);color:#EF4444}.snvK .a{background:color-mix(in srgb,#D97706 13%,transparent);color:#D97706}.snvK .g{background:color-mix(in srgb,#16A34A 13%,transparent);color:#16A34A}
 .snvW{margin:0;font-size:12.5px;font-weight:700;color:#EF4444}
+.presIni{position:relative;overflow:hidden;border-radius:24px;padding:18px;color:#fff;background:linear-gradient(120deg,#0A4D73,#0A7DAD,#2AC1F1,#0A7DAD,#0A4D73);background-size:300% 100%;animation:piMv 7s linear infinite;box-shadow:0 10px 26px rgba(10,125,173,.28)}.presIni[hidden]{display:none}
+@keyframes piMv{to{background-position:300% 0}}.presIni .pmic{position:absolute;right:16px;top:16px;width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:28px;animation:piPu 1.8s infinite}
+@keyframes piPu{0%{box-shadow:0 0 0 0 rgba(255,255,255,.5)}70%{box-shadow:0 0 0 16px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+.presIni small{font-size:10.5px;font-weight:800;letter-spacing:2px;opacity:.9}.presIni b{display:block;font-size:22px;font-weight:900;margin:4px 0 2px}.presIni p{margin:0 0 14px;font-size:13px;opacity:.92;max-width:240px}
+.presIni .pbs{display:flex;gap:8px}.presIni .pbs button{flex:1;border:0;border-radius:14px;padding:12px 6px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;background:#fff;color:#0A4D73}.presIni .pbs button+button{background:rgba(255,255,255,.2);color:#fff}
+@media (prefers-reduced-motion:reduce){.presIni,.presIni .pmic{animation:none}}
+#v-inicio.simple>#presIni{order:2}
+.acaHero{gap:14px!important}.acaHero .ahR{--p:0;flex:none;width:66px;height:66px;border-radius:50%;background:conic-gradient(#2AC1F1 calc(var(--p)*1%),rgba(255,255,255,.15) 0);display:grid;place-items:center;position:relative}.acaHero .ahR:before{content:"";position:absolute;inset:7px;border-radius:50%;background:#0b2a47}.acaHero .ahR b{position:relative;font-size:16px;font-weight:900}
+.acaHero>span:nth-child(2){display:flex;flex-direction:column;gap:2px;flex:1}.acaHero small{font-size:10.5px;letter-spacing:1.5px;font-weight:800;color:#7FDBFF}.acaHero #acaHT{font-size:17px}.acaHero .ahS{letter-spacing:0;font-weight:600;color:#cfe3f2;font-size:12.5px}
+.acaSec{display:flex;justify-content:space-between;align-items:center;margin-top:4px}.acaSec b{font-size:16px}.acaSec em{font-style:normal;font-weight:800;color:var(--brand,#0A7DAD);font-size:13px}
+.acaPath{position:relative;padding-left:36px;display:flex;flex-direction:column;gap:10px}.acaPath:before{content:"";position:absolute;left:14px;top:16px;bottom:22px;width:3px;border-radius:3px;background:var(--line)}
+.acaSt{position:relative;display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:10px 12px;font:inherit;cursor:pointer}
+.acaSt>i,.acaN{position:absolute;left:-36px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px;background:var(--surface);border:3px solid var(--line);color:var(--muted);z-index:1}
+.acaSt.ok>i,.acaN.ok{background:#16A34A;border-color:#16A34A;color:#fff}.acaSt.now>i,.acaN.now{background:#0A7DAD;border-color:#0A7DAD;color:#fff;box-shadow:0 0 0 5px rgba(10,125,173,.18)}.acaSt.now{border-color:#0A7DAD}
+.acaTh{flex:none;width:76px;height:46px;border-radius:10px;background:linear-gradient(135deg,#1e293b,#0A7DAD) center/cover;display:grid;place-items:center;color:#fff;font-size:16px;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.acaSt b{display:block;font-size:14.5px}.acaSt small{font-size:12px;color:var(--muted)}.acaSt.lock{opacity:.55;cursor:default}.acaOpen{position:relative}.acaOpen .acaN{top:26px;transform:none}
+.acaTools{display:grid;grid-template-columns:1fr 1fr;gap:10px}.acaTools button{display:flex;gap:10px;align-items:center;text-align:left;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:12px;font:inherit;font-size:20px;cursor:pointer}.acaTools span{display:flex;flex-direction:column;font-size:14px;font-weight:800}.acaTools small{font-size:11.5px;font-weight:600;color:var(--muted)}
 #apGate{position:fixed;inset:0;z-index:2147483000;background:var(--bg,#fff);color:var(--ink);display:flex;align-items:center;justify-content:center;padding:28px}
 #apGate .apC{max-width:360px;text-align:center;display:flex;flex-direction:column;gap:10px}#apGate .apI{font-size:54px}#apGate h2{margin:0;font-size:24px}#apGate p{margin:0;line-height:1.5;color:var(--muted,#555)}#apGate .btn{width:100%}
 .card.apr{display:flex;align-items:center;gap:12px;border:1.5px solid #F5B700;background:linear-gradient(135deg,rgba(245,183,0,.12),rgba(245,183,0,.03))}.aprH{flex:1;display:flex;gap:10px;align-items:center}.aprH b{display:block}.aprI{font-size:28px}
@@ -1430,6 +1447,7 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
         <div class="hiPills"><span class="hiPill" id="pillAh" hidden><i class="dot"></i>Ahorro al día</span><span class="hiPill" id="streak" hidden>Racha 0 días</span><span class="hiPill" id="pillRg" hidden></span><button type="button" class="hiPill" id="pillP" hidden></button><button type="button" class="hiPill" id="pillE" hidden></button></div>
       </div>
       <div id="trHoy" hidden></div>
+      <div class="presIni" id="presIni" hidden><span class="pmic">🎤</span><small>ACCESO DIRECTO</small><b>Dar presentación</b><p>Lleve a su prospecto paso a paso, con la presentación del equipo.</p><div class="pbs"><button type="button" id="piPro">👤 A un prospecto</button><button type="button" id="piGen">👥 General</button></div></div>
       <div class="card" id="avisoCard" hidden></div>
       <div class="miwa" id="miWaCard" hidden></div>
       <div class="ahCard" id="ahCard" hidden></div>
@@ -1542,8 +1560,7 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
     <!-- ACADEMIA -->
     <section class="view" id="v-academia" hidden>
       <div class="row between"><div><p class="eyebrow">Aprende y crece</p><h1>Academia</h1></div><button class="btn sm ghost" id="goPrompts" type="button">🤖 Prompts IA</button></div>
-      <button type="button" class="irAca" id="goPres" style="margin-bottom:10px">🎤 <span><b>Dar presentación</b><small>A un prospecto o una presentación general</small></span><em>›</em></button>
-      <button type="button" class="irAca" id="goIR">🚀 <span><b>Plan de Inicio Rápido</b><small>30 días · 4 insignias · aprenda a duplicar</small></span><em>›</em></button>
+      <button type="button" class="irAca acaHero" id="goIR"><span class="ahR" id="acaRing"><b>🚀</b></span><span><small>SU PLAN DE INICIO RÁPIDO</small><b id="acaHT">30 días · 4 insignias</b><small class="ahS" id="acaHS">Aprenda a duplicar paso a paso</small></span><em>›</em></button>
       <div class="seg" role="tablist" id="acaSeg">
         <button aria-selected="true" data-k="arranque">Arranque</button>
         <button aria-selected="false" data-k="training">Training</button>
@@ -2028,7 +2045,7 @@ async function snCompartir(){if(!snList||!snList.length){toast("Agregue primero 
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(x){if(x&&x.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);toast("Imagen descargada 📲")}catch(e){toast("No se pudo crear la imagen")}}
 $("#snShare").onclick=snCompartir;
-$("#goPrompts").onclick=()=>go("ia");$("#goIR").onclick=()=>irDesdeAca();{const gp=$("#goPres");if(gp)gp.onclick=()=>presElegir()}{const pb=$("#presBtn");if(pb)pb.onclick=()=>presElegir()}$("#iaBack").onclick=()=>go("academia");
+$("#goPrompts").onclick=()=>go("ia");$("#goIR").onclick=()=>irDesdeAca();{const gp=$("#goPres");if(gp)gp.onclick=()=>presElegir()}{const a=$("#piPro");if(a)a.onclick=()=>presElegir();const g=$("#piGen");if(g)g.onclick=()=>{if(presOk())presAbrir({general:1,name:""})}}{const pb=$("#presBtn");if(pb)pb.onclick=()=>presElegir()}$("#iaBack").onclick=()=>go("academia");
 
 // ---------- mi constancia (mes) ----------
 function perfRankHtml(){let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}
@@ -3155,6 +3172,10 @@ function idxEqPrev(L){L=L.filter(idxCuenta);const v=L.map(x=>idxPrev(x.uid)).fil
 function idxDelta(v,pv){if(idxPer!=="sem"||pv==null||v==null||!diasPrev())return"";const d=v-pv;return `<span class="chip" style="background:${d>0?"var(--good-soft)":d<0?"rgba(220,38,38,.12)":"var(--line)"};color:${d>0?"var(--good)":d<0?"#DC2626":"var(--muted)"};font-weight:800">${d>0?"↑ +"+d:d<0?"↓ "+d:"= 0"} vs. semana pasada (${pv}%)</span>`}
 function idxHoy(uid){const c=idxC(uid);return !!(c&&c.fecha===TODAY&&(+c.hoy||0)>0)}
 const IDX_INACT=14*864e5;
+// 10 nov (Edwin): CLIENTE = 14 días o más sin abrir la app ni hacer su rutina, con el ahorro al día (no quiere trabajar el negocio).
+// No cuenta en el índice ni en "Hoy llame a estos". Si vuelve a usar la app, vuelve solo a socio. Con ahorro pendiente sigue contando (está en riesgo).
+function esCliente(x){if(!constL||idxActivo(x))return false;const a=ahSoc(x);return !(a&&a.pend)}
+function diasACliente(x){if(!constL||!idxUlt(x))return null;const d=Math.floor((Date.now()-idxUlt(x))/864e5);return d>=7&&d<14?14-d:null}
 function idxUlt(x){const c=idxC(x.uid);let f=0;try{f=c&&c.fecha?parseK(c.fecha).getTime():0}catch(e){}return Math.max(tsMs(x.ultimoAcceso)||0,f)}
 function idxActivo(x){return Date.now()-idxUlt(x)<IDX_INACT}
 function idxCuenta(x){if(idxActivo(x))return true;const a=ahSoc(x);return !!(a&&a.pend)}
@@ -3172,7 +3193,7 @@ function idxCard(){const P=idxPool();if(!P.length)return"";if(!constL){if(!windo
   return `<div class="card" style="gap:10px"><div class="row between" style="gap:8px;flex-wrap:wrap"><b style="font-size:17px">⚡ Índice de Duplicación</b><div class="seg" style="width:auto;margin:0"><button aria-selected="${idxPer==="sem"}" data-ip="sem">Semana</button><button aria-selected="${idxPer==="mes"}" data-ip="mes">Mes</button></div></div>
    <div class="row" style="gap:14px;align-items:center"><b class="num" style="font-size:54px;line-height:1;color:${IDX_C(v)}">${v}%</b><span class="small muted">Promedio de la rutina de ${isAdmin?"todo el equipo":"su equipo"} activo ${idxPer==="sem"?"esta semana":"este mes"}. Quien tiene ahorro pendiente cuenta siempre.</span></div>
    <div style="height:10px;border-radius:99px;background:var(--line);overflow:hidden"><i style="display:block;height:100%;width:${v}%;background:${IDX_C(v)}"></i></div>
-   <div class="row wrap" style="gap:6px">${idxDelta(v,idxEqPrev(P))}<span class="chip c-brand">👥 Equipo activo: ${P.length-PI.length} de ${P.length}</span><span class="chip c-good">✅ Hoy: ${act} de ${P.length} hicieron su rutina</span>${PI.length?`<button type="button" class="chip c-warn" style="border:0;font:inherit;font-weight:700;cursor:pointer" data-reac="1">😴 Por reactivar: ${PI.length} ›</button>`:""}${me!=null?`<span class="chip" style="background:${IDX_C(me)};color:#fff">Mi índice: ${me}%</span>`:""}${me!=null&&idxPer==="sem"&&idxPrev(store.uid)!=null?`<span class="chip c-brand">Yo: ${(d=>d>0?"↑ +"+d:d<0?"↓ "+d:"= 0")(me-idxPrev(store.uid))} vs. semana pasada</span>`:""}</div>
+   <div class="row wrap" style="gap:6px">${idxDelta(v,idxEqPrev(P))}<span class="chip c-brand">👥 Equipo activo: ${P.length-PI.length} de ${P.length}</span>${(n=>n?`<span class="chip" style="background:#64748B;color:#fff">🧳 Clientes: ${n} (no cuentan)</span>`:"")(P.filter(esCliente).length)}<span class="chip c-good">✅ Hoy: ${act} de ${P.length} hicieron su rutina</span>${PI.length?`<button type="button" class="chip c-warn" style="border:0;font:inherit;font-weight:700;cursor:pointer" data-reac="1">😴 Por reactivar: ${PI.length} ›</button>`:""}${me!=null?`<span class="chip" style="background:${IDX_C(me)};color:#fff">Mi índice: ${me}%</span>`:""}${me!=null&&idxPer==="sem"&&idxPrev(store.uid)!=null?`<span class="chip c-brand">Yo: ${(d=>d>0?"↑ +"+d:d<0?"↓ "+d:"= 0")(me-idxPrev(store.uid))} vs. semana pasada</span>`:""}</div>
    <button class="btn sm" data-idxv="" style="width:100%">Ver el índice de cada socio ›</button></div>`}
 function idxSheet(uid){const P=idxPool(),ids=new Set(P.map(x=>x.uid)),root=!uid;
   const D=root?(isAdmin?P.filter(x=>!ids.has((x.registro||{}).patrocinadorUid)):P.filter(x=>x.nivel===1)):P.filter(x=>(x.registro||{}).patrocinadorUid===uid);
@@ -3238,7 +3259,7 @@ function gestHoja(x,k){const nm=(x.registro||{}).nombre||"Socio",f=nm.split(" ")
 function hoyLlamar(){try{const L=[];(mios||[]).forEach(x=>{const nm=(x.registro||{}).nombre||"Socio",ah=ahSoc(x),p=(x.ir||{}).p,dd=new Date().getDate();let r=null,o=9,k="";
   if(ah&&ah.pend){r=ah.bloq?"💰 Ahorro vencido · está en pausa":"💰 Ahorro pendiente";o=1;k=ah.bloq?"ahv":"ah"}
   else if(p&&!p.g&&Date.now()-(p.u||0)>2*864e5){r="🚀 Inicio Rápido atrasado · semana "+(p.w||1);o=2;k="ir"}
-  else if(constL&&!idxActivo(x)){r="😴 Sin actividad en la app";o=3;k="inact"}
+  else if(constL&&!idxActivo(x)&&!esCliente(x)){r="😴 Sin actividad en la app";o=3;k="inact"}
   else if(dd>=3&&compPuede0()&&!compDe(x)){r="🎯 Sin compromiso del mes";o=4;k="comp"}
   if(r){const g=gestDe(x.uid),ot=gestOtro(x);L.push({x,nm,r,o,k,g,ot,h:!!(g&&g.d===TODAY)||!!ot,n:x.nivel||1})}});L.sort((a,b)=>a.h-b.h||a.o-b.o||a.n-b.n);
   const P=L.filter(z=>!z.h),H=L.filter(z=>z.h),M=hoyAll?P.concat(H):P.slice(0,4);
@@ -3314,7 +3335,7 @@ function miosFila(V,lvl0){let lvl=lvl0;const cname=k=>{const c=cursosL().find(x=
       ${constL?(()=>{const hp=actDe(x).hoy||0,mp=idxPerPer(x,"mes"),E=idxDesc(x.uid,idxPool()),eh=E.length?Math.round(E.filter(idxCuenta).reduce((t,y)=>t+(actDe(y).hoy||0),0)/Math.max(1,E.filter(idxCuenta).length)):null,em=E.length?idxEqPer(E,"mes"):null;
         const bx=(t,v)=>v==null?"":`<div class="mfIx" style="--c:${IDX_C(v)}"><small>${t}</small><b>${v}%</b><span>${v>=70?"🟢 Bien":v>=40?"🟡 Regular":"🔴 Mal"}</span></div>`;
         return `<div class="mfIxs">${bx("Personal hoy",hp)}${bx("Personal del mes",mp)}${bx("Su equipo hoy",eh)}${bx("Su equipo del mes",em)}</div>`})():""}<div class="row wrap mfc" style="gap:6px;margin-top:8px">
-       ${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<span class="chip c-bad mk" style="font-weight:700">🔴 Ahorro pendiente · ${ah.bloq?"en pausa":"hasta el "+esc(ahFecha(ah.lim))}</span>`:ah?`<span class="chip c-good mk" style="font-weight:700">🚢 Ahorro al día</span>`:""})()}${!idxActivo(x)&&constL?`<span class="chip c-warn mk">😴 ${(d=>d>90||!idxUlt(x)?"Sin actividad":d+" días sin actividad")(Math.floor((Date.now()-idxUlt(x))/864e5))}</span>`:""}
+       ${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<span class="chip c-bad mk" style="font-weight:700">🔴 Ahorro pendiente · ${ah.bloq?"en pausa":"hasta el "+esc(ahFecha(ah.lim))}</span>`:ah?`<span class="chip c-good mk" style="font-weight:700">🚢 Ahorro al día</span>`:""})()}${esCliente(x)?`<span class="chip mk" style="background:#64748B;color:#fff;font-weight:700">🧳 Cliente · ${(d=>d>90||!idxUlt(x)?"no usa la app":d+" días sin la app")(Math.floor((Date.now()-idxUlt(x))/864e5))}</span>`:!idxActivo(x)&&constL?`<span class="chip c-warn mk">😴 ${(d=>d>90||!idxUlt(x)?"Sin actividad":d+" días sin actividad")(Math.floor((Date.now()-idxUlt(x))/864e5))}</span>`:diasACliente(x)!=null?`<span class="chip mk" style="background:#FEF3C7;color:#92400E;font-weight:700">⏳ ${diasACliente(x)===1?"Mañana pasa":"En "+diasACliente(x)+" días pasa"} a cliente si no usa la app</span>`:""}
        ${constL?(()=>{const ip=idxPersX(x),E=idxDesc(x.uid,idxPool()),e=idxEq(E);return `<span class="chip" style="background:${IDX_C(ip)};color:#fff">⚡ Personal ${ip}%</span>${E.length?`<span class="chip" style="background:${IDX_C(e)};color:#fff">⚡ Equipo de ${esc(nm.split(" ")[0])} ${e}% (${E.length} ${E.length===1?"socio":"socios"})</span>`:""}`})():""}
        <span class="chip ${a.bien?"c-good":"c-warn"}">${a.bien?"🎬 Bienvenida ✓":"🎬 Bienvenida pendiente"}</span>
        <span class="chip ${a.racha?"c-gold":"c-brand"}">🔥 Racha ${a.racha} ${a.racha===1?"día":"días"}</span>
@@ -6486,14 +6507,25 @@ async function presClick(e){const b=e.target.closest("[data-pv]");if(!b||!PS)ret
   if(k==="wa"){if(!profile.ref)toast("Tip: agregue su enlace de inCruises en Mi página para que salga en el mensaje");const m=presMsg(),w=waNum(PS.c.phone,PS.c.cc);await presGuardar();location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(m);return}
   if(k==="l3"){await presGuardar();const c=PS.c;presCerrar();pedirL3(c);return}
   if(k==="fin"){if(PS.c.general){toast("🎤 Presentación terminada");presCerrar();return}if(!PS.ok)await presGuardar();toast("✅ Presentación guardada en el CRM");presCerrar()}}
+function acaHero(){const r=$("#acaRing"),t=$("#acaHT"),s=$("#acaHS");if(!r)return;let m=null;try{m=irModo()}catch(e){}
+  if(!m){r.style.setProperty("--p",0);r.innerHTML="<b>🚀</b>";t.textContent="30 días · 4 insignias";s.textContent="Aprenda a duplicar paso a paso";return}
+  const E=irEstado(),tot=E.W.reduce((a,w)=>a+w.L.length,0),hc=E.W.reduce((a,w)=>a+w.n2,0),p=tot?Math.round(hc*100/tot):0;
+  r.style.setProperty("--p",p);r.innerHTML=`<b>${p}%</b>`;t.textContent=E.grad?"¡Plan completado! 🎓":"Semana "+E.cur.n+" · "+E.cur.k;
+  const nx=E.grad?null:E.cur.L.find(i=>!i.ok);s.textContent=E.grad?"Ya es Action Leader graduado":nx?"Siguiente: "+nx.t:"Toque para ver su plan"}
+function acaMateriales(){const L=cursosL().filter(c=>c.pdf),pr=irPresUrl();
+  openSheet(`<p class="eyebrow">ACADEMIA</p><h2 style="margin:2px 0 12px">📄 Materiales</h2><div class="amL">${L.map(c=>`<button type="button" data-mpdf="${esc(c.pdf)}" data-mpn="${esc(c.pdfN||"material.pdf")}"><i>📄</i><span><b>${esc(c.pdfT||"Material")}</b><small>${esc(c.t)}</small></span><em>›</em></button>`).join("")}${pr?`<button type="button" id="mPres"><i>🎤</i><span><b>Presentación del negocio</b><small>Para descargar o compartir</small></span><em>›</em></button>`:""}</div>${!L.length&&!pr?`<p class="muted">Pronto habrá materiales aquí.</p>`:""}<button class="btn ghost" data-close style="width:100%;margin-top:12px">Cerrar</button>`,()=>{
+  document.querySelectorAll("[data-mpdf]").forEach(x=>x.onclick=()=>bajarPdf(x.dataset.mpdf,x.dataset.mpn));const mp=$("#mPres");if(mp)mp.onclick=()=>{try{window.open(pr,"_blank")}catch(e){location.href=pr}}})}
 function renderAca(){const b=$("#acaBody");if(ahBloqYo()){b.innerHTML=`<div class="card" style="gap:8px;text-align:center"><b style="font-size:17px">🔒 Academia en pausa</b><p class="small muted" style="margin:0">Su ahorro de inCruises está pendiente. Póngase al día para reactivar sus cursos y herramientas.</p><button class="btn" style="background:#25D366;color:#fff" onclick="ahHablarSp()">💬 Hablar con mi patrocinador</button></div>`;return}
   if(ACA_PRONTO){$("#acaSeg").hidden=true;const cv=profile.cursos||{};
-    b.innerHTML=tourCard()+`<div><p class="eyebrow" style="margin:0">Cursos</p><p class="small muted" style="margin:2px 0 0">Aprenda paso a paso y descargue su material.</p></div>`+cursosL().map((c,i)=>{const ok=!!cv[c.k];if(ok&&!cursoOpen[c.k])return `<button type="button" class="card curso cursoMin" data-cabre="${c.k}"><span class="cmOk">${CHECK}</span><span class="grow" style="text-align:left"><span class="chip c-good">Curso ${i+1} · Completado</span><b>${esc(c.t)}</b><small class="muted">Toque para volver a ver el video</small></span><span class="cmGo">›</span></button>`;return `<div class="card curso">
+    try{acaHero()}catch(e){}const CL=cursosL(),nOk=CL.filter(c=>cv[c.k]).length,sig=CL.findIndex(c=>!cv[c.k]);
+    b.innerHTML=`<div class="acaSec"><b>🎓 Su ruta de aprendizaje</b><em>${nOk} de ${CL.length}</em></div><div class="acaPath">`+CL.map((c,i)=>{const ok=!!cv[c.k],now=i===sig;if(!cursoOpen[c.k])return `<button type="button" class="acaSt${ok?" ok":now?" now":""}" data-cabre="${c.k}"><i>${ok?"✓":i+1}</i><span class="acaTh" style="background-image:url(https://i.ytimg.com/vi/${c.yt}/mqdefault.jpg),linear-gradient(135deg,#1e293b,#0A7DAD)">▶</span><span class="grow"><b>${esc(c.t)}</b><small>${ok?"Completado · toque para verlo de nuevo":now?"Siga aquí"+(c.pdf?" · 📄 con material":""):"Curso "+(i+1)+(c.pdf?" · 📄 con material":"")}</small></span></button>`;return `<div class="acaOpen"><i class="acaN${ok?" ok":now?" now":""}">${ok?"✓":i+1}</i><div class="card curso">
       <div class="row between" style="align-items:flex-start;gap:10px"><div><span class="chip ${ok?"c-good":"c-gold"}">Curso ${i+1}${ok?" · Completado ✓":""}</span><h2 style="margin:8px 0 0">${esc(c.t)}</h2><p class="small muted" style="margin:4px 0 0">${esc(c.d)}</p></div></div>
       <div class="yt"><iframe src="https://www.youtube.com/embed/${c.yt}?rel=0&playsinline=1" referrerpolicy="strict-origin-when-cross-origin" title="${esc(c.t)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
       ${c.pdf?`<button class="btn" data-pdf="${c.pdf}" data-pdfn="${esc(c.pdfN||"material.pdf")}" style="width:100%;justify-content:center">📄 ${esc(c.pdfT||"Descargar material")}</button>`:""}
-      ${ok?`<button class="btn ghost" data-ccierra="${c.k}" style="width:100%">Cerrar</button>`:`<button class="btn dark" data-curso="${c.k}" style="width:100%">Marcar como visto</button>`}</div>`}).join("")+
-     `<div class="card empty" style="text-align:center;padding:20px"><div style="font-size:28px;line-height:1">🎓</div><p class="small muted" style="margin:6px 0 0">Más cursos muy pronto.</p></div>`;
+      ${ok?`<button class="btn ghost" data-ccierra="${c.k}" style="width:100%">Cerrar</button>`:`<div class="row" style="gap:8px"><button class="btn ghost" data-ccierra="${c.k}" style="flex:1">Cerrar</button><button class="btn dark" data-curso="${c.k}" style="flex:2">Marcar como visto</button></div>`}</div></div>`}).join("")+
+     `<div class="acaSt lock"><i>${CL.length+1}</i><span class="acaTh">🔒</span><span class="grow"><b>Más cursos</b><small>Muy pronto</small></span></div></div>
+     <div class="acaSec"><b>🧰 Herramientas</b></div><div class="acaTools"><button type="button" id="acaIA">🤖 <span>Prompts IA<small>Textos listos para usar</small></span></button><button type="button" id="acaMat">📄 <span>Materiales<small>Hojas y presentación</small></span></button></div>`;
+    {const a=$("#acaIA");if(a)a.onclick=()=>go("ia");const m=$("#acaMat");if(m)m.onclick=acaMateriales}
     b.querySelectorAll("[data-pdf]").forEach(x=>{const u=x.dataset.pdf,n=x.dataset.pdfn;pdfFile(u,n);x.onclick=()=>bajarPdf(u,n)});
     b.querySelectorAll("[data-cabre]").forEach(x=>x.onclick=()=>{cursoOpen[x.dataset.cabre]=1;renderAca()});
     b.querySelectorAll("[data-tour]").forEach(x=>x.onclick=()=>tourIr(x.dataset.tour));
@@ -7493,6 +7525,7 @@ async function startApp(u){
   if(u&&!(regDoc&&regDoc.registro))await cargarInvitacion();
   await loadMine();
   if(u&&!isAdmin&&regDoc&&regDoc.registro)apRevisar().catch(()=>{});
+  {const pi=$("#presIni");if(pi)pi.hidden=!(u&&regDoc&&regDoc.registro)}
   if(u){setTimeout(()=>{try{trHoy()}catch(e){}},900);setInterval(()=>{try{if(!document.hidden)trHoy()}catch(e){}},5*6e4)}
   if(regDoc&&regDoc.registro){welState.registro=true;publicarInv();if(profile.waPublico)setTimeout(publicarPerfil,4000)}
   renderWel();renderAviso();renderAccesos();
@@ -7506,7 +7539,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110094520";var busy=false,pend=null;
+(function(){var V="20261110095447";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
