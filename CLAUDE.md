@@ -700,3 +700,10 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Tema del flyer del training en Bebas Neue dorado (Edwin opción A), en invitación y estados.
 - trCanvas carga fotos (cargarFotos) y usa los ponentes de turnos CON uid (trPon) → foto por cuenta (caso Miguel Ángel García salía con iniciales: e._tr solo traía nombres).
 - Lanzamiento de negocio: frase LZ_TXT.sub = «Descubra la oportunidad de emprender / en la industria de viajes.» (antes decía «Una noche…»).
+
+## Editar juntas y eventos (10 nov)
+- evaVer → «✏️ Editar fecha, hora, lugar o ponentes» (evaEditar) para creador, anfitriones (lidU) y admin: fecha, hora, presencial/virtual, ciudad, lugar, detalle, Maps, Zoom, formulario, foto del flyer (o título/subtítulo en Business Experience) y «👥 Cambiar anfitriones/invitados» (evaEditLid, ahora también para anfitriones y admin).
+- Si cambia fecha, hora o lugar se guarda `cam` {t, u, por, f, h, l (valores ANTERIORES; si ya había un cambio en 48 h se conservan los originales)}. evaCam(e) = «🔁 Cambió la hora y el lugar» por 48 h en la fila, la ficha y la franja #evHoy. evaCamRevisar (en renderEvA): avisoTop una vez (LS evCamV:id) a creador/anfitriones/quien invitó gente, y vuelve a publicar su copia del link corto (rsvpPub, solo si cambió el hash).
+- Confirmados con r.t < cam.t: botón naranja «📢 Avisar el cambio» (evaCamMsg por WhatsApp; LS evCamAv:id marca a quién ya se avisó; luego vuelve a «Recordar»).
+- Reglas: agendaEv update ahora también `|| isAdmin()` (respaldo/firestore.rules). Sin la regla, el admin ve «Falta pegar en Firebase la regla nueva».
+- Socios nuevos: selector de mes compacto (#snvMs barra delgada «Noviembre [17] | Octubre [54]»).

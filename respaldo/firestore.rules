@@ -128,7 +128,7 @@ service cloud.firestore {
     match /agendaEv/{id} {
       allow read: if socio();
       allow create: if socio() && request.resource.data.cre == request.auth.uid;
-      allow update: if request.auth != null && (resource.data.cre == request.auth.uid || request.auth.uid in resource.data.lidU)
+      allow update: if request.auth != null && (resource.data.cre == request.auth.uid || request.auth.uid in resource.data.lidU || isAdmin())
         && request.resource.data.cre == resource.data.cre;
       allow delete: if request.auth != null && resource.data.cre == request.auth.uid;
     }
