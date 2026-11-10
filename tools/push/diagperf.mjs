@@ -1,4 +1,7 @@
-import admin from "firebase-admin";
+// Una sola vez: compara reglas de PRODUCCIÓN con respaldo/firestore.rules. Solo lee.
+import admin from "firebase-admin";import fs from "node:fs";import {execSync} from "node:child_process";
 admin.initializeApp({credential:admin.credential.cert(JSON.parse(process.env.FIREBASE_SA))});
-const d=(await admin.firestore().doc("privAp/zoom").get()).data()||{};
-console.log("zoom guardado:",!!d.tr,"· es zoom.us:",/^https:\/\/([a-z0-9-]+\.)*zoom\.us\//i.test(d.tr||""),"· hace min:",d.t?Math.round((Date.now()-d.t)/6e4):"-");
+const rs=await admin.securityRules().getFirestoreRuleset();
+const src=rs.source.map(f=>f.content).join("\n");fs.writeFileSync("/tmp/prod.rules",src);
+console.log("ruleset creado",rs.createTime,"líneas",src.split("\n").length);
+try{execSync("diff -u -w -B ../../respaldo/firestore.rules /tmp/prod.rules",{stdio:"inherit"});console.log("IGUALES")}catch(e){console.log("(fin del diff)")}
