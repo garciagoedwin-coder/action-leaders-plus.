@@ -1,0 +1,46 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:BB;src:url(../../../media/fonts/BebasNeue-Regular.ttf)}
+@font-face{font-family:CC;src:url(../../../media/fonts/Cormorant-500-caps.ttf)}
+@font-face{font-family:OU;src:url(../../../media/fonts/Outfit-Regular.ttf)}
+@font-face{font-family:OB;src:url(../../../media/fonts/Outfit-Bold.ttf)}
+@font-face{font-family:KS;src:url(../../../media/fonts/KaushanScript-Regular.ttf)}
+*{box-sizing:border-box}
+body{margin:0;width:1080px;height:1920px;overflow:hidden;font-family:OU;color:#fff;background:#03070f;position:relative}
+/* ===== D1 CINE ===== */
+.ph{position:absolute;left:0;right:0;top:0;height:1180px;background:var(--f,url(foto.jpg)) center/cover;filter:saturate(.85) contrast(1.08)}
+.tint{position:absolute;left:0;right:0;top:0;height:1180px;background:linear-gradient(180deg,rgba(3,7,15,.8) 0%,rgba(3,7,15,.15) 24%,rgba(3,7,15,0) 45%,rgba(3,7,15,.65) 75%,#03070f 100%),linear-gradient(90deg,rgba(10,125,173,.35),rgba(42,193,241,.05) 50%,rgba(10,125,173,.35));mix-blend-mode:normal}
+.glow{position:absolute;left:-200px;right:-200px;top:960px;height:420px;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(42,193,241,.22),transparent 70%)}
+.logo{position:absolute;top:96px;left:0;right:0;text-align:center}.logo img{height:64px}
+.kick{position:absolute;top:900px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:22px;font:700 24px OB;letter-spacing:12px;color:#7FE0FF;padding-left:12px}
+.kick:before,.kick:after{content:"";width:90px;height:2px;background:linear-gradient(90deg,transparent,#2AC1F1)}.kick:after{transform:scaleX(-1)}
+.t1{position:absolute;top:950px;left:0;right:0;text-align:center;font:400 196px/0.92 BB;letter-spacing:4px;text-shadow:0 10px 40px rgba(0,0,0,.6)}
+.t1 span{display:block;background:linear-gradient(180deg,#BDEEFF,#2AC1F1 55%,#0A7DAD);-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 0 30px rgba(42,193,241,.35))}
+.scr{position:absolute;top:1280px;left:0;right:0;text-align:center;font:400 54px KS;color:#fff;transform:rotate(-4deg);opacity:.95}
+.inv{position:absolute;top:1376px;left:0;right:0;display:flex;justify-content:center;gap:46px}
+.p{display:flex;flex-direction:column;align-items:center;width:250px;text-align:center}
+.r{width:150px;height:150px;border-radius:50%;padding:4px;background:conic-gradient(from 210deg,#BDEEFF,#2AC1F1,#0A7DAD,#2AC1F1,#BDEEFF);box-shadow:0 0 30px rgba(42,193,241,.35)}
+.r img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 20%;border:5px solid #03070f}
+.p b{margin-top:12px;font:700 25px/1.1 OB}.p span{margin-top:4px;font:400 20px CC;letter-spacing:4px;color:#E8C766}
+.bar{position:absolute;left:80px;right:80px;top:1636px;height:150px;display:flex;border-radius:26px;overflow:hidden;border:1px solid rgba(42,193,241,.45);background:rgba(6,20,40,.85)}
+.dd{width:200px;background:linear-gradient(150deg,#2AC1F1,#0A7DAD);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dd small{font:700 18px OB;letter-spacing:5px}.dd b{font:400 74px/0.9 BB}.dd em{font:700 18px OB;letter-spacing:5px;font-style:normal}
+.dt{flex:1;padding:22px 30px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.dt .h{font:400 52px/1 BB;letter-spacing:2px}.dt .h small{font:600 20px OB;letter-spacing:3px;color:#7FE0FF;margin-left:10px}
+.dt .l{font:500 24px OU;color:#d6e6f2}
+.ft{position:absolute;left:0;right:0;bottom:62px;text-align:center;font:700 18px OB;letter-spacing:8px;color:rgba(255,255,255,.55)}
+.cupo{position:absolute;top:220px;right:80px;transform:rotate(8deg);font:700 20px OB;letter-spacing:4px;background:#E8C766;color:#1a1408;border-radius:99px;padding:12px 22px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+</style></head><body>
+<div class="ph"></div><div class="tint"></div><div class="glow"></div>
+<div class="logo"><img src="../../../media/logo-al.png"></div>
+<div class="cupo">★ CUPO LIMITADO</div>
+<div class="kick">GRAN EVENTO</div>
+<div class="t1">NOCHE DE<span>LÍDERES</span></div>
+<div class="scr">Descubra cómo viajar más y emprender</div>
+<div class="inv">
+ <div class="p"><div class="r"><img src="../../../media/fotos/n-mayckol-turcios.jpg"></div><b>Mayckol Turcios</b><span>INVITADO</span></div>
+ <div class="p"><div class="r" style="width:180px;height:180px;margin-top:-30px"><img src="../../../media/fotos/n-nuvia-martinez.jpg"></div><b>Nuvia Martínez</b><span>INVITADA ESPECIAL</span></div>
+ <div class="p"><div class="r"><img src="../../../media/fotos/n-zamir-fuentes.jpg"></div><b>Zamir Fuentes</b><span>INVITADO</span></div>
+</div>
+<div class="bar"><div class="dd"><small>SÁBADO</small><b>28</b><em>NOV</em></div><div class="dt"><div class="h">6:00 PM<small>HORA DE HONDURAS</small></div><div class="l">📍 Hotel Copantl · San Pedro Sula</div></div></div>
+<div class="ft">PIDA SU ENTRADA A QUIEN LE INVITÓ</div>
+</body></html>
