@@ -736,3 +736,8 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Ficha del Dream Team (dtRedFicha): «🚀 Va a trabajar» / «🧳 Es cliente» → snvdSet(x.act||{id:"r:"+id}); con decisión: «↩️ Cambiar decisión / Ya no es cliente» (s "").
 - dtCliForm: al agregar un cliente cuyo correo/WhatsApp (ek/wk) coincide con una activación sin decisión, la marca "c" sola en Socios nuevos (para los avisos). 0 lecturas extra, sin reglas nuevas.
 - (10 nov) Paso «Lance su negocio en redes» (lzs): en Android, compartir a estados de WhatsApp devuelve AbortError aunque se publique, y el paso no se marcaba. Ahora: tras el AbortError sale «¿Ya lo publicó? ✅ Sí, ya lo publiqué» (#lzsAsk) y la hoja tiene «✅ Ya lo publiqué» fijo; en la lista del plan el paso tiene un 2.º botón «Ya lo publiqué» (b2 en irItems → data-it2 → irMk("lzs")). m:1 (sin etiqueta AUTOMÁTICO).
+
+## Insignias espartanas (10 nov)
+- Las insignias del Plan de Inicio Rápido ya no son emojis: media/insignias/{despegue,presentador,cerrador,duplicador,graduado}.webp (480×528, ~45 KB, fondo transparente). Bronce (espada en alto), plata (escudo), oro (espadas cruzadas), celeste (falange de 3 cascos), graduado (laurel). El casco es el del ícono (alta resolución). Fuente para regenerarlas: scratchpad ins/m2.html (SVG) + casco-hd.png.
+- insSrc(n|"g") / insImg(n,clase): irCelebrar, raCelebrar (Despegue), irFlyer (drawImage 320 px en y 232), pestañas de semana (.insT), franja dorada .irMdl, fila .irMed (gris si no la ganó) e .irPath de la bienvenida del plan.
+- Idea futura (Edwin, pausada): diploma del curso de 8 videos de habilidades con las insignias del socio (maqueta en scratchpad ins/dip.html).

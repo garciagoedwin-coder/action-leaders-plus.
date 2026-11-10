@@ -807,7 +807,7 @@ nav.tabs button{z-index:0;isolation:isolate}
 .irTg .ck{width:24px;height:24px;border-radius:7px;border:2px solid #C9D4DE;display:grid;place-items:center;color:#fff;font-weight:800;flex:none}.irTg.on{border-color:#0A7DAD;background:#E0F2FE;color:#06384F}.irTg.on .ck{background:#0A7DAD;border-color:#0A7DAD}
 .irOp{display:flex;gap:6px}.irOp button{flex:1;border:1.5px solid var(--line,#DCE4EB);background:var(--card,#fff);color:inherit;font:inherit;font-weight:700;padding:9px 0;border-radius:11px;cursor:pointer}.irOp button.on{background:#0A7DAD;border-color:#0A7DAD;color:#fff}
 .irHero,.irCel{background:linear-gradient(150deg,#0b1020,#0b3b57 70%,#0A7DAD);border-radius:20px;color:#fff;padding:20px 18px;text-align:center;position:relative;overflow:hidden}
-.irHero h2,.irCel h2{color:#fff;margin:4px 0 0}.irHero p,.irCel p{opacity:.85;margin:6px 0 0}.irCel{margin-bottom:12px}.irCel.g{background:linear-gradient(150deg,#0b1020,#3b2a00 70%,#8C6A12)}.irCelIc{font-size:64px}.irCel .k{font-size:11px;letter-spacing:.14em;font-weight:800;color:#7DD3FC}.irCel.g .k{color:#E8C766}
+.irHero h2,.irCel h2{color:#fff;margin:4px 0 0}.irHero p,.irCel p{opacity:.85;margin:6px 0 0}.irCel{margin-bottom:12px}.irCel.g{background:linear-gradient(150deg,#0b1020,#3b2a00 70%,#8C6A12)}.irCelIc{font-size:64px}.irCelIc .insI{width:200px;height:auto;display:block;margin:-6px auto 2px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.35));animation:insIn .7s cubic-bezier(.2,1.4,.4,1) both}@keyframes insIn{from{transform:scale(.4) rotate(-12deg);opacity:0}to{transform:none;opacity:1}}@media (prefers-reduced-motion:reduce){.irCelIc .insI{animation:none}}.insT{width:20px;height:auto;vertical-align:-5px;margin-right:2px}.irMdl .ic .insI{width:42px;height:auto;display:block}.irMed span i .insI{width:34px;height:auto;display:block;margin:0 auto 2px}.irMed span:not(.ok) i .insI{filter:grayscale(1)}.irPath div i.im{background:none;border:0;width:52px;height:56px}.irPath div i.im .insI{width:52px;height:auto}.irCel .k{font-size:11px;letter-spacing:.14em;font-weight:800;color:#7DD3FC}.irCel.g .k{color:#E8C766}
 .irPath{display:flex;align-items:center;justify-content:space-between;margin:16px 0 6px}.irPath div{text-align:center;font-size:11px;font-weight:800;width:64px}.irPath div i{display:grid;place-items:center;font-style:normal;font-size:22px;width:46px;height:46px;margin:0 auto 4px;border-radius:50%;background:var(--gold-soft,#E0F2FE);border:2px solid #2AC1F1}
 .irPath s{flex:1;height:2px;background:repeating-linear-gradient(90deg,#2AC1F1 0 5px,transparent 5px 9px);margin-bottom:18px}
 .irQ{background:var(--soft,#F1F6F9);border-left:3px solid #0A7DAD;border-radius:10px;padding:10px 12px;font-size:13.5px;margin:12px 0;font-style:italic}
@@ -4456,7 +4456,7 @@ function raStrip(){const el=$("#raStrip");if(!el)return;const E=raYo();if(!E||(E
   el.onclick=()=>{try{irLista()}catch(e){}}}
 function raCelebrar(forzar){const E=raYo();if(!E||!E.gano)return;const k="raCel:"+store.uid+":"+(raCfg().id||"");if(!forzar&&LS.get(k))return;LS.set(k,1);
   const nm=raCap((miRegistro().nombre||"").split(" ")[0]),pt=raPat();
-  const abrir=()=>{if(!$("#sheet").hidden){setTimeout(abrir,4000);return}openSheet(`<div class="irCel g" id="raCel"><div class="irCelIc">🚀</div><div class="k">INSIGNIA DE DESPEGUE</div><h2>¡Felicidades${nm?", "+esc(nm):""}!</h2><p>Completó su Semana 1 del Plan de Inicio Rápido a tiempo. <b>¡Su negocio ya despegó!</b></p><p>👉 Cuéntele a su patrocinador${pt?", <b>"+esc(pt)+"</b>,":""} que ya cumplió su primera meta.</p></div>
+  const abrir=()=>{if(!$("#sheet").hidden){setTimeout(abrir,4000);return}openSheet(`<div class="irCel g" id="raCel"><div class="irCelIc">${insImg(1)}</div><div class="k">INSIGNIA DE DESPEGUE</div><h2>¡Felicidades${nm?", "+esc(nm):""}!</h2><p>Completó su Semana 1 del Plan de Inicio Rápido a tiempo. <b>¡Su negocio ya despegó!</b></p><p>👉 Cuéntele a su patrocinador${pt?", <b>"+esc(pt)+"</b>,":""} que ya cumplió su primera meta.</p></div>
    <button class="btn" id="raWa" style="width:100%">💬 Contarle a mi patrocinador</button><button class="btn ghost" data-close style="width:100%">Seguir</button>`,()=>{confeti($("#raCel"),80);$("#raWa").onclick=raAvisarPat})};abrir()}
 async function raAvisarPat(){const r=miRegistro()||{},nm=raCap((r.nombre||"").split(" ")[0]),pt=(raPat()||"").split(" ")[0];
   const t=`¡Hola${pt?" "+pt:""}! 🎉\n\nYa terminé mi Semana 1 del Plan de Inicio Rápido y gané mi insignia de Despegue 🚀\n\n¿Cuál es mi siguiente paso?\n\n${nm}`;
@@ -7163,6 +7163,8 @@ const irBeta=()=>true; // abierto a todos el 1 nov 2026, 20:40
 const IR_DESDE="2026-11-02";
 const IR_W=[
  {n:1,k:"Despegue",ic:"🚀",fin:7},{n:2,k:"Presentador",ic:"🎤",fin:14},{n:3,k:"Cerrador",ic:"🔁",fin:21},{n:4,k:"Duplicador",ic:"🌱",fin:30}];
+// 10 nov (Edwin): insignias espartanas dibujadas (bronce, plata, oro, celeste, graduado) en media/insignias/*.webp
+const INS_F=["","despegue","presentador","cerrador","duplicador"],insSrc=n=>"media/insignias/"+(n==="g"?"graduado":INS_F[n]||"despegue")+".webp",insImg=(n,c)=>`<img src="${insSrc(n)}" alt="" class="${c||"insI"}" decoding="async">`;
 const IR_HERR_V=["pago","app","arr","work","yess","caja"]; // lista vieja (6): quien la completó se respeta
 const IR_HERR=[["alp","Instalé la app Action Leaders+",1],["avisos","Activé mis avisos",1],["yess","Me registré en YessMovement"],["pres","Descargué la presentación"]];
 function irHerrAuto(k){try{if(k==="alp")return pushStandalone();if(k==="avisos")return typeof Notification!=="undefined"&&Notification.permission==="granted"&&!!LS.get("pushTk")}catch(e){}return false}
@@ -7364,13 +7366,13 @@ function irPremiar(E){const st=irSt(),med=Object.assign({},st.med||{});let nueva
   if(E.grad&&!st.grad){irSave({med,grad:Date.now()});setTimeout(()=>irCelebrar(null),900);return}
   if(nueva){irSave({med});if(nueva.n===1){try{regDoc.ir=Object.assign({},regDoc.ir||{},{med})}catch(e){}}setTimeout(()=>{const E=nueva.n===1&&raYo();if(E&&E.gano)raCelebrar();else irCelebrar(nueva)},900)}}
 function irCelebrar(w){if(!$("#sheet").hidden){setTimeout(()=>irCelebrar(w),4000);return}const g=!w,nm=(miRegistro().nombre||profile.nombrePila||"").split(" ")[0];
-  openSheet(`<div class="irCel${g?" g":""}" id="irCel"><div class="irCelIc">${g?"🎓":w.ic}</div><div class="k">${g?"PLAN DE INICIO RÁPIDO COMPLETADO":"SEMANA "+w.n+" COMPLETADA"}</div><h2>${g?"¡Action Leader graduado!":"¡Insignia "+esc(w.k)+"!"}</h2><p>${g?`¡Felicidades${nm?", "+esc(nm):""}! Terminó sus 30 días. Ahora el ciclo continúa: ayude a su equipo a hacer el suyo.`:`¡Muy bien${nm?", "+esc(nm):""}! ${w.n<4?"Siga así: la semana "+(w.n+1)+" ya está lista.":"Ya casi se gradúa."}`}</p></div>
+  openSheet(`<div class="irCel${g?" g":""}" id="irCel"><div class="irCelIc">${insImg(g?"g":w.n)}</div><div class="k">${g?"PLAN DE INICIO RÁPIDO COMPLETADO":"SEMANA "+w.n+" COMPLETADA"}</div><h2>${g?"¡Action Leader graduado!":"¡Insignia "+esc(w.k)+"!"}</h2><p>${g?`¡Felicidades${nm?", "+esc(nm):""}! Terminó sus 30 días. Ahora el ciclo continúa: ayude a su equipo a hacer el suyo.`:`¡Muy bien${nm?", "+esc(nm):""}! ${w.n<4?"Siga así: la semana "+(w.n+1)+" ya está lista.":"Ya casi se gradúa."}`}</p></div>
    <button class="btn" id="irFly" style="width:100%">📣 Compartir mi logro</button><button class="btn ghost" data-close style="width:100%">Seguir</button>`,()=>{confeti($("#irCel"),60);$("#irFly").onclick=()=>irFlyer(w)})}
 async function irFlyer(w){try{await flFonts()}catch(e){}const g=!w,W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
   const gr=x.createLinearGradient(0,0,W,H);gr.addColorStop(0,"#0b1020");gr.addColorStop(.6,"#0b3b57");gr.addColorStop(1,g?"#8C6A12":"#0A7DAD");x.fillStyle=gr;x.fillRect(0,0,W,H);
   const rg=x.createRadialGradient(W/2,380,40,W/2,380,600);rg.addColorStop(0,g?"rgba(232,199,102,.45)":"rgba(42,193,241,.45)");rg.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=rg;x.fillRect(0,0,W,H);
   x.textAlign="center";x.fillStyle=g?"#E8C766":"#7DD3FC";x.font="700 34px Figtree,system-ui,sans-serif";x.fillText("PLAN DE INICIO RÁPIDO",W/2,140);
-  x.font="230px system-ui";x.fillText(g?"🎓":w.ic,W/2,470);
+  {const im=await imgLoad(insSrc(g?"g":w.n));if(im&&im.width){const iw=320,ih=iw*im.height/im.width;x.drawImage(im,W/2-iw/2,232,iw,ih)}else{x.font="230px system-ui";x.fillText(g?"🎓":w.ic,W/2,470)}}
   x.fillStyle="#fff";x.font="800 84px 'Bricolage Grotesque',Figtree,system-ui,sans-serif";x.fillText(g?"¡Graduado!":"¡Semana "+w.n+"!",W/2,640);
   x.fillStyle=g?"#E8C766":"#7DD3FC";x.font="700 54px Figtree,system-ui,sans-serif";x.fillText(g?"Action Leader":"Insignia "+w.k,W/2,725);
   const nm=miRegistro().nombre||profile.nombrePila||"";x.fillStyle="#fff";x.font="600 50px Figtree,system-ui,sans-serif";x.fillText(nv(nm).slice(0,32),W/2,860);
@@ -7402,15 +7404,15 @@ let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()
     <div class="irBar"><i style="width:${Math.max(4,pc)}%"></i></div>
     <div class="irMeta"><span><b>${w.n2} de ${w.L.length}</b> ✅</span><span>Día ${d} de ${fin}${d>fin?" · ¡a terminarla!":q>0?" · quedan "+q+(q===1?" día":" días"):" · ¡último día!"}</span></div>
     ${nx?`<div class="irNx">👉 <b>${esc(nx.t)}</b>${nx.b?`<button class="btn sm" id="irNxB" type="button">${esc(nx.b[0])}</button>`:""}</div>`:""}
-    <div class="irMed">${IR_W.map(z=>`<span class="${(st2.med||{})[z.n]?"ok":z.n===w.n?"on":""}"><i>${z.ic}</i>${esc(z.k)}</span>`).join("")}</div>${E.grad?"":`<button type="button" class="irSx up" id="irSx" aria-label="Ver menos">▴ Ver menos</button>`}`;
+    <div class="irMed">${IR_W.map(z=>`<span class="${(st2.med||{})[z.n]?"ok":z.n===w.n?"on":""}"><i>${insImg(z.n)}</i>${esc(z.k)}</span>`).join("")}</div>${E.grad?"":`<button type="button" class="irSx up" id="irSx" aria-label="Ver menos">▴ Ver menos</button>`}`;
   {const x=$("#irSx");if(x)x.onclick=e=>{e.stopPropagation();irAbierto=false;irRender()}}
   if(E.grad){$("#irFlyG").onclick=e=>{e.stopPropagation();irFlyer(null)}}
   {const b=$("#irNxB");if(b&&nx)b.onclick=e=>{e.stopPropagation();nx.b[1]()}}
   el.onclick=e=>{if(e.target.closest("button"))return;irLista()}}catch(e){el.hidden=true;try{console.warn("irRender",e)}catch(x){}}}
 function irLista(n){if(!grpLk&&store.db)grpLink().catch(()=>{});const E=irEstado(),st=irSt();n=n||E.cur.n;const w=E.W[n-1],G={};w.L.forEach(i=>{(G[i.g]=G[i.g]||[]).push(i)});
   openSheet(`<div class="irTop"><div class="k">🚀 Plan de Inicio Rápido</div><div class="t">Semana ${w.n} · <em>${esc(w.k)}</em></div><div class="irBar"><i style="width:${Math.max(4,Math.round(w.n2/w.L.length*100))}%"></i></div><div class="irMeta"><span><b>${w.n2} de ${w.L.length}</b> listas</span><span>Día ${E.dia} · meta: día ${w.fin}</span></div></div>
-   <div class="irWk">${E.W.map(z=>`<button type="button" data-w="${z.n}" class="${z.n===n?"on":""}${(st.med||{})[z.n]?" ok":""}">${(st.med||{})[z.n]?"🏅":z.ic} Sem ${z.n}</button>`).join("")}</div>
-   ${(st.med||{})[n]?`<div role="button" tabindex="0" class="irMdl" id="irMedB"><span class="ic">🏅</span><span class="mt" style="flex:1;min-width:0"><b>Insignia ${esc(w.k)} ganada</b><small>${(()=>{try{return "El "+niceDate(dkey(new Date((st.med||{})[n])))+" · "}catch(e){return ""}})()}Toque para celebrar y compartir</small></span><span class="go">›</span></div>`:""}
+   <div class="irWk">${E.W.map(z=>`<button type="button" data-w="${z.n}" class="${z.n===n?"on":""}${(st.med||{})[z.n]?" ok":""}">${(st.med||{})[z.n]?insImg(z.n,"insT"):z.ic} Sem ${z.n}</button>`).join("")}</div>
+   ${(st.med||{})[n]?`<div role="button" tabindex="0" class="irMdl" id="irMedB"><span class="ic">${insImg(n)}</span><span class="mt" style="flex:1;min-width:0"><b>Insignia ${esc(w.k)} ganada</b><small>${(()=>{try{return "El "+niceDate(dkey(new Date((st.med||{})[n])))+" · "}catch(e){return ""}})()}Toque para celebrar y compartir</small></span><span class="go">›</span></div>`:""}
    ${n>E.cur.n&&!E.grad?`<p class="small muted" style="margin:6px 2px">Esta semana se abre al terminar la semana ${E.cur.n}. Lo que ya tenga hecho se marca solo.</p>`:""}
    ${Object.keys(G).map(g=>`<div class="irG"><h4>${esc(g)}</h4>${G[g].map(i=>`<div class="irIt${i.ok?" d":""}"><span class="ck${i.ok?" ok":""}">${i.ok?"✓":""}</span><span class="tx">${esc(i.t)}${i.ok&&!i.m?` <span class="au">AUTOMÁTICO</span>`:""}${i.s||i.pt?`<small>${esc(i.pt?(i.pt+(i.s?" · "+i.s:"")):i.s)}</small>`:""}</span>${!i.ok&&i.b?(i.b2?`<span style="display:flex;flex-direction:column;gap:6px;flex:none">`:"")+`<button type="button" class="go${i.f?" f":""}" data-it="${i.k}">${esc(i.b[0])}</button>`+(i.b2?`<button type="button" class="go" data-it2="${i.k}" style="background:transparent;border-style:dashed">${esc(i.b2[0])}</button></span>`:""):""}</div>`).join("")}</div>`).join("")}
    ${n===1?`<p class="small muted" style="margin:8px 2px 0;text-align:center">No necesita saberlo todo para comenzar. Comience acompañado y aprenda mientras avanza.</p>`:""}
@@ -7423,7 +7425,7 @@ function irLista(n){if(!grpLk&&store.db)grpLink().catch(()=>{});const E=irEstado
     sh.querySelectorAll("[data-it]").forEach(b=>b.onclick=()=>{const i=w.L.find(z=>z.k===b.dataset.it);if(i&&i.b)i.b[1]()});sh.querySelectorAll("[data-it2]").forEach(b=>b.onclick=()=>{const i=w.L.find(z=>z.k===b.dataset.it2);if(i&&i.b2)i.b2[1]()})})}
 function irIntro(){const nm=(miRegistro().nombre||profile.nombrePila||"").split(" ")[0];
   openSheet(`<div class="irHero"><div class="k">ACTION LEADER SYSTEM</div><div style="font-size:46px">🚀</div><h2>Su Plan de Inicio Rápido</h2><p>${nm?esc(nm)+", ":""}30 días para poner su negocio en movimiento, acompañado.</p></div>
-   <div class="irPath">${IR_W.map((z,i)=>`${i?"<s></s>":""}<div><i>${z.ic}</i>${esc(z.k)}</div>`).join("")}</div>
+   <div class="irPath">${IR_W.map((z,i)=>`${i?"<s></s>":""}<div><i class="im">${insImg(z.n)}</i>${esc(z.k)}</div>`).join("")}</div>
    <div style="text-align:center;font-size:13px;font-weight:800;color:#8C6A12">🎓 Al final: Action Leader graduado</div>
    <div class="irQ">“No necesita saberlo todo para comenzar. Comience acompañado y aprenda mientras avanza.”</div>
    <div class="irPts"><div>✅ <span>Muchas acciones se marcan <b>solas</b> con lo que ya hace en la app.</span></div><div>🤝 <span>Su patrocinador ve su avance y le ayuda.</span></div><div>🏅 <span>Gane una insignia cada semana.</span></div></div>
@@ -7902,7 +7904,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110162103";var busy=false,pend=null;
+(function(){var V="20261110163555";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
