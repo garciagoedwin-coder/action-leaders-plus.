@@ -626,3 +626,8 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Imagen: media/logo-al.png (texto blanco) y media/logo-al-osc.png (texto oscuro), 1460×224 con el mismo aire arriba/abajo que el viejo logo-mas.png (el texto se ve del mismo tamaño a la misma altura). Reemplazó a logo-mas.png en app, evento.html, membresia.html, todos los canvases de flyers y plantillas tools/flyer/*. logo-mas.png sigue en media/ por si acaso.
 - Texto con casco (clase .alC, alto .69em entre las palabras; .alH = versión un poco más grande para tamaños chicos): encabezado (.top-t b), bienvenida (.wel-k), portada (.lm-brand) y conoce.html (.brand). Maquetas en tools/flyer/logo/ (l4.html = 6 ubicaciones; gen.html genera el PNG).
 - Los TEXTOS siguen diciendo "Action Leaders+" (mensajes, títulos, bio de historias): pendiente que Edwin decida si se quita el +.
+
+## Business Experience (maqueta, 9 nov, sin programar aún)
+- Flyer especial elegido: tools/flyer/especial/p4.html (azul moderno: foto subida arriba con corte diagonal, "BUSINESS EXPERIENCE" título, subtítulo "Taller exclusivo de liderazgo", invitado especial al centro + 4 ponentes, fecha/hora/lugar, "Solo con invitación").
+- GUARDADAS PARA EL FUTURO (Edwin): p1.html (gala negro/dorado) y p2.html (claro ejecutivo). e1–e5 = versiones anteriores.
+- Pendiente de Edwin para programarlo: quién lo crea (todos con ahorro al día o solo rangos) y la foto (A: cada quien la suya / B: la del creador para todos).

@@ -1,0 +1,60 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:OU;src:url(../../../media/fonts/Outfit-Regular.ttf)}
+@font-face{font-family:OB;src:url(../../../media/fonts/Outfit-Bold.ttf)}
+@font-face{font-family:BB;src:url(../../../media/fonts/BebasNeue-Regular.ttf)}
+@font-face{font-family:CC;src:url(../../../media/fonts/Cormorant-500-caps.ttf)}
+*{box-sizing:border-box}
+:root{--c:#2AC1F1;--b:#0A7DAD}
+body{margin:0;width:1080px;height:1920px;overflow:hidden;font-family:OU;color:#fff;background:#04101f;position:relative}
+/* PROPUESTA 3 · AZUL CORPORATIVO MODERNO */
+.ph{position:absolute;left:0;right:0;top:0;height:860px;background:url(foto2.jpg) center/cover;clip-path:polygon(0 0,100% 0,100% 82%,0 100%)}
+.ph:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,16,31,.7),rgba(4,16,31,.1) 35%,rgba(10,125,173,.35))}
+.acc{position:absolute;left:0;right:0;top:0;height:880px;background:linear-gradient(90deg,var(--c),var(--b));clip-path:polygon(0 97.7%,100% 80.5%,100% 82.5%,0 100%)}
+.logo{position:absolute;top:84px;left:90px}.logo img{height:52px}
+.be{position:absolute;top:96px;right:90px;font:700 16px OB;letter-spacing:6px;border:1px solid rgba(255,255,255,.6);padding:10px 18px}
+.k{position:absolute;top:900px;left:90px;display:flex;align-items:center;gap:16px;font:700 20px OB;letter-spacing:9px;color:var(--c)}
+.k:before{content:"";width:50px;height:3px;background:var(--c)}
+.t{position:absolute;top:944px;left:86px;font:400 176px/0.86 BB;letter-spacing:2px}
+.t span{display:block;background:linear-gradient(90deg,#BDEEFF,var(--c));-webkit-background-clip:text;color:transparent}
+.inv{position:absolute;top:1330px;left:90px;right:90px;display:grid;grid-template-columns:1fr 250px 1fr;gap:20px;align-items:center}
+.col{display:flex;flex-direction:column;gap:22px}
+.p{display:flex;align-items:center;gap:14px}
+.col.rt .p{flex-direction:row-reverse;text-align:right}
+.p .r{width:92px;height:92px;flex:none;border-radius:50%;padding:3px;background:linear-gradient(135deg,var(--c),var(--b))}
+.r img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 20%;border:4px solid #04101f}
+.p b{display:block;font:700 19px/1.1 OB}.p em{display:block;font:700 10px OB;letter-spacing:2px;color:var(--c);font-style:normal;margin-top:4px}
+.m{display:flex;flex-direction:column;align-items:center;text-align:center}
+.m .r{width:210px;height:210px;padding:5px;border-radius:50%;background:conic-gradient(from 200deg,#BDEEFF,var(--c),var(--b),var(--c),#BDEEFF);box-shadow:0 0 50px rgba(42,193,241,.35)}
+.m small{margin-top:14px;font:700 13px OB;letter-spacing:5px;color:var(--c)}
+.m b{font:400 46px/1 BB;letter-spacing:1px;margin-top:4px;white-space:nowrap}
+.m i{font:500 22px CC;letter-spacing:4px;color:#cfe3f2;font-style:normal}
+.pl{position:absolute;top:1245px;left:90px;font:700 13px OB;letter-spacing:6px;color:rgba(255,255,255,.5)}
+.bar{position:absolute;left:90px;right:90px;top:1690px;display:grid;grid-template-columns:1fr 1fr 1.4fr;border-radius:20px;overflow:hidden;background:rgba(255,255,255,.06);border:1px solid rgba(42,193,241,.4)}
+.bar div{padding:20px 22px}.bar div+div{border-left:1px solid rgba(42,193,241,.25)}
+.bar small{display:block;font:700 12px OB;letter-spacing:5px;color:var(--c)}
+.bar b{display:block;font:400 42px/1 BB;letter-spacing:1px;margin-top:6px}
+.bar em{display:block;font:400 15px OU;color:#9fb6c9;font-style:normal}
+.ft{position:absolute;left:0;right:0;bottom:52px;text-align:center;font:700 14px OB;letter-spacing:8px;color:rgba(255,255,255,.55)}
+.st{position:absolute;top:1252px;left:90px;font:500 40px CC;letter-spacing:6px;color:#E8EEF5}
+.st:before{content:"";display:inline-block;width:46px;height:2px;background:var(--c);vertical-align:middle;margin-right:18px}
+</style></head><body>
+<div class="ph"></div><div class="acc"></div>
+<div class="logo"><img src="../../../media/logo-al.png"></div>
+<div class="be">SOLO CON INVITACIÓN</div>
+<div class="k">ACTION LEADERS</div>
+<div class="t">BUSINESS<span>EXPERIENCE</span></div>
+<div class="st">Taller exclusivo de liderazgo</div>
+<div class="inv">
+ <div class="col">
+  <div class="p"><div class="r"><img src="../../../media/fotos/n-mayckol-turcios.jpg"></div><div><b>Mayckol Turcios</b><em>MARKETING DIR.</em></div></div>
+  <div class="p"><div class="r"><img src="../../../media/fotos/n-zamir-fuentes.jpg"></div><div><b>Zamir Fuentes</b><em>MARKETING DIR.</em></div></div>
+ </div>
+ <div class="m"><div class="r"><img src="../../../media/fotos/n-nuvia-martinez.jpg"></div><small>INVITADA ESPECIAL</small><b>NUVIA MARTÍNEZ</b><i>SM DIRECTOR</i></div>
+ <div class="col rt">
+  <div class="p"><div class="r"><img src="../../../media/fotos/n-josue-delgado.jpg"></div><div><b>Josué Delgado</b><em>MARKETING DIR.</em></div></div>
+  <div class="p"><div class="r"><img src="../../../media/fotos/n-lorena-velasquez.jpg"></div><div><b>Lorena Velásquez</b><em>MARKETING DIR.</em></div></div>
+ </div>
+</div>
+<div class="bar"><div><small>FECHA</small><b>SÁB 28 NOV</b><em>2026</em></div><div><small>HORA</small><b>6:00 PM</b><em>Hora de Honduras</em></div><div><small>LUGAR</small><b>HOTEL COPANTL</b><em>San Pedro Sula</em></div></div>
+<div class="ft">ACCESO SOLO CON INVITACIÓN PERSONAL</div>
+</body></html>
