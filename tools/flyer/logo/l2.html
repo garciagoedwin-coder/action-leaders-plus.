@@ -1,0 +1,23 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:LB;src:url(LBI.ttf);font-style:italic;font-weight:400 700}
+body{margin:0;font-family:system-ui;background:#e9edf2;width:1200px}
+.row{display:flex}.cell{width:600px;height:250px;display:flex;align-items:center;justify-content:center;position:relative}
+.d{background:#0b1220;color:#fff}.l{background:#F3F6F9;color:#2B2A2D}
+.tag{position:absolute;left:16px;top:12px;font:700 13px system-ui;letter-spacing:.1em;opacity:.55}
+.lg{position:relative;font:italic 700 64px/1 LB;letter-spacing:-.02em;white-space:nowrap}
+.pl{position:absolute;font:900 50px/1 system-ui;background:linear-gradient(135deg,#2AC1F1,#0A7DAD);-webkit-background-clip:text;color:transparent}
+.c{position:absolute;-webkit-mask:url(casco-blanco.png) center/contain no-repeat;mask:url(casco-blanco.png) center/contain no-repeat;aspect-ratio:447/500}
+.g{background:linear-gradient(160deg,#7FE0FF,#2AC1F1 45%,#0A7DAD)}
+.w{background:currentColor}
+.sm{transform:scale(.42);transform-origin:center}
+</style></head><body>
+<script>
+const V=[
+ ["A · casco celeste arriba de «rs» + signo a la derecha",k=>`<div class="lg">Action Leaders<i class="c g" style="right:6px;top:-50px;height:50px"></i><span class="pl" style="right:-42px;top:-20px">+</span></div>`],
+ ["B · casco del color del texto, + celeste",k=>`<div class="lg">Action Leaders<i class="c w" style="right:6px;top:-50px;height:50px"></i><span class="pl" style="right:-42px;top:-20px">+</span></div>`],
+ ["C · casco más chico, pegado a la «s»",k=>`<div class="lg">Action Leaders<i class="c g" style="right:-4px;top:-36px;height:38px"></i><span class="pl" style="right:-44px;top:-6px;font-size:44px">+</span></div>`]
+];
+let h="";V.forEach(([t,f])=>{h+=`<div class="row"><div class="cell d"><span class="tag">${t}</span>${f()}</div><div class="cell l"><span class="tag">${t}</span>${f()}</div></div>`});
+h+=`<div class="row"><div class="cell d"><span class="tag">ACTUAL</span><img src="../../../media/logo-mas.png" style="height:62px"></div><div class="cell d"><span class="tag">TAMAÑO DEL ENCABEZADO DE LA APP (A)</span><div class="sm">${V[0][1]()}</div></div></div>`;
+document.body.insertAdjacentHTML("beforeend",h);
+</script></body></html>
