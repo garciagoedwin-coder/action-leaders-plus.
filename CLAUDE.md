@@ -707,3 +707,6 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Confirmados con r.t < cam.t: botón naranja «📢 Avisar el cambio» (evaCamMsg por WhatsApp; LS evCamAv:id marca a quién ya se avisó; luego vuelve a «Recordar»).
 - Reglas: agendaEv update ahora también `|| isAdmin()` (respaldo/firestore.rules). Sin la regla, el admin ve «Falta pegar en Firebase la regla nueva».
 - Socios nuevos: selector de mes compacto (#snvMs barra delgada «Noviembre [17] | Octubre [54]»).
+
+## Video de bienvenida en YouTube (10 nov)
+- WEL_YT = "y00_VwPo9Gg" (reemplazó a media/bienvenida-corto.mp4, que queda de respaldo si WEL_YT = ""). welVideoYT: API de YouTube (youtube-nocookie), revisa cada segundo: si salta más de 3 s adelante de lo visto, vuelve (seekTo); «Ya vi mi video» se desbloquea al 90 %; al terminar marca welMark("video"). Progreso en LS alp:welpos2 {t,max}; duración real en LS alp:welDur. config.bienvenida.video en team.json = el mismo link. Se quitó el listener viejo de mensajes de YouTube (marcaba visto con cualquier 90 %).
