@@ -2,17 +2,17 @@
 //   node red.mjs bajar  → si el admin subió reportes desde la app (evento/sps26/priv/rep, est "p"),
 //                          los descifra a $RED_DIR/{so,mi,pe}.csv y deja la clave en $EVK_FILE (todo fuera del repo).
 //   node red.mjs subir  → descifra data/red.enc y lo reparte en Firestore red/{k} (quién ve a quién),
+//                          ve[] = toda su línea de arriba que está en la app + la cuenta del equipo;
 //                          corrige registro.plan con el plan real del reporte (planPor "reporte"; nunca toca planPor "admin"),
 //                          guarda team/prem (nombres Premium para la ★) y team/redMeta, y avisa a los admins.
 // Logs públicos: SOLO conteos.
 import fs from "node:fs"; import crypto from "node:crypto";
-import { mismoNombre, rangoUsr } from "./enviar.mjs";
+import { mismoNombre } from "./enviar.mjs";
 import { ahKe, ahKw } from "./aprobar.mjs";
 
 const ADMINS = ["garciagoedwin@gmail.com", "actionleadersoficial@gmail.com", "edwing.go@gmail.com"];
 const ROOT = "edwing.go@gmail.com", SOLO = "garciagoedwin@gmail.com";
 const APP = "https://actionleadersplus.com/", ICON = APP + "icon-192.png";
-const RG_MD = /director|board/i;   // Marketing Director en adelante (RED_MD = 2 en la app)
 const modo = process.argv[2] || "subir", DRY = !!process.env.DRY, FORCE = !!process.env.FORCE;
 
 const keyDe = k => Buffer.from(k.replace(/-/g, "+").replace(/_/g, "/"), "base64");
@@ -67,7 +67,6 @@ async function main() {
     let x = (r.ek && H[r.ek]) || (r.wk && H[r.wk]) || null;
     if (!x) { const c = S.filter(s => mismoNombre(s.registro.nombre, r.n)); if (c.length === 1) x = c[0]; }
     return (U[kk] = x); };
-  const md = new Map(S.map(x => [x.uid, RG_MD.test(rangoUsr(x, team))]));
   const invDe = x => { const n = String(x.registro.nombre || "socio").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").split("-").slice(0, 2).join("-");
     return (n || "socio") + "-" + String(x.uid).slice(0, 4).toLowerCase(); };
   const root = S.find(x => x.email === ROOT);
@@ -75,7 +74,7 @@ async function main() {
   for (const r of D.rows) {
     const me = uOf(r.k); if (me) enApp++;
     const ve = new Set(); let iv = "";
-    (r.anc || []).forEach((kk, j) => { const x = uOf(kk); if (!x) return; if (!iv) iv = invDe(x); if (j === 0 || md.get(x.uid)) ve.add(x.uid); });
+    (r.anc || []).forEach((kk, j) => { const x = uOf(kk); if (!x) return; if (!iv) iv = invDe(x); ve.add(x.uid); });   // 10 nov (Edwin): toda la línea de arriba que está en la app (como Mis socios)
     if (root) { ve.add(root.uid); if (!iv) iv = invDe(root); }
     if (me) ve.delete(me.uid);
     const o = { an: (r.anc || []).map(kk => (P[kk] || {}).n || ""), ap: (r.anc || []).map(kk => (P[kk] || {}).lv || 0), au: (r.anc || []).map(kk => { const x = uOf(kk); return x ? x.uid : ""; }),

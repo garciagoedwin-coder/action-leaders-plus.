@@ -992,6 +992,12 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .wel-k em{background:none!important;padding:0!important;font-size:18px!important;font-weight:900!important;letter-spacing:0!important;margin-left:2px!important;vertical-align:6px!important;background-image:linear-gradient(135deg,#2AC1F1,#0A7DAD)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
 .lm-brand .lp{font-size:.95em!important;letter-spacing:0!important;padding:0!important;border:0!important;background:linear-gradient(135deg,#2AC1F1,#0A7DAD)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;box-shadow:none!important;margin-left:-.22em;position:relative;top:-.4em;font-weight:900!important}
 
+.redEq{gap:8px}.redEq .k{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--brand)}.redEq p{margin:0;font-size:13px;color:var(--muted)}.redEqG{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}.redEqG button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:12px;padding:10px 12px;text-align:left;font:inherit;cursor:pointer}.redEqG b{font-family:'Barlow Condensed',sans-serif;font-size:26px;line-height:1}.redEqG span{font-size:12.5px;font-weight:700}.redEqG small{font-size:11px;color:var(--muted)}
+.dt-c.sa{opacity:.62}.dt-c.sa .dt-av{background:#94A3B8}.dt-c.sa .dt-av i{background:#64748B;font-size:9px}
+.repSt{border:1px solid var(--line);background:var(--surface-2);border-radius:12px;padding:10px 12px;font-size:13px;margin:0 0 12px}.repSt.ok{border-color:#16A34A55}.repSt.err{border-color:#DC262655}
+.repPick{display:flex;flex-direction:column;align-items:center;gap:2px;border:2px dashed var(--line);border-radius:14px;padding:16px;cursor:pointer;color:var(--brand)}.repPick span{font-weight:700;font-size:15px}.repPick small{color:var(--muted)}
+.repBox{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:12px;background:var(--surface)}.repRow{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:6px 8px;padding:10px 12px;border-top:1px solid var(--line)}.repRow:first-child{border-top:0}.repRow>span{font-size:18px}.repRow div{display:flex;flex-direction:column;min-width:0}.repRow small{color:var(--muted);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.repRow.no{opacity:.55}.repN{font-family:'Barlow Condensed',sans-serif;font-size:20px}.repX{grid-column:2/4;margin-top:-4px}
+.repW{margin:8px 0 0;font-size:12.5px;color:#B45309}
 #v-inicio.simple>#incStrip{order:2}#v-inicio.simple>#lzgStrip{order:2}
 .incS{display:flex;align-items:center;gap:10px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:18px;padding:12px 16px;box-shadow:0 4px 14px rgba(20,33,61,.06);cursor:pointer}
 .incS .tx{min-width:0}.incS .lb{display:block;font:800 11px Figtree,sans-serif;letter-spacing:1.5px;color:var(--brand)}
@@ -1656,8 +1662,15 @@ const sameN=(a,b)=>{a=nrmN(a);b=nrmN(b);if(!a||!b)return false;if(a===b)return t
 // ---------- ★ PREMIUM (10 nov, Edwin): insignia negra junto al nombre en rankings, equipo, Dream Team y liderazgo ----------
 // Plan: registro.plan del usuario (si la app lo tiene) o el paquete de su activación en team.json. 0 lecturas.
 let premMemo=null,premT=0;
+// 10 nov: team/prem {n:[nombres Premium del reporte de inCruises]} lo escribe el servidor (tools/push/red.mjs). Caché local 24 h (≈1 lectura al día).
+let PREM=null;
+async function premCargar(force){if(!store.db)return;try{const c=LS.get("premL");if(!force&&c&&c.t&&Date.now()-c.t<864e5){PREM=c.n||[];return}
+  const d=await store.db.doc("team/prem").get();PREM=d.exists?(d.data().n||[]):[];LS.set("premL",{t:Date.now(),n:PREM});premMemo=null}catch(e){}}
 function esPrem(n){if(!n)return false;if(!premMemo||Date.now()-premT>6e4){premMemo=new Map();premT=Date.now()}const k=nrmN(n);if(premMemo.has(k))return premMemo.get(k);let r=null;
-  try{const U=((typeof socios!=="undefined"&&socios)||[]).concat((typeof mios!=="undefined"&&mios)||[]);const u=U.find(y=>y&&y.registro&&sameN(y.registro.nombre,n));if(u&&u.registro.plan)r=/premium/i.test(u.registro.plan);
+  try{const U=((typeof socios!=="undefined"&&socios)||[]).concat((typeof mios!=="undefined"&&mios)||[]);const u=U.find(y=>y&&y.registro&&sameN(y.registro.nombre,n));
+    if(u&&u.registro.plan&&u.registro.planPor==="admin")r=/premium/i.test(u.registro.plan);
+    if(r===null&&PREM&&PREM.some(x=>sameN(x,n)))r=true;
+    if(r===null&&u&&u.registro.plan)r=/premium/i.test(u.registro.plan);
     if(r===null&&regDoc&&regDoc.registro&&sameN(regDoc.registro.nombre,n)&&regDoc.registro.plan)r=/premium/i.test(regDoc.registro.plan);
     if(r===null){const A=((T&&T.activaciones)||[]).filter(a=>sameN(a.socio,n)).sort((a,b)=>Date.parse(b.fecha||0)-Date.parse(a.fecha||0))[0];if(A)r=/premium/i.test(A.paquete||"")}}catch(e){}
   r=!!r;premMemo.set(k,r);return r}
@@ -2972,7 +2985,12 @@ async function dtCargar(force){if(dtCargando||!store.db||!store.uid)return;if(!f
 // clientes del Dream Team: contactos del CRM en etapa "Cliente" con correo de inCruises (privados del socio)
 function dtEks(){return new Set(((dtSum&&dtSum.d)||[]).map(x=>x.ek).filter(Boolean))}
 function dtClis(){const S=dtEks();return (contacts||[]).filter(c=>c.stage==="Cliente"&&c.email&&!S.has(ahKe(c.email))).map(c=>{const a=ahDe([c.email],[c.phone?waNum(c.phone,c.cc):""]);return{cli:1,id:c.id,n:c.name||"Cliente",ok:!(a&&a.pend),c}})}
-function dtTodos(){const D=(dtSum&&dtSum.d)||[],C=dtClis();return D.filter(x=>x.ok).concat(C.filter(x=>x.ok),D.filter(x=>!x.ok),C.filter(x=>!x.ok))}
+// 10 nov: directos de inCruises que no están en la app (colección red): clientes cuentan para los 30 (si su ahorro está al día); socios sin app salen pero no cuentan.
+function dtRed(){if(!Array.isArray(redL)){redPre();return {c:[],s:[]}}const ce=new Set((contacts||[]).filter(c=>c.email).map(c=>ahKe(c.email))),de=dtEks();
+  const R=redL.filter(r=>redDir(r)&&!(r.ek&&(ce.has(r.ek)||de.has(r.ek))));
+  return {c:R.filter(redCL).map(r=>({cli:1,red:1,id:r.id,n:r.n,ok:r.t==="c"&&!(()=>{const A=ahCfg();return !!(A&&A.k&&((r.ek&&A.k[r.ek])||(r.wk&&A.k[r.wk])))})(),r})),
+    s:R.filter(redSA).map(r=>({red:1,sa:1,id:r.id,n:r.n,ok:false,r}))}}
+function dtTodos(){const D=(dtSum&&dtSum.d)||[],C=dtClis(),R=dtRed();return D.filter(x=>x.ok).concat(C.filter(x=>x.ok),R.c.filter(x=>x.ok),D.filter(x=>!x.ok),C.filter(x=>!x.ok),R.c.filter(x=>!x.ok),R.s)}
 async function dtConvertir(){const S=dtEks();if(!S.size)return;for(const c of (contacts||[])){if(c.stage==="Cliente"&&c.email&&S.has(ahKe(c.email))){c.stage="Socio";c.note=(c.note?c.note+" · ":"")+"🚀 Pasó de cliente a socio ("+niceDate(TODAY)+")";c.updated=Date.now();try{await store.saveContact(c)}catch(e){}}}}
 function dtMas(){openSheet(`<h2>➕ Sume a su Dream Team</h2><p class="small muted" style="margin:0">💭 Cada casilla vacía es un sueño esperando a su próximo socio.</p>
    <button class="btn" id="dtMs" style="width:100%;background:#25D366;color:#fff">📲 Invitar a un socio a la app</button><button class="btn ghost" id="dtMc" style="width:100%">🛳️ Agregar un cliente</button>
@@ -3000,7 +3018,16 @@ function dtCliFicha(x){const c=x.c,f=dtFirst(x.n),w=c.phone?waNum(c.phone,c.cc):
     $("#clW1").onclick=()=>go(x.ok?`¡Hola, ${f}! 👋\n\nPaso a saludarle y a agradecerle por ser parte de nuestra familia inCruises 🛳️\n\nSi necesita ayuda para planear su próximo viaje, aquí estoy.`:`Hola, ${f} 👋\n\nLe aviso con cariño que su ahorro de inCruises quedó pendiente.\n\nPóngase al día para no perder sus beneficios de viaje 🛳️\n\nSi necesita ayuda, aquí estoy.`);
     $("#clW2").onclick=()=>go(`¡Hola, ${f}! 👋\n\nUsted ya disfruta los beneficios de inCruises como cliente 🛳️\n\n¿Sabía que también puede compartirlo con otras personas y crecer con nuestro equipo? Me encantaría mostrarle cómo.\n\nSi le interesa, regístrese en la app de nuestro equipo con mi enlace:\n${miEnlace()}`);
     const dl=$("#clDel");dl.onclick=async()=>{if(!confirmar2(dl))return;c.stage="Seguimiento";c.dtc=0;c.updated=Date.now();await store.saveContact(c);try{renderCRM()}catch(e){}renderDT();toast("Quitado de su Dream Team");dtTras()}})}
-function dtAct(){return (dtSum?dtSum.d.filter(x=>x.ok).length:0)+dtClis().filter(x=>x.ok).length}
+function dtRedFicha(x){const r=x.r||{},f=dtFirst(x.n),w=String(r.w||"").replace(/\D/g,""),go=t=>{location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t)};
+  const tipo=x.sa?(r.t==="x"?"🟠 Socio sin membresía":"📵 Socio · sin app"):"🛳️ Cliente";
+  openSheet(`<div style="display:flex;gap:14px;align-items:center"><div class="dt-av" style="width:72px;height:72px;flex:none;margin:0;background:${x.sa?"#94A3B8":x.ok?"#16A34A":"#E5B35A"}"><s style="font-size:22px">${esc(initials(x.n))}</s></div><div style="min-width:0;flex:1"><h2 style="margin:0">${esc(nv(x.n))}</h2><span class="chip">${tipo}</span>${r.pl?` <span class="chip">${esc(r.pl)}${r.pl==="Premium"?" ★":""}</span>`:""}${!x.sa?` <span class="chip ${x.ok?"c-good":"c-gold"}">${x.ok?"✅ Ahorro al día":"⚠️ Ahorro pendiente"}</span>`:""}</div></div>
+   <p class="small muted" style="margin:0">${x.sa?"Es su directo en inCruises pero todavía no se registra en la app. Cuando entre con su enlace, cuenta para sus 30.":x.ok?"Cliente de su red en inCruises: suma a su red y cuenta para sus 30.":"Mientras su ahorro esté pendiente, no cuenta para sus 30."}</p>
+   <button class="btn" id="drW1" style="width:100%;background:#25D366;color:#fff">${x.sa?"📲 Invitarlo a la app":x.ok?"💬 Escribirle":"💰 Recordarle su ahorro"}</button>
+   ${x.sa?"":`<button class="btn ghost" id="drW2" style="width:100%">🚀 Invitarlo a hacer el negocio</button>`}
+   <button class="btn ghost" id="dtBk" style="width:100%">‹ Volver a mi cuadro</button>`,()=>{$("#dtBk").onclick=dtVolver;
+    $("#drW1").onclick=()=>{try{redMarca(r.id,"c")}catch(e){}go(x.sa?(r.t==="x"?redMsgX(r):redMsgS(Object.assign({},r,{iv:miInv()}))):x.ok?redMsgC(r):redMsgP(r))};
+    const b2=$("#drW2");if(b2)b2.onclick=()=>go(`¡Hola, ${f}! 👋\n\nUsted ya disfruta los beneficios de inCruises 🛳️\n\n¿Sabía que también puede compartirlo con otras personas y crecer con nuestro equipo? Me encantaría mostrarle cómo.\n\nSi le interesa, regístrese en la app de nuestro equipo con mi enlace:\n${miEnlace()}`)})}
+function dtAct(){return (dtSum?dtSum.d.filter(x=>x.ok).length:0)+dtClis().filter(x=>x.ok).length+dtRed().c.filter(x=>x.ok).length}
 function dtFirst(n){return String(n||"").trim().split(/\s+/)[0]||""}
 function dtAvS(x){const img=dtFoto(x.u,x.n);return img?`<s style="background-image:url('${esc(img)}')"></s>`:`<s>${esc(initials(x.n||"?"))}</s>`}
 function renderDT(){if(!dtSum){try{dtSum=LS.get("dtSum:"+store.uid)}catch(e){}}
@@ -3024,18 +3051,18 @@ function dtHito(n){if(!dtSum)return;const K="dtHito:"+store.uid,h=[...DT_HITOS].
     <button class="btn" id="dtShare" style="width:100%;background:#25D366;color:#fff">💬 Compartir mi logro</button><button class="btn ghost" data-close style="width:100%">${h===30?"¡Lo logré!":"¡Vamos por más!"}</button>`,()=>{confeti($("#dtCel"),50);
     $("#dtShare").onclick=()=>{const yo=miNombreCorto()||"",m=h===30?`🏆 ¡Completé mi Dream Team!\n\n30 directos activos en Action Leaders+.\n\nCamino a mi libertad ✨`:`🔥 ¡Ya tengo ${h} directos activos en mi Dream Team!\n\nVoy por mis 30.\n\nCamino a mi libertad ✨`;location.href="https://wa.me/?text="+encodeURIComponent(m+(yo?"\n\n*"+yo+"*":""))}})},900)}
 let dtDesde="sheet";
-function dtPanel(P){const D=dtTodos(),n=dtAct(),nc=D.filter(x=>x.ok&&x.cli).length,pd=D.filter(x=>!x.ok).length;
-  const g=D.map((x,i)=>`<button type="button" class="dt-c ${x.cli?"cl":""} ${x.ok?"":"pd"}" data-dti="${i}"><div class="dt-av">${x.cli?`<s>${esc(initials(x.n))}</s>`:dtAvS(x)}<i>${x.ok?"✓":"!"}</i>${(()=>{if(x.cli)return `<em class="dt-lv" style="background:#E0F2FE">🛳️</em>`;const g=dtRg(x);if(g)return `<em class="dt-rg" style="background:${g.c}" title="${esc(DT_RGTX[g.n]||g.n)}"></em>`;const l=lcNivelDe(x.n);return l.k?`<em class="dt-lv ${l.k}">${l.k==="esp"?"⚔️":"🏅"}</em>`:""})()}</div><b>${esc(dtFirst(x.n))}</b><small>${!x.ok?"⚠️ Ahorro":x.cli?"🛳️ Cliente":"👥 "+x.a}</small></button>`).join("")
+function dtPanel(P){const D=dtTodos(),n=dtAct(),nc=D.filter(x=>x.ok&&x.cli).length,pd=D.filter(x=>!x.ok&&!x.sa).length,nsa=D.filter(x=>x.sa).length;
+  const g=D.map((x,i)=>`<button type="button" class="dt-c ${x.cli?"cl":""} ${x.sa?"sa":x.ok?"":"pd"}" data-dti="${i}"><div class="dt-av">${x.cli||x.sa?`<s>${esc(initials(x.n))}</s>`:dtAvS(x)}<i>${x.sa?"📵":x.ok?"✓":"!"}</i>${(()=>{if(x.cli)return `<em class="dt-lv" style="background:#E0F2FE">🛳️</em>`;const g=dtRg(x);if(g)return `<em class="dt-rg" style="background:${g.c}" title="${esc(DT_RGTX[g.n]||g.n)}"></em>`;const l=lcNivelDe(x.n);return l.k?`<em class="dt-lv ${l.k}">${l.k==="esp"?"⚔️":"🏅"}</em>`:""})()}</div><b>${esc(dtFirst(x.n))}</b><small>${x.sa?"📵 Sin app":!x.ok?"⚠️ Ahorro":x.cli?"🛳️ Cliente":"👥 "+x.a}</small></button>`).join("")
     +Array.from({length:Math.max(0,DT_META-D.length)},()=>`<button type="button" class="dt-c e" data-dte="1"><div class="dt-av">+</div><b>&nbsp;</b><small>&nbsp;</small></button>`).join("");
   const h=`<div class="dt-hd"><div class="dt-k">CAMINO A MI LIBERTAD</div><div class="dt-tr"><h3>${n>=DT_META?"🏆 ¡Dream Team completado!":"✨ My Dream Team"}</h3><div class="dt-n">${n}<span> / ${DT_META}</span></div></div><div class="dt-bar"><i style="width:${Math.min(100,n/DT_META*100).toFixed(0)}%"></i></div><div class="dt-ms"><span>5 🎉</span><span>10 🔥</span><span>20 🚀</span><span>30 🏆 Camino a mi libertad</span></div></div>
    <div class="dt-g" id="${P}G">${g}</div>
    <div class="dt-leg">${RANGOS.slice(2).map(r=>`<span><i style="background:${r.n==="Board of Director"?"linear-gradient(120deg,#EA580C 50%,#7C2D12 50%)":r.c}"></i>${esc({"Marketing Director":"Marketing Director","SM Director":"Senior MD","Regional Director":"Regional","National Director":"National","International Director":"International","Executive Director":"Executive","Board of Director":"Board"}[r.n]||r.n)}</span>`).join("")}<span>🏅 Líder</span><span>⚔️ Espartano</span><span>🛳️ Cliente</span></div>
-   <p class="small muted" style="margin:0">${n>=DT_META?"🏆 ¡Completó sus 30! Cada directo extra fortalece su equipo.":`💭 Cada casilla vacía es un sueño esperando a su próximo socio. Le faltan <b>${DT_META-n}</b> directos activos.`}${nc?` Tiene <b>${n-nc}</b> socios y <b>${nc}</b> ${nc===1?"cliente":"clientes"} activos.`:""} Equipo activo total: <b>${((dtSum&&dtSum.eq)||0)+nc}</b>.</p>
+   <p class="small muted" style="margin:0">${n>=DT_META?"🏆 ¡Completó sus 30! Cada directo extra fortalece su equipo.":`💭 Cada casilla vacía es un sueño esperando a su próximo socio. Le faltan <b>${DT_META-n}</b> directos activos.`}${nc?` Tiene <b>${n-nc}</b> socios y <b>${nc}</b> ${nc===1?"cliente":"clientes"} activos.`:""} Equipo activo total: <b>${((dtSum&&dtSum.eq)||0)+nc}</b>.${nsa?` <b>${nsa}</b> ${nsa===1?"socio directo aún no está":"socios directos aún no están"} en la app (📵): cuando se registren, cuentan.`:""}</p>
    <div class="row" style="gap:8px"><button class="btn grow" id="${P}Inv" style="background:#25D366;color:#fff">➕ Invitar</button>${pd?`<button class="btn ghost grow" id="${P}Mot">💰 Motivar ahorro (${pd})</button>`:""}</div>
    <div class="row" style="gap:8px"><button class="btn ghost grow" id="${P}Num">📊 Nuestros números</button><button class="btn ghost grow" id="${P}Sim">🔮 Simular</button></div>`;
   const bind=()=>{dtDesde=P==="dt"?"sheet":"inline";
-    $("#"+P+"G").onclick=e=>{const b=e.target.closest("[data-dti],[data-dte]");if(!b)return;dtDesde=P==="dt"?"sheet":"inline";if(b.dataset.dte){dtMas();return}const x=D[+b.dataset.dti];if(x)(x.cli?dtCliFicha(x):dtFicha(x))};
-    $("#"+P+"Inv").onclick=dtMas;const m=$("#"+P+"Mot");if(m)m.onclick=()=>{const x=D.find(y=>!y.ok);if(x)(x.cli?dtCliFicha(x):dtFicha(x))};$("#"+P+"Num").onclick=()=>{dtDesde=P==="dt"?"sheet":"inline";dtNumeros()};$("#"+P+"Sim").onclick=dtSimular};
+    $("#"+P+"G").onclick=e=>{const b=e.target.closest("[data-dti],[data-dte]");if(!b)return;dtDesde=P==="dt"?"sheet":"inline";if(b.dataset.dte){dtMas();return}const x=D[+b.dataset.dti];if(x)(x.red?dtRedFicha(x):x.cli?dtCliFicha(x):dtFicha(x))};
+    $("#"+P+"Inv").onclick=dtMas;const m=$("#"+P+"Mot");if(m)m.onclick=()=>{const x=D.find(y=>!y.ok&&!y.sa);if(x)(x.red?dtRedFicha(x):x.cli?dtCliFicha(x):dtFicha(x))};$("#"+P+"Num").onclick=()=>{dtDesde=P==="dt"?"sheet":"inline";dtNumeros()};$("#"+P+"Sim").onclick=dtSimular};
   return{h,bind}}
 // Tarjeta llamativa de My Dream Team en Mi equipo › Directos (5 nov). Se abre/cierra; LS dtHeroOpen.
 function dtHeroHTML(inner){let D=[],n=0;try{D=dtTodos();n=dtAct()}catch(e){}const pc=Math.min(100,n/DT_META*100).toFixed(0),op=LS.get("dtHeroOpen")===1;
@@ -3307,7 +3334,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
   if(miosErr){b.innerHTML=emptyCard("No se pudo cargar su equipo","Revise su conexión e intente de nuevo. Si sigue igual, avise al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
   if(!mios.length){// 9 nov: sin socios en la app igual sale My Dream Team, para poder agregar CLIENTES
     let H="",bd=null;if(!isAdmin){try{const z=dtArmar();if(z){dtSum=Object.assign(z,{t:(dtSum&&dtSum.t)||z.t});LS.set("dtSum:"+store.uid,dtSum)}}catch(e){}try{const X=dtPanel("dtq");H=dtHeroHTML(X.h);bd=X.bind}catch(e){H=""}}
-    b.innerHTML=snvCard()+idxCard()+H+`<div class="card empty"><h3>Aún no tiene socios en la app</h3><p class="small muted">Cuando firme a alguien, mándele su mensaje de bienvenida desde el CRM o comparta su enlace. Al registrarse aparecerá aquí.${H?" Mientras tanto, puede agregar a sus clientes en su My Dream Team con el botón +.":""}</p></div>`+inv;bind();snvBind(b);
+    b.innerHTML=snvCard()+redEqCard()+idxCard()+H+`<div class="card empty"><h3>Aún no tiene socios en la app</h3><p class="small muted">Cuando firme a alguien, mándele su mensaje de bienvenida desde el CRM o comparta su enlace. Al registrarse aparecerá aquí.${H?" Mientras tanto, puede agregar a sus clientes en su My Dream Team con el botón +.":""}</p></div>`+inv;bind();snvBind(b);
     if(bd)try{bd()}catch(e){}{const h=$("#dtHero");if(h)h.ontoggle=()=>{try{LS.set("dtHeroOpen",h.open?1:0)}catch(e){}const g=h.querySelector(".go");if(g)g.textContent=h.open?"Cerrar ▴":"Ver mi cuadro ›"}}return}
   const lin=true;const V=miosVista==="dir"?mios.filter(x=>x.nivel===1):mios.slice().sort((a,b)=>a.nivel-b.nivel||byAct(a,b));
   const seg=lin?`<div class="seg" id="miosSeg"><button aria-selected="${miosVista==="dir"}" data-mv="dir">⭐ Directos · ${mios.filter(x=>x.nivel===1).length}</button><button aria-selected="${miosVista==="todo"}" data-mv="todo">🌳 Mi línea · ${mios.length}</button>${pipeOk()?`<button aria-selected="${miosVista==="pros"}" data-mv="pros">🎯 Prospectos</button>`:""}</div>`:"";
@@ -3321,7 +3348,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
     return Dr.map(({d,M,ac,nv})=>{const r=d.registro||{},nm=r.nombre||"Socio",g=dtRg({u:d.uid,n:nm,rg:r.rango||""}),pc=M.length?Math.round(ac/M.length*100):0;
       return `<details class="card pi" data-pi="${esc(d.uid)}" style="gap:8px"><summary style="list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:8px"><div class="row" style="gap:10px;align-items:center">${avHTML(nm,false,false)}<div class="grow" style="min-width:0"><b style="font-weight:700">Línea de ${esc(nm)}</b><div class="small muted">⭐ Directo${g?` · <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${g.c};vertical-align:middle"></span> ${esc(DT_RGTX[g.n]||g.n)}`:""} · ${M.length} ${M.length===1?"socio":"socios"} · ${nv} ${nv===1?"nivel":"niveles"}</div></div><span class="chip ${pc>=50?"c-good":pc>0?"c-gold":"c-brand"}">${ac} de ${M.length} activos</span></div>
        <div class="bar" style="height:6px"><i style="width:${pc}%"></i></div><span class="small" style="color:var(--brand);font-weight:700">Ver su línea ›</span></summary><div class="pi-b"></div></details>`}).join("")||emptyCard("Aún no tiene directos","Cuando un socio se registre con su enlace, aquí verá su línea.")};
-  b.innerHTML=irSimple()?`${snvCard()}${hoyLlamar()}${seg}${miosVista==="dir"&&DTP.h?dtHeroHTML(DTP.h):""}<details class="card mnum">${mnumSum()}${idxCard()}</details>`:`${snvCard()}${idxCard()}${seg}${miosVista==="dir"&&DTP.h?`<div class="card dtin" style="gap:10px">${DTP.h}</div>`:""}`;b.innerHTML+=`<div class="grid2">${st(n,miosVista==="todo"?"Socios en toda tu línea":n===1?"Socio directo":"Socios directos")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}${st(pres,"Presentaciones esta semana")}</div>
+  b.innerHTML=irSimple()?`${snvCard()}${redEqCard()}${hoyLlamar()}${seg}${miosVista==="dir"&&DTP.h?dtHeroHTML(DTP.h):""}<details class="card mnum">${mnumSum()}${idxCard()}</details>`:`${snvCard()}${redEqCard()}${idxCard()}${seg}${miosVista==="dir"&&DTP.h?`<div class="card dtin" style="gap:10px">${DTP.h}</div>`:""}`;b.innerHTML+=`<div class="grid2">${st(n,miosVista==="todo"?"Socios en toda tu línea":n===1?"Socio directo":"Socios directos")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}${st(pres,"Presentaciones esta semana")}</div>
    ${miosVista==="dir"?`<p class="eyebrow" style="margin:6px 0 0">Detalle de mis directos</p>`:""}
    ${miosVista==="todo"?`<div class="seg" id="miosLin" style="width:auto;align-self:flex-start"><button aria-selected="${miosLin==="pi"}" data-ml="pi">🌳 Por piernas</button><button aria-selected="${miosLin==="li"}" data-ml="li">☰ Lista por nivel</button></div>`:""}
    ${miosVista==="todo"&&miosLin==="pi"?piernas():`<div class="card" style="gap:0">${V.map(x=>fila(x)).join("")}</div>`}
@@ -3726,13 +3753,15 @@ const redTZ={timeZone:"America/Tegucigalpa"};
 const redFC=iso=>new Date(iso).toLocaleDateString("es-HN",Object.assign({weekday:"short",day:"numeric",month:"short"},redTZ)).replace(/[.,]/g,"");
 const redFL=iso=>new Date(iso).toLocaleDateString("es-HN",Object.assign({weekday:"long",day:"numeric",month:"long"},redTZ)).replace(",","");
 const redFirst=n=>String(n||"").trim().split(/\s+/)[0]||"";
-function redOk(){if(isAdmin)return true;try{if(irSimple())return false}catch(e){}return !!redHay}
+function redOk(){return isAdmin||!!redHay}
 async function redProbe(){if(redHay!==null||!store.db||!store.uid)return;redHay=false;
   try{const q=await store.db.collection("red").where("ve",store.uid,"array-contains").limit(1).get();redHay=q.docs.length>0}catch(e){redHay=false}
   redBtn()}
 function redBtn(){const b=$("#eqCierre");if(b)b.hidden=!redOk()}
 async function redCargar(f){if(!f&&redL&&Date.now()-redT<6e5)return redL;
-  const q=isAdmin?await store.db.collection("red").get():await store.db.collection("red").where("ve",store.uid,"array-contains").get();
+  // 10 nov: caché local de 6 h (la red cambia 1 vez al mes o a la semana); deslizar para actualizar fuerza el servidor
+  const W=isAdmin?store.db.collection("red"):store.db.collection("red").where("ve",store.uid,"array-contains");
+  const q=await rdCache("red",6*36e5,f,()=>W.getCache(),()=>W.get());
   redL=q.docs.map(d=>Object.assign({id:d.id},d.data()));redT=Date.now();return redL}
 function redPago(r){const A=ahCfg();if(!A||r.t!=="p")return false;return !((r.ek&&A.k[r.ek])||(r.wk&&A.k[r.wk]))}
 function redEst(r){const n=Date.now(),dp=Date.parse(r.dp||0),fi=Date.parse(r.in||0);
@@ -3803,9 +3832,9 @@ function renderCierre(b){if(!redOk()){b.innerHTML=emptyCard("Cierre de mes","Aqu
   const piSel=piL.length>1?`<select class="inp" id="rdPi" style="padding:10px 12px"><option value="todo">📂 Todas mis líneas · ${piL.reduce((a,k)=>a+PI[k],0)}</option>${piL.map(k=>`<option value="${esc(k)}" ${redPi===k?"selected":""}>${esc(k)} · ${PI[k]}</option>`).join("")}</select>`:"";
   const filas=()=>{let h="",last=null;L.slice(0,200).forEach(r=>{if(redPi==="todo"&&piL.length>1&&r._pi!==last){last=r._pi;h+=`<div class="rd-h">${esc(r._pi)}<span>${PI[r._pi]}</span></div>`}h+=redFila(r)});return h};
   const fb=(k,t)=>`<button type="button" data-rf="${k}" aria-pressed="${redF===k}">${t}</button>`;
-  b.innerHTML=`<div class="card rd-hero"><div class="small" style="font-weight:800;letter-spacing:.08em;opacity:.85">💰 CIERRE DE MES</div>
-    <div style="display:flex;align-items:baseline;gap:8px;margin:4px 0 2px"><b style="font-size:40px;line-height:1;font-family:'Barlow Condensed',Figtree,sans-serif">${falt}</b><span style="font-weight:700">ahorros pendientes en su red</span></div>
-    <div class="small" style="opacity:.9">${urg?`🔥 <b>${urg}</b> pierden el doble punto en 2 días o menos · `:""}📩 ${con} contactados · ✅ ${pag} ya pagaron</div></div>
+  b.innerHTML=`${redEqBack||!isAdmin?`<button type="button" class="btn ghost sm" id="rdBack" style="align-self:flex-start">‹ Volver a Mi equipo</button>`:""}<div class="card rd-hero"><div class="small" style="font-weight:800;letter-spacing:.08em;opacity:.85">${redSeg==="p"?"💰 CIERRE DE MES":"🌐 SU RED EN INCRUISES"}</div>
+    <div style="display:flex;align-items:baseline;gap:8px;margin:4px 0 2px"><b style="font-size:40px;line-height:1;font-family:'Barlow Condensed',Figtree,sans-serif">${redSeg==="p"?falt:redSeg==="s"?S.length:redSeg==="x"?X.length:C.length}</b><span style="font-weight:700">${redSeg==="p"?"ahorros pendientes en su red":redSeg==="s"?"socios de su red aún sin la app":redSeg==="x"?"socios sin membresía activa":"clientes en su red"}</span></div>
+    ${redSeg==="p"?`<div class="small" style="opacity:.9">${urg?`🔥 <b>${urg}</b> pierden el doble punto en 2 días o menos · `:""}📩 ${con} contactados · ✅ ${pag} ya pagaron</div>`:`<div class="small" style="opacity:.9">Ordenados por línea de patrocinio. Toque para escribirles por WhatsApp.</div>`}</div>
    <div class="seg rd-seg" id="rdSeg"><button data-rs="p" aria-selected="${redSeg==="p"}">💰 Ahorros · ${falt}</button><button data-rs="x" aria-selected="${redSeg==="x"}">🟠 Sin membresía · ${X.length}</button><button data-rs="s" aria-selected="${redSeg==="s"}">⏳ Sin app · ${S.length}</button><button data-rs="c" aria-selected="${redSeg==="c"}">🛍️ Clientes · ${C.length}</button></div>
    ${redSeg==="p"?`<div class="crmord rd-fl">${fb("todo","Todos")}${fb("dp","🔥 Doble punto · "+dp)}${fb("in","⚠️ Inactivar · "+inc)}${fb("sin","Sin escribir")}${fb("ok","✅ Pagaron · "+pag)}</div>`
      :redSeg==="x"?`<p class="small muted" style="margin:0">Socios que tienen su código pero no tienen membresía activa. No cuentan en su Índice de Duplicación ni en el Dream Team. Si activan su membresía, pasan solos a "al día" en el siguiente reporte.</p>`
@@ -3816,7 +3845,7 @@ function renderCierre(b){if(!redOk()){b.innerHTML=emptyCard("Cierre de mes","Aqu
    ${isAdmin?`<div class="card">${redAdmHTML()}</div>`:""}
    <p class="small muted">Datos del reporte de inCruises. "Ya pagó" se actualiza con los correos de pago, varias veces al día.</p>`;
   redBind(b)}
-function redBind(b){const sg=$("#rdSeg");if(sg)sg.onclick=e=>{const x=e.target.closest("[data-rs]");if(!x)return;redSeg=x.dataset.rs;renderEquipo()};
+function redBind(b){const bk=$("#rdBack");if(bk)bk.onclick=()=>{redEqBack=false;eqTab="mios";setSeg("eqSeg","mios");renderEquipo();window.scrollTo(0,0)};const sg=$("#rdSeg");if(sg)sg.onclick=e=>{const x=e.target.closest("[data-rs]");if(!x)return;redSeg=x.dataset.rs;renderEquipo()};
   b.querySelectorAll("[data-rf]").forEach(x=>x.onclick=()=>{redF=redF===x.dataset.rf?"todo":x.dataset.rf;renderEquipo()});
   const ps=$("#rdPi");if(ps)ps.onchange=()=>{redPi=ps.value;renderEquipo()};
   const qi=$("#rdQ");if(qi)qi.oninput=()=>{redQ=qi.value;const L=$("#rdList");clearTimeout(qi._t);qi._t=setTimeout(()=>{renderEquipo();const n=$("#rdQ");if(n){n.focus();n.setSelectionRange(n.value.length,n.value.length)}},350)};
@@ -3842,7 +3871,7 @@ async function redSubir(btn){if(!isAdmin)return;const m=$("#rdUpMsg"),say=t=>{if
     const root=S.find(x=>String(x.email||"").toLowerCase()==="edwing.go@gmail.com");
     const docs={};let enApp=0,conVe=0;
     D.rows.forEach(r=>{const me=uOf(r.k);if(me)enApp++;const ve=new Set();let iv="";
-      (r.anc||[]).forEach((k,j)=>{const x=uOf(k);if(!x)return;if(!iv)iv=redInvDe(x);if(j===0||rangoActualIdx(x.registro,x.registro.nombre)>=RED_MD)ve.add(x.uid)});
+      (r.anc||[]).forEach((k,j)=>{const x=uOf(k);if(!x)return;if(!iv)iv=redInvDe(x);ve.add(x.uid)});
       if(root){ve.add(root.uid);if(!iv)iv=redInvDe(root)}if(me)ve.delete(me.uid);if(ve.size>1||!root)conVe++;
       const an=(r.anc||[]).map(k=>(P[k]||{}).n||""),ap=(r.anc||[]).map(k=>(P[k]||{}).lv||0),au=(r.anc||[]).map(k=>{const x=uOf(k);return x?x.uid:""});
       const o={an,ap,au,ps:r.ps?1:0,n:r.n,t:r.t,pl:r.pl||"",lv:r.lv||0,sp:r.sp||"",w:r.w||"",ek:r.ek||"",wk:r.wk||"",ve:[...ve],u:me?me.uid:"",iv,v:D.v};
@@ -4496,6 +4525,20 @@ function snvFila(f){const a=f.a,E=f.E,id=esc(a.id||a.socio),pl=/premium/i.test(a
     <div class="small muted">${f.yo?"⭐ Su directo":"Patrocinador: "+esc(nv(bonitoN(a.patrocinador||"")))+(g=>g?` · <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${g.c};vertical-align:middle"></span> <b style="color:var(--ink);font-weight:700">${esc(DT_RGTX[g.n]||g.n)}</b>`:"")(dtRg({n:a.patrocinador||"",rg:""}))} · ${niceDate(dkey(new Date(a.fecha)))}</div>
     <div class="row wrap" style="gap:4px;margin-top:4px">${ap}${irT}${rt}</div>${bt?`<div class="row wrap" style="gap:6px;margin-top:6px">${bt}</div>`:""}</div></div>`}
 const bonitoN=t=>String(t||"").split(/\s+/).filter(Boolean).map(w=>w.length>1?w[0].toUpperCase()+w.slice(1).toLowerCase():w.toUpperCase()).join(" ");
+// ---------- 🌐 Su red en inCruises dentro de Mi equipo (10 nov) ----------
+// Gente de la línea del socio que aún NO está en la app (colección red, la reparte el servidor con los reportes de inCruises).
+// Socio sin app = t s / x / (p con ps); cliente = t c / (p sin ps). Se abre la vista de la red (renderCierre) por tipo y línea.
+const redSA=r=>!r.u&&(r.t==="s"||r.t==="x"||(r.t==="p"&&r.ps)),redCL=r=>!r.u&&(r.t==="c"||(r.t==="p"&&!r.ps));
+const redDir=r=>{const i=(r.au||[]).indexOf(store.uid);return i===0||(i<0&&r.lv===1&&(isAdmin||String((fbUser&&fbUser.email)||"").toLowerCase()==="edwing.go@gmail.com"))};
+let redEqBack=false;
+function redPre(){if(redL||window._redLd||!store.db||!store.uid)return;window._redLd=1;redCargar().then(()=>{try{renderDT()}catch(e){}if(eqTab==="mios")try{renderEquipo()}catch(e){}}).catch(()=>{}).finally(()=>{window._redLd=0;if(!redL)redL=[]})}
+function redEqCard(){try{if(!store.uid||esSoloAdminYo())return "";if(!redL){redPre();return ""}
+  const S=redL.filter(redSA),Cl=redL.filter(redCL),X=S.filter(r=>r.t==="x"),SS=S.filter(r=>r.t==="s"),dS=SS.filter(redDir).length,dC=Cl.filter(redDir).length;
+  if(!S.length&&!Cl.length)return "";
+  return `<div class="card redEq"><div class="k">🌐 SU RED EN INCRUISES</div><p>Personas de su línea que todavía no están en la app. Invítelas para que crezcan con usted.</p>
+   <div class="redEqG"><button type="button" data-rq="s"><b>${SS.length}</b><span>📵 Socios sin app</span>${dS?`<small>⭐ ${dS} ${dS===1?"directo":"directos"}</small>`:""}</button><button type="button" data-rq="c"><b>${Cl.length}</b><span>🧳 Clientes</span>${dC?`<small>⭐ ${dC} ${dC===1?"directo":"directos"}</small>`:""}</button>${X.length?`<button type="button" data-rq="x"><b>${X.length}</b><span>🟠 Sin membresía</span></button>`:""}</div>
+   <small class="muted">Ordenados por línea de patrocinio · datos del último reporte de inCruises</small></div>`}catch(e){return ""}}
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-rq]");if(!b)return;redSeg=b.dataset.rq;redPi="todo";redQ="";redEqBack=true;eqTab="cierre";try{renderEquipo();window.scrollTo(0,0)}catch(x){}});
 function snvCard(){try{const L0=snvDatos(0),L1=snvDatos(1);if(!L0.length&&!L1.length)return"";if(snvM===0&&!L0.length)snvM=1;if(!SNVD&&!window._snvdL){window._snvdL=1;snvdCargar().then(()=>{try{renderEquipo()}catch(e){}})}const L=snvM?L1:L0;const sin=L.filter(f=>!f.app&&!f.cli).length,cli=L.filter(f=>f.cli).length,sd=L.filter(f=>!f.app&&!f.dec).length,vt=L.filter(f=>!f.app&&f.dec&&f.dec.s==="t").length,s1=L.filter(f=>f.app&&!f.m1).length,ok=L.filter(f=>f.m1).length,V=snvFiltra(L);
   const ch=(k,t,n)=>`<button type="button" class="chip${snvF===k?" on":""}" data-snf="${k}">${t} · ${n}</button>`;
   return `<details class="card snv" id="snvCard" ${LS.get("snvOpen")?"open":""}><summary><div class="snvH"><span class="snv-ic">🆕</span><span class="grow"><b>Socios nuevos · ${snvMesN(snvM)}</b><small>${L.length} ${L.length===1?"activación":"activaciones"} · toque para ver a cada uno</small></span><span class="snv-go">›</span></div>
@@ -4858,6 +4901,7 @@ function avScroll(id,n){n=n||0;setTimeout(()=>{const r=$(id);if(r&&!r.hidden){r.
 function avEq(t){eqTab=t;try{setSeg("eqSeg",eqTab)}catch(e){}go("equipo");try{renderEquipo()}catch(e){}}
 function avIr(k){try{
   if(k==="apr"){aprAbrir();return}
+  if(k==="rep"){if(isAdmin)repAdmin();return}
   if(k==="via"){go("inicio");try{avBoxMostrar("viaStrip")}catch(e){}avScroll("#viaStrip");return}
   if(k==="ag"||k==="agenda"){avisosVer();return}
   if(k==="ahp"){if(ahpLista())ahpVentana();else{go("inicio");avScroll("#urgStrip")}return}
@@ -6875,11 +6919,11 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     ${irSimple()?`<div class="pf-h">Ayuda</div>`:""}<button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
     <button class="pf-it" id="pfFront"><span class="ic">🏠</span>Ver la portada de la app</button>
-    ${isAdmin&&irSimple()?`<div class="pf-h">Admin</div><button class="pf-it" id="pfCie"><span class="ic">💰</span>Cierre de mes</button>`:""}${isAdmin?`<button class="pf-it" id="pfGrp"><span class="ic">👥</span>Grupo de WhatsApp del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)${irSimM()?` <b style="margin-left:auto;font-size:11px;background:#7C3AED;color:#fff;border-radius:99px;padding:3px 8px">ENCENDIDO</b>`:""}</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfRh"><span class="ic">🔥</span>Ver celebración de racha (admin)</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
+    ${isAdmin&&irSimple()?`<div class="pf-h">Admin</div><button class="pf-it" id="pfCie"><span class="ic">💰</span>Cierre de mes</button>`:""}${isAdmin?`<button class="pf-it" id="pfRep"><span class="ic">📤</span>Cargar reportes de inCruises</button>`:""}${isAdmin?`<button class="pf-it" id="pfGrp"><span class="ic">👥</span>Grupo de WhatsApp del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)${irSimM()?` <b style="margin-left:auto;font-size:11px;background:#7C3AED;color:#fff;border-radius:99px;padding:3px 8px">ENCENDIDO</b>`:""}</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfRh"><span class="ic">🔥</span>Ver celebración de racha (admin)</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
-    $("#pfNombre").onclick=abrirMisDatos;$("#pfAvisos").onclick=()=>{closeSheet();setTimeout(misAvisos,250)};{const gp=$("#pfGrp");if(gp)gp.onclick=()=>{closeSheet();setTimeout(grpAdmin,250)}}{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const cz=$("#pfCie");if(cz)cz.onclick=()=>{closeSheet();eqTab="cierre";go("equipo");renderEquipo()}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
+    $("#pfNombre").onclick=abrirMisDatos;$("#pfAvisos").onclick=()=>{closeSheet();setTimeout(misAvisos,250)};{const gp=$("#pfGrp");if(gp)gp.onclick=()=>{closeSheet();setTimeout(grpAdmin,250)}}{const rp=$("#pfRep");if(rp)rp.onclick=()=>{closeSheet();setTimeout(repAdmin,250)}}{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const cz=$("#pfCie");if(cz)cz.onclick=()=>{closeSheet();eqTab="cierre";go("equipo");renderEquipo()}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
     $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfVia").onclick=()=>window.open(VIA_FORM,"_blank","noopener");$("#pfMem").onclick=()=>memCompartir();$("#pfLzs").onclick=()=>{closeSheet();setTimeout(abrirLanzSocio,250)};$("#pfMemV").onclick=()=>memVisitas();
     $("#pfInv").onclick=()=>{closeSheet();setTimeout(invPlanHoja,250)};
     $("#pfInst").onclick=()=>openSheet(`<h2>Instala la app</h2>
@@ -6999,6 +7043,66 @@ function grpAbrir(){
   (async()=>{const c=await apClaims(false);if(c.ap!==true&&!isAdmin){openSheet(`<h3 style="margin:0 0 8px">🔒 Grupo del equipo</h3><p class="muted" style="margin:0 0 14px">Disponible cuando su cuenta sea aprobada. Normalmente tarda unos minutos.</p><button class="btn ghost" data-close style="width:100%">Entendido</button>`);return}
     const L=await grpLink();if(!L){toast("No se pudo abrir el grupo. Intente de nuevo en un momento; si sigue, avise a su patrocinador.");return}
     grpMarca();toast("Abriendo el grupo…");setTimeout(()=>{location.href=L},600)})()}
+// ---------- 📤 Cargar reportes de inCruises (10 nov, admin) ----------
+// Un solo selector: los 3 reportes (inicio de mes) o solo el de pendientes (semanal). Se reconocen por sus columnas,
+// se CIFRAN en el teléfono (misma clave de red.enc) y se guardan en evento/sps26/priv/rep {est:"p"}. El servidor
+// (.github/workflows/red.yml, cada 15 min) los procesa, publica la red y avisa "✅ Red de inCruises actualizada".
+function repCsv(t){const R=[];let row=[],f="",q=false;for(let i=0;i<t.length;i++){const c=t[i];
+  if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+  else if(c==='"')q=true;else if(c===","){row.push(f);f=""}else if(c==="\n"||c==="\r"){if(c==="\r"&&t[i+1]==="\n")i++;row.push(f);f="";if(row.some(x=>x!==""))R.push(row);row=[]}else f+=c}
+  row.push(f);if(row.some(x=>x!==""))R.push(row);return R}
+async function repLeer(file){const t=(await file.text()).replace(/^﻿/,"");const R=repCsv(t);const h=(R[0]||[]).map(x=>x.trim().toLowerCase());
+  const ie=h.indexOf("email"),ok=["email","first_name","last_name","level","sponsor_id","sponsor_name"].every(c=>h.includes(c));
+  const em=new Set(R.slice(1).map(r=>String(r[ie]||"").trim().toLowerCase()).filter(Boolean));
+  const ip=h.indexOf("plan_name"),prem=ip<0?0:R.slice(1).filter(r=>/premium/i.test(r[ip]||"")).length;
+  return {file,t,ok,pend:h.includes("invoices_due_date"),n:em.size,em,prem,nom:file.name||""}}
+function repTipos(L){const out={so:null,mi:null,pe:null},warn=[];
+  L.forEach(x=>{if(!x.ok)warn.push(`«${x.nom}» no parece un reporte de inCruises (faltan columnas).`)});
+  const V=L.filter(x=>x.ok),P=V.filter(x=>x.pend),N=V.filter(x=>!x.pend);
+  if(P.length>1)warn.push("Hay 2 reportes de pendientes: deje solo uno.");out.pe=P[0]||null;
+  if(N.length>2)warn.push("Hay más de 2 reportes de miembros: suba solo Socios y Miembros activos.");
+  if(N.length===2){let [a,b]=N;const sub=(x,y)=>[...x.em].every(e=>y.em.has(e));
+    if(sub(a,b)&&!sub(b,a))out.so=a,out.mi=b;else if(sub(b,a)&&!sub(a,b))out.so=b,out.mi=a;
+    else{const fs=x=>/socio/i.test(x.nom)&&!/activ/i.test(x.nom);if(fs(a)&&!fs(b))out.so=a,out.mi=b;else if(fs(b)&&!fs(a))out.so=b,out.mi=a;
+      else{[a,b]=a.n<=b.n?[a,b]:[b,a];out.so=a;out.mi=b;warn.push("No pude confirmar cuál es el de Socios: tomé el más pequeño. Revise los números.")}}}
+  if(N.length===1)warn.push("Falta un reporte: para la carga del mes suba los 3 juntos (Socios, Miembros activos y Pendientes). Para la semanal, solo Pendientes.");
+  if(!out.pe&&N.length)warn.push("Falta el reporte de Miembros pendientes (el que trae las fechas de las facturas).");
+  return {out,warn}}
+async function repCifrar(txt){if(!entKey){const d=await store.db.doc("evento/"+ENT.id+"/priv/llave").get();entKey=d.exists?d.data().k:null}if(!entKey)throw new Error("sin-llave");
+  const key=await crypto.subtle.importKey("raw",b64u(entKey),"AES-GCM",false,["encrypt"]),iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv},key,new TextEncoder().encode(txt))),all=new Uint8Array(12+ct.length);all.set(iv);all.set(ct,12);
+  let b="";for(let i=0;i<all.length;i+=8192)b+=String.fromCharCode.apply(null,all.subarray(i,i+8192));return btoa(b)}
+function repEstHTML(r){if(!r||!r.est)return "";const f=t=>t?new Date(t).toLocaleString("es-HN",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):"";
+  if(r.est==="p")return `<div class="repSt">⏳ <b>En cola</b> · subido ${f(r.t)}. El servidor lo procesa en máximo 15 minutos; le llegará un aviso.</div>`;
+  if(r.est==="w")return `<div class="repSt">⚙️ <b>Procesando…</b> esto toma 1 o 2 minutos.</div>`;
+  if(r.est==="err")return `<div class="repSt err">❌ ${esc(r.msg||"No se pudo procesar.")} <span class="muted">(${f(r.tf)})</span></div>`;
+  const x=r.res||{};return `<div class="repSt ok">✅ <b>Red actualizada</b> · ${f(r.tf)}<br><span class="small">${x.n||0} personas: ${x.s||0} socios, ${x.c||0} clientes, ${x.p||0} ahorros pendientes${x.x?`, ${x.x} sin membresía`:""}. ${x.app||0} ya están en la app${x.pl?` · ${x.pl} planes corregidos`:""}.</span></div>`}
+async function repAdmin(){if(!isAdmin)return;let R=null;try{const d=await store.db.doc("evento/sps26/priv/rep").get();R=d.exists?d.data():null}catch(e){}
+  let sel=null,poll=null;
+  openSheet(`<p class="eyebrow">ADMIN</p><h3 style="margin:4px 0 6px">📤 Cargar reportes de inCruises</h3>
+  <p class="small muted" style="margin:0 0 10px"><b>Inicio de mes:</b> los 3 juntos (Socios, Miembros activos y Miembros pendientes). <b>Cada semana (opcional):</b> solo Miembros pendientes. Se cifran en este teléfono antes de subir.</p>
+  <div id="repEst">${repEstHTML(R)}</div>
+  <label class="repPick"><input type="file" id="repF" accept=".csv,text/csv" multiple hidden><span>📁 Elegir archivos</span><small>Puede seleccionar los 3 a la vez</small></label>
+  <div id="repRes"></div>
+  <button class="btn" id="repGo" style="width:100%;margin-top:10px" disabled>Subir y actualizar la red</button>
+  <button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{
+    const pinta=()=>{const b=$("#repGo"),box=$("#repRes");if(!sel){box.innerHTML="";b.disabled=true;return}
+      const {out,warn}=sel,fila=(ic,t,x,ex)=>`<div class="repRow ${x?"":"no"}"><span>${ic}</span><div><b>${t}</b><small>${x?esc(x.nom):"— no está"}</small></div><b class="repN">${x?x.n.toLocaleString("es-HN"):""}</b>${ex&&x?`<small class="repX">${ex}</small>`:""}</div>`;
+      const modo=out.so&&out.mi&&out.pe?"mes":out.pe&&!out.so&&!out.mi?"sem":"";
+      box.innerHTML=`<div class="repBox">${fila("👥","Socios",out.so,out.so?`★ ${out.so.prem} Premium`:"")}${fila("🧾","Miembros activos",out.mi,out.mi&&out.so?`${Math.max(0,out.mi.n-[...out.mi.em].filter(e=>out.so.em.has(e)).length)} clientes`:"")}${fila("⏳","Miembros pendientes",out.pe)}</div>
+        ${modo==="sem"?`<p class="small" style="margin:8px 0 0">📅 Carga semanal: se actualizan solo los ahorros pendientes; socios y clientes quedan como en la última carga del mes.</p>`:""}
+        ${warn.map(w=>`<p class="repW">⚠️ ${esc(w)}</p>`).join("")}`;
+      b.disabled=!modo;b.dataset.m=modo};
+    $("#repF").onchange=async e=>{const F=[...e.target.files];if(!F.length)return;$("#repRes").innerHTML=`<p class="small muted">Leyendo ${F.length} archivo${F.length>1?"s":""}…</p>`;
+      try{const L=await Promise.all(F.map(repLeer));sel=repTipos(L)}catch(x){sel=null;$("#repRes").innerHTML=`<p class="repW">⚠️ No se pudieron leer los archivos.</p>`;return}pinta()};
+    $("#repGo").onclick=async()=>{const b=$("#repGo");if(!sel||b.disabled)return;b.disabled=true;b.textContent="Cifrando…";
+      try{const {out}=sel,f={};for(const k of ["so","mi","pe"])if(out[k])f[k]=await repCifrar(out[k].t);
+        const tam=Object.values(f).reduce((a,x)=>a+x.length,0);if(tam>950000)throw new Error("grande");
+        b.textContent="Subiendo…";const cnt={};for(const k in f)cnt[k]=out[k].n;
+        await store.db.doc("evento/sps26/priv/rep").set({est:"p",t:Date.now(),por:store.uid,f,cnt,m:b.dataset.m});
+        R={est:"p",t:Date.now()};$("#repEst").innerHTML=repEstHTML(R);sel=null;pinta();b.textContent="✅ Subido";toast("✅ Reportes subidos. Le aviso cuando la red esté lista.");
+        clearInterval(poll);poll=setInterval(async()=>{if(!$("#repEst")){clearInterval(poll);return}try{const d=await store.db.doc("evento/sps26/priv/rep").get();const x=d.data()||{};$("#repEst").innerHTML=repEstHTML(x);if(x.est==="ok"||x.est==="err")clearInterval(poll)}catch(e){}},30000)}
+      catch(e){b.disabled=false;b.textContent="Subir y actualizar la red";toast(e&&e.message==="grande"?"Los archivos son muy grandes: suba solo los reportes de inCruises.":"No se pudo subir ("+errCod(e)+")")}}})}
 async function grpAdmin(){const L=await grpLink();openSheet(`<p class="eyebrow">ADMIN</p><h3 style="margin:4px 0 6px">👥 Grupo de WhatsApp del equipo</h3><p class="small muted" style="margin:0 0 12px">Es el paso 1 del Plan de Inicio Rápido. Solo lo ven las cuentas aprobadas. Si restablece el enlace en WhatsApp, péguelo aquí.</p>
   <input id="grpL" value="${esc(L)}" placeholder="https://chat.whatsapp.com/…" style="width:100%;margin-bottom:12px"><button class="btn" id="grpS" style="width:100%">Guardar</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{
   $("#grpS").onclick=async()=>{let v=$("#grpL").value.trim();if(!/^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]+/.test(v)){toast("Pegue un enlace de grupo de WhatsApp (chat.whatsapp.com/…)");return}v=v.split("?")[0];
@@ -7575,7 +7679,7 @@ async function startApp(u){
   await loadMine();
   if(u&&!isAdmin&&regDoc&&regDoc.registro)apRevisar().catch(()=>{});
   {const pi=$("#presIni");if(pi)pi.hidden=!(u&&regDoc&&regDoc.registro)}
-  if(u){setTimeout(()=>{try{trHoy()}catch(e){}},900);setInterval(()=>{try{if(!document.hidden)trHoy()}catch(e){}},5*6e4)}
+  if(u){setTimeout(()=>{try{premCargar()}catch(e){}},2500);setTimeout(()=>{try{trHoy()}catch(e){}},900);setInterval(()=>{try{if(!document.hidden)trHoy()}catch(e){}},5*6e4)}
   if(regDoc&&regDoc.registro){welState.registro=true;publicarInv();if(profile.waPublico)setTimeout(publicarPerfil,4000)}
   renderWel();renderAviso();renderAccesos();
   renderMeBtn();setTimeout(renderHist,800);setTimeout(renderMiWa,1200);if(isAdmin)setTimeout(()=>{if(!socios)loadSocios();else syncConst()},2500);
@@ -7588,7 +7692,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110103851";var busy=false,pend=null;
+(function(){var V="20261110112534";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
