@@ -70,7 +70,7 @@ const fechaL=DIA[fd.getDay()]+" "+D+" de "+MES[M-1],fechaC=DIA[fd.getDay()].slic
 const dn=E.dn||"",dn1=dn.split(" ")[0]||"";
 const ds=[1,2,3].includes(+E.ds)?+E.ds:1,bg="media/eventos/f-"+(gran?"g":"j")+ds+".jpg"+(gran?"":"?v=3");
 document.title=tipo+" · Confirme su asistencia";
-$("#app").innerHTML=`<div class="hero" style="background-image:url('${bg}')"><img class="logo" src="media/logo-mas.png" alt="Action Leaders+"><div class="hc"><span class="pill">${E.z?"VIRTUAL":"PRESENCIAL"}</span><h1>${gran?"GRAN EVENTO <span>DE NEGOCIOS</span>":"JUNTA DE <span>NEGOCIOS</span>"}</h1><div class="city">${esc(E.c||(E.z?"En línea":""))}</div></div></div>
+$("#app").innerHTML=`<div class="hero" style="background-image:url('${bg}')"><img class="logo" src="media/logo-al.png" alt="Action Leaders+"><div class="hc"><span class="pill">${E.z?"VIRTUAL":"PRESENCIAL"}</span><h1>${gran?"GRAN EVENTO <span>DE NEGOCIOS</span>":"JUNTA DE <span>NEGOCIOS</span>"}</h1><div class="city">${esc(E.c||(E.z?"En línea":""))}</div></div></div>
 <div class="w">
  ${dn?`<div class="inv"><div class="av" id="dav">${esc(ini(dn))}</div><div><small>Le invita</small><b>${esc(dn)}</b></div></div>`:""}
  <div class="grid"><div class="c"><small>FECHA</small><b>${esc(fechaC)}</b></div><div class="c"><small>HORA</small><b>${esc(h12)} 🇭🇳</b></div>

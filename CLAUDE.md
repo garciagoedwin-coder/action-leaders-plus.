@@ -620,3 +620,9 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - (9 nov) evaPuedeGran: además de rango Team Leader+, el Líder Espartano del Sistema de liderazgo (lzMiL con ptsBase o volumen ≥ calCfg().esp, 500) puede crear Gran evento. Caso Karen Lizeth Paz Escober (Espartana sin Posición en la hoja).
 - (9 nov, 5 p.m.) Edwin: CUALQUIER socio con ahorro al día puede crear Junta y Gran evento (evaPuedeGran() = true).
 - (9 nov) Mi equipo SIN socios en la app: igual muestra My Dream Team (dtHeroHTML + dtPanel "dtq") para poder agregar CLIENTES con el +; textos del estado vacío de usted.
+
+## Logo nuevo: Action 🛡️ Leaders (9 nov, Edwin aprobó la opción 6 original)
+- El casco espartano es EL MISMO del escudo/ícono (recortado de media/icono-1024.png, sin redibujar): media/casco.png (blanco, se pinta con máscara CSS y degradado celeste #7FE0FF→#2AC1F1→#0A7DAD). Ya no hay "+" en el logo.
+- Imagen: media/logo-al.png (texto blanco) y media/logo-al-osc.png (texto oscuro), 1460×224 con el mismo aire arriba/abajo que el viejo logo-mas.png (el texto se ve del mismo tamaño a la misma altura). Reemplazó a logo-mas.png en app, evento.html, membresia.html, todos los canvases de flyers y plantillas tools/flyer/*. logo-mas.png sigue en media/ por si acaso.
+- Texto con casco (clase .alC, alto .69em entre las palabras; .alH = versión un poco más grande para tamaños chicos): encabezado (.top-t b), bienvenida (.wel-k), portada (.lm-brand) y conoce.html (.brand). Maquetas en tools/flyer/logo/ (l4.html = 6 ubicaciones; gen.html genera el PNG).
+- Los TEXTOS siguen diciendo "Action Leaders+" (mensajes, títulos, bio de historias): pendiente que Edwin decida si se quita el +.

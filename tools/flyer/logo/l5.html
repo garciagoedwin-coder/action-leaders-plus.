@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:LB;src:url(LBI.ttf);font-style:italic;font-weight:400 700}
+body{margin:0;font-family:system-ui;width:1200px}
+.row{display:flex}.cell{width:600px;height:230px;display:flex;align-items:center;justify-content:center;position:relative}
+.d{background:#0b1220;color:#fff}.l{background:#F3F6F9;color:#2B2A2D}
+.tag{position:absolute;left:16px;top:12px;font:700 13px system-ui;letter-spacing:.08em;opacity:.6}
+.lg{position:relative;font:italic 700 64px/1 LB;letter-spacing:-.02em;white-space:nowrap;display:inline-flex;align-items:center}
+.c{display:inline-block;-webkit-mask:url(casco-blanco.png) center/contain no-repeat;mask:url(casco-blanco.png) center/contain no-repeat;aspect-ratio:447/500;background:linear-gradient(160deg,#7FE0FF,#2AC1F1 45%,#0A7DAD)}
+.sm{transform:scale(.36)}
+</style></head><body><script>
+const C=(h,st="")=>`<i class="c" style="height:${h}px;${st}"></i>`;
+const V=[
+ ["6 · COMO ESTABA",()=>`<div class="lg">Action${C(44,"margin:0 14px 0 12px;transform:translateY(-6px)")}Leaders</div>`],
+ ["6 MEJORADA · casco más grande, centrado y con aire",()=>`<div class="lg">Action${C(58,"margin:0 20px 0 18px;transform:translateY(-4px)")}Leaders</div>`],
+ ["1 · PUNTO DE LA «i» (para comparar)",()=>`<div class="lg">Actı<span style="position:relative">${C(34,"position:absolute;left:-30px;top:-40px")}</span>on Leaders</div>`]
+];
+let h="";V.forEach(([t,f])=>{h+=`<div class="row"><div class="cell d"><span class="tag">${t}</span>${f()}</div><div class="cell d"><span class="tag">ASÍ SE VE EN EL ENCABEZADO DE LA APP</span><div class="sm">${f()}</div></div></div>`});
+document.body.insertAdjacentHTML("beforeend",h);
+</script></body></html>

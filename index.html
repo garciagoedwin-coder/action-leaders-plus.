@@ -1136,6 +1136,9 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .lm .lm-brand.on .lw{animation:lwIn 1s cubic-bezier(.2,.8,.2,1) forwards}
 .lm .lm-brand.on .lp{animation:lpIn .6s cubic-bezier(.3,1.6,.5,1) .85s forwards,lpGlow 2.4s ease-in-out 1.6s infinite}
 @keyframes lwIn{to{opacity:1;transform:none;clip-path:inset(0 0 0 0)}}
+.alC{display:inline-block;height:.69em;aspect-ratio:201/225;margin:0 .21em 0 .18em;transform:translateY(-.09em);-webkit-mask:url(media/casco.png) center/contain no-repeat;mask:url(media/casco.png) center/contain no-repeat;background:linear-gradient(160deg,#7FE0FF,#2AC1F1 45%,#0A7DAD);flex:none}
+.alC.alH{height:.95em;margin:0 .26em 0 .22em;transform:translateY(-.06em)}
+.top-t b:has(.alC){gap:0}.top-t b .alC{margin:0 .2em 0 .17em}
 @keyframes lpIn{to{opacity:1;transform:translateY(.08em) scale(1)}}
 @keyframes lpGlow{50%{box-shadow:0 0 30px rgba(42,193,241,.9),inset 0 0 16px rgba(42,193,241,.4)}}
 @media (prefers-reduced-motion:reduce){.lm .lm-brand .lw,.lm .lm-brand .lp{opacity:1;transform:none;clip-path:none;animation:none!important}}
@@ -1214,7 +1217,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 <div class="l-bg"></div><div class="l-orb o1"></div><div class="l-orb o2"></div>
 <div class="l-wall" id="lWall"></div>
 <div class="l-main">
- <img class="l-logo l-in" style="--i:0" src="media/logo-mas.png" alt="Action Leaders+">
+ <img class="l-logo l-in" style="--i:0" src="media/logo-al.png" alt="Action Leaders+">
  <div class="l-kick l-in" style="--i:1">Bienvenidos a la comunidad</div>
  <h1 class="l-h l-in" style="--i:2">Hasta que funcione.</h1>
  <p class="l-sub l-in" style="--i:3">Un equipo que no se rinde. Entre a Action Leaders+ y empiece su camino con nosotros.</p>
@@ -1233,7 +1236,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 </div>
 </div>
 <div class="lm" id="lMore">
- <div class="lm-brand rv" role="img" aria-label="Action Leaders+"><span class="lw">Action Leaders</span><span class="lp">+</span></div>
+ <div class="lm-brand rv" role="img" aria-label="Action Leaders"><span class="lw">Action<i class="alC"></i>Leaders</span></div>
  <section class="rv" style="padding-top:36px">
   <p class="k">Action Leaders+</p>
   <h2>La herramienta <em>Pro</em> para networkers que quieren crecer en serio.</h2>
@@ -1334,7 +1337,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
   <button type="button" id="lLogin2">¿Ya es socio? Iniciar sesión</button>
   <span class="sm">🔒 ¿Aún no tiene acceso? Pida su enlace a su patrocinador.</span>
  </section>
- <footer><img src="media/logo-mas.png" alt="Action Leaders+">© Action Leaders · Hasta que funcione</footer>
+ <footer><img src="media/logo-al.png" alt="Action Leaders+">© Action Leaders · Hasta que funcione</footer>
 </div>
 <div class="l-boot"><img src="media/escudo.png" alt=""></div>
 <script>
@@ -1375,7 +1378,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 
 <div class="app">
   <header class="top">
-    <div class="top-t"><b>Action Leaders<em>+</em></b><span id="hello">Hola, líder</span></div>
+    <div class="top-t"><b>Action<i class="alC alH"></i>Leaders</b><span id="hello">Hola, líder</span></div>
     <div class="pv" id="topPvBox" data-empty><b class="num" id="topPv">—</b><small>Registros<br>inCruises</small></div>
     <button class="bell-btn" id="bellBtn" aria-label="Avisos" hidden><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><i id="bellN">0</i></button>
     <button class="me-btn" id="meBtn" aria-label="Mi perfil" title="Mi perfil"></button>
@@ -1538,7 +1541,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 </div>
 
 <div class="sheet" id="sheet" hidden><div class="panel" id="sheetPanel"></div></div>
-<div class="wel" id="wel" role="dialog" aria-modal="true" aria-labelledby="welT"><div class="wel-c" id="welC"><div class="wel-k">ACTION LEADERS<em>+</em></div><div class="wel-bar"></div><p class="muted" id="welT">Cargando…</p></div></div>
+<div class="wel" id="wel" role="dialog" aria-modal="true" aria-labelledby="welT"><div class="wel-c" id="welC"><div class="wel-k">ACTION<i class="alC alH"></i>LEADERS</div><div class="wel-bar"></div><p class="muted" id="welT">Cargando…</p></div></div>
 <div class="toast" id="toast" hidden></div>
 
 
@@ -2616,7 +2619,7 @@ async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas
   const y0=1490-((FL.length-1)*45)/2;FL.forEach((t,i)=>g.fillText(t,540,y0+i*45));const w0=g.measureText(FL[0]).width,wl=g.measureText(FL[FL.length-1]).width;g.fillStyle=C.a;g.font="700 64px Georgia, serif";g.fillText("“",540-w0/2-30,y0+14);g.fillText("”",540+wl/2+30,y0+(FL.length-1)*45+14)}
   // hashtag y pie
   g.font="400 42px "+BB;g.fillStyle="rgba(255,255,255,.92)";sp("#HASTAQUEFUNCIONE",540,1690,7,"center");
-  const lg=await imgLoad("media/logo-mas.png");if(lg){const h=38,w=lg.width*h/lg.height;g.drawImage(lg,80,1770,w,h)}
+  const lg=await imgLoad("media/logo-al.png");if(lg){const h=38,w=lg.width*h/lg.height;g.drawImage(lg,80,1770,w,h)}
   g.font="600 15px "+BF;g.fillStyle=C.a;sp("CAMINO A MI LIBERTAD",1000,1796,4.5,"right");
   return cv}
 async function lcFile(q){const cv=await lcCanvas(q);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));return new File([b],(q.k==="esp"?"Lider-Espartano-":"Lider-")+String(q.n).split(" ")[0]+".jpg",{type:"image/jpeg"})}
@@ -2688,7 +2691,7 @@ async function rhCanvas(m){const W=1080,H=1920,cv=document.createElement("canvas
   g.font="italic 400 30px "+BF;g.fillStyle="rgba(255,255,255,.72)";const q="“"+(RH_FR[m]||"")+"”",L=[];let c="";q.split(" ").forEach(w=>{const z=c?c+" "+w:w;if(c&&g.measureText(z).width>900){L.push(c);c=w}else c=z});if(c)L.push(c);L.forEach((l,i)=>g.fillText(l,540,1548+i*40));
   g.font="400 38px "+BB;g.fillStyle="rgba(255,255,255,.9)";sp("#HASTAQUEFUNCIONE",540,1682,9,"center");
   g.fillStyle="rgba(255,255,255,.16)";g.fillRect(80,1720,920,1);
-  const lg=await imgLoad("media/logo-mas.png");if(lg){const h=42,w=lg.width*h/lg.height;g.drawImage(lg,80,1748,w,h)}
+  const lg=await imgLoad("media/logo-al.png");if(lg){const h=42,w=lg.width*h/lg.height;g.drawImage(lg,80,1748,w,h)}
   g.font="600 18px "+BF;g.fillStyle=OR;sp("CAMINO A MI LIBERTAD",1000,1782,6,"right");
   return cv}
 // ---------- Flyer del día (sistema de liderazgo): imagen + texto de WhatsApp, distinto por día, líder y modo ----------
@@ -2721,7 +2724,7 @@ async function fdCanvas(D,m,k){const W=1080,H=1350,cv=document.createElement("ca
   z=g.createRadialGradient(am?W*.85:W*.15,0,0,am?W*.85:W*.15,0,W*.8);z.addColorStop(0,am?"rgba(245,183,0,.35)":"rgba(124,58,237,.45)");z.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=z;g.fillRect(0,0,W,H);
   const rr=(x,y,w,h,R,f,s)=>{g.beginPath();g.roundRect(x,y,w,h,R);if(f){g.fillStyle=f;g.fill()}if(s){g.strokeStyle=s;g.lineWidth=1.5;g.stroke()}};
   const sp=(t,x,y,ls)=>{for(const ch of t){g.fillText(ch,x,y);x+=g.measureText(ch).width+ls}return x};
-  const lg=await imgLoad("media/logo-mas.png"),ic=await imgLoad("media/icono-1024.png");if(lg)g.drawImage(lg,72,94,lg.width*46/lg.height,46);if(ic){g.save();g.beginPath();g.roundRect(924,72,84,84,20);g.clip();g.drawImage(ic,924,72,84,84);g.restore()}
+  const lg=await imgLoad("media/logo-al.png"),ic=await imgLoad("media/icono-1024.png");if(lg)g.drawImage(lg,72,94,lg.width*46/lg.height,46);if(ic){g.save();g.beginPath();g.roundRect(924,72,84,84,20);g.clip();g.drawImage(ic,924,72,84,84);g.restore()}
   g.textAlign="left";g.fillStyle=AC;g.font="700 24px "+BF;sp((am?"☀️ ":"🌙 ")+(am?"":"CIERRE DEL DÍA · ")+fdDia().toUpperCase(),72,230,5);
   const T=fdPick(r,FD_T[m]);g.font="400 118px "+BB;g.fillStyle="#fff";let x=sp(T[0],72,350,2);g.fillStyle=AC;x=sp(T[1],x,350,2);g.fillStyle="#fff";if(T[2])sp(T[2],72,460,2);
   const y0=T[2]?510:400;rr(72,y0,936,190,28,"rgba(255,255,255,.07)","rgba(255,255,255,.14)");g.fillStyle="rgba(255,255,255,.8)";g.font="500 24px "+BF;
@@ -3522,7 +3525,7 @@ async function rcCanvas(D){const W=1080,H=1920,cv=document.createElement("canvas
   gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,"rgba(0,0,0,.25)");gr.addColorStop(.55,"rgba(0,0,0,.1)");gr.addColorStop(1,"rgba(0,0,0,.8)");g.fillStyle=gr;g.fillRect(0,0,W,H);
   const sp=(t,x,y,ls)=>{let w=0;for(const ch of t)w+=g.measureText(ch).width+ls;w-=ls;let cx=x-w/2;g.textAlign="left";for(const ch of t){g.fillText(ch,cx,y);cx+=g.measureText(ch).width+ls}};
   const C=(t,y,f,col)=>{g.font=f;g.fillStyle=col;g.textAlign="center";g.fillText(t,W/2,y)};
-  const lg=await imgLoad("media/logo-mas.png");if(lg){const h=56,w=lg.width*h/lg.height;g.drawImage(lg,(W-w)/2,104,w,h)}
+  const lg=await imgLoad("media/logo-al.png");if(lg){const h=56,w=lg.width*h/lg.height;g.drawImage(lg,(W-w)/2,104,w,h)}
   g.font="800 30px "+BF;g.fillStyle=AM;sp("RETO DE CIERRE · "+String(D.R.mes||"").split(" ")[0].toUpperCase(),W/2,262,11);
   g.save();g.shadowColor="rgba(249,115,22,.9)";g.shadowBlur=50;C("🔥",430,"120px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif","#fff");g.restore();
   const np=Math.round(D.meta/500),FL=Math.max(0,D.meta-D.tot);
@@ -4122,7 +4125,7 @@ function hgCta(g,K,p,pill,y,o){o=o||{};g.font="700 30px ALO, Figtree, sans-serif
   const pw=g.measureText(p).width;g.font="700 28px ALO, Figtree, sans-serif";const qw=g.measureText(pill).width+56;
   if(72+pw+22+qw<=1008){g.font="700 30px ALO, Figtree, sans-serif";g.textAlign="left";g.fillStyle=o.pc||"#fff";g.fillText(p,72,y+31);hgPill(g,K,pill,72+pw+22,y,0,o.tc,o.bg)}
   else{g.font="700 30px ALO, Figtree, sans-serif";g.textAlign="left";g.fillStyle=o.pc||"#fff";g.fillText(p,72,y+10);hgPill(g,K,pill,72,y+40,0,o.tc,o.bg)}}
-async function hgLogo(g,x,y,h,cx,inv){const lg=await imgLoad("media/logo-mas.png");if(!lg)return;const w=lg.width*h/lg.height,x0=cx?(1080-w)/2:x;
+async function hgLogo(g,x,y,h,cx,inv){const lg=await imgLoad("media/logo-al.png");if(!lg)return;const w=lg.width*h/lg.height,x0=cx?(1080-w)/2:x;
   if(inv){const c=document.createElement("canvas");c.width=Math.ceil(w);c.height=Math.ceil(h);const q=c.getContext("2d");q.drawImage(lg,0,0,w,h);try{const D=q.getImageData(0,0,c.width,c.height),a=D.data;for(let i=0;i<a.length;i+=4){a[i]=20+(235-a[i])*.4;a[i+1]=33+(235-a[i+1])*.4;a[i+2]=61+(235-a[i+2])*.4}q.putImageData(D,0,0)}catch(e){}g.drawImage(c,x0,y);return}
   g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=8;g.drawImage(lg,x0,y,w,h);g.restore()}
 function hgGrain(g){try{const c=document.createElement("canvas");c.width=c.height=160;const q=c.getContext("2d"),D=q.createImageData(160,160);for(let i=0;i<D.data.length;i+=4){const v=Math.random()*255;D.data[i]=D.data[i+1]=D.data[i+2]=v;D.data[i+3]=18}q.putImageData(D,0,0);g.fillStyle=g.createPattern(c,"repeat");g.fillRect(0,0,1080,1920)}catch(e){}}
@@ -4505,7 +4508,7 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo){n=nv(n);pat=nv(p
   const grad=(x0,x1)=>{const q=g.createLinearGradient(x0,0,x1,0);q.addColorStop(0,T.g[0]);q.addColorStop(.5,T.g[1]);q.addColorStop(1,T.g[2]);return q};
   const sp=(t,x,y,ls,al)=>{let w=0;for(const ch of t)w+=g.measureText(ch).width+ls;w-=ls;let cx=al==="right"?x-w:al==="center"?x-w/2:x;g.textAlign="left";for(const ch of t){g.fillText(ch,cx,y);cx+=g.measureText(ch).width+ls}return w};
   const wrap=(t,mw)=>{const L=[];let c="";String(t).split(/\s+/).forEach(w=>{const z=c?c+" "+w:w;if(c&&g.measureText(z).width>mw){L.push(c);c=w}else c=z});if(c)L.push(c);return L};
-  const lg=await imgLoad("media/logo-mas.png");if(lg){const h=52,w=lg.width*h/lg.height;g.drawImage(lg,80,104,w,h)}
+  const lg=await imgLoad("media/logo-al.png");if(lg){const h=52,w=lg.width*h/lg.height;g.drawImage(lg,80,104,w,h)}
   if(!yo){g.font="700 22px "+BF;g.fillStyle=T.a;sp(T.top,1000,142,6.4,"right")}
   {g.fillStyle=grad(80,150);g.fillRect(80,242,78,3);g.font="700 27px "+BF;g.fillStyle=T.a;sp(yo?"NUEVA ETAPA · "+new Date().getFullYear():f?"BIENVENIDA A LA FAMILIA":"BIENVENIDO A LA FAMILIA",178,254,7.6)}
   const ring=async(src,cx,cy,r,b,glow,ph,pad)=>{g.save();if(glow){g.shadowColor=T.glow;g.shadowBlur=80}g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.fillStyle=grad(cx-r,cx+r);g.fill();g.restore();
@@ -4903,7 +4906,7 @@ async function trCanvas(e,fmt){fmt=fmt==="p"?"p":"h";const L=TR_L[fmt],W=1080,H=
    tx("🇭🇳 HONDURAS",hx+hw+12,y+40,26,"700 18px ALO, Figtree, sans-serif","#8EC5FF","left","3px");
    let cx=hx,ry=y+86;g.font="500 16px ALOR, Figtree, sans-serif";for(const z of Zn.Z){const tw=g.measureText(z).width;if(cx+tw>x+w-14){cx=hx;ry+=0;break}tx(z,cx,ry,22,"500 16px ALOR, Figtree, sans-serif","rgba(255,255,255,.78)","left");cx+=tw+16}}
   // pie
-  {const lg=await imgLoad("media/logo-mas.png");if(lg){const hh=30,ww=lg.width*hh/lg.height;g.drawImage(lg,110,L.ft-hh/2,ww,hh)}
+  {const lg=await imgLoad("media/logo-al.png");if(lg){const hh=30,ww=lg.width*hh/lg.height;g.drawImage(lg,110,L.ft-hh/2,ww,hh)}
    tx("PIDA SU ENLACE A QUIEN LE INVITÓ",970,L.ft-12,24,"700 14px ALO, Figtree, sans-serif","#8EC5FF","right","4px")}
   return cv}
 const flFotoDe0=p=>{try{return fotoDe(p.n,0,p.u)||flFotoDe(p.n)}catch(e){return flFotoDe(p.n)}};
@@ -4927,7 +4930,7 @@ async function presCanvas(e,fmt,fondo){fmt=fmt==="p"?"p":"h";const L=PRES_L[fmt]
   fondo=PRES_FONDOS.some(x=>x.k===fondo)?fondo:D.fondo;
   g.fillStyle="#04060b";g.fillRect(0,0,L.W,L.H);const bg=await imgLoad("media/flyers/pres/"+fondo+"-"+fmt+".jpg?v=2");if(bg)g.drawImage(bg,0,0,L.W,L.H);
   // logo + EN VIVO
-  const lg=await imgLoad("media/logo-mas.png");if(lg){const hh=L.logo[2],ww=lg.width*hh/lg.height,lx=L.logo[0]==="c"?(L.W-ww)/2:L.logo[0];sombra("rgba(0,0,0,.6)",10,()=>g.drawImage(lg,lx,L.logo[1],ww,hh))}
+  const lg=await imgLoad("media/logo-al.png");if(lg){const hh=L.logo[2],ww=lg.width*hh/lg.height,lx=L.logo[0]==="c"?(L.W-ww)/2:L.logo[0];sombra("rgba(0,0,0,.6)",10,()=>g.drawImage(lg,lx,L.logo[1],ww,hh))}
   if(L.live){const[x,y,w,h]=L.live;rr(x,y,w,h,h/2);g.fillStyle="rgba(0,0,0,.5)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.28)";g.stroke();
    const dx=x+24,dy=y+h/2;g.beginPath();g.arc(dx,dy,13,0,Math.PI*2);g.fillStyle="rgba(255,59,59,.22)";g.fill();sombra("#ff3b3b",18,()=>{g.beginPath();g.arc(dx,dy,7,0,Math.PI*2);g.fillStyle="#ff3b3b";g.fill()});
    tx("EN VIVO",dx+20,y,h,"700 24px ALO, Figtree, sans-serif","#fff","left","4px")}
@@ -5006,7 +5009,7 @@ async function lzCanvas(o,fmt,fondo){fmt=fmt==="h"?"h":"p";const L=LZ_L[fmt],cv=
   await flFonts();const{rr,fit,tx,tx2,sombra,sp}=flKit(g),C=540,GO="#F5C451";
   fondo=LZ_FONDOS.some(x=>x.k===fondo)?fondo:"ny";
   g.fillStyle="#04070d";g.fillRect(0,0,L.W,L.H);const bg=await imgLoad("media/flyers/lanz/"+fondo+"-"+fmt+".jpg?v=1");if(bg)g.drawImage(bg,0,0,L.W,L.H);
-  const lg=await imgLoad("media/logo-mas.png");if(lg){const hh=L.logo[2],ww=lg.width*hh/lg.height;sombra("rgba(0,0,0,.6)",10,()=>g.drawImage(lg,L.logo[0],L.logo[1],ww,hh))}
+  const lg=await imgLoad("media/logo-al.png");if(lg){const hh=L.logo[2],ww=lg.width*hh/lg.height;sombra("rgba(0,0,0,.6)",10,()=>g.drawImage(lg,L.logo[0],L.logo[1],ww,hh))}
   {const[x,y,w,h]=L.k;rr(x,y,w,h,h/2);g.fillStyle="rgba(0,0,0,.45)";g.fill();g.lineWidth=2;g.strokeStyle=GO;g.stroke();tx("INVITACIÓN ESPECIAL",x+w/2,y,h,"700 17px ALO, Figtree, sans-serif",GO,"center","5px")}
   g.textAlign="center";g.textBaseline="alphabetic";
   const bebas=(t,y,h,s,fill)=>{const z=fit(t,"{s}px 'Bebas Neue', Impact, sans-serif",s,L.W-120,60);const base=y+h/2+z*.35;sombra("rgba(0,0,0,.85)",24,()=>{g.fillStyle=fill;g.fillText(t,C,base)});g.fillStyle=fill;g.fillText(t,C,base)};
@@ -5409,7 +5412,7 @@ async function rsvpTkCanvas(e,r,num){await flFonts();const W=1080,H=1920,cv=docu
   const OB="ALO, Figtree, sans-serif",OR="ALOR, Figtree, sans-serif",BE="'Bebas Neue', Impact, sans-serif";g.fillStyle="#071526";g.fillRect(0,0,W,H);
   const bg=await imgLoad("media/eventos/f-"+(gran?"g":"j")+ds+".jpg"+(gran?"":"?v=3"));if(bg){const sc=Math.max(W/bg.width,H*.62/bg.height),bw=bg.width*sc,bh=bg.height*sc;g.drawImage(bg,(W-bw)/2,0,bw,bh)}
   let gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,"rgba(7,21,38,.55)");gr.addColorStop(.38,"rgba(7,21,38,.88)");gr.addColorStop(.62,"#071526");gr.addColorStop(1,"#071526");g.fillStyle=gr;g.fillRect(0,0,W,H);
-  const lg=await imgLoad("media/logo-mas.png");if(lg){const lh=64,lw=lg.width*lh/lg.height;g.drawImage(lg,(W-lw)/2,150,lw,lh)}
+  const lg=await imgLoad("media/logo-al.png");if(lg){const lh=64,lw=lg.width*lh/lg.height;g.drawImage(lg,(W-lw)/2,150,lw,lh)}
   g.textAlign="center";g.font="700 34px "+OB;const okT="ASISTENCIA CONFIRMADA",okW=evaSpW(g,okT,8);g.fillStyle="#16A34A";g.beginPath();g.arc(W/2-okW/2-30,312,31,0,7);g.fill();g.fillStyle="#fff";g.font="700 36px "+OB;g.fillText("✓",W/2-okW/2-30,325);g.fillStyle="#4ADE80";g.font="700 34px "+OB;evaSp(g,okT,W/2+22,324,8,"center");
   const X=90,Y=400,TW=W-180,TH=1070;g.save();g.shadowColor="rgba(0,0,0,.5)";g.shadowBlur=80;g.shadowOffsetY=40;evaRR(g,X,Y,TW,TH,44);g.fillStyle="#fff";g.fill();g.restore();
   g.save();evaRR(g,X,Y,TW,TH,44);g.clip();const tg=g.createLinearGradient(X,Y,X+TW,Y+260);if(gran){tg.addColorStop(0,"#0B1B33");tg.addColorStop(1,"#6b5000")}else{tg.addColorStop(0,"#0A7DAD");tg.addColorStop(1,"#2AC1F1")}g.fillStyle=tg;g.fillRect(X,Y,TW,250);g.restore();
@@ -5654,7 +5657,7 @@ async function invCanvas(){const W=1080,H=1350,K=2,cv=document.createElement("ca
   g.fillStyle="rgba(255,255,255,.18)";g.fillRect(510,930,60,2);
   g.font="600 42px "+BF;g.fillStyle="#fff";g.fillText("Viaja más, gasta menos",540,1010);
   g.fillStyle="rgba(255,255,255,.62)";g.fillText("y crea un ingreso extra.",540,1064);
-  const lo=await imgLoad("media/logo-mas.png");if(lo){const h=46,w=lo.width*h/lo.height;g.globalAlpha=.75;g.drawImage(lo,540-w/2,1220,w,h);g.globalAlpha=1}
+  const lo=await imgLoad("media/logo-al.png");if(lo){const h=46,w=lo.width*h/lo.height;g.globalAlpha=.75;g.drawImage(lo,540-w/2,1220,w,h);g.globalAlpha=1}
   return cv}
 window.__invCanvas=invCanvas;
 function evHTML(e){const fin=finalizada(e);return `<div class="ev ${fin?"ev-past":""}"><span class="hr">${esc(h12(e.hora))||"—"}${e.horaFin?`<br><span class="small muted" style="font-family:var(--f-body);font-weight:600">a ${esc(h12(e.horaFin))}</span>`:""}</span><div class="body">
@@ -6496,7 +6499,7 @@ function welSaveFlag(o){try{if(store.db){store.mine().doc("bienvenida").set(o,{m
 function welMark(k){if(welState[k])return;welState[k]=true;profile.welPasos=Object.assign({},welState);store.set("perfil",profile);welSaveFlag({pasos:{[k]:true}});renderWel()}
 function renderWel(){const el=$("#wel");
   if(welSigned===false){el.hidden=false;document.body.style.overflow="hidden";const C=$("#welC");if(C.dataset.v==="signin")return;C.dataset.v="signin";
-    C.innerHTML=`<div class="wel-k">ACTION LEADERS<em>+</em></div><div class="wel-bar"></div>
+    C.innerHTML=`<div class="wel-k">ACTION<i class="alC alH"></i>LEADERS</div><div class="wel-bar"></div>
      <h1 id="welT">Te damos la bienvenida</h1>
      <p class="muted">Es un gusto tenerte en el equipo.<br>Desde hoy no caminas solo: vamos a crecer juntos.</p>
      <div class="wel-step"><h3>Para empezar, entra con tu cuenta de Google</h3>
@@ -6534,7 +6537,7 @@ function renderWel(){const el=$("#wel");
    <div class="wel-sig"><b>Edwin García Go</b><p class="small muted">Director Nacional – Action Leaders</p><p class="small">+504 9430-5906</p></div>`;
   const C=$("#welC");
   if(C.dataset.v!==vid){C.dataset.v=vid;
-    C.innerHTML=`<div class="wel-k">ACTION LEADERS<em>+</em></div><div class="wel-bar"></div><div id="welHead"></div><div id="welReg"></div>
+    C.innerHTML=`<div class="wel-k">ACTION<i class="alC alH"></i>LEADERS</div><div class="wel-bar"></div><div id="welHead"></div><div id="welReg"></div>
      <div class="wel-step"><div id="welVH"></div>${vid?`<div class="wel-vid" id="welVid"></div><div class="row between small muted" style="margin-top:-4px"><span id="welPart"></span><span id="welPct"></span></div><div class="bar" style="height:6px"><i id="welBar" style="width:0%"></i></div>`:""}<div id="welVB"></div></div><div id="welRest" style="display:flex;flex-direction:column;gap:14px"></div>`;
     welVideo();}
   if($("#regF")&&!welState.registro){}
@@ -7277,12 +7280,12 @@ async function startApp(u){
 }
 function bootFB(){if(window.FB&&window.FB.__ready!==undefined)return;}
 window.addEventListener("fb-ready",e=>startApp(e.detail),{once:true});
-setTimeout(()=>{if(welSigned===null){const C=$("#welC");if(C)C.innerHTML=`<div class="wel-k">ACTION LEADERS<em>+</em></div><div class="wel-bar"></div><h1 id="welT">Sin conexión</h1><p class="muted">No pudimos conectar con el servidor. Revisa tu internet y vuelve a intentarlo.</p><button class="btn pill dark" onclick="location.reload()">Reintentar</button>`}},15000);
+setTimeout(()=>{if(welSigned===null){const C=$("#welC");if(C)C.innerHTML=`<div class="wel-k">ACTION<i class="alC alH"></i>LEADERS</div><div class="wel-bar"></div><h1 id="welT">Sin conexión</h1><p class="muted">No pudimos conectar con el servidor. Revisa tu internet y vuelve a intentarlo.</p><button class="btn pill dark" onclick="location.reload()">Reintentar</button>`}},15000);
 window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261109170524";var busy=false,pend=null;
+(function(){var V="20261109200535";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
