@@ -2,8 +2,6 @@
 // se quitaron reservas (sin uso) y la regla floja de prospectos, y se validan los campos de la presentación virtual / membresía (sala).
 // 10/11/2026 FASE 2: el socio ya no puede cambiarse rango, plan, patrocinador ni línea después de registrarse (solo admin),
 // no puede borrar su documento, y la constancia (ranking) solo acepta números dentro de lo posible.
-// 10/11/2026 FASE 3: cuentas aprobadas (claim ap del servidor), turnos solo miembros del sistema (claim sis),
-// link del grupo del sistema en sisPriv (solo miembros), aprobaciones en aprob/{uid} (patrocinador directo o admin).
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -14,7 +12,7 @@ service cloud.firestore {
     match /users/{socio} { allow update, delete: if isAdmin(); }
     match /users/{socio} { allow read: if signedIn() && request.auth.uid in resource.data.registro.linea; }
     match /constancia/{uid} {
-      allow read: if socio();
+      allow read: if signedIn();
       allow write: if isAdmin() || (signedIn() && request.auth.uid == uid && constOk(request.resource.data));
     }
     function nOk(d, k, m) { return !(k in d) || d[k] == null || (d[k] is number && d[k] >= 0 && d[k] <= m); }
@@ -26,31 +24,19 @@ service cloud.firestore {
 
     match /invitaciones/{id} {
       allow get: if signedIn();
-      allow create: if socio() && request.resource.data.by == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.by == request.auth.uid;
       allow update: if signedIn() && (resource.data.by == request.auth.uid || isAdmin()
         || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['usadoPor','usado']));
     }
 
     function signedIn() { return request.auth != null; }
-    // Cuenta aprobada: el servidor marca ap=false a las cuentas en revisión o rechazadas. Sin marca (recién creada) = puede entrar.
-    function socio() { return isAdmin() || (signedIn() && request.auth.token.get('ap', true) != false); }
-    // Miembro del Sistema de liderazgo (lo marca el servidor desde data/team.json)
-    function sis() { return isAdmin() || (signedIn() && request.auth.token.get('sis', false) == true); }
-    function sinAp(d) { return !('apE' in d) && !('apT' in d); }
     function sinRegistro(d) { return !('registro' in d) || !('nombre' in d.registro) || d.registro.nombre == ''; }
     function sinRango(d) { return !('registro' in d) || !('rango' in d.registro) || d.registro.rango == ''; }
     function isAdmin() {
       return signedIn() && request.auth.token.email_verified == true &&
         request.auth.token.email in ['garciagoedwin@gmail.com','actionleadersoficial@gmail.com','edwing.go@gmail.com'];
     }
-    match /team/{doc=**} { allow read: if socio(); allow write: if isAdmin(); }
-    match /sisPriv/{d} { allow read: if sis(); allow write: if isAdmin(); }
-    match /aprob/{uid} {
-      allow read, delete: if isAdmin();
-      allow create, update: if signedIn() && request.resource.data.keys().hasOnly(['ok','por','t'])
-        && request.resource.data.ok is bool && request.resource.data.por == request.auth.uid && request.resource.data.t is number
-        && (isAdmin() || get(/databases/$(database)/documents/users/$(uid)).data.registro.patrocinadorUid == request.auth.uid);
-    }
+    match /team/{doc=**} { allow read: if signedIn(); allow write: if isAdmin(); }
     match /fotos/{id} { allow read: if signedIn(); allow write: if isAdmin() || (signedIn() && id == request.auth.uid); }
     match /perfiles/{code} {
       allow read: if true;
@@ -60,9 +46,8 @@ service cloud.firestore {
     }
     match /users/{uid} {
       allow read: if signedIn() && request.auth.uid == uid;
-      allow create: if signedIn() && request.auth.uid == uid && sinRango(request.resource.data) && sinAp(request.resource.data);
-      allow update: if signedIn() && request.auth.uid == uid
-        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['apE','apT']) && (
+      allow create: if signedIn() && request.auth.uid == uid && sinRango(request.resource.data);
+      allow update: if signedIn() && request.auth.uid == uid && (
         sinRegistro(resource.data) ? sinRango(request.resource.data)
         : ('registro' in request.resource.data
            && !request.resource.data.registro.diff(resource.data.registro).affectedKeys()
@@ -89,7 +74,7 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     match /evento/{eid} {
-      allow read: if socio();
+      allow read: if signedIn();
       allow write: if staffEvento();
       match /priv/{d} { allow read: if staffEvento(); allow write: if isAdmin(); }
       match /checkin/{id} { allow read, write: if staffEvento(); }
@@ -97,7 +82,7 @@ service cloud.firestore {
     }
         // ---- Llamada de 3 ----
     match /llamadas3/{id} {
-      allow create: if socio() && request.resource.data.de == request.auth.uid && request.resource.data.para is string;
+      allow create: if request.auth != null && request.resource.data.de == request.auth.uid && request.resource.data.para is string;
       allow read: if request.auth != null && (resource.data.de == request.auth.uid || resource.data.para == request.auth.uid);
       allow update: if request.auth != null && (resource.data.de == request.auth.uid || resource.data.para == request.auth.uid)
         && request.resource.data.de == resource.data.de && request.resource.data.para == resource.data.para;
@@ -116,8 +101,8 @@ service cloud.firestore {
     function txtOk(d, k, n) { return !(k in d) || (d[k] is string && d[k].size() <= n); }
     function numOk(d, k) { return !(k in d) || d[k] is number; }
     match /agendaEv/{id} {
-      allow read: if socio();
-      allow create: if socio() && request.resource.data.cre == request.auth.uid;
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.cre == request.auth.uid;
       allow update: if request.auth != null && (resource.data.cre == request.auth.uid || request.auth.uid in resource.data.lidU)
         && request.resource.data.cre == resource.data.cre;
       allow delete: if request.auth != null && resource.data.cre == request.auth.uid;
@@ -147,9 +132,9 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['st']));
       allow create, delete: if isAdmin();
     }
-    match /turnos/{mes} {
-      allow read: if socio();
-      allow write: if sis();
+        match /turnos/{mes} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
     }
         match /push/{uid} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
