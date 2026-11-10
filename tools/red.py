@@ -95,6 +95,29 @@ def main():
             r['dp'] = A.iso(A.fecha(x['invoices_due_date']))
             r['in'] = A.iso(A.fecha(x['invoices_expiration_date']))
         rows.append(r)
+    # memoria del reporte anterior: pendientes que eran socios y socios sin membresía que ya no salen
+    prev = []
+    if os.path.exists(ENC):
+        try:
+            raw0 = base64.b64decode(open(ENC).read().strip())
+            prev = json.loads(AESGCM(A.key()).decrypt(raw0[:12], raw0[12:], None)).get('rows', [])
+        except Exception as ex: print('aviso: no se pudo leer el red.enc anterior', type(ex).__name__)
+    try: acts = json.load(open(A.TEAM, encoding='utf-8')).get('activaciones', [])
+    except Exception: acts = []
+    actK = {h for x in acts for h in (x.get('ek'), x.get('wk')) if h and not x.get('sc')}
+    old = {r['k']: r for r in prev}
+    nuevos = {r['k'] for r in rows}
+    ps_prev = ps_act = 0
+    for r in rows:
+        if r['t'] != 'p' or r.get('ps'): continue
+        o = old.get(r['k'])
+        if o and (o.get('t') == 's' or o.get('ps')): r['ps'] = 1; ps_prev += 1
+        elif (r.get('ek') and r['ek'] in actK) or (r.get('wk') and r['wk'] in actK): r['ps'] = 1; ps_act += 1
+    kx = 0
+    for o in prev:
+        if o.get('t') == 'x' and o['k'] not in nuevos:
+            rows.append(o); kx += 1
+    if prev: print(f"memoria: pendientes socios por reporte anterior {ps_prev} · por activación {ps_act} · sin membresía conservados {kx}")
     rows.sort(key=lambda r: (r['lv'], r['n']))
     st = {'v': A.iso(A.ahora()), 'rows': rows, 'dud': dud}
     raw = json.dumps(st, ensure_ascii=False, sort_keys=True).encode()
