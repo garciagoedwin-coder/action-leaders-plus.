@@ -2849,7 +2849,7 @@ function lzgStrip(){const el=$("#lzgStrip");if(!el)return;if(!lzgDebe()){el.hidd
   el.querySelectorAll("[data-lzg]").forEach(b=>b.onclick=()=>b.dataset.lzg==="e"?lzgEntrar():lzgPresentar())}
 async function lzgEntrar(){const G=lzgCfg();if(!G)return;if(!lzgComp()&&!lzgNo()&&!isAdmin){lzgPideComp();return}let L=lzgLinkYa(),w=null;
   if(!L){toast("Abriendo el grupo…");L=await lzgLink();if(!L){toast("No se pudo abrir el grupo. Si usted es miembro del sistema, se activa en unas horas; si sigue, avise a Edwin.");return}location.href=L}
-  else{try{w=window.open(L,"_blank","noopener")}catch(e){}if(!w)location.href=L}try{LS.set("lzgE:"+store.uid+":"+mesMeta(),1)}catch(e){}setTimeout(()=>{try{lzgStrip()}catch(e){}},600)}
+  else{try{w=window.open(L,"_blank");if(w)w.opener=null}catch(e){}if(!w)location.href=L}try{LS.set("lzgE:"+store.uid+":"+mesMeta(),1)}catch(e){}setTimeout(()=>{try{lzgStrip()}catch(e){}},600)}
 function lzgAbrir(){const G=lzgCfg();if(!G)return;if(!lzgComp()&&!lzgNo()&&!isAdmin){lzgPideComp();return}if(lzgYa()||lzgNo()){lzgEntrar();return}openSheet(`<p class="eyebrow">SISTEMA DE LIDERAZGO · ${esc(lzgMes().toUpperCase())}</p><h3 style="margin:4px 0 6px">💬 Grupo de WhatsApp</h3><p class="muted" style="margin:0 0 12px">Entre al grupo y preséntese con su flyer. Es parte de ser miembro del sistema.</p>
   <button class="btn" id="lzgE1" style="width:100%">1. 💬 Entrar al grupo</button><button class="btn" id="lzgP1" style="width:100%;margin-top:8px;background:linear-gradient(135deg,#B07D00,#F5B700);color:#2a1c00">2. 📣 Presentarme en el grupo</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{$("#lzgE1").onclick=lzgEntrar;$("#lzgP1").onclick=()=>{closeSheet();setTimeout(lzgPresentar,250)}})}
 function lzgPaisDe(){const r=miRegistro(),p=String(r.pais||"").trim();if(p&&!/^\d+$/.test(p))return p;const cc=String(r.cc||p||"").replace(/\D/g,"");const f=PAISES.find(x=>x[1]===cc);return f?f[0]:""}
@@ -6559,7 +6559,7 @@ const REG_FORM="https://docs.google.com/forms/d/e/1FAIpQLSdEKTrG8N27CJrVqt7svD-e
 const REG_F=[{k:"nombre",e:"1500475489",t:"Nombre completo",ty:"text",ac:"name"},{k:"correo",e:"2043048630",t:"Correo",ty:"email",ac:"email"},{k:"patrocinador",e:"215396076",t:"Nombre de tu patrocinador",ty:"text"},
   {k:"plan",e:"771484550",t:"Plan",ty:"select",opts:["Classic","Premium"]},{k:"pais",e:"987456673",t:"País",ty:"text",ac:"country-name"},{k:"ciudad",e:"1482142378",t:"Ciudad",ty:"text",ac:"address-level2"}];
 const AVISO_FORM="https://forms.gle/YNAGLjLTv9VTk33bA";
-const WEL_DEF={video:"6ySNnmhDjwk",whatsapp:"https://chat.whatsapp.com/H2qNlABTfsAAuZ12JqCiKi",caja:"https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"};
+const WEL_DEF={video:"6ySNnmhDjwk",caja:"https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"};
 // 4 nov: solo la parte donde Edwin habla (4:41); la pantalla compartida se quitó
 const WEL_PARTS=["media/bienvenida-corto.mp4?v=1"],WEL_DUR=[281],WEL_TOT=WEL_DUR.reduce((a,b)=>a+b,0);
 let welVidFail=false,welUnl=false;
@@ -6567,7 +6567,7 @@ const welVidPct=()=>{let m=0;try{m=(JSON.parse(localStorage.getItem("alp:welpos"
 let welState={},welName="",welTimer=null,welOpenedAt=0;
 const welCfg=()=>Object.assign({},WEL_DEF,(T.config&&T.config.bienvenida)||{});
 const ytId=u=>{u=String(u||"").trim();const m=u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/);return m?m[1]:(/^[\w-]{11}$/.test(u)?u:"")};
-function welSteps(){const c=welCfg(),st=[{k:"video"}];st.unshift({k:"registro"});if(safeUrl(c.whatsapp))st.push({k:"whatsapp"});if(safeUrl(c.caja))st.push({k:"caja"});return st}
+function welSteps(){const c=welCfg(),st=[{k:"video"}];st.unshift({k:"registro"});/* 10 nov: el grupo del equipo pasó al Plan de Inicio Rápido (link privado privAp/grupo) */if(safeUrl(c.caja))st.push({k:"caja"});return st}
 function welDone(){return welSteps().every(x=>welState[x.k])}
 function welSaveFlag(o){try{if(store.db){store.mine().doc("bienvenida").set(o,{merge:true}).catch(()=>{})}}catch(e){}}
 function welMark(k){if(welState[k])return;welState[k]=true;profile.welPasos=Object.assign({},welState);store.set("perfil",profile);welSaveFlag({pasos:{[k]:true}});renderWel()}
@@ -6740,11 +6740,11 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     ${irSimple()?`<div class="pf-h">Ayuda</div>`:""}<button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
     <button class="pf-it" id="pfFront"><span class="ic">🏠</span>Ver la portada de la app</button>
-    ${isAdmin&&irSimple()?`<div class="pf-h">Admin</div><button class="pf-it" id="pfCie"><span class="ic">💰</span>Cierre de mes</button>`:""}${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)${irSimM()?` <b style="margin-left:auto;font-size:11px;background:#7C3AED;color:#fff;border-radius:99px;padding:3px 8px">ENCENDIDO</b>`:""}</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfRh"><span class="ic">🔥</span>Ver celebración de racha (admin)</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
+    ${isAdmin&&irSimple()?`<div class="pf-h">Admin</div><button class="pf-it" id="pfCie"><span class="ic">💰</span>Cierre de mes</button>`:""}${isAdmin?`<button class="pf-it" id="pfGrp"><span class="ic">👥</span>Grupo de WhatsApp del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)${irSimM()?` <b style="margin-left:auto;font-size:11px;background:#7C3AED;color:#fff;border-radius:99px;padding:3px 8px">ENCENDIDO</b>`:""}</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfRh"><span class="ic">🔥</span>Ver celebración de racha (admin)</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
-    $("#pfNombre").onclick=abrirMisDatos;$("#pfAvisos").onclick=()=>{closeSheet();setTimeout(misAvisos,250)};{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const cz=$("#pfCie");if(cz)cz.onclick=()=>{closeSheet();eqTab="cierre";go("equipo");renderEquipo()}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
+    $("#pfNombre").onclick=abrirMisDatos;$("#pfAvisos").onclick=()=>{closeSheet();setTimeout(misAvisos,250)};{const gp=$("#pfGrp");if(gp)gp.onclick=()=>{closeSheet();setTimeout(grpAdmin,250)}}{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const cz=$("#pfCie");if(cz)cz.onclick=()=>{closeSheet();eqTab="cierre";go("equipo");renderEquipo()}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
     $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfVia").onclick=()=>window.open(VIA_FORM,"_blank","noopener");$("#pfMem").onclick=()=>memCompartir();$("#pfLzs").onclick=()=>{closeSheet();setTimeout(abrirLanzSocio,250)};$("#pfMemV").onclick=()=>memVisitas();
     $("#pfInv").onclick=()=>{if(!(regDoc&&regDoc.registro)){toast("Completa tu registro primero");return}const u=miEnlace();openSheet(`<h2>🔗 Tu enlace de invitación</h2><p class="small muted">Compártelo solo con tus socios nuevos. Al registrarse, aparecerás como su patrocinador.</p>
       <div class="card" style="word-break:break-all;font-weight:600">${esc(u)}</div><button class="btn" id="invCp" style="width:100%">Copiar enlace</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#invCp").onclick=async()=>{try{await navigator.clipboard.writeText(u);toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})};
@@ -6809,7 +6809,7 @@ function irCtx(){const st=irSt(),ini=irIni(),iniD=dkey(new Date(ini)),C=contacts
    pres:c.pres||0,seg:c.seg||0,lid:lid.length,l3:lid.filter(x=>x.l3&&!x.lz&&!x.lzE).length,mk,
    herrN:IR_HERR.filter(h=>mk[h[0]]||(h[2]&&irHerrAuto(h[0]))).length,herrV:IR_HERR_V.every(k=>mk[k]),porque:!!(snInfo&&String(snInfo.porque||"").trim()),meta:!!(st.meta&&st.meta.tiempo),
    pat:sim||!!miRegistro().patrocinadorUid,ref:!!String(profile.ref||"").trim(),val:!!st.val||!!irValOk,comp:!!(miComp()&&!miComp().no),
-   act1,soc:dir.length>0,ayu:!!mk.ayu||dir.some(x=>x.ir&&x.ir.ini)||(citas||[]).some(x=>x.lzE&&String(x.fecha||"")>=iniD),racha:irRacha(),sim}}
+   act1,soc:dir.length>0,grpYa:!!((profile.welPasos||{}).whatsapp)||!!(st.ini&&st.ini<GRP_DESDE),ayu:!!mk.ayu||dir.some(x=>x.ir&&x.ir.ini)||(citas||[]).some(x=>x.lzE&&String(x.fecha||"")>=iniD),racha:irRacha(),sim}}
 function irRacha(){let r=0;try{for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const k=dkey(d),s=dayScore(k===TODAY?day:weekCache[k],k);if(i===0&&s<1)continue;if(s>=1)r++;else break}}catch(e){}return r}
 const irGoCRM=()=>{closeSheet();go("crm");try{const D=LS.get("tourOk")||{};if(!D.crm&&!LS.get("tourAskCrm")){LS.set("tourAskCrm",1);setTimeout(()=>avisoTop("🧭 ¿Le enseño a usar su CRM?","Guía de 2 minutos · toque Ver",()=>tourIr("crm")),700)}}catch(e){}};
 function irItems(n){const V2=irV2();
@@ -6817,7 +6817,8 @@ function irItems(n){const V2=irV2();
   const IP=(n,g,t)=>({k:"p"+n,g,t,a:x=>x.pres>=n,p:x=>Math.min(x.pres,n)+" de "+n,b:["Presentar",()=>{closeSheet();abrirPres();window._irV=1}]});
   const IS=(n,g,t,sub)=>({k:"s"+n,g,t,s:sub,a:x=>x.seg>=n,p:x=>Math.min(x.seg,n)+" de "+n,b:["Registrar",()=>{closeSheet();abrirSeg();window._irV=1}]});
   const its={
- 1:[{k:"porque",g:"Define su meta",t:"Su “por qué”",s:"Lo más importante que quiere lograr con inCruises",a:x=>x.porque,b:["Escribir",()=>{closeSheet();setTimeout(snWhyIr,250)}]},
+ 1:[{k:"grp",g:"Conéctese con su equipo",t:"Únase al grupo del equipo",s:"Ahí compartimos los entrenamientos de la semana y los avisos importantes",a:x=>!!x.mk.grp||x.grpYa,b:["Unirme",()=>grpAbrir()]},
+    {k:"porque",g:"Define su meta",t:"Su “por qué”",s:"Lo más importante que quiere lograr con inCruises",a:x=>x.porque,b:["Escribir",()=>{closeSheet();setTimeout(snWhyIr,250)}]},
     {k:"meta",g:"Define su meta",t:"Su meta y compromiso diario",s:"Tiempo, contactos y presentaciones al día",a:x=>x.meta,m:1,b:["Llenar",()=>irMeta()]},
     {k:"pago",g:"Prepare su negocio",t:"Configure su pago recurrente",s:"En su cuenta de inCruises: su ahorro se paga solo cada mes y su cuenta no se inactiva",a:x=>!!x.mk.pago,m:1,b:["Ya lo configuré",()=>irMk("pago")]},
     {k:"pat",g:"Prepare su negocio",t:"Conectado con su patrocinador",a:x=>x.pat},
@@ -6853,6 +6854,21 @@ function irEstado(){const x=irCtx(),md=(x.st&&x.st.med)||{},W=IR_W.map(w=>{const
 function irAct1(){openSheet(`<h2>📅 Su primera actividad</h2><p class="small muted" style="margin:0">Agéndela con su patrocinador o con un líder de su línea.</p>
    <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px"><button class="btn" id="a1L3">📞 Pedir llamada de 3 a mi líder</button><button class="btn" id="a1Lz" style="background:linear-gradient(135deg,#B07D00,#F5B700);color:#fff">🚀 Planear mi lanzamiento con mi líder</button><button class="btn ghost" id="a1Ok">✅ Ya la agendé por WhatsApp o en persona</button></div>
    <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{$("#a1L3").onclick=()=>{closeSheet();setTimeout(()=>pedirL3(null),250)};$("#a1Lz").onclick=()=>{closeSheet();setTimeout(abrirLanz,250)};$("#a1Ok").onclick=()=>irMk("act1")})}
+// ---------- Grupo del equipo (10 nov 2026): link en privAp/grupo {link,t}, solo cuentas aprobadas (claim ap) y admins ----------
+const GRP_DESDE=Date.parse("2026-11-10T06:00:00Z"); // quien empezó su plan antes de hoy ya lo tiene hecho
+let grpLk=null;
+async function grpLink(){if(grpLk)return grpLk;try{const d=await store.db.doc("privAp/grupo").get();const z=d.exists?d.data():null;if(z&&z.link){grpLk=z.link;return grpLk}}catch(e){}return""}
+function grpMarca(){try{const st=irSt();if(!(st.mk||{}).grp)irSave({mk:Object.assign({},st.mk||{},{grp:Date.now()})})}catch(e){}}
+function grpAbrir(){
+  // con el link ya cargado se abre al instante (si se espera, el navegador bloquea la ventana nueva)
+  if(grpLk){grpMarca();try{closeSheet()}catch(e){}let w=null;try{w=window.open(grpLk,"_blank");if(w)w.opener=null}catch(e){}if(!w)setTimeout(()=>{location.href=grpLk},400);setTimeout(()=>{try{irRender();irLista()}catch(e){}},600);return}
+  (async()=>{const c=await apClaims(false);if(c.ap!==true&&!isAdmin){openSheet(`<h3 style="margin:0 0 8px">🔒 Grupo del equipo</h3><p class="muted" style="margin:0 0 14px">Disponible cuando su cuenta sea aprobada. Normalmente tarda unos minutos.</p><button class="btn ghost" data-close style="width:100%">Entendido</button>`);return}
+    const L=await grpLink();if(!L){toast("No se pudo abrir el grupo. Intente de nuevo en un momento; si sigue, avise a su patrocinador.");return}
+    grpMarca();toast("Abriendo el grupo…");setTimeout(()=>{location.href=L},600)})()}
+async function grpAdmin(){const L=await grpLink();openSheet(`<p class="eyebrow">ADMIN</p><h3 style="margin:4px 0 6px">👥 Grupo de WhatsApp del equipo</h3><p class="small muted" style="margin:0 0 12px">Es el paso 1 del Plan de Inicio Rápido. Solo lo ven las cuentas aprobadas. Si restablece el enlace en WhatsApp, péguelo aquí.</p>
+  <input id="grpL" value="${esc(L)}" placeholder="https://chat.whatsapp.com/…" style="width:100%;margin-bottom:12px"><button class="btn" id="grpS" style="width:100%">Guardar</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{
+  $("#grpS").onclick=async()=>{let v=$("#grpL").value.trim();if(!/^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]+/.test(v)){toast("Pegue un enlace de grupo de WhatsApp (chat.whatsapp.com/…)");return}v=v.split("?")[0];
+    try{await store.db.doc("privAp/grupo").set({link:v,t:Date.now()});grpLk=v;closeSheet();toast("✅ Enlace del grupo guardado")}catch(e){toast("No se pudo guardar ("+errCod(e)+")")}}})}
 function irMk(k){const st=irSt(),mk=Object.assign({},st.mk||{});mk[k]=Date.now();irSave({mk});closeSheet();toast("✅ Marcado");setTimeout(()=>{irRender();irLista()},300)}
 function irHerr(){const st=irSt(),mk=Object.assign({},st.mk||{});
   // las automáticas se guardan en cuanto se detectan
@@ -6943,7 +6959,7 @@ let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()
   if(E.grad){$("#irFlyG").onclick=e=>{e.stopPropagation();irFlyer(null)}}
   {const b=$("#irNxB");if(b&&nx)b.onclick=e=>{e.stopPropagation();nx.b[1]()}}
   el.onclick=e=>{if(e.target.closest("button"))return;irLista()}}catch(e){el.hidden=true;try{console.warn("irRender",e)}catch(x){}}}
-function irLista(n){const E=irEstado(),st=irSt();n=n||E.cur.n;const w=E.W[n-1],G={};w.L.forEach(i=>{(G[i.g]=G[i.g]||[]).push(i)});
+function irLista(n){if(!grpLk&&store.db)grpLink().catch(()=>{});const E=irEstado(),st=irSt();n=n||E.cur.n;const w=E.W[n-1],G={};w.L.forEach(i=>{(G[i.g]=G[i.g]||[]).push(i)});
   openSheet(`<div class="irTop"><div class="k">🚀 Plan de Inicio Rápido</div><div class="t">Semana ${w.n} · <em>${esc(w.k)}</em></div><div class="irBar"><i style="width:${Math.max(4,Math.round(w.n2/w.L.length*100))}%"></i></div><div class="irMeta"><span><b>${w.n2} de ${w.L.length}</b> listas</span><span>Día ${E.dia} · meta: día ${w.fin}</span></div></div>
    <div class="irWk">${E.W.map(z=>`<button type="button" data-w="${z.n}" class="${z.n===n?"on":""}${(st.med||{})[z.n]?" ok":""}">${(st.med||{})[z.n]?"🏅":z.ic} Sem ${z.n}</button>`).join("")}</div>
    ${(st.med||{})[n]?`<div role="button" tabindex="0" class="irMdl" id="irMedB"><span class="ic">🏅</span><span class="mt" style="flex:1;min-width:0"><b>Insignia ${esc(w.k)} ganada</b><small>${(()=>{try{return "El "+niceDate(dkey(new Date((st.med||{})[n])))+" · "}catch(e){return ""}})()}Toque para celebrar y compartir</small></span><span class="go">›</span></div>`:""}
@@ -7436,7 +7452,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110082148";var busy=false,pend=null;
+(function(){var V="20261110084446";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

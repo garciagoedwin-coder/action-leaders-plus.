@@ -4,6 +4,7 @@
 // no puede borrar su documento, y la constancia (ranking) solo acepta números dentro de lo posible.
 // 10/11/2026 FASE 3: cuentas aprobadas (claim ap del servidor), turnos solo miembros del sistema (claim sis),
 // link del grupo del sistema en sisPriv (solo miembros), aprobaciones en aprob/{uid} (patrocinador directo o admin).
+// privAp/grupo: link del grupo del equipo, solo cuentas aprobadas.
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -45,6 +46,8 @@ service cloud.firestore {
     }
     match /team/{doc=**} { allow read: if socio(); allow write: if isAdmin(); }
     match /sisPriv/{d} { allow read: if sis(); allow write: if isAdmin(); }
+    // Grupo de WhatsApp del equipo (10 nov): solo cuentas YA aprobadas (sin periodo de gracia) y admins
+    match /privAp/{d} { allow read: if isAdmin() || (signedIn() && request.auth.token.get('ap', false) == true); allow write: if isAdmin(); }
     match /aprob/{uid} {
       allow read, delete: if isAdmin();
       allow create, update: if signedIn() && request.resource.data.keys().hasOnly(['ok','por','t'])

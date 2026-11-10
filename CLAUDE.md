@@ -660,3 +660,9 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Cuenta con contraseña sin confirmar → mailGate (#apGate «Confirme su correo»), revisa cada 8 s y al volver a la app; no carga datos.
 - aprobar.mjs solo usa el correo de la cuenta si emailVerified. Requiere que Edwin habilite el proveedor Correo/contraseña en Firebase Authentication (+ protección contra enumeración).
 - Stub de pruebas: tools/test/stub/auth.js guarda cuentas en localStorage stubPw.
+
+## Grupo de WhatsApp del equipo (10 nov)
+- Ya NO está en la bienvenida ni en team.json/index.html (el link viejo estaba público; Edwin lo restableció). Ahora es el paso 1 de la Semana 1 del Plan de Inicio Rápido (item k:"grp", marca ir.mk.grp).
+- Link en privAp/grupo {link,t}: lectura solo isAdmin() o token ap==true (sin gracia); escritura admin. Admin lo cambia en Perfil → «👥 Grupo de WhatsApp del equipo» (grpAdmin).
+- grpYa: hecho automático si ya marcó el grupo en la bienvenida (welPasos.whatsapp) o empezó el plan antes del 10 nov (GRP_DESDE).
+- window.open con "noopener" devuelve null siempre: usar window.open(url,"_blank") y luego w.opener=null.
