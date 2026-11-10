@@ -18,8 +18,8 @@ jobs:
       FIREBASE_SA: "${{ secrets.FIREBASE_SA }}"
       DRY: "${{ github.event.inputs.dry }}"
       FORCE: "${{ github.event.inputs.force }}"
-      RED_DIR: "${{ runner.temp }}/rep"
-      EVK_FILE: "${{ runner.temp }}/evk"
+      RED_DIR: /tmp/alp-rep
+      EVK_FILE: /tmp/alp-evk
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
