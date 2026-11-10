@@ -96,7 +96,7 @@ section.alt{background:linear-gradient(180deg,rgba(42,193,241,.06),rgba(139,107,
 .mid-cta{margin-top:34px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 22px}
 .mid-cta p{margin:0;font-weight:700;font-size:19px}
 @media(max-width:760px){.grid2v{grid-template-columns:1fr}.mid-cta .btn{width:100%}}
-</style></head><body>
+.grecaptcha-badge{visibility:hidden!important}</style></head><body>
 <header class="top"><div class="wrap"><div class="brand" style="gap:0">Action<i class="alC"></i>Leaders</div></div></header>
 
 <div class="hero"><div class="bg"></div><div class="wrap">
@@ -191,7 +191,7 @@ section.alt{background:linear-gradient(180deg,rgba(42,193,241,.06),rgba(139,107,
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getFirestore,doc,getDoc,collection,addDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});
+const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});try{const _ac=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js");_ac.initializeAppCheck(app,{provider:new _ac.ReCaptchaEnterpriseProvider("6LfesRkuAAAAAJQPpPOr5UFCDPoy2WuclKV0hgdg"),isTokenAutoRefreshEnabled:true})}catch(e){} /* App Check (10 nov 2026): solo la app oficial habla con Firebase */
 const db=getFirestore(app);const $=id=>document.getElementById(id);
 const code=(new URLSearchParams(location.search).get("de")||"").trim().toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60);
 let P=null;
@@ -219,4 +219,5 @@ else{document.querySelector(".inv").style.display="none";$("wa").style.display="
   var abrir=function(){if(box.dataset.on)return;box.dataset.on=1;var u=src+(src.indexOf("?")<0?"?":"&")+"autoplay=1";box.innerHTML='<iframe src="'+u+'" title="Video" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen></iframe>';box.style.cursor="default"};
   box.addEventListener("click",abrir);box.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();abrir()}})})})();
 </script>
+<p class="rcN" style="font:11px/1.4 system-ui,sans-serif;opacity:.6;text-align:center;margin:18px 16px 28px">Protegido por reCAPTCHA · se aplican la <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacidad</a> y las <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Condiciones</a> de Google</p><style>.rcN a{color:inherit}</style>
 </body></html>
