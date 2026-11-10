@@ -1,0 +1,51 @@
+name: Red de inCruises
+# El admin sube los reportes desde la app (Perfil › Admin › Cargar reportes de inCruises, cifrados) →
+# aquí se procesan con tools/red.py y tools/ahorro.py, se publica data/red.enc y se reparte en Firestore (red/{k}).
+# Logs públicos: SOLO conteos.
+on:
+  schedule: [{ cron: "7,22,37,52 * * * *" }]
+  push: { branches: [main], paths: [data/red.enc] }
+  workflow_dispatch:
+    inputs:
+      dry: { description: "1 = solo prueba (no escribe)", default: "" }
+      force: { description: "1 = repartir aunque ya esté al día", default: "" }
+concurrency: { group: red, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  r:
+    runs-on: ubuntu-latest
+    env:
+      FIREBASE_SA: "${{ secrets.FIREBASE_SA }}"
+      DRY: "${{ github.event.inputs.dry }}"
+      FORCE: "${{ github.event.inputs.force }}"
+      RED_DIR: "${{ runner.temp }}/rep"
+      EVK_FILE: "${{ runner.temp }}/evk"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: cd tools/push && npm ci --no-audit --no-fund >/dev/null
+      - id: b
+        if: github.event_name != 'push'
+        run: cd tools/push && node red.mjs bajar
+      - if: steps.b.outputs.rep == '1'
+        run: pip install -q -r tools/buzon/requirements.txt
+      - id: p
+        if: steps.b.outputs.rep == '1'
+        run: |
+          set -e
+          python3 tools/red.py "${{ steps.b.outputs.so }}" "${{ steps.b.outputs.mi }}" "$RED_DIR/pe.csv"
+          python3 tools/ahorro.py csv "$RED_DIR/pe.csv"
+          rm -rf "$RED_DIR"
+          if [ -z "$DRY" ]; then
+            git config user.name "Action Leaders bot"; git config user.email "bot@actionleadersplus.com"
+            git add data/red.enc data/ahorro.enc data/team.json
+            git commit -qm "Red: reportes de inCruises cargados desde la app" || true
+            for i in 1 2 3; do git pull -q --rebase && git push -q && break; sleep 5; done
+          fi
+      - if: failure() && steps.b.outputs.rep == '1'
+        run: cd tools/push && node red.mjs error
+      - if: github.event_name == 'push' || steps.b.outputs.rep == '1' || github.event.inputs.force == '1'
+        run: cd tools/push && node red.mjs subir
+      - if: always()
+        run: rm -rf "$RED_DIR" "$EVK_FILE"
