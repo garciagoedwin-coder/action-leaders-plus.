@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: steps.hay.outputs.si == '1'
         with: { node-version: 20 }
-      - run: npm install --no-audit --no-fund
+      - run: npm ci --no-audit --no-fund
         if: steps.hay.outputs.si == '1'
         working-directory: tools/push
       - name: Enviar

@@ -22,7 +22,7 @@ jobs:
         with: { fetch-depth: 2 }
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-      - run: pip install -q cryptography
+      - run: pip install -q -r tools/buzon/requirements.txt
       - name: Procesar
         env:
           FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
@@ -45,6 +45,6 @@ jobs:
           H=$(python3 -c "import json;print(json.load(open('/tmp/buzon_out.json')).get('ahorro',0))")
           C=$(python3 -c "import json;print(json.load(open('/tmp/buzon_out.json')).get('commit',0))")
           [ "$C" = "1" ] || exit 0
-          (cd tools/push && npm install --no-audit --no-fund >/dev/null)
+          (cd tools/push && npm ci --no-audit --no-fund >/dev/null)
           if [ "$A" != "0" ]; then echo "Socios nuevos: espero 3 min a que se publique el ranking"; sleep 180; node tools/push/enviar.mjs act /tmp/viejo.json data/team.json; fi
           if [ "$H" = "1" ]; then (cd tools/push && node enviar.mjs inact-sync); fi

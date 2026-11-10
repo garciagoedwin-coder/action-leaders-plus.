@@ -7,5 +7,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
-      - run: cd tools/push && npm install --no-audit --no-fund >/dev/null && node diagperf.mjs
+      - run: cd tools/push && npm ci --no-audit --no-fund >/dev/null && node diagperf.mjs
         env: { FIREBASE_SA: "${{ secrets.FIREBASE_SA }}" }

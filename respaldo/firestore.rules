@@ -1,4 +1,5 @@
-// Copia exacta de las reglas de Firestore (4/11/2026: + bloque rsvp de confirmación de asistencia).
+// Reglas de Firestore. 10/11/2026 SEGURIDAD FASE 1: se quitó la regla duplicada de perfiles (permitía sobrescribir la página de otro socio),
+// se quitaron reservas (sin uso) y la regla floja de prospectos, y se validan los campos de la presentación virtual / membresía (sala).
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -9,9 +10,6 @@ service cloud.firestore {
     match /users/{socio} { allow update, delete: if isAdmin(); }
     match /users/{socio} { allow read: if signedIn() && request.auth.uid in resource.data.registro.linea; }
     match /constancia/{uid} { allow read: if signedIn(); allow write: if signedIn() && (request.auth.uid == uid || isAdmin()); }
-    match /perfiles/{code} { allow read: if true; allow write: if signedIn() && request.resource.data.uid == request.auth.uid; }
-    match /reservas/{id} { allow read: if true; allow create: if request.resource.data.keys().hasOnly(['p','s','t']); allow delete: if signedIn(); }
-    match /users/{uid}/prospectos/{id} { allow create: if request.resource.data.keys().hasOnly(['nombre','cc','tel','interes','t','s','tipo']); }
 
     match /invitaciones/{id} {
       allow get: if signedIn();
@@ -30,7 +28,8 @@ service cloud.firestore {
     match /perfiles/{code} {
       allow read: if true;
       allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
-      allow update, delete: if signedIn() && resource.data.uid == request.auth.uid;
+      allow update: if signedIn() && resource.data.uid == request.auth.uid && request.resource.data.uid == request.auth.uid;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
     }
     match /users/{uid} {
       allow read, write: if signedIn() && request.auth.uid == uid;
@@ -43,7 +42,10 @@ service cloud.firestore {
     match /users/{uid}/prospectos/{id} {
       allow create: if request.resource.data.keys().hasOnly(['nombre','cc','tel','interes','t'])
         && request.resource.data.nombre is string && request.resource.data.nombre.size() < 80
-        && request.resource.data.tel is string && request.resource.data.tel.size() < 21;
+        && request.resource.data.tel is string && request.resource.data.tel.size() < 21
+        && (!('cc' in request.resource.data) || (request.resource.data.cc is string && request.resource.data.cc.size() <= 5))
+        && (!('interes' in request.resource.data) || (request.resource.data.interes is string && request.resource.data.interes.size() <= 60))
+        && (!('t' in request.resource.data) || request.resource.data.t is number);
     }
 
     // ---- Modo entrada del evento ----
@@ -71,8 +73,14 @@ service cloud.firestore {
     match /users/{uid}/sala/{id} {
       allow create, update: if request.resource.data.keys().hasOnly(['n','c','t0','t','pct','r1','pais','pulso','resp','como','motivo','dur'])
         && request.resource.data.n is string && request.resource.data.n.size() <= 60
-        && request.resource.data.t is number;
+        && request.resource.data.t is number
+        && txtOk(request.resource.data, 'c', 40) && txtOk(request.resource.data, 'r1', 80) && txtOk(request.resource.data, 'pais', 80)
+        && txtOk(request.resource.data, 'pulso', 80) && txtOk(request.resource.data, 'resp', 80) && txtOk(request.resource.data, 'como', 40)
+        && txtOk(request.resource.data, 'motivo', 80)
+        && numOk(request.resource.data, 't0') && numOk(request.resource.data, 'pct') && numOk(request.resource.data, 'dur');
     }
+    function txtOk(d, k, n) { return !(k in d) || (d[k] is string && d[k].size() <= n); }
+    function numOk(d, k) { return !(k in d) || d[k] is number; }
     match /agendaEv/{id} {
       allow read: if request.auth != null;
       allow create: if request.auth != null && request.resource.data.cre == request.auth.uid;
