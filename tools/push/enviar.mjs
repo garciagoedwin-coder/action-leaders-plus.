@@ -130,11 +130,25 @@ export function agendaPendientes(cal, ms = Date.now()) {
   const H = (cal || []).filter(e => e.fecha === hoy && /^\d\d:\d\d$/.test(e.hora || "")).map(e => ({ ...e, min: +e.hora.slice(0, 2) * 60 + +e.hora.slice(3) }));
   const tipoDe = e => /liderazgo/i.test(e.titulo || "") || /líderes/i.test(e.tipo || "") ? "lid" : /presentaci/i.test(e.tipo || "") ? "pres" : /capacitaci|llamada/i.test(e.tipo || "") ? "ent" : null;
   const primPres = H.filter(e => tipoDe(e) === "pres").sort((a, b) => a.min - b.min)[0];
-  return H.filter(e => { const t = tipoDe(e); if (!t) return false; if (t === "pres" && e !== primPres) return false;
-    const falta = e.min - ahora, ant = t === "pres" ? 60 : 30; return falta >= 5 && falta <= ant + 10; }).map(e => ({ ...e, k: tipoDe(e), falta: e.min - ahora }));
+  const out = [];
+  for (const e of H) { const t = tipoDe(e); if (!t) continue; if (t === "pres" && e !== primPres) continue; const falta = e.min - ahora;
+    // 10 nov (Edwin): el Action Leaders Training se avisa 3 veces: en la mañana, 1 hora antes y 10 minutos antes (edificando a los ponentes)
+    if (t === "ent" && /action leaders? training/i.test(e.titulo || "")) {
+      const st = ahora >= 540 && ahora < 600 && falta > 90 ? "m" : falta >= 45 && falta <= 75 ? "1h" : falta >= 5 && falta <= 25 ? "10" : null;
+      if (st) out.push({ ...e, eid: e.id, id: e.id + ":" + st, st, k: t, falta });
+      continue; }
+    const ant = t === "pres" ? 60 : 30; if (falta >= 5 && falta <= ant + 10) out.push({ ...e, k: t, falta }); }
+  return out;
 }
 const h12 = h => { let [a, b] = h.split(":").map(Number); const p = a >= 12 ? "p.m." : "a.m."; a = a % 12 || 12; return `${a}:${String(b).padStart(2, "0")} ${p}`; };
-export function msgAgenda(e) {
+const n2 = n => String(n || "").trim().split(/\s+/).slice(0, 2).join(" ");
+export function msgAgenda(e, tur) {
+  if (e.st) { const s = ((tur || {}).s || {})[e.eid] || {}, P = ["p", "e", "p3", "p4"].map(k => s[k] && s[k].n).filter(Boolean).map(n2);
+    const con = P.length ? (P.length === 1 ? P[0] : P.slice(0, -1).join(", ") + " y " + P[P.length - 1]) : "";
+    const tema = s.tema || (new Date(e.fecha + "T12:00:00Z").getUTCDay() === 0 ? "Llamada de poder" : "");
+    if (e.st === "m") return { title: `📣 Hoy ${h12(e.hora)}: ${e.titulo}`, body: (con ? `Nos edifica${P.length > 1 ? "n" : ""} ${con}. ` : "") + (tema ? `Tema: ${tema}. ` : "") + "¡Invite a su equipo y no se lo pierda!" };
+    if (e.st === "1h") return { title: `⏰ En 1 hora: ${e.titulo}`, body: (con ? `Con ${con}. ` : "") + "Prepárese y avísele a su equipo." };
+    return { title: `🔴 En ${Math.max(5, Math.round(e.falta / 5) * 5)} min: ${e.titulo}`, body: (con ? `Con ${con}. ` : "") + "Toque para ver cómo entrar." }; }
   if (e.k === "pres") return { title: `🎤 Hoy a las ${h12(e.hora)}: ${e.titulo}`, body: "¿Ya invitó a alguien? Todavía está a tiempo: un mensaje hoy puede ser un socio mañana." };
   const mi = e.falta ? Math.max(5, Math.round(e.falta / 5) * 5) : 30;
   if (e.k === "lid") return { title: `🛡️ En ${mi} min: ${e.titulo}`, body: `Empieza a las ${h12(e.hora)} · toque para ver el Zoom en la Agenda.` };
@@ -315,7 +329,8 @@ async function main() {
     if (!nuevos.length) { console.log("Ya se avisó."); return; }
     const P = (await db.collection("push").get()).docs.map(d => ({ uid: d.id, ...d.data() })).filter(p => p.tk && (p.pr || {}).agenda !== false);
     P.forEach(p => hist[p.uid] = p.h || []);
-    for (const e of nuevos) { const m = msgAgenda(e); for (const p of P) { if (e.k === "lid" && !p.sis) continue; salida.push([p.uid, p.tk, m]); } console.log("Aviso:", e.titulo, e.hora); }
+    let tur = null; if (nuevos.some(e => e.st)) { try { tur = (await db.doc("turnos/" + nuevos[0].fecha.slice(0, 7)).get()).data() || {}; } catch {} }
+    for (const e of nuevos) { const m = msgAgenda(e, tur); for (const p of P) { if (e.k === "lid" && !p.sis) continue; salida.push([p.uid, p.tk, m]); } console.log("Aviso:", e.titulo, e.hora); }
     if (!DRY) await metaRef.set({ sent: [...ya, ...nuevos.map(e => e.id)].slice(-80), t: Date.now() });
   } else if (modo === "equipo") {
     const Q = (await db.collection("agendaEv").where("tipo", "==", "equipo").get()).docs.map(d => ({ id: d.id, ...d.data() }));

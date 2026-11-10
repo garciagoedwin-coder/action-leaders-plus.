@@ -1026,6 +1026,12 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 #mailM .mmT{display:flex;gap:6px;background:var(--surface-2);border-radius:999px;padding:4px;margin-right:40px}#mailM .mmT button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-weight:700;padding:9px;border-radius:999px;cursor:pointer}#mailM .mmT button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
 #mailM label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:var(--muted)}#mailM input{font:inherit;font-size:16px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}#mailM input:focus{outline:none;border-color:#0A7DAD}
 #mailM .mmErr{color:var(--bad,#d33);font-size:14px;font-weight:600}#mailM .btn{width:100%;margin-top:4px}#mailM .mmL{border:0;background:none;color:#0A7DAD;font:inherit;font-weight:700;padding:8px;cursor:pointer}
+#trHoy{border-radius:22px;overflow:hidden;background:linear-gradient(160deg,#0B1F3A,#0A4D73);color:#fff;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 10px 30px rgba(10,77,115,.25)}#trHoy[hidden]{display:none}
+#trHoy .evH{display:flex;flex-direction:column;gap:3px}#trHoy .evK{font-size:12px;font-weight:800;letter-spacing:2px;color:#7FDBFF}#trHoy .evH b{font-size:20px;line-height:1.15}#trHoy .evT{font-size:13px;color:#cfe3f2}
+#trHoy .evF{border-radius:14px;overflow:hidden;background:rgba(255,255,255,.06);aspect-ratio:1080/1350;display:flex;align-items:center;justify-content:center;font-size:13px;color:#cfe3f2}#trHoy .evF img{width:100%;height:100%;object-fit:cover;display:block}
+#trHoy .evQ{margin:0;font-size:14px;color:#e6f2fb}#trHoy .evB .btn{width:100%;background:#2AC1F1;color:#04101f;font-weight:800}
+#v-inicio.simple>#trHoy{order:1}
+.hoyMas{display:block;width:100%;margin-top:10px;padding:10px;border:0;border-radius:12px;background:var(--surface-2);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
 #apGate{position:fixed;inset:0;z-index:2147483000;background:var(--bg,#fff);color:var(--ink);display:flex;align-items:center;justify-content:center;padding:28px}
 #apGate .apC{max-width:360px;text-align:center;display:flex;flex-direction:column;gap:10px}#apGate .apI{font-size:54px}#apGate h2{margin:0;font-size:24px}#apGate p{margin:0;line-height:1.5;color:var(--muted,#555)}#apGate .btn{width:100%}
 .card.apr{display:flex;align-items:center;gap:12px;border:1.5px solid #F5B700;background:linear-gradient(135deg,rgba(245,183,0,.12),rgba(245,183,0,.03))}.aprH{flex:1;display:flex;gap:10px;align-items:center}.aprH b{display:block}.aprI{font-size:28px}
@@ -1406,6 +1412,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
         <p class="eyebrow" id="todayLbl">Hoy</p><h1 class="hiH">Hola, <span id="hiNm">líder</span> 👋</h1><p class="hiSpar" hidden>¡Vamos, líder! 🛡️</p><h1 class="motto" hidden><span id="motto">Haz que suceda.</span></h1>
         <div class="hiPills"><span class="hiPill" id="pillAh" hidden><i class="dot"></i>Ahorro al día</span><span class="hiPill" id="streak" hidden>Racha 0 días</span><span class="hiPill" id="pillRg" hidden></span><button type="button" class="hiPill" id="pillP" hidden></button><button type="button" class="hiPill" id="pillE" hidden></button></div>
       </div>
+      <div id="trHoy" hidden></div>
       <div class="card" id="avisoCard" hidden></div>
       <div class="miwa" id="miWaCard" hidden></div>
       <div class="ahCard" id="ahCard" hidden></div>
@@ -1824,11 +1831,11 @@ function viaStrip(){const el=$("#viaStrip");if(!el)return;
   // Edwin: los ADMIN siempre ven cada tarjeta nueva para revisarla (sus respuestas no se guardan; ✕ = solo por hoy)
   const adm=!!isAdmin&&!!fbUser;let no=!fbUser||!store.uid||!(regDoc&&regDoc.registro&&regDoc.registro.nombre)||!!(regDoc&&regDoc.viaj);
   try{no=no||yoPrueba()||SOLO_ADMIN.includes(String(fbUser.email||"").toLowerCase())}catch(e){}
-  if(!adm&&(no||viaYa())){el.hidden=true;return}
+  if(!adm&&(no||viaYa())){el.hidden=true;return}if(adm&&LS.get("viaAdm:"+store.uid)){el.hidden=true;return}
   el.innerHTML=`<div class="lzgI">✈️</div><div class="lzgT"><b>¿Ya viajó con inCruises?</b><span>Comparta sus fotos y su experiencia: puede salir en la historia del día de todo el equipo.</span>
    <div class="lzgB"><button type="button" class="vf" data-via="f">📝 Compartir mi viaje</button></div><div class="viaB"><button type="button" data-via="si">✅ Ya lo hice</button><button type="button" data-via="no">No me interesa</button></div></div>`;el.hidden=false;
   el.querySelectorAll("[data-via]").forEach(b=>b.onclick=()=>{const v=b.dataset.via;if(v==="f"){window.open(VIA_FORM,"_blank","noopener");setTimeout(()=>{try{toast("Cuando lo envíe, toque «✅ Ya lo hice»")}catch(e){}},800);return}viaResp(v)})}
-async function viaResp(r){const el=$("#viaStrip");if(isAdmin){if(el)el.hidden=true;toast("👀 Vista de admin: no se guarda (vuelve a salir mañana)");return}
+async function viaResp(r){const el=$("#viaStrip");if(isAdmin){LS.set("viaAdm:"+store.uid,Date.now());if(el)el.hidden=true;toast("Listo, ya no le sale en este teléfono");return}
   const z={r,t:Date.now()};regDoc=Object.assign({},regDoc,{viaj:z});if(el)el.hidden=true;
   try{await store.db.doc("users/"+store.uid).set({viaj:z},{merge:true})}catch(e){}toast(r==="si"?"¡Gracias por compartir su viaje! ✈️":"Listo, no le volveremos a preguntar")}
 // 8 nov: "Prospectos olvidados" en Avisos de hoy: los que llevan más de 7 días en Seguimiento
@@ -3212,15 +3219,16 @@ function hoyLlamar(){try{const L=[];(mios||[]).forEach(x=>{const nm=(x.registro|
   else if(constL&&!idxActivo(x)){r="😴 Sin actividad en la app";o=3;k="inact"}
   else if(dd>=3&&compPuede0()&&!compDe(x)){r="🎯 Sin compromiso del mes";o=4;k="comp"}
   if(r){const g=gestDe(x.uid),ot=gestOtro(x);L.push({x,nm,r,o,k,g,ot,h:!!(g&&g.d===TODAY)||!!ot,n:x.nivel||1})}});L.sort((a,b)=>a.h-b.h||a.o-b.o||a.n-b.n);
-  const P=L.filter(z=>!z.h),H=L.filter(z=>z.h),M=P.slice(0,8).concat(H);
+  const P=L.filter(z=>!z.h),H=L.filter(z=>z.h),M=hoyAll?P.concat(H):P.slice(0,4);
   if(!M.length)return `<div class="card hoyL"><h3>📞 Hoy</h3><p class="small muted" style="margin:0">✅ Todo su equipo va al día. ¡Felicítelos!</p></div>`;
-  return `<div class="card hoyL"><h3>📞 Hoy llame a estos <span class="small muted">(${L.length})${H.length?` · <b style="color:var(--good)">✅ ${H.length} ${H.length===1?"hecho":"hechos"}</b>`:""}</span></h3>${M.map(z=>`<div class="hoyR${z.h?" hecho":""}"><div style="min-width:0"><b>${esc(z.nm)}</b><div class="small muted">${esc(z.r)}${z.n>1?" · nivel "+z.n:""}</div>${z.g&&z.g.d===TODAY?`<div class="small" style="font-weight:700;color:var(--good)">${z.g.a?"🤝 Le pidió a "+esc(String(z.g.a).split(" ")[0])+" que lo atienda":"✓ Contactado hoy"}${(+z.g.n||0)>1?" · "+z.g.n+".º contacto":""}</div>`:z.ot?`<div class="small" style="font-weight:700;color:var(--good)">${esc(z.ot)}</div>`:z.g?`<div class="small" style="font-weight:700;color:var(--muted)">💬 Último mensaje: ${gestHace(z.g)}${(+z.g.n||0)>1?" · "+z.g.n+".º contacto":""}</div>`:""}</div><button class="btn sm" data-gst="${esc(z.x.uid)}|${z.k}" style="${z.h?"background:var(--surface-2,#E6ECF2);color:var(--muted,#55606b)":"background:#25D366;color:#fff"}">${z.h?"✓":"💬"}</button></div>`).join("")}${P.length>8?`<p class="small muted" style="margin:6px 0 0">Y ${P.length-8} más en la lista de abajo.</p>`:""}</div>`}catch(e){return""}}
+  return `<div class="card hoyL"><h3>📞 Hoy llame a estos <span class="small muted">(${L.length})${H.length?` · <b style="color:var(--good)">✅ ${H.length} ${H.length===1?"hecho":"hechos"}</b>`:""}</span></h3>${M.map(z=>`<div class="hoyR${z.h?" hecho":""}"><div style="min-width:0"><b>${esc(z.nm)}</b><div class="small muted">${esc(z.r)}${z.n>1?" · nivel "+z.n:""}</div>${z.g&&z.g.d===TODAY?`<div class="small" style="font-weight:700;color:var(--good)">${z.g.a?"🤝 Le pidió a "+esc(String(z.g.a).split(" ")[0])+" que lo atienda":"✓ Contactado hoy"}${(+z.g.n||0)>1?" · "+z.g.n+".º contacto":""}</div>`:z.ot?`<div class="small" style="font-weight:700;color:var(--good)">${esc(z.ot)}</div>`:z.g?`<div class="small" style="font-weight:700;color:var(--muted)">💬 Último mensaje: ${gestHace(z.g)}${(+z.g.n||0)>1?" · "+z.g.n+".º contacto":""}</div>`:""}</div><button class="btn sm" data-gst="${esc(z.x.uid)}|${z.k}" style="${z.h?"background:var(--surface-2,#E6ECF2);color:var(--muted,#55606b)":"background:#25D366;color:#fff"}">${z.h?"✓":"💬"}</button></div>`).join("")}${L.length>M.length||hoyAll?`<button type="button" class="hoyMas" id="hoyMas">${hoyAll?"Ver menos ▲":"Ver los "+L.length+" ▼"}</button>`:""}</div>`}catch(e){return""}}
+let hoyAll=false;
 function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia sesión","Entra con tu cuenta para ver a tus socios.");return}
   if(mios===null){b.innerHTML=`<p class="muted small">Cargando tus socios…</p>`;loadMios();return}
   if(isAdmin&&socios===null&&!window._ldS){window._ldS=1;loadSocios()}
   const inv=`<div class="card"><h3 style="margin:0">🔗 Tu enlace de invitación</h3><p class="small muted" style="margin:0">Los socios que se registren con tu enlace aparecen aquí con su avance.</p>
     <div class="ref"><code style="word-break:break-all">${esc(miEnlace())}</code><button class="btn sm gold" id="miosCopy">Copiar</button></div></div>`;
-  const bind=()=>{b.querySelectorAll("[data-mcp]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mcp);if(!x)return;const w=waSocio(x);location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(compMsg(x))});b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=waSocio(x);
+  const bind=()=>{{const hm=b.querySelector("#hoyMas");if(hm)hm.onclick=()=>{hoyAll=!hoyAll;renderEquipo()}}b.querySelectorAll("[data-mcp]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mcp);if(!x)return;const w=waSocio(x);location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(compMsg(x))});b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=waSocio(x);
     if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});b.querySelectorAll("[data-wnum]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.wnum);if(x)cambiarNumSocio(x)});b.querySelectorAll("[data-gst]").forEach(bt=>bt.onclick=()=>{const [u,k]=bt.dataset.gst.split("|"),x=(mios||[]).find(y=>y.uid===u);if(x)gestHoja(x,k)});b.querySelectorAll("[data-mah]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mah);if(!x)return;const nm=((x.registro||{}).nombre||"").split(" ")[0],ah=ahSoc(x)||{},t=`¡Hola${nm?", "+nm:""}! 🙌 Vi que su ahorro de este mes en inCruises quedó pendiente. Póngase al día${ah.lim&&!ah.bloq?" antes del "+ahFecha(ah.lim):""} para que no se le inactive la cuenta ni pierda sus puntos dobles 🛳️ ¿Le ayudo con algo?`,w=waSocio(x);if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});b.querySelectorAll("[data-ip]").forEach(x=>x.onclick=()=>{idxPer=x.dataset.ip;renderEquipo()});b.querySelectorAll("[data-idxv]").forEach(x=>x.onclick=()=>{idxStk=[""];idxSheet("")});b.querySelectorAll("[data-reac]").forEach(x=>x.onclick=abrirReactivar);const c=$("#miosCopy");if(c)c.onclick=async()=>{try{await navigator.clipboard.writeText(miEnlace());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}};const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
   if(miosErr){b.innerHTML=emptyCard("No se pudo cargar su equipo","Revise su conexión e intente de nuevo. Si sigue igual, avise al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
   if(!mios.length){// 9 nov: sin socios en la app igual sale My Dream Team, para poder agregar CLIENTES
@@ -5764,7 +5772,25 @@ $("#calNext").onclick=()=>{calM=new Date(calM.getFullYear(),calM.getMonth()+1,1)
 $("#agSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;agTab=b.dataset.k;setSeg("agSeg",agTab);if(agTab==="semana")calM=new Date(now.getFullYear(),now.getMonth(),1);if(agTab==="proxima"){const d=new Date(now);d.setDate(d.getDate()+7);calM=new Date(d.getFullYear(),d.getMonth(),1)}renderCal()});
 $("#evList").addEventListener("click",e=>{const b=e.target.closest("[data-ev]");if(b)editEvent(T.eventos.find(x=>x.id===b.dataset.ev))});
 const WA_IC=`<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>`;
-function renderNext(){const nowHM=pad(now.getHours())+":"+pad(now.getMinutes());const up=T.eventos.filter(e=>e.fecha>=TODAY&&!finalizada(e)).sort((a,b)=>(a.fecha+(a.hora||"")).localeCompare(b.fecha+(b.hora||""))).slice(0,irSimple()?1:3);
+// ---------- Evento del día en Inicio (10 nov): el flyer del Action Leaders Training de hoy, con los ponentes de Turnos ----------
+let trHoyK="",trHoyF=null;
+async function trHoy(){const el=$("#trHoy");if(!el)return;try{
+  const e=(T.eventos||[]).filter(x=>x.fecha===TODAY&&esTr(x)&&!espDe(x)&&turMs(x)+90*6e4>Date.now()).sort((a,b)=>(a.hora||"").localeCompare(b.hora||""))[0];
+  if(!e||!store.db){el.hidden=true;return}
+  if(!turD&&!trHoy._t){trHoy._t=1;Promise.race([turCargar(),new Promise(r=>setTimeout(r,4000))]).catch(()=>{}).then(()=>{try{trHoy()}catch(x){}})}
+  const pon=trPon(e).map(x=>x.n),k=e.id+"|"+pon.join(",")+"|"+trTema(e);
+  const vivo=Date.now()>=turMs(e)-10*6e4,falta=turMs(e)-Date.now();
+  const cuando=vivo?"🔴 EN VIVO AHORA":falta<36e5?"⏰ EN "+Math.max(1,Math.round(falta/6e4))+" MIN":"HOY · "+h12(e.hora);
+  const quien=pon.length?pon.slice(0,2).map(n=>esc(nv(n))).join(" y ")+(pon.length>2?" y "+(pon.length-2)+" más":""):"";
+  el.innerHTML=`<div class="evH"><span class="evK">${cuando}</span><b>${esc(e.titulo)}</b>${trTema(e)?`<span class="evT">📚 ${esc(trTema(e))}</span>`:""}</div>
+   <div class="evF" id="trHoyF">${trHoyF&&trHoyK===k?`<img src="${trHoyF}" alt="Flyer de ${esc(e.titulo)}">`:`<span>Creando el flyer…</span>`}</div>
+   ${quien?`<p class="evQ">Hoy nos edifica${pon.length>1?"n":""}: <b>${quien}</b></p>`:""}
+   <div class="evB"><button type="button" class="btn" id="trHoyC">📣 Invitar con este flyer</button></div>`;el.hidden=false;
+  $("#trHoyC").onclick=()=>abrirCompartir(e);
+  if(!(trHoyF&&trHoyK===k)){try{const cv=await trCanvas(e,"p");const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.85));if(trHoyF)URL.revokeObjectURL(trHoyF);trHoyF=URL.createObjectURL(b);trHoyK=k;const f=$("#trHoyF");if(f)f.innerHTML=`<img src="${trHoyF}" alt="Flyer de ${esc(e.titulo)}">`}
+    catch(x){const f=$("#trHoyF");if(f){f.style.aspectRatio="auto";f.style.padding="18px";f.innerHTML=`<span>Toque «Invitar con este flyer» para verlo y compartirlo.</span>`}}}
+ }catch(x){console.log("trHoy",x&&x.message);el.hidden=true}}
+function renderNext(){try{trHoy()}catch(x){}const nowHM=pad(now.getHours())+":"+pad(now.getMinutes());const up=T.eventos.filter(e=>e.fecha>=TODAY&&!finalizada(e)).sort((a,b)=>(a.fecha+(a.hora||"")).localeCompare(b.fecha+(b.hora||""))).slice(0,irSimple()?1:3);
   $("#nextEvents").innerHTML=`<div class="row between" style="align-items:flex-start"><div><h3>📣 ${irSimple()?"Próxima actividad":"Próximas actividades"}</h3><p class="small muted" style="margin:2px 0 0">Invite hoy: comparta el flyer con sus prospectos.</p></div><button class="btn sm ghost" id="goAgenda">Calendario</button></div>`+
    (up.length?`<div class="list">${up.map(e=>`<div class="ev"><span class="hr" style="font-size:15px">${e.fecha===TODAY?"Hoy":esc(niceDate(e.fecha).replace(" de "," "))}<br><span class="muted" style="font-size:14px">${esc(h12(e.hora))}</span></span><div class="body"><div class="row between" style="align-items:flex-start"><b>${esc(e.titulo)}</b>${modoChip(e)}</div><div class="meta">${e.lugar?`<span>${PIN}${esc(e.lugar)}</span>`:""}${e.responsable?`<span>${USER}${esc(nv(e.responsable))}</span>`:pendiente(e)?`<span class="chip c-warn">Por asignar</span>`:""}</div>${e.id?`<button type="button" class="nxShare" data-share="${esc(e.id)}">${esYess(e)?"📧 ¿Cómo entrar?":WA_IC+" Compartir"+(esFlyer(e)?" flyer":"")}</button>`:""}</div></div>`).join("")}</div>`
    :welSigned===false&&!T.eventos.length?`<p class="small muted">Crea tu cuenta gratis en <a href="https://claude.ai/login" target="_blank" rel="noopener"><b>Claude</b></a> para ver la agenda del equipo.</p>`:`<p class="small muted">No hay actividades próximas en el calendario.</p>`);
@@ -7440,6 +7466,7 @@ async function startApp(u){
   if(u&&!(regDoc&&regDoc.registro))await cargarInvitacion();
   await loadMine();
   if(u&&!isAdmin&&regDoc&&regDoc.registro)apRevisar().catch(()=>{});
+  if(u){setTimeout(()=>{try{trHoy()}catch(e){}},900);setInterval(()=>{try{if(!document.hidden)trHoy()}catch(e){}},5*6e4)}
   if(regDoc&&regDoc.registro){welState.registro=true;publicarInv();if(profile.waPublico)setTimeout(publicarPerfil,4000)}
   renderWel();renderAviso();renderAccesos();
   renderMeBtn();setTimeout(renderHist,800);setTimeout(renderMiWa,1200);if(isAdmin)setTimeout(()=>{if(!socios)loadSocios();else syncConst()},2500);
@@ -7452,7 +7479,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110084446";var busy=false,pend=null;
+(function(){var V="20261110093108";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
