@@ -132,7 +132,12 @@ def main():
                          'p': x.get('plan_name', '').replace(' Member', ''), 'lv': x.get('level', ''),
                          'k': [ke(x['email']), kw(w), kw(x.get('mobile_phone', ''))], 'g': iso(g), 'f': 'reporte',
                          'x': iso(fecha(x['invoices_expiration_date'])) if x.get('invoices_expiration_date') else ''})
-        st['rows'] = rows
+        # fallas por correo de los últimos 2 días que el reporte aún no trae: se conservan
+        ya = {h for r in rows for h in r['k'] if h}
+        lim = iso(ahora() - datetime.timedelta(days=2) + datetime.timedelta(days=5))
+        keep = [r for r in st['rows'] if r.get('f') == 'correo' and r['g'] > lim and not any(h in ya for h in r['k'] if h)]
+        st['rows'] = rows + keep
+        if keep: print('fallas recientes conservadas', len(keep))
         if len(a) > 2 and a[2] and os.path.exists(a[2]): lideres(st, a[2])
     elif a[0] == 'falla':
         e, nom, f, plan, sp = (a[1].split('|') + [''] * 5)[:5]

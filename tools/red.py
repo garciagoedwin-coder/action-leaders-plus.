@@ -2,6 +2,8 @@
 """Red de inCruises (cierre de mes): cruza los reportes y deja la base CIFRADA en data/red.enc.
 
   python3 tools/red.py SOCIOS.csv MIEMBROS.csv PENDIENTES.csv ['{"sponsor_id":"email",...}'] [SOLO_SOCIOS.csv]
+  ("-" en SOCIOS o MIEMBROS = reusar el de la carga anterior, que va guardado CIFRADO en red.enc; los arreglos
+   de patrocinador y la lista solo-socios también se recuerdan. Lo corre solo .github/workflows/red.yml)
 
 - SOLO_SOCIOS = todos los que tienen código de socio; los que no están en MIEMBROS ni PENDIENTES
   son socios sin membresía (t "x"). Un pendiente que está ahí lleva ps=1 (es socio).
@@ -42,9 +44,27 @@ def main():
     a = sys.argv[1:]
     if len(a) < 3: print(__doc__); return
     L = lambda f: list(csv.DictReader(open(f, encoding='utf-8-sig')))
-    so, mi, pe = L(a[0]), L(a[1]), L(a[2])
-    fix = json.loads(a[3]) if len(a) > 3 and a[3] else {}
-    ss = L(a[4]) if len(a) > 4 and a[4] else []
+    # memoria cifrada del reporte anterior (lista "solo socios" y arreglos de patrocinador)
+    st0 = {}
+    if os.path.exists(ENC):
+        try:
+            raw0 = base64.b64decode(open(ENC).read().strip())
+            st0 = json.loads(AESGCM(A.key()).decrypt(raw0[:12], raw0[12:], None))
+        except Exception as ex: print('aviso: no se pudo leer el red.enc anterior', type(ex).__name__)
+    fix = dict(st0.get('fix') or {})
+    if len(a) > 3 and a[3]: fix.update(json.loads(a[3]))
+    ss = L(a[4]) if len(a) > 4 and a[4] else (st0.get('ss') or [])
+    CAMPOS = ('level', 'first_name', 'last_name', 'email', 'mobile_phone', 'sponsor_name', 'sponsor_id', 'plan_name', 'whatsapp_url',
+              'invoices_due_date', 'invoices_expiration_date')
+    mini = lambda R: [{c: x.get(c, '') for c in CAMPOS if c in x} for x in R]
+    # "-" = usar el mismo reporte de la carga anterior (p. ej. solo llegaron los pendientes de la semana)
+    Lx = lambda i, k: ((st0.get('raw') or {}).get(k) or []) if a[i] == '-' else mini(L(a[i]))
+    so, mi, pe = Lx(0, 'so'), Lx(1, 'mi'), Lx(2, 'pe')
+    if a[1] == '-':  # los que estaban pendientes y ya no salen = pagaron → vuelven a miembros al día
+        ya = {x['email'].strip().lower() for x in pe}
+        mi = mi + [{c: v for c, v in x.items() if not c.startswith('invoices_')} for x in ((st0.get('raw') or {}).get('pe') or []) if x['email'].strip().lower() not in ya]
+    if not so or not mi: print('Falta el reporte de socios o de miembros activos (y no hay uno anterior).'); sys.exit(2)
+    ss = mini(ss)
     em = lambda x: x['email'].strip().lower()
     soc = {em(x) for x in so} | {em(x) for x in ss}
     P = {}
@@ -96,12 +116,7 @@ def main():
             r['in'] = A.iso(A.fecha(x['invoices_expiration_date']))
         rows.append(r)
     # memoria del reporte anterior: pendientes que eran socios y socios sin membresía que ya no salen
-    prev = []
-    if os.path.exists(ENC):
-        try:
-            raw0 = base64.b64decode(open(ENC).read().strip())
-            prev = json.loads(AESGCM(A.key()).decrypt(raw0[:12], raw0[12:], None)).get('rows', [])
-        except Exception as ex: print('aviso: no se pudo leer el red.enc anterior', type(ex).__name__)
+    prev = st0.get('rows') or []
     try: acts = json.load(open(A.TEAM, encoding='utf-8')).get('activaciones', [])
     except Exception: acts = []
     actK = {h for x in acts for h in (x.get('ek'), x.get('wk')) if h and not x.get('sc')}
@@ -119,7 +134,7 @@ def main():
             rows.append(o); kx += 1
     if prev: print(f"memoria: pendientes socios por reporte anterior {ps_prev} · por activación {ps_act} · sin membresía conservados {kx}")
     rows.sort(key=lambda r: (r['lv'], r['n']))
-    st = {'v': A.iso(A.ahora()), 'rows': rows, 'dud': dud}
+    st = {'v': A.iso(A.ahora()), 'rows': rows, 'dud': dud, 'ss': ss, 'fix': fix, 'raw': {'so': so, 'mi': mi, 'pe': pe}}
     raw = json.dumps(st, ensure_ascii=False, sort_keys=True).encode()
     iv = os.urandom(12)
     open(ENC, 'w').write(base64.b64encode(iv + AESGCM(A.key()).encrypt(iv, raw, None)).decode())
@@ -131,7 +146,7 @@ def main():
             if sid[i] not in (None, 'ROOT'):
                 x = P[sid[i]]; print('   ', sorted(nom[i])[0], '→', x['first_name'], x['last_name'])
     print('sin cadena completa (patrocinador no encontrado):', len(dud))
-    for d in dud: print('  ', d)
+    for d in dud: print('  ', d['id'], 'nivel', d['nivel'], 'opciones', d['opciones'])
 
 
 if __name__ == '__main__':
