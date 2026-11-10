@@ -1027,9 +1027,9 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 #mailM label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:var(--muted)}#mailM input{font:inherit;font-size:16px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}#mailM input:focus{outline:none;border-color:#0A7DAD}
 #mailM .mmErr{color:var(--bad,#d33);font-size:14px;font-weight:600}#mailM .btn{width:100%;margin-top:4px}#mailM .mmL{border:0;background:none;color:#0A7DAD;font:inherit;font-weight:700;padding:8px;cursor:pointer}
 #trHoy{border-radius:22px;overflow:hidden;background:linear-gradient(160deg,#0B1F3A,#0A4D73);color:#fff;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 10px 30px rgba(10,77,115,.25)}#trHoy[hidden]{display:none}
-#trHoy .evH{display:flex;flex-direction:column;gap:3px}#trHoy .evK{font-size:12px;font-weight:800;letter-spacing:2px;color:#7FDBFF}#trHoy .evH b{font-size:20px;line-height:1.15}#trHoy .evT{font-size:13px;color:#cfe3f2}
+#trHoy .evH{display:flex;flex-direction:column;gap:3px;padding-right:40px}#trHoy .evK{font-size:12px;font-weight:800;letter-spacing:2px;color:#7FDBFF}#trHoy .evH b{font-size:20px;line-height:1.15}#trHoy .evT{font-size:13px;color:#cfe3f2}
 #trHoy .evF{border-radius:14px;overflow:hidden;background:rgba(255,255,255,.06);aspect-ratio:1080/1350;display:flex;align-items:center;justify-content:center;font-size:13px;color:#cfe3f2}#trHoy .evF img{width:100%;height:100%;object-fit:cover;display:block}
-#trHoy .evQ{margin:0;font-size:14px;color:#e6f2fb}#trHoy .evB .btn{width:100%;background:#2AC1F1;color:#04101f;font-weight:800}
+#trHoy{position:relative}#trHoy .trX{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:14px;cursor:pointer}#trHoy .evQ{margin:0;font-size:15px;line-height:1.4;color:#e6f2fb}#trHoy .evB .btn{width:100%;background:#2AC1F1;color:#04101f;font-weight:800}
 #v-inicio.simple>#trHoy{order:1}
 .hoyMas{display:block;width:100%;margin-top:10px;padding:10px;border:0;border-radius:12px;background:var(--surface-2);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
 .mnum>summary.mnS{display:flex;align-items:center;gap:14px;padding:16px;background:linear-gradient(135deg,#0B1F3A,#0A4D73);color:#fff}.mnum[open]>summary.mnS{border-radius:0}
@@ -4913,8 +4913,8 @@ async function trFoto(g,src,n,cx,cy,R,aro){g.save();g.shadowColor="rgba(61,139,2
   if(vacio){g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.fillStyle="#0b1a36";g.fill();g.fillStyle="#8EC5FF";g.font="700 "+Math.round(r*.72)+"px ALBG, Figtree, sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText(initials(n||"AL"),cx,cy+r*.04);g.restore()}}
 function trEstrella(g,x,y,r,col){g.save();g.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,q=i%2?r*.45:r;g.lineTo(x+q*Math.cos(a),y+q*Math.sin(a))}g.closePath();g.fillStyle=col;g.fill();g.restore()}
 // k = escala vertical del formato publicación; todas las medidas salen de la maqueta en historia (1080×1920)
-const TR_L={h:{H:1920,pill:240,l1:412,l1s:138,tr:505,trs:140,sw:564,tag:636,tm:690,tmT:743,tms:74,pp:822,when:1450,ft:1627,big:260,uno:300,med:260,sm:150,row:1210},
-  p:{H:1350,pill:56,l1:196,l1s:118,tr:286,trs:110,sw:334,tag:386,tm:428,tmT:470,tms:60,pp:528,when:1086,ft:1262,big:200,uno:240,med:210,sm:118,row:850}};
+const TR_L={h:{H:1920,pill:240,l1:412,l1s:138,tr:505,trs:140,sw:564,tag:636,tm:690,tmT:743,tms:74,pp:822,when:1450,ft:1627,big:260,uno:300,med:360,sm:150,row:1210},
+  p:{H:1350,pill:56,l1:196,l1s:118,tr:286,trs:110,sw:334,tag:386,tm:428,tmT:470,tms:60,pp:528,when:1086,ft:1262,big:200,uno:240,med:290,sm:118,row:850}};
 async function trCanvas(e,fmt){fmt=fmt==="p"?"p":"h";const L=TR_L[fmt],W=1080,H=L.H,C=540,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
   await Promise.all([flFonts(),trFonts()]);const K=flKit(g),{rr,fit,tx,sombra,sp}=K;const ph=fmt==="p";
   // fondo
@@ -4957,7 +4957,7 @@ async function trCanvas(e,fmt){fmt=fmt==="p"?"p":"h";const L=TR_L[fmt],W=1080,H=
   const fila=async(Q,y,R,ns,rs,iw,gap)=>{const tot=Q.length*iw+(Q.length-1)*gap;for(let i=0;i<Q.length;i++){const p=Q[i],cx=C-tot/2+iw/2+i*(iw+gap);await trFoto(g,flFotoDe0(p),p.n,cx,y+R,R,4);
       nombre(p,cx,y+2*R+(ph?8:12),ns,iw);const r=trRango(p);if(r&&rs<20){tx(r,cx,y+2*R+(ph?8:12)+ns*1.3+2,rs*1.5,"700 "+rs+"px ALO, Figtree, sans-serif","#8EC5FF","center","3px")}else rangoG(p,cx,y+2*R+(ph?8:12)+ns*1.35,rs,iw)}};
   if(N===1)await grande(P[0],top+(ph?50:90),L.uno/2);
-  else if(N===2)await fila(P,top+(ph?80:150),L.med/2,ph?30:36,ph?20:24,ph?400:420,ph?20:30);
+  else if(N===2)await fila(P,top+(ph?40:110),L.med/2,ph?34:40,ph?22:26,ph?440:460,ph?20:30);
   else if(N>=3){await grande(P[0],top,L.big/2);await fila(P.slice(1,4),L.row+dy,L.sm/2,ph?21:24,ph?11:12,ph?230:240,ph?24:36)}
   else tx("PONENTES POR CONFIRMAR",C,top+180,40,"700 22px ALO, Figtree, sans-serif","#8EC5FF","center","6px");
   // fecha y hora
@@ -5799,20 +5799,21 @@ $("#agSeg").addEventListener("click",e=>{const b=e.target.closest("button");if(!
 $("#evList").addEventListener("click",e=>{const b=e.target.closest("[data-ev]");if(b)editEvent(T.eventos.find(x=>x.id===b.dataset.ev))});
 const WA_IC=`<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>`;
 // ---------- Evento del día en Inicio (10 nov): el flyer del Action Leaders Training de hoy, con los ponentes de Turnos ----------
-let trHoyK="",trHoyF=null;
+let trHoyK="",trHoyF=null,trHoyX="";
 async function trHoy(){const el=$("#trHoy");if(!el)return;try{
   const e=(T.eventos||[]).filter(x=>x.fecha===TODAY&&esTr(x)&&!espDe(x)&&turMs(x)+90*6e4>Date.now()).sort((a,b)=>(a.hora||"").localeCompare(b.hora||""))[0];
   if(!e||!store.db){el.hidden=true;return}
   if(!turD&&!trHoy._t){trHoy._t=1;Promise.race([turCargar(),new Promise(r=>setTimeout(r,4000))]).catch(()=>{}).then(()=>{try{trHoy()}catch(x){}})}
-  const pon=trPon(e).map(x=>x.n),k=e.id+"|"+pon.join(",")+"|"+trTema(e);
+  if(trHoyX===e.id){el.hidden=true;return}
+  const PP=trOrden(trPon(e)),pon=PP.map(x=>x.n),k=e.id+"|"+pon.join(",")+"|"+trTema(e);
   const vivo=Date.now()>=turMs(e)-10*6e4,falta=turMs(e)-Date.now();
   const cuando=vivo?"🔴 EN VIVO AHORA":falta<36e5?"⏰ EN "+Math.max(1,Math.round(falta/6e4))+" MIN":"HOY · "+h12(e.hora);
-  const quien=pon.length?pon.slice(0,2).map(n=>esc(nv(n))).join(" y ")+(pon.length>2?" y "+(pon.length-2)+" más":""):"";
-  el.innerHTML=`<div class="evH"><span class="evK">${cuando}</span><b>${esc(e.titulo)}</b>${trTema(e)?`<span class="evT">📚 ${esc(trTema(e))}</span>`:""}</div>
+  const tc=t=>String(t||"").toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase()),quien=PP.length?PP.map(p=>{const r=tc(trRango(p));return `<b>${r?esc(r)+" ":""}${esc(nv(p.n))}</b>`}).reduce((a,b,i,A)=>i?a+(i===A.length-1?" y ":", ")+b:b,""):"";
+  el.innerHTML=`<button type="button" class="trX" id="trHoyX" aria-label="Quitar">✕</button><div class="evH"><span class="evK">${cuando}</span><b>${esc(e.titulo)}</b>${trTema(e)?`<span class="evT">📚 ${esc(trTema(e))}</span>`:""}</div>
    <div class="evF" id="trHoyF">${trHoyF&&trHoyK===k?`<img src="${trHoyF}" alt="Flyer de ${esc(e.titulo)}">`:`<span>Creando el flyer…</span>`}</div>
-   ${quien?`<p class="evQ">Hoy nos edifica${pon.length>1?"n":""}: <b>${quien}</b></p>`:""}
+   ${quien?`<p class="evQ">🔥 Gran entrenamiento por ${quien}. <b>¡No falte!</b></p>`:`<p class="evQ">🔥 Gran entrenamiento hoy. <b>¡No falte!</b></p>`}
    <div class="evB"><button type="button" class="btn" id="trHoyC">📣 Invitar con este flyer</button></div>`;el.hidden=false;
-  $("#trHoyC").onclick=()=>abrirCompartir(e);
+  $("#trHoyC").onclick=()=>abrirCompartir(e);$("#trHoyX").onclick=()=>{trHoyX=e.id;el.hidden=true};
   if(!(trHoyF&&trHoyK===k)){try{const cv=await trCanvas(e,"p");const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.85));if(trHoyF)URL.revokeObjectURL(trHoyF);trHoyF=URL.createObjectURL(b);trHoyK=k;const f=$("#trHoyF");if(f)f.innerHTML=`<img src="${trHoyF}" alt="Flyer de ${esc(e.titulo)}">`}
     catch(x){const f=$("#trHoyF");if(f){f.style.aspectRatio="auto";f.style.padding="18px";f.innerHTML=`<span>Toque «Invitar con este flyer» para verlo y compartirlo.</span>`}}}
  }catch(x){console.log("trHoy",x&&x.message);el.hidden=true}}
@@ -7505,7 +7506,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110094356";var busy=false,pend=null;
+(function(){var V="20261110094520";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
