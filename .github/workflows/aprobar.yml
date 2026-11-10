@@ -1,0 +1,20 @@
+name: Aprobación de cuentas
+on:
+  # schedule: se activa después de la primera corrida GRAND
+  workflow_dispatch:
+    inputs:
+      dry: { description: "1 = solo prueba (no escribe)", default: "" }
+      grand: { description: "1 = aprobar a todos los ya registrados", default: "" }
+concurrency: { group: aprobar, cancel-in-progress: false }
+jobs:
+  a:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: cd tools/push && npm ci --no-audit --no-fund >/dev/null && node aprobar.mjs
+        env:
+          FIREBASE_SA: "${{ secrets.FIREBASE_SA }}"
+          DRY: "${{ github.event.inputs.dry }}"
+          GRAND: "${{ github.event.inputs.grand }}"
