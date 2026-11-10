@@ -32,7 +32,7 @@ async function main() {
 
   if (modo === "bajar") {
     const r = (await repRef.get()).data() || {};
-    if (r.est !== "p" && !FORCE) { console.log("Sin reportes nuevos."); out("rep", ""); return; }
+    if (r.est !== "p") { console.log("Sin reportes nuevos."); out("rep", ""); return; }
     const dir = process.env.RED_DIR; fs.mkdirSync(dir, { recursive: true });
     const F = r.f || {}, hay = [];
     for (const t of ["so", "mi", "pe"]) if (F[t]) { fs.writeFileSync(`${dir}/${t}.csv`, dec(key, F[t])); hay.push(t); }
