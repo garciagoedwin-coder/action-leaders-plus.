@@ -86,7 +86,7 @@ async function main() {
       else if (m && m.ok === false) { ap = false; apE = "no"; nNo++; }
       else if (u && u.apE === "no") { ap = false; nNo++; }
       else if (reg && GRAND) { ap = true; apE = "ok"; }
-      else if (reg) { const ks = [ahKe(a.email), ...claveDe(u)].filter(Boolean); if (ks.some(x => H.has(x))) { ap = true; nAuto++; apE = "ok"; } }
+      else if (reg) { const ks = [a.emailVerified ? ahKe(a.email) : null, ...claveDe(u)].filter(Boolean); /* con contraseña solo cuenta el correo ya confirmado */ if (ks.some(x => H.has(x))) { ap = true; nAuto++; apE = "ok"; } }
       if (ap !== true && reg && !apE && !(u && u.apE === "no")) { ap = false; apE = "p"; nPend++; if (!avisados[a.uid]) avisos.push(u); }
       if (ap !== true && !reg && vieja) ap = false;
       if (ap === true) aprobados.push(a.uid);

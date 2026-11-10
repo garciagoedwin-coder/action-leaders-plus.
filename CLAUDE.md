@@ -654,3 +654,9 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - App Check con Fraud Defense / reCAPTCHA Enterprise, clave de sitio 6LfesRkuAAAAAJQPpPOr5UFCDPoy2WuclKV0hgdg (pública). Se inicializa con import dinámico justo después de initializeApp en index, conoce, sala, membresia y evento (si falla, la app sigue).
 - Sello de reCAPTCHA oculto (.grecaptcha-badge) + texto «Protegido por reCAPTCHA…» (.rcN) en login y al pie de las páginas públicas.
 - AÚN NO APLICADO (Enforce). Aplicar en Firebase → App Check → APIs → Cloud Firestore solo cuando las métricas muestren casi todo verificado.
+
+## Entrar con correo y contraseña (10 nov)
+- window.FB.mailIn/mailUp/mailReset/mailVerif/mailOk; modal #mailM (alpMail("in"|"up"|"rs")) desde la portada (.l-mail) y la bienvenida (#gMail). auth.languageCode="es".
+- Cuenta con contraseña sin confirmar → mailGate (#apGate «Confirme su correo»), revisa cada 8 s y al volver a la app; no carga datos.
+- aprobar.mjs solo usa el correo de la cuenta si emailVerified. Requiere que Edwin habilite el proveedor Correo/contraseña en Firebase Authentication (+ protección contra enumeración).
+- Stub de pruebas: tools/test/stub/auth.js guarda cuentas en localStorage stubPw.

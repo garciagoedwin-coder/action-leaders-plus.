@@ -1019,6 +1019,13 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .urgS .ur.pg{background:rgba(22,163,74,.12)}.urgS .ur .q.g{background:#16A34A;color:#fff}
 .urgS.ok{border-left-color:#16A34A}.urgS.ok .uh .tg{color:#16A34A}
 .lzbL{display:flex;flex-direction:column;gap:8px}.lzbB{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;color:var(--ink);font:inherit}.lzbB>span:first-child{font-size:22px}.lzbB b{display:block;font-size:14px}.lzbB small{display:block;color:var(--muted);font-size:12px;line-height:1.3}.lzbB i{margin-left:auto;font-style:normal;color:var(--brand);font-size:20px}
+#mailM{position:fixed;inset:0;z-index:2147483001;background:rgba(10,14,22,.6);display:flex;align-items:flex-end;justify-content:center}#mailM[hidden]{display:none}
+#mailM .mmC{position:relative;width:100%;max-width:440px;background:var(--surface);color:var(--ink);border-radius:22px 22px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;max-height:92vh;overflow:auto}
+@media(min-width:600px){#mailM{align-items:center}#mailM .mmC{border-radius:22px}}
+#mailM h3{margin:4px 0 0;font-size:20px}#mailM p{margin:0}#mailM .mmX{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:0;background:var(--surface-2);color:var(--ink);font-size:15px;cursor:pointer}
+#mailM .mmT{display:flex;gap:6px;background:var(--surface-2);border-radius:999px;padding:4px;margin-right:40px}#mailM .mmT button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-weight:700;padding:9px;border-radius:999px;cursor:pointer}#mailM .mmT button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+#mailM label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:var(--muted)}#mailM input{font:inherit;font-size:16px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}#mailM input:focus{outline:none;border-color:#0A7DAD}
+#mailM .mmErr{color:var(--bad,#d33);font-size:14px;font-weight:600}#mailM .btn{width:100%;margin-top:4px}#mailM .mmL{border:0;background:none;color:#0A7DAD;font:inherit;font-weight:700;padding:8px;cursor:pointer}
 #apGate{position:fixed;inset:0;z-index:2147483000;background:var(--bg,#fff);color:var(--ink);display:flex;align-items:center;justify-content:center;padding:28px}
 #apGate .apC{max-width:360px;text-align:center;display:flex;flex-direction:column;gap:10px}#apGate .apI{font-size:54px}#apGate h2{margin:0;font-size:24px}#apGate p{margin:0;line-height:1.5;color:var(--muted,#555)}#apGate .btn{width:100%}
 .card.apr{display:flex;align-items:center;gap:12px;border:1.5px solid #F5B700;background:linear-gradient(135deg,rgba(245,183,0,.12),rgba(245,183,0,.03))}.aprH{flex:1;display:flex;gap:10px;align-items:center}.aprH b{display:block}.aprI{font-size:28px}
@@ -1082,6 +1089,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 .land .l-stat{flex:1;min-width:92px;padding:12px 12px 10px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .land .l-stat b{display:block;font-size:26px;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .land .l-stat span{font-size:12px;color:rgba(255,255,255,.65)}
+.land .l-mail{margin-top:12px;width:100%;max-width:440px;background:none;border:0;color:#fff;font:inherit;font-size:15px;font-weight:600;text-decoration:underline;text-underline-offset:4px;cursor:pointer;padding:8px;align-self:flex-start;opacity:.9}
 .land .l-btn{position:relative;overflow:hidden;margin-top:24px;width:100%;max-width:440px;height:58px;border:0;border-radius:999px;background:#fff;color:#1d1c22;font:inherit;font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:12px;cursor:pointer;
  box-shadow:0 0 0 0 rgba(34,184,240,.6),0 14px 40px rgba(34,184,240,.35);animation:lPulse 2.6s ease-out 2s infinite;transition:transform .15s}
 .land .l-btn:active{transform:scale(.97)}
@@ -1115,7 +1123,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
  .land .l-main:after{content:"";position:absolute;left:0;right:0;top:0;height:110px;z-index:-1;background:linear-gradient(rgba(13,12,18,.75),rgba(13,12,18,0))}
  .land .l-logo{position:absolute;top:max(16px,env(safe-area-inset-top));left:20px;height:24px}
  .land .l-stat b{font-size:22px}
- .land .l-btn{max-width:none}
+ .land .l-btn{max-width:none}.land .l-mail{max-width:none;align-self:stretch}
 }
 @media (max-width:899px) and (max-height:700px){.land h1.l-h{font-size:44px}.land .l-sub{font-size:14px;margin-top:8px}.land .l-stats{margin-top:14px}.land .l-btn{margin-top:16px}}
 /* computadora */
@@ -1372,6 +1380,8 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
   var lk=document.createElement("button");lk.textContent="¿Ya es socio? Iniciar sesión";lk.style.cssText="margin-top:22px;background:none;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:999px;padding:12px 22px;font:inherit;font-size:15px;font-weight:600;cursor:pointer;align-self:flex-start";
   b.parentNode.insertBefore(lk,b);lk.onclick=function(){b.onclick()};if(window.matchMedia("(max-width:899px)").matches)lk.style.alignSelf="stretch"}
  else{b.lastChild.textContent="Activar mi acceso con Google"}
+ var mb=document.createElement("button");mb.type="button";mb.className="l-mail";mb.innerHTML="✉️ Entrar con correo y contraseña";mb.onclick=function(){if(window.alpMail)window.alpMail()};
+ var ref=b.style.display==="none"?b.previousSibling:b;ref.parentNode.insertBefore(mb,ref.nextSibling);
  var b2=document.getElementById("lLogin2");if(b2)b2.onclick=function(){L.scrollTo({top:0,behavior:"smooth"});b.onclick()};
  var cue=L.querySelector(".l-more-cue");if(cue)cue.onclick=function(e){e.preventDefault();var m=document.getElementById("lMore");L.scrollTo({top:m.offsetTop-10,behavior:"smooth"})};
  try{var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add("on");io.unobserve(x.target)}})},{root:L,threshold:.12});[].forEach.call(L.querySelectorAll(".rv"),function(x){io.observe(x)})}catch(e){[].forEach.call(L.querySelectorAll(".rv"),function(x){x.classList.add("on")})}
@@ -1552,7 +1562,7 @@ nav.tabs{margin:0 10px calc(8px + env(safe-area-inset-bottom,0px));border:1px so
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,onAuthStateChanged,signOut,setPersistence,browserLocalPersistence} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,onAuthStateChanged,signOut,setPersistence,browserLocalPersistence,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendEmailVerification,sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {initializeFirestore,persistentLocalCache,doc,collection,getDoc,setDoc,getDocs,getDocsFromCache,addDoc,deleteDoc,onSnapshot,serverTimestamp,query,where,limit,writeBatch,updateDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});try{const _ac=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js");_ac.initializeAppCheck(app,{provider:new _ac.ReCaptchaEnterpriseProvider("6LfesRkuAAAAAJQPpPOr5UFCDPoy2WuclKV0hgdg"),isTokenAutoRefreshEnabled:true})}catch(e){} /* App Check (10 nov 2026): solo la app oficial habla con Firebase */
 const auth=getAuth(app);
@@ -1563,12 +1573,18 @@ const D=p=>({_p:p,update:b=>updateDoc(doc(fdb,p),b),get:async()=>{const x=await 
 const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),getCache:async()=>wrapS(await getDocsFromCache(collection(fdb,p))),where:(f,v,op)=>({limit:n=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v),limit(n))))}),get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v)))),getCache:async()=>wrapS(await getDocsFromCache(query(collection(fdb,p),where(f,op||"==",v)))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),where(f,op||"==",v)),q=>cb(wrapS(q)),er||(()=>{}))}),whereAll:L=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))),q=>cb(wrapS(q)),er||(()=>{}))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
   onSnapshot:(cb,er)=>onSnapshot(collection(fdb,p),q=>cb(wrapS(q)),er||(()=>{}))});
 const db={collection:C,doc:D,batch:()=>{const b=writeBatch(fdb);return{set:(r,o)=>b.set(doc(fdb,r._p),o),delete:r=>b.delete(doc(fdb,r._p)),commit:()=>b.commit()}}};
-setPersistence(auth,browserLocalPersistence).catch(()=>{});
+setPersistence(auth,browserLocalPersistence).catch(()=>{});try{auth.languageCode="es"}catch(e){}
 getRedirectResult(auth).catch(()=>{});
 window.FB={auth,db,serverTimestamp,
   async login(){const pr=new GoogleAuthProvider();pr.setCustomParameters({prompt:"select_account"});
     try{await signInWithPopup(auth,pr)}catch(e){if(e&&/popup-blocked|operation-not-supported|cancelled-popup/.test(e.code||""))await signInWithRedirect(auth,pr);else throw e}},
   logout(){return signOut(auth)},
+  // Correo y contraseña (10 nov 2026). La cuenta nueva debe confirmar su correo antes de usar la app.
+  mailIn(e,p){return signInWithEmailAndPassword(auth,e,p)},
+  async mailUp(e,p){const r=await createUserWithEmailAndPassword(auth,e,p);try{await sendEmailVerification(r.user,{url:location.origin+location.pathname})}catch(x){}return r},
+  mailReset(e){return sendPasswordResetEmail(auth,e,{url:location.origin+location.pathname})},
+  async mailVerif(){const u=auth.currentUser;if(u)await sendEmailVerification(u,{url:location.origin+location.pathname})},
+  async mailOk(){const u=auth.currentUser;if(!u)return false;await u.reload();if(auth.currentUser.emailVerified){await auth.currentUser.getIdToken(true);return true}return false},
   async pushToken(vapid){const m=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js");if(!(await m.isSupported()))return null;
     const reg=await navigator.serviceWorker.register("./firebase-messaging-sw.js",{scope:"./"});const msg=m.getMessaging(app);
     if(!window._pushFg){window._pushFg=1;try{m.onMessage(msg,p=>window.dispatchEvent(new CustomEvent("push-fg",{detail:p})))}catch(e){}}
@@ -6562,10 +6578,12 @@ function renderWel(){const el=$("#wel");
      <div class="wel-step"><h3>Para empezar, entra con tu cuenta de Google</h3>
       <p class="small muted">Así guardamos tu avance, tus contactos y tu rutina en tu cuenta, aunque cambies de teléfono.</p>
       <button class="btn pill dark" id="gLogin" style="gap:10px"><svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Entrar con Google</button>
+      <button class="btn ghost sm" id="gMail" style="margin-top:8px">✉️ Entrar con correo y contraseña</button>
       <p class="small" id="gErr" style="color:var(--bad)" hidden></p></div>
      ${welPreview?`<button class="btn sm gold" id="welPrevX" style="align-self:center">Cerrar vista previa</button>`:""}
      <div class="wel-sig"><b>Edwin García Go</b><p class="small muted">Director Nacional – Action Leaders</p><p class="small">+504 9430-5906</p></div>`;
     const gl=$("#gLogin");if(gl)gl.onclick=async()=>{gl.disabled=true;try{await window.FB.login()}catch(e){gl.disabled=false;const er=$("#gErr");er.textContent="No se pudo iniciar sesión ("+((e&&e.code)||"error")+"). Intenta de nuevo.";er.hidden=false}};
+    const gm=$("#gMail");if(gm)gm.onclick=()=>alpMail();
     const px=$("#welPrevX");if(px)px.onclick=()=>{welPreview=false;welSigned=true;C.dataset.v="";el.hidden=true;document.body.style.overflow="";renderWel()};return}
   if(welSigned===null)return;
   if(profile.bienvenida){el.hidden=true;document.body.style.overflow="";try{if(store.uid)localStorage.setItem("alp:welok",store.uid)}catch(x){}return}
@@ -7178,6 +7196,48 @@ async function invOK(){try{const c=(localStorage.getItem("alp:inv")||"").trim().
 const miInv=()=>{const n=(miRegistro().nombre||miNombreCorto()||"socio").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").split("-").slice(0,2).join("-");return (n||"socio")+"-"+String(store.uid||"").slice(0,4).toLowerCase()};
 const miEnlace=()=>"https://actionleadersplus.com/?unirme="+miInv();
 async function publicarInv(){try{if(esSoloAdminYo())return;if(!store.db||!store.uid||!(regDoc&&regDoc.registro))return;await store.db.doc("fotos/"+store.uid).set({inv:miInv(),invNombre:regDoc.registro.nombre,linea:Array.isArray(regDoc.registro.linea)?regDoc.registro.linea:[],...(yoPrueba()?{oculto:true}:{})},{merge:true})}catch(e){}}
+// ---------- Entrar con correo y contraseña (10 nov 2026) ----------
+const mailErr=e=>{const c=(e&&e.code)||"";return /email-already-in-use/.test(c)?"Este correo ya tiene cuenta. Toque «Entrar». Si antes entraba con Google, use el botón de Google."
+  :/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c)?"Correo o contraseña incorrectos. Si antes entraba con Google, use el botón de Google."
+  :/invalid-email/.test(c)?"Ese correo no es válido.":/weak-password/.test(c)?"La contraseña debe tener al menos 8 caracteres."
+  :/too-many-requests/.test(c)?"Demasiados intentos. Espere unos minutos e intente de nuevo.":/network/.test(c)?"Sin conexión. Revise su internet."
+  :/operation-not-allowed/.test(c)?"Esta opción aún no está activada. Avise a Edwin.":"No se pudo ("+(c||"error")+"). Intente de nuevo."};
+function alpMail(modo){modo=modo||"in";let d=$("#mailM");if(!d){d=document.createElement("div");d.id="mailM";document.body.appendChild(d)}d.hidden=false;
+  const up=modo==="up",rs=modo==="rs";
+  d.innerHTML=`<div class="mmC" role="dialog" aria-modal="true"><button class="mmX" aria-label="Cerrar">✕</button>
+   ${rs?"":`<div class="mmT"><button data-m="in" class="${up?"":"on"}">Entrar</button><button data-m="up" class="${up?"on":""}">Crear cuenta</button></div>`}
+   <h3>${rs?"Recuperar contraseña":up?"Crear cuenta con su correo":"Entrar con su correo"}</h3>
+   ${rs?`<p class="small muted">Le enviaremos un correo con un enlace para crear una contraseña nueva.</p>`:up?`<p class="small muted">Use el mismo correo que tiene en inCruises. Le enviaremos un correo para confirmarlo.</p>`:""}
+   <label>Correo<input id="mmE" type="email" autocomplete="email" inputmode="email" placeholder="sucorreo@ejemplo.com"></label>
+   ${rs?"":`<label>Contraseña<input id="mmP" type="password" autocomplete="${up?"new-password":"current-password"}" placeholder="${up?"Mínimo 8 caracteres":""}"></label>`}
+   ${up?`<label>Repita la contraseña<input id="mmP2" type="password" autocomplete="new-password"></label>`:""}
+   <p class="mmErr" id="mmErr" hidden></p>
+   <button class="btn" id="mmGo">${rs?"Enviar enlace":up?"Crear cuenta":"Entrar"}</button>
+   ${modo==="in"?`<button class="mmL" id="mmRs">¿Olvidó su contraseña?</button>`:""}${rs?`<button class="mmL" data-m="in">← Volver</button>`:""}</div>`;
+  const E=d.querySelector("#mmE"),P=d.querySelector("#mmP"),P2=d.querySelector("#mmP2"),er=d.querySelector("#mmErr"),go=d.querySelector("#mmGo");
+  try{const v=d.dataset.e;if(v)E.value=v}catch(x){}
+  const err=t=>{er.textContent=t;er.hidden=!t};
+  d.querySelector(".mmX").onclick=()=>{d.hidden=true};d.onclick=ev=>{if(ev.target===d)d.hidden=true};
+  d.querySelectorAll("[data-m]").forEach(x=>x.onclick=()=>{d.dataset.e=E.value;alpMail(x.dataset.m)});
+  const rsb=d.querySelector("#mmRs");if(rsb)rsb.onclick=()=>{d.dataset.e=E.value;alpMail("rs")};
+  const run=async()=>{const e=E.value.trim().toLowerCase();err("");if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e))return err("Escriba un correo válido.");
+    if(!rs){if(!P.value)return err("Escriba su contraseña.");if(up&&P.value.length<8)return err("La contraseña debe tener al menos 8 caracteres.");if(up&&P.value!==P2.value)return err("Las contraseñas no coinciden.")}
+    go.disabled=true;go.textContent="Un momento…";
+    try{if(rs){await window.FB.mailReset(e);d.querySelector(".mmC").innerHTML=`<h3>📩 Revise su correo</h3><p class="muted">Si <b>${esc(e)}</b> tiene cuenta, le llegó un enlace para crear una contraseña nueva. Revise también «Spam» o «Promociones».</p><button class="btn" id="mmOk">Entendido</button>`;d.querySelector("#mmOk").onclick=()=>alpMail("in");return}
+      if(up)await window.FB.mailUp(e,P.value);else await window.FB.mailIn(e,P.value)}
+    catch(x){go.disabled=false;go.textContent=rs?"Enviar enlace":up?"Crear cuenta":"Entrar";err(mailErr(x))}};
+  go.onclick=run;d.querySelectorAll("input").forEach(x=>x.onkeydown=ev=>{if(ev.key==="Enter")run()});setTimeout(()=>{try{E.focus()}catch(x){}},50)}
+window.alpMail=alpMail;
+let mailTm=null;
+function mailGate(u){let d=$("#apGate");if(!d){d=document.createElement("div");d.id="apGate";document.body.appendChild(d)}document.body.style.overflow="hidden";
+  try{const L=document.getElementById("land");if(L)L.style.display="none"}catch(x){}
+  d.innerHTML=`<div class="apC"><div class="apI">📩</div><h2>Confirme su correo</h2><p>Le enviamos un correo a <b>${esc(u.email||"")}</b>. Ábralo y toque el enlace para confirmar.</p><p class="small">Si no lo ve, revise «Spam» o «Promociones».</p><button class="btn" id="mgOk">Ya lo confirmé</button><button class="btn ghost" id="mgRe">Reenviar correo</button><button class="btn ghost" id="mgOut">Salir</button></div>`;
+  const ok=async(silencio)=>{try{if(await window.FB.mailOk()){location.reload();return}}catch(x){}if(!silencio)toast("Todavía no aparece confirmado. Toque el enlace del correo y vuelva a intentar.")};
+  $("#mgOk").onclick=()=>ok(false);
+  $("#mgRe").onclick=async()=>{const b=$("#mgRe");b.disabled=true;try{await window.FB.mailVerif();toast("📩 Correo enviado de nuevo")}catch(x){toast(mailErr(x))}setTimeout(()=>{b.disabled=false},30000)};
+  $("#mgOut").onclick=async()=>{try{await window.FB.logout()}catch(x){}location.reload()};
+  if(!mailTm)mailTm=setInterval(()=>ok(true),8000);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)ok(true)})}
 // ---------- Aprobación de cuentas (10 nov 2026) ----------
 // El servidor (tools/push/aprobar.mjs, cada 10 min) marca la cuenta: ap=true aprobada · ap=false en revisión/rechazada. users.apE "ok"|"p"|"no".
 // El patrocinador directo o un admin aprueba escribiendo aprob/{uid} {ok, por, t}. Sin lecturas extra: los claims vienen en el token.
@@ -7345,6 +7405,7 @@ let fbUser=null,regDoc=null;
 async function startApp(u){
   if(store.uid&&(!u||u.uid!==store.uid)){location.reload();return}
   fbUser=u||null;const db=window.FB.db;
+  if(u&&u.emailVerified===false){mailGate(u);return}
   try{if(u&&localStorage.getItem("alp:welok")===u.uid){profile.bienvenida=true;const w=$("#wel");w.hidden=true;document.body.style.overflow=""}}catch(x){}
   welSigned=!!u;isAdmin=!!(u&&u.emailVerified&&ADMINS.includes((u.email||"").toLowerCase()));
   if(u){store.db=db;store.uid=u.uid;const nm=u.displayName||"";if(nm){welName=nm.split(" ")[0];if(!profile.nombrePila)$("#hello").textContent="Hola, "+welName}
@@ -7373,7 +7434,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110072453";var busy=false,pend=null;
+(function(){var V="20261110075707";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
