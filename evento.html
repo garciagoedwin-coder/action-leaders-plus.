@@ -64,18 +64,19 @@ let PX=null;
 // 9 nov: link corto ?p=CODIGO&e=CLAVE → los datos están en la página pública del socio (perfiles/{p}.ev[e]); 1 lectura (la misma que ya se hacía para la foto)
 if(!E){const q=new URLSearchParams(location.search),p=q.get("p"),k=q.get("e");if(p&&k){try{await fb();const d=await fs.getDoc(fs.doc(db,"perfiles",p));if(d.exists()){PX=d.data()||{};const o=(PX.ev||{})[k];if(o&&typeof o==="object"){E=Object.assign({},o,{p,a:(o.a||[]).map(x=>Array.isArray(x)?x:String(x).split("|"))})}}}catch(e){}}}
 if(!E||!E.e||!E.f){$("#app").innerHTML=`<div class="bad"><h2>Enlace incompleto</h2><p>Pídale de nuevo la invitación a la persona que se la envió.</p></div>`;return}
-const gran=E.tp==="gran",tipo=gran?"Gran evento de negocios":"Junta de negocios",[Y,M,D]=E.f.split("-").map(Number),fd=new Date(Y,M-1,D);
+const bx=!!E.bx,gran=E.tp==="gran",tipo=bx?String(E.bt||"Business Experience"):gran?"Gran evento de negocios":"Junta de negocios",[Y,M,D]=E.f.split("-").map(Number),fd=new Date(Y,M-1,D);
 const [hh,mm]=String(E.h||"00:00").split(":").map(Number),h12=(hh%12||12)+":"+String(mm).padStart(2,"0")+(hh<12?" a.m.":" p.m.");
 const fechaL=DIA[fd.getDay()]+" "+D+" de "+MES[M-1],fechaC=DIA[fd.getDay()].slice(0,3).replace(/^./,c=>c.toUpperCase())+" "+D+" de "+MES[M-1].slice(0,3)+".";
 const dn=E.dn||"",dn1=dn.split(" ")[0]||"";
-const ds=[1,2,3].includes(+E.ds)?+E.ds:1,bg="media/eventos/f-"+(gran?"g":"j")+ds+".jpg"+(gran?"":"?v=3");
+const ds=[1,2,3].includes(+E.ds)?+E.ds:1,bg=bx?"media/eventos/bx.jpg":"media/eventos/f-"+(gran?"g":"j")+ds+".jpg"+(gran?"":"?v=3");
+const bxH=()=>{const w=esc(tipo.toUpperCase()).split(/\s+/);if(w.length<2)return w[0];const i=Math.ceil(w.length/2);return w.slice(0,i).join(" ")+" <span>"+w.slice(i).join(" ")+"</span>"};
 document.title=tipo+" · Confirme su asistencia";
-$("#app").innerHTML=`<div class="hero" style="background-image:url('${bg}')"><img class="logo" src="media/logo-al.png" alt="Action Leaders+"><div class="hc"><span class="pill">${E.z?"VIRTUAL":"PRESENCIAL"}</span><h1>${gran?"GRAN EVENTO <span>DE NEGOCIOS</span>":"JUNTA DE <span>NEGOCIOS</span>"}</h1><div class="city">${esc(E.c||(E.z?"En línea":""))}</div></div></div>
+$("#app").innerHTML=`<div class="hero" style="background-image:url('${bg}')"><img class="logo" src="media/logo-al.png" alt="Action Leaders+"><div class="hc"><span class="pill">${E.z?"VIRTUAL":"PRESENCIAL"}</span><h1>${bx?bxH():gran?"GRAN EVENTO <span>DE NEGOCIOS</span>":"JUNTA DE <span>NEGOCIOS</span>"}</h1>${bx&&E.bs?`<div class="city" style="font-weight:600;letter-spacing:.06em">${esc(E.bs)}</div>`:""}<div class="city">${esc(E.c||(E.z?"En línea":""))}</div></div></div>
 <div class="w">
  ${dn?`<div class="inv"><div class="av" id="dav">${esc(ini(dn))}</div><div><small>Le invita</small><b>${esc(dn)}</b></div></div>`:""}
  <div class="grid"><div class="c"><small>FECHA</small><b>${esc(fechaC)}</b></div><div class="c"><small>HORA</small><b>${esc(h12)} 🇭🇳</b></div>
  <div class="c full"><div style="min-width:0"><small>LUGAR</small><b>${E.z?"🎥 Por Zoom":"📍 "+esc(E.l||"")}</b>${!E.z&&E.ls?`<div class="sub2">${esc(E.ls)}</div>`:""}${E.z?`<div class="sub2">Le enviaremos el enlace por WhatsApp</div>`:""}</div>${!E.z&&E.m&&/^https:\/\//.test(E.m)?`<a class="map" href="${esc(E.m)}" target="_blank" rel="noopener">📍 Mapa</a>`:""}</div></div>
- ${(E.a||[]).length?`<div class="an">${gran?"INVITADOS":"ANFITRIONES"}</div><div class="hs">${E.a.map(x=>`<div class="h"><div class="av">${esc(ini(x[0]))}</div>${esc(x[0])}${x[1]==="esp"?" ⭐":""}</div>`).join("")}</div>`:""}
+ ${(E.a||[]).length?`<div class="an">${bx?"INVITADO ESPECIAL Y PONENTES":gran?"INVITADOS":"ANFITRIONES"}</div><div class="hs">${E.a.map(x=>`<div class="h"><div class="av">${esc(ini(x[0]))}</div>${esc(x[0])}${x[1]==="esp"?" ⭐":""}</div>`).join("")}</div>`:""}
  <div class="f" id="F"></div>
  <p class="foot">Descubra cómo viajar más, gastar menos y emprender desde su celular.<br>Action Leaders+</p>
 </div>`;
@@ -85,7 +86,7 @@ const gcal=()=>{const a=new Date(Date.UTC(Y,M-1,D,hh+6,mm)),b=new Date(a.getTime
 let WA="";
 function listo(n){const f=String(n||"").trim().split(/\s+/)[0];
   $("#F").innerHTML=`<div class="ok"><div class="ck">✓</div><h3>¡Listo${f?", "+esc(f):""}!</h3><p>Le esperamos el ${esc(fechaL)} a las ${esc(h12)}${dn1?`<br>${esc(dn1)} ya sabe que usted va. 🙌`:""}</p></div>
-  <a class="b2" href="${gcal()}" target="_blank" rel="noopener">📅 Agregar a mi calendario</a>${WA?`<a class="b3" href="https://wa.me/${WA}?text=${encodeURIComponent("¡Hola"+(dn1?" "+dn1:"")+"! Ya confirmé mi asistencia a la "+tipo.toLowerCase()+" del "+fechaL+". 🙌")}" target="_blank" rel="noopener">💬 Escribirle a ${esc(dn1||"quien me invitó")}</a>`:""}`}
+  <a class="b2" href="${gcal()}" target="_blank" rel="noopener">📅 Agregar a mi calendario</a>${WA?`<a class="b3" href="https://wa.me/${WA}?text=${encodeURIComponent("¡Hola"+(dn1?" "+dn1:"")+"! Ya confirmé mi asistencia "+(bx?"al "+tipo:"a la "+tipo.toLowerCase())+" del "+fechaL+". 🙌")}" target="_blank" rel="noopener">💬 Escribirle a ${esc(dn1||"quien me invitó")}</a>`:""}`}
 function form(){$("#F").innerHTML=`<h3>Confirme su asistencia</h3><p>Solo le toma 10 segundos. El cupo es limitado.</p>
  <label for="n">Su nombre</label><input id="n" autocomplete="name" maxlength="60" placeholder="Nombre y apellido">
  <label for="t">Su WhatsApp</label><div class="row2"><select id="cc"><option value="504">🇭🇳 +504</option><option value="502">🇬🇹 +502</option><option value="503">🇸🇻 +503</option><option value="505">🇳🇮 +505</option><option value="506">🇨🇷 +506</option><option value="507">🇵🇦 +507</option><option value="52">🇲🇽 +52</option><option value="1">🇺🇸 +1</option><option value="34">🇪🇸 +34</option><option value="44">🇬🇧 +44</option></select><input id="t" type="tel" inputmode="tel" autocomplete="tel" placeholder="Número"></div>
