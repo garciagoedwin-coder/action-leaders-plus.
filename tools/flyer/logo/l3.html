@@ -1,0 +1,40 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:LB;src:url(LBI.ttf);font-style:italic;font-weight:400 700}
+body{margin:0;font-family:system-ui;background:#e9edf2;width:1200px}
+.row{display:flex}.cell{height:260px;display:flex;align-items:center;justify-content:center;position:relative;gap:40px}
+.em{width:300px}.lgc{width:600px}
+.d{background:#0b1220;color:#fff;--bg:#0b1220}.l{background:#F3F6F9;color:#2B2A2D;--bg:#F3F6F9}
+.tag{position:absolute;left:16px;top:12px;font:700 13px system-ui;letter-spacing:.1em;opacity:.55}
+.lg{position:relative;font:italic 700 64px/1 LB;letter-spacing:-.02em;white-space:nowrap}
+.mk{position:relative;display:inline-block}
+.ko{position:absolute;inset:0;filter:drop-shadow(3px 0 0 var(--bg)) drop-shadow(-3px 0 0 var(--bg)) drop-shadow(0 3px 0 var(--bg)) drop-shadow(0 -3px 0 var(--bg))}
+.c{position:absolute;inset:0;-webkit-mask:url(casco-blanco.png) center/contain no-repeat;mask:url(casco-blanco.png) center/contain no-repeat}
+.g{background:linear-gradient(160deg,#7FE0FF,#2AC1F1 45%,#0A7DAD)}
+.w{background:currentColor}
+svg.p{position:absolute;overflow:visible}
+.sm{transform:scale(.42)}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FE0FF"/><stop offset=".5" stop-color="#2AC1F1"/><stop offset="1" stop-color="#0A7DAD"/></linearGradient>
+<path id="plus" d="M38 6a6 6 0 0 1 6 6v20h20a6 6 0 0 1 6 6v0a6 6 0 0 1-6 6H44v20a6 6 0 0 1-6 6v0a6 6 0 0 1-6-6V44H12a6 6 0 0 1-6-6v0a6 6 0 0 1 6-6h20V12a6 6 0 0 1 6-6z"/>
+</defs></svg>
+<script>
+const P=(x,y,s,ko,fill)=>`<svg class="p" viewBox="0 0 76 76" style="left:${x}%;top:${y}%;width:${s}%;height:${s}%"><use href="#plus" fill="${fill||'url(#pg)'}" ${ko?'stroke="var(--bg)" stroke-width="10" paint-order="stroke"':''}/></svg>`;
+// marcas: w = ancho en px; el casco ocupa 447:500
+const M={
+ D:(w,col)=>`<span class="mk" style="width:${w}px;height:${w*1.12}px"><span class="ko"><i class="c ${col}"></i></span>${P(58,58,52,1)}</span>`,
+ E:(w,col)=>`<span class="mk" style="width:${w}px;height:${w*1.12}px"><span class="ko"><i class="c ${col}"></i></span><span style="position:absolute;left:56%;top:56%;width:50%;aspect-ratio:1;border-radius:50%;background:linear-gradient(135deg,#7FE0FF,#0A7DAD);box-shadow:0 0 0 ${Math.max(2,w/40)}px var(--bg)"></span>${P(66,66,30,0,'#fff')}</span>`,
+ F:(w,col)=>`<span class="mk" style="width:${w}px;height:${w*1.12}px"><i class="c ${col}"></i>${P(74,-14,44,1)}</span>`
+};
+const N={D:"D · Insignia: el + sale del casco como sello (abajo a la derecha)",E:"E · Sello redondo: el + en una moneda celeste pegada al casco",F:"F · Cresta: la punta del penacho termina en el +"};
+let h="";
+for(const k of "DEF"){
+ for(const cl of ["d","l"]){
+  const col="g";
+  h+=`<div class="row"><div class="cell em ${cl}"><span class="tag">${k} · SOLO</span>${M[k](150,col)}</div>`+
+   `<div class="cell lgc ${cl}"><span class="tag">${N[k]}</span><div class="lg">Action Leaders<span style="position:absolute;right:${k==='F'?-20:-48}px;top:-58px">${M[k](56,col)}</span></div></div>`+
+   `<div class="cell em ${cl}"><span class="tag">TAMAÑO APP</span><div class="sm"><div class="lg">Action Leaders<span style="position:absolute;right:${k==='F'?-20:-48}px;top:-58px">${M[k](56,col)}</span></div></div></div></div>`;
+ }
+}
+document.body.insertAdjacentHTML("beforeend",h);
+</script></body></html>
