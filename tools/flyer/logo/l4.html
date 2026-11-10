@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:LB;src:url(LBI.ttf);font-style:italic;font-weight:400 700}
+body{margin:0;font-family:system-ui;background:#e9edf2;width:1500px}
+.row{display:flex}.cell{height:250px;display:flex;align-items:center;justify-content:center;position:relative}
+.big{width:620px}.sm2{width:260px}
+.d{background:#0b1220;color:#fff}.l{background:#F3F6F9;color:#2B2A2D}
+.tag{position:absolute;left:16px;top:12px;font:700 13px system-ui;letter-spacing:.08em;opacity:.6;max-width:90%}
+.lg{position:relative;font:italic 700 64px/1 LB;letter-spacing:-.02em;white-space:nowrap;display:inline-flex;align-items:center}
+.c{display:inline-block;-webkit-mask:url(casco-blanco.png) center/contain no-repeat;mask:url(casco-blanco.png) center/contain no-repeat;aspect-ratio:447/500;background:linear-gradient(160deg,#7FE0FF,#2AC1F1 45%,#0A7DAD)}
+.ab{position:absolute}
+.ip{position:relative}
+.sm{transform:scale(.4)}
+.st{flex-direction:column;gap:6px}
+.vr{width:2px;height:54px;background:linear-gradient(#2AC1F1,#0A7DAD);margin:0 22px;opacity:.8}
+.sub{font:600 13px system-ui;letter-spacing:.42em;opacity:.7;padding-left:.42em;margin-top:6px}
+</style></head><body>
+<script>
+const C=(h,st="")=>`<i class="c" style="height:${h}px;${st}"></i>`;
+const V=[
+ ["1 · EL PUNTO DE LA «i»: el casco reemplaza el punto de Action",()=>`<div class="lg">Act<span class="ip">ı<span class="ab" style="left:50%;top:-40px;transform:translateX(-40%)">${C(34)}</span></span>on Leaders</div>`],
+ ["2 · SELLO ARRIBA AL FINAL (como ®), solo el casco",()=>`<div class="lg">Action Leaders<span class="ab" style="right:-40px;top:-26px">${C(40)}</span></div>`],
+ ["3 · CORONA DE LA «A»: el casco encima de la A inicial",()=>`<div class="lg"><span class="ip">A<span class="ab" style="left:24px;top:-50px">${C(38)}</span></span>ction Leaders</div>`],
+ ["4 · ÍCONO + NOMBRE: casco a la izquierda con línea fina",()=>`<div class="lg">${C(70)}<span class="vr"></span>Action Leaders</div>`],
+ ["5 · EMBLEMA ARRIBA AL CENTRO (para flyers y portadas)",()=>`<div class="lg st" style="font-size:52px">${C(64)}<span>Action Leaders</span></div>`],
+ ["6 · DIVISOR: el casco entre las dos palabras",()=>`<div class="lg">Action${C(44,"margin:0 14px 0 12px;transform:translateY(-6px)")}Leaders</div>`]
+];
+let h="";
+V.forEach(([t,f])=>{h+=`<div class="row"><div class="cell big d"><span class="tag">${t}</span>${f()}</div><div class="cell big l"><span class="tag">${t.split(":")[0]}</span>${f()}</div><div class="cell sm2 d"><span class="tag">EN LA APP</span><div class="sm">${f()}</div></div></div>`});
+document.body.insertAdjacentHTML("beforeend",h);
+</script></body></html>
