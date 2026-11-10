@@ -4673,14 +4673,19 @@ async function abrirLanzSocio(){if(!fbUser)return;const r=miRegistro()||{},n=r.n
   openSheet(`<h2 style="margin:0">📣 Lance su negocio en redes</h2><p class="small muted" style="margin:0">Publique su flyer de nueva etapa en sus historias y use el texto de la red donde lo publique.</p>
    <div id="lzsImg" style="border-radius:14px;overflow:hidden;background:#0b0b10;aspect-ratio:9/16;max-height:56vh;margin:0 auto;width:100%;max-width:290px;display:flex;align-items:center;justify-content:center"><span class="small" style="color:#fff">Creando su flyer…</span></div>
    <button class="btn" id="lzsShare" style="width:100%">📤 Compartir en mis historias</button>
+   <div id="lzsAsk" class="card" style="gap:8px;border:2px solid #16A34A" hidden><b>¿Ya lo publicó en sus historias?</b><button class="btn" id="lzsYa" style="width:100%;background:#16A34A;color:#fff">✅ Sí, ya lo publiqué</button></div>
+   <button class="btn ghost" id="lzsYa2" style="width:100%">✅ Ya lo publiqué</button>
    ${LZS_TX.map(([t,x],i)=>`<div class="card" style="gap:8px"><div class="row between"><b class="small">${t}</b><button type="button" class="btn sm ghost" data-lzc="${i}">📋 Copiar</button></div><div class="small" style="white-space:pre-wrap;line-height:1.4">${esc(x)}</div></div>`).join("")}
    <div class="card" style="gap:8px"><div class="row between"><b class="small">💬 Cuando alguien le responda</b><button type="button" class="btn sm ghost" data-lzc="r">📋 Copiar</button></div><div class="small" style="white-space:pre-wrap;line-height:1.4">${esc(LZS_RESP)}</div><p class="small muted" style="margin:0">Agréguelo a su CRM y agende una presentación.</p></div>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     document.querySelectorAll("[data-lzc]").forEach(b=>b.onclick=async()=>{const t=b.dataset.lzc==="r"?LZS_RESP:LZS_TX[+b.dataset.lzc][1];try{await navigator.clipboard.writeText(t);toast("Texto copiado ✅")}catch(e){toast("No se pudo copiar")}});
+    ["#lzsYa","#lzsYa2"].forEach(q=>{const b=$(q);if(b)b.onclick=()=>{try{const st=irSt();if(!(st.mk||{}).lzs)irSave({mk:Object.assign({},st.mk||{},{lzs:Date.now()})})}catch(e){}toast("¡Su nueva etapa ya está en sus redes! 🚀");closeSheet();setTimeout(()=>{try{irRender();irLista()}catch(e){}},300)}});
+    if((irSt().mk||{}).lzs){const y=$("#lzsYa2");if(y)y.hidden=true}
     $("#lzsShare").onclick=async()=>{if(!lzsFile){toast("El flyer aún se está creando");return}
       const marcar=()=>{try{const st=irSt();if(!(st.mk||{}).lzs){irSave({mk:Object.assign({},st.mk||{},{lzs:Date.now()})});setTimeout(()=>{try{irRender()}catch(e){}},300)}}catch(e){}toast("¡Su nueva etapa ya está en sus redes! 🚀")};
       try{await navigator.clipboard.writeText(LZS_TX[2][1])}catch(e){}
-      if(navigator.canShare&&navigator.canShare({files:[lzsFile]})){try{await navigator.share({files:[lzsFile]});marcar();return}catch(x){if(x&&x.name==="AbortError")return}}
+      const ask=()=>{const k=$("#lzsAsk");if(k&&!(irSt().mk||{}).lzs){k.hidden=false;const y=$("#lzsYa2");if(y)y.hidden=true;try{k.scrollIntoView({block:"center",behavior:"smooth"})}catch(e){}}};
+      if(navigator.canShare&&navigator.canShare({files:[lzsFile]})){try{await navigator.share({files:[lzsFile]});marcar();return}catch(x){if(x&&x.name==="AbortError"){ask();return}}}
       const a=document.createElement("a");a.href=URL.createObjectURL(lzsFile);a.download=lzsFile.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);marcar()}});
   try{const foto=await bienPat(),cv=await bienCanvas(n,false,"",plan,foto,r.pais||"Honduras","",1);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));lzsFile=new File([b],"Nueva-etapa.jpg",{type:"image/jpeg"});
     const box=$("#lzsImg");if(box){box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im)}}catch(e){const box=$("#lzsImg");if(box)box.innerHTML='<span class="small" style="color:#fff">No se pudo crear el flyer</span>'}}
@@ -7207,7 +7212,7 @@ function irItems(n){const V2=irV2();
     {k:"pat",g:"Prepare su negocio",t:"Conectado con su patrocinador",a:x=>x.pat},
     {k:"ref",g:"Prepare su negocio",t:"Su link de referido listo",a:x=>x.ref,b:["Agregar",()=>{closeSheet();abrirMiPagina()}]},
     {k:"herr",g:"Prepare su negocio",t:"Sus herramientas listas",s:"App Action Leaders+, avisos, YessMovement y la presentación",a:x=>x.herrV||x.herrN>=IR_HERR.length,p:x=>x.herrV?"":x.herrN+" de "+IR_HERR.length,m:1,b:["Ver",()=>irHerr()]},
-    ...(irLzsReq()?[{k:"lzs",g:"Prepare su negocio",t:"Lance su negocio en redes",s:"Comparta su flyer de nueva etapa en sus historias",a:x=>!!x.mk.lzs,b:["Compartir",()=>{closeSheet();abrirLanzSocio()}]}]:[]),
+    ...(irLzsReq()?[{k:"lzs",g:"Prepare su negocio",t:"Lance su negocio en redes",s:"Comparta su flyer de nueva etapa en sus historias",a:x=>!!x.mk.lzs,m:1,b:["Compartir",()=>{closeSheet();abrirLanzSocio()}],b2:["Ya lo publiqué",()=>irMk("lzs")]}]:[]),
     {k:"act1",g:"Prepare su negocio",t:"Su primera actividad con su patrocinador",s:"Lo que no tiene día y hora, probablemente no suceda",a:x=>x.lid>0||!!x.mk.act1,b:["Agendar",()=>irAct1()],f:1},
     ...(V2?[IL(20,"Su lista y primeras presentaciones","No seleccione quién cree que dirá que sí: primero escriba nombres"),
       {k:"c10",g:"Su lista y primeras presentaciones",t:"Contactar a 10 personas",a:x=>x.cont>=10,p:x=>Math.min(x.cont,10)+" de 10",b:["Contactar",irGoCRM]},
@@ -7407,7 +7412,7 @@ function irLista(n){if(!grpLk&&store.db)grpLink().catch(()=>{});const E=irEstado
    <div class="irWk">${E.W.map(z=>`<button type="button" data-w="${z.n}" class="${z.n===n?"on":""}${(st.med||{})[z.n]?" ok":""}">${(st.med||{})[z.n]?"🏅":z.ic} Sem ${z.n}</button>`).join("")}</div>
    ${(st.med||{})[n]?`<div role="button" tabindex="0" class="irMdl" id="irMedB"><span class="ic">🏅</span><span class="mt" style="flex:1;min-width:0"><b>Insignia ${esc(w.k)} ganada</b><small>${(()=>{try{return "El "+niceDate(dkey(new Date((st.med||{})[n])))+" · "}catch(e){return ""}})()}Toque para celebrar y compartir</small></span><span class="go">›</span></div>`:""}
    ${n>E.cur.n&&!E.grad?`<p class="small muted" style="margin:6px 2px">Esta semana se abre al terminar la semana ${E.cur.n}. Lo que ya tenga hecho se marca solo.</p>`:""}
-   ${Object.keys(G).map(g=>`<div class="irG"><h4>${esc(g)}</h4>${G[g].map(i=>`<div class="irIt${i.ok?" d":""}"><span class="ck${i.ok?" ok":""}">${i.ok?"✓":""}</span><span class="tx">${esc(i.t)}${i.ok&&!i.m?` <span class="au">AUTOMÁTICO</span>`:""}${i.s||i.pt?`<small>${esc(i.pt?(i.pt+(i.s?" · "+i.s:"")):i.s)}</small>`:""}</span>${!i.ok&&i.b?`<button type="button" class="go${i.f?" f":""}" data-it="${i.k}">${esc(i.b[0])}</button>`:""}</div>`).join("")}</div>`).join("")}
+   ${Object.keys(G).map(g=>`<div class="irG"><h4>${esc(g)}</h4>${G[g].map(i=>`<div class="irIt${i.ok?" d":""}"><span class="ck${i.ok?" ok":""}">${i.ok?"✓":""}</span><span class="tx">${esc(i.t)}${i.ok&&!i.m?` <span class="au">AUTOMÁTICO</span>`:""}${i.s||i.pt?`<small>${esc(i.pt?(i.pt+(i.s?" · "+i.s:"")):i.s)}</small>`:""}</span>${!i.ok&&i.b?(i.b2?`<span style="display:flex;flex-direction:column;gap:6px;flex:none">`:"")+`<button type="button" class="go${i.f?" f":""}" data-it="${i.k}">${esc(i.b[0])}</button>`+(i.b2?`<button type="button" class="go" data-it2="${i.k}" style="background:transparent;border-style:dashed">${esc(i.b2[0])}</button></span>`:""):""}</div>`).join("")}</div>`).join("")}
    ${n===1?`<p class="small muted" style="margin:8px 2px 0;text-align:center">No necesita saberlo todo para comenzar. Comience acompañado y aprenda mientras avanza.</p>`:""}
    ${yoPrueba()?`<div class="row" style="gap:8px;margin-top:10px"><button class="btn sm ghost" id="irPD" style="flex:1">🧪 Adelantar 7 días</button><button class="btn sm ghost" id="irPR" style="flex:1">🧪 Reiniciar</button></div>`:""}
    <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{const sh=$("#sheet");
@@ -7415,7 +7420,7 @@ function irLista(n){if(!grpLk&&store.db)grpLink().catch(()=>{});const E=irEstado
     {const r=$("#irPR");if(r)r.onclick=()=>{const f={ini:Date.now()};regDoc.ir=f;store.db.doc("users/"+store.uid).update({ir:f}).catch(()=>{});closeSheet();setTimeout(irRevisar,500)}}
     sh.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>irLista(+b.dataset.w));
     {const mb=$("#irMedB");if(mb)mb.onclick=()=>{closeSheet();setTimeout(()=>{const R=n===1&&raYo();if(R&&R.gano)raCelebrar(true);else irCelebrar(w)},350)}}
-    sh.querySelectorAll("[data-it]").forEach(b=>b.onclick=()=>{const i=w.L.find(z=>z.k===b.dataset.it);if(i&&i.b)i.b[1]()})})}
+    sh.querySelectorAll("[data-it]").forEach(b=>b.onclick=()=>{const i=w.L.find(z=>z.k===b.dataset.it);if(i&&i.b)i.b[1]()});sh.querySelectorAll("[data-it2]").forEach(b=>b.onclick=()=>{const i=w.L.find(z=>z.k===b.dataset.it2);if(i&&i.b2)i.b2[1]()})})}
 function irIntro(){const nm=(miRegistro().nombre||profile.nombrePila||"").split(" ")[0];
   openSheet(`<div class="irHero"><div class="k">ACTION LEADER SYSTEM</div><div style="font-size:46px">🚀</div><h2>Su Plan de Inicio Rápido</h2><p>${nm?esc(nm)+", ":""}30 días para poner su negocio en movimiento, acompañado.</p></div>
    <div class="irPath">${IR_W.map((z,i)=>`${i?"<s></s>":""}<div><i>${z.ic}</i>${esc(z.k)}</div>`).join("")}</div>
@@ -7897,7 +7902,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110154824";var busy=false,pend=null;
+(function(){var V="20261110162103";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
