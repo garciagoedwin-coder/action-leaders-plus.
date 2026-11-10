@@ -1,4 +1,4 @@
-// Una sola vez: compara reglas de PRODUCCIÓN con respaldo/firestore.rules y revisa si privAp/grupo tiene link. Solo lee; no imprime el link.
+// Una sola vez: compara reglas de PRODUCCIÓN con respaldo/firestore.rules. Solo lee.
 import admin from "firebase-admin";import fs from "node:fs";import {execSync} from "node:child_process";
 admin.initializeApp({credential:admin.credential.cert(JSON.parse(process.env.FIREBASE_SA))});
 const rs=await admin.securityRules().getFirestoreRuleset();
