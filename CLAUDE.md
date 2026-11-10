@@ -713,3 +713,11 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 
 ## Logos en Academia › Materiales (10 nov)
 - «🛡️ Logos de Action Leaders» (acaLogos): media/logos/action-leaders-blanco.png y action-leaders-oscuro.png (6100×646, transparentes) y casco-azul.png (894×1000). Se descargan al abrir la hoja para compartir con un toque. Se generan con tools/flyer/logo/gen.html (servidor local, deviceScaleFactor 3).
+
+## Manual de marca en los flyers (10 nov) — opción B
+- Manual: proyecto «App Movil» › claude/manual-de-marca-action-leaders.md. Edwin: «mismo diseño y orden visual, solo cambia la letra», con excepciones (dorado para Premium/reconocimientos, fotos de fondo, logotipo «ACTION LEADERS Training!»).
+- Cambio por ALIAS de fuentes (bienFonts/evaFonts): 'Bebas Neue' → Barlow Condensed Bold; 'Cormorant Caps', ALBG y ALP → Poppins SemiBold; ALO/ALOR/Figtree → Figtree (media/fonts/Figtree-VF.ttf, weight 100–900). ALBB = Bebas real (solo el «ACTION LEADERS» del Training); ALBC = Barlow Condensed. Libre Baskerville en canvas → ALP. Licencias OFL en media/fonts/OFL-*.txt.
+- PRIMERO SOLO admin + cuenta de prueba: marcaBeta() (isAdmin || yoPrueba()); los demás cargan las letras viejas. Para abrir a todos: MARCA_TODOS=true y publicar.
+- Textos corregidos: tarjeta «Te invito» («y emprenda desde su celular», sin «ingreso extra»); sin «+» en Compromiso, Insignia IR y firma de la historia (hgBio).
+- PÍLDORA MILLONARIA nueva (pildoraCanvas, publicación e historia; solo marcaBeta por ahora; en Compartir con selector Publicación/Historia): logo blanco, TikTok + LIVE (media/flyers/pildora/tiktok-blanco.png / -negro.png del logo que mandó Edwin), «PÍLDORA MILLONARIA.» con efecto TikTok (celeste/rojo desplazado), frase de usted, chips (20 minutos · Mentalidad · Hábitos de éxito), quien presenta = e.responsable con aro TikTok (sin responsable: casco + «Action Leaders»), fecha/hora + Miami/España/Reino Unido, botón blanco «Síganos y active la campanita» + #HASTAQUEFUNCIONE.
+- Flyer del día noche: se queda morado (Edwin).

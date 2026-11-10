@@ -4053,8 +4053,51 @@ async function flyerCanvas(e){const W=1080,H=1350,cv=document.createElement("can
   const ds=(d.getDate()+" DE "+MONTHS[d.getMonth()]).toUpperCase();fit(ds,"italic 500 {s}px Figtree, Arial, sans-serif",21,F.d[2]);g.fillText(ds,F.d[0],F.d[1]);
   const hh=h12(e.hora).replace(" am"," AM").replace(" pm"," PM")+(F.hsuf!=null?F.hsuf:" HN");fit(hh,"italic 500 {s}px Figtree, Arial, sans-serif",24,F.h[2]);g.fillText(hh,F.h[0],F.h[1]);
   return cv}
+// ---------- Píldora Millonaria (10 nov, manual de marca · Edwin aprobó la opción A con TikTok) ----------
+// Publicación 1080×1350 e historia 1080×1920 (todo dentro de 220–1700 px). Quien presenta = e.responsable (foto por nombre; si no hay, el casco).
+const esPildora=e=>/p[ií]ldora/i.test(((e&&e.tipo)||"")+" "+((e&&e.titulo)||""));
+async function pildoraCanvas(e,fmt){fmt=fmt==="h"?"h":"p";await flFonts();if(!(fotosFs||[]).length)try{await cargarFotos()}catch(x){}
+  const W=1080,H=fmt==="h"?1920:1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d"),K=flKit(g),{sp,rr,fit,tx}=K;
+  const Y=y=>fmt==="h"?Math.round(250+(y-60)*1.16):y,P="ALP, Poppins, sans-serif",F="Figtree, ALO, sans-serif",B="ALBC, 'Barlow Condensed', sans-serif",CEL="#2AC1F1",TC="#25F4EE",TR="#FE2C55";
+  // fondo #0B1220 + brillo celeste arriba a la derecha + casco tenue
+  g.fillStyle="#0B1220";g.fillRect(0,0,W,H);{const q=g.createRadialGradient(W*.85,H*.06,0,W*.85,H*.06,W*.75);q.addColorStop(0,"rgba(42,193,241,.22)");q.addColorStop(1,"rgba(42,193,241,0)");g.fillStyle=q;g.fillRect(0,0,W,H)}
+  {const cs=await imgLoad("media/casco.png");if(cs){g.save();g.globalAlpha=.05;const h=850,w=cs.width*h/cs.height;g.drawImage(cs,W-w+120,Y(240),w,h);g.restore()}}
+  // logo + TikTok LIVE
+  {const lg=await imgLoad("media/logo-al.png");if(lg)g.drawImage(lg,72,Y(72),lg.width*44/lg.height,44)}
+  {const tt=await imgLoad("media/flyers/pildora/tiktok-blanco.png"),lw=106,lh=40,lx=W-72-lw,ly=Y(74);rr(lx,ly,lw,lh,10);g.fillStyle=TR;g.fill();g.beginPath();g.arc(lx+22,ly+lh/2,5,0,Math.PI*2);g.fillStyle="#fff";g.fill();tx("LIVE",lx+34,ly,lh,"800 20px "+F,"#fff","left","3.6px");
+    if(tt){const h=64,w=tt.width*h/tt.height;g.save();g.shadowColor="rgba(37,244,238,.35)";g.shadowBlur=14;g.drawImage(tt,lx-14-w,Y(62),w,h);g.restore()}}
+  // etiqueta + titular
+  tx("LLAMADA MATUTINA · LUN · MIÉ · VIE · SÁB",72,Y(178),28,"800 22px "+F,CEL,"left","5.3px");
+  {const z=fit("MILLONARIA.","600 {s}px "+P,148,W-130,90),y1=Y(262)+z*.82,y2=y1+z*.98;g.textAlign="left";g.textBaseline="alphabetic";g.font="600 "+z+"px "+P;
+    g.fillStyle="#fff";g.fillText("PÍLDORA",72,y1);[[TC,-5,-3],[TR,5,3],[CEL,0,0]].forEach(([c,dx,dy])=>{g.fillStyle=c;g.globalAlpha=c===CEL?1:.85;g.fillText("MILLONARIA.",72+dx,y2+dy)});g.globalAlpha=1}
+  // frase (izquierda) y quien presenta (derecha)
+  {g.font="400 36px "+F;g.fillStyle="rgba(255,255,255,.78)";g.textBaseline="alphabetic";g.textAlign="left";const L=["Despierte su mejor versión cada","mañana y tome decisiones que le","acerquen a su libertad."];L.forEach((t,i)=>g.fillText(t,72,Y(636)+i*49))}
+  {const x0=72,y=Y(810),ch=[["☀️","20 minutos"],["🧠","Mentalidad"],["🔥","Hábitos de éxito"]];let x=x0;g.font="700 21px "+F;
+    for(const [ic,t] of ch){const w=g.measureText(ic+" "+t).width+34;rr(x,y,w,44,22);g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.25)";g.stroke();tx(ic+" "+t,x+17,y,44,"700 21px "+F,"#fff","left");x+=w+10}}
+  {const nm=String(e.responsable||"").trim(),cx=W-60-165,cy=Y(560)+135,r=135;
+    [[TC,-8,-6],[TR,8,6]].forEach(([c,dx,dy])=>{g.beginPath();g.arc(cx+dx,cy+dy,r+5,0,Math.PI*2);g.lineWidth=5;g.strokeStyle=c;g.stroke()});
+    g.beginPath();g.arc(cx,cy,r+4,0,Math.PI*2);g.fillStyle="#fff";g.fill();g.beginPath();g.arc(cx,cy,r-1,0,Math.PI*2);g.fillStyle="#0B1220";g.fill();
+    let vac=!nm;if(nm){vac=false;await circFoto(g,fotoDe(nm)||"",cx,cy,r-6,null,()=>{vac=true})}
+    if(vac){const cs=await imgLoad("media/casco.png");g.save();g.beginPath();g.arc(cx,cy,r-6,0,Math.PI*2);g.fillStyle="#0b1a36";g.fill();if(cs){const h=150,w=cs.width*h/cs.height;g.drawImage(cs,cx-w/2,cy-h/2,w,h)}g.restore()}
+    tx(nm?"PRESENTA":"PRESENTA",cx,Y(845),24,"800 17px "+F,CEL,"center","3.4px");
+    const n2=nm?nv(nm):"Action Leaders",rg=nm?(tituloFlyer(nm)||""):"Equipo de líderes";const z=fit(n2,"800 {s}px "+F,32,330,20);tx(n2,cx,Y(872),40,"800 "+z+"px "+F,"#fff","center");if(rg)tx(rg,cx,Y(906),30,"500 22px "+F,"rgba(255,255,255,.7)","center")}
+  // fecha y hora
+  {const d=parseK(e.fecha),y=Y(990),h=140;rr(72,y,264,h,18);g.fillStyle="rgba(255,255,255,.06)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(255,255,255,.12)";g.stroke();
+    g.font="700 72px "+B;g.fillStyle="#fff";g.textBaseline="alphabetic";g.textAlign="left";g.fillText(String(d.getDate()),98,y+h/2+28);const dw=g.measureText(String(d.getDate())).width;
+    tx(DAYS_L[d.getDay()].toUpperCase(),98+dw+18,y+40,24,"800 17px "+F,"rgba(255,255,255,.6)","left","3.4px");tx(MONTHS[d.getMonth()].toUpperCase(),98+dw+18,y+66,34,"800 26px "+F,"#fff","left");
+    const x2=354,w2=W-72-x2;rr(x2,y,w2,h,18);g.fillStyle="rgba(255,255,255,.06)";g.fill();g.stroke();
+    const[hh,mm]=String(e.hora||"08:00").split(":").map(Number),h12x=((hh%12)||12)+":"+String(mm||0).padStart(2,"0"),ap=hh<12?" am":" pm";
+    g.font="700 72px "+B;g.fillStyle="#fff";g.textAlign="left";g.textBaseline="alphabetic";g.fillText(h12x,x2+26,y+80);const hw=g.measureText(h12x).width;g.font="700 38px "+B;g.fillStyle=CEL;g.fillText(ap,x2+26+hw,y+80);const aw=g.measureText(ap).width;
+    tx("🇭🇳 Honduras",x2+26+hw+aw+12,y+50,36,"600 22px "+F,"rgba(255,255,255,.7)","left");
+    const Z=(lzZonas(e.fecha,e.hora)||[]).filter(z=>z.n!=="HONDURAS").map(z=>z.fl+" "+(z.n==="REINO UNIDO"?"R. Unido":z.n[0]+z.n.slice(1).toLowerCase())+" "+z.h.replace(" a.m."," am").replace(" p.m."," pm")+(z.sig?"*":"")).join(" · ");
+    const zz=fit(Z,"500 {s}px "+F,20,w2-52,14);tx(Z,x2+26,y+94,30,"500 "+zz+"px "+F,"rgba(255,255,255,.72)","left")}
+  // botón TikTok + hashtag
+  {const y=Y(1186),tt=await imgLoad("media/flyers/pildora/tiktok-negro.png"),t="Síganos y active la campanita";g.font="800 28px "+F;const w=g.measureText(t).width+34*2+52;rr(72,y,w,74,37);g.fillStyle="#fff";g.fill();
+    if(tt){const h=38,iw=tt.width*h/tt.height;g.drawImage(tt,72+34,y+18,iw,h)}tx(t,72+34+52,y,74,"800 28px "+F,"#0B1220","left");
+    tx("#HASTAQUEFUNCIONE",W-72,y,74,"600 30px "+P,"#fff","right","0.6px")}
+  return cv}
 async function abrirCompartir(e){const trn=esTr(e)&&!espDe(e);if(trn){try{await turCargar()}catch(x){}}
-  const sp=espDe(e),msg=sp&&sp.msg?sp.msg:evMsg(e),fl=esFlyer(e),pr=fl&&!sp&&(flyerCfg(e)===FLYERS.presentacion||trn);let file=null;
+  const sp=espDe(e),msg=sp&&sp.msg?sp.msg:evMsg(e),fl=esFlyer(e),pil=fl&&!sp&&esPildora(e)&&marcaBeta(),pr=fl&&!sp&&(flyerCfg(e)===FLYERS.presentacion||trn||pil);let file=null;
   openSheet(`<h2>Compartir actividad</h2>${pr?`<div class="seg" id="prFmtS"><button type="button" data-f="p">🖼️ Publicación</button><button type="button" data-f="h">📱 Historia</button></div>`:""}${fl?`<div id="flyBox" style="aspect-ratio:4/5;border-radius:14px;background:#0b1a36;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Creando flyer…</span></div>`:""}
     <pre class="small" style="white-space:pre-wrap;background:var(--bg);border-radius:12px;padding:10px;margin:0;font-family:inherit">${esc(msg)}</pre>
     <button class="btn" id="shGo" style="width:100%">📤 Compartir${fl?" flyer y mensaje":" mensaje"}</button>
@@ -4071,7 +4114,7 @@ async function abrirCompartir(e){const trn=esTr(e)&&!espDe(e);if(trn){try{await 
   if(pr){let fmt=LS.get("presFmt")||"p",fo=presDatos(e).fondo,nv=0;
     const mk=async()=>{const my=++nv;file=null;document.querySelectorAll("#prFmtS [data-f]").forEach(x=>x.setAttribute("aria-selected",x.dataset.f===fmt));document.querySelectorAll("#prFoS [data-fo]").forEach(x=>{const on=x.dataset.fo===fo;x.setAttribute("aria-pressed",on);x.style.outline=on?"2px solid var(--brand)":""});
       const box=$("#flyBox");if(box){box.style.display="flex";box.style.aspectRatio=fmt==="h"?"1080/1920":"1080/1350";box.innerHTML='<span class="small" style="color:#fff">Creando flyer…</span>'}
-      try{const cv=trn?await trCanvas(e,fmt):await presCanvas(e,fmt,fo);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));if(my!==nv)return;file=new File([b],(trn?"Training-":"Presentacion-")+e.fecha+(fmt==="h"?"-historia":"")+".jpg",{type:"image/jpeg"});
+      try{const cv=trn?await trCanvas(e,fmt):pil?await pildoraCanvas(e,fmt):await presCanvas(e,fmt,fo);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));if(my!==nv)return;file=new File([b],(trn?"Training-":pil?"Pildora-":"Presentacion-")+e.fecha+(fmt==="h"?"-historia":"")+".jpg",{type:"image/jpeg"});
         const bx=$("#flyBox");if(bx){bx.innerHTML="";bx.style.display="block";bx.style.aspectRatio="auto";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:auto;display:block";bx.appendChild(im)}}
       catch(x){const bx=$("#flyBox");if(bx&&my===nv)bx.innerHTML='<span class="small" style="color:#fff">No se pudo crear el flyer</span>'}};
     const fs=$("#prFmtS");if(fs)fs.onclick=ev=>{const b=ev.target.closest("[data-f]");if(!b||b.dataset.f===fmt)return;fmt=b.dataset.f;LS.set("presFmt",fmt);mk()};
@@ -4649,7 +4692,9 @@ const BIEN_TH={classic:{img:"media/flyers/bienvenida-classic.jpg?v=7",a:"#5FD3F7
 // 10 nov · MANUAL DE MARCA (opción B): mismos diseños, solo cambia la letra. Los nombres viejos de fuente ahora cargan las 3 de la marca:
 // 'Bebas Neue' → Barlow Condensed Bold (números y titulares angostos), 'Cormorant Caps' y ALBG/ALP → Poppins SemiBold, ALO/ALOR/Figtree → Figtree.
 // Excepción: el logotipo "ACTION LEADERS Training!" sigue con Bebas (ALBB) + Kaushan (ALKS).
-let bienFont=null;function bienFonts(){if(!bienFont)bienFont=Promise.all([["Bebas Neue","media/fonts/BarlowCondensed-Bold.ttf"],["Cormorant Caps","media/fonts/Poppins-SemiBold.ttf"],["ALBB","media/fonts/BebasNeue-Regular.ttf"],["ALP","media/fonts/Poppins-SemiBold.ttf"]].map(([n,u])=>{try{const f=new FontFace(n,"url("+u+")");return f.load().then(x=>document.fonts.add(x)).catch(()=>{})}catch(e){return null}}));return bienFont}
+// Primero solo admin y cuenta de prueba (marcaBeta); los demás siguen con las letras de antes hasta abrirlo a todos (MARCA_TODOS=true).
+const MARCA_TODOS=false;function marcaBeta(){if(MARCA_TODOS)return true;try{return !!isAdmin||yoPrueba()}catch(e){return !!isAdmin}}
+let bienFont=null;function bienFonts(){if(!bienFont)bienFont=Promise.all((marcaBeta()?[["Bebas Neue","media/fonts/BarlowCondensed-Bold.ttf"],["Cormorant Caps","media/fonts/Poppins-SemiBold.ttf"],["ALBB","media/fonts/BebasNeue-Regular.ttf"],["ALP","media/fonts/Poppins-SemiBold.ttf"],["ALBC","media/fonts/BarlowCondensed-Bold.ttf"]]:[["Bebas Neue","media/fonts/BebasNeue-Regular.ttf"],["Cormorant Caps","media/fonts/Cormorant-500-caps.ttf"],["ALBB","media/fonts/BebasNeue-Regular.ttf"],["ALBC","media/fonts/BarlowCondensed-Bold.ttf"]]).map(([n,u])=>{try{const f=new FontFace(n,"url("+u+")");return f.load().then(x=>document.fonts.add(x)).catch(()=>{})}catch(e){return null}}));return bienFont}
 async function bienFotoPat(){try{if(fotosFs===null||fotosFs===undefined)await cargarFotos()}catch(e){}
   const mine=(fotosFs||[]).find(x=>x.id===store.uid&&x.img);const C=[fotoDe(miNombreFull()),fotoDe(miRegistro().nombre||""),fotoDe(miNombreCorto()),mine&&mine.img,fbUser&&fbUser.photoURL].filter(Boolean);
   for(const u of [...new Set(C)]){const im=await imgLoad(u,!/^(data|blob):/.test(u));if(im)return u}return ""}
@@ -5405,7 +5450,7 @@ function eqzAbrir(){if(!eqzPuede()){toast("Solo los rangos pueden crear la reuni
     const del=$("#eqzDel");if(del)del.onclick=async()=>{if(!confirmar2(del))return;try{await store.db.doc("agendaEv/"+M.id).delete();EVQ=EVQ.filter(e=>e.id!==M.id);closeSheet();eqzPinta();toast("🗑️ Reunión eliminada")}catch(x){toast("No se pudo eliminar")}}})}
 
 let EVA=null,EVAt=0,evaFont=null;
-function evaFonts(){if(!evaFont){evaFont=Promise.all([["ALO","media/fonts/Figtree-VF.ttf"],["ALOR","media/fonts/Figtree-VF.ttf"],["ALBG","media/fonts/Poppins-SemiBold.ttf"],["Figtree","media/fonts/Figtree-VF.ttf"]].map(([n,u])=>{try{const f=new FontFace(n,"url("+u+")",/Figtree/.test(u)?{weight:"100 900"}:{});return f.load().then(x=>document.fonts.add(x)).catch(()=>{})}catch(e){return null}}))}return evaFont}
+function evaFonts(){if(!evaFont){evaFont=Promise.all((marcaBeta()?[["ALO","media/fonts/Figtree-VF.ttf"],["ALOR","media/fonts/Figtree-VF.ttf"],["ALBG","media/fonts/Poppins-SemiBold.ttf"],["Figtree","media/fonts/Figtree-VF.ttf"],["ALP","media/fonts/Poppins-SemiBold.ttf"]]:[["ALO","media/fonts/Outfit-Bold.ttf"],["ALOR","media/fonts/Outfit-Regular.ttf"],["ALBG","media/fonts/BricolageGrotesque-Bold.ttf"],["Figtree","media/fonts/Figtree-VF.ttf"],["ALP","media/fonts/Poppins-SemiBold.ttf"]]).map(([n,u])=>{try{const f=new FontFace(n,"url("+u+")",/Figtree/.test(u)?{weight:"100 900"}:{});return f.load().then(x=>document.fonts.add(x)).catch(()=>{})}catch(e){return null}}))}return evaFont}
 function evaFichas(){const r=miRegistro()||{},L=(Array.isArray(r.linea)?r.linea:[]).slice();if(r.patrocinadorUid&&!L.includes(r.patrocinadorUid))L.push(r.patrocinadorUid);return ["all","u:"+store.uid].concat(L.filter(Boolean).map(u=>"d:"+u)).concat(isAdmin?["adm"]:[]).slice(0,30)}
 let evaUn=null,evaFirst=true;
 function evaListen(){if(evaUn||!store.db||!store.uid)return;try{evaUn=evCol().where("ver",evaFichas(),"array-contains-any").onSnapshot(q=>{EVAt=Date.now();const A0=q.docs.map(d=>Object.assign({id:d.id},d.data())),A=A0.filter(e=>e.tipo!=="equipo"&&e.fecha>=dkey(new Date(Date.now()-864e5)));EVQ=A0.filter(e=>e.tipo==="equipo");EVA=A.filter(e=>!e.cancel);
