@@ -1581,9 +1581,10 @@ window.FB={auth,db,serverTimestamp,
   logout(){return signOut(auth)},
   // Correo y contraseña (10 nov 2026). La cuenta nueva debe confirmar su correo antes de usar la app.
   mailIn(e,p){return signInWithEmailAndPassword(auth,e,p)},
-  async mailUp(e,p){const r=await createUserWithEmailAndPassword(auth,e,p);try{await sendEmailVerification(r.user,{url:location.origin+location.pathname})}catch(x){}return r},
+  mailUrl(){let u=location.origin+location.pathname;try{const i=localStorage.getItem("alp:inv"),b=localStorage.getItem("alp:invb");if(i)u+="?unirme="+encodeURIComponent(i)+(b?"&b="+encodeURIComponent(b):"")}catch(x){}return u},
+  async mailUp(e,p){const r=await createUserWithEmailAndPassword(auth,e,p);try{await sendEmailVerification(r.user,{url:window.FB.mailUrl()})}catch(x){try{localStorage.setItem("alp:mailErr",(x&&x.code)||"error")}catch(y){}}return r},
   mailReset(e){return sendPasswordResetEmail(auth,e,{url:location.origin+location.pathname})},
-  async mailVerif(){const u=auth.currentUser;if(u)await sendEmailVerification(u,{url:location.origin+location.pathname})},
+  async mailVerif(){const u=auth.currentUser;if(u)await sendEmailVerification(u,{url:window.FB.mailUrl()})},
   async mailOk(){const u=auth.currentUser;if(!u)return false;await u.reload();if(auth.currentUser.emailVerified){await auth.currentUser.getIdToken(true);return true}return false},
   async pushToken(vapid){const m=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js");if(!(await m.isSupported()))return null;
     const reg=await navigator.serviceWorker.register("./firebase-messaging-sw.js",{scope:"./"});const msg=m.getMessaging(app);
@@ -7233,6 +7234,7 @@ function mailGate(u){let d=$("#apGate");if(!d){d=document.createElement("div");d
   try{const L=document.getElementById("land");if(L)L.style.display="none"}catch(x){}
   d.innerHTML=`<div class="apC"><div class="apI">📩</div><h2>Confirme su correo</h2><p>Le enviamos un correo a <b>${esc(u.email||"")}</b>. Ábralo y toque el enlace para confirmar.</p><p class="small">Si no lo ve, revise «Spam» o «Promociones».</p><button class="btn" id="mgOk">Ya lo confirmé</button><button class="btn ghost" id="mgRe">Reenviar correo</button><button class="btn ghost" id="mgOut">Salir</button></div>`;
   const ok=async(silencio)=>{try{if(await window.FB.mailOk()){location.reload();return}}catch(x){}if(!silencio)toast("Todavía no aparece confirmado. Toque el enlace del correo y vuelva a intentar.")};
+  try{const me=localStorage.getItem("alp:mailErr");if(me){localStorage.removeItem("alp:mailErr");toast("No se pudo enviar el correo ("+me+"). Toque «Reenviar correo».")}}catch(x){}
   $("#mgOk").onclick=()=>ok(false);
   $("#mgRe").onclick=async()=>{const b=$("#mgRe");b.disabled=true;try{await window.FB.mailVerif();toast("📩 Correo enviado de nuevo")}catch(x){toast(mailErr(x))}setTimeout(()=>{b.disabled=false},30000)};
   $("#mgOut").onclick=async()=>{try{await window.FB.logout()}catch(x){}location.reload()};
@@ -7434,7 +7436,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110081408";var busy=false,pend=null;
+(function(){var V="20261110082148";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
