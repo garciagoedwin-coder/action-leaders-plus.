@@ -1,5 +1,7 @@
 // Reglas de Firestore. 10/11/2026 SEGURIDAD FASE 1: se quitó la regla duplicada de perfiles (permitía sobrescribir la página de otro socio),
 // se quitaron reservas (sin uso) y la regla floja de prospectos, y se validan los campos de la presentación virtual / membresía (sala).
+// 10/11/2026 FASE 2: el socio ya no puede cambiarse rango, plan, patrocinador ni línea después de registrarse (solo admin),
+// no puede borrar su documento, y la constancia (ranking) solo acepta números dentro de lo posible.
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -9,7 +11,16 @@ service cloud.firestore {
     }
     match /users/{socio} { allow update, delete: if isAdmin(); }
     match /users/{socio} { allow read: if signedIn() && request.auth.uid in resource.data.registro.linea; }
-    match /constancia/{uid} { allow read: if signedIn(); allow write: if signedIn() && (request.auth.uid == uid || isAdmin()); }
+    match /constancia/{uid} {
+      allow read: if signedIn();
+      allow write: if isAdmin() || (signedIn() && request.auth.uid == uid && constOk(request.resource.data));
+    }
+    function nOk(d, k, m) { return !(k in d) || d[k] == null || (d[k] is number && d[k] >= 0 && d[k] <= m); }
+    function constOk(d) {
+      return nOk(d, 'racha', 31) && nOk(d, 'semDias', 7) && nOk(d, 'semComp', 7) && nOk(d, 'semPts', 35) && nOk(d, 'pSemPts', 35)
+        && nOk(d, 'mesDias', 31) && nOk(d, 'mesComp', 31) && nOk(d, 'mesMejor', 31) && nOk(d, 'mesPts', 155)
+        && nOk(d, 'semPres', 500) && nOk(d, 'mesPres', 2000) && nOk(d, 'hoy', 100);
+    }
 
     match /invitaciones/{id} {
       allow get: if signedIn();
@@ -19,6 +30,8 @@ service cloud.firestore {
     }
 
     function signedIn() { return request.auth != null; }
+    function sinRegistro(d) { return !('registro' in d) || !('nombre' in d.registro) || d.registro.nombre == ''; }
+    function sinRango(d) { return !('registro' in d) || !('rango' in d.registro) || d.registro.rango == ''; }
     function isAdmin() {
       return signedIn() && request.auth.token.email_verified == true &&
         request.auth.token.email in ['garciagoedwin@gmail.com','actionleadersoficial@gmail.com','edwing.go@gmail.com'];
@@ -32,7 +45,13 @@ service cloud.firestore {
       allow delete: if signedIn() && resource.data.uid == request.auth.uid;
     }
     match /users/{uid} {
-      allow read, write: if signedIn() && request.auth.uid == uid;
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow create: if signedIn() && request.auth.uid == uid && sinRango(request.resource.data);
+      allow update: if signedIn() && request.auth.uid == uid && (
+        sinRegistro(resource.data) ? sinRango(request.resource.data)
+        : ('registro' in request.resource.data
+           && !request.resource.data.registro.diff(resource.data.registro).affectedKeys()
+                .hasAny(['rango','plan','planPor','planCambio','patrocinadorUid','patrocinador','invitadoPor','linea','invId'])));
       allow read: if isAdmin();
       match /{sub=**} {
         allow read, write: if signedIn() && request.auth.uid == uid;

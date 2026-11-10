@@ -1653,7 +1653,8 @@ const longDate=k=>{const d=parseK(k);return DAYS_L[d.getDay()]+" "+d.getDate()+"
 const niceDate=k=>{const d=parseK(k);return d.getDate()+" de "+MONTHS[d.getMonth()]};
 const updatedTxt=t=>{if(!t)return"";const d=new Date(t);if(isNaN(d))return"";return "Actualizado el "+d.getDate()+" de "+MONTHS[d.getMonth()]+" a las "+pad(d.getHours())+":"+pad(d.getMinutes())};
 const h12=t=>{if(!t)return"";const[h,m]=t.split(":").map(Number);if(isNaN(h))return t;return ((h%12)||12)+":"+pad(m||0)+(h<12?" am":" pm")};
-let toastT;function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2200)}
+let toastT;function errCod(e){const c=String((e&&e.code)||"").replace(/^(firestore|auth|storage)\//,"").replace(/[^a-z0-9-]/gi,"").slice(0,30);return c||"error"}
+function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2200)}
 async function copy(text){try{await navigator.clipboard.writeText(text);toast("Copiado")}catch(e){toast("Mantén presionado el texto para copiarlo")}}
 const safeUrl=u=>/^https?:\/\//i.test(String(u||""))?u:"";
 
@@ -1670,7 +1671,7 @@ const store={db:null,uid:null,
   async set(k,v){if(k==="perfil"&&this.db&&!mineReady)return;if(this.db){try{await this.mine().doc(k).set(v);return}catch(e){toast("No se pudo guardar. Revisa tu conexión.")}}LS.set(k,v)},
   crm(){return this.db.collection("users/"+this.uid+"/crm")},
   async contacts(){if(this.db){for(let i=0;i<3;i++){try{const q=await this.crm().get();return q.docs.map(d=>Object.assign({id:d.id},d.data()))}catch(e){await new Promise(r=>setTimeout(r,1500))}}toast("No se pudieron cargar tus contactos. Revisa tu conexión y vuelve a abrir la app.");return []}return LS.get("crm")||[]},
-  async saveContact(c){if(!c.id&&!c.creado)c.creado=Date.now();const{id,...b0}=c;const body=JSON.parse(JSON.stringify(b0));if(this.db){try{if(id){await this.crm().doc(id).set(body);return id}const r=await this.crm().add(body);return r.id}catch(e){console.error("saveContact",e);toast("No se pudo guardar el contacto ("+((e&&(e.code||e.message))||"error").toString().slice(0,60)+"). Revise su internet e intente de nuevo.");return null}}
+  async saveContact(c){if(!c.id&&!c.creado)c.creado=Date.now();const{id,...b0}=c;const body=JSON.parse(JSON.stringify(b0));if(this.db){try{if(id){await this.crm().doc(id).set(body);return id}const r=await this.crm().add(body);return r.id}catch(e){console.error("saveContact",e);toast("No se pudo guardar el contacto ("+errCod(e)+"). Revise su internet e intente de nuevo.");return null}}
     const all=LS.get("crm")||[];if(!id){c.id="c"+Date.now();all.push(c)}else{const i=all.findIndex(x=>x.id===id);all[i]=c}LS.set("crm",all);return c.id},
   async delContact(id){if(this.db){try{await this.crm().doc(id).delete()}catch(e){toast("No se pudo eliminar.")}return}
     LS.set("crm",(LS.get("crm")||[]).filter(x=>x.id!==id))}
@@ -2861,7 +2862,7 @@ function lzgAdmin(){const G=(liderRes&&liderRes.grupo)||{};openSheet(`<p class="
   <input id="lzgL" value="${esc(G.m===mesMeta()?G.link||"":"")}" placeholder="https://chat.whatsapp.com/…" style="width:100%;margin-bottom:12px">
   <button class="btn" id="lzgS" style="width:100%">Guardar</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cancelar</button>`,()=>{$("#lzgS").onclick=async()=>{let v=$("#lzgL").value.trim();
     if(!/^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]+/.test(v)){toast("Pegue un link de grupo de WhatsApp (chat.whatsapp.com/…)");return}v=v.split("?")[0];
-    const z={m:mesMeta(),link:v,t:Date.now()};try{await store.db.doc("team/liderazgo").set({grupo:z},{merge:true});liderRes=liderRes||{};liderRes.grupo=z;closeSheet();toast("✅ Link guardado");try{renderEquipo()}catch(e){}}catch(e){toast("No se pudo guardar: "+(e.code||e.message))}}})}
+    const z={m:mesMeta(),link:v,t:Date.now()};try{await store.db.doc("team/liderazgo").set({grupo:z},{merge:true});liderRes=liderRes||{};liderRes.grupo=z;closeSheet();toast("✅ Link guardado");try{renderEquipo()}catch(e){}}catch(e){toast("No se pudo guardar ("+errCod(e)+")")}}})}
 function lzBienMarcar(r){try{const S=lcSeen();S[lcMes()+"|"+nrmN(r.n)+"|"+r.k]=1;LS.set("lcSeen:"+store.uid,S);LS.set("lcAviso:"+store.uid+":"+lcMes(),1)}catch(e){}}
 function lcAvisoYo(){try{const yo=miRegistro().nombre||miNombreFull();if(!yo)return;const r=lcLista0().find(x=>sameN(x.n,yo));if(!r||r.k!=="lid")return;const k="lcAviso:"+store.uid+":"+lcMes();if(LS.get(k))return;LS.set(k,1);
   avisoTop("🛡️ ¡Ya es Líder del sistema!","Le faltan "+fmt(calCfg().esp-r.v)+" pts para Líder Espartano. ¡Vamos!",()=>{eqTab="ranking";rankMetric="liderazgo";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()})}catch(e){}}
@@ -5420,7 +5421,7 @@ const rsvpK=e=>ahF("ev:"+e.id).slice(0,6);
 async function rsvpPub(e){// Firestore no acepta listas dentro de listas: los anfitriones se guardan como "Nombre|esp"
   try{if(!store.db||!miPCode())return false;const o=rsvpObj(e),k=rsvpK(e),h=ahF(JSON.stringify(o)),P=LS.get("evPub")||{};if(P[k]&&P[k].h===h)return true;
   const ev={[k]:Object.assign({},o,{a:(o.a||[]).map(x=>x.join("|"))})};Object.keys(P).forEach(q=>{if(q!==k&&P[q].f<addD(TODAY,-2)){ev[q]=null;delete P[q]}});
-  await store.db.doc("perfiles/"+miPCode()).set({uid:store.uid,ev},{merge:true});P[k]={h,f:e.fecha};LS.set("evPub",P);return true}catch(x){try{toast("Link corto no disponible ("+String(x&&(x.code||x.message)||x).slice(0,80)+"). Se usó el link normal.")}catch(_){}return false}}
+  await store.db.doc("perfiles/"+miPCode()).set({uid:store.uid,ev},{merge:true});P[k]={h,f:e.fecha};LS.set("evPub",P);return true}catch(x){try{toast("Link corto no disponible ("+errCod(x)+"). Se usó el link normal.")}catch(_){}return false}}
 function rsvpLink(e){const k=rsvpK(e),P=LS.get("evPub")||{};if(P[k]&&P[k].h===ahF(JSON.stringify(rsvpObj(e)))&&miPCode())return "https://actionleadersplus.com/j?p="+encodeURIComponent(miPCode())+"&e="+k;
   return rsvpLinkL(e)}
 function rsvpLinkL(e){const o={...(e.bx?{bx:1,bt:String(e.bxT||BX_T).slice(0,34),bs:String(e.bxS||"").slice(0,40)}:{}),e:e.id,d:store.uid,p:miPCode(),dn:nv(miRegistro().nombre||miNombreCorto()||""),tp:e.tipo,ds:+e.dis||1,c:e.ciudad||"",l:e.lugar||"",ls:e.lugarSub||"",m:safeUrl(e.maps||"")||"",z:e.modo==="virtual"?1:0,f:e.fecha,h:e.hora,a:(e.lid||[]).slice(0,7).map(x=>[nv(x.n),x.rol==="esp"?"esp":""])};
@@ -7328,7 +7329,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261109231817";var busy=false,pend=null;
+(function(){var V="20261110004727";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
