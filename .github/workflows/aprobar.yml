@@ -5,6 +5,7 @@ on:
     inputs:
       dry: { description: "1 = solo prueba (no escribe)", default: "" }
       grand: { description: "1 = aprobar a todos los ya registrados", default: "" }
+      full: { description: "1 = revisar todas las cuentas ahora", default: "" }
 concurrency: { group: aprobar, cancel-in-progress: false }
 jobs:
   a:
@@ -18,3 +19,4 @@ jobs:
           FIREBASE_SA: "${{ secrets.FIREBASE_SA }}"
           DRY: "${{ github.event.inputs.dry }}"
           GRAND: "${{ github.event.inputs.grand }}"
+          FULL: "${{ github.event.inputs.full }}"

@@ -6639,7 +6639,7 @@ function renderWel(){const el=$("#wel");
       err.hidden=true;const bt=$("#regOk");bt.disabled=true;bt.textContent="Enviando…";
       try{d.fecha=new Date().toISOString();await store.db.doc("users/"+store.uid).set({registro:d,nombre:d.nombre,email:(fbUser&&fbUser.email)||"",creado:window.FB.serverTimestamp()},{merge:true});
         regDoc=Object.assign({},regDoc||{},{registro:d});if(!profile.nombrePila){profile.nombrePila=d.nombre.split(" ")[0];$("#hello").textContent="Hola, "+profile.nombrePila}
-        toast("¡Registro enviado!");publicarInv();if(invData)store.db.doc("invitaciones/"+invData.id).set({usadoPor:store.uid,usado:Date.now()},{merge:true}).catch(()=>{});welMark("registro");autoFoto()}catch(e){bt.disabled=false;bt.textContent="Enviar mi registro";err.textContent="No se pudo enviar. Revisa tu conexión e intenta de nuevo.";err.hidden=false}}}
+        toast("¡Registro enviado!");if(!isAdmin)setTimeout(()=>apRevisar().catch(()=>{}),1500);publicarInv();if(invData)store.db.doc("invitaciones/"+invData.id).set({usadoPor:store.uid,usado:Date.now()},{merge:true}).catch(()=>{});welMark("registro");autoFoto()}catch(e){bt.disabled=false;bt.textContent="Enviar mi registro";err.textContent="No se pudo enviar. Revisa tu conexión e intenta de nuevo.";err.hidden=false}}}
 
   $("#welHead").innerHTML=head;$("#welVH").innerHTML=vh;$("#welVB").innerHTML=vbtn;$("#welRest").innerHTML=rest;
   $("#welVidOk").onclick=()=>welMark("video");
@@ -7245,11 +7245,11 @@ let apTm=null,apVisto=false;
 async function apClaims(force){try{if(window.__T&&window.__T.claims)return window.__T.claims;if(fbUser&&fbUser.getIdTokenResult)return (await fbUser.getIdTokenResult(!!force)).claims||{}}catch(e){}return {ap:true}}
 async function apRevisar(force){const c=await apClaims(force),e=regDoc&&regDoc.apE;
   if(c.ap===true){if(apTm){clearInterval(apTm);apTm=null}if(apVisto)location.reload();return}
-  if(c.ap===false||e==="p"||e==="no")apMostrar(e==="no"&&c.ap!==true?"no":"p");
+  if(c.ap===false||e==="p"||e==="no")apMostrar(e==="no"?"no":(c.nr&&e!=="p")?"v":"p");
   if(!apTm)apTm=setInterval(()=>apRevisar(true).catch(()=>{}),(c.ap===false||apVisto)?60e3:180e3)}
 function apMostrar(k){let d=$("#apGate");if(!d){d=document.createElement("div");d.id="apGate";document.body.appendChild(d)}apVisto=true;document.body.style.overflow="hidden";
   const r=(regDoc&&regDoc.registro)||{},sp=String(r.patrocinador||"").split(" ").slice(0,2).join(" ");
-  d.innerHTML=k==="no"?`<div class="apC"><div class="apI">🔒</div><h2>Su cuenta no fue aprobada</h2><p>Si cree que es un error, hable con ${sp?"<b>"+esc(sp)+"</b>, su patrocinador":"su patrocinador"} para que la revise.</p><button class="btn ghost" id="apOut">Salir</button></div>`
+  d.innerHTML=k==="v"?`<div class="apC"><div class="apI">🔎</div><h2>Estamos verificando su cuenta</h2><p>Tarda unos minutos. Cuando termine, la app se abre sola.</p><p class="small">Puede dejar esta pantalla abierta o volver más tarde.</p><button class="btn" id="apRe">🔄 Revisar de nuevo</button><button class="btn ghost" id="apOut">Salir</button></div>`:k==="no"?`<div class="apC"><div class="apI">🔒</div><h2>Su cuenta no fue aprobada</h2><p>Si cree que es un error, hable con ${sp?"<b>"+esc(sp)+"</b>, su patrocinador":"su patrocinador"} para que la revise.</p><button class="btn ghost" id="apOut">Salir</button></div>`
   :`<div class="apC"><div class="apI">⏳</div><h2>Su cuenta está en revisión</h2><p>No encontramos su correo ni su WhatsApp en inCruises. ${sp?"<b>"+esc(sp)+"</b>, su patrocinador,":"Su patrocinador"} o el administrador la aprobarán pronto.</p><p class="small">Cuando la aprueben, la app se abre sola. No necesita hacer nada más.</p><button class="btn" id="apRe">🔄 Revisar de nuevo</button><button class="btn ghost" id="apOut">Salir</button></div>`;
   const re=d.querySelector("#apRe");if(re)re.onclick=async()=>{re.disabled=true;re.textContent="Revisando…";await apRevisar(true).catch(()=>{});if($("#apRe")){re.disabled=false;re.textContent="🔄 Revisar de nuevo";toast("Todavía está en revisión")}};
   d.querySelector("#apOut").onclick=async()=>{try{await window.FB.logout()}catch(e){}location.reload()}}
@@ -7434,7 +7434,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110075707";var busy=false,pend=null;
+(function(){var V="20261110081408";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

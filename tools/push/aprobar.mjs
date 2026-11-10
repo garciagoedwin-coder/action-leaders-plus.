@@ -47,7 +47,7 @@ export function miembros(team, users) {
 }
 
 async function main() {
-  const DRY = !!process.env.DRY, GRAND = !!process.env.GRAND;
+  const DRY = !!process.env.DRY, GRAND = !!process.env.GRAND, FULL = !!process.env.FULL;
   const { initializeApp, cert } = await import("firebase-admin/app");
   const { getFirestore, FieldValue } = await import("firebase-admin/firestore");
   const { getAuth } = await import("firebase-admin/auth");
@@ -61,12 +61,14 @@ async function main() {
   // Cuentas de Firebase Auth (gratis, sin lecturas de Firestore)
   const A = []; let pt; do { const r = await auth.listUsers(1000, pt); A.push(...r.users); pt = r.pageToken; } while (pt);
   // Documentos de users: TODOS solo cuando hace falta (primera vez o cada hora para los miembros); si no, solo los que aún no están aprobados.
-  const _n = new Date(), hora = _n.getUTCHours() % 6 === 0 && _n.getUTCMinutes() < 10; // cada 6 h: todas las cuentas
+  const _n = new Date(), hora = FULL || (_n.getUTCHours() % 6 === 0 && _n.getUTCMinutes() < 10); // cada 6 h: todas las cuentas
   // Aprobaciones manuales (patrocinador o admin): aprob/{uid} {ok, por, t}
   const M = (await db.collection("aprob").get()).docs;
   const man = new Map(M.map(d => [d.id, d.data()]));
   // Cada 10 min solo se leen las cuentas sin veredicto o con aprobación manual nueva; cada 6 horas, todas (miembros y re-chequeo).
-  const leer = A.filter(a => (a.customClaims || {}).ap === undefined || man.has(a.uid));
+  // nr = cuenta sin registro (ap=false). Si volvió a entrar en la última hora, se revisa: puede que se esté registrando ahora.
+  const reciente = a => Date.now() - Date.parse(a.metadata.lastRefreshTime || a.metadata.lastSignInTime || 0) < 3600e3;
+  const leer = A.filter(a => { const c = a.customClaims || {}; return c.ap === undefined || man.has(a.uid) || (c.ap === false && c.nr && reciente(a)); });
   let docs;
   if (GRAND || hora) docs = (await db.collection("users").get()).docs;
   else docs = leer.length ? await db.getAll(...leer.map(a => db.doc("users/" + a.uid))) : [];
@@ -77,7 +79,7 @@ async function main() {
   let nAp = 0, nAuto = 0, nMan = 0, nNo = 0, nPend = 0, nSis = 0, nCl = 0; const avisos = [], aprobados = [];
   for (const a of A) {
     // ap: true = aprobada · false = en revisión / rechazada / sin registro (más de 2 h) · sin marcar = cuenta recién creada (aún sin veredicto)
-    if (!(GRAND || hora) && !U.has(a.uid) && (a.customClaims || {}).ap !== undefined) continue;
+    if (!(GRAND || hora) && !leer.includes(a)) continue;
     const c = a.customClaims || {}, u = U.get(a.uid); let ap = c.ap, sis = !!c.sis, apE = null;
     const reg = !!(u && u.registro && u.registro.nombre), vieja = Date.now() - Date.parse(a.metadata.creationTime) > 2 * 3600e3;
     if (ap !== true) {
@@ -93,7 +95,8 @@ async function main() {
     }
     if (mem) sis = mem.uids.has(a.uid);
     if (ap === true) nAp++; if (sis) nSis++;
-    if (ap !== c.ap || sis !== !!c.sis) { nCl++; if (!DRY) { const nc = { ...c, sis }; if (ap === undefined) delete nc.ap; else nc.ap = ap; await auth.setCustomUserClaims(a.uid, nc); } }
+    const nr = ap === false && !reg;
+    if (ap !== c.ap || sis !== !!c.sis || nr !== !!c.nr) { nCl++; if (!DRY) { const nc = { ...c, sis }; if (ap === undefined) delete nc.ap; else nc.ap = ap; if (nr) nc.nr = true; else delete nc.nr; await auth.setCustomUserClaims(a.uid, nc); } }
     if (apE && u && u.apE !== apE && !DRY) await db.doc("users/" + a.uid).set({ apE, apT: Date.now() }, { merge: true });
   }
   console.log("cuentas", A.length, "docs", U.size, "aprobadas", nAp, "auto", nAuto, "manual", nMan, "rechazadas", nNo, "pendientes", nPend, "miembros", nSis, "claims cambiados", nCl, DRY ? "(prueba)" : "");
