@@ -47,6 +47,13 @@ service cloud.firestore {
     match /team/{doc=**} { allow read: if socio(); allow write: if isAdmin(); }
     match /sisPriv/{d} { allow read: if sis(); allow write: if isAdmin(); }
     // Grupo de WhatsApp del equipo (10 nov): solo cuentas YA aprobadas (sin periodo de gracia) y admins
+    // Socios nuevos sin app (10 nov): el patrocinador o los líderes marcan "va a trabajar" o "es cliente". Un socio por cambio.
+    match /snvd/{d} {
+      allow read: if socio();
+      allow create: if socio() && request.resource.data.keys().hasOnly(['c']) && request.resource.data.c.size() == 1;
+      allow update: if socio() && request.resource.data.keys().hasOnly(['c'])
+        && request.resource.data.c.diff(resource.data.c).affectedKeys().size() == 1;
+    }
     match /privAp/{d} { allow read: if isAdmin() || (signedIn() && request.auth.token.get('ap', false) == true); allow write: if isAdmin(); }
     match /aprob/{uid} {
       allow read, delete: if isAdmin();

@@ -676,3 +676,10 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Socios nuevos: contadores 📵/⏳/🏅. Workflow avisos-sinapp.yml (9:47 a.m. HN) → enviar.mjs sinapp: push diario al patrocinador de activaciones de 30 días sin cuenta registrada (huella ek/wk o nombre). Logs solo conteos.
 - Agenda: botón «Crear actividad» (.agMas) y opciones en .amL. Aviso de viaje: el admin lo quita en su teléfono (LS viaAdm).
 - tools/smoke.js a veces falla en «mios» (una ventana tapa el clic); si pasa, se vuelve a correr .publicar.sh.
+
+## Socios nuevos, plan e insignia Premium (10 nov, tarde)
+- Socios nuevos SIN app: botones «🚀 Va a trabajar» / «🧳 Es cliente» (patrocinador, su línea o admin) → snvd/d {c:{idActivación:{s:"t"|"c"|"",por,pn,t}}} (1 lectura, caché 10 min; regla en respaldo). Cliente sigue en el Dream Team y deja de recibir el aviso sinapp. «❓ Sin decidir» = sin marca. Mensajes «Preguntarle al patrocinador / al líder».
+- Pestañas de mes (#snvMs) en dos tarjetas; rango del patrocinador con dtRg junto a su nombre.
+- Plan: el patrocinador elige el paquete ANTES de mandar el enlace (invPlan/invPlanHoja → invitaciones/{id} {by,plan,gen:1}, enlace &b=id). Registro ya no tiene selector de plan (sin invitación = vacío, «por confirmar»). Starter es plan (50 pts). aprobar.mjs corrige registro.plan con el paquete de la activación (huella ek/wk), planPor "inCruises"; no toca planPor "admin"/"reporte" (reporte mensual: pendiente de que Edwin lo mande).
+- ★ PREMIUM: premN(nombre)/esPrem (registro.plan o paquete de la activación) junto al nombre en listas (.prem negra con borde dorado).
+- Se quitó «generar ingresos» del mensaje para clientes (clW2). Todavía hay «generar ingresos» en la invitación a la presentación virtual (sala) y en la encuesta: preguntar a Edwin.

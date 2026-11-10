@@ -76,7 +76,10 @@ async function main() {
   const meta = db.doc("push_meta/aprob"), mt = (await meta.get()).data() || {}, avisados = mt.n || {};
   const mem = (GRAND || hora) ? miembros(team, [...U.values()]) : null;
   const ADM = A.filter(a => ["garciagoedwin@gmail.com", "actionleadersoficial@gmail.com", "edwing.go@gmail.com"].includes(String(a.email || "").toLowerCase())).map(a => a.uid);
-  let nAp = 0, nAuto = 0, nMan = 0, nNo = 0, nPend = 0, nSis = 0, nCl = 0; const avisos = [], aprobados = [];
+  let nAp = 0, nAuto = 0, nMan = 0, nNo = 0, nPend = 0, nSis = 0, nCl = 0, nPlan = 0; const avisos = [], aprobados = [];
+  // 10 nov (Edwin): el paquete real sale del correo de activación de inCruises (team.json activaciones[].paquete), reconocido por la huella del correo o WhatsApp.
+  // Manda sobre lo que puso el patrocinador; no toca lo que cambió un admin (planPor "admin") ni lo del reporte mensual (planPor "reporte").
+  const actK = new Map(); for (const a of [...(team.activaciones || [])].sort((x, y) => Date.parse(x.fecha || 0) - Date.parse(y.fecha || 0))) { const pq = /premium/i.test(a.paquete || "") ? "Premium" : /starter/i.test(a.paquete || "") ? "Starter" : /classic/i.test(a.paquete || "") ? "Classic" : ""; if (!pq) continue; if (a.ek) actK.set(a.ek, pq); if (a.wk) actK.set(a.wk, pq); }
   for (const a of A) {
     // ap: true = aprobada · false = en revisión / rechazada / sin registro (más de 2 h) · sin marcar = cuenta recién creada (aún sin veredicto)
     if (!(GRAND || hora) && !leer.includes(a)) continue;
@@ -98,8 +101,10 @@ async function main() {
     const nr = ap === false && !reg;
     if (ap !== c.ap || sis !== !!c.sis || nr !== !!c.nr) { nCl++; if (!DRY) { const nc = { ...c, sis }; if (ap === undefined) delete nc.ap; else nc.ap = ap; if (nr) nc.nr = true; else delete nc.nr; await auth.setCustomUserClaims(a.uid, nc); } }
     if (apE && u && u.apE !== apE && !DRY) await db.doc("users/" + a.uid).set({ apE, apT: Date.now() }, { merge: true });
+    if (u && reg && !["admin", "reporte"].includes(u.registro.planPor)) { const ks = [a.emailVerified ? ahKe(a.email) : null, ...claveDe(u)].filter(Boolean); const pq = ks.map(k => actK.get(k)).find(Boolean);
+      if (pq && pq !== u.registro.plan) { nPlan++; if (!DRY) await db.doc("users/" + a.uid).set({ registro: { plan: pq, planPor: "inCruises", planCambio: new Date().toISOString() } }, { merge: true }); } }
   }
-  console.log("cuentas", A.length, "docs", U.size, "aprobadas", nAp, "auto", nAuto, "manual", nMan, "rechazadas", nNo, "pendientes", nPend, "miembros", nSis, "claims cambiados", nCl, DRY ? "(prueba)" : "");
+  console.log("cuentas", A.length, "docs", U.size, "aprobadas", nAp, "auto", nAuto, "manual", nMan, "rechazadas", nNo, "pendientes", nPend, "miembros", nSis, "claims cambiados", nCl, "planes corregidos", nPlan, DRY ? "(prueba)" : "");
   if (mem) { console.log("filas de liderazgo sin cuenta:", mem.sin.length); if (!DRY) await db.doc("team/sisU").set({ sin: mem.sin, n: mem.uids.size, t: Date.now() }); }
   if (DRY) return;
   for (const d of M) await d.ref.delete();

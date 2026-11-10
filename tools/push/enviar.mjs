@@ -380,15 +380,16 @@ async function main() {
     const reg = users.filter(u => u.registro && u.registro.nombre);
     const K = new Set(); for (const u of reg) { for (const k of [ahKe(u.email), ...claveDe(u)]) if (k) K.add(k); }
     const tiene = a => (a.ek && K.has(a.ek)) || (a.wk && K.has(a.wk)) || reg.some(u => mismoNombre(u.registro.nombre, a.socio));
-    const porSp = {}; let sinSp = 0;
-    for (const a of A) { if (tiene(a)) continue; const { sp } = destinosAct(a, users); if (!sp) { sinSp++; continue; } (porSp[sp] = porSp[sp] || []).push(a); }
+    const DEC = ((await db.doc("snvd/d").get()).data() || {}).c || {}; // decisiones: "c" = es cliente (no se avisa)
+    const porSp = {}; let sinSp = 0, nCli = 0;
+    for (const a of A) { if (tiene(a)) continue; if ((DEC[a.id || a.socio] || {}).s === "c") { nCli++; continue; } const { sp } = destinosAct(a, users); if (!sp) { sinSp++; continue; } (porSp[sp] = porSp[sp] || []).push(a); }
     const nom = a => String(a.socio || "").trim().split(/\s+/).slice(0, 1).map(w => w[0].toUpperCase() + w.slice(1).toLowerCase()).join("");
     for (const [sp, L] of Object.entries(porSp)) { const d = await db.doc("push/" + sp).get(); const x = d.exists ? d.data() : {}; hist[sp] = x.h || []; if (!x.tk || (x.pr || {}).act === false) continue;
       const ns = L.map(nom), lista = ns.length === 1 ? ns[0] : ns.slice(0, -1).join(", ") + " y " + ns[ns.length - 1];
       salida.push([sp, x.tk, L.length === 1
-        ? { title: `📵 ${lista} aún no entra a la app`, body: "Mándele hoy su enlace de invitación: sin la app no arranca su Plan de Inicio Rápido." }
-        : { title: `📵 ${L.length} socios nuevos aún no entran a la app`, body: `${lista}. Mándeles hoy su enlace de invitación para que arranquen su Plan de Inicio Rápido.` }]); }
-    console.log("activaciones 30 días:", A.length, "· sin app:", Object.values(porSp).reduce((t, L) => t + L.length, 0) + sinSp, "· patrocinadores a avisar:", Object.keys(porSp).length, "· sin patrocinador en la app:", sinSp);
+        ? { title: `📵 ${lista} aún no entra a la app`, body: (L.some(a => (DEC[a.id || a.socio] || {}).s === "t") ? "Va a trabajar: mándele hoy su enlace para que arranque su Plan de Inicio Rápido." : "¿Va a trabajar o es cliente? Márquelo en Equipo → Socios nuevos.") }
+        : { title: `📵 ${L.length} socios nuevos aún no entran a la app`, body: `${lista}. ¿Van a trabajar o son clientes? Márquelos en Equipo → Socios nuevos.` }]); }
+    console.log("activaciones 30 días:", A.length, "· sin app:", Object.values(porSp).reduce((t, L) => t + L.length, 0) + sinSp, "· patrocinadores a avisar:", Object.keys(porSp).length, "· sin patrocinador en la app:", sinSp, "· clientes:", nCli);
   } else if (modo === "sol") {
     // Solicitudes de cambio del Dream Team: users.solN (nueva, avisar a admins) / users.solR (respondida, avisar al socio)
     vista = "equipo";
