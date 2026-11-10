@@ -2066,14 +2066,14 @@ async function snCompartir(){if(!snList||!snList.length){toast("Agregue primero 
   const W=1080,H=1920,c=document.createElement("canvas");c.width=W;c.height=H;const g=c.getContext("2d");
   const bg=g.createLinearGradient(0,0,W,H);bg.addColorStop(0,"#0b1020");bg.addColorStop(1,"#0b3b57");g.fillStyle=bg;g.fillRect(0,0,W,H);
   g.fillStyle="#2AC1F1";g.font="800 34px Figtree,system-ui,sans-serif";g.fillText("MI MAPA DE SUEÑOS",70,130);
-  g.fillStyle="#fff";g.font="800 64px 'Bricolage Grotesque',Figtree,system-ui,sans-serif";g.fillText(miNombreCorto()||"Líder",70,210);
+  g.fillStyle="#fff";g.font="600 64px ALP,Figtree,system-ui,sans-serif";g.fillText(miNombreCorto()||"Líder",70,210);
   const why=(snInfo&&snInfo.porque)||"";if(why){g.font="600 34px Figtree,system-ui,sans-serif";g.fillStyle="rgba(255,255,255,.85)";const ws=("“"+why+"”").split(" ");let ln="",y=275;for(const w of ws){if(g.measureText(ln+w).width>940){g.fillText(ln,70,y);ln="";y+=46;if(y>370)break}ln+=w+" "}if(y<=370)g.fillText(ln,70,y)}
   const L=snList.slice(0,7),ims=await Promise.all(L.map(x=>snImg(x.img))),top=420,G=18,cw=(W-140-G)/2,bigH=500,n=L.length-1,rows=Math.ceil(n/2),rowH=rows?Math.min(320,(H-top-150-bigH-G*rows)/rows):0;
   const slots=[[70,top,W-140,n?bigH:900]];for(let i=0;i<n;i++){const rI=Math.floor(i/2),col=i%2,solo=i===n-1&&n%2===1;slots.push([solo?70:70+col*(cw+G),top+bigH+G+rI*(rowH+G),solo?W-140:cw,rowH])}
   const wrap=(t,x,y,mw,lh)=>{const ws=String(t).split(" ");let ln="",out=[];for(const w of ws){if(g.measureText(ln+w).width>mw&&ln){out.push(ln.trim());ln=""}ln+=w+" "}out.push(ln.trim());out=out.slice(0,2);out.reverse().forEach((l,k)=>g.fillText(l,x,y-k*lh))};
   L.forEach((x,i)=>{const [sx,sy,sw,sh]=slots[i];snCover(g,ims[i],sx,sy,sw,sh,28);const gr=g.createLinearGradient(0,sy+sh*.4,0,sy+sh);gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(1,"rgba(0,0,0,.78)");g.save();g.beginPath();g.roundRect(sx,sy,sw,sh,28);g.clip();g.fillStyle=gr;g.fillRect(sx,sy,sw,sh);g.restore();
     const fs=i===0||sw>600?44:30;g.fillStyle="#fff";g.font=`800 ${fs}px Figtree,system-ui,sans-serif`;wrap((x.ok?"✅ ":"")+(x.tit||""),sx+24,sy+sh-26,sw-48,fs*1.15)});
-  g.fillStyle="rgba(255,255,255,.7)";g.font="700 30px Figtree,system-ui,sans-serif";g.fillText("Action Leaders+",70,H-60);
+  g.fillStyle="rgba(255,255,255,.7)";g.font="700 30px Figtree,system-ui,sans-serif";g.fillText("Action Leaders",70,H-60);
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],"mi-mapa-de-suenos.jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(x){if(x&&x.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);toast("Imagen descargada 📲")}catch(e){toast("No se pudo crear la imagen")}}
@@ -2251,17 +2251,17 @@ function compListo(){const C=miComp();if(!C)return;const r=compR(C.rango)||{ic:"
    <p class="small muted" style="text-align:center;margin:0">¡Listo! Su compromiso queda en Inicio para que lo vea cada día.</p>
    <button class="btn" id="cpShare" style="width:100%">📤 Compartir mi compromiso</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
    const cc=$("#cpCard");if(cc)setTimeout(()=>confeti(cc,50),250);$("#cpShare").onclick=compFlyer})}
-async function compFlyer(){const C=miComp();if(!C)return;const r=compR(C.rango)||{ic:"🎯",t:C.rango},W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const g=c.getContext("2d");
+async function compFlyer(){try{await flFonts()}catch(e){}const C=miComp();if(!C)return;const r=compR(C.rango)||{ic:"🎯",t:C.rango},W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const g=c.getContext("2d");
   const bg=g.createLinearGradient(0,0,W,H);bg.addColorStop(0,"#0b1020");bg.addColorStop(1,"#0b3b57");g.fillStyle=bg;g.fillRect(0,0,W,H);
   g.textAlign="center";g.fillStyle="#2AC1F1";g.font="800 40px Figtree,system-ui,sans-serif";g.fillText("MI COMPROMISO DE "+mesNom().toUpperCase(),W/2,190);
-  g.fillStyle="#fff";g.font="800 96px 'Bricolage Grotesque',Figtree,system-ui,sans-serif";g.fillText("Me comprometo",W/2,330);
+  g.fillStyle="#fff";g.font="600 96px ALP,Figtree,system-ui,sans-serif";g.fillText("Me comprometo",W/2,330);
   g.font="700 54px Figtree,system-ui,sans-serif";g.fillStyle="rgba(255,255,255,.9)";g.fillText(miNombreCorto()||"Líder",W/2,420);
   g.font="800 70px Figtree,system-ui,sans-serif";g.fillStyle="#FDE047";g.fillText(r.ic+" "+r.t,W/2,590);
   const box=(x,y,w,n,t,col)=>{g.fillStyle="rgba(255,255,255,.1)";g.beginPath();g.roundRect(x,y,w,270,36);g.fill();g.fillStyle=col||"#fff";g.font="800 "+(String(n).length>4?104:120)+"px Figtree,system-ui,sans-serif";g.fillText(String(n),x+w/2,y+150);g.font="700 34px Figtree,system-ui,sans-serif";g.fillStyle="rgba(255,255,255,.85)";t.forEach((l,i)=>g.fillText(l,x+w/2,y+205+i*42))};
   const det=[C.ap?C.ap+" Premium":"",C.ac?C.ac+" Classic":""].filter(Boolean).join(" · ");
   box(90,640,430,C.act,["activaciones",det].filter(Boolean));box(560,640,430,C.pres,["presentaciones","por semana"]);
   if(C.vol)box(90,940,900,fmt(C.vol)+" pts",["de volumen personal"],"#FDE047");
-  g.fillStyle="rgba(255,255,255,.7)";g.font="700 34px Figtree,system-ui,sans-serif";g.fillText("Action Leaders+",W/2,H-45);
+  g.fillStyle="rgba(255,255,255,.7)";g.font="700 34px Figtree,system-ui,sans-serif";g.fillText("Action Leaders",W/2,H-45);
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],"mi-compromiso.jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(x){if(x&&x.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
@@ -2669,8 +2669,8 @@ function lcSello(g,k,x,y,col){g.save();g.translate(x,y);g.fillStyle=col;g.stroke
   else{g.beginPath();for(let i=0;i<10;i++){const r=i%2?8.5:20,a=-Math.PI/2+i*Math.PI/5;g.lineTo(Math.cos(a)*r,Math.sin(a)*r+1.5)}g.closePath();g.fill()}
   g.restore()}
 async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d"),esp=q.k==="esp";
-  await bienFonts();try{await Promise.all(["700 30px Figtree","600 30px Figtree","500 30px Figtree","400 30px Figtree","italic 700 40px 'Libre Baskerville'","400 60px 'Bebas Neue'"].map(x=>document.fonts.load(x)))}catch(x){}
-  const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', 'Bricolage Grotesque', Arial, sans-serif",LB="'Libre Baskerville', Georgia, serif";
+  await bienFonts();try{await Promise.all(["700 30px Figtree","600 30px Figtree","500 30px Figtree","400 30px Figtree","600 40px ALP","400 60px 'Bebas Neue'"].map(x=>document.fonts.load(x)))}catch(x){}
+  const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', ALP, Arial, sans-serif",LB="ALP, Figtree, sans-serif";
   const C=esp?{a:"#E8C766",g:["#FBEFC0","#D4AF37","#8C6A12"],t:["#FFF6D6","#E8C766","#A57F1C"],glow:"rgba(212,175,55,.38)",img:"media/flyers/lc-espartano.jpg?v=1",sello:"⚔️",tit:"LÍDER ESPARTANO"}
     :{a:"#D9DEE7",g:["#FFFFFF","#C0C7D2","#6B7280"],t:["#FFFFFF","#D9DEE7","#8A93A3"],glow:"rgba(200,210,225,.32)",img:"media/flyers/lc-lider.jpg?v=1",sello:"🛡️",tit:"LÍDER DEL MES"};if(q.tit)C.tit=q.tit;if(q.sello)C.sello=q.sello;
   g.fillStyle="#04060d";g.fillRect(0,0,W,H);const bg=await imgLoad(C.img);if(bg)g.drawImage(bg,0,0,W,H);
@@ -2682,7 +2682,7 @@ async function lcCanvas(q){const W=1080,H=1920,cv=document.createElement("canvas
   g.font="600 19px "+BF;g.fillStyle=C.a;const kw=sp("SISTEMA DE LIDERAZGO",540,172,8,"center");
   const ln=(x0,x1)=>{const z=g.createLinearGradient(x0,0,x1,0);z.addColorStop(0,"rgba(0,0,0,0)");z.addColorStop(1,C.a);g.fillStyle=z;g.fillRect(Math.min(x0,x1),165,Math.abs(x1-x0),1.5)};
   ln(540-kw/2-90,540-kw/2-24);{const z=g.createLinearGradient(540+kw/2+24,0,540+kw/2+90,0);z.addColorStop(0,C.a);z.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=z;g.fillRect(540+kw/2+24,165,66,1.5)}
-  const f1=String(q.n).trim().split(/\s+/)[0];g.textAlign="center";g.fillStyle="#fff";const NEW=true;let fz=66;g.font="italic 700 "+fz+"px "+LB;const hT=q.pres?"¡Hola, equipo! Soy "+f1:"¡Felicidades, "+f1+"!";while(g.measureText(hT).width>900&&fz>28){fz--;g.font="italic 700 "+fz+"px "+LB}g.fillText(hT,540,318);
+  const f1=String(q.n).trim().split(/\s+/)[0];g.textAlign="center";g.fillStyle="#fff";const NEW=true;let fz=66;g.font="600 "+fz+"px "+LB;const hT=q.pres?"¡Hola, equipo! Soy "+f1:"¡Felicidades, "+f1+"!";while(g.measureText(hT).width>900&&fz>28){fz--;g.font="600 "+fz+"px "+LB}g.fillText(hT,540,318);
   // foto
   const cx=540,cy=640,R=222;g.save();g.shadowColor=C.glow;g.shadowBlur=110;g.beginPath();g.arc(cx,cy,R+16,0,Math.PI*2);g.fillStyle="rgba(4,6,13,.7)";g.fill();g.restore();
   g.beginPath();g.arc(cx,cy,R+16,0,Math.PI*2);g.lineWidth=1.5;g.strokeStyle=esp?"rgba(232,199,102,.45)":"rgba(217,222,231,.45)";g.stroke();
@@ -2752,8 +2752,8 @@ async function rhCompartir(m,bt){let file=null;if(bt){bt.disabled=true;bt.textCo
   if(file&&navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(e){if(e&&e.name==="AbortError")return}}
   if(file){const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click()}try{copy(t)}catch(e){}}
 async function rhCanvas(m){const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
-  await bienFonts();try{await Promise.all(["700 30px Figtree","600 30px Figtree","400 30px Figtree","italic 400 40px Georgia","400 60px 'Bebas Neue'","400 80px 'Cormorant Caps'"].map(x=>document.fonts.load(x)))}catch(x){}
-  const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', Arial, sans-serif",CF="'Cormorant Caps', Georgia, serif",IT="italic 400 {s}px Georgia, 'Times New Roman', serif",OR="#FFB15C";
+  await bienFonts();try{await Promise.all(["700 30px Figtree","600 30px Figtree","400 30px Figtree","600 40px ALP","400 60px 'Bebas Neue'","400 80px 'Cormorant Caps'"].map(x=>document.fonts.load(x)))}catch(x){}
+  const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', Arial, sans-serif",CF="'Cormorant Caps', Georgia, serif",IT="600 {s}px ALP, Figtree, sans-serif",OR="#FFB15C";
   const sp=(t,x,y,ls,al)=>{let w=0;for(const ch of t)w+=g.measureText(ch).width+ls;w-=ls;let cx=al==="right"?x-w:al==="center"?x-w/2:x;g.textAlign="left";for(const ch of t){g.fillText(ch,cx,y);cx+=g.measureText(ch).width+ls}return w};
   const ww=(t,ls)=>{let w=0;for(const ch of t)w+=g.measureText(ch).width+ls;return w-ls};
   g.fillStyle="#05070d";g.fillRect(0,0,W,H);const bg=await imgLoad("media/flyers/lc-espartano.jpg?v=1");if(bg)g.drawImage(bg,0,0,W,H);
@@ -3663,7 +3663,7 @@ function rcAvisos(D,c){const K="rcSeen:"+D.R.id;let seen=LS.get(K);const nuevo=s
   const fal=Math.max(0,D.meta-D.tot);nw.slice(0,2).forEach((x,i)=>setTimeout(()=>{try{avisoTop(`🎉 ${x.n} acaba de cerrar +${x.v.toLocaleString("en-US")}`,fal?`Reto de cierre · faltan ${fal.toLocaleString("en-US")} pts`:"¡Meta del equipo cumplida!",()=>{LS.set("rcOpen:"+D.R.id,1);go&&go("inicio");renderRC()})}catch(e){}confeti(c,60)},1500+i*4500))}
 async function rcCanvas(D){const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
   await bienFonts();try{await Promise.all(["800 30px Figtree","700 30px Figtree","500 30px Figtree","400 60px 'Bebas Neue'"].map(x=>document.fonts.load(x)))}catch(x){}
-  const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', 'Bricolage Grotesque', Arial, sans-serif",GO="#FDE68A",AM="#FBBF24",fm=n=>n.toLocaleString("en-US");
+  const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', ALP, Arial, sans-serif",GO="#FDE68A",AM="#FBBF24",fm=n=>n.toLocaleString("en-US");
   g.fillStyle="#07080c";g.fillRect(0,0,W,H);const bg=await imgLoad("media/flyers/lc-espartano.jpg");if(bg){g.save();g.filter="blur(6px) brightness(.42)";g.drawImage(bg,-30,-50,W+60,H+100);g.restore()}
   let gr=g.createRadialGradient(W/2,560,40,W/2,560,760);gr.addColorStop(0,"rgba(249,115,22,.38)");gr.addColorStop(1,"rgba(249,115,22,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
   gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,"rgba(0,0,0,.25)");gr.addColorStop(.55,"rgba(0,0,0,.1)");gr.addColorStop(1,"rgba(0,0,0,.8)");g.fillStyle=gr;g.fillRect(0,0,W,H);
@@ -4287,8 +4287,8 @@ async function hgQuien(g,t,x,y,dark){const nm=t&&t.n||"",lu=t&&t.l||"";if(!nm)re
 const HIST_FRASES=["Viajes & Negocios","Emprendedor digital","Emprendedora digital","Empresario digital","Empresaria digital","Constructor de sistemas","Constructora de sistemas","Líder de equipo"];
 // 8 nov (Edwin): por defecto "Viajes & Negocios"; si tiene rango Marketing Director o más, su rango. Lo que elija en su perfil manda.
 function hgBioDef(){try{const ri=miRangoIdx();if(ri>=2&&RANGOS[ri])return RANGOS[ri].n}catch(e){}return "Viajes & Negocios"}
-function hgBio(){const f=String((profile&&profile.histFrase)||"").trim();if(!f)return hgBioDef()+" · Action Leaders+";return /action leaders/i.test(f)?f:f+" · Action Leaders+"}
-async function hgFirma(g,claro){const W=1080,y0=1688,cx=124,cy=y0+52,r=52;let nm="";try{nm=nv(miNombreFull())||miNombreCorto()||""}catch(e){nm=miNombreCorto()||""}if(!nm)nm="Action Leaders+";
+function hgBio(){const f=String((profile&&profile.histFrase)||"").trim().replace(/Action Leaders\+/i,"Action Leaders");if(!f)return hgBioDef()+" · Action Leaders";return /action leaders/i.test(f)?f:f+" · Action Leaders"}
+async function hgFirma(g,claro){const W=1080,y0=1688,cx=124,cy=y0+52,r=52;let nm="";try{nm=nv(miNombreFull())||miNombreCorto()||""}catch(e){nm=miNombreCorto()||""}if(!nm)nm="Action Leaders";
   const fr=hgBio(),src=miFotoUrl();
   g.fillStyle=claro?"rgba(20,33,61,.15)":"rgba(255,255,255,.18)";g.fillRect(72,y0-28,W-144,2);
   const im=src?await imgLoad(src,!/^data:/.test(src)):null;g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.clip();
@@ -4646,7 +4646,10 @@ const PAIS_ISO={"Honduras":"HN","Estados Unidos":"US","España":"ES","Reino Unid
 const bandera=p=>{const c=PAIS_ISO[p];return c?String.fromCodePoint(...[...c].map(x=>127397+x.charCodeAt(0))):""};
 const BIEN_TH={classic:{img:"media/flyers/bienvenida-classic.jpg?v=7",a:"#5FD3F7",g:["#D7F4FE","#2AC1F1","#0A7DAD"],glow:"rgba(42,193,241,.55)",lab:"SOCIO CLASSIC",top:"CLASSIC",pill:0},
   premium:{img:"media/flyers/bienvenida-premium.jpg?v=7",a:"#E8C766",g:["#FBEFC0","#D4AF37","#8C6A12"],glow:"rgba(212,175,55,.5)",lab:"SOCIO PREMIUM",top:"PREMIUM",pill:1}};
-let bienFont=null;function bienFonts(){if(!bienFont)bienFont=Promise.all([["Bebas Neue","media/fonts/BebasNeue-Regular.ttf"],["Cormorant Caps","media/fonts/Cormorant-500-caps.ttf"]].map(([n,u])=>{try{const f=new FontFace(n,"url("+u+")");return f.load().then(x=>document.fonts.add(x)).catch(()=>{})}catch(e){return null}}));return bienFont}
+// 10 nov · MANUAL DE MARCA (opción B): mismos diseños, solo cambia la letra. Los nombres viejos de fuente ahora cargan las 3 de la marca:
+// 'Bebas Neue' → Barlow Condensed Bold (números y titulares angostos), 'Cormorant Caps' y ALBG/ALP → Poppins SemiBold, ALO/ALOR/Figtree → Figtree.
+// Excepción: el logotipo "ACTION LEADERS Training!" sigue con Bebas (ALBB) + Kaushan (ALKS).
+let bienFont=null;function bienFonts(){if(!bienFont)bienFont=Promise.all([["Bebas Neue","media/fonts/BarlowCondensed-Bold.ttf"],["Cormorant Caps","media/fonts/Poppins-SemiBold.ttf"],["ALBB","media/fonts/BebasNeue-Regular.ttf"],["ALP","media/fonts/Poppins-SemiBold.ttf"]].map(([n,u])=>{try{const f=new FontFace(n,"url("+u+")");return f.load().then(x=>document.fonts.add(x)).catch(()=>{})}catch(e){return null}}));return bienFont}
 async function bienFotoPat(){try{if(fotosFs===null||fotosFs===undefined)await cargarFotos()}catch(e){}
   const mine=(fotosFs||[]).find(x=>x.id===store.uid&&x.img);const C=[fotoDe(miNombreFull()),fotoDe(miRegistro().nombre||""),fotoDe(miNombreCorto()),mine&&mine.img,fbUser&&fbUser.photoURL].filter(Boolean);
   for(const u of [...new Set(C)]){const im=await imgLoad(u,!/^(data|blob):/.test(u));if(im)return u}return ""}
@@ -4681,7 +4684,7 @@ async function circFoto(g,src,cx,cy,r,ph,vacio){const im=src?await imgLoad(src,!
 window.__circFoto=circFoto;
 async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo){n=nv(n);pat=nv(pat);const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");const T=BIEN_TH[plan]||BIEN_TH.classic;
   await bienFonts();try{await Promise.all(["800 30px Figtree","600 30px Figtree","500 30px Figtree","400 60px 'Bebas Neue'"].map(x=>document.fonts.load(x)))}catch(x){}
-  const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', 'Bricolage Grotesque', Arial, sans-serif";
+  const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', ALP, Arial, sans-serif";
   g.fillStyle="#05070c";g.fillRect(0,0,W,H);const bg=await imgLoad(T.img);if(bg)g.drawImage(bg,0,0,W,H);
   let gr=g.createLinearGradient(0,0,W,0);gr.addColorStop(0,"rgba(0,0,0,.7)");gr.addColorStop(.5,"rgba(0,0,0,.3)");gr.addColorStop(.75,"rgba(0,0,0,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
   gr=g.createLinearGradient(0,H,0,H*.6);gr.addColorStop(0,"rgba(0,0,0,.85)");gr.addColorStop(1,"rgba(0,0,0,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
@@ -5051,7 +5054,7 @@ async function trCanvas(e,fmt,est){fmt=fmt==="p"?"p":"h";if(est)fmt="h";if(!(typ
    rr(x,y,w,h,h/2);g.fillStyle="rgba(255,255,255,.06)";g.fill();g.lineWidth=1;g.strokeStyle="rgba(255,255,255,.18)";g.stroke();
    sombra("#FF3B3B",14,()=>{g.beginPath();g.arc(x+24,y+h/2,5,0,Math.PI*2);g.fillStyle="#FF3B3B";g.fill()});tx(t,x+40,y,h,"700 16px ALO, Figtree, sans-serif","#fff","left","5px")}
   // ACTION LEADERS
-  {const s=L.l1s;g.font=s+"px 'Bebas Neue', Impact, sans-serif";sp("4px");const a="ACTION ",b="LEADERS",wa=g.measureText(a).width,wb=g.measureText(b).width,x0=C-(wa+wb)/2;g.textAlign="left";g.textBaseline="alphabetic";
+  {const s=L.l1s;g.font=s+"px ALBB, 'Bebas Neue', Impact, sans-serif";sp("4px");const a="ACTION ",b="LEADERS",wa=g.measureText(a).width,wb=g.measureText(b).width,x0=C-(wa+wb)/2;g.textAlign="left";g.textBaseline="alphabetic";
    sombra("rgba(120,170,255,.25)",40,()=>{g.fillStyle="#fff";g.fillText(a,x0,L.l1)});
    const gr=g.createLinearGradient(0,L.l1-s*.72,0,L.l1);gr.addColorStop(0,"#8EC5FF");gr.addColorStop(.45,"#3D8BFF");gr.addColorStop(1,"#1452D9");sombra("rgba(40,110,255,.45)",26,()=>{g.fillStyle=gr;g.fillText(b,x0+wa,L.l1)});sp("0px")}
   // Training!
@@ -5100,7 +5103,7 @@ async function trCanvas(e,fmt,est){fmt=fmt==="p"?"p":"h";if(est)fmt="h";if(!(typ
   if(est){const a="Así se construye un negocio ",b="con sistema 💪",f="600 38px ALO, Figtree, sans-serif";g.font=f;const wa=g.measureText(a).width,wb=g.measureText(b).width,x0=C-(wa+wb)/2;
     tx(a,x0,1450,50,f,"#fff","left");tx(b,x0+wa,1450,50,f,"#8EC5FF","left");
     {const gr=g.createLinearGradient(110,0,970,0);gr.addColorStop(0,"rgba(142,197,255,0)");gr.addColorStop(.5,"rgba(142,197,255,.5)");gr.addColorStop(1,"rgba(142,197,255,0)");g.fillStyle=gr;g.fillRect(110,1512,860,1)}
-    let nm="";try{nm=nv(miNombreFull())||miNombreCorto()||""}catch(x){nm=""}const bio=(()=>{try{return hgBio()}catch(x){return "Action Leaders+"}})(),r=38,cy=1568;
+    let nm="";try{nm=nv(miNombreFull())||miNombreCorto()||""}catch(x){nm=""}const bio=(()=>{try{return hgBio()}catch(x){return "Action Leaders"}})(),r=38,cy=1568;
     const fn="700 30px ALO, Figtree, sans-serif",fb="500 20px ALOR, Figtree, sans-serif";g.font=fn;const w1=g.measureText(nm).width;g.font=fb;const w2=g.measureText(bio).width,tw=2*r+18+Math.max(w1,w2),sx=C-tw/2,cx=sx+r;
     g.save();g.beginPath();g.arc(cx,cy,r+3,0,Math.PI*2);g.fillStyle="#3D8BFF";g.fill();g.restore();let vac=false;await circFoto(g,(()=>{try{return miFotoUrl()}catch(x){return ""}})(),cx,cy,r,null,()=>{vac=true});
     if(vac){g.save();g.beginPath();g.arc(cx,cy,r,0,Math.PI*2);g.fillStyle="#0b1a36";g.fill();g.fillStyle="#8EC5FF";g.font="700 28px ALBG, Figtree, sans-serif";g.textAlign="center";g.textBaseline="middle";g.fillText(initials(nm||"AL"),cx,cy+1);g.restore()}
@@ -5402,7 +5405,7 @@ function eqzAbrir(){if(!eqzPuede()){toast("Solo los rangos pueden crear la reuni
     const del=$("#eqzDel");if(del)del.onclick=async()=>{if(!confirmar2(del))return;try{await store.db.doc("agendaEv/"+M.id).delete();EVQ=EVQ.filter(e=>e.id!==M.id);closeSheet();eqzPinta();toast("🗑️ Reunión eliminada")}catch(x){toast("No se pudo eliminar")}}})}
 
 let EVA=null,EVAt=0,evaFont=null;
-function evaFonts(){if(!evaFont){evaFont=Promise.all([["ALO","media/fonts/Outfit-Bold.ttf"],["ALOR","media/fonts/Outfit-Regular.ttf"],["ALBG","media/fonts/BricolageGrotesque-Bold.ttf"]].map(([n,u])=>{try{const f=new FontFace(n,"url("+u+")");return f.load().then(x=>document.fonts.add(x)).catch(()=>{})}catch(e){return null}}))}return evaFont}
+function evaFonts(){if(!evaFont){evaFont=Promise.all([["ALO","media/fonts/Figtree-VF.ttf"],["ALOR","media/fonts/Figtree-VF.ttf"],["ALBG","media/fonts/Poppins-SemiBold.ttf"],["Figtree","media/fonts/Figtree-VF.ttf"]].map(([n,u])=>{try{const f=new FontFace(n,"url("+u+")",/Figtree/.test(u)?{weight:"100 900"}:{});return f.load().then(x=>document.fonts.add(x)).catch(()=>{})}catch(e){return null}}))}return evaFont}
 function evaFichas(){const r=miRegistro()||{},L=(Array.isArray(r.linea)?r.linea:[]).slice();if(r.patrocinadorUid&&!L.includes(r.patrocinadorUid))L.push(r.patrocinadorUid);return ["all","u:"+store.uid].concat(L.filter(Boolean).map(u=>"d:"+u)).concat(isAdmin?["adm"]:[]).slice(0,30)}
 let evaUn=null,evaFirst=true;
 function evaListen(){if(evaUn||!store.db||!store.uid)return;try{evaUn=evCol().where("ver",evaFichas(),"array-contains-any").onSnapshot(q=>{EVAt=Date.now();const A0=q.docs.map(d=>Object.assign({id:d.id},d.data())),A=A0.filter(e=>e.tipo!=="equipo"&&e.fecha>=dkey(new Date(Date.now()-864e5)));EVQ=A0.filter(e=>e.tipo==="equipo");EVA=A.filter(e=>!e.cancel);
@@ -5926,7 +5929,7 @@ function abrirEnviarPagina(){let q="";const L=()=>contacts.filter(c=>!q||nrmN(c.
       const c={name:nm.slice(0,80),cc:ccx,phone:t.slice(0,15),stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(c);if(!id)return;c.id=id;contacts.push(c);conNuevo(c);enviarPaginaA(c)};
     $("#epCard").onclick=()=>compartirTarjeta("");$("#epCfg").onclick=()=>configMiPagina(false);
     $("#epCopy").onclick=async()=>{try{await navigator.clipboard.writeText(miPagina());toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})}
-async function invCanvas(){const W=1080,H=1350,K=2,cv=document.createElement("canvas");cv.width=W*K;cv.height=H*K;const g=cv.getContext("2d");g.scale(K,K);g.imageSmoothingQuality="high";
+async function invCanvas(){try{await flFonts()}catch(e){}const W=1080,H=1350,K=2,cv=document.createElement("canvas");cv.width=W*K;cv.height=H*K;const g=cv.getContext("2d");g.scale(K,K);g.imageSmoothingQuality="high";
   try{await Promise.all(["700 64px 'Bricolage Grotesque'","600 40px Figtree","700 26px Figtree"].map(f=>document.fonts.load(f)))}catch(x){}
   const HF="'Bricolage Grotesque', Figtree, Arial, sans-serif",BF="Figtree, Arial, sans-serif";
   const sp=(t,x,y,ls)=>{if("letterSpacing" in g){g.letterSpacing=ls+"px";g.fillText(t,x+ls/2,y);g.letterSpacing="0px"}else g.fillText(t.split("").join("\u200A"),x,y)};
@@ -5944,7 +5947,7 @@ async function invCanvas(){const W=1080,H=1350,K=2,cv=document.createElement("ca
   g.font="700 66px "+HF;g.fillStyle="#fff";g.fillText(nm,540,880);
   g.fillStyle="rgba(255,255,255,.18)";g.fillRect(510,930,60,2);
   g.font="600 42px "+BF;g.fillStyle="#fff";g.fillText("Viaja más, gasta menos",540,1010);
-  g.fillStyle="rgba(255,255,255,.62)";g.fillText("y crea un ingreso extra.",540,1064);
+  g.fillStyle="rgba(255,255,255,.62)";g.fillText("y emprenda desde su celular.",540,1064);
   const lo=await imgLoad("media/logo-al.png");if(lo){const h=46,w=lo.width*h/lo.height;g.globalAlpha=.75;g.drawImage(lo,540-w/2,1220,w,h);g.globalAlpha=1}
   return cv}
 window.__invCanvas=invCanvas;
@@ -7282,7 +7285,7 @@ function irPremiar(E){const st=irSt(),med=Object.assign({},st.med||{});let nueva
 function irCelebrar(w){if(!$("#sheet").hidden){setTimeout(()=>irCelebrar(w),4000);return}const g=!w,nm=(miRegistro().nombre||profile.nombrePila||"").split(" ")[0];
   openSheet(`<div class="irCel${g?" g":""}" id="irCel"><div class="irCelIc">${g?"🎓":w.ic}</div><div class="k">${g?"PLAN DE INICIO RÁPIDO COMPLETADO":"SEMANA "+w.n+" COMPLETADA"}</div><h2>${g?"¡Action Leader graduado!":"¡Insignia "+esc(w.k)+"!"}</h2><p>${g?`¡Felicidades${nm?", "+esc(nm):""}! Terminó sus 30 días. Ahora el ciclo continúa: ayude a su equipo a hacer el suyo.`:`¡Muy bien${nm?", "+esc(nm):""}! ${w.n<4?"Siga así: la semana "+(w.n+1)+" ya está lista.":"Ya casi se gradúa."}`}</p></div>
    <button class="btn" id="irFly" style="width:100%">📣 Compartir mi logro</button><button class="btn ghost" data-close style="width:100%">Seguir</button>`,()=>{confeti($("#irCel"),60);$("#irFly").onclick=()=>irFlyer(w)})}
-async function irFlyer(w){const g=!w,W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+async function irFlyer(w){try{await flFonts()}catch(e){}const g=!w,W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
   const gr=x.createLinearGradient(0,0,W,H);gr.addColorStop(0,"#0b1020");gr.addColorStop(.6,"#0b3b57");gr.addColorStop(1,g?"#8C6A12":"#0A7DAD");x.fillStyle=gr;x.fillRect(0,0,W,H);
   const rg=x.createRadialGradient(W/2,380,40,W/2,380,600);rg.addColorStop(0,g?"rgba(232,199,102,.45)":"rgba(42,193,241,.45)");rg.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=rg;x.fillRect(0,0,W,H);
   x.textAlign="center";x.fillStyle=g?"#E8C766":"#7DD3FC";x.font="700 34px Figtree,system-ui,sans-serif";x.fillText("PLAN DE INICIO RÁPIDO",W/2,140);
@@ -7292,7 +7295,7 @@ async function irFlyer(w){const g=!w,W=1080,H=1350,c=document.createElement("can
   const nm=miRegistro().nombre||profile.nombrePila||"";x.fillStyle="#fff";x.font="600 50px Figtree,system-ui,sans-serif";x.fillText(nv(nm).slice(0,32),W/2,860);
   x.fillStyle="rgba(255,255,255,.75)";x.font="500 36px Figtree,system-ui,sans-serif";x.fillText(g?"Completé mis 30 días de Inicio Rápido":"Completé la semana "+w.n+" de mi Inicio Rápido",W/2,930);
   x.fillStyle=g?"#E8C766":"#2AC1F1";x.font="800 40px Figtree,system-ui,sans-serif";x.fillText("#HASTAQUEFUNCIONE",W/2,1150);
-  x.fillStyle="rgba(255,255,255,.7)";x.font="700 34px Figtree,system-ui,sans-serif";x.fillText("Action Leaders+",W/2,H-70);
+  x.fillStyle="rgba(255,255,255,.7)";x.font="700 34px Figtree,system-ui,sans-serif";x.fillText("Action Leaders",W/2,H-70);
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],g?"graduado-inicio-rapido.jpg":"inicio-rapido-semana-"+w.n+".jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
