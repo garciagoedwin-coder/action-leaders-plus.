@@ -1,6 +1,6 @@
 name: Aprobación de cuentas
 on:
-  # schedule: se activa después de la primera corrida GRAND
+  schedule: [{ cron: "*/10 * * * *" }]
   workflow_dispatch:
     inputs:
       dry: { description: "1 = solo prueba (no escribe)", default: "" }

@@ -382,7 +382,7 @@ async function main() {
     // modo lzg además avisa a los miembros (push.sis == 1) que aún no se presentan.
     const mes = new Date().toISOString().slice(0, 7);
     const T = await db.doc("team/liderazgo").get(), G = (T.exists && T.data().grupo) || {};
-    if (!G.link || G.m !== mes) { console.log("Sin link del grupo para", mes); return; }
+    if (!(G.link || G.si) || G.m !== mes) { console.log("Sin link del grupo para", mes); return; }
     const ya = (await db.collection("users").where("lzG.m", "==", mes).get()).docs;
     const n = ya.map(d => ((d.data().registro || {}).nombre || "").trim()).filter(Boolean), yaU = new Set(ya.map(d => d.id));
     console.log("Ya se presentaron:", n.length);

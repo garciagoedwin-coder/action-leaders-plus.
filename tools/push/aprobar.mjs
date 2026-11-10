@@ -61,11 +61,11 @@ async function main() {
   // Cuentas de Firebase Auth (gratis, sin lecturas de Firestore)
   const A = []; let pt; do { const r = await auth.listUsers(1000, pt); A.push(...r.users); pt = r.pageToken; } while (pt);
   // Documentos de users: TODOS solo cuando hace falta (primera vez o cada hora para los miembros); si no, solo los que aún no están aprobados.
-  const hora = new Date().getUTCMinutes() < 10;
+  const _n = new Date(), hora = _n.getUTCHours() % 6 === 0 && _n.getUTCMinutes() < 10; // cada 6 h: todas las cuentas
   // Aprobaciones manuales (patrocinador o admin): aprob/{uid} {ok, por, t}
   const M = (await db.collection("aprob").get()).docs;
   const man = new Map(M.map(d => [d.id, d.data()]));
-  // Cada 10 min solo se leen las cuentas sin veredicto o con aprobación manual nueva; cada hora, todas (miembros y re-chequeo).
+  // Cada 10 min solo se leen las cuentas sin veredicto o con aprobación manual nueva; cada 6 horas, todas (miembros y re-chequeo).
   const leer = A.filter(a => (a.customClaims || {}).ap === undefined || man.has(a.uid));
   let docs;
   if (GRAND || hora) docs = (await db.collection("users").get()).docs;
