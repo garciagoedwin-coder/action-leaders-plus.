@@ -710,3 +710,6 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 
 ## Video de bienvenida en YouTube (10 nov)
 - WEL_YT = "y00_VwPo9Gg" (reemplazó a media/bienvenida-corto.mp4, que queda de respaldo si WEL_YT = ""). welVideoYT: API de YouTube (youtube-nocookie), revisa cada segundo: si salta más de 3 s adelante de lo visto, vuelve (seekTo); «Ya vi mi video» se desbloquea al 90 %; al terminar marca welMark("video"). Progreso en LS alp:welpos2 {t,max}; duración real en LS alp:welDur. config.bienvenida.video en team.json = el mismo link. Se quitó el listener viejo de mensajes de YouTube (marcaba visto con cualquier 90 %).
+
+## Logos en Academia › Materiales (10 nov)
+- «🛡️ Logos de Action Leaders» (acaLogos): media/logos/action-leaders-blanco.png y action-leaders-oscuro.png (6100×646, transparentes) y casco-azul.png (894×1000). Se descargan al abrir la hoja para compartir con un toque. Se generan con tools/flyer/logo/gen.html (servidor local, deviceScaleFactor 3).
