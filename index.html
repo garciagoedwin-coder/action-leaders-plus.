@@ -5879,10 +5879,10 @@ async function trHoy(){const el=$("#trHoy");if(!el)return;try{
   const PP=trOrden(trPon(e)),pon=PP.map(x=>x.n),k=e.id+"|"+pon.join(",")+"|"+trTema(e);
   const vivo=Date.now()>=turMs(e)-10*6e4,falta=turMs(e)-Date.now();
   const cuando=vivo?"🔴 EN VIVO AHORA":falta<36e5?"⏰ EN "+Math.max(1,Math.round(falta/6e4))+" MIN":"HOY · "+h12(e.hora);
-  const tc=t=>String(t||"").toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase()),quien=PP.length?PP.map(p=>{const r=tc(trRango(p));return `<b>${r?esc(r)+" ":""}${esc(nv(p.n))}</b>`}).reduce((a,b,i,A)=>i?a+(i===A.length-1?" y ":", ")+b:b,""):"";
+  const tc=t=>String(t||"").toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase()),quien=PP.length?PP.map(p=>{const r=tc(trRango(p));return `<b>${esc(nv(p.n))}</b>${r?", "+esc(r):""}`}).reduce((a,b,i,A)=>i?a+(i===A.length-1?" y ":"; ")+b:b,""):"";
   el.innerHTML=`<button type="button" class="trX" id="trHoyX" aria-label="Quitar">✕</button><div class="evH"><span class="evK">${cuando}</span><b>${esc(e.titulo)}</b>${trTema(e)?`<span class="evT">📚 ${esc(trTema(e))}</span>`:""}</div>
    <div class="evF" id="trHoyF">${trHoyF&&trHoyK===k?`<img src="${trHoyF}" alt="Flyer de ${esc(e.titulo)}">`:`<span>Creando el flyer…</span>`}</div>
-   ${quien?`<p class="evQ">🔥 Gran entrenamiento por ${quien}. <b>¡No falte!</b></p>`:`<p class="evQ">🔥 Gran entrenamiento hoy. <b>¡No falte!</b></p>`}
+   ${quien?`<p class="evQ">🔥 Hoy tenemos un gran entrenamiento con ${quien}. <b>¡No falte!</b></p>`:`<p class="evQ">🔥 Gran entrenamiento hoy. <b>¡No falte!</b></p>`}
    <div class="evB"><button type="button" class="btn" id="trHoyC">📣 Invitar con este flyer</button></div>`;el.hidden=false;
   $("#trHoyC").onclick=()=>abrirCompartir(e);$("#trHoyX").onclick=()=>{trHoyX=e.id;el.hidden=true};
   if(!(trHoyF&&trHoyK===k)){try{const cv=await trCanvas(e,"p");const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.85));if(trHoyF)URL.revokeObjectURL(trHoyF);trHoyF=URL.createObjectURL(b);trHoyK=k;const f=$("#trHoyF");if(f)f.innerHTML=`<img src="${trHoyF}" alt="Flyer de ${esc(e.titulo)}">`}
@@ -7588,7 +7588,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110102222";var busy=false,pend=null;
+(function(){var V="20261110103851";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
