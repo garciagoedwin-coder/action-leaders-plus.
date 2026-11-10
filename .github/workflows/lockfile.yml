@@ -1,0 +1,21 @@
+name: Generar archivos de versiones fijas (una vez)
+on: workflow_dispatch
+permissions: { contents: write }
+jobs:
+  l:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: cd tools/push && npm install --package-lock-only --no-audit --no-fund
+      - run: |
+          python -m venv /tmp/a && /tmp/a/bin/pip install -q cryptography && /tmp/a/bin/pip freeze > tools/buzon/requirements.txt
+          python -m venv /tmp/b && /tmp/b/bin/pip install -q pillow pillow-heif opencv-python-headless && /tmp/b/bin/pip freeze > tools/hist/requirements.txt
+          cat tools/buzon/requirements.txt tools/hist/requirements.txt
+      - run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/push/package-lock.json tools/buzon/requirements.txt tools/hist/requirements.txt
+          git commit -m "Versiones fijas: package-lock y requirements" && git push
