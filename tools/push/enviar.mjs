@@ -270,6 +270,7 @@ export function avDestino(modo, m) {
   if (/^inact/.test(modo)) return /ahorros? pendientes?/i.test(t) ? "ahp" : "urg";
   if (/^lzg/.test(modo)) return /compromiso/i.test(t) ? "comp" : "lzg";
   if (modo === "viaje") return "via";
+  if (modo === "sinapp") return "snv";
   if (modo === "rhito") return "rach";
   return "inicio";
 }
@@ -367,6 +368,27 @@ async function main() {
       const d = await db.doc("push/" + U[0].uid).get(); const x = d.exists ? d.data() : {}; hist[U[0].uid] = hist[U[0].uid] || x.h || [];
       if (x.tk) salida.push([U[0].uid, x.tk, msgLz(c)]);
     }
+  } else if (modo === "sinapp") {
+    // 10 nov (Edwin): cada día, al patrocinador de cada socio activado en los últimos 30 días que aún no entra a la app (hasta que entre).
+    // Logs: solo conteos (los logs de Actions son públicos).
+    vista = "equipo";
+    const team = JSON.parse(fs.readFileSync("../../data/team.json", "utf8"));
+    const { ahKe, ahKw, claveDe } = await import("./aprobar.mjs");
+    const desde = Date.now() - 30 * 864e5;
+    const A = (team.activaciones || []).filter(a => Date.parse(a.fecha || "") >= desde);
+    const users = (await db.collection("users").get()).docs.map(d => ({ uid: d.id, ...d.data() }));
+    const reg = users.filter(u => u.registro && u.registro.nombre);
+    const K = new Set(); for (const u of reg) { for (const k of [ahKe(u.email), ...claveDe(u)]) if (k) K.add(k); }
+    const tiene = a => (a.ek && K.has(a.ek)) || (a.wk && K.has(a.wk)) || reg.some(u => mismoNombre(u.registro.nombre, a.socio));
+    const porSp = {}; let sinSp = 0;
+    for (const a of A) { if (tiene(a)) continue; const { sp } = destinosAct(a, users); if (!sp) { sinSp++; continue; } (porSp[sp] = porSp[sp] || []).push(a); }
+    const nom = a => String(a.socio || "").trim().split(/\s+/).slice(0, 1).map(w => w[0].toUpperCase() + w.slice(1).toLowerCase()).join("");
+    for (const [sp, L] of Object.entries(porSp)) { const d = await db.doc("push/" + sp).get(); const x = d.exists ? d.data() : {}; hist[sp] = x.h || []; if (!x.tk || (x.pr || {}).act === false) continue;
+      const ns = L.map(nom), lista = ns.length === 1 ? ns[0] : ns.slice(0, -1).join(", ") + " y " + ns[ns.length - 1];
+      salida.push([sp, x.tk, L.length === 1
+        ? { title: `📵 ${lista} aún no entra a la app`, body: "Mándele hoy su enlace de invitación: sin la app no arranca su Plan de Inicio Rápido." }
+        : { title: `📵 ${L.length} socios nuevos aún no entran a la app`, body: `${lista}. Mándeles hoy su enlace de invitación para que arranquen su Plan de Inicio Rápido.` }]); }
+    console.log("activaciones 30 días:", A.length, "· sin app:", Object.values(porSp).reduce((t, L) => t + L.length, 0) + sinSp, "· patrocinadores a avisar:", Object.keys(porSp).length, "· sin patrocinador en la app:", sinSp);
   } else if (modo === "sol") {
     // Solicitudes de cambio del Dream Team: users.solN (nueva, avisar a admins) / users.solR (respondida, avisar al socio)
     vista = "equipo";
@@ -453,7 +475,7 @@ async function main() {
   } else { console.log("Modo desconocido:", modo); process.exit(1); }
 
   console.log(`${salida.length} avisos para enviar${DRY ? " (prueba, no se envían)" : ""}.`);
-  if (DRY || !salida.length) { salida.slice(0, 15).forEach(([u, , m]) => console.log("·", u.slice(0, 5) + "…", m.title, "|", m.body)); return; }
+  if (DRY || !salida.length) { if (modo !== "sinapp") salida.slice(0, 15).forEach(([u, , m]) => console.log("·", u.slice(0, 5) + "…", m.title, "|", m.body)); return; }
   for (let i = 0; i < salida.length; i += 400) {
     const lote = salida.slice(i, i + 400);
     const r = await fcm.sendEach(lote.map(([, tk, m]) => ({ token: tk,
