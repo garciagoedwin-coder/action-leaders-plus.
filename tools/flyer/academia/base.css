@@ -1,0 +1,7 @@
+@font-face{font-family:IN;src:url(../../../media/fonts/Outfit-Regular.ttf)}@font-face{font-family:IB;src:url(../../../media/fonts/Outfit-Bold.ttf)}
+*{box-sizing:border-box}body{margin:0;width:390px;height:844px;overflow:hidden;font-family:IN,system-ui;background:#F3F6F9;color:#2B2A2D}
+.top{display:flex;justify-content:space-between;align-items:center;padding:14px 18px 6px}.top img{height:22px}.av{width:38px;height:38px;border-radius:50%;background:#0A7DAD;border:3px solid #9fdcf5}
+.eb{font:700 11px IB;letter-spacing:2px;color:#5D6470;margin:10px 18px 0}.h1{font:800 30px IB;margin:2px 18px 12px}
+.nav{position:absolute;left:12px;right:12px;bottom:12px;height:62px;background:#fff;border-radius:22px;box-shadow:0 4px 20px rgba(0,0,0,.08);display:flex;justify-content:space-around;align-items:center;font:600 10px IB;color:#5D6470}
+.nav span{display:flex;flex-direction:column;align-items:center;gap:3px}.nav .on{color:#0A7DAD}
+.lbl{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:#F5B700;color:#000;font:800 12px IB;padding:4px 10px;border-radius:99px;z-index:9}
