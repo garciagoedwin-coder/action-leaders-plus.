@@ -693,3 +693,10 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Mi equipo: tarjeta «🌐 Su red en inCruises» (redEqCard: 📵 socios sin app, 🧳 clientes, 🟠 sin membresía, ⭐ directos) → abre la vista de la red (renderCierre) en ese tipo, por línea, con «‹ Volver a Mi equipo». redOk() = admin o tiene docs (ya no depende de irSimple).
 - Dream Team: directos de inCruises sin app (dtRed: au[0] = yo). Clientes (t c / p sin ps) cuentan para los 30 si su ahorro está al día (sin duplicar con clientes del CRM por huella de correo); socios sin app salen con 📵 y NO cuentan hasta registrarse. Ficha dtRedFicha (invitar a la app / escribir / invitar al negocio).
 - 1.ª carga hecha el 10 nov: 579 personas (245 socios, 225 clientes, 70 pendientes [23 socios], 39 sin membresía), 147 en la app, 20 planes corregidos, 83 Premium.
+
+## Training de hoy: estados y Zoom (10 nov)
+- Tarjeta #trHoy en Inicio: «📲 Publicar en mis estados» (trEstados: trCanvas(e,"h",1) = versión ESTADOS con TR_LE, todo dentro de la zona segura 220–1700 px: «HOY ME CAPACITO CON», frase «Así se construye un negocio con sistema 💪», firma del socio con foto + hgBio, logo y #HASTAQUEFUNCIONE; texto TR_EST que rota por día y se copia al compartir), «🎥 Entrar al Zoom» (rojo «🔴 En vivo» desde 10 min antes) y «📣 Compartir con mi equipo» (abrirCompartir, flyer de invitación).
+- Zoom del training: Firestore `privAp/zoom` {tr} (solo cuentas aprobadas, sin reglas nuevas); lo pone el admin en Perfil › «🎥 Zoom del Action Leaders Training» (trZoomAdmin) o al tocar el botón sin enlace. 1 lectura por sesión, solo al tocar.
+- Tema del flyer del training en Bebas Neue dorado (Edwin opción A), en invitación y estados.
+- trCanvas carga fotos (cargarFotos) y usa los ponentes de turnos CON uid (trPon) → foto por cuenta (caso Miguel Ángel García salía con iniciales: e._tr solo traía nombres).
+- Lanzamiento de negocio: frase LZ_TXT.sub = «Descubra la oportunidad de emprender / en la industria de viajes.» (antes decía «Una noche…»).
