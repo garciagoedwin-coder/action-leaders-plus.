@@ -666,3 +666,13 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Link en privAp/grupo {link,t}: lectura solo isAdmin() o token ap==true (sin gracia); escritura admin. Admin lo cambia en Perfil → «👥 Grupo de WhatsApp del equipo» (grpAdmin).
 - grpYa: hecho automático si ya marcó el grupo en la bienvenida (welPasos.whatsapp) o empezó el plan antes del 10 nov (GRP_DESDE).
 - window.open con "noopener" devuelve null siempre: usar window.open(url,"_blank") y luego w.opener=null.
+
+## Mejoras del 10 nov (mañana) — pedidas por Edwin
+- Inicio: #trHoy = flyer del Action Leaders Training de HOY (trCanvas "p", ponentes de Turnos ordenados por rango, texto «🔥 Gran entrenamiento por {Rango} {Nombre}. ¡No falte!»), ✕ lo quita hasta la próxima apertura (trHoyX en memoria). (Ojo: #evHoy ya existía para juntas en Avisos; no reutilizar el id.)
+- Push del Training: enviar.mjs agenda → 3 avisos (st "m" 9–10 a.m. HN, "1h", "10") con ponentes y tema leídos de turnos/{mes} (1 lectura). Dedupe push_meta/agenda con id "evento:st".
+- #presIni en Inicio: «Dar presentación» animado (A un prospecto → presElegir, General → presAbrir({general:1})). Academia: ruta de cursos (acaPath/acaSt), tarjeta del plan con % (acaHero), Herramientas (Prompts IA, Materiales = acaMateriales). Se quitaron «Descubra su app» y «Dar presentación» de Academia.
+- Mi equipo: «Mis números» = mnumSum (anillo con el índice); cada directo muestra .mfDup (duplicación de su equipo) y al abrir .mfIxs (personal/equipo, hoy/mes, 🟢🟡🔴); fila abierta resaltada. «Hoy llame a estos» muestra 4 + «Ver los N» (hoyAll).
+- CLIENTE (esCliente): 14+ días sin app/rutina y ahorro al día → chip 🧳 Cliente, no cuenta en índice ni en Hoy llame; del día 7 al 13 chip «⏳ En N días pasa a cliente». Vuelve solo si usa la app.
+- Socios nuevos: contadores 📵/⏳/🏅. Workflow avisos-sinapp.yml (9:47 a.m. HN) → enviar.mjs sinapp: push diario al patrocinador de activaciones de 30 días sin cuenta registrada (huella ek/wk o nombre). Logs solo conteos.
+- Agenda: botón «Crear actividad» (.agMas) y opciones en .amL. Aviso de viaje: el admin lo quita en su teléfono (LS viaAdm).
+- tools/smoke.js a veces falla en «mios» (una ventana tapa el clic); si pasa, se vuelve a correr .publicar.sh.
