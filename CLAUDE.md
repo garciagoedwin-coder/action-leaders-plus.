@@ -721,3 +721,11 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Textos corregidos: tarjeta «Te invito» («y emprenda desde su celular», sin «ingreso extra»); sin «+» en Compromiso, Insignia IR y firma de la historia (hgBio).
 - PÍLDORA MILLONARIA nueva (pildoraCanvas, publicación e historia; solo marcaBeta por ahora; en Compartir con selector Publicación/Historia): logo blanco, TikTok + LIVE (media/flyers/pildora/tiktok-blanco.png / -negro.png del logo que mandó Edwin), «PÍLDORA MILLONARIA.» con efecto TikTok (celeste/rojo desplazado), frase de usted, chips (20 minutos · Mentalidad · Hábitos de éxito), quien presenta = e.responsable con aro TikTok (sin responsable: casco + «Action Leaders»), fecha/hora + Miami/España/Reino Unido, botón blanco «Síganos y active la campanita» + #HASTAQUEFUNCIONE.
 - Flyer del día noche: se queda morado (Edwin).
+
+## Números de WhatsApp por país (10 nov)
+- Causa: sin «+código», waNum asume 504 (Honduras). Un número de España (9 dígitos) quedaba +504 675…, y WhatsApp decía que no existe.
+- TEL_LEN (dígitos por país), telInfo(n), telAviso(n). Se valida en: registro (rg_wa), ventana de confirmar WhatsApp (mw), Mis datos (md), «✏️ Número» del líder/admin (cn), invitación de bienvenida (bnTel, aviso en vivo) y CRM (cSave: avisa; segundo toque guarda igual).
+- Bienvenida: «País del socio» y el país del teléfono se sincronizan.
+- waIr(url): TODOS los location.href="https://wa.me/…" pasan por aquí (49 lugares); si el número no cuadra con su país, hoja «⚠️ Revise el número» con «Elegir el chat en WhatsApp».
+- Admin › Admin del equipo: tarjeta «⚠️ Números por revisar» (con «✏️ Número»).
+- 10 nov: 1 cuenta corregida con el número del reporte de inCruises; 1 queda para revisar (6 dígitos).

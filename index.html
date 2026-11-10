@@ -2139,7 +2139,7 @@ function renderMiWa(){const c=$("#miWaCard");if(c)c.hidden=true;const g0=documen
    <button class="btn" id="mwOk" style="width:100%;background:#25D366;color:#fff">Guardar y continuar</button></div>`;
   document.body.appendChild(g);
   g.querySelector("#mwOk").onclick=async()=>{const v=g.querySelector("#mwT").value.trim(),sp=splitPhone(v),n=sp.cc?sp.cc+sp.num:waNum(v,g.querySelector("#mwC").value),er=g.querySelector("#mwErr");
-    if(n.length<8){er.textContent="Escriba su número de WhatsApp completo.";er.hidden=false;return}
+    if(n.length<8){er.textContent="Escriba su número de WhatsApp completo.";er.hidden=false;return}if(telAviso(n)){er.textContent=telAviso(n);er.hidden=false;return}
     const bt=g.querySelector("#mwOk");bt.disabled=true;bt.textContent="Guardando…";
     try{await store.db.doc("users/"+store.uid).set({registro:{whatsapp:n.slice(0,15),waOk:true}},{merge:true});regDoc.registro.whatsapp=n.slice(0,15);regDoc.registro.waOk=true;LS.set("lastCC",g.querySelector("#mwC").value);g.remove();toast("¡Listo! WhatsApp guardado ✓")}
     catch(e){bt.disabled=false;bt.textContent="Guardar y continuar";er.textContent="No se pudo guardar. Revise su conexión e intente de nuevo.";er.hidden=false}}}
@@ -2375,7 +2375,7 @@ function evSeguimiento(E,iy){const m=evMios(E,iy),A=m.R.filter(x=>x.ok),F=m.R.fi
    <p class="entSub" style="margin:10px 0 0">⏳ No llegaron (${F.length})</p>${F.map(x=>row(x,false)).join("")||`<p class="small muted">¡Llegaron todos! 🎉</p>`}
    <p class="small muted" style="margin:0">📲 abre WhatsApp con un mensaje listo. Si la persona está en su CRM con número, se abre su chat directo.</p><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     const P=$("#sheetPanel");
-    P.querySelectorAll("[data-evw]").forEach(b=>b.onclick=()=>{const n=b.dataset.evw,c=evMatchCRM(n),num=c&&String(c.phone||"").replace(/\D/g,"").length>=7?waNum(c.phone,c.cc||"504"):"";if(!num)toast("Elija el contacto de "+n.split(" ")[0]+" en WhatsApp");const t=evSegMsg(E,n,b.dataset.ok==="1");setTimeout(()=>{location.href="https://wa.me/"+(num||"")+"?text="+encodeURIComponent(t)},num?0:600)});
+    P.querySelectorAll("[data-evw]").forEach(b=>b.onclick=()=>{const n=b.dataset.evw,c=evMatchCRM(n),num=c&&String(c.phone||"").replace(/\D/g,"").length>=7?waNum(c.phone,c.cc||"504"):"";if(!num)toast("Elija el contacto de "+n.split(" ")[0]+" en WhatsApp");const t=evSegMsg(E,n,b.dataset.ok==="1");setTimeout(()=>{waIr("https://wa.me/"+(num||"")+"?text="+encodeURIComponent(t))},num?0:600)});
     P.querySelectorAll("[data-evc]").forEach(b=>b.onclick=async()=>{b.disabled=true;const r=await evToCRM(E,b.dataset.evc,b.dataset.ok==="1");if(!r){b.disabled=false;toast("No se pudo guardar");return}b.textContent=r==="new"?"✓ Agregado":"✓ Actualizado";try{renderCRM()}catch(e){}});
     $("#evAll").onclick=async()=>{const bt=$("#evAll");bt.disabled=true;let nw=0,up=0;for(const x of A.concat(F)){const r=await evToCRM(E,x.n,x.ok);if(r==="new")nw++;else if(r==="upd")up++}try{renderCRM()}catch(e){}bt.textContent=`✓ ${nw} agregados · ${up} actualizados`;toast("Listo: revise su CRM y complete los WhatsApp que falten");setTimeout(()=>evSeguimiento(E,iy),1200)}})}
 // Tarjeta del reto/resultados del evento: oculta por ahora (los datos se conservan). Para mostrarla: EV_SHOW=true
@@ -2461,9 +2461,9 @@ function felReto(nom){try{const P=(T.config||{}).premios;if(!P||!P.vol||Date.now
 function felMsg(g,a){const n=(g.nom||"").trim().split(/\s+/)[0],s=String(a.socio||"").trim().split(/\s+/)[0].toLowerCase().replace(/^\S/,c=>c.toUpperCase()),
   i=parseInt(ahF((store.uid||"")+"|"+banK(a)),16)%FEL_MSG.length;return FEL_MSG[i](n,s,felReto(g.nom),a.paquete||"")}
 function banFelicitar(g){const L=g.F||[];if(!L.length||!g.sp)return;const a=L[L.length-1];banMarca("banFel",L);
-  const t=felMsg(g,a),w=waSocio(g.sp);if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(g.sp,t)}
+  const t=felMsg(g,a),w=waSocio(g.sp);if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t));return}pedirWaSocio(g.sp,t)}
 function banBienvenida(g){const L=g.W||[];if(!L.length)return;const ir=a=>{banMarca("banBienv",[a]);if(L.every(z=>(LS.get("banBienv")||{})[banK(z)]))setTimeout(cerrarBan,300);const t=banMsg(a,g),w=banWa(a);
-    if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}toast("Aún no tenemos su WhatsApp")};
+    if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t));return}toast("Aún no tenemos su WhatsApp")};
   if(L.length===1){ir(L[0]);return}
   openSheet(`<h2>💬 Darle la bienvenida</h2><p class="small muted" style="margin:0">¿A quién le escribe?</p>${L.map((a,i)=>`<button class="ep-op" data-bw="${i}"><span class="ic">🎉</span><span class="grow"><b>${esc(nv(a.socio))}${premN(a.socio)}</b><small>${esc(a.paquete||"")}</small></span><span>›</span></button>`).join("")}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     document.querySelectorAll("[data-bw]").forEach(b=>b.onclick=()=>{closeSheet();setTimeout(()=>ir(L[+b.dataset.bw]),250)})})}
@@ -2514,7 +2514,7 @@ function ahGate(){if(!ahBloqYo())return false;openSheet(`<h2>🔒 Función en pa
 async function ahHablarSp(){const r=miRegistro(),sp=(r.invitadoPor||r.patrocinador||"").split(" ")[0];let w="";
   try{if(r.patrocinadorUid){const d=await store.db.doc("users/"+r.patrocinadorUid).get();w=String(((d.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}}catch(e){}
   const t=`Hola${sp?", "+sp:""}. Quiero ponerme al día con mi ahorro de inCruises. ¿Me puede ayudar?`;
-  location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t)}
+  waIr("https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t))}
 let rkTab=(()=>{try{return LS.get("rkTab")||"act"}catch(e){return "act"}})();
 function rkInicio(){const c=$("#rkCard");if(!c)return;try{
   const yo=miNombreFull()||miNombreCorto()||"",mes=(m=>m.charAt(0).toUpperCase()+m.slice(1))(mesNom().split(" ")[0]);let L=[],mi=-1,cargando=false;
@@ -2569,7 +2569,7 @@ function abrirReactivar(){const P=idxPool().filter(x=>!idxActivo(x)).sort((a,b)=
    <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{
    $("#sheetPanel").querySelectorAll("[data-rea]").forEach(bt=>bt.onclick=()=>{const x=P.find(y=>y.uid===bt.dataset.rea);if(!x)return;const nm=((x.registro||{}).nombre||"").split(" ")[0];
      const t=`¡Hola${nm?", "+nm:""}! 👋 Le extrañamos en el equipo. ¿Cómo va todo? Abra hoy la app Action Leaders+ y retome su rutina, un paso a la vez. Aquí estoy para ayudarle en lo que necesite.`;
-     const w=waSocio(x);if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)})})}
+     const w=waSocio(x);if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t));return}pedirWaSocio(x,t)})})}
 // Resumen de Liderazgo: lo calcula la app del admin y lo guarda en team/liderazgo (1 lectura para cada socio)
 let liderRes=null,liderResT=0;
 function liderMatch(l,S){const ns=[l.nombre,l.nombreRanking].map(nrmN2).filter(Boolean);return S.find(x=>ns.includes(nrmN2((x.registro||{}).nombre)))}
@@ -2854,7 +2854,7 @@ async function fdPinta(){const m=fdM,cv=await fdCanvas(fdD,m,fdK),url=cv.toDataU
     $("#fdSh").onclick=async()=>{const t=$("#fdTx").value,b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92)),file=new File([b],"Flyer-"+(m==="am"?"manana":"noche")+"-"+TODAY+".jpg",{type:"image/jpeg"});
       if(navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(e){if(e&&e.name==="AbortError")return}}
       const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click();try{await navigator.clipboard.writeText(t)}catch(e){}toast("Imagen descargada y texto copiado");setTimeout(()=>{location.href="https://wa.me/?text="+encodeURIComponent(t)},900)}})}
-async function lcFelicitar(q){const f=lcFicha(q.n);let w="";if(f)w=await dtWa(f.id);location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(lcTextoFelicitar(q))}
+async function lcFelicitar(q){const f=lcFicha(q.n);let w="";if(f)w=await dtWa(f.id);waIr("https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(lcTextoFelicitar(q)))}
 // ventana con confeti: una sola vez por calificado y por nivel, para todos los socios
 function lcSeen(){return LS.get("lcSeen:"+store.uid)||{}}
 function lcPendientes(){const S=lcSeen(),m=lcMes();const A=lcLista0().filter(r=>r.k==="esp"&&!S[m+"|"+nrmN(r.n)+"|esp"]);
@@ -3016,11 +3016,11 @@ function dtCliFicha(x){const c=x.c,f=dtFirst(x.n),w=c.phone?waNum(c.phone,c.cc):
    <button class="btn" id="clW1" style="width:100%;background:#25D366;color:#fff">${x.ok?"💬 Escribirle":"💰 Recordarle su ahorro"}</button>
    <button class="btn ghost" id="clW2" style="width:100%">🚀 Invitarlo a hacer el negocio</button>
    <button class="btn ghost" id="clDel" style="width:100%;color:var(--bad)">Quitar de mi Dream Team</button><button class="btn ghost" id="dtBk" style="width:100%">‹ Volver a mi cuadro</button>`,()=>{
-    const go=t=>{location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(fm(t))};$("#dtBk").onclick=dtVolver;
+    const go=t=>{waIr("https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(fm(t)))};$("#dtBk").onclick=dtVolver;
     $("#clW1").onclick=()=>go(x.ok?`¡Hola, ${f}! 👋\n\nPaso a saludarle y a agradecerle por ser parte de nuestra familia inCruises 🛳️\n\nSi necesita ayuda para planear su próximo viaje, aquí estoy.`:`Hola, ${f} 👋\n\nLe aviso con cariño que su ahorro de inCruises quedó pendiente.\n\nPóngase al día para no perder sus beneficios de viaje 🛳️\n\nSi necesita ayuda, aquí estoy.`);
     $("#clW2").onclick=()=>go(`¡Hola, ${f}! 👋\n\nUsted ya disfruta los beneficios de inCruises como cliente 🛳️\n\n¿Sabía que también puede compartirlo con otras personas y crecer con nuestro equipo? Me encantaría mostrarle cómo.\n\nSi le interesa, regístrese en la app de nuestro equipo con mi enlace:\n${miEnlace()}`);
     const dl=$("#clDel");dl.onclick=async()=>{if(!confirmar2(dl))return;c.stage="Seguimiento";c.dtc=0;c.updated=Date.now();await store.saveContact(c);try{renderCRM()}catch(e){}renderDT();toast("Quitado de su Dream Team");dtTras()}})}
-function dtRedFicha(x){const r=x.r||{},f=dtFirst(x.n),w=String(r.w||"").replace(/\D/g,""),go=t=>{location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t)};
+function dtRedFicha(x){const r=x.r||{},f=dtFirst(x.n),w=String(r.w||"").replace(/\D/g,""),go=t=>{waIr("https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t))};
   const tipo=x.sa?(r.t==="x"?"🟠 Socio sin membresía":"📵 Socio · sin app"):"🛳️ Cliente";
   openSheet(`<div style="display:flex;gap:14px;align-items:center"><div class="dt-av" style="width:72px;height:72px;flex:none;margin:0;background:${x.sa?"#94A3B8":x.ok?"#16A34A":"#E5B35A"}"><s style="font-size:22px">${esc(initials(x.n))}</s></div><div style="min-width:0;flex:1"><h2 style="margin:0">${esc(nv(x.n))}</h2><span class="chip">${tipo}</span>${r.pl?` <span class="chip">${esc(r.pl)}${r.pl==="Premium"?" ★":""}</span>`:""}${!x.sa?` <span class="chip ${x.ok?"c-good":"c-gold"}">${x.ok?"✅ Ahorro al día":"⚠️ Ahorro pendiente"}</span>`:""}</div></div>
    <p class="small muted" style="margin:0">${x.sa?"Es su directo en inCruises pero todavía no se registra en la app. Cuando entre con su enlace, cuenta para sus 30.":x.ok?"Cliente de su red en inCruises: suma a su red y cuenta para sus 30.":"Mientras su ahorro esté pendiente, no cuenta para sus 30."}</p>
@@ -3121,10 +3121,10 @@ function dtFicha(x){const img=dtFoto(x.u,x.n),f=dtFirst(x.n),mes=x.f?MONTHS[new 
    ${(()=>{const g=dtRg(x);if(g)return `<div class="dt-q" style="background:var(--soft,#F1F6F9);color:inherit"><span class="dt-rgb" style="background:${g.c}"></span> <b>${esc(DT_RGTX[g.n]||g.n)}</b></div>`;const l=lcNivelDe(x.n),C=calCfg();return l.k?`<div class="dt-q" style="${l.k==="esp"?"":"background:#E0F5FD;color:#06384F"}">${l.k==="esp"?"⚔️ <b>Líder Espartano</b> de "+esc(lcMesCorto())+(lcTL(x.n)?" · ⭐ Team Leader":""):"🏅 <b>Líder</b> de "+esc(lcMesCorto())} · ${fmt(l.v)} pts${l.k==="lid"?`<br><span class="small">Le faltan ${fmt(C.esp-l.v)} pts para Líder Espartano</span>`:""}</div>`:`<div class="dt-q" style="background:var(--soft,#F1F6F9);color:inherit">📈 ${fmt(l.v)} pts este mes · le faltan <b>${fmt(C.lider-l.v)}</b> para ser Líder</div>`})()}
    ${x.ok?`<div class="dt-st"><div><b>${x.a}</b><small>activos en su equipo</small></div><div><b>${x.dp}</b><small>directos propios</small></div><div><b>${esc(mes)}</b><small>se unió</small></div></div>`:`<p class="small muted" style="margin:0">Mientras su ahorro esté pendiente, no cuenta para sus 30. Anímelo con cariño 💙</p>`}
    ${(()=>{const l=lcNivelDe(x.n);return l.k?`<button class="btn" id="dtLcF" style="width:100%;background:#25D366;color:#fff">💬 Felicitarlo por calificar como ${l.k==="esp"?"Líder Espartano":"Líder"} de ${esc(lcMesCorto())}</button><button class="btn ghost" id="dtLcS" style="width:100%">📣 Compartir su flyer</button>`:""})()}<button class="btn ${lcNivelDe(x.n).k?"ghost":""}" id="dtFw" style="width:100%;${lcNivelDe(x.n).k?"":"background:#25D366;color:#fff"}">${x.ok?"💬 Felicitar por WhatsApp":"💰 Motivar su ahorro"}</button>${x.u&&!isAdmin?(()=>{const s=solDe(x.u);return s&&s.st==="p"?`<button class="btn ghost" id="dtSol" style="width:100%" disabled>⏳ Solicitud de cambio en revisión</button>`:`<button class="btn ghost" id="dtSol" style="width:100%">✏️ Pedir un cambio al administrador</button>`})():""}<button class="btn ghost" id="dtBk" style="width:100%">‹ Volver a mi cuadro</button>`,()=>{
-    $("#dtBk").onclick=dtVolver;{const so=$("#dtSol");if(so&&!so.disabled)so.onclick=()=>solForm(x)}{const l=lcNivelDe(x.n);if(l.k){const q=lcQ({n:x.n,k:l.k,v:l.v});q.foto=dtFoto(x.u,x.n)||q.foto;$("#dtLcF").onclick=()=>{const w0=dtWa(x.u);w0.then(w=>{location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(lcTextoFelicitar(q))})};$("#dtLcS").onclick=()=>lcCompartir(q,$("#dtLcS"))}}$("#dtFw").onclick=async()=>{const w=await dtWa(x.u),yo=miNombreCorto()||"",v=parseInt(ahF(x.u),16)%3;
+    $("#dtBk").onclick=dtVolver;{const so=$("#dtSol");if(so&&!so.disabled)so.onclick=()=>solForm(x)}{const l=lcNivelDe(x.n);if(l.k){const q=lcQ({n:x.n,k:l.k,v:l.v});q.foto=dtFoto(x.u,x.n)||q.foto;$("#dtLcF").onclick=()=>{const w0=dtWa(x.u);w0.then(w=>{waIr("https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(lcTextoFelicitar(q)))})};$("#dtLcS").onclick=()=>lcCompartir(q,$("#dtLcS"))}}$("#dtFw").onclick=async()=>{const w=await dtWa(x.u),yo=miNombreCorto()||"",v=parseInt(ahF(x.u),16)%3;
       const t=x.ok?[`¡Hola, ${f}! 👏\n\nQuería felicitarle: es parte de mi Dream Team y ya tiene *${x.a}* socios activos en su equipo.\n\n¡Siga así, vamos juntos camino a la libertad! 🚀`,`${f}, ¡qué orgullo tenerle en mi equipo! 🙌\n\nGracias por su compromiso. Cada paso que da inspira a los demás.\n\n¡Vamos por más! 💪`,`¡Hola, ${f}! ✨\n\nSolo quería decirle que valoro mucho su trabajo en el equipo.\n\n¡Sigamos construyendo nuestra libertad juntos! 🚢`][v]
         :[`Hola, ${f} 👋\n\nVi que su ahorro de inCruises quedó pendiente. Póngase al día para que no se le inactive la cuenta ni pierda sus puntos dobles 🛳️\n\nSi necesita ayuda, aquí estoy 💙`,`¡Hola, ${f}! 🙌\n\nUn recordatorio con cariño: su ahorro de este mes está pendiente.\n\nAl ponerse al día sigue sumando en el equipo y no pierde su avance.\n\n¡Cuento con usted! 💪`,`Hola, ${f} 😊\n\nNo quiero que pierda lo que ha construido: su ahorro de inCruises está pendiente.\n\n¿Le ayudo con algo para ponerse al día?`][v];
-      location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t+(yo?"\n\n*"+yo+"*":""))}})}
+      waIr("https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t+(yo?"\n\n*"+yo+"*":"")))}})}
 // 10 nov (Edwin): el patrocinador elige el paquete ANTES de mandar el enlace → invitaciones/{id} {by, plan, gen} y el enlace lleva &b=id.
 // El socio se registra sin elegir plan. Si alguien usa un enlace viejo, queda "por confirmar" y lo corrige el correo de inCruises (aprobar.mjs).
 function invPlan(cb){openSheet(`<p class="eyebrow">INVITAR</p><h2 style="margin:2px 0 6px">¿Con qué paquete entró?</h2><p class="small muted" style="margin:0 0 12px">Se crea un enlace solo para esa persona, con su paquete ya puesto. Al registrarse no tiene que elegir nada.</p>
@@ -3201,7 +3201,7 @@ function cambiarNumSocio(x){const r=x.registro||{},nm=(r.nombre||"este socio").s
    <div class="grid2"><div class="field"><label for="cnC">País</label><select class="inp" id="cnC">${PAISES.map(([pn,k],i)=>`<option value="${k}" ${k===cc0&&i===PAISES.findIndex(y=>y[1]===cc0)?"selected":""}>${pn} (+${k})</option>`).join("")}</select></div>
    <div class="field"><label for="cnT">WhatsApp</label><input class="inp" id="cnT" type="tel" inputmode="tel" value="${esc(sp.num||"")}" placeholder="Número"></div></div>
    <button class="btn" id="cnOk" style="width:100%">Guardar número</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
-    $("#cnOk").onclick=async()=>{const v=$("#cnT").value.trim(),p2=splitPhone(v),n=(p2.cc?p2.cc+p2.num:waNum(v,$("#cnC").value)).slice(0,15);if(n.length<8){toast("Escriba el número completo");return}
+    $("#cnOk").onclick=async()=>{const v=$("#cnT").value.trim(),p2=splitPhone(v),n=(p2.cc?p2.cc+p2.num:waNum(v,$("#cnC").value)).slice(0,15);if(n.length<8){toast("Escriba el número completo");return}if(telAviso(n)){toast(telAviso(n));return}
       const w=String(r.whatsapp||"").replace(/\D/g,"");$("#cnOk").disabled=true;
       if(isAdmin&&x.registro){try{await store.db.doc("users/"+x.uid).set({registro:{whatsapp:n,waOk:false}},{merge:true});r.whatsapp=n;r.waOk=false;if(telSoc&&telSoc[x.uid]){delete telSoc[x.uid];store.set("telsocios",telSoc)}closeSheet();toast("📱 Número corregido ✓");try{renderEquipo()}catch(e){}return}catch(e){}}
       telSoc=Object.assign({},telSoc||{},{[x.uid]:{n,b:w}});store.set("telsocios",telSoc);LS.set("lastCC",$("#cnC").value);closeSheet();toast("📱 Número guardado ✓");try{renderEquipo()}catch(e){}}})}
@@ -3211,7 +3211,7 @@ function pedirWaSocio(x,t){const nm=(x.registro||{}).nombre||"este socio";
    <div class="field"><label for="wsT">WhatsApp</label><input class="inp" id="wsT" type="tel" placeholder="Número"></div></div>
    <button class="btn" id="wsOk" style="width:100%;background:#25D366;color:#fff">Guardar y abrir chat</button><button class="btn ghost" id="wsSh" style="width:100%">Elegir el chat en WhatsApp</button>`,()=>{
     $("#wsOk").onclick=async()=>{let v=$("#wsT").value.trim();const sp=splitPhone(v),n=sp.cc?sp.cc+sp.num:waNum(v,$("#wsC").value);if(n.length<8){toast("Escribe el número");return}
-      telSoc=Object.assign({},telSoc||{},{[x.uid]:{n,b:String((x.registro||{}).whatsapp||"").replace(/\D/g,"")}});store.set("telsocios",telSoc);LS.set("lastCC",$("#wsC").value);closeSheet();location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t)};
+      telSoc=Object.assign({},telSoc||{},{[x.uid]:{n,b:String((x.registro||{}).whatsapp||"").replace(/\D/g,"")}});store.set("telsocios",telSoc);LS.set("lastCC",$("#wsC").value);closeSheet();waIr("https://wa.me/"+n+"?text="+encodeURIComponent(t))};
     $("#wsSh").onclick=async()=>{closeSheet();if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}})}
 async function loadMios(force){try{return await loadMios0(force)}finally{try{raAvisosPat()}catch(e){}}}
 async function loadMios0(force){miosErr=false;const me=store.uid,M={};const cMs=60*60e3;if(telSoc===null){try{telSoc=(await store.get("telsocios"))||{}}catch(e){telSoc={}}}
@@ -3311,10 +3311,10 @@ function gestHoja(x,k){const nm=(x.registro||{}).nombre||"Socio",f=nm.split(" ")
    ${A.rg&&!sameRg?`<button class="btn ghost" id="ghRg" style="width:100%;margin-top:8px">⭐ Pedirle a ${esc(((A.rg.y.registro||{}).nombre||"").split(" ").slice(0,2).join(" "))} (${esc(rgN(A.rg.y))})</button>`:""}
    <p class="small muted" style="margin:10px 2px 0">Se abre WhatsApp con el mensaje listo. La línea verá que ya se gestionó hoy.</p>
    <button class="btn ghost" data-close style="width:100%;margin-top:8px">Cancelar</button>`,()=>{
-    $("#ghYo").onclick=()=>{closeSheet();const m=gestMsg(x,k),w=waSocio(x);gestMarcar(x,k,m);renderEquipo();if(w){setTimeout(()=>{location.href="https://wa.me/"+w+"?text="+encodeURIComponent(m.t)},150);return}pedirWaSocio(x,m.t)};
+    $("#ghYo").onclick=()=>{closeSheet();const m=gestMsg(x,k),w=waSocio(x);gestMarcar(x,k,m);renderEquipo();if(w){setTimeout(()=>{waIr("https://wa.me/"+w+"?text="+encodeURIComponent(m.t))},150);return}pedirWaSocio(x,m.t)};
     const pide=y=>{closeSheet();const L=GEST_L[k]||GEST_L.inact,g=gestDe(x.uid)||{},i=parseInt(ahF(x.uid+"|"+y.uid+"|"+TODAY+"|"+(+g.n||0)),16)%L.length,yo=miNombreCorto()||"",ln=((y.registro||{}).nombre||"").split(" ")[0];
       const t=L[i].replace(/\{L\}/g,ln).replace(/\{N\}/g,nm)+(yo?"\n\n*"+yo+"*":"");gestMarcar(x,k,{i:-1,lv:-1},(y.registro||{}).nombre||ln);renderEquipo();const w=waSocio(y);
-      if(w){setTimeout(()=>{location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t)},150);return}pedirWaSocio(y,t)};
+      if(w){setTimeout(()=>{waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t))},150);return}pedirWaSocio(y,t)};
     {const b=$("#ghSp");if(b)b.onclick=()=>pide(A.sp)}{const b=$("#ghRg");if(b)b.onclick=()=>pide(A.rg.y)}})}
 function hoyLlamar(){try{const L=[];(mios||[]).forEach(x=>{const nm=(x.registro||{}).nombre||"Socio",ah=ahSoc(x),p=(x.ir||{}).p,dd=new Date().getDate();let r=null,o=9,k="";
   if(ah&&ah.pend){r=ah.bloq?"💰 Ahorro vencido · está en pausa":"💰 Ahorro pendiente";o=1;k=ah.bloq?"ahv":"ah"}
@@ -3331,8 +3331,8 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
   if(isAdmin&&socios===null&&!window._ldS){window._ldS=1;loadSocios()}
   const inv=`<div class="card"><h3 style="margin:0">🔗 Tu enlace de invitación</h3><p class="small muted" style="margin:0">Los socios que se registren con tu enlace aparecen aquí con su avance.</p>
     <button class="btn" id="miosCopy" style="width:100%">🔗 Crear enlace para un socio nuevo</button></div>`;
-  const bind=()=>{{const hm=b.querySelector("#hoyMas");if(hm)hm.onclick=()=>{hoyAll=!hoyAll;renderEquipo()}}b.querySelectorAll("[data-mcp]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mcp);if(!x)return;const w=waSocio(x);location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(compMsg(x))});b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=waSocio(x);
-    if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});b.querySelectorAll("[data-wnum]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.wnum);if(x)cambiarNumSocio(x)});b.querySelectorAll("[data-gst]").forEach(bt=>bt.onclick=()=>{const [u,k]=bt.dataset.gst.split("|"),x=(mios||[]).find(y=>y.uid===u);if(x)gestHoja(x,k)});b.querySelectorAll("[data-mah]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mah);if(!x)return;const nm=((x.registro||{}).nombre||"").split(" ")[0],ah=ahSoc(x)||{},t=`¡Hola${nm?", "+nm:""}! 🙌 Vi que su ahorro de este mes en inCruises quedó pendiente. Póngase al día${ah.lim&&!ah.bloq?" antes del "+ahFecha(ah.lim):""} para que no se le inactive la cuenta ni pierda sus puntos dobles 🛳️ ¿Le ayudo con algo?`,w=waSocio(x);if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});b.querySelectorAll("[data-ip]").forEach(x=>x.onclick=()=>{idxPer=x.dataset.ip;renderEquipo()});b.querySelectorAll("[data-idxv]").forEach(x=>x.onclick=()=>{idxStk=[""];idxSheet("")});b.querySelectorAll("[data-reac]").forEach(x=>x.onclick=abrirReactivar);const c=$("#miosCopy");if(c)c.onclick=()=>invPlanHoja();const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
+  const bind=()=>{{const hm=b.querySelector("#hoyMas");if(hm)hm.onclick=()=>{hoyAll=!hoyAll;renderEquipo()}}b.querySelectorAll("[data-mcp]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mcp);if(!x)return;const w=waSocio(x);waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(compMsg(x)))});b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=waSocio(x);
+    if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t));return}pedirWaSocio(x,t)});b.querySelectorAll("[data-wnum]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.wnum);if(x)cambiarNumSocio(x)});b.querySelectorAll("[data-gst]").forEach(bt=>bt.onclick=()=>{const [u,k]=bt.dataset.gst.split("|"),x=(mios||[]).find(y=>y.uid===u);if(x)gestHoja(x,k)});b.querySelectorAll("[data-mah]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mah);if(!x)return;const nm=((x.registro||{}).nombre||"").split(" ")[0],ah=ahSoc(x)||{},t=`¡Hola${nm?", "+nm:""}! 🙌 Vi que su ahorro de este mes en inCruises quedó pendiente. Póngase al día${ah.lim&&!ah.bloq?" antes del "+ahFecha(ah.lim):""} para que no se le inactive la cuenta ni pierda sus puntos dobles 🛳️ ¿Le ayudo con algo?`,w=waSocio(x);if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t));return}pedirWaSocio(x,t)});b.querySelectorAll("[data-ip]").forEach(x=>x.onclick=()=>{idxPer=x.dataset.ip;renderEquipo()});b.querySelectorAll("[data-idxv]").forEach(x=>x.onclick=()=>{idxStk=[""];idxSheet("")});b.querySelectorAll("[data-reac]").forEach(x=>x.onclick=abrirReactivar);const c=$("#miosCopy");if(c)c.onclick=()=>invPlanHoja();const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
   if(miosErr){b.innerHTML=emptyCard("No se pudo cargar su equipo","Revise su conexión e intente de nuevo. Si sigue igual, avise al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
   if(!mios.length){// 9 nov: sin socios en la app igual sale My Dream Team, para poder agregar CLIENTES
     let H="",bd=null;if(!isAdmin){try{const z=dtArmar();if(z){dtSum=Object.assign(z,{t:(dtSum&&dtSum.t)||z.t});LS.set("dtSum:"+store.uid,dtSum)}}catch(e){}try{const X=dtPanel("dtq");H=dtHeroHTML(X.h);bd=X.bind}catch(e){H=""}}
@@ -3385,7 +3385,7 @@ function pipeBind(b){const ps=b.querySelector("#pipeSel");if(ps)ps.onchange=()=>
   const f=String((x.registro||{}).nombre||"").split(" ")[0],pn=bt.dataset.pn,pp=bt.dataset.pp,yo=miNombreCorto()||"",w=await dtWa(u);
   const t=bt.dataset.pl3?`Hola, ${f} 👋\n\nVi que ${pn} va en ${pp}% en su CRM.\n\n¿Le ayudo con una llamada de 3 para cerrarlo?\n\nDígame qué día y hora le quedan bien. 💪`
     :`¡Hola, ${f}! 🙌\n\nVi que tiene a ${pn} en ${pp}%. ¡Está muy cerca!\n\nSi necesita apoyo para el cierre, aquí estoy.\n\n¡Vamos por esa activación! 🚀`;
-  location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t+(yo?"\n\n*"+yo+"*":""))})}
+  waIr("https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t+(yo?"\n\n*"+yo+"*":"")))})}
 function miosFila(V,lvl0){let lvl=lvl0;const cname=k=>{const c=cursosL().find(x=>x.k===k);return c?c.t:k};return (x,enPi)=>{const r=x.registro||{},a=actDe(x),S=a.sem,nm=r.nombre||"Socio",ua=tsMs(x.ultimoAcceso),cs=((x.actividad||{}).cursos||[]);
      const hd=!enPi&&miosVista==="todo"&&x.nivel!==lvl?(lvl=x.nivel,`<div class="lvl-h">Nivel ${x.nivel} <span>${(c=>c+(c===1?" socio":" socios"))(V.filter(y=>y.nivel===x.nivel).length)}</span></div>`):"";
      return `${hd}<div class="mfRow${mfOpen.has(x.uid)?" open":""}" data-mfr="${esc(x.uid)}" style="padding:12px 0;border-bottom:1px solid var(--line)">${enPi?`<div class="small" style="margin-bottom:6px"><span class="chip ${x.nivel===1?"c-gold":"c-brand"}" style="font-weight:700">${x.nivel===1?"⭐ Directo":"Nivel "+x.nivel+" · de "+esc(dtFirst(x.patNom||r.invitadoPor||r.patrocinador||"—"))}</span></div>`:miosVista==="todo"&&x.nivel>1?`<div class="small" style="color:var(--brand);font-weight:700;margin-bottom:6px">Línea de ${esc(x.piernaNom||"tu equipo")} · Patrocinador: ${esc(x.patNom||r.invitadoPor||r.patrocinador||"—")}</div>`:""}<div class="row" style="align-items:flex-start">${avHTML(nm,false,false,x.uid)}<div class="grow" style="min-width:0">
@@ -3469,7 +3469,10 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
   const sinP=socios.filter(x=>x.registro&&!x.registro.patrocinadorUid&&!esSoloAdmin(x)).length;
   const wm={};socios.forEach(x=>{const w=String((x.registro||{}).whatsapp||"").replace(/\D/g,"");if(w.length>=8&&!esSoloAdmin(x))(wm[w]=wm[w]||[]).push(x)});const dups=Object.keys(wm).filter(k=>wm[k].length>1);
   const dupH=dups.length?`<div class="card" style="gap:8px;border:1.5px solid var(--warn)"><h3 style="margin:0">⚠️ WhatsApp repetidos (${dups.length})</h3><p class="small muted" style="margin:0">Estos socios tienen el mismo número. Corrija el que no corresponde con «Número».</p>${dups.map(k=>`<div style="padding:8px 0;border-top:1px solid var(--line)"><b class="small">${esc(waFmt(k))}</b>${wm[k].map(x=>`<div class="row between" style="gap:8px;margin-top:6px"><span class="small" style="min-width:0">${esc((x.registro||{}).nombre||x.email||"Socio")}${(x.registro||{}).waOk?" · ✅ confirmó":""}</span><button class="btn sm ghost" type="button" data-wfix="${esc(x.uid)}">✏️ Número</button></div>`).join("")}</div>`).join("")}</div>`:"";
-  b.innerHTML=`${solAdminCard()}<div class="card" style="gap:6px"><h3 style="margin:0">🌳 Líneas del equipo</h3><p class="small muted" style="margin:0">Arma la línea completa de cada socio para que cada líder vea a todos los que tiene debajo.</p><button class="btn sm ghost" id="socLin" style="align-self:flex-start">Reconstruir líneas</button></div>${sinP?`<div class="card" style="gap:8px"><div class="row between"><div><h3 style="margin:0">🔗 Vincular patrocinadores</h3><p class="small muted" style="margin:2px 0 0">${sinP} ${sinP===1?"socio se registró":"socios se registraron"} sin enlace. Vincúlalos para que su patrocinador los vea en "Mi equipo".</p></div></div><button class="btn sm gold" id="socVinc" style="align-self:flex-start">Vincular ahora</button></div>`:""}${dupH}${ahCfg()?`<div class="card" style="gap:6px"><h3 style="margin:0">💰 Ahorro pendiente</h3><p class="small muted" style="margin:0">${Object.keys(ahCfg().k).length?"Revise quién del reporte está enlazado en la app y quién no coincide (email o WhatsApp).":"Sin socios pendientes."}</p><button class="btn sm ghost" id="ahAdm" style="align-self:flex-start">🔎 Revisar coincidencias</button></div>`:""}${raAdminCard()}<div class="grid2">${st(reg,"Socios registrados")}${st(sin,"Entraron sin registrarse")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}</div>
+  // 10 nov: números con largo que no corresponde a su país (p. ej. +504 con 9 dígitos)
+  const malT=socios.filter(x=>!esSoloAdmin(x)&&x.registro&&String(x.registro.whatsapp||"").replace(/\D/g,"").length>=6&&telAviso(x.registro.whatsapp));
+  const malH=malT.length?`<div class="card" style="gap:8px;border:1.5px solid var(--bad)"><h3 style="margin:0">⚠️ Números por revisar (${malT.length})</h3><p class="small muted" style="margin:0">El largo no corresponde al país del número (por ejemplo, +504 con 9 dígitos). WhatsApp no los encuentra. Corríjalos con «Número».</p>${malT.map(x=>{const t=telInfo(x.registro.whatsapp);return `<div class="row between" style="gap:8px;padding-top:8px;border-top:1px solid var(--line)"><span class="small" style="min-width:0"><b>${esc(x.registro.nombre||"Socio")}</b><br>+${esc(t.d)} · ${t.n} dígitos (${esc(t.pais)} usa ${t.esp.join(" u ")})</span><button class="btn sm ghost" type="button" data-wfix="${esc(x.uid)}">✏️ Número</button></div>`}).join("")}</div>`:"";
+  b.innerHTML=`${solAdminCard()}${malH}<div class="card" style="gap:6px"><h3 style="margin:0">🌳 Líneas del equipo</h3><p class="small muted" style="margin:0">Arma la línea completa de cada socio para que cada líder vea a todos los que tiene debajo.</p><button class="btn sm ghost" id="socLin" style="align-self:flex-start">Reconstruir líneas</button></div>${sinP?`<div class="card" style="gap:8px"><div class="row between"><div><h3 style="margin:0">🔗 Vincular patrocinadores</h3><p class="small muted" style="margin:2px 0 0">${sinP} ${sinP===1?"socio se registró":"socios se registraron"} sin enlace. Vincúlalos para que su patrocinador los vea en "Mi equipo".</p></div></div><button class="btn sm gold" id="socVinc" style="align-self:flex-start">Vincular ahora</button></div>`:""}${dupH}${ahCfg()?`<div class="card" style="gap:6px"><h3 style="margin:0">💰 Ahorro pendiente</h3><p class="small muted" style="margin:0">${Object.keys(ahCfg().k).length?"Revise quién del reporte está enlazado en la app y quién no coincide (email o WhatsApp).":"Sin socios pendientes."}</p><button class="btn sm ghost" id="ahAdm" style="align-self:flex-start">🔎 Revisar coincidencias</button></div>`:""}${raAdminCard()}<div class="grid2">${st(reg,"Socios registrados")}${st(sin,"Entraron sin registrarse")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}</div>
    <div class="seg" id="socOrd"><button aria-selected="${sociosOrd==="act"}" data-o="act">Más activos</button><button aria-selected="${sociosOrd==="rec"}" data-o="rec">Recientes</button><button aria-selected="${sociosOrd==="inact"}" data-o="inact">Sin actividad</button></div>
    <div class="row"><input class="inp grow" id="socQ" placeholder="Buscar por nombre, patrocinador o plan" value="${esc(sociosQ)}"><button class="btn sm ghost" id="socCsv">Descargar</button></div>
    <div class="card" style="gap:0">${L.length?L.map(x=>{const r=x.registro||{},a=actDe(x),S=a.sem;const nm=r.nombre||x.nombre||x.email||"Sin nombre";const wa=r.whatsapp?`https://wa.me/${r.whatsapp}`:"";
@@ -3493,7 +3496,7 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
     try{await store.db.doc("users/"+x.uid).set({registro:{plan:nv,planPor:"admin",planCambio:new Date().toISOString()}},{merge:true});x.registro.plan=nv;toast((x.registro.nombre||"Socio").split(" ")[0]+" ahora es "+nv+" ✓")}catch(e){sel.value=prev;toast("No se pudo cambiar el paquete")}});
   b.querySelectorAll("[data-sedit]").forEach(bt=>bt.onclick=()=>editarSocio(bt.dataset.sedit));
   {const ah=$("#ahAdm");if(ah)ah.onclick=ahRevisar}b.querySelectorAll("[data-wfix]").forEach(bt=>bt.onclick=()=>{const x=(socios||[]).find(y=>y.uid===bt.dataset.wfix);if(x)cambiarNumSocio(x)});
-  b.querySelectorAll("[data-amot]").forEach(bt=>bt.onclick=()=>{const x=(socios||[]).find(y=>y.uid===bt.dataset.amot);if(!x)return;let t="";try{t=msgMotiva(x)}catch(e){t="Hola "+(((x.registro||{}).nombre||"").split(" ")[0]||"")+" 👋"}const w=waSocio(x);if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(x,t)});
+  b.querySelectorAll("[data-amot]").forEach(bt=>bt.onclick=()=>{const x=(socios||[]).find(y=>y.uid===bt.dataset.amot);if(!x)return;let t="";try{t=msgMotiva(x)}catch(e){t="Hola "+(((x.registro||{}).nombre||"").split(" ")[0]||"")+" 👋"}const w=waSocio(x);if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t));return}pedirWaSocio(x,t)});
   $("#socCsv").onclick=sociosCSV;{const ra=$("#raAdm");if(ra)ra.onclick=raAdmin}solAdmBind(b);const sv=$("#socVinc");if(sv)sv.onclick=abrirVincular;const sl=$("#socLin");if(sl)sl.onclick=async()=>{sl.disabled=true;sl.textContent="Reconstruyendo…";await reconstruirLineas(false);sl.disabled=false;sl.textContent="Reconstruir líneas"};$("#socReload").onclick=()=>{socios=null;renderEquipo()}}
 let constL=null,constT=0;
 let constVista="sem";
@@ -3741,7 +3744,7 @@ function renderConst(b){const segs=`<div class="seg" role="tablist" id="rankMetr
   b.innerHTML=segs+constBanner()+rachaPremio()+(mine?`<div class="card row between"><span>Tu lugar ${constVista==="sem"?"esta semana":"este mes"}</span><b class="num" style="font-size:20px">#${mine.rk}</b></div>`:`<div class="card small">Haga al menos una acción de su rutina para aparecer en este ranking 💪</div>`)+`<div class="card"><div class="podium">${pod(L[1],1)+pod(L[0],0)+pod(L[2],2)}</div></div>
    <div class="card" style="gap:0">${L.slice(3).map(x=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)${x.uid===store.uid?";background:var(--brand-soft,rgba(42,193,241,.08))":""}"><b class="num" style="width:26px;text-align:center">${x.rk}</b>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(nv(x.nombre))}</b>${premN(x.nombre)}<div class="small muted">${constSub(x)}</div><div class="small">${hoyTxt(x)}</div>${constBtn(x)}</div><span class="chip ${(constVista==="sem"?x.racha:x.mesMejor)?"c-gold":"c-brand"}" style="flex:none">${(constVista==="sem"?x.semPts:x.mesPts)} pts</span></div>`).join("")||`<p class="small muted" style="padding:8px 0">¡Súmese al ranking haciendo su rutina!</p>`}</div>`+zCard;
   b.querySelectorAll("[data-cv]").forEach(x=>x.onclick=()=>{constVista=x.dataset.cv;constSort(constL);renderEquipo()});
-  b.querySelectorAll("[data-cwa]").forEach(bt=>bt.onclick=()=>{const x=L.concat(Z).find(y=>y.uid===bt.dataset.cwa),u=x&&constUser(x);if(!u)return;const t=constMsg(x),w=waSocio(u);cwaMarca(x.uid,hoyPts(x)>=ROUTINE.length?"fel":"mot");renderEquipo();if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}pedirWaSocio(u,t)});
+  b.querySelectorAll("[data-cwa]").forEach(bt=>bt.onclick=()=>{const x=L.concat(Z).find(y=>y.uid===bt.dataset.cwa),u=x&&constUser(x);if(!u)return;const t=constMsg(x),w=waSocio(u);cwaMarca(x.uid,hoyPts(x)>=ROUTINE.length?"fel":"mot");renderEquipo();if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t));return}pedirWaSocio(u,t)});
   cwaNube();if(mios===null&&store.db&&store.uid&&!constMiosT){constMiosT=1;loadMios().catch(()=>{})}
   if(isAdmin&&socios===null&&store.db&&!constSocT){constSocT=1;Promise.resolve(loadSocios()).catch(()=>{}).finally(()=>{if(eqTab==="ranking"&&rankMetric==="rutina")renderEquipo()})}
   bindRank();loadConst()}
@@ -3853,7 +3856,7 @@ function redBind(b){const bk=$("#rdBack");if(bk)bk.onclick=()=>{redEqBack=false;
   const qi=$("#rdQ");if(qi)qi.oninput=()=>{redQ=qi.value;const L=$("#rdList");clearTimeout(qi._t);qi._t=setTimeout(()=>{renderEquipo();const n=$("#rdQ");if(n){n.focus();n.setSelectionRange(n.value.length,n.value.length)}},350)};
   const li=$("#rdList");if(li)li.onclick=e=>{const w=e.target.closest("[data-rw]"),h=e.target.closest("[data-rh]");
     if(w){const r=redL.find(x=>x.id===w.dataset.rw);if(!r)return;const t=r.t==="p"?redMsgP(r):r.t==="s"?redMsgS(r):r.t==="x"?redMsgX(r):redMsgC(r);
-      redMarca(r.id,"c");location.href="https://wa.me/"+(r.w||"")+"?text="+encodeURIComponent(t);setTimeout(()=>{if(eqTab==="cierre")renderEquipo()},800);return}
+      redMarca(r.id,"c");waIr("https://wa.me/"+(r.w||"")+"?text="+encodeURIComponent(t));setTimeout(()=>{if(eqTab==="cierre")renderEquipo()},800);return}
     if(h){redMarca(h.dataset.rh,"h").then(()=>renderEquipo())}};
   redBindAdm()}
 function redAdmHTML(){return `<b>🛠️ Admin: base de la red</b><p class="small muted" style="margin:4px 0 8px">Sube a Firebase el último reporte cifrado (data/red.enc) y calcula quién ve a cada persona: su patrocinador y los líderes desde Marketing Director de su línea.</p><button class="btn sm" id="rdUp" style="width:100%">⬆️ Cargar reporte a la app</button><p class="small" id="rdUpMsg" style="margin:6px 0 0"></p>`}
@@ -4170,7 +4173,7 @@ function evRecordar(nc,E){const w=String(nc||"").trim().split(/\s+/),pila=w[0]||
   const cand=(contacts||[]).filter(c=>{const v=nrmN(c.name||"").split(" ");return v[0]&&v[0]===nrmN(pila)&&(!ini||v.slice(1).some(z=>z.startsWith(ini)))&&String(c.phone||"").replace(/\D/g,"").length>=7});
   const num=cand.length===1?waNum(cand[0].phone,cand[0].cc||"504"):"";
   const t=`Hola ${pila} 👋 ¡Hoy es el gran día! 🎉\n\nLe espero en el *${E.titulo||"evento"}*.\n`+(E.hora?`\n🕑 Registro: *${E.hora}*`:"")+(E.llegar?`\n⏰ Le recomiendo llegar 10 minutos antes: *${E.llegar}*`:"")+`\n📍 ${E.lugarTxt||E.lugar||""}`+(E.mapa?`\n🗺️ ${E.mapa}`:"")+`\n\nVa a ser una experiencia que le puede cambiar la forma de viajar y de generar ingresos. ¡No se la pierda!\n\nConfírmeme con un 👍 que ahí nos vemos.\n\nAtt. ${miNombreCorto()}`;
-  if(!num)toast("Elija el contacto de "+pila+" en WhatsApp");setTimeout(()=>{location.href="https://wa.me/"+(num||"")+"?text="+encodeURIComponent(t)},num?0:600)}
+  if(!num)toast("Elija el contacto de "+pila+" en WhatsApp");setTimeout(()=>{waIr("https://wa.me/"+(num||"")+"?text="+encodeURIComponent(t))},num?0:600)}
 function miNombreCorto(){const n=(miRegistro().nombre||miNombreFull()||profile.nombrePila||"").trim().split(/\s+/);return n.length>2?n[0]+" "+n[n.length>3?2:1]:n.join(" ")}
 async function histCanvas(k){const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");const h=histDia(k);
   try{await Promise.all(["800 90px 'Bricolage Grotesque'","500 40px Figtree","700 40px Figtree"].map(f=>document.fonts.load(f)))}catch(x){}
@@ -4440,7 +4443,7 @@ function raCelebrar(forzar){const E=raYo();if(!E||!E.gano)return;const k="raCel:
 async function raAvisarPat(){const r=miRegistro()||{},nm=raCap((r.nombre||"").split(" ")[0]),pt=(raPat()||"").split(" ")[0];
   const t=`¡Hola${pt?" "+pt:""}! 🎉\n\nYa terminé mi Semana 1 del Plan de Inicio Rápido y gané mi insignia de Despegue 🚀\n\n¿Cuál es mi siguiente paso?\n\n${nm}`;
   let wa="";try{if(r.patrocinadorUid){const d=await store.db.doc("users/"+r.patrocinadorUid).get();wa=((d.data()||{}).registro||{}).whatsapp||""}}catch(e){}
-  location.href="https://wa.me/"+(wa?String(wa).replace(/\D/g,""):"")+"?text="+encodeURIComponent(t)}
+  waIr("https://wa.me/"+(wa?String(wa).replace(/\D/g,""):"")+"?text="+encodeURIComponent(t))}
 // patrocinador / línea: aviso una vez por ganador
 function raAvisosPat(){try{if(!raCfg()||!mios||!mios.length)return;const me=store.uid;mios.forEach(x=>{const r=x.registro||{};if(r.patrocinadorUid!==me)return;const E=raDe(x);if(!E||!E.gano)return;
   const k="raPat:"+x.uid+":"+(raCfg().id||"");if(LS.get(k))return;LS.set(k,1);const n=raN(r.nombre||"").split(" ")[0];
@@ -4486,7 +4489,7 @@ function ahpVentana(a){a=a||ahpLista();if(!a)return;const L=a.l.slice().sort((x,
     $("#ahpEq").onclick=()=>{closeSheet();try{eqTab="mios";go("equipo")}catch(e){}};
     document.querySelectorAll("[data-ahw]").forEach(b=>b.onclick=async()=>{const m=L[+b.dataset.ahw],x=urgSocio(m),nn=m.n.split(" ")[0],yo=miNombreCorto()||"";
       const t=`¡Hola, ${nn}! 👋\n\nLe escribo porque su membresía de inCruises tiene un pago pendiente.\n\nNo queremos que pierda su cuenta ni sus puntos dobles. ¿Le ayudo a ponerse al día? 🙌${yo?"\n\n*"+yo+"*":""}`;
-      try{urgMarcar(m)}catch(e){}let w=x?waSocio(x):"";if(x&&!w)w=await dtWa(x.uid);location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t)})})}
+      try{urgMarcar(m)}catch(e){}let w=x?waSocio(x):"";if(x&&!w)w=await dtWa(x.uid);waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t))})})}
 function urgStrip(){const el=$("#urgStrip");if(!el)return;const L=urgLista();if(!L.length){el.hidden=true;return}
   const pend=L.filter(m=>!m.p),pag=L.filter(m=>m.p),hoy=pend.filter(m=>urgCuando(m.x)==="hoy").length,man=pend.filter(m=>urgCuando(m.x)==="mañana").length,ges=pend.filter(m=>urgGest(m)).length;
   const tit=pend.length?`${pend.length===1?"1 de su equipo se inactiva pronto":pend.length+" de su equipo se inactivan pronto"}`:`${pag.length===1?"¡1 de su equipo ya pagó!":"¡"+pag.length+" de su equipo ya pagaron!"} 🎉`;
@@ -4500,10 +4503,10 @@ function urgStrip(){const el=$("#urgStrip");if(!el)return;const L=urgLista();if(
   el.querySelectorAll("[data-urw]").forEach(b=>b.onclick=async()=>{const m=L[+b.dataset.urw],x=urgSocio(m),n=m.n.split(" ")[0],c=urgCuando(m.x),yo=miNombreCorto()||"";
     const t=`¡Hola, ${n}! 👋\n\nLe escribo porque su membresía de inCruises tiene un pago pendiente y su cuenta se inactiva ${c}.\n\nNo queremos que pierda su cuenta ni sus puntos dobles. ¿Le ayudo a ponerse al día ahora mismo? 🙌${yo?"\n\n*"+yo+"*":""}`;
     urgMarcar(m);let w=x?waSocio(x):"";if(x&&!w)w=await dtWa(x.uid);
-    location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t);setTimeout(urgStrip,800)});
+    waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t));setTimeout(urgStrip,800)});
   el.querySelectorAll("[data-urs]").forEach(b=>b.onclick=async()=>{const m=L[+b.dataset.urs],p=(mios||[]).find(y=>sameN((y.registro||{}).nombre||"",m.s)||parecidoN((y.registro||{}).nombre||"",m.s)),c=urgCuando(m.x),yo=miNombreCorto()||"";
     const t=`¡Hola, ${m.s.split(" ")[0]}! 🚨\n\n${m.n} se inactiva ${c} por su ahorro pendiente.\n\n¿Ya pudo hablar con ${m.n.split(" ")[0]}? Si necesita apoyo con la llamada, aquí estoy. 💪${yo?"\n\n*"+yo+"*":""}`;
-    urgMarcar(m);let w=p?waSocio(p):"";if(p&&!w)w=await dtWa(p.uid);location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t);setTimeout(urgStrip,800)})}
+    urgMarcar(m);let w=p?waSocio(p):"";if(p&&!w)w=await dtWa(p.uid);waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t));setTimeout(urgStrip,800)})}
 
 // ---------- Avisos de hoy (7 nov): urgStrip, lzgStrip y evHoy en una tarjeta deslizable con ✕ (oculta por hoy: LS avX:id = fecha) ----------
 let avBoxR=0;function avBoxPinta(){const box=$("#avBox"),tr=$("#avTrack");if(!box||!tr)return;const vis=[];
@@ -4603,17 +4606,17 @@ function snvBind(b){const d=b.querySelector("#snvCard");if(!d)return;d.ontoggle=
     location.href="https://wa.me/?text="+encodeURIComponent(firma(t))});
   d.querySelectorAll("[data-snp]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snp);if(!f||!f.pu)return;const w=waSocio(f.pu)||await dtWa(f.pu.uid);
     const t=`¡Hola, ${pn((f.pu.registro||{}).nombre||"")}! 🙌\n\nFelicidades por la activación de ${pn(f.a.socio)}. 🎉\n\n${f.inc?"Veo que entró a la app Action Leaders+ pero no ha terminado su registro. ¿Le ayuda a terminarlo?":"Veo que todavía no ha entrado a la app Action Leaders+.\n\n¿Va a hacer el negocio o solo entró como cliente? Márquelo en la app, en Equipo → Socios nuevos. Si va a trabajar, mándele su enlace para que empiece su Plan de Inicio Rápido."}\n\nSi necesita apoyo, aquí estoy. 💪`;
-    location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(firma(t))});
+    waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(firma(t)))});
   d.querySelectorAll("[data-snd]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snd);if(!f)return;const v=x.dataset.sv;
     if(v==="c"&&!x.dataset.ok){x.dataset.ok=1;x.textContent="¿Seguro? Toque otra vez";return}
     x.disabled=true;if(await snvdSet(f.a,v)){toast(v==="c"?"🧳 Marcado como cliente. Sigue en el Dream Team.":v==="t"?"🚀 Listo: va a trabajar. Ayúdele a entrar a la app.":"↩️ Decisión quitada");LS.set("snvOpen",1);renderEquipo()}else x.disabled=false});
   d.querySelectorAll("[data-snq]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snq);if(!f||!f.pu)return;const L2=((isAdmin&&socios)||mios||[]).find(y=>y.uid===(f.pu.registro||{}).patrocinadorUid);if(!L2)return;const w=waSocio(L2)||await dtWa(L2.uid);
     const t=`Hola, ${pn((L2.registro||{}).nombre||"")} 👋\n\nVeo que *${bonitoN(f.a.socio)}*, de la línea de ${pn((f.pu.registro||{}).nombre||"")}, todavía no entra a la app.\n\n¿Va a hacer el negocio o solo entró como cliente? Márquelo en la app, en Equipo → Socios nuevos, para darle el seguimiento correcto. 🙏`;
-    location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(firma(t))});
+    waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(firma(t)))});
   d.querySelectorAll("[data-snw]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snw);if(!f||!f.x)return;const w=waSocio(f.x)||await dtWa(f.x.uid),n=pn(f.a.socio);
     const t=f.m1?`¡Hola, ${n}! 🏅\n\nVi que ya completó la primera fase de su Plan de Inicio Rápido. ¡Felicidades! Así se arranca.\n\nVamos por la Semana 2. Cuente conmigo. 🚀`
       :`¡Hola, ${n}! 💪\n\nVi que va en ${f.ir.n||0} de ${f.ir.tot||12} pasos de su Semana 1 del Plan de Inicio Rápido.${f.E&&!f.E.venc&&!f.E.gano?"\n\nLe quedan "+raQueda(f.E.lim-Date.now())+" para completarla a tiempo.":""}\n\n¿Le ayudo con el siguiente paso? 🚀`;
-    location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(firma(t))});
+    waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(firma(t)))});
   d.querySelectorAll("[data-snc]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snc);if(!f)return;let c=null;
     try{if(!snvC)snvC=(await ahCargarAdm("data/nuevos.enc")).c||{};c=snvC[f.a.id||f.a.socio]||null}catch(e){c=null}
     const w=c&&String(c.w||"").replace(/\D/g,"");
@@ -4790,7 +4793,7 @@ function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,
   openSheet(`<h2>🎉 Bienvenida a socio nuevo</h2>
    <div class="field"><label for="bnN">Nombre del socio nuevo</label><input class="inp" id="bnN" value="${esc(n)}" placeholder="Nombre y apellido"></div>
    ${sinTel?`<div class="grid2"><div class="field"><label for="bnCC">País</label><select class="inp" id="bnCC">${PAISES.map(([pn,k],i)=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")&&i===PAISES.findIndex(x=>x[1]===(LS.get("lastCC")||"504"))?"selected":""}>${pn} (+${k})</option>`).join("")}</select></div>
-   <div class="field"><label for="bnTel">WhatsApp <span class="muted">(opcional)</span></label><input class="inp" id="bnTel" type="tel" autocomplete="tel" placeholder="Solo el número"></div></div>`:""}
+   <div class="field"><label for="bnTel">WhatsApp <span class="muted">(opcional)</span></label><input class="inp" id="bnTel" type="tel" autocomplete="tel" placeholder="Solo el número"><p class="small" id="bnTelA" style="color:var(--bad);margin:4px 0 0" hidden></p></div></div>`:""}
    <div class="field"><label for="bnPais">País del socio</label><select class="inp" id="bnPais">${PAISES.filter((x,i,a)=>a.findIndex(y=>y[0]===x[0])===i).map(([pn])=>`<option ${pn===pais?"selected":""}>${pn}</option>`).join("")}<option value="">No mostrar país</option></select></div>
    <div class="seg" id="bnG"><button aria-selected="true" data-g="m" type="button">Bienvenido</button><button aria-selected="false" data-g="f" type="button">Bienvenida</button></div>
    <div class="seg" id="bnP"><button aria-selected="false" data-p="starter" type="button">Starter</button><button aria-selected="true" data-p="classic" type="button">Classic</button><button aria-selected="false" data-p="premium" type="button">★ Premium</button></div>
@@ -4808,15 +4811,15 @@ function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,
       box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im);
       const wa=$("#bnWa");if(wa)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat,lk));guardarInv()};
     let deb;$("#bnN").oninput=()=>{clearTimeout(deb);deb=setTimeout(upd,450)};
-    const tI=$("#bnTel");if(tI){const syncTel=()=>{const v=tI.value;if(/^\s*(\+|00)/.test(v)){const sp=splitPhone(v);if(sp.cc){$("#bnCC").value=sp.cc;tI.value=sp.num}}tel=tI.value.trim()?waNum(tI.value,$("#bnCC").value):"";const wa=$("#bnWa");wa.style.display=tel?"":"none";if(n)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat,lk));guardarInv()};tI.oninput=syncTel;tI.onchange=syncTel;$("#bnCC").onchange=()=>{LS.set("lastCC",$("#bnCC").value);syncTel()}}
+    const tI=$("#bnTel");if(tI){const syncTel=()=>{const v=tI.value;if(/^\s*(\+|00)/.test(v)){const sp=splitPhone(v);if(sp.cc){$("#bnCC").value=sp.cc;tI.value=sp.num}}tel=tI.value.trim()?waNum(tI.value,$("#bnCC").value):"";{const av=$("#bnTelA"),m=tel&&tI.value.replace(/\D/g,"").length>=6?telAviso(tel):"";if(av){av.textContent=m;av.hidden=!m}}const wa=$("#bnWa");wa.style.display=tel?"":"none";if(n)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat,lk));guardarInv()};tI.oninput=syncTel;tI.onchange=syncTel;$("#bnCC").onchange=()=>{LS.set("lastCC",$("#bnCC").value);{const ps=$("#bnPais"),pn=(PAISES.find(x=>x[1]===$("#bnCC").value)||[])[0];if(ps&&pn&&ps.value&&ps.value!==pn){ps.value=pn;pais=pn;upd()}}syncTel()}}
     $("#bnG").onclick=e=>{const b=e.target.closest("[data-g]");if(!b)return;f=b.dataset.g==="f";$("#bnG").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));upd()};
-    $("#bnPais").onchange=()=>{pais=$("#bnPais").value;upd()};
+    $("#bnPais").onchange=()=>{pais=$("#bnPais").value;{const cs=$("#bnCC"),k=(PAISES.find(x=>x[0]===pais)||[])[1];if(cs&&k&&cs.value!==k){cs.value=k;cs.dispatchEvent(new Event("change"))}}upd()};
     $("#bnP").onclick=e=>{const b=e.target.closest("[data-p]");if(!b)return;plan=b.dataset.p;$("#bnP").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));upd()};
     $("#bnFoto").onchange=async e=>{const fl=e.target.files&&e.target.files[0];if(!fl)return;try{foto=await fotoReduce400(fl);toast("Foto lista")}catch(x){toast("No se pudo usar esa foto")}upd()};
     $("#bnCopy").onclick=async()=>{if(!n)return toast("Escribe el nombre");try{await navigator.clipboard.writeText(BIEN_GRUPO(n,f,plan,pais));toast("Celebración copiada (sin enlace)")}catch(x){toast("No se pudo copiar")}};
     const pn=()=>(n.split(" ")[0]||"el socio nuevo");const privTx=()=>{const b=$("#bnPriv");if(b&&n)b.textContent="🔒 Enviar en privado a "+pn()};$("#bnN").addEventListener("input",()=>setTimeout(privTx,500));privTx();
     let privOk=false;$("#bnPriv").onclick=async()=>{if(!n||!file)return toast("Escribe el nombre del socio");const msg=BIEN_MSG(n,f,pat,lk);
-      if(tel){location.href="https://wa.me/"+tel+"?text="+encodeURIComponent(msg);return}
+      if(tel){waIr("https://wa.me/"+tel+"?text="+encodeURIComponent(msg));return}
       if(!privOk){privOk=true;$("#bnPriv").textContent="⚠️ Solo a "+pn()+", no a grupos · toque otra vez";$("#bnPrivTx").innerHTML="Este mensaje lleva <b>el enlace personal de "+esc(pn())+"</b>. Elija <b>su chat</b>, no un grupo.";return}
       if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text:msg});return}catch(x){if(x&&x.name==="AbortError")return}}
       try{await navigator.clipboard.writeText(msg);toast("Mensaje copiado: péguelo en el chat de "+pn())}catch(x){}};
@@ -5032,7 +5035,7 @@ async function l3Avisar(x,t){const yo=miNombreCorto()||"";t=`Hola ${(x.deN||"").
   try{const d=await store.db.doc("users/"+x.de).get();if(d.exists)w=String(((d.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}catch(e){}
   openSheet(`<h2>💬 Avisarle a ${esc((x.deN||"").split(" ")[0])}</h2><p class="small muted" style="margin:0">Ya le aparece en su app. Si quiere, avísele también por WhatsApp.</p>
    <button class="btn" id="l3aw" style="width:100%;background:#25D366;color:#fff">💬 Enviar por WhatsApp</button><button class="btn ghost" data-close style="width:100%">No hace falta</button>`,()=>{
-    $("#l3aw").onclick=async()=>{if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(t);return}if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}})}
+    $("#l3aw").onclick=async()=>{if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t));return}if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}})}
 // ---------- Flyers nuevos (3 nov): Presentación de negocios y Lanzamiento ----------
 // Fondos ya oscurecidos (foto + degradados) en media/flyers/pres/* y media/flyers/lanz/*; aquí solo se dibuja el contenido.
 const FL_GOLD="#F2C35B";
@@ -5371,7 +5374,7 @@ async function lzInvitarLider(ci){const bt=$("#lzLd");if(bt)bt.disabled=true;
   let w="";try{const r=await store.db.doc("users/"+pu).get();if(r.exists)w=String(((r.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}catch(e){}
   openSheet(`<h2>✅ Invitación enviada</h2><p style="margin:0">${esc(pn)} la verá al abrir su app y podrá aceptarla.</p><p class="small muted" style="margin:0">Avísele por WhatsApp para que la confirme pronto:</p>
    <button class="btn" id="lzLw" style="width:100%;background:#25D366;color:#fff">💬 Avisarle por WhatsApp</button><button class="btn ghost" id="lzBk" style="width:100%">Volver a mi ${LZP(ci)?"presentación":"lanzamiento"}</button>`,()=>{
-    $("#lzLw").onclick=()=>{location.href="https://wa.me/"+w+"?text="+encodeURIComponent(msg)};$("#lzBk").onclick=()=>{closeSheet();setTimeout(()=>lzVer(ci),250)}})}
+    $("#lzLw").onclick=()=>{waIr("https://wa.me/"+w+"?text="+encodeURIComponent(msg))};$("#lzBk").onclick=()=>{closeSheet();setTimeout(()=>lzVer(ci),250)}})}
 async function lzInvitados(ci){const o=lzDatos(ci);let file=null;lzFile(o).then(f=>file=f).catch(()=>{});ci.inv=ci.inv||[];let q="";
   const lista=()=>{const Q=nrmN(q),M=(contacts||[]).filter(c=>!Q||nrmN(c.name).includes(Q)).sort((a,b)=>(ci.inv.includes(a.id)?1:0)-(ci.inv.includes(b.id)?1:0)||String(a.name).localeCompare(b.name,"es")).slice(0,60);
     return M.map(c=>{const ya=ci.inv.includes(c.id);return `<div class="row between" style="gap:8px;padding:8px 0;border-bottom:1px solid var(--line)"><div style="min-width:0"><b class="small">${esc(c.name)}</b><div class="small muted">${ya?"✅ Invitado":esc(c.stage||"Nuevo")}</div></div><button class="btn sm ${ya?"ghost":""}" data-lzi="${esc(c.id)}" style="flex:none;${ya?"":"background:#25D366;color:#fff"}">${ya?"Reenviar":"💬 Enviar"}</button></div>`}).join("")||`<p class="small muted">No hay contactos con ese nombre.</p>`};
@@ -5384,7 +5387,7 @@ async function lzInvitados(ci){const o=lzDatos(ci);let file=null;lzFile(o).then(
       if(!ci.inv.includes(c.id)){ci.inv.push(c.id);saveCita(ci);c.note=(c.note?c.note+" · ":"")+"🚀 Invitado a mi lanzamiento ("+niceDate(ci.fecha)+")";c.next=ci.fecha;c.updated=Date.now();try{await store.saveContact(c)}catch(e){}}
       pinta();
       if(file&&navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(x){if(x&&x.name==="AbortError")return}}
-      location.href="https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t)};
+      waIr("https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t))};
     $("#lzLst").onclick=e=>{const b=e.target.closest("[data-lzi]");if(!b)return;const c=contacts.find(x=>x.id===b.dataset.lzi);if(c)enviar(c)};
     $("#lzAdd").onclick=()=>{closeSheet();setTimeout(()=>editContact(null,nc=>{setTimeout(()=>lzInvitados(ci),300)},{}),250)}})}
 // ---------- Eventos y Juntas de negocios (colección agendaEv) ----------
@@ -5695,7 +5698,7 @@ async function evaInvitar(e){const o=evaDatos(e);let file=null;evaFile(o).then(f
     $("#eviL").onclick=async x=>{const b=x.target.closest("[data-evi]");if(!b)return;const c=contacts.find(y=>y.id===b.dataset.evi);if(!c)return;const t=evaScript(e,String(c.name||"").split(" ")[0],lk),n=waNum(c.phone,c.cc);
       if(!ya.includes(c.id)){ya.push(c.id);LS.set(k,ya);c.note=(c.note?c.note+" · ":"")+(e.bx?"💼 Invitado a "+evaLarga(e):e.tipo==="gran"?"🎤 Invitado al evento":"🤝 Invitado a la junta")+" ("+niceDate(e.fecha)+")";c.next=e.fecha;c.updated=Date.now();try{await store.saveContact(c)}catch(z){}}pinta();
       if(file&&navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(z){if(z&&z.name==="AbortError")return}}
-      location.href="https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t)};
+      waIr("https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t))};
     $("#eviAdd").onclick=()=>{closeSheet();setTimeout(()=>editContact(null,()=>setTimeout(()=>evaInvitar(e),300),{}),250)};
     $("#eviGr").onclick=async()=>{const t=evaScript(e,"",lk);if(file&&navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(z){if(z&&z.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}})}
 // ---------- Confirmación de asistencia (evento.html) ----------
@@ -5733,11 +5736,11 @@ async function rsvpVer(e){let L=[];openSheet(`<h2>📝 Confirmados</h2><p class=
   const fila=r=>`<div class="row between" style="gap:8px;padding:9px 0;border-bottom:1px solid var(--line)"><div style="min-width:0"><b style="font-weight:600">${esc(r.n)}</b><div class="small muted">✅ ${esc("Confirmó "+haceTxt(r.t))}</div></div>${r.de===store.uid||todo?`<span class="row" style="gap:6px;flex:none">${e.tipo==="gran"?`<button class="btn sm ghost" data-rtk="${esc(r.id)}">🎟️</button>`:""}<button class="btn sm" data-rsw="${esc(r.id)}" style="background:${evaCamPend(e,r)?"#EA580C":"#25D366"};color:#fff">${evaCamPend(e,r)?"📢 Avisar el cambio":"💬 "+(e.tipo!=="gran"||e.fecha<=addD(TODAY,1)?"Recordar":"Escribir")}</button></span>`:""}</div>`;
   $("#rsL").innerHTML=!L.length?`<p class="small muted" style="margin:10px 0">Aún no hay confirmados. Toque "📣 Invitar" y comparta su link: quien confirme aparece aquí.</p>`:
    `<div class="row wrap" style="gap:6px;margin:8px 0"><span class="chip c-good">✅ ${L.length} confirmados</span>${todo?`<span class="chip">🙋 ${mios} suyos</span>`:""}</div>`+(todo?Object.keys(G).sort((a,b)=>G[b].length-G[a].length).map(k=>`<div class="small" style="margin:12px 0 2px;font-weight:800;color:var(--brand)">Invitados por ${esc(k)} · ${G[k].length}</div>`+G[k].map(fila).join("")).join(""):L.map(fila).join(""));
-  $("#rsL").onclick=x=>{const tk=x.target.closest("[data-rtk]");if(tk&&e.tipo==="gran"){const r=L.find(y=>y.id===tk.dataset.rtk);if(r)rsvpTicket(e,r,L);return}const b=x.target.closest("[data-rsw]");if(!b)return;const r=L.find(y=>y.id===b.dataset.rsw);if(!r)return;const t=rsvpMsg(e,r);evaCamMarca(e,r);location.href="https://wa.me/"+waNum(r.w,r.cc)+"?text="+encodeURIComponent(t)}})}
+  $("#rsL").onclick=x=>{const tk=x.target.closest("[data-rtk]");if(tk&&e.tipo==="gran"){const r=L.find(y=>y.id===tk.dataset.rtk);if(r)rsvpTicket(e,r,L);return}const b=x.target.closest("[data-rsw]");if(!b)return;const r=L.find(y=>y.id===b.dataset.rsw);if(!r)return;const t=rsvpMsg(e,r);evaCamMarca(e,r);waIr("https://wa.me/"+waNum(r.w,r.cc)+"?text="+encodeURIComponent(t))}})}
 // Lista corta de confirmados dentro de la junta (de la caché que dejó rsvpCuenta) con botón de ticket
 function rsvpInline(e){const c=$("#evaRsL"),R=rsvpN[e.id];if(!c||!R||!R.L||!R.L.length){if(c)c.innerHTML="";return}const L=R.L.slice(0,5);
   c.innerHTML=`<div class="small" style="font-weight:800;margin:4px 0 0">✅ ${R.L.length} confirmado${R.L.length===1?"":"s"}</div>`+L.map(r=>`<div class="rsRow"><div style="min-width:0"><b style="font-weight:600">${esc(r.n)}</b><div class="small muted">${r.de===store.uid?"Invitado por usted":"Invitado por "+esc(String(r.dn||"").split(" ")[0])} · ${esc(haceTxt(r.t))}</div></div>${e.tipo==="gran"&&!evaCamPend(e,r)?`<button class="btn sm" data-rtk="${esc(r.id)}" style="flex:none">🎟️ Ticket</button>`:`<button class="btn sm" data-rsw2="${esc(r.id)}" style="flex:none;background:${evaCamPend(e,r)?"#EA580C":"#25D366"};color:#fff">${evaCamPend(e,r)?"📢 Avisar cambio":"💬 Recordar"}</button>`}</div>`).join("")+(R.L.length>5?`<button class="btn sm ghost" id="rsMas" style="width:100%;margin-top:6px">Ver los ${R.L.length} confirmados</button>`:"");
-  c.onclick=x=>{const w=x.target.closest("[data-rsw2]");if(w){const r=R.L.find(y=>y.id===w.dataset.rsw2);if(r){const t=rsvpMsg(e,r);evaCamMarca(e,r);location.href="https://wa.me/"+waNum(r.w,r.cc)+"?text="+encodeURIComponent(t)}return}const b=x.target.closest("[data-rtk]");if(b&&e.tipo==="gran"){const r=R.L.find(y=>y.id===b.dataset.rtk);if(r)rsvpTicket(e,r,R.L)}if(x.target.id==="rsMas"){closeSheet();setTimeout(()=>rsvpVer(e),250)}}}
+  c.onclick=x=>{const w=x.target.closest("[data-rsw2]");if(w){const r=R.L.find(y=>y.id===w.dataset.rsw2);if(r){const t=rsvpMsg(e,r);evaCamMarca(e,r);waIr("https://wa.me/"+waNum(r.w,r.cc)+"?text="+encodeURIComponent(t))}return}const b=x.target.closest("[data-rtk]");if(b&&e.tipo==="gran"){const r=R.L.find(y=>y.id===b.dataset.rtk);if(r)rsvpTicket(e,r,R.L)}if(x.target.id==="rsMas"){closeSheet();setTimeout(()=>rsvpVer(e),250)}}}
 // Ticket de confirmación (historia 1080×1920): foto de la junta, "Asistencia confirmada", datos y número de lugar
 function rsvpNum(r,L,e){if(!L||!e||!rsvpTodo(e))return 0;const A=L.slice().sort((a,b)=>(a.t||0)-(b.t||0));const i=A.findIndex(x=>x.id===r.id);return i>=0?i+1:0}
 async function rsvpTkCanvas(e,r,num){await flFonts();const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d"),gran=e.tipo==="gran",ds=[1,2,3].includes(+e.dis)?+e.dis:1;
@@ -5763,8 +5766,8 @@ function rsvpTkMsg(e,r){const f=String(r.n||"").split(" ")[0];return [`¡Hola, $
 async function rsvpTicket(e,r,L){toast("Creando su ticket…");let cv;try{cv=await rsvpTkCanvas(e,r,rsvpNum(r,L,e))}catch(x){toast("No se pudo crear el ticket");return}
   const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92)),file=new File([b],"Ticket-"+String(r.n||"invitado").split(" ")[0]+".jpg",{type:"image/jpeg"}),t=rsvpTkMsg(e,r),u=URL.createObjectURL(b);
   openSheet(`<h2>🎟️ Ticket de ${esc(String(r.n||"").split(" ")[0])}</h2><img src="${u}" alt="Ticket" style="width:100%;border-radius:14px"><button class="btn" id="tkSh" style="width:100%;background:#25D366;color:#fff">📤 Enviar ticket por WhatsApp</button><button class="btn ghost" id="tkWa" style="width:100%">💬 Solo el mensaje a ${esc(String(r.n||"").split(" ")[0])}</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
-    $("#tkSh").onclick=async()=>{try{await navigator.clipboard.writeText(t)}catch(x){}if(navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(x){if(x&&x.name==="AbortError")return}}const a=document.createElement("a");a.href=u;a.download=file.name;a.click();toast("Ticket guardado. Mensaje copiado ✓");setTimeout(()=>{location.href="https://wa.me/"+waNum(r.w,r.cc)+"?text="+encodeURIComponent(t)},900)};
-    $("#tkWa").onclick=()=>{location.href="https://wa.me/"+waNum(r.w,r.cc)+"?text="+encodeURIComponent(t)}})}
+    $("#tkSh").onclick=async()=>{try{await navigator.clipboard.writeText(t)}catch(x){}if(navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(x){if(x&&x.name==="AbortError")return}}const a=document.createElement("a");a.href=u;a.download=file.name;a.click();toast("Ticket guardado. Mensaje copiado ✓");setTimeout(()=>{waIr("https://wa.me/"+waNum(r.w,r.cc)+"?text="+encodeURIComponent(t))},900)};
+    $("#tkWa").onclick=()=>{waIr("https://wa.me/"+waNum(r.w,r.cc)+"?text="+encodeURIComponent(t))}})}
 // Quien compartió su link: aviso + CRM cuando alguien confirma (1 consulta por junta próxima, máx. cada 5 min)
 let rsvpRevT=0;async function rsvpRevisar(){if(!store.db||!store.uid||!EVA||Date.now()-rsvpRevT<3e5)return;rsvpRevT=Date.now();
   for(const e of EVA.filter(x=>!x.cancel&&x.fecha>=addD(TODAY,-1)&&LS.get("rsvpI:"+x.id))){try{
@@ -5843,7 +5846,7 @@ function memUrl(nombre,cid){let u="https://actionleadersplus.com/membresia.html?
 function memMsg(nombre,u){const f=String(nombre||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"";
   return `Hola${f?" "+f:""} 😊\n\nLe preparé esta página para que vea, de forma sencilla, *cómo funciona la membresía de viajes*: cómo su dinero se convierte en el doble de puntos y cómo se reserva un crucero.\n\nTiene un *simulador* para calcular su próximo crucero:\n${u}\n\nCuando la vea, me cuenta qué le pareció. 🚢${yo?"\n\n*"+yo+"*":""}`}
 async function enviarMem(c){if(!c)return;if(!(await salaPrep()))return;LS.set("memOn",1);const E=LS.get("memEnv")||{};E[c.id]=Date.now();LS.set("memEnv",E);stAvanza(c,"Contactado","le envió la página de la membresía");
-  const t=memMsg(c.name,memUrl(c.name,c.id)),n=waNum(c.phone,c.cc);if(n){location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t);return}
+  const t=memMsg(c.name,memUrl(c.name,c.id)),n=waNum(c.phone,c.cc);if(n){waIr("https://wa.me/"+n+"?text="+encodeURIComponent(t));return}
   if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
 async function memCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}
   openSheet(`<h2>🛳️ Página de membresía</h2><p class="small muted" style="margin:0 0 10px">Cómo funciona la membresía, con el simulador de cruceros. Los botones le escriben a su WhatsApp.</p>
@@ -5885,7 +5888,7 @@ async function salaPrep(){if(!(regDoc&&regDoc.registro)){toast("Complete su regi
 function salaMsgInv(nombre,u){const f=String(nombre||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"";
   return `Hola${f?" "+f:""} 😊\n\nLe preparé una *presentación privada de 15 minutos* sobre cómo viajar más pagando menos y generar ingresos extra.\n\n🎬 Véala aquí cuando tenga un momento tranquilo:\n${u}\n\nAl final le hago una pregunta: su respuesta me ayuda a orientarle mejor. 🙌${yo?"\n\n*"+yo+"*":""}`}
 async function enviarSala(c){if(!c)return;if(ahGate())return;if(!(await salaPrep()))return;stAvanza(c,"Contactado","le envió la presentación virtual");const t=salaMsgInv(c.name,salaUrl(c.name,c.id)),n=waNum(c.phone,c.cc);
-  if(n){location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t);return}
+  if(n){waIr("https://wa.me/"+n+"?text="+encodeURIComponent(t));return}
   if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
 function salaSeg(v){const f=String(v.n||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"",pa=v.pais?` y vi que le gustaría conocer *${v.pais.split(",")[0].trim()}*`:"";
   if(v.resp==="no")return `Hola ${f} 😊\n\nGracias por tomarse el tiempo de ver la presentación. Respeto mucho su decisión.\n\nSi más adelante le surge alguna duda o quiere saber más, aquí estoy para ayudarle. 🙌${yo?"\n\n*"+yo+"*":""}`;
@@ -5905,7 +5908,7 @@ async function abrirSala(){LS.set("salaSeen",Date.now());renderSalaCard();
    <div class="row" style="gap:8px"><input class="inp grow" id="slN" placeholder="Nombre de la persona" maxlength="50" style="min-width:0"><button class="btn sm" id="slSend" style="background:#25D366;color:#fff">Enviar</button></div>
    <div id="slList">${draw()}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button><span data-nofocus hidden></span>`,()=>{
     const bind=()=>document.querySelectorAll("#slList [data-sseg]").forEach(b=>b.onclick=async()=>{const v=salaCache()[b.dataset.sseg];if(!v)return;const t=salaSeg(v),ct=v.c&&contacts.find(x=>x.id===v.c),n=ct?waNum(ct.phone,ct.cc):"";
-      if(n){location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t);return}if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)});bind();
+      if(n){waIr("https://wa.me/"+n+"?text="+encodeURIComponent(t));return}if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)});bind();
     $("#slSend").onclick=async()=>{const nm=$("#slN").value.trim();if(nm.length<2){toast("Escriba el nombre de la persona");$("#slN").focus();return}if(!(await salaPrep()))return;const t=salaMsgInv(nm,salaUrl(nm,""));
       if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)};
     loadSala(true).then(()=>{const l=$("#slList");if(l){l.innerHTML=draw();bind()}})})}
@@ -5950,7 +5953,7 @@ function enviarPaginaA(c){const n=waNum(c.phone,c.cc),first=String(c.name||"").t
    <button class="ep-op" id="eoCard"><span class="ic">🖼️</span><span class="grow"><b>Con tarjeta de mi foto</b><small>Envías la imagen y el mensaje; eliges su chat en WhatsApp</small></span><span>›</span></button>
    <button class="btn ghost" id="eoBack" style="width:100%">Volver</button>`,()=>{
     $("#eoBack").onclick=abrirEnviarPagina;
-    $("#eoMsg").onclick=async()=>{await marcarEnvio(c);closeSheet();location.href="https://wa.me/"+n+"?text="+encodeURIComponent(msgPagina(first))};
+    $("#eoMsg").onclick=async()=>{await marcarEnvio(c);closeSheet();waIr("https://wa.me/"+n+"?text="+encodeURIComponent(msgPagina(first)))};
     $("#eoCard").onclick=async()=>{const ok=await compartirTarjeta(first);if(ok){await marcarEnvio(c);closeSheet();toast("Listo ✓ "+first+" quedó como Contactado en tu CRM")}}})}
 function abrirEnviarPagina(){let q="";const L=()=>contacts.filter(c=>!q||nrmN(c.name).includes(nrmN(q))).sort((a,b)=>(b.updated||0)-(a.updated||0)).slice(0,40);
   openSheet(`<div data-nofocus></div><h2>🌐 Enviar mi página</h2><p class="small muted" style="margin:0">¿A quién se la quieres enviar?</p>
@@ -6123,6 +6126,14 @@ const STAGE_C={"Nuevo":"c-brand","Contactado":"c-brand","Presentación":"c-gold"
 let contacts=[],stageF="Todos",openC=null,crmOrd=(()=>{try{return LS.get("crmOrd")||"seg"}catch(e){return "seg"}})();
 const STAGE_COL={"Nuevo":"#2AC1F1","Contactado":"#2AC1F1","Presentación":"#d4a017","Seguimiento":"#e8862a","Por cerrar":"#EA580C","Socio":"#22a35a","Cliente":"#22a35a","No interesado":"#d64545"};
 const PAISES=[["Honduras","504"],["Estados Unidos","1"],["España","34"],["Reino Unido","44"],["Guatemala","502"],["El Salvador","503"],["Nicaragua","505"],["Costa Rica","506"],["Panamá","507"],["México","52"],["Colombia","57"],["Venezuela","58"],["Perú","51"],["Ecuador","593"],["Chile","56"],["Argentina","54"],["República Dominicana","1"],["Canadá","1"],["Italia","39"],["Francia","33"],["Alemania","49"]];
+// 10 nov: antes de abrir WhatsApp se revisa el número: si el largo no corresponde a su país (p. ej. +504 con 9 dígitos), no se abre un chat que no existe.
+const TEL_LEN={"504":[8],"502":[8],"503":[8],"505":[8],"506":[8],"507":[7,8],"34":[9],"1":[10],"52":[10],"57":[10],"58":[10],"51":[9],"593":[9],"56":[9],"54":[10,11],"44":[10],"39":[9,10],"33":[9],"49":[10,11],"55":[10,11],"591":[8],"595":[9],"598":[8],"53":[8],"809":[7]};
+function telInfo(full){const d=String(full||"").replace(/\D/g,"");if(!d)return{ok:true,d};let best=null;for(const [pn,k] of PAISES)if(d.startsWith(k)&&(!best||k.length>best[1].length))best=[pn,k];
+  if(!best||!TEL_LEN[best[1]])return{ok:true,d};const nn=d.length-best[1].length;return{ok:TEL_LEN[best[1]].includes(nn),d,cc:best[1],pais:best[0],n:nn,esp:TEL_LEN[best[1]]}}
+function telAviso(full){const t=telInfo(full);if(t.ok)return "";return `Ese número tiene ${t.n} dígitos y los de ${t.pais} tienen ${t.esp.join(" u ")}. ¿Es de otro país? Elija el país correcto.`}
+function waIr(u){try{const m=String(u).match(/wa\.me\/(\d*)\?/),num=m?m[1]:"";if(num){const t=telInfo(num);if(!t.ok){const txt=(String(u).split("?text=")[1]||"");
+    openSheet(`<h2>⚠️ Revise el número</h2><p class="small" style="margin:0">El número <b>+${esc(num)}</b> parece incompleto o de otro país: los de ${esc(t.pais)} tienen ${t.esp.join(" u ")} dígitos y este tiene ${t.n}.</p><p class="small muted" style="margin:0">Puede elegir el chat en WhatsApp ahora y luego corregir el número (Mi equipo › ✏️ Número).</p><button class="btn" id="wiGo" style="width:100%;background:#25D366;color:#fff">💬 Elegir el chat en WhatsApp</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#wiGo").onclick=()=>{closeSheet();location.href="https://wa.me/?text="+txt}});return}}}catch(e){}
+  location.href=u}
 const waNum=(t,cc)=>{const raw=String(t||"").trim();let d=raw.replace(/\D/g,"");if(!d)return"";if(raw.startsWith("+")||raw.startsWith("00"))return d.replace(/^00/,"");cc=cc||"504";if(d.startsWith(cc)&&d.length>cc.length+6)return d;return cc+d.replace(/^0+/,"")};
 function msgPara(c,first){const nt=c.note||"";if((c.stage||"Nuevo")==="Nuevo"&&nt.includes("Desde tu página")){const yo=miNombreCorto().split(" ")[0]||"yo";
   const i=/Viajar/i.test(nt)?["que le interesa viajar ✈️","cómo estamos viajando más gastando menos"]:/Negocio|Ingresos/i.test(nt)?["que le interesa emprender un negocio 💼","cómo lo estamos haciendo desde el celular"]:["que le interesa viajar y emprender ✈️💼","cómo funciona"];
@@ -6227,7 +6238,7 @@ function flEnviar(c,k){if(k==="pres"){presAbrir(c);return}if(k==="bien"){flMarca
    $("#flW").onclick=()=>{const t=$("#flT").value.trim();if(!t)return;const kk=k==="re2"?"seg":k;flMarca(c,kk,["sal","resal","inv","rinv","re"].includes(k)?(k==="resal"?"nr":k==="rinv"?"pen":""):undefined);
      if(k==="resal")c.fl.h.sal=c.fl.h.sal||Date.now();if(k==="re"){c.stage="Contactado";c.stT=Date.now();c.fl.h={re:Date.now(),sal:Date.now()};c.fl.r=""}
      if(k==="sal"||k==="resal")stAvanza(c,"Contactado","le escribió el saludo");if(k==="seg")stAvanza(c,"Seguimiento","le dio seguimiento");
-     notaPend(c,k,1);flGuardar(c);const n=waNum(c.phone,c.cc);closeSheet();location.href="https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t)};
+     notaPend(c,k,1);flGuardar(c);const n=waNum(c.phone,c.cc);closeSheet();waIr("https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t))};
    document.querySelectorAll("#sheetPanel [data-fla]").forEach(b=>b.onclick=()=>{const a=b.dataset.fla;if(k==="agd"){flMarca(c,"agd");flGuardar(c)}closeSheet();
      if(a==="cita")abrirCita(null,c);else if(a==="pres")presAbrir(c);else if(a==="l3")pedirL3(c);else if(a==="sala")enviarSala(c)})})}
 async function flResp(c,v){c.fl=Object.assign({h:{},r:""},c.fl||{});
@@ -6278,7 +6289,7 @@ function crmWa(c,k){const f=String(c.name||"").trim().split(/\s+/)[0]||"",w=c.ph
     neg:`¡Hola, ${f}! 👋\n\nUsted ya disfruta los beneficios de inCruises como cliente 🛳️\n\n¿Sabía que también puede compartirlo y hacerlo su negocio? Me encantaría mostrarle cómo funciona, sin compromiso.\n\nSi le interesa, regístrese en la app de nuestro equipo con mi enlace:\n${miEnlace()}`,
     ah:`Hola, ${f} 👋\n\nLe aviso con cariño que su ahorro de inCruises quedó pendiente.\n\nPóngase al día para no perder sus beneficios de viaje 🛳️\n\nSi necesita ayuda, aquí estoy.`,
     hola:`¡Hola, ${f}! 👋\n\nPaso a saludarle y a agradecerle por ser parte de nuestra familia inCruises 🛳️\n\nSi necesita ayuda para planear su próximo viaje, aquí estoy.`}[k];
-  location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(T+(yo?"\n\n*"+yo+"*":""))}
+  waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(T+(yo?"\n\n*"+yo+"*":"")))}
 function crmAhorro(c){const a=ahDe([c.email],[c.phone?waNum(c.phone,c.cc):""]),pend=!!(a&&a.pend),sin=!a;
   openSheet(`<h2>💰 Ahorro de ${esc(String(c.name||"").split(" ")[0])}</h2>
    <p style="margin:0">${sin?"Todavía no hay reporte de ahorros cargado.":pend?`<span class="chip c-bad" style="font-weight:700">🔴 Ahorro pendiente</span>`:`<span class="chip c-good" style="font-weight:700">🚢 Ahorro al día</span>`}</p>
@@ -6344,7 +6355,7 @@ function citaMsg(c,rec){const first=String(c.nombre||"").trim().split(/\s+/)[0]|
   const ind=String(c.nota||"").split("\n").map(x=>x.trim()).filter(Boolean),indL=ind.length?["","📝 *Para aprovechar la reunión:*",...ind.map(x=>"• "+x)]:[];
   L.push(`Hola ${first}, ¿cómo está? 😊`,"",rec==="rep"?"Le confirmo el *nuevo horario* de nuestra reunión 👇":"Le confirmo nuestra reunión 👇","",`📅 *${dia}*`,`🕖 *${h12(c.hora)}*`,como,...det,...indL,"","📲 Agréguela a su calendario:",citaLink(c),"","¡Nos vemos! 🙌");if(yo)L.push(`*${yo}*`);return L.join("\n")}
 async function citaWa(c,rec){const t=citaMsg(c,rec),ct=c.cid&&contacts.find(x=>x.id===c.cid),n=ct?waNum(ct.phone,ct.cc):String(c.tel||"").replace(/\D/g,"");
-  if(n){location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t);return}
+  if(n){waIr("https://wa.me/"+n+"?text="+encodeURIComponent(t));return}
   if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
 function abrirCita(c,ct){const ed=!!(c&&c.id);c=Object.assign({tipo:"zoom",fecha:dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1)),hora:"19:00",dur:60,enlace:profile.zoom||"",lugar:"",nombre:"",cid:""},c||{});if(c.nota==null)c.nota=notaDef(c.tipo);
   if(ct){c.cid=ct.id;c.nombre=ct.name}
@@ -6418,7 +6429,7 @@ function recMsg(o){const cu=recCu(o.fecha),h=h12(o.hora),yo=miNombreCorto()||"",
 function recGet(){return LS.get("recH")||{}}
 function recMarca(k){const S=recGet(),lim=Date.now()-20*864e5;S[k]=Date.now();Object.keys(S).forEach(x=>{if(S[x]<lim)delete S[x]});LS.set("recH",S)}
 function recYa(k,f,h){const t=recGet()[k];return !!t&&t>citaIni({fecha:f,hora:h}).getTime()-36*36e5}
-async function recEnviar(ct,t){const n=ct?waNum(ct.phone,ct.cc):"";if(n){location.href="https://wa.me/"+n+"?text="+encodeURIComponent(t);return}
+async function recEnviar(ct,t){const n=ct?waNum(ct.phone,ct.cc):"";if(n){waIr("https://wa.me/"+n+"?text="+encodeURIComponent(t));return}
   if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
 // lista de invitados de una actividad para recordarles uno por uno
 function recLista(a){// a:{titulo,k,ids,fecha,hora,msg:first=>texto}
@@ -6466,7 +6477,7 @@ async function citaAvisar(c){if(!c)return;let other="",nm="",x=null;
   const t=lz&&LZP(c)?`Hola ${f} 🎤\n\nLe recuerdo *la presentación de negocios* para ${cu}.\n\n¿Me la confirma en la app? ¡Gracias!`:lz?(c.lzE?`Hola ${f} 🚀\n\nLe recuerdo *el lanzamiento de su negocio* para ${cu}. Yo le acompaño como su líder.\n\nAbra la app para confirmarlo y para invitar a sus prospectos con su flyer.`:`Hola ${f} 🙏\n\nLe recuerdo *el lanzamiento de mi negocio* con usted para ${cu}.\n\n¿Me lo confirma en la app? ¡Gracias por acompañarme!`)
     :`Hola ${f} 👋\n\nLe escribo por la *llamada de 3*${x&&x.pros?" con *"+x.pros+"*":""} para ${cu}${c.enlace?"\n\n🎥 Zoom: "+c.enlace:""}.\n\n¿Me la confirma en la app? ¡Gracias!`;
   const msg=t+(yo?"\n\n*"+yo+"*":"");
-  if(w){location.href="https://wa.me/"+w+"?text="+encodeURIComponent(msg);return}
+  if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(msg));return}
   if(navigator.share){try{await navigator.share({text:msg});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(msg)}
 function abrirReprog(c){if(!c)return;const pas=citaIni(c).getTime()<Date.now(),nm=c.tipo==="lider"?c.titulo:c.nombre,f0=pas||c.fecha<TODAY?dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1)):c.fecha;
   openSheet(`<h2>🔁 Reprogramar cita</h2><span data-nofocus hidden></span><p class="small muted" style="margin:0">${esc(nm||"Cita")} · antes: ${esc(citaCuando(c))}${c.reprog?` · reprogramada ${c.reprog} ${c.reprog===1?"vez":"veces"}`:""}</p>
@@ -6560,6 +6571,7 @@ function editContact(c,onNew,opts){opts=opts||{};const esNuevo=!c;if(esNuevo&&ah
   {const ph=$("#cPhone"),fix=()=>{const v=ph.value;if(/^\s*(\+|00)/.test(v)||/[\s()\-.]/.test(v)){const sp=splitPhone(v);if(sp.cc){const o=[...$("#cCC").options].find(x=>x.value===sp.cc&&x.dataset.n===sp.ccN)||[...$("#cCC").options].find(x=>x.value===sp.cc);if(o)$("#cCC").value=o.value}ph.value=sp.num}};ph.addEventListener("change",fix);ph.addEventListener("blur",fix);setTimeout(()=>ph.addEventListener("input",()=>{if(ph.value.length>9&&/^\s*(\+|00)/.test(ph.value))fix()}),0)}
   $("#cSave").onclick=async()=>{const name=$("#cName").value.trim();if(!name){$("#cErr").textContent="Escriba el nombre del contacto.";$("#cErr").hidden=false;return}
     if(esNuevo){const dup=yaEnCRM(name,$("#cPhone").value);if(dup){$("#cErr").textContent="Esta persona ya está en su lista (CRM) como "+dup.name+". Solo cuentan personas nuevas.";$("#cErr").hidden=false;return}}
+    {const pv=$("#cPhone").value.trim();if(pv&&pv.replace(/\D/g,"").length>=6){const m=telAviso(waNum(pv,$("#cCC").value));if(m&&!$("#cSave").dataset.tw){$("#cErr").textContent=m+" (Si está seguro, toque Guardar otra vez.)";$("#cErr").hidden=false;$("#cSave").dataset.tw=1;$("#cCC").style.outline="2px solid var(--bad)";return}}}
     const ccE=$("#cCC");LS.set("lastCC",ccE.value);const nc={id:c.id,name,cc:ccE.value,ccN:ccE.selectedOptions[0].dataset.n,phone:$("#cPhone").value.trim(),stage:$("#cStage").value,note:$("#cNote").value.trim(),next:$("#cNext").value,updated:Date.now()};
     $("#cSave").disabled=true;const id=await store.saveContact(nc);if(!id){$("#cSave").disabled=false;return}
     nc.id=id;const i=contacts.findIndex(x=>x.id===id);if(i>=0)contacts[i]=nc;else contacts.push(nc);
@@ -6739,7 +6751,7 @@ async function presClick(e){const b=e.target.closest("[data-pv]");if(!b||!PS)ret
   if(k==="qb"){$("#presOv").classList.toggle("qOpen");b.textContent=$("#presOv").classList.contains("qOpen")?"✕ Cerrar":"❓ Pregunta";return}
   if(k==="o"&&q){const v=+b.dataset.v;if(q.multi){const a=PS.a[q.k]||[];PS.a[q.k]=a.includes(v)?a.filter(x=>x!==v):a.concat(v)}else PS.a[q.k]=v;presPinta();return}
   if(k==="num"){PS.a.n=+b.dataset.v;presPinta();const r=$("#presOv .pv-res");if(r)r.scrollIntoView({behavior:"smooth",block:"nearest"});return}
-  if(k==="wa"){if(!profile.ref)toast("Tip: agregue su enlace de inCruises en Mi página para que salga en el mensaje");const m=presMsg(),w=waNum(PS.c.phone,PS.c.cc);await presGuardar();location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(m);return}
+  if(k==="wa"){if(!profile.ref)toast("Tip: agregue su enlace de inCruises en Mi página para que salga en el mensaje");const m=presMsg(),w=waNum(PS.c.phone,PS.c.cc);await presGuardar();waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(m));return}
   if(k==="l3"){await presGuardar();const c=PS.c;presCerrar();pedirL3(c);return}
   if(k==="fin"){if(PS.c.general){toast("🎤 Presentación terminada");presCerrar();return}if(!PS.ok)await presGuardar();toast("✅ Presentación guardada en el CRM");presCerrar()}}
 function acaHero(){const r=$("#acaRing"),t=$("#acaHT"),s=$("#acaHS");if(!r)return;let m=null;try{m=irModo()}catch(e){}
@@ -6970,6 +6982,7 @@ function renderWel(){const el=$("#wel");
       const lab={nombre:"Nombre completo",patrocinador:"Patrocinador",plan:"Plan"};
       for(const k in lab)if(!d[k]){err.textContent="Completa: "+lab[k];err.hidden=false;return}
       if(String(d.whatsapp||"").replace(/\D/g,"").length<8){err.textContent="Escribe tu número de WhatsApp completo para que tu patrocinador pueda escribirte.";err.hidden=false;const we=$("#rg_wa");if(we)we.focus();return}
+      if(telAviso(d.whatsapp)){err.textContent=telAviso(d.whatsapp);err.hidden=false;const cs=$("#rg_cc");if(cs){cs.focus();cs.style.outline="2px solid var(--bad)"}return}
       err.hidden=true;const bt=$("#regOk");bt.disabled=true;bt.textContent="Enviando…";
       try{d.fecha=new Date().toISOString();await store.db.doc("users/"+store.uid).set({registro:d,nombre:d.nombre,email:(fbUser&&fbUser.email)||"",creado:window.FB.serverTimestamp()},{merge:true});
         regDoc=Object.assign({},regDoc||{},{registro:d});if(!profile.nombrePila){profile.nombrePila=d.nombre.split(" ")[0];$("#hello").textContent="Hola, "+profile.nombrePila}
@@ -7050,7 +7063,7 @@ function abrirMisDatos(){const r=(regDoc&&regDoc.registro)||null,w=String((r&&r.
     {const fs=$("#mdFs");if(fs)fs.onclick=e=>{const b=e.target.closest("[data-f]");if(b)$("#mdF").value=b.dataset.f}}
     $("#mdOk").onclick=async()=>{const er=$("#mdErr"),bt=$("#mdOk"),rk=$("#rkI");er.hidden=true;
       if(rk&&rk.value&&rk.value!==profile.miNombre&&!nomOk(rk.value,bt))return;
-      const te=$("#mdT");let nw=null;if(te){const v=te.value.trim(),p2=splitPhone(v),n=p2.cc?p2.cc+p2.num:waNum(v,$("#mdC").value);if(n.length<8){er.textContent="Escriba su número de WhatsApp completo.";er.hidden=false;te.focus();return}nw=n.slice(0,15)}
+      const te=$("#mdT");let nw=null;if(te){const v=te.value.trim(),p2=splitPhone(v),n=p2.cc?p2.cc+p2.num:waNum(v,$("#mdC").value);if(n.length<8){er.textContent="Escriba su número de WhatsApp completo.";er.hidden=false;te.focus();return}if(telAviso(n)&&n!==String(miRegistro().whatsapp||"").replace(/\D/g,"")){er.textContent=telAviso(n);er.hidden=false;te.focus();return}nw=n.slice(0,15)}
       const mp=$("#mdP"),base=miRegistro().nombre||miNombreFull()||"";let pubN=null;if(mp){const v=mp.value.trim().replace(/\s+/g," ");if(v!==(pubDe(store.uid)||nv(miNombreFull()))){if(v&&!pubOk(v,base+" "+(profile.miNombre||""))){er.textContent="Use su nombre real (puede quitar un apellido o un segundo nombre).";er.hidden=false;mp.focus();return}pubN=v}}
       bt.disabled=true;
       if(pubN!==null){try{await pubGuardar(store.uid,pubN,base,profile.miNombre||"")}catch(e){bt.disabled=false;er.textContent="No se pudo guardar su nombre. Revise su conexión.";er.hidden=false;return}}
@@ -7318,7 +7331,7 @@ async function irPedirVal(){if(irSimM()){openSheet(`<h2>✅ Validación</h2><p>E
   const r=miRegistro(),sp=(r.invitadoPor||r.patrocinador||"").split(" ")[0];let w="";
   try{if(r.patrocinadorUid){const d=await store.db.doc("users/"+r.patrocinadorUid).get();w=String(((d.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}}catch(e){}
   const t=`Hola${sp?", "+sp:""} 🙌\n\nYa di mi primera presentación yo solo, como parte de mi Plan de Inicio Rápido.\n\n¿Me ayuda a validarla en la app (Mi equipo → ✅ Ya puede presentar)?`;
-  location.href="https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t)}
+  waIr("https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t))}
 function irInvitar(){closeSheet();const u=miEnlace(),t=`¡Bienvenido al equipo! 🎉\n\nEntre a nuestra app con este enlace para empezar su Plan de Inicio Rápido conmigo:\n\n${u}`;location.href="https://wa.me/?text="+encodeURIComponent(t)}
 async function irValCheck(){try{if(irValOk||irSimM()||Date.now()-irValT<18e5)return;irValT=Date.now();const p=miRegistro().patrocinadorUid;if(!p||!store.db)return;const d=await store.db.doc("constancia/"+p).get();const v=d.exists&&(d.data().irVal||{})[store.uid];if(v){irValOk=v;irSave({val:v});irRender()}}catch(e){}}
 function irResumen(E){try{if(irSimM())return;const st=irSt();if(!st.ini&&irModo()!=="nuevo")return;const tot=E.W.reduce((s,w)=>s+w.n2,0);const p0=st.p||{};
@@ -7427,7 +7440,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-irh]
   const nm=((x.registro||{}).nombre||"").split(" ")[0],p=((x.ir||{}).p)||{},w=waSocio(x);
   if(b.dataset.irv){if(!confirm("¿Confirma que "+nm+" ya puede dar la presentación solo?"))return;try{await store.db.doc("constancia/"+store.uid).set({u:Date.now(),irVal:{[uid]:Date.now()}},{merge:true});irVals=Object.assign({},irVals||{},{[uid]:Date.now()});toast("✅ Validado: "+nm+" ya puede presentar");renderEquipo()}catch(err){toast("No se pudo guardar")}return}
   const t=b.dataset.irf?`¡Felicidades, ${nm}! 🏅\n\nYa ganó su insignia de la semana ${Math.max(...(p.med||[1]))} del Plan de Inicio Rápido.\n\nMe llena de orgullo su avance. ¡Vamos por la siguiente! 🚀`:`¡Hola, ${nm}! 🙌\n\nVi que va en la semana ${p.w||1} de su Plan de Inicio Rápido.\n\n¿Qué le está costando? Agendemos 15 minutos y lo hacemos juntos. 💪`;
-  location.href="https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t)});
+  waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t))});
 // ---- Interruptor de prueba (solo admin) ----
 function simAbrir(){const s=irSimM();openSheet(`<h2>🧪 Ver como socio</h2><p class="small muted" style="margin:0">Pruebe lo nuevo como lo vería un socio. Lo que marque aquí se guarda aparte: no toca su avance real ni lo ve el equipo. Usa sus datos reales (CRM, citas, racha).</p>
    <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
@@ -7866,7 +7879,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110144004";var busy=false,pend=null;
+(function(){var V="20261110152708";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
