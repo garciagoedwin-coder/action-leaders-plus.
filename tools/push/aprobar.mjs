@@ -68,48 +68,60 @@ async function main() {
   // Cada 10 min solo se leen las cuentas sin veredicto o con aprobación manual nueva; cada 6 horas, todas (miembros y re-chequeo).
   // nr = cuenta sin registro (ap=false). Si volvió a entrar en la última hora, se revisa: puede que se esté registrando ahora.
   const reciente = a => Date.now() - Date.parse(a.metadata.lastRefreshTime || a.metadata.lastSignInTime || 0) < 3600e3;
-  const leer = A.filter(a => { const c = a.customClaims || {}; return c.ap === undefined || man.has(a.uid) || (c.ap === false && c.nr && reciente(a)); });
+  const leer = A.filter(a => { const c = a.customClaims || {}; return c.ap === undefined || c.pv || man.has(a.uid) || (c.ap === false && c.nr && reciente(a)); });
   let docs;
   if (GRAND || hora) docs = (await db.collection("users").get()).docs;
   else docs = leer.length ? await db.getAll(...leer.map(a => db.doc("users/" + a.uid))) : [];
   const U = new Map(); for (const d of docs) if (d.exists) U.set(d.id, { uid: d.id, ...d.data() });
   const meta = db.doc("push_meta/aprob"), mt = (await meta.get()).data() || {}, avisados = mt.n || {};
   const mem = (GRAND || hora) ? miembros(team, [...U.values()]) : null;
-  const ADM = A.filter(a => ["garciagoedwin@gmail.com", "actionleadersoficial@gmail.com", "edwing.go@gmail.com"].includes(String(a.email || "").toLowerCase())).map(a => a.uid);
-  let nAp = 0, nAuto = 0, nMan = 0, nNo = 0, nPend = 0, nSis = 0, nCl = 0, nPlan = 0; const avisos = [], aprobados = [];
+  const ADM_MAIL = ["garciagoedwin@gmail.com", "actionleadersoficial@gmail.com", "edwing.go@gmail.com"];
+  const ADM = A.filter(a => ADM_MAIL.includes(String(a.email || "").toLowerCase())).map(a => a.uid);
+  let nAp = 0, nAuto = 0, nMan = 0, nNo = 0, nPend = 0, nSis = 0, nCl = 0, nPlan = 0, nInv = 0, nConf = 0, nVen = 0, nSinH = 0; const avisos = [], aprobados = [], vencidos = [];
+  const PV_MS = 72 * 3600e3; // 11 nov (Edwin): entrada por invitación con paquete = provisional 72 h hasta aparecer en inCruises
   // 10 nov (Edwin): el paquete real sale del correo de activación de inCruises (team.json activaciones[].paquete), reconocido por la huella del correo o WhatsApp.
   // Manda sobre lo que puso el patrocinador; no toca lo que cambió un admin (planPor "admin") ni lo del reporte mensual (planPor "reporte").
   const actK = new Map(); for (const a of [...(team.activaciones || [])].sort((x, y) => Date.parse(x.fecha || 0) - Date.parse(y.fecha || 0))) { const pq = /premium/i.test(a.paquete || "") ? "Premium" : /starter/i.test(a.paquete || "") ? "Starter" : /classic/i.test(a.paquete || "") ? "Classic" : ""; if (!pq) continue; if (a.ek) actK.set(a.ek, pq); if (a.wk) actK.set(a.wk, pq); }
   for (const a of A) {
     // ap: true = aprobada · false = en revisión / rechazada / sin registro (más de 2 h) · sin marcar = cuenta recién creada (aún sin veredicto)
     if (!(GRAND || hora) && !leer.includes(a)) continue;
-    const c = a.customClaims || {}, u = U.get(a.uid); let ap = c.ap, sis = !!c.sis, apE = null;
+    const c = a.customClaims || {}, u = U.get(a.uid); let ap = c.ap, sis = !!c.sis, apE = null, pv = c.pv || 0, rv = !!c.rv, apX;
     const reg = !!(u && u.registro && u.registro.nombre), vieja = Date.now() - Date.parse(a.metadata.creationTime) > 2 * 3600e3;
-    if (ap !== true) {
-      const m = man.get(a.uid);
-      if (m && m.ok === true) { ap = true; nMan++; apE = "ok"; }
+    const enH = !!(u && [a.emailVerified ? ahKe(a.email) : null, ...claveDe(u)].filter(Boolean).some(x => H.has(x)));
+    // Provisional por invitación: se confirma al aparecer en inCruises; a las 72 h sin aparecer → revisión (solo un admin la reabre).
+    if (ap === true && pv && u) { if (enH) { pv = 0; nConf++; } else if (Date.now() > pv) { ap = false; pv = 0; rv = true; apE = "p"; apX = "inv"; nVen++; vencidos.push(u); } }
+    else if (ap === true && reg && (GRAND || hora) && !enH && !ADM_MAIL.includes(String(a.email || "").toLowerCase())) nSinH++;
+    if (ap !== true && !apX) {
+      const m = man.get(a.uid), mAdm = m && ADM.includes(m.por);
+      if (m && m.ok === true && (!rv || mAdm)) { ap = true; nMan++; apE = "ok"; rv = false; apX = null; }
       else if (m && m.ok === false) { ap = false; apE = "no"; nNo++; }
       else if (u && u.apE === "no") { ap = false; nNo++; }
       else if (reg && GRAND) { ap = true; apE = "ok"; }
-      else if (reg) { const ks = [a.emailVerified ? ahKe(a.email) : null, ...claveDe(u)].filter(Boolean); /* con contraseña solo cuenta el correo ya confirmado */ if (ks.some(x => H.has(x))) { ap = true; nAuto++; apE = "ok"; } }
+      else if (reg && enH) { ap = true; nAuto++; apE = "ok"; rv = false; apX = null; } /* con contraseña solo cuenta el correo ya confirmado */
+      else if (reg && !rv) { const r = u.registro, sp = A.find(x => x.uid === r.patrocinadorUid);
+        // Invitación con paquete del patrocinador (invitaciones/{invId}): acceso al instante, provisional.
+        const spOk = sp && ((sp.customClaims || {}).ap === true || ADM_MAIL.includes(String(sp.email || "").toLowerCase()));
+        if (r.invId && spOk) { const iv = await db.doc("invitaciones/" + r.invId).get().then(d => d.exists ? d.data() : null).catch(() => null);
+          if (iv && iv.plan && iv.by === r.patrocinadorUid && (!iv.usadoPor || iv.usadoPor === a.uid)) { ap = true; apE = "ok"; pv = Date.now() + PV_MS; nInv++; } } }
       if (ap !== true && reg && !apE && !(u && u.apE === "no")) { ap = false; apE = "p"; nPend++; if (!avisados[a.uid]) avisos.push(u); }
       if (ap !== true && !reg && vieja) ap = false;
-      if (ap === true) aprobados.push(a.uid);
+      if (ap === true && !pv) aprobados.push(a.uid);
     }
     if (mem) sis = mem.uids.has(a.uid);
     if (ap === true) nAp++; if (sis) nSis++;
     const nr = ap === false && !reg;
-    if (ap !== c.ap || sis !== !!c.sis || nr !== !!c.nr) { nCl++; if (!DRY) { const nc = { ...c, sis }; if (ap === undefined) delete nc.ap; else nc.ap = ap; if (nr) nc.nr = true; else delete nc.nr; await auth.setCustomUserClaims(a.uid, nc); } }
-    if (apE && u && u.apE !== apE && !DRY) await db.doc("users/" + a.uid).set({ apE, apT: Date.now() }, { merge: true });
+    if (ap !== c.ap || sis !== !!c.sis || nr !== !!c.nr || pv !== (c.pv || 0) || rv !== !!c.rv) { nCl++; if (!DRY) { const nc = { ...c, sis }; if (ap === undefined) delete nc.ap; else nc.ap = ap; if (nr) nc.nr = true; else delete nc.nr; if (pv) nc.pv = pv; else delete nc.pv; if (rv) nc.rv = true; else delete nc.rv; await auth.setCustomUserClaims(a.uid, nc); } }
+    if (u && !DRY && ((apE && u.apE !== apE) || (apX !== undefined && (u.apX || null) !== apX))) await db.doc("users/" + a.uid).set({ ...(apE ? { apE, apT: Date.now() } : {}), ...(apX !== undefined ? { apX: apX || FieldValue.delete() } : {}) }, { merge: true });
     if (u && reg && !["admin", "reporte"].includes(u.registro.planPor)) { const ks = [a.emailVerified ? ahKe(a.email) : null, ...claveDe(u)].filter(Boolean); const pq = ks.map(k => actK.get(k)).find(Boolean);
       if (pq && pq !== u.registro.plan) { nPlan++; if (!DRY) await db.doc("users/" + a.uid).set({ registro: { plan: pq, planPor: "inCruises", planCambio: new Date().toISOString() } }, { merge: true }); } }
   }
+  console.log("invitación", nInv, "confirmadas", nConf, "a revisión (72 h sin inCruises)", nVen, (GRAND || hora) ? "aprobadas sin huella de inCruises " + nSinH : "");
   console.log("cuentas", A.length, "docs", U.size, "aprobadas", nAp, "auto", nAuto, "manual", nMan, "rechazadas", nNo, "pendientes", nPend, "miembros", nSis, "claims cambiados", nCl, "planes corregidos", nPlan, DRY ? "(prueba)" : "");
   if (mem) { console.log("filas de liderazgo sin cuenta:", mem.sin.length); if (!DRY) await db.doc("team/sisU").set({ sin: mem.sin, n: mem.uids.size, t: Date.now() }); }
   if (DRY) return;
   for (const d of M) await d.ref.delete();
   // Avisos push: pendientes → admins + patrocinador (una vez); aprobados → al socio
-  const P = {}; const need = new Set([...ADM, ...aprobados, ...avisos.map(u => (u.registro || {}).patrocinadorUid).filter(Boolean)]);
+  const P = {}; const need = new Set([...ADM, ...aprobados, ...[...avisos, ...vencidos].map(u => (u.registro || {}).patrocinadorUid).filter(Boolean)]);
   if (need.size) { const pd = await db.getAll(...[...need].map(id => db.doc("push/" + id))); pd.forEach(d => { if (d.exists) P[d.id] = d.data(); }); }
   const env = async (uid, title, body, v) => { const p = P[uid]; if (!p || !p.tk) return; try {
     await fcm.send({ token: p.tk, notification: { title, body }, webpush: { fcmOptions: { link: "https://actionleadersplus.com/?av=" + v }, notification: { icon: "https://actionleadersplus.com/icon-192.png" } } });
@@ -117,7 +129,10 @@ async function main() {
   for (const u of avisos) { const n = String((u.registro || {}).nombre || "Alguien").split(" ").slice(0, 2).join(" "), sp = (u.registro || {}).patrocinadorUid;
     const t = "📝 " + n + " pide entrar a la app", b = "No reconocimos su correo ni su WhatsApp de inCruises. Toque para aprobarlo o rechazarlo.";
     for (const id of new Set([...ADM, sp].filter(Boolean))) await env(id, t, b, "apr"); avisados[u.uid] = Date.now(); }
+  for (const u of vencidos) { const n = String((u.registro || {}).nombre || "Alguien").split(" ").slice(0, 2).join(" "), sp = (u.registro || {}).patrocinadorUid;
+    const t = "⚠️ " + n + " no aparece en inCruises", b = "Entró con invitación hace 3 días y no encontramos su correo ni su WhatsApp. Su cuenta pasó a revisión; solo un administrador puede reabrirla.";
+    for (const id of new Set([...ADM, sp].filter(Boolean))) await env(id, t, b, "apr"); avisados[u.uid] = Date.now(); }
   for (const uid of aprobados) if (!GRAND) await env(uid, "✅ ¡Su cuenta fue aprobada!", "Ya puede usar toda la app. Ciérrela y vuelva a abrirla.", "inicio");
-  if (avisos.length) await meta.set({ n: avisados }, { merge: true });
+  if (avisos.length || vencidos.length) await meta.set({ n: avisados }, { merge: true });
 }
 if (process.argv[1] && process.argv[1].endsWith("aprobar.mjs")) main().catch(e => { console.error("ERROR", e.code || e.message); process.exit(1); });

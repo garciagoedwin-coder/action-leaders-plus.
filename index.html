@@ -3071,7 +3071,7 @@ function dtCliFicha(x){const c=x.c,f=dtFirst(x.n),w=c.phone?waNum(c.phone,c.cc):
    <button class="btn ghost" id="clDel" style="width:100%;color:var(--bad)">Quitar de mi Dream Team</button><button class="btn ghost" id="dtBk" style="width:100%">‹ Volver a mi cuadro</button>`,()=>{
     const go=t=>{waIr("https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(fm(t)))};$("#dtBk").onclick=dtVolver;
     $("#clW1").onclick=()=>go(x.ok?`¡Hola, ${f}! 👋\n\nPaso a saludarle y a agradecerle por ser parte de nuestra familia inCruises 🛳️\n\nSi necesita ayuda para planear su próximo viaje, aquí estoy.`:`Hola, ${f} 👋\n\nLe aviso con cariño que su ahorro de inCruises quedó pendiente.\n\nPóngase al día para no perder sus beneficios de viaje 🛳️\n\nSi necesita ayuda, aquí estoy.`);
-    $("#clW2").onclick=()=>go(`¡Hola, ${f}! 👋\n\nUsted ya disfruta los beneficios de inCruises como cliente 🛳️\n\n¿Sabía que también puede compartirlo con otras personas y crecer con nuestro equipo? Me encantaría mostrarle cómo.\n\nSi le interesa, regístrese en la app de nuestro equipo con mi enlace:\n${miEnlace()}`);
+    $("#clW2").onclick=()=>go(`¡Hola, ${f}! 👋\n\nUsted ya disfruta los beneficios de inCruises como cliente 🛳️\n\n¿Sabía que también puede compartirlo con otras personas y crecer con nuestro equipo? Me encantaría mostrarle cómo.\n\n¿Le gustaría que conversemos? Respóndame por aquí 🙌`);
     const dl=$("#clDel");dl.onclick=async()=>{if(!confirmar2(dl))return;c.stage="Seguimiento";c.dtc=0;c.updated=Date.now();await store.saveContact(c);try{renderCRM()}catch(e){}renderDT();toast("Quitado de su Dream Team");dtTras()}})}
 function dtRedFicha(x){const r=x.r||{},f=dtFirst(x.n),w=String(r.w||"").replace(/\D/g,""),go=t=>{waIr("https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t))};
   const tipo=x.sa?(r.t==="x"?"🟠 Socio sin membresía":"📵 Socio · sin app"):"🛳️ Cliente";
@@ -3085,7 +3085,7 @@ function dtRedFicha(x){const r=x.r||{},f=dtFirst(x.n),w=String(r.w||"").replace(
     const dk=x.act||{id:"r:"+r.id},dset=async v=>{if(await snvdSet(dk,v)){toast(v==="c"?"🧳 Marcado como cliente: ya cuenta en su Dream Team":v==="t"?"🚀 Marcado: va a trabajar":"↩️ Decisión quitada");try{renderDT()}catch(e){}if(eqTab==="mios")try{renderEquipo()}catch(e){}dtVolver()}};
     [["drDt","t"],["drDc","c"],["drD0",""]].forEach(([i,v])=>{const b=$("#"+i);if(b)b.onclick=()=>dset(v)});
     $("#drW1").onclick=()=>{try{redMarca(r.id,"c")}catch(e){}go(x.sa?(r.t==="x"?redMsgX(r):redMsgS(Object.assign({},r,{iv:miInv()}))):x.ok?redMsgC(r):redMsgP(r))};
-    const b2=$("#drW2");if(b2)b2.onclick=()=>go(`¡Hola, ${f}! 👋\n\nUsted ya disfruta los beneficios de inCruises 🛳️\n\n¿Sabía que también puede compartirlo con otras personas y crecer con nuestro equipo? Me encantaría mostrarle cómo.\n\nSi le interesa, regístrese en la app de nuestro equipo con mi enlace:\n${miEnlace()}`)})}
+    const b2=$("#drW2");if(b2)b2.onclick=()=>go(`¡Hola, ${f}! 👋\n\nUsted ya disfruta los beneficios de inCruises 🛳️\n\n¿Sabía que también puede compartirlo con otras personas y crecer con nuestro equipo? Me encantaría mostrarle cómo.\n\n¿Le gustaría que conversemos? Respóndame por aquí 🙌`)})}
 function dtAct(){return (dtSum?dtSum.d.filter(x=>x.ok).length:0)+dtClis().filter(x=>x.ok).length+dtRed().c.filter(x=>x.ok).length}
 function dtFirst(n){return String(n||"").trim().split(/\s+/)[0]||""}
 function dtAvS(x){const img=dtFoto(x.u,x.n);return img?`<s style="background-image:url('${esc(img)}')"></s>`:`<s>${esc(initials(x.n||"?"))}</s>`}
@@ -4742,9 +4742,9 @@ function snvBind(b){const d=b.querySelector("#snvCard");if(!d)return;d.ontoggle=
   const L=snvDatos(),de=id=>L.find(f=>(f.a.id||f.a.socio)===id),pn=n=>bonitoN(n).split(" ")[0],yo=miNombreCorto()||"",firma=t=>t+(yo?"\n\n*"+yo+"*":"");
   d.querySelectorAll("[data-snm]").forEach(x=>x.onclick=e=>{e.preventDefault();snvM=+x.dataset.snm;snvF="";LS.set("snvOpen",1);renderEquipo()});
   d.querySelectorAll("[data-snf]").forEach(x=>x.onclick=e=>{e.preventDefault();snvF=x.dataset.snf;LS.set("snvOpen",1);renderEquipo()});
-  d.querySelectorAll("[data-snl]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snl);if(!f)return;let lk=miEnlace();
-    if(!f.inc){const plan=/premium/i.test(f.a.paquete||"")?"Premium":/starter/i.test(f.a.paquete||"")?"Starter":"Classic",id=Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4);
-      try{await store.db.doc("invitaciones/"+id).set({by:store.uid,byNombre:miRegistro().nombre||"",nombre:bonitoN(f.a.socio),plan,gen:1,t:Date.now()});lk=miEnlace()+"&b="+id}catch(e){}}
+  d.querySelectorAll("[data-snl]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snl);if(!f)return;let lk="";
+    {const plan=/premium/i.test(f.a.paquete||"")?"Premium":/starter/i.test(f.a.paquete||"")?"Starter":"Classic",id=Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4);
+      try{await store.db.doc("invitaciones/"+id).set({by:store.uid,byNombre:miRegistro().nombre||"",nombre:bonitoN(f.a.socio),plan,gen:1,t:Date.now()});lk=miEnlace()+"&b="+id}catch(e){toast("No se pudo crear el enlace ("+errCod(e)+")");return}}
     const t=f.inc?`¡Hola, ${pn(f.a.socio)}! 👋\n\nVi que ya entró a la app *Action Leaders+*, pero le falta terminar su registro.\n\n👉 Entre con este enlace y complete sus datos (toma 1 minuto):\n${lk}\n\nAsí empieza su Plan de Inicio Rápido. Cualquier duda, aquí estoy. 💪`:`¡Hola, ${pn(f.a.socio)}! 🎉\n\nBienvenido/a al equipo. Para empezar con todo, descargue nuestra app *Action Leaders+*: ahí tiene su Plan de Inicio Rápido, su rutina y todas las herramientas.\n\n👉 Regístrese aquí con mi enlace:\n${lk}\n\nCualquier duda, aquí estoy. 💪`;
     location.href="https://wa.me/?text="+encodeURIComponent(firma(t))});
   d.querySelectorAll("[data-snp]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snp);if(!f||!f.pu)return;const w=waSocio(f.pu)||await dtWa(f.pu.uid);
@@ -4821,7 +4821,7 @@ const BIEN_MSG=(n,f,pat,lk)=>`🎉 *¡Felicidades, ${n}! ${f?"Bienvenida":"Bienv
 Es un gusto tenerle en el equipo. 💪
 
 👉 Su primer paso: entre a nuestra app
-${lk||miEnlace()}
+${lk||"https://actionleadersplus.com"}
 
 Entre con Google, complete su registro y vea su video de bienvenida.
 
@@ -6437,7 +6437,7 @@ $("#contactList").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" 
 const crmMas=new Set(),crmSt=new Set();
 function crmWa(c,k){const f=String(c.name||"").trim().split(/\s+/)[0]||"",w=c.phone?waNum(c.phone,c.cc):"",yo=miNombreCorto()||"";
   const T={ref:`¡Hola, ${f}! 👋\n\nGracias por confiar en mí y ser parte de la familia inCruises 🛳️\n\n¿Conoce a alguien a quien le encante viajar? Con gusto le comparto cómo ahorrar para sus vacaciones.\n\nSi se le ocurre alguien, mándeme su nombre por aquí 🙏`,
-    neg:`¡Hola, ${f}! 👋\n\nUsted ya disfruta los beneficios de inCruises como cliente 🛳️\n\n¿Sabía que también puede compartirlo y hacerlo su negocio? Me encantaría mostrarle cómo funciona, sin compromiso.\n\nSi le interesa, regístrese en la app de nuestro equipo con mi enlace:\n${miEnlace()}`,
+    neg:`¡Hola, ${f}! 👋\n\nUsted ya disfruta los beneficios de inCruises como cliente 🛳️\n\n¿Sabía que también puede compartirlo y hacerlo su negocio? Me encantaría mostrarle cómo funciona, sin compromiso.\n\n¿Le gustaría que conversemos? Respóndame por aquí 🙌`,
     ah:`Hola, ${f} 👋\n\nLe aviso con cariño que su ahorro de inCruises quedó pendiente.\n\nPóngase al día para no perder sus beneficios de viaje 🛳️\n\nSi necesita ayuda, aquí estoy.`,
     hola:`¡Hola, ${f}! 👋\n\nPaso a saludarle y a agradecerle por ser parte de nuestra familia inCruises 🛳️\n\nSi necesita ayuda para planear su próximo viaje, aquí estoy.`}[k];
   waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(T+(yo?"\n\n*"+yo+"*":"")))}
@@ -7131,7 +7131,7 @@ function renderWel(){const el=$("#wel");
       if(invSponsor){let sl=[];try{const fd=await store.db.doc("fotos/"+invSponsor.uid).get();if(fd.exists&&Array.isArray(fd.data().linea))sl=fd.data().linea}catch(x){}d.linea=[invSponsor.uid].concat(sl.filter(u=>u&&u!==invSponsor.uid&&u!==store.uid)).slice(0,60)}
       if(invData){d.invId=invData.id;d.planPor="patrocinador";if(invData.pais)d.pais=invData.pais;if(invData.wa)d.whatsapp=String(invData.wa).replace(/\D/g,"").slice(0,15)}
       {const we=$("#rg_wa");if(we&&we.value.trim()){const sp=splitPhone(we.value),n=sp.cc?sp.cc+sp.num:waNum(we.value,$("#rg_cc").value);if(n.length>=8){d.whatsapp=n.slice(0,15);d.waOk=true}}}try{d.inv=(localStorage.getItem("alp:inv")||"").slice(0,60)}catch(x){};
-      const lab={nombre:"Nombre completo",patrocinador:"Patrocinador",plan:"Plan"};
+      const lab={nombre:"Nombre completo",patrocinador:"Patrocinador"};if(!d.plan)d.plan="";
       for(const k in lab)if(!d[k]){err.textContent="Completa: "+lab[k];err.hidden=false;return}
       if(String(d.whatsapp||"").replace(/\D/g,"").length<8){err.textContent="Escribe tu número de WhatsApp completo para que tu patrocinador pueda escribirte.";err.hidden=false;const we=$("#rg_wa");if(we)we.focus();return}
       if(telAviso(d.whatsapp)){err.textContent=telAviso(d.whatsapp);err.hidden=false;const cs=$("#rg_cc");if(cs){cs.focus();cs.style.outline="2px solid var(--bad)"}return}
@@ -7486,7 +7486,7 @@ async function irPedirVal(){if(irSimM()){openSheet(`<h2>✅ Validación</h2><p>E
   try{if(r.patrocinadorUid){const d=await store.db.doc("users/"+r.patrocinadorUid).get();w=String(((d.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}}catch(e){}
   const t=`Hola${sp?", "+sp:""} 🙌\n\nYa di mi primera presentación yo solo, como parte de mi Plan de Inicio Rápido.\n\n¿Me ayuda a validarla en la app (Mi equipo → ✅ Ya puede presentar)?`;
   waIr("https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t))}
-function irInvitar(){closeSheet();const u=miEnlace(),t=`¡Bienvenido al equipo! 🎉\n\nEntre a nuestra app con este enlace para empezar su Plan de Inicio Rápido conmigo:\n\n${u}`;location.href="https://wa.me/?text="+encodeURIComponent(t)}
+function irInvitar(){closeSheet();setTimeout(invPlanHoja,250)}
 async function irValCheck(){try{if(irValOk||irSimM()||Date.now()-irValT<18e5)return;irValT=Date.now();const p=miRegistro().patrocinadorUid;if(!p||!store.db)return;const d=await store.db.doc("constancia/"+p).get();const v=d.exists&&(d.data().irVal||{})[store.uid];if(v){irValOk=v;irSave({val:v});irRender()}}catch(e){}}
 function irResumen(E){try{if(irSimM())return;const st=irSt();if(!st.ini&&irModo()!=="nuevo")return;const tot=E.W.reduce((s,w)=>s+w.n2,0);const p0=st.p||{};
   const p={w:E.grad?5:E.cur.n,n:E.cur.n2,tot:E.cur.L.length,d:E.dia,g:E.grad?1:0,med:Object.keys(st.med||{}).map(Number),all:tot,u:tot>(p0.all||0)?Date.now():(p0.u||Date.now())};
@@ -7847,17 +7847,17 @@ async function apRevisar(force){const c=await apClaims(force),e=regDoc&&regDoc.a
 function apMostrar(k){let d=$("#apGate");if(!d){d=document.createElement("div");d.id="apGate";document.body.appendChild(d)}apVisto=true;document.body.style.overflow="hidden";
   const r=(regDoc&&regDoc.registro)||{},sp=String(r.patrocinador||"").split(" ").slice(0,2).join(" ");
   d.innerHTML=k==="v"?`<div class="apC"><div class="apI">🔎</div><h2>Estamos verificando su cuenta</h2><p>Tarda unos minutos. Cuando termine, la app se abre sola.</p><p class="small">Puede dejar esta pantalla abierta o volver más tarde.</p><button class="btn" id="apRe">🔄 Revisar de nuevo</button><button class="btn ghost" id="apOut">Salir</button></div>`:k==="no"?`<div class="apC"><div class="apI">🔒</div><h2>Su cuenta no fue aprobada</h2><p>Si cree que es un error, hable con ${sp?"<b>"+esc(sp)+"</b>, su patrocinador":"su patrocinador"} para que la revise.</p><button class="btn ghost" id="apOut">Salir</button></div>`
-  :`<div class="apC"><div class="apI">⏳</div><h2>Su cuenta está en revisión</h2><p>No encontramos su correo ni su WhatsApp en inCruises. ${sp?"<b>"+esc(sp)+"</b>, su patrocinador,":"Su patrocinador"} o el administrador la aprobarán pronto.</p><p class="small">Cuando la aprueben, la app se abre sola. No necesita hacer nada más.</p><button class="btn" id="apRe">🔄 Revisar de nuevo</button><button class="btn ghost" id="apOut">Salir</button></div>`;
+  :`<div class="apC"><div class="apI">⏳</div><h2>Su cuenta está en revisión</h2><p>${regDoc&&regDoc.apX==="inv"?"No encontramos su registro en inCruises. Un administrador la revisará pronto.":"No encontramos su correo ni su WhatsApp en inCruises. "+(sp?"<b>"+esc(sp)+"</b>, su patrocinador,":"Su patrocinador")+" o el administrador la aprobarán pronto."}</p><p class="small">Cuando la aprueben, la app se abre sola. No necesita hacer nada más.</p><button class="btn" id="apRe">🔄 Revisar de nuevo</button><button class="btn ghost" id="apOut">Salir</button></div>`;
   const re=d.querySelector("#apRe");if(re)re.onclick=async()=>{re.disabled=true;re.textContent="Revisando…";await apRevisar(true).catch(()=>{});if($("#apRe")){re.disabled=false;re.textContent="🔄 Revisar de nuevo";toast("Todavía está en revisión")}};
   d.querySelector("#apOut").onclick=async()=>{try{await window.FB.logout()}catch(e){}location.reload()}}
-function aprLista(){const me=store.uid;if(isAdmin)return (socios||[]).filter(x=>x.apE==="p"&&x.registro);return (mios||[]).filter(x=>x.apE==="p"&&x.registro&&x.registro.patrocinadorUid===me)}
+function aprLista(){const me=store.uid;if(isAdmin)return (socios||[]).filter(x=>x.apE==="p"&&x.registro);return (mios||[]).filter(x=>x.apE==="p"&&x.apX!=="inv"&&x.registro&&x.registro.patrocinadorUid===me)}
 const aprHechos={};
 function aprCard(b){if(!b||!store.uid)return;const L=aprLista(),n=L.filter(x=>!aprHechos[x.uid]).length;if(!n&&!isAdmin)return;
   const el=document.createElement("div");el.className="card apr";el.innerHTML=`<div class="aprH"><span class="aprI">📝</span><div><b>Por aprobar${n?" · "+n:""}</b><span class="small muted">${n?"Se registraron con su enlace, pero no encontramos su correo ni su WhatsApp en inCruises.":"No hay cuentas esperando aprobación."}</span></div></div>${n?`<button class="btn sm" id="aprVer">Revisar</button>`:""}`;
   b.prepend(el);const v=el.querySelector("#aprVer");if(v)v.onclick=aprHoja}
 async function aprAbrir(){go("equipo");try{eqTab="mios";setSeg("eqSeg","mios")}catch(e){}try{if(isAdmin&&!socios)await loadSocios(true);if(mios===null)await loadMios(true)}catch(e){}try{renderEquipo()}catch(e){}aprHoja()}
 function aprHoja(){const L=aprLista();openSheet(`<p class="eyebrow">CUENTAS NUEVAS</p><h3 style="margin:4px 0 6px">📝 Por aprobar</h3><p class="muted small" style="margin:0 0 12px">Apruebe solo a quien usted conoce y se asoció o es su cliente. Al rechazar, la persona no puede usar la app.</p>
-  ${L.length?L.map(x=>{const r=x.registro||{},h=aprHechos[x.uid],w=String(r.whatsapp||"").replace(/\D/g,"");return `<div class="aprR" data-u="${x.uid}"><div><b>${esc(r.nombre||"")}</b><span class="small muted">${esc(x.email||r.correo||"")}${w?" · +"+esc(w):""}${isAdmin&&r.patrocinador?"<br>Patrocinador: "+esc(r.patrocinador):""}</span></div>
+  ${L.length?L.map(x=>{const r=x.registro||{},h=aprHechos[x.uid],w=String(r.whatsapp||"").replace(/\D/g,"");return `<div class="aprR" data-u="${x.uid}"><div><b>${esc(r.nombre||"")}</b><span class="small muted">${esc(x.email||r.correo||"")}${w?" · +"+esc(w):""}${isAdmin&&r.patrocinador?"<br>Patrocinador: "+esc(r.patrocinador):""}${x.apX==="inv"?"<br>⚠️ Entró con invitación y en 3 días no apareció en inCruises":""}</span></div>
    ${h?`<span class="chip ${h==="ok"?"c-good":"c-warn"}">${h==="ok"?"✓ Aprobado":"Rechazado"}</span>`:`<div class="aprB"><button class="btn sm" data-ap="ok">✅ Aprobar</button><button class="btn sm ghost" data-ap="no">Rechazar</button></div>`}</div>`}).join(""):`<p class="muted">No hay cuentas esperando aprobación.</p>`}
   <p class="small muted" style="margin:12px 0 0">La aprobación se activa en unos minutos.</p><button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{
   document.querySelectorAll(".aprR [data-ap]").forEach(bt=>bt.onclick=async()=>{const u=bt.closest(".aprR").dataset.u,ok=bt.dataset.ap==="ok";
@@ -8033,7 +8033,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261111162326";var busy=false,pend=null;
+(function(){var V="20261111173007";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
