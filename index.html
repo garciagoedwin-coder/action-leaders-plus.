@@ -6531,9 +6531,10 @@ function abrirCita(c,ct){const ed=!!(c&&c.id);c=Object.assign({tipo:"zoom",fecha
     $("#ciTipo").onclick=e=>{const x=e.target.closest("[data-t]");if(!x)return;const prev=tipo;tipo=x.dataset.t;const n=$("#ciN");if(n.value.trim()===notaDef(prev).trim())n.value=tipo==="lider"?"":notaDef(tipo);
       const z=$("#ciZ");if(tipo==="lider"&&z.value===(profile.zoom||""))z.value="";else if(tipo==="zoom"&&!z.value)z.value=profile.zoom||"";sync()};
     $("#ciCid").onchange=()=>{$("#ciNom").hidden=!!$("#ciCid").value};["ciF","ciH","ciD"].forEach(k=>$("#"+k).oninput=chk);sync();
-    $("#ciOk").onclick=async()=>{const cid=$("#ciCid").value,cc=contacts.find(x=>x.id===cid);const n={id:c.id,tipo,fecha:$("#ciF").value,hora:$("#ciH").value,dur:+$("#ciD").value,cid:tipo==="lider"?"":cid,nombre:tipo==="lider"?"":(cc?cc.name:$("#ciNom").value.trim()),titulo:tipo==="lider"?$("#ciTit").value.trim():"",enlace:$("#ciZ").value.trim(),lugar:$("#ciL").value.trim(),nota:$("#ciN").value.trim()};
+    $("#ciOk").onclick=async()=>{const cid=$("#ciCid").value,cc=contacts.find(x=>x.id===cid);let n={id:c.id,tipo,fecha:$("#ciF").value,hora:$("#ciH").value,dur:+$("#ciD").value,cid:tipo==="lider"?"":cid,nombre:tipo==="lider"?"":(cc?cc.name:$("#ciNom").value.trim()),titulo:tipo==="lider"?$("#ciTit").value.trim():"",enlace:$("#ciZ").value.trim(),lugar:$("#ciL").value.trim(),nota:$("#ciN").value.trim()};
       if(!n.fecha||!n.hora){toast("Elige día y hora");return}if(tipo!=="lider"&&!n.nombre){toast("Elige o escribe el nombre");return}if(tipo==="lider"&&!n.titulo){toast("Escribe con quién es la llamada");return}
-      if(!ed)delete n.id;const bt=$("#ciOk");bt.disabled=true;const id=await saveCita(n);bt.disabled=false;if(!id)return;n.id=id;const i=citas.findIndex(x=>x.id===id);if(i>=0)citas[i]=n;else citas.push(n);
+      if(!ed)delete n.id;else{const prev=citas.find(x=>x.id===c.id)||c;n=Object.assign({},prev,n);if(prev.tipo==="lider"&&(prev.lz||prev.l3)&&!n.titulo)n.titulo=prev.titulo} // 11 nov: Editar conserva lanzamiento/llamada de 3 (lz, l3, inv…)
+      const bt=$("#ciOk");bt.disabled=true;const id=await saveCita(n);bt.disabled=false;if(!id)return;n.id=id;const i=citas.findIndex(x=>x.id===id);if(i>=0)citas[i]=n;else citas.push(n);
       let pc=false;if(n.enlace&&tipo==="zoom"&&n.enlace!==profile.zoom){profile.zoom=n.enlace;pc=true}
       if(tipo!=="lider"&&n.nota!==notaDef(tipo)){profile.notaCita=Object.assign({},profile.notaCita||{},{[tipo]:n.nota});pc=true}if(pc)store.set("perfil",profile);
       if(cc&&FLOW.indexOf(cc.stage||"Nuevo")<FLOW.indexOf("Presentación")&&cc.stage!=="Cliente"&&cc.stage!=="No interesado"){cc.stage="Presentación";cc.stT=Date.now();cc.stAuto="le agendó una cita";cc.next=n.fecha;cc.updated=Date.now();await store.saveContact(Object.assign({},cc))}else if(cc&&(!cc.next||cc.next<n.fecha)){cc.next=n.fecha;await store.saveContact(Object.assign({},cc))}
@@ -8032,7 +8033,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261111111459";var busy=false,pend=null;
+(function(){var V="20261111162326";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
