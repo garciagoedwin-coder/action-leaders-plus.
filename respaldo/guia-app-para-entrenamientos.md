@@ -128,3 +128,15 @@ Formatos que ya funcionan: PDF paso a paso con capturas (tamaño celular), flyer
 - Curso de 8 videos de habilidades con **diploma** que muestra las insignias del socio (pausado).
 - Aprobación instantánea de cuentas nuevas (en configuración).
 - Las letras nuevas del manual de marca en todos los flyers y la Píldora Millonaria nueva (hoy solo los ven los admins).
+
+## 11. Material de entrenamiento que YA existe (artefactos de Edwin)
+
+Ábralos con su enlace antes de crear algo nuevo y continúe desde ahí (no empiece de cero).
+
+- **Action Leaders Training** (presentación de 27 diapositivas, 7 nov 2026): https://claude.ai/artifact/KWZiMahd8sucs41zNnij1k
+  - Es el curso de **8 videos** (serie "Entrenamientos Nivel Básico"): 1 Mentalidad del líder y rutina de acción · 2 Lista de contactos · 3 Invitación · 4 Presentación · 5 Seguimiento y cierre · 6 Arranque del nuevo socio · 7 Atracción en redes · 8 Liderazgo. Cada video tiene diapositivas de Mentalidad (m), Habilidad (h) y Acción con la app (a). Cierre: reto de 7 días + diploma.
+- **Diploma Action Leaders Training** (página para descargar el diploma, 7 nov): https://claude.ai/artifact/MsMhvjG9hsdmJbHnphU8ii
+  - PENDIENTE de actualizar a la marca nueva: quitar "ACTION LEADERS+" (sin "+"), letras Poppins/Figtree/Barlow, y mostrar las **insignias espartanas** que el socio ganó en el Plan de Inicio Rápido (las que falten, en gris).
+- **Training: Arranque y Duplicación** (4 nov): https://claude.ai/artifact/H79DgF6eBEE1SBb9kwwJ5p
+- Manual de marca en línea (sistema de diseño): https://claude.ai/artifact/5y7DaCPuGmikhdLZY6CDaq
+- Edwin y su equipo ya grabaron los 8 videos; se suben a YouTube como no listados en una lista de reproducción. Cuando estén los enlaces, el curso va en Academia de la app con el diploma.
