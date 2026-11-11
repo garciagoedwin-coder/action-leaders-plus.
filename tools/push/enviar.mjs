@@ -488,7 +488,7 @@ async function main() {
   } else { console.log("Modo desconocido:", modo); process.exit(1); }
 
   console.log(`${salida.length} avisos para enviar${DRY ? " (prueba, no se envían)" : ""}.`);
-  if (DRY || !salida.length) { if (modo !== "sinapp") salida.slice(0, 15).forEach(([u, , m]) => console.log("·", u.slice(0, 5) + "…", m.title, "|", m.body)); return; }
+  if (DRY || !salida.length) { if (modo !== "sinapp") { const P2 = new Map(); salida.forEach(([, , m]) => { const k = m.title.replace(/,\s*[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+/, ", [nombre]"); P2.set(k, (P2.get(k) || 0) + 1); }); [...P2].slice(0, 15).forEach(([t, c]) => console.log("·", c, "×", t)); } return; } // logs públicos: sin nombres ni textos personales
   for (let i = 0; i < salida.length; i += 400) {
     const lote = salida.slice(i, i + 400);
     const r = await fcm.sendEach(lote.map(([, tk, m]) => ({ token: tk,
