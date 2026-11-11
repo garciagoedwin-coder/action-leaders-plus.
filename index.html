@@ -909,7 +909,7 @@ button.hiPill{font:inherit;font-size:13px;font-weight:700;cursor:pointer}.hiPill
 .rkRow{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--line)}.rkRow .md{font-size:20px}.rkRow b{font-size:14.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rkRow .v{font-family:var(--f-num);font-weight:700;font-size:21px;color:var(--brand)}
 .rkRow.yo b{color:var(--brand)}.rkPie{background:var(--surface-2);border-radius:12px;padding:8px 12px;font-size:13.5px}
 .rkGan{border:0;background:var(--warn-soft);color:var(--warn);font:inherit;font-weight:800;font-size:13px;border-radius:12px;padding:8px 12px;text-align:left;cursor:pointer}
-#v-inicio.simple>.hiBox{order:0}#v-inicio.simple>#compStrip{order:3}#v-inicio.simple>#irCard{order:4}#v-inicio.simple>#rutCard{order:6}#v-inicio.simple>#rkCard{order:9}
+#v-inicio.simple>.hiBox{order:0}#v-inicio.simple>#compStrip{order:3}#v-inicio.simple>#cieStrip{order:3}.cie{margin:-4px 0 12px;border-radius:999px;padding:7px 7px 7px 12px;display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid #2AC1F1;box-shadow:0 6px 16px -10px rgba(10,125,173,.6);cursor:pointer}.cie .tx{flex:1;min-width:0;line-height:1.2}.cie .tx b{display:block;font-size:13px;color:var(--brand);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cie .tx span{display:block;font-size:11.5px;letter-spacing:-.1px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cie .clk{background:linear-gradient(90deg,#2AC1F1,#0A7DAD);color:#fff;border-radius:999px;padding:6px 10px;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:19px;white-space:nowrap;font-variant-numeric:tabular-nums}.cie.u{border-color:#B42335}.cie.u .tx b{color:#E5484D}.cie.u .clk{background:#B42335}#v-inicio.simple>#irCard{order:4}#v-inicio.simple>#rutCard{order:6}#v-inicio.simple>#rkCard{order:9}
 #v-inicio.simple.irProta>#irCard{order:3}#v-inicio.simple.irProta>#compStrip{order:4}
 #v-inicio.irProta .cpHero{background:var(--surface)!important;color:var(--ink);border:1px solid var(--line)!important;box-shadow:var(--shadow)!important;padding:14px!important}
 #v-inicio.irProta .cpHero .hwave{display:none}#v-inicio.irProta .cpHero .hk,#v-inicio.irProta .cpHero .cp-chev{color:var(--brand)}#v-inicio.irProta .cpHero .hring circle:first-child{stroke:var(--surface-2)}#v-inicio.irProta .cpHero .hring b{color:var(--ink)}
@@ -1471,7 +1471,7 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
       <div class="ganCard" id="ganCard" hidden></div>
       <div class="mqCard" id="metaEq" hidden></div>
       <div class="rcCard" id="rcCard" hidden></div>
-      <div id="compStrip" hidden></div>
+      <div id="compStrip" hidden></div><div id="cieStrip" hidden></div>
       <div class="pendStrip" id="pendStrip" hidden></div>
       <div id="pushStrip" hidden></div>
       <div class="avBox" id="avBox" hidden><div class="avHd" id="avBoxN">AVISOS DE HOY</div><div class="avTrack" id="avTrack">
@@ -4550,7 +4550,16 @@ function incStrip(){const el=$("#incStrip");if(!el)return;const c=incCfg();if(!c
   el.classList.toggle("ult",ms<36e5);
   if(el.dataset.ok!==c.id+"|2"){el.dataset.ok=c.id+"|2";el.innerHTML=`<span class="tx"><span class="lb">⏱ CIERRE DEL INCENTIVO</span><span class="cd"></span></span><span class="fin">${esc(c.fin||"")} ›</span>`;el.onclick=()=>avisoTop(c.t||"¡Aproveche!",c.sub||"",null)}
   el.querySelector(".cd").innerHTML=cd;el.hidden=false}
-setInterval(()=>{try{if(document.visibilityState==="visible")incStrip()}catch(e){}},1000);
+setInterval(()=>{try{if(document.visibilityState==="visible")incStrip()}catch(e){}try{if(document.visibilityState==="visible")cieStrip()}catch(e){}},1000);
+// 11 nov (Edwin): «Quedan para el cierre semanal» debajo del compromiso. Cierra el domingo 11:59 p.m. hora de Honduras (UTC-6).
+function cieFin(){const hn=new Date(Date.now()-6*36e5),dw=hn.getUTCDay(),dd=(7-dw)%7;return Date.UTC(hn.getUTCFullYear(),hn.getUTCMonth(),hn.getUTCDate()+dd,23,59,59)+6*36e5}
+function cieStrip(){const el=$("#cieStrip");if(!el)return;if(!store.uid||esSoloAdminYo()){el.hidden=true;return}
+  const ms=cieFin()-Date.now();if(ms<=0){el.hidden=true;return}const p2=n=>String(n).padStart(2,"0"),d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4),sg=Math.floor(ms%6e4/1e3);
+  const dom=new Date(Date.now()-6*36e5).getUTCDay()===0,clk=dom?`${p2(h)}:${p2(m)}:${p2(sg)}`:`${d}d ${p2(h)}:${p2(m)}`;
+  const k=(dom?"u":"n")+"|"+clk;if(el.dataset.k===k&&!el.hidden)return;
+  if(el.dataset.f!==(dom?"u":"n")||!el.firstChild){el.dataset.f=dom?"u":"n";el.className="cie"+(dom?" u":"");el.innerHTML=`<div class="tx"><b>${dom?"⏳ ¡Hoy cierra la semana!":"🔥 Quedan para el cierre semanal"}</b><span>${dom?"Cierre hoy y gánese el incentivo.":"Agilice sus cierres y gane el incentivo"}</span></div><div class="clk"></div>`;
+    el.onclick=()=>{try{rankMetric="nuevos";eqTab="ranking";go("equipo")}catch(e){}}}
+  el.querySelector(".clk").textContent=clk;el.dataset.k=k;el.hidden=false}
 
 // ---------- Socios nuevos del mes (4 nov) ----------
 // Equipo › Mi equipo, arriba. Activaciones del mes inCruises (T.activaciones, 0 lecturas) que le tocan a quien mira:
@@ -7909,7 +7918,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261111085335";var busy=false,pend=null;
+(function(){var V="20261111091357";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
