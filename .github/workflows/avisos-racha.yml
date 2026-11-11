@@ -1,7 +1,7 @@
 name: Avisos de racha
 on:
   schedule:
-    - cron: "0 14 * * *"   # 8:00 a.m. Honduras
+    - cron: "0 13 * * *"   # 7:00 a.m. Honduras
     - cron: "0 1 * * *"    # 7:00 p.m. Honduras
     - cron: "30 3 * * *"   # 9:30 p.m. Honduras
   workflow_dispatch:
@@ -31,6 +31,6 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then M="${{ inputs.modo }}";
           elif [ "${{ github.event.schedule }}" = "30 3 * * *" ]; then M=racha2;
-          elif [ "${{ github.event.schedule }}" = "0 14 * * *" ]; then M=manana; else M=racha; fi
+          elif [ "${{ github.event.schedule }}" = "0 13 * * *" ]; then M=manana; else M=racha; fi
           node enviar.mjs "$M"
           [ "${{ github.event_name }}" = "workflow_dispatch" ] || node enviar.mjs rhito || true   # metas de racha 7/14/21/30 → aviso a su línea de arriba

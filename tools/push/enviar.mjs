@@ -32,18 +32,13 @@ export function estadoRutina(c, hoy, ayer) {
   return { pts: Math.min(5, pts), racha: valida ? (+c.racha || 0) : 0 };
 }
 
-// "manana": 8:00 a.m. HN, solo a quien aún no empieza su rutina de hoy.
-export function msgManana(uid, c, hoy, ayer) {
-  const { pts, racha } = estadoRutina(c, hoy, ayer); if (pts > 0) return null;
+// "manana": 7:00 a.m. HN (11 nov, Edwin): a todos, suave, con la competencia del mes (lider = primer nombre del 1.º en volumen).
+export function msgManana(uid, c, hoy, ayer, lider) {
   const n = primer(c && c.nombre), seed = uid + hoy + "m";
-  const m = racha >= 1 ? pick([
-    { title: `☀️ Buenos días${n ? ", " + n : ""}`, body: `Hoy va por el día ${racha + 1} de su racha 🔥 Empiece con la historia del día: toma 1 minuto.` },
-    { title: `🔥 Día ${racha + 1} de su racha`, body: `${n ? n + ", a" : "A"}rranque temprano: un punto de su rutina ahora y el resto sale solo.` }], seed)
-    : pick([
-    { title: `☀️ Buenos días${n ? ", " + n : ""}`, body: "Hoy es buen día para empezar su racha 🔥 Comparta la historia del día y lleva 1 de 5." },
-    { title: "🛡️ Su rutina de hoy ya está lista", body: `${n ? n + ", e" : "E"}mpiece temprano: 5 puntos sencillos y su día queda completo.` },
-    { title: "💪 Un día nuevo, una racha nueva", body: "Abra su rutina y haga el primer punto antes del mediodía." }], seed);
-  return m;
+  return pick([
+    { title: `☀️ Buenos días${n ? ", " + n : ""}`, body: `Hoy cuenta para Mi Racha y para el incentivo de viaje. Que sea un gran día.` },
+    { title: `☀️ Un nuevo día${n ? ", " + n : ""}`, body: lider ? `${lider} va primero por el incentivo de viaje. Su lugar también se construye hoy.` : `Los 3 primeros de Mi Racha se llevan los Libros Go Pro. Hoy es un buen día para sumar.` },
+    { title: `☀️ Buenos días${n ? ", " + n : ""}`, body: `Los 3 primeros de Mi Racha se llevan los Libros Go Pro. Empiece su día con su declaración.` }], seed);
 }
 // "fin": unos minutos antes de medianoche, a todos los que tienen avisos de racha.
 export function msgFin(uid, c, hoy, ayer, ms = Date.now()) {
@@ -54,8 +49,17 @@ export function msgFin(uid, c, hoy, ayer, ms = Date.now()) {
 }
 export function msgRacha(...a) { const m = msgRacha0(...a); if (m) { m.title = m.title[0].toUpperCase() + m.title.slice(1); m.body = m.body[0].toUpperCase() + m.body.slice(1); } return m; }
 function msgRacha0(modo, uid, c, hoy, ayer) {
-  const { pts, racha } = estadoRutina(c, hoy, ayer); if (pts >= 5) return null;
+  const { pts, racha } = estadoRutina(c, hoy, ayer);
   const n = primer(c && c.nombre), hola = n ? n + ", " : "", falta = 5 - pts, seed = uid + hoy + modo;
+  if (modo === "racha") { // 11 nov (Edwin): 7 p.m. = «Cierre del día», suave
+    if (pts >= 5) return pick([
+      { title: `🌙 ¡Qué buen día${n ? ", " + n : ""}!`, body: `Completó su rutina 5 de 5. Mañana va por ${racha + 1} días seguidos.` },
+      { title: `🌙 Día completo${n ? ", " + n : ""}`, body: "Así se construye un negocio: un día a la vez. Descanse, mañana va por más." }], seed);
+    return pick([
+      { title: `🌙 ¿Cómo le fue hoy${n ? ", " + n : ""}?`, body: `Lleva ${pts} de 5 en su rutina. ${falta === 1 ? "Un paso más" : `${falta} pasos más`} y cierra el día.` },
+      { title: `🌙 Cierre del día${n ? ", " + n : ""}`, body: pts ? `Lleva ${pts} de 5. Cada paso cuenta: todavía está a tiempo.` : "Todavía está a tiempo de su rutina de hoy. Cada paso cuenta." }], seed);
+  }
+  if (pts >= 5) return null;
   if (modo === "racha2") {
     if (racha < 3) return null;
     return pick([
@@ -292,7 +296,8 @@ async function main() {
     P.forEach(p => hist[p.uid] = p.h || []);
     if (!P.length) { console.log("Nadie con avisos activos."); return; }
     const C = {}; (await db.collection("constancia").get()).docs.forEach(d => C[d.id] = d.data());
-    for (const p of P) { const m = modo === "fin" ? msgFin(p.uid, C[p.uid], hoy, ayer) : modo === "manana" ? msgManana(p.uid, C[p.uid], hoy, ayer) : msgRacha(modo, p.uid, C[p.uid], hoy, ayer); if (m) salida.push([p.uid, p.tk, m]); }
+    let lider = ""; try { const TJ = JSON.parse(fs.readFileSync("../../data/team.json", "utf8")); const V = (TJ.ranking || []).filter(r => +r.volumen > 0).sort((a, b) => (+b.volumen) - (+a.volumen)); lider = V[0] ? primer(V[0].nombre) : ""; } catch (e) {}
+    for (const p of P) { const m = modo === "fin" ? msgFin(p.uid, C[p.uid], hoy, ayer) : modo === "manana" ? msgManana(p.uid, C[p.uid], hoy, ayer, lider) : msgRacha(modo, p.uid, C[p.uid], hoy, ayer); if (m) salida.push([p.uid, p.tk, m]); }
   } else if (modo === "msg") {
     // 10 nov: aviso manual a TODOS los que tienen avisos (título y texto en disparo.json)
     const D = JSON.parse(fs.readFileSync("disparo.json", "utf8"));
