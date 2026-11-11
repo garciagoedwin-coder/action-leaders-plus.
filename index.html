@@ -3152,6 +3152,20 @@ function solForm(x){let k="q";
 // respuesta del admin: aviso una vez
 function solRevisar(){try{solMias().forEach(s=>{if(s.st==="p"||!s.ta)return;const k="solV:"+s.id;if(LS.get(k))return;LS.set(k,1);
   const mostrar=i=>{if(document.querySelector(".avisoTop.on")&&i<10){setTimeout(()=>mostrar(i+1),4000);return}try{avisoTop(s.st==="ok"?"✅ Su solicitud fue aprobada":"📝 Revisamos su solicitud",(s.st==="ok"?"Cambio aplicado sobre ":"No se aplicó el cambio sobre ")+nv(s.n)+(s.r?" · "+s.r:""),()=>{go("equipo")})}catch(e){}};setTimeout(()=>mostrar(0),5000)})}catch(e){}}
+// 11 nov (Edwin): cuentas YA aprobadas que no aparecen en inCruises (las marca aprobar.mjs en users.apSH). Solo admin. 0 lecturas (sale de socios).
+const shHechos={};
+function shLista(){return (socios||[]).filter(x=>x.apSH&&x.registro&&x.registro.nombre&&x.apE!=="p"&&x.apE!=="no").sort((a,b)=>(b.apSH.t||0)-(a.apSH.t||0))}
+function shCard(){if(!isAdmin)return"";const L=shLista();if(!L.length)return"";const pend=L.filter(x=>!shHechos[x.uid]).length;
+  return `<div class="card" style="gap:6px;border:1.5px solid #D97706" id="shAdm"><h3 style="margin:0">🔎 Aprobadas sin inCruises (${pend})</h3><p class="small muted" style="margin:0 0 4px">Tienen acceso a la app, pero no encontramos su correo ni su WhatsApp en los datos de inCruises. Revise cada una.</p>
+   ${L.map(x=>{const r=x.registro||{},w=String(r.whatsapp||"").replace(/\D/g,""),h=shHechos[x.uid];return `<div class="shI" style="display:flex;flex-direction:column;gap:6px;padding:8px 0;border-top:1px solid var(--line)"><div class="small"><b>${esc(r.nombre||"")}</b><br><span class="muted">${esc(x.email||r.correo||"")}${w?" · +"+esc(w):""}<br>Patrocinador: ${esc(r.patrocinador||"—")}${r.fecha?" · registro "+esc(String(r.fecha).slice(0,10)):""}</span></div>
+     ${h?`<span class="chip ${h==="ok"?"c-good":"c-warn"}" style="align-self:flex-start">${h==="ok"?"✓ Se queda · se actualiza en unos minutos":"⏳ Pasa a revisión en unos minutos"}</span>`:`<div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn sm" data-sh="${esc(x.uid)}|ok">✅ Es socio o cliente</button><button class="btn sm ghost" data-sh="${esc(x.uid)}|rev">⏳ Pasar a revisión</button>${r.patrocinadorUid?`<button class="btn sm ghost" data-sh="${esc(x.uid)}|wa">💬 Preguntar al patrocinador</button>`:""}</div>`}</div>`}).join("")}</div>`}
+function shBind(b){const c=b.querySelector("#shAdm");if(!c)return;c.querySelectorAll("[data-sh]").forEach(bt=>bt.onclick=async()=>{const [u,k]=bt.dataset.sh.split("|"),x=(socios||[]).find(y=>y.uid===u);if(!x)return;const r=x.registro||{};
+  if(k==="wa"){const p=(socios||[]).find(y=>y.uid===r.patrocinadorUid),pr=(p&&p.registro)||{},pw=String(pr.whatsapp||"").replace(/\D/g,""),pn=String(pr.nombre||r.patrocinador||"").split(" ")[0];
+    const t=`Hola${pn?" "+pn:""} 👋\n\nUna consulta rápida: *${r.nombre||""}* está registrado en la app como parte de su equipo, pero no lo encontramos en inCruises.\n\n¿Ya está activo como socio o cliente? ¿Con qué correo se registró en inCruises?\n\n¡Gracias!`+(miNombreCorto()?"\n\n*"+miNombreCorto()+"*":"");
+    waIr("https://wa.me/"+(pw.length>=8?pw:"")+"?text="+encodeURIComponent(t));return}
+  if(k==="rev"&&!confirmar2(bt))return;bt.disabled=true;
+  try{await store.db.doc("aprob/"+u).set({ok:k==="ok",por:store.uid,t:Date.now()});shHechos[u]=k==="ok"?"ok":"rev";toast(k==="ok"?"✅ Listo, se queda":"⏳ Pasa a revisión en unos minutos");try{renderEquipo()}catch(e){}}
+  catch(e){bt.disabled=false;toast("No se pudo guardar ("+errCod(e)+")")}})}
 // admin
 function solPend(){return (socios||[]).flatMap(x=>Object.values(x.sol||{}).filter(s=>s.st==="p").map(s=>({x,s}))).sort((a,b)=>a.s.t-b.s.t)}
 function solAdminCard(){if(!isAdmin)return"";const L=solPend();if(!L.length)return"";
@@ -3529,7 +3543,7 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
   // 10 nov: números con largo que no corresponde a su país (p. ej. +504 con 9 dígitos)
   const malT=socios.filter(x=>!esSoloAdmin(x)&&x.registro&&String(x.registro.whatsapp||"").replace(/\D/g,"").length>=6&&telAviso(x.registro.whatsapp));
   const malH=malT.length?`<div class="card" style="gap:8px;border:1.5px solid var(--bad)"><h3 style="margin:0">⚠️ Números por revisar (${malT.length})</h3><p class="small muted" style="margin:0">El largo no corresponde al país del número (por ejemplo, +504 con 9 dígitos). WhatsApp no los encuentra. Corríjalos con «Número».</p>${malT.map(x=>{const t=telInfo(x.registro.whatsapp);return `<div class="row between" style="gap:8px;padding-top:8px;border-top:1px solid var(--line)"><span class="small" style="min-width:0"><b>${esc(x.registro.nombre||"Socio")}</b><br>+${esc(t.d)} · ${t.n} dígitos (${esc(t.pais)} usa ${t.esp.join(" u ")})</span><button class="btn sm ghost" type="button" data-wfix="${esc(x.uid)}">✏️ Número</button></div>`}).join("")}</div>`:"";
-  b.innerHTML=`${solAdminCard()}${malH}<div class="card" style="gap:6px"><h3 style="margin:0">🌳 Líneas del equipo</h3><p class="small muted" style="margin:0">Arma la línea completa de cada socio para que cada líder vea a todos los que tiene debajo.</p><button class="btn sm ghost" id="socLin" style="align-self:flex-start">Reconstruir líneas</button></div>${sinP?`<div class="card" style="gap:8px"><div class="row between"><div><h3 style="margin:0">🔗 Vincular patrocinadores</h3><p class="small muted" style="margin:2px 0 0">${sinP} ${sinP===1?"socio se registró":"socios se registraron"} sin enlace. Vincúlalos para que su patrocinador los vea en "Mi equipo".</p></div></div><button class="btn sm gold" id="socVinc" style="align-self:flex-start">Vincular ahora</button></div>`:""}${dupH}${ahCfg()?`<div class="card" style="gap:6px"><h3 style="margin:0">💰 Ahorro pendiente</h3><p class="small muted" style="margin:0">${Object.keys(ahCfg().k).length?"Revise quién del reporte está enlazado en la app y quién no coincide (email o WhatsApp).":"Sin socios pendientes."}</p><button class="btn sm ghost" id="ahAdm" style="align-self:flex-start">🔎 Revisar coincidencias</button></div>`:""}${raAdminCard()}<div class="grid2">${st(reg,"Socios registrados")}${st(sin,"Entraron sin registrarse")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}</div>
+  b.innerHTML=`${solAdminCard()}${shCard()}${malH}<div class="card" style="gap:6px"><h3 style="margin:0">🌳 Líneas del equipo</h3><p class="small muted" style="margin:0">Arma la línea completa de cada socio para que cada líder vea a todos los que tiene debajo.</p><button class="btn sm ghost" id="socLin" style="align-self:flex-start">Reconstruir líneas</button></div>${sinP?`<div class="card" style="gap:8px"><div class="row between"><div><h3 style="margin:0">🔗 Vincular patrocinadores</h3><p class="small muted" style="margin:2px 0 0">${sinP} ${sinP===1?"socio se registró":"socios se registraron"} sin enlace. Vincúlalos para que su patrocinador los vea en "Mi equipo".</p></div></div><button class="btn sm gold" id="socVinc" style="align-self:flex-start">Vincular ahora</button></div>`:""}${dupH}${ahCfg()?`<div class="card" style="gap:6px"><h3 style="margin:0">💰 Ahorro pendiente</h3><p class="small muted" style="margin:0">${Object.keys(ahCfg().k).length?"Revise quién del reporte está enlazado en la app y quién no coincide (email o WhatsApp).":"Sin socios pendientes."}</p><button class="btn sm ghost" id="ahAdm" style="align-self:flex-start">🔎 Revisar coincidencias</button></div>`:""}${raAdminCard()}<div class="grid2">${st(reg,"Socios registrados")}${st(sin,"Entraron sin registrarse")}${st(hoy,"Activos hoy","var(--good)")}${st(sem,"Activos esta semana")}</div>
    <div class="seg" id="socOrd"><button aria-selected="${sociosOrd==="act"}" data-o="act">Más activos</button><button aria-selected="${sociosOrd==="rec"}" data-o="rec">Recientes</button><button aria-selected="${sociosOrd==="inact"}" data-o="inact">Sin actividad</button></div>
    <div class="row"><input class="inp grow" id="socQ" placeholder="Buscar por nombre, patrocinador o plan" value="${esc(sociosQ)}"><button class="btn sm ghost" id="socCsv">Descargar</button></div>
    <div class="card" style="gap:0">${L.length?L.map(x=>{const r=x.registro||{},a=actDe(x),S=a.sem;const nm=r.nombre||x.nombre||x.email||"Sin nombre";const wa=r.whatsapp?`https://wa.me/${r.whatsapp}`:"";
@@ -3554,7 +3568,7 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
   b.querySelectorAll("[data-sedit]").forEach(bt=>bt.onclick=()=>editarSocio(bt.dataset.sedit));
   {const ah=$("#ahAdm");if(ah)ah.onclick=ahRevisar}b.querySelectorAll("[data-wfix]").forEach(bt=>bt.onclick=()=>{const x=(socios||[]).find(y=>y.uid===bt.dataset.wfix);if(x)cambiarNumSocio(x)});
   b.querySelectorAll("[data-amot]").forEach(bt=>bt.onclick=()=>{const x=(socios||[]).find(y=>y.uid===bt.dataset.amot);if(!x)return;let t="";try{t=msgMotiva(x)}catch(e){t="Hola "+(((x.registro||{}).nombre||"").split(" ")[0]||"")+" 👋"}const w=waSocio(x);if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t));return}pedirWaSocio(x,t)});
-  $("#socCsv").onclick=sociosCSV;{const ra=$("#raAdm");if(ra)ra.onclick=raAdmin}solAdmBind(b);const sv=$("#socVinc");if(sv)sv.onclick=abrirVincular;const sl=$("#socLin");if(sl)sl.onclick=async()=>{sl.disabled=true;sl.textContent="Reconstruyendo…";await reconstruirLineas(false);sl.disabled=false;sl.textContent="Reconstruir líneas"};$("#socReload").onclick=()=>{socios=null;renderEquipo()}}
+  $("#socCsv").onclick=sociosCSV;{const ra=$("#raAdm");if(ra)ra.onclick=raAdmin}solAdmBind(b);shBind(b);const sv=$("#socVinc");if(sv)sv.onclick=abrirVincular;const sl=$("#socLin");if(sl)sl.onclick=async()=>{sl.disabled=true;sl.textContent="Reconstruyendo…";await reconstruirLineas(false);sl.disabled=false;sl.textContent="Reconstruir líneas"};$("#socReload").onclick=()=>{socios=null;renderEquipo()}}
 let constL=null,constT=0;
 let constVista="sem";
 const constSort=L=>{const sem=constVista==="sem";L.sort((a,b)=>sem?(b.racha-a.racha||b.semPres-a.semPres||b.semPts-a.semPts):(b.mesMejor-a.mesMejor||b.mesPres-a.mesPres||b.mesPts-a.mesPts)||String(a.nombre).localeCompare(b.nombre,"es"));L.forEach((x,i)=>x.rk=i+1);return L};
@@ -5094,7 +5108,7 @@ const avHace=t=>{const m=Math.round((Date.now()-t)/6e4);if(m<1)return"ahora";if(
 // 6 nov: el Centro de avisos muestra solo los de HOY (hora de Honduras) y cada aviso lleva a lo suyo (avIr). ?av=destino al tocar la notificación.
 function avHoy0(){const n=Date.now(),h=new Date(n-6*36e5);return Date.UTC(h.getUTCFullYear(),h.getUTCMonth(),h.getUTCDate())+6*36e5}
 function avDest(x){const v=x.v||"",t=x.ti||"";if(v&&!/^(inicio|equipo)$/.test(v))return v==="agenda"?"agenda":v;
-  if(/pide un cambio/i.test(t))return "sol";if(/solicitud/i.test(t))return "dt";if(/ahorros? pendientes?/i.test(t))return "ahp";if(/inactiva|ya pag/i.test(t))return "urg";
+  if(/pide un cambio/i.test(t))return "sol";if(/no aparecen? en inCruises/i.test(t)&&isAdmin)return /cuentas aprobadas/i.test(t)?"sinh":"apr";if(/solicitud/i.test(t))return "dt";if(/ahorros? pendientes?/i.test(t))return "ahp";if(/inactiva|ya pag/i.test(t))return "urg";
   if(/compromiso/i.test(t))return "comp";if(/grupo/i.test(t))return "lzg";if(/Sistema de liderazgo|Felicidades/i.test(t))return "lz";if(/socio en su equipo|nuevo socio/i.test(t))return "snv";if(/incentivo|cerrar/i.test(t))return "inc";
   return v==="equipo"?"eq":"rut"}
 function avFila(x,v){return `<button type="button" class="avIt avRow${(x.t||0)>v?" nuevo":""}" data-avd="${avDest(x)}"><span class="avIc">${(x.t||0)>v?"🔵":"🔔"}</span><div class="grow" style="min-width:0;text-align:left"><b>${esc(x.ti||"")}</b><small>${esc(x.b||"")}</small><small class="muted">${avHace(x.t||0)}</small></div><span class="avGo">›</span></button>`}
@@ -5113,6 +5127,7 @@ function avIr(k){try{
   if(k==="snv"){LS.set("snvOpen",1);avEq("mios");avScroll("#snvCard");return}
   if(k==="dt"){LS.set("dtHeroOpen",1);avEq("mios");avScroll("#dtHero");return}
   if(k==="sol"){avEq(isAdmin?"socios":"mios");avScroll("#solAdm");return}
+  if(k==="sinh"){if(isAdmin){avEq("socios");avScroll("#shAdm")}return}
   if(k==="lz"){rankMetric="liderazgo";avEq("ranking");return}
   if(k==="rach"){rankMetric="rutina";avEq("ranking");return}
   if(k==="eq"){go("equipo");return}
@@ -8033,7 +8048,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261111173007";var busy=false,pend=null;
+(function(){var V="20261111173845";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
