@@ -909,7 +909,30 @@ button.hiPill{font:inherit;font-size:13px;font-weight:700;cursor:pointer}.hiPill
 .rkRow{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--line)}.rkRow .md{font-size:20px}.rkRow b{font-size:14.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rkRow .v{font-family:var(--f-num);font-weight:700;font-size:21px;color:var(--brand)}
 .rkRow.yo b{color:var(--brand)}.rkPie{background:var(--surface-2);border-radius:12px;padding:8px 12px;font-size:13.5px}
 .rkGan{border:0;background:var(--warn-soft);color:var(--warn);font:inherit;font-weight:800;font-size:13px;border-radius:12px;padding:8px 12px;text-align:left;cursor:pointer}
-#v-inicio.simple>.hiBox{order:0}#v-inicio.simple>#compStrip{order:3}#v-inicio.simple>#cieStrip{order:3}.cie{margin:-4px 0 12px;border-radius:999px;padding:7px 7px 7px 12px;display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid #2AC1F1;box-shadow:0 6px 16px -10px rgba(10,125,173,.6);cursor:pointer}.cie .tx{flex:1;min-width:0;line-height:1.2}.cie .tx b{display:block;font-size:13px;color:var(--brand);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cie .tx span{display:block;font-size:11.5px;letter-spacing:-.1px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cie .clk{background:linear-gradient(90deg,#2AC1F1,#0A7DAD);color:#fff;border-radius:999px;padding:6px 10px;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:19px;white-space:nowrap;font-variant-numeric:tabular-nums}.cie.u{border-color:#B42335}.cie.u .tx b{color:#E5484D}.cie.u .clk{background:#B42335}#v-inicio.simple>#irCard{order:4}#v-inicio.simple>#rutCard{order:6}#v-inicio.simple>#rkCard{order:9}
+#v-inicio.simple>.hiBox{order:0}#v-inicio.simple>#compStrip{order:3}#v-inicio.simple>#cieStrip{order:3}#v-inicio.simple>#declStrip{order:1}
+.decl{display:flex;align-items:center;gap:11px;margin:0 0 12px;padding:11px 12px;border-radius:18px;cursor:pointer;color:#fff;background:radial-gradient(160px 70px at 90% 0%,rgba(246,222,138,.35),transparent 70%),linear-gradient(110deg,#0A7DAD,#0B1220);box-shadow:0 8px 20px -10px rgba(10,125,173,.7)}
+.decl .di{width:38px;height:38px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:20px;background:rgba(255,255,255,.14);box-shadow:0 0 0 3px rgba(246,222,138,.35)}.decl .tx{flex:1;min-width:0;line-height:1.2}.decl .tx b{display:block;font-size:14.5px}.decl .tx span{display:block;font-size:12px;opacity:.85}
+.decl .db{background:#F6DE8A;color:#1d1402;font-weight:900;font-size:13px;border-radius:999px;padding:8px 12px;white-space:nowrap}
+.decl.ok{background:var(--surface);color:var(--ink);border:1.5px solid #16A34A;box-shadow:none;padding:8px 12px}.decl.ok .di{background:#16A34A;color:#fff;box-shadow:none;width:30px;height:30px;font-size:16px}.decl.ok .tx span{color:var(--muted);opacity:1}
+#declOv{position:fixed;inset:0;z-index:9999;color:#fff;overflow:hidden;user-select:none;-webkit-user-select:none;background:radial-gradient(520px 400px at 50% 16%,rgba(42,193,241,.32),transparent 70%),linear-gradient(180deg,#0B1220,#06101c 60%,#03070d);font-family:Figtree,system-ui,sans-serif}
+#declOv .dwm{position:absolute;left:50%;top:44%;width:300px;height:330px;transform:translate(-50%,-50%);background:#2AC1F1;opacity:.07;-webkit-mask:url(media/casco.png) center/contain no-repeat;mask:url(media/casco.png) center/contain no-repeat;pointer-events:none}
+#declOv .dtop{position:absolute;top:calc(env(safe-area-inset-top) + 16px);left:18px;right:14px;display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:.18em;color:#9BE8FF;font-weight:800;z-index:2}
+#declOv .dx{background:none;border:0;color:#fff;opacity:.7;font-size:22px;padding:6px}
+#declOv .dbar{position:absolute;top:calc(env(safe-area-inset-top) + 52px);left:18px;right:18px;height:4px;background:rgba(255,255,255,.12);border-radius:9px}#declOv .dbar b{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#2AC1F1,#F6DE8A);transition:width .4s}
+#declOv .dc{position:absolute;inset:calc(env(safe-area-inset-top) + 76px) 24px 150px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:14px}
+#declOv .dk{font-size:12px;letter-spacing:.24em;color:#F6DE8A;font-weight:800}
+#declOv .dh{font-weight:900;font-size:clamp(28px,8.6vw,38px);line-height:1.08;text-transform:uppercase}
+#declOv .dg{background:linear-gradient(90deg,#9BE8FF,#2AC1F1);-webkit-background-clip:text;background-clip:text;color:transparent}#declOv .dy{color:#F6DE8A}
+#declOv .ds{font-size:15px;color:#cbd5e1;line-height:1.45;font-weight:600}
+#declOv .dl{font-weight:900;font-size:clamp(24px,7.4vw,34px);line-height:1.12;text-shadow:0 0 28px rgba(42,193,241,.5);opacity:0;animation:dIn .6s cubic-bezier(.2,1.3,.4,1) forwards}
+@keyframes dIn{from{opacity:0;transform:translateY(16px) scale(.94)}to{opacity:1;transform:none}}
+#declOv .dbot{position:absolute;left:20px;right:20px;bottom:calc(env(safe-area-inset-bottom) + 24px);display:flex;flex-direction:column;gap:10px;align-items:center}
+#declOv .dgo{width:100%;border:0;border-radius:16px;padding:16px;font-weight:900;font-size:17px;color:#fff;background:linear-gradient(90deg,#2AC1F1,#0A7DAD)}#declOv .dgo:disabled{opacity:.35}
+#declOv .dhint{font-size:12.5px;color:#9fb3c8;text-align:center}#declOv .dhint a{color:#9BE8FF}
+#declOv .dgen{margin-top:6px;background:rgba(255,255,255,.08);border-radius:14px;padding:10px 12px;font-size:13.5px;display:flex;flex-direction:column;gap:8px}#declOv .dgen div{display:flex;gap:8px}#declOv .dgen button{flex:1;border:1.5px solid #2AC1F1;background:transparent;color:#fff;border-radius:12px;padding:10px;font-weight:800;font-size:14px}
+#declOv .dhold{position:relative;width:156px;height:156px;border-radius:50%;border:0;color:#fff;font-weight:900;font-size:17px;line-height:1.1;background:radial-gradient(circle at 50% 40%,#ff9a3c,#e2551b 60%,#a8300c);box-shadow:0 0 0 8px rgba(255,140,60,.2),0 0 60px rgba(255,120,40,.6);touch-action:none;transition:transform .1s}
+#declOv .dhold svg{position:absolute;inset:-14px;width:calc(100% + 28px);height:calc(100% + 28px);transform:rotate(-90deg)}#declOv .dhold circle{fill:none;stroke:#F6DE8A;stroke-width:5;stroke-linecap:round}
+@media (prefers-reduced-motion:reduce){#declOv .dl{animation:none;opacity:1}}.cie{margin:-4px 0 12px;border-radius:999px;padding:7px 7px 7px 12px;display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid #2AC1F1;box-shadow:0 6px 16px -10px rgba(10,125,173,.6);cursor:pointer}.cie .tx{flex:1;min-width:0;line-height:1.2}.cie .tx b{display:block;font-size:13px;color:var(--brand);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cie .tx span{display:block;font-size:11.5px;letter-spacing:-.1px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cie .clk{background:linear-gradient(90deg,#2AC1F1,#0A7DAD);color:#fff;border-radius:999px;padding:6px 10px;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:19px;white-space:nowrap;font-variant-numeric:tabular-nums}.cie.u{border-color:#B42335}.cie.u .tx b{color:#E5484D}.cie.u .clk{background:#B42335}#v-inicio.simple>#irCard{order:4}#v-inicio.simple>#rutCard{order:6}#v-inicio.simple>#rkCard{order:9}
 #v-inicio.simple.irProta>#irCard{order:3}#v-inicio.simple.irProta>#compStrip{order:4}
 #v-inicio.irProta .cpHero{background:var(--surface)!important;color:var(--ink);border:1px solid var(--line)!important;box-shadow:var(--shadow)!important;padding:14px!important}
 #v-inicio.irProta .cpHero .hwave{display:none}#v-inicio.irProta .cpHero .hk,#v-inicio.irProta .cpHero .cp-chev{color:var(--brand)}#v-inicio.irProta .cpHero .hring circle:first-child{stroke:var(--surface-2)}#v-inicio.irProta .cpHero .hring b{color:var(--ink)}
@@ -1474,6 +1497,7 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
       <div id="compStrip" hidden></div><div id="cieStrip" hidden></div>
       <div class="pendStrip" id="pendStrip" hidden></div>
       <div id="pushStrip" hidden></div>
+      <div id="declStrip" hidden></div>
       <div class="avBox" id="avBox" hidden><div class="avHd" id="avBoxN">AVISOS DE HOY</div><div class="avTrack" id="avTrack">
         <div class="avSl" data-k="urgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="urgS" id="urgStrip" hidden></div></div>
         <div class="avSl" data-k="lzgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="lzgS" id="lzgStrip" hidden></div></div>
@@ -4551,6 +4575,56 @@ function incStrip(){const el=$("#incStrip");if(!el)return;const c=incCfg();if(!c
   if(el.dataset.ok!==c.id+"|2"){el.dataset.ok=c.id+"|2";el.innerHTML=`<span class="tx"><span class="lb">⏱ CIERRE DEL INCENTIVO</span><span class="cd"></span></span><span class="fin">${esc(c.fin||"")} ›</span>`;el.onclick=()=>avisoTop(c.t||"¡Aproveche!",c.sub||"",null)}
   el.querySelector(".cd").innerHTML=cd;el.hidden=false}
 setInterval(()=>{try{if(document.visibilityState==="visible")incStrip()}catch(e){}try{if(document.visibilityState==="visible")cieStrip()}catch(e){}},1000);
+// 11 nov (Edwin): DECLARACIÓN DE ÉXITO · ritual de la mañana (no suma a la rutina). Sale arriba en Inicio antes de las 12 m. HN.
+// Masculino/femenino según el socio (profile.decG "m"|"f", se pregunta una vez). Hecha: profile.dec {d:día, r:racha, b:mejor}.
+const DECL=[["¡YO SOY {UN GANADOR|UNA GANADORA}!","¡YO SOY {UN LÍDER|UNA LÍDER}!","¡YO SOY CAPAZ!","¡YO SOY *IMPARABLE*!"],
+ ["¡NACÍ PARA CRECER, PROSPERAR Y *TRIUNFAR*!"],
+ ["Dios puso en mí talentos extraordinarios","y una mente poderosa.","¡Y EL PODER PARA HACER MIS SUEÑOS *REALIDAD*!"],
+ ["¡CREO EN MÍ!","¡CONFÍO EN MI CAPACIDAD!","¡MIS SUEÑOS SON MÁS GRANDES QUE MIS *MIEDOS*!"],
+ ["¡YO CONSTRUYO MI PROPIO *DESTINO*!"],
+ ["¡SOY UN IMÁN PARA EL *DINERO*!","¡PARA LA ABUNDANCIA!","¡Y PARA LAS PERSONAS Y OPORTUNIDADES CORRECTAS!"],
+ ["¡PIENSO EN GRANDE!","¡ACTÚO CON VALENTÍA!","¡Y AVANZO CON *DISCIPLINA*!"],
+ ["¡CREO VALOR!","¡AYUDO A LAS PERSONAS!","¡Y MIS ACCIONES PRODUCEN *RESULTADOS*!"],
+ ["¡DIOS GUÍA MIS PASOS!","¡BENDICE EL TRABAJO DE MIS MANOS!","¡Y ME DA SABIDURÍA PARA *TRIUNFAR*!"],
+ ["¡SOY {PRÓSPERO|PRÓSPERA}!","¡SOY ABUNDANTE!","¡SOY {UN LÍDER|UNA LÍDER}!","¡SOY *IMPARABLE*!"],
+ ["¡ESTOY FORMANDO UNA GENERACIÓN DE *LÍDERES EXTRAORDINARIOS*!"],
+ ["¡ESTOY {LISTO|LISTA}!","¡ESTOY {PREPARADO|PREPARADA}!","¡ESTE ES MI *MOMENTO*!"]];
+const declHN=()=>new Date(Date.now()-6*36e5),declHoy=()=>{const d=declHN();return d.toISOString().slice(0,10)};
+function declHecha(){return !!(profile.dec&&profile.dec.d===declHoy())}
+function declRacha(){const x=profile.dec;if(!x||!x.d)return 0;const ay=new Date(Date.parse(declHoy()+"T12:00:00Z")-864e5).toISOString().slice(0,10);return x.d===declHoy()||x.d===ay?(+x.r||0):0}
+function declTx(t){const g=profile.decG==="f"?1:0;return esc(t.replace(/\{([^|}]*)\|([^}]*)\}/g,(m,a,b)=>g?b:a)).replace(/\*([^*]+)\*/g,'<span class="dg">$1</span>')}
+function declStrip(){const el=$("#declStrip");if(!el)return;if(!store.uid||esSoloAdminYo()){el.hidden=true;return}
+  const h=declHN().getUTCHours();if(h>=12){el.hidden=true;return}
+  const ok=declHecha(),r=declRacha(),k=(ok?"1":"0")+r;if(el.dataset.k===k&&!el.hidden)return;el.dataset.k=k;
+  el.className="decl"+(ok?" ok":"");
+  el.innerHTML=ok?`<span class="di">✓</span><div class="tx"><b>Declaración de hoy hecha</b><span>${r>1?`🔥 ${r} días seguidos declarando`:"¡Gran inicio de día!"}</span></div>`
+   :`<span class="di">☀️</span><div class="tx"><b>Su declaración de éxito</b><span>2 minutos para empezar el día ganando${r?` · 🔥 ${r} días`:""}</span></div><span class="db">Declarar ›</span>`;
+  el.onclick=declAbrir;el.hidden=false}
+function declAbrir(){let ov=$("#declOv");if(ov)ov.remove();ov=document.createElement("div");ov.id="declOv";document.body.appendChild(ov);document.body.style.overflow="hidden";
+  const nm=(()=>{let b=String(miRegistro().nombre||profile.nombrePila||"").trim();try{b=nv(b)||b}catch(e){}const n=b.split(/\s+/).filter(Boolean);return n.length>1?n[0]+" "+n[n.length-1]:(n[0]||"")})().toUpperCase(),pila=(nm.split(" ")[0]||"");
+  const cerrar=()=>{ov.remove();document.body.style.overflow="";try{declStrip()}catch(e){}};
+  let i=-1;const N=DECL.length;
+  const pinta=()=>{const bar=`<div class="dbar"><b style="width:${Math.max(0,(i+1)/(N+1)*100)}%"></b></div>`,top=`<div class="dtop"><span>${i<0?"DECLARACIÓN DE ÉXITO":(Math.min(i+1,N+1))+" DE "+(N+1)}</span><button class="dx" aria-label="Cerrar">✕</button></div>`;
+    if(i<0){ov.innerHTML=`<div class="dwm"></div>${top}<div class="dc"><div class="dk">☀️ BUENOS DÍAS${pila?", "+esc(pila):""}</div><div class="dh">¡YO${nm?`, <span class="dg">${esc(nm)}</span>,`:","}<br>HOY DECLARO<br>QUIÉN SOY!</div><div class="ds">Póngase de pie. Léala <b>en voz alta</b>,<br>con fuerza y convicción. 🔥</div>
+      ${profile.decG?"":`<div class="dgen"><span>¿Cómo quiere su declaración?</span><div><button data-g="m">🙋‍♂️ Masculino</button><button data-g="f">🙋‍♀️ Femenino</button></div></div>`}</div>
+      <div class="dbot"><button class="dgo" ${profile.decG?"":"disabled"}>🗣️ Empezar mi declaración</button><div class="dhint">Toma 2 minutos${declRacha()?` · 🔥 ${declRacha()} días seguidos`:""}${profile.decG?` · <a href="#" class="dcg">Cambiar a ${profile.decG==="f"?"masculino":"femenino"}</a>`:""}</div></div>`;
+      ov.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{profile.decG=b.dataset.g;store.set("perfil",profile);pinta()});
+      const cg=ov.querySelector(".dcg");if(cg)cg.onclick=e=>{e.preventDefault();profile.decG=profile.decG==="f"?"m":"f";store.set("perfil",profile);pinta()};
+      ov.querySelector(".dgo").onclick=()=>{i=0;pinta()}}
+    else if(i<N){ov.innerHTML=`<div class="dwm"></div>${top}${bar}<div class="dc dtap">${DECL[i].map((t,j)=>`<div class="dl" style="animation-delay:${j*.45}s">${declTx(t)}</div>`).join("")}</div><div class="dbot"><div class="dhint">Toque la pantalla para seguir ›</div></div>`;
+      ov.querySelector(".dtap").parentNode.onclick=e=>{if(e.target.closest(".dx"))return;i++;pinta()}}
+    else{ov.innerHTML=`<div class="dwm"></div>${top}${bar}<div class="dc" style="bottom:300px"><div class="dl">¡LO CREO!</div><div class="dl" style="animation-delay:.45s">¡LO DECLARO!</div><div class="dl" style="animation-delay:.9s">¡Y LO HAGO <span class="dy">REALIDAD!</span></div><div class="ds dl" style="animation-delay:1.4s">¡Porque nací para crecer, prosperar y ganar!</div></div>
+      <div class="dbot"><button class="dhold" aria-label="Mantener presionado"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46"/></svg><span>🔥<br>¡LO<br>DECLARO!</span></button><div class="dhint">Mantenga presionado 2 segundos</div></div>`;
+      const hb=ov.querySelector(".dhold"),cir=hb.querySelector("circle");let t0=0,raf=0;const L=289;cir.style.strokeDasharray=L;cir.style.strokeDashoffset=L;
+      const fin=()=>{cancelAnimationFrame(raf);const hoy=declHoy(),r=declRacha();if(!declHecha()){const nr=r+1;profile.dec={d:hoy,r:nr,b:Math.max(nr,+(profile.dec&&profile.dec.b)||0)};store.set("perfil",profile)}
+        ov.innerHTML=`<div class="dwm"></div><div class="dc"><div class="dk">✅ DECLARACIÓN HECHA</div><div class="dh">¡HOY ES<br>SU <span class="dy">DÍA</span>!</div><div class="ds">${declRacha()>1?`🔥 ${declRacha()} días seguidos declarando`:"Empezó el día ganando."}<br>#HASTAQUEFUNCIONE</div></div><div class="dbot"><button class="dgo">Vamos por el día ›</button></div>`;
+        try{confeti(ov.querySelector(".dc"),120)}catch(e){}try{navigator.vibrate&&navigator.vibrate([60,40,120])}catch(e){}ov.querySelector(".dgo").onclick=cerrar};
+      const tick=()=>{const p=Math.min(1,(performance.now()-t0)/2000);cir.style.strokeDashoffset=L*(1-p);hb.style.transform=`scale(${1+p*.08})`;if(p>=1)return fin();raf=requestAnimationFrame(tick)};
+      const down=e=>{e.preventDefault();t0=performance.now();raf=requestAnimationFrame(tick)},up=()=>{if(!t0)return;cancelAnimationFrame(raf);t0=0;cir.style.strokeDashoffset=L;hb.style.transform=""};
+      hb.addEventListener("pointerdown",down);["pointerup","pointerleave","pointercancel"].forEach(ev=>hb.addEventListener(ev,up));hb.oncontextmenu=e=>e.preventDefault()}
+    const x=ov.querySelector(".dx");if(x)x.onclick=e=>{e.stopPropagation();cerrar()}};
+  pinta()}
+setInterval(()=>{try{if(document.visibilityState==="visible")declStrip()}catch(e){}},30000);setTimeout(()=>{try{declStrip()}catch(e){}},2500);
 // 11 nov (Edwin): «Quedan para el cierre semanal» debajo del compromiso. Cierra el domingo 11:59 p.m. hora de Honduras (UTC-6).
 function cieFin(){const hn=new Date(Date.now()-6*36e5),dw=hn.getUTCDay(),dd=(7-dw)%7;return Date.UTC(hn.getUTCFullYear(),hn.getUTCMonth(),hn.getUTCDate()+dd,23,59,59)+6*36e5}
 function cieStrip(){const el=$("#cieStrip");if(!el)return;if(!store.uid||esSoloAdminYo()){el.hidden=true;return}
@@ -7134,7 +7208,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
    <div class="pf-list">
     ${irSimple()?`<div class="pf-h">Mis datos</div>`:""}<button class="pf-it" id="pfFoto"><span class="ic">📷</span>Cambiar mi foto</button>
     <button class="pf-it" id="pfNombre"><span class="ic">👤</span>Mis datos <span class="small muted" style="font-weight:500">· nombre y WhatsApp</span></button><button class="pf-it" id="pfAvisos"><span class="ic">🔔</span>Mis avisos</button>
-    ${irSimple()?`<div class="pf-h">Mis páginas</div>`:""}<button class="pf-it" id="pfPag"><span class="ic">🌐</span>Mi página para prospectos</button><button class="pf-it" id="pfVia"><span class="ic">✈️</span>Compartir mi viaje (fotos y testimonio)</button>
+    ${irSimple()?`<div class="pf-h">Mis páginas</div>`:""}<button class="pf-it" id="pfPag"><span class="ic">🌐</span>Mi página para prospectos</button><button class="pf-it" id="pfDecl"><span class="ic">🗣️</span>Mi declaración de éxito</button><button class="pf-it" id="pfVia"><span class="ic">✈️</span>Compartir mi viaje (fotos y testimonio)</button>
     <button class="pf-it" id="pfLzs"><span class="ic">📣</span>Mi flyer de nueva etapa</button>
     <button class="pf-it" id="pfMem"><span class="ic">🛳️</span>Compartir página de membresía</button>
     <button class="pf-it" id="pfMemV"><span class="ic">👀</span>Quién vio mi página de membresía</button>
@@ -7148,7 +7222,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
     $("#pfNombre").onclick=abrirMisDatos;$("#pfAvisos").onclick=()=>{closeSheet();setTimeout(misAvisos,250)};{const gp=$("#pfGrp");if(gp)gp.onclick=()=>{closeSheet();setTimeout(grpAdmin,250)}}{const rp=$("#pfRep");if(rp)rp.onclick=()=>{closeSheet();setTimeout(repAdmin,250)}}{const tz=$("#pfTz");if(tz)tz.onclick=()=>{closeSheet();setTimeout(trZoomAdmin,250)}}{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const cz=$("#pfCie");if(cz)cz.onclick=()=>{closeSheet();eqTab="cierre";go("equipo");renderEquipo()}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
-    $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfVia").onclick=()=>window.open(VIA_FORM,"_blank","noopener");$("#pfMem").onclick=()=>memCompartir();$("#pfLzs").onclick=()=>{closeSheet();setTimeout(abrirLanzSocio,250)};$("#pfMemV").onclick=()=>memVisitas();
+    $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfVia").onclick=()=>window.open(VIA_FORM,"_blank","noopener");{const b=$("#pfDecl");if(b)b.onclick=()=>{closeSheet();setTimeout(declAbrir,250)}}$("#pfMem").onclick=()=>memCompartir();$("#pfLzs").onclick=()=>{closeSheet();setTimeout(abrirLanzSocio,250)};$("#pfMemV").onclick=()=>memVisitas();
     $("#pfInv").onclick=()=>{closeSheet();setTimeout(invPlanHoja,250)};
     $("#pfInst").onclick=()=>openSheet(`<h2>Instala la app</h2>
       <p><b>iPhone (Safari):</b> toca <b>Compartir</b> (cuadro con flecha) → <b>Agregar a pantalla de inicio</b> → <b>Agregar</b>.</p>
@@ -7918,7 +7992,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261111091357";var busy=false,pend=null;
+(function(){var V="20261111095215";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
