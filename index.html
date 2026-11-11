@@ -2216,9 +2216,9 @@ const compR=k=>COMP_R.find(r=>r.k===k)||null;
 function miComp(){const c=(regDoc&&regDoc.comp)||null;return c&&c.mes===mesMeta()?c:null}
 function compPuede(){const C=(T.config||{}).compromiso;if(!C||!fbUser||!regDoc||SOLO_ADMIN.includes(String(fbUser.email||"").toLowerCase()))return false;return !(C.desde&&Date.now()<Date.parse(C.desde))}
 function compDias(){const n=new Date(),f=new Date(n.getFullYear(),n.getMonth()+1,1);return Math.max(0,Math.ceil((f-n)/864e5))}
-async function compGuardar(o){const nm=Object.assign({mes:mesMeta(),t:Date.now()},o);
+async function compGuardar(o){const nm=Object.assign({mes:mesMeta(),t:Date.now(),no:false},o); // no:false: el merge de Firestore dejaba pegado un "No" anterior (10 nov)
   await store.db.doc("users/"+store.uid).set({comp:nm},{merge:true});regDoc=Object.assign({},regDoc,{comp:nm});
-  try{const nmb=miNombreFull()||miNombreCorto();if(nmb&&!yoPrueba())store.db.doc("constancia/"+store.uid).set({u:Date.now(),comp:nm.no?{mes:nm.mes,no:true}:{mes:nm.mes,rango:nm.rango,act:nm.act,ac:nm.ac,ap:nm.ap,vol:nm.vol,pres:nm.pres}},{merge:true}).catch(()=>{})}catch(e){}
+  try{const nmb=miNombreFull()||miNombreCorto();if(nmb&&!yoPrueba())store.db.doc("constancia/"+store.uid).set({u:Date.now(),comp:nm.no?{mes:nm.mes,no:true}:{mes:nm.mes,no:false,rango:nm.rango,act:nm.act,ac:nm.ac,ap:nm.ap,vol:nm.vol,pres:nm.pres}},{merge:true}).catch(()=>{})}catch(e){}
   renderComp();try{renderMetaEq()}catch(e){}try{lzgStrip()}catch(e){}}
 let compVisto=false;
 function compCheck(){if(compVisto||!compPuede()||miComp())return;try{if(irIntroPend())return}catch(e){}if(!$("#sheet").hidden||($("#wel")&&!$("#wel").hidden)||document.querySelector(".waGate"))return;compVisto=true;try{if(!popHoy("comp"))return}catch(e){}compIntro()}
@@ -7907,7 +7907,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110232130";var busy=false,pend=null;
+(function(){var V="20261110234731";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
