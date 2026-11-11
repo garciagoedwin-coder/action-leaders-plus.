@@ -1949,11 +1949,13 @@ function constStats(){const ini=k=>k<CONST_INI?CONST_INI:k,sc=k=>dayScore(k===TO
   const per=a=>{let act=0,comp=0,best=0,run=0,pres=0,pts=0;for(let d=parseK(ini(a));dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=sc(k),dd=(k===TODAY?day:weekCache[k])||{};pres+=+dd.presentaciones||0;pts+=ptsDia(dd,k);if(v>0)act++;if(v>=1){comp++;run++;best=Math.max(best,run)}else if(k!==TODAY)run=0}return{act,comp,best,pres,pts}};
   const lun=lunesK(),si=semIni(),mes=TODAY.slice(0,7),W=per(si),M=per(mes+"-01");let racha=0;
   for(let d=parseK(TODAY);dkey(d)>=si;d.setDate(d.getDate()-1)){const k=dkey(d),v=sc(k);if(k===TODAY&&v<1)continue;if(v>=1)racha++;else break}
+  // 11 nov (Edwin): racha REAL = días seguidos completos hasta hoy dentro del mes (no se corta el lunes); se usa en los mensajes
+  let rr=0;{const m0=ini(mes+"-01");for(let d=parseK(TODAY);dkey(d)>=m0;d.setDate(d.getDate()-1)){const k=dkey(d),v=sc(k);if(k===TODAY&&v<1)continue;if(v>=1)rr++;else break}}
   const pl=(()=>{const d=parseK(lun);d.setDate(d.getDate()-7);return dkey(d)})();let pSem=null;
   if(window._wkFrom&&window._wkFrom<=pl){pSem=0;for(let d=parseK(pl);dkey(d)<lun;d.setDate(d.getDate()+1)){const k=dkey(d);if(k>=CONST_INI)pSem+=ptsDia(weekCache[k]||{},k)}}
   else{const o=LS.get("wkp");if(o&&o.wk===pl)pSem=+o.pts||0}
   LS.set("wkp",{wk:lun,pts:W.pts});
-  return{wk:lun,si,pwk:pl,pSemPts:pSem,racha,semDias:W.act,semComp:W.comp,semPres:W.pres,semPts:W.pts,mes,mesDias:M.act,mesComp:M.comp,mesMejor:M.best,mesPres:M.pres,mesPts:M.pts}}
+  return{wk:lun,si,pwk:pl,pSemPts:pSem,racha,rr,semDias:W.act,semComp:W.comp,semPres:W.pres,semPts:W.pts,mes,mesDias:M.act,mesComp:M.comp,mesMejor:M.best,mesPres:M.pres,mesPts:M.pts}}
 let resT;function pushResumen(){if(!store.db||!store.uid)return;clearTimeout(resT);resT=setTimeout(async()=>{try{
   const sum={contactos:0,seguimientos:0,presentaciones:0,videos:0};let dias=0,racha=0;
   for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()-i);const w=weekCache[dkey(d)];if(w){Object.keys(sum).forEach(k=>sum[k]+=(+w[k]||0));if(dayScore(w,dkey(d))>0)dias++}}
@@ -3560,10 +3562,10 @@ const CM_LLENO=[
  (n,X)=>`¡Felicidades, ${n}! 🌟\n\n5 de 5 hoy${X}. Eso es compromiso de verdad.\n\nMañana otra vez, ¡usted puede! 🙌`,
  (n,X)=>`¡Excelente, ${n}! 🎉\n\nCompletó su rutina${X}. Cada día así le acerca a lo que quiere lograr.\n\n¡Vamos por el siguiente! 💙`];
 function cmPick(L,uid,cat){const k="cmV:"+(uid||"")+":"+cat;let i=parseInt(ahF((store.uid||"")+"|"+(uid||"")+"|"+TODAY+"|"+cat),16)%L.length;const last=LS.get(k);if(last===i&&L.length>1)i=(i+1)%L.length;LS.set(k,i);return L[i]}
-function constMsg(x){const n0=String(x.nombre||"").split(" ")[0],n=n0?n0.charAt(0).toUpperCase()+n0.slice(1):"",p=hoyPts(x),f=ROUTINE.length-p,r=+x.racha||0,url="https://actionleadersplus.com";
+function constMsg(x){const n0=String(x.nombre||"").split(" ")[0],n=n0?n0.charAt(0).toUpperCase()+n0.slice(1):"",p=hoyPts(x),f=ROUTINE.length-p,url="https://actionleadersplus.com";let r=+x.racha||0;
   let yo="";try{yo=String((miRegistro().nombre||"")||(fbUser&&fbUser.displayName)||"").trim().split(" ")[0]}catch(e){}if(!yo&&isAdmin)yo="Edwin";const firma=yo?`\n\n${yo}`:"";
   // 10 nov (Edwin): si su racha actual es menor que su mejor del mes, se habla de la mejor (no "1 día")
-  const mj=+x.mesMejor||0,baja=mj>r&&mj>1;
+  const mj=+x.mesMejor||0;if(x.rr!=null&&x.mes===TODAY.slice(0,7))r=Math.max(r,+x.rr||0);const baja=x.rr!=null&&mj>r&&mj>1;
   if(p>=ROUTINE.length)return cmPick(CM_LLENO,x.uid,"l")(n,baja?` y retoma su racha (su mejor este mes: *${mj} días* 🔥, ¡vamos a superarla!)`:r>1?` y ya lleva *${r} días de racha*`:"")+firma;
   if(p>0)return cmPick(CM_MEDIO,x.uid,"m")(n,url,p,f===1?"Solo le falta 1":"Le faltan "+f,baja?` y retoma su racha (su mejor este mes: ${mj} días 🔥)`:r>1?` y mantiene su racha de ${r} días 🔥`:" y empieza su racha 🔥")+firma;
   return cmPick(CM_CERO,x.uid,"c")(n,url)+firma}
@@ -7907,7 +7909,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110234731";var busy=false,pend=null;
+(function(){var V="20261111085335";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
