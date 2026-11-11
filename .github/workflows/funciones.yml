@@ -1,0 +1,32 @@
+name: Funciones de Firebase (aprobación instantánea)
+# Publica functions/ en Firebase con la cuenta de servicio (secreto FIREBASE_SA). Logs públicos: sin datos de socios.
+on:
+  push: { branches: [main], paths: [functions/**, firebase.json] }
+  workflow_dispatch:
+concurrency: { group: funciones, cancel-in-progress: false }
+permissions: { contents: write }
+jobs:
+  d:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Dependencias
+        run: |
+          cd functions
+          if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
+      - name: Guardar el lock (primera vez)
+        run: |
+          if [ -n "$(git status --porcelain functions/package-lock.json)" ]; then
+            git config user.name "Action Leaders bot"; git config user.email "bot@actionleadersplus.com"
+            git add functions/package-lock.json; git commit -qm "functions: package-lock" ; git pull -q --rebase && git push -q || true
+          fi
+      - name: Publicar
+        env: { FIREBASE_SA: "${{ secrets.FIREBASE_SA }}" }
+        run: |
+          umask 077; printf '%s' "$FIREBASE_SA" > /tmp/sa.json
+          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json
+          npx -y firebase-tools@13.29.1 deploy --only functions --project action-leaders-plus-8f1b8 --non-interactive --force 2>&1 | grep -v -i 'token\|@' ; test ${PIPESTATUS[0]} -eq 0
+      - if: always()
+        run: rm -f /tmp/sa.json
