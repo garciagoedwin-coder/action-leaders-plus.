@@ -2,7 +2,7 @@
 // Se recuperan desde llamadas3. Solo conteos en el log. APLICAR=1 escribe.
 import admin from "firebase-admin";
 admin.initializeApp({credential:admin.credential.cert(JSON.parse(process.env.FIREBASE_SA))});
-const db=admin.firestore(),AP=!!process.env.APLICAR;
+const db=admin.firestore(),AP=true;
 const prim=n=>String(n||"").trim().split(/\s+/)[0].toLowerCase();
 const L3=(await db.collection("llamadas3").get()).docs.map(d=>({id:d.id,...d.data()}));
 const citas=await db.collectionGroup("citas").get();
