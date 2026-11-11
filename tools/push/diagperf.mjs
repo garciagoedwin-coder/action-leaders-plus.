@@ -6,6 +6,6 @@ const U=(await db.collection("users").get()).docs.map(d=>({id:d.id,...d.data()})
 console.log("cuentas encontradas",U.length);
 const mes=new Date().toISOString().slice(0,7);
 for(const u of U){const a=await auth.getUser(u.id).catch(()=>null);const c=(a&&a.customClaims)||{};
-  console.log("sis:",!!c.sis,"· ap:",c.ap,"· compromiso del mes:",!!(u.comp&&u.comp.mes===mes&&!u.comp.no),"· lzG:",!!(u.lzG&&u.lzG.m===mes));}
+  console.log("comp existe:",!!u.comp,"· comp.mes:",u.comp&&u.comp.mes,"· dijo no:",!!(u.comp&&u.comp.no),"· hace horas:",u.comp&&u.comp.t?Math.round((Date.now()-u.comp.t)/36e5):null,"· constancia.comp?");console.log("sis:",!!c.sis,"· ap:",c.ap,"· compromiso del mes:",!!(u.comp&&u.comp.mes===mes&&!u.comp.no),"· lzG:",!!(u.lzG&&u.lzG.m===mes));}
 const g=(await db.doc("sisPriv/grupo").get()).data()||{};const t=(await db.doc("team/liderazgo").get()).data()||{};
 console.log("link del grupo en sisPriv:",!!g.link,"mes",g.m,"· team/liderazgo.grupo:",JSON.stringify({m:(t.grupo||{}).m,si:(t.grupo||{}).si}));
