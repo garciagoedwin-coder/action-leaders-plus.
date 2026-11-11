@@ -2468,7 +2468,7 @@ function banBienvenida(g){const L=g.W||[];if(!L.length)return;const ir=a=>{banMa
   if(L.length===1){ir(L[0]);return}
   openSheet(`<h2>💬 Darle la bienvenida</h2><p class="small muted" style="margin:0">¿A quién le escribe?</p>${L.map((a,i)=>`<button class="ep-op" data-bw="${i}"><span class="ic">🎉</span><span class="grow"><b>${esc(nv(a.socio))}${premN(a.socio)}</b><small>${esc(a.paquete||"")}</small></span><span>›</span></button>`).join("")}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     document.querySelectorAll("[data-bw]").forEach(b=>b.onclick=()=>{closeSheet();setTimeout(()=>ir(L[+b.dataset.bw]),250)})})}
-function renderAccesos(){const c=$("#accesos");if(!c)return;const L=((T.config&&Array.isArray(T.config.accesos)&&T.config.accesos.length)?T.config.accesos:ACC_DEF).filter(a=>safeUrl(a.u));
+function renderAccesos(){const c=$("#accesos");if(!c)return;const L=((T.config&&Array.isArray(T.config.accesos)&&T.config.accesos.length)?T.config.accesos:ACC_DEF).filter(a=>safeUrl(a.u)&&!(a.d&&Date.now()<Date.parse(a.d))&&!(a.x&&Date.now()>Date.parse(a.x)));
   if(!L.length){c.hidden=true;return}c.hidden=false;
   c.innerHTML=`<h3>Accesos directos</h3><div class="acc"><a href="#" id="accBien"><span class="ic">🎉</span>Bienvenida socio nuevo</a><a href="#" id="accPag"><span class="ic">🌐</span>Mi página prospectos</a><a href="#" id="accMem"><span class="ic">🛳️</span>Página de membresía</a>${L.map(a=>`<a href="${esc(a.u)}" target="_blank" rel="noopener"><span class="ic">${esc(a.i||"🔗")}</span>${esc(a.t)}${a.n&&(!a.h||Date.now()<Date.parse(a.h))?` <b style="font-size:10px;background:#F5B700;color:#2a1c00;border-radius:6px;padding:1px 5px;vertical-align:middle">NUEVO</b>`:""}</a>`).join("")}</div>`;$("#accBien").onclick=e=>{e.preventDefault();abrirBienvenida()};$("#accPag").onclick=e=>{e.preventDefault();abrirMiPagina()};$("#accMem").onclick=e=>{e.preventDefault();memCompartir()}}
 function renderMe(){let rk=null;const me=myRow();try{if(!me&&fbUser)rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}const v=me?(Number(me.registros)||0)+(Number(me.activaciones)||0):rk?rk.R:null;$("#topPv").textContent=v!=null?fmt(v):"—";$("#topPvBox").toggleAttribute("data-empty",v==null);renderWho();if(eqTab==="ranking")renderEquipo()}
@@ -4900,7 +4900,7 @@ function avisoTop(t,sub,fn){try{if(navigator.vibrate)navigator.vibrate([60,40,60
   d.addEventListener("touchend",e=>{if(x0==null)return;const p=e.changedTouches[0],dx=p.clientX-x0,dy=p.clientY-y0;x0=null;d.style.transition="";d.style.opacity="";if(Math.abs(dx)>60||dy<-30)bye();else d.style.transform=""},{passive:true});
   const sc=()=>{window.removeEventListener("scroll",sc);const m=document.getElementById("main");if(m)m.removeEventListener("scroll",sc);setTimeout(bye,150)};setTimeout(()=>{window.addEventListener("scroll",sc,{passive:true});const m=document.getElementById("main");if(m)m.addEventListener("scroll",sc,{passive:true})},600)}
 // Novedad de config (config.novedad {id,t,sub,u,hasta}): aviso arriba una sola vez por persona, sin publicar la app
-let novHecho=false;function novedadAviso(){if(novHecho)return;const N=(T.config||{}).novedad;if(!N||!N.id||!N.t||!fbUser)return;if(N.hasta&&Date.now()>Date.parse(N.hasta))return;
+let novHecho=false;function novedadAviso(){if(novHecho)return;const N=(T.config||{}).novedad;if(!N||!N.id||!N.t||!fbUser)return;if(N.hasta&&Date.now()>Date.parse(N.hasta))return;if(N.desde&&Date.now()<Date.parse(N.desde))return;
   const K="nov:"+N.id;try{if(LS.get(K))return}catch(e){}novHecho=true;setTimeout(()=>{try{if(document.querySelector(".avisoTop.on")){novHecho=false;setTimeout(novedadAviso,6000);return}LS.set(K,1);avisoTop(N.t,N.sub||"",N.u&&safeUrl(N.u)?()=>window.open(N.u,"_blank","noopener"):null)}catch(e){}},4500)}
 function avisosVer(){go("agenda");setTimeout(()=>{const c=[$("#l3Card"),$("#evaInv")].find(x=>x&&!x.hidden);if(c)c.scrollIntoView({behavior:"smooth",block:"center"})},250)}
 // ===== Avisos (notificaciones push). El servidor (GitHub Actions, tools/push) manda: racha 7:00/9:30 p.m. y socios nuevos. =====
@@ -6783,7 +6783,7 @@ function acaHero(){const r=$("#acaRing"),t=$("#acaHT"),s=$("#acaHS");if(!r)retur
   const E=irEstado(),tot=E.W.reduce((a,w)=>a+w.L.length,0),hc=E.W.reduce((a,w)=>a+w.n2,0),p=tot?Math.round(hc*100/tot):0;
   r.style.setProperty("--p",p);r.innerHTML=`<b>${p}%</b>`;t.textContent=E.grad?"¡Plan completado! 🎓":"Semana "+E.cur.n+" · "+E.cur.k;
   const nx=E.grad?null:E.cur.L.find(i=>!i.ok);s.textContent=E.grad?"Ya es Action Leader graduado":nx?"Siguiente: "+nx.t:"Toque para ver su plan"}
-function acaMateriales(){const L=cursosL().filter(c=>c.pdf),pr=irPresUrl();
+function acaMateriales(){const L=[...(((T.config||{}).materiales)||[]).filter(m=>m&&m.pdf&&!(m.desde&&Date.now()<Date.parse(m.desde))).map(m=>({t:m.d||"",pdf:m.pdf,pdfN:m.pdfN,pdfT:m.t})),...cursosL().filter(c=>c.pdf)],pr=irPresUrl();
   openSheet(`<p class="eyebrow">ACADEMIA</p><h2 style="margin:2px 0 12px">📄 Materiales</h2><div class="amL">${L.map(c=>`<button type="button" data-mpdf="${esc(c.pdf)}" data-mpn="${esc(c.pdfN||"material.pdf")}"><i>📄</i><span><b>${esc(c.pdfT||"Material")}</b><small>${esc(c.t)}</small></span><em>›</em></button>`).join("")}${pr?`<button type="button" id="mPres"><i>🎤</i><span><b>Presentación del negocio</b><small>Para descargar o compartir</small></span><em>›</em></button>`:""}<button type="button" id="mLogos"><i>🛡️</i><span><b>Logos de Action Leaders</b><small>PNG con fondo transparente, para videos y publicaciones</small></span><em>›</em></button></div>${false&&!L.length&&!pr?`<p class="muted">Pronto habrá materiales aquí.</p>`:""}<button class="btn ghost" data-close style="width:100%;margin-top:12px">Cerrar</button>`,()=>{
   document.querySelectorAll("[data-mpdf]").forEach(x=>x.onclick=()=>bajarPdf(x.dataset.mpdf,x.dataset.mpn));const mp=$("#mPres");if(mp)mp.onclick=()=>{try{window.open(pr,"_blank")}catch(e){location.href=pr}};$("#mLogos").onclick=()=>{closeSheet();setTimeout(acaLogos,250)}})}
 // 10 nov: logos para descargar (media/logos). Se descargan al abrir la hoja para poder compartir con un solo toque (iPhone pide el toque directo).
@@ -7905,7 +7905,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110164420";var busy=false,pend=null;
+(function(){var V="20261110200515";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

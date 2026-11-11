@@ -293,6 +293,13 @@ async function main() {
     if (!P.length) { console.log("Nadie con avisos activos."); return; }
     const C = {}; (await db.collection("constancia").get()).docs.forEach(d => C[d.id] = d.data());
     for (const p of P) { const m = modo === "fin" ? msgFin(p.uid, C[p.uid], hoy, ayer) : modo === "manana" ? msgManana(p.uid, C[p.uid], hoy, ayer) : msgRacha(modo, p.uid, C[p.uid], hoy, ayer); if (m) salida.push([p.uid, p.tk, m]); }
+  } else if (modo === "msg") {
+    // 10 nov: aviso manual a TODOS los que tienen avisos (título y texto en disparo.json)
+    const D = JSON.parse(fs.readFileSync("disparo.json", "utf8"));
+    if (!D.title || !D.body) { console.log("Falta título o texto."); return; }
+    const P = (await db.collection("push").get()).docs.map(d => ({ uid: d.id, ...d.data() })).filter(p => p.tk);
+    P.forEach(p => hist[p.uid] = p.h || []);
+    for (const p of P) salida.push([p.uid, p.tk, { title: D.title, body: D.body }]);
   } else if (modo === "inc1" || modo === "inc2") {
     let cfg = null; try { cfg = (JSON.parse(fs.readFileSync(viejoP || "../../data/team.json", "utf8")).config || {}).incentivo; } catch {}
     const m = msgInc(modo, cfg);
