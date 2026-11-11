@@ -3157,15 +3157,30 @@ const shHechos={};
 function shLista(){return (socios||[]).filter(x=>x.apSH&&x.registro&&x.registro.nombre&&x.apE!=="p"&&x.apE!=="no").sort((a,b)=>(b.apSH.t||0)-(a.apSH.t||0))}
 function shCard(){if(!isAdmin)return"";const L=shLista();if(!L.length)return"";const pend=L.filter(x=>!shHechos[x.uid]).length;
   return `<div class="card" style="gap:6px;border:1.5px solid #D97706" id="shAdm"><h3 style="margin:0">🔎 Aprobadas sin inCruises (${pend})</h3><p class="small muted" style="margin:0 0 4px">Tienen acceso a la app, pero no encontramos su correo ni su WhatsApp en los datos de inCruises. Revise cada una.</p>
-   ${L.map(x=>{const r=x.registro||{},w=String(r.whatsapp||"").replace(/\D/g,""),h=shHechos[x.uid];return `<div class="shI" style="display:flex;flex-direction:column;gap:6px;padding:8px 0;border-top:1px solid var(--line)"><div class="small"><b>${esc(r.nombre||"")}</b><br><span class="muted">${esc(x.email||r.correo||"")}${w?" · +"+esc(w):""}<br>Patrocinador: ${esc(r.patrocinador||"—")}${r.fecha?" · registro "+esc(String(r.fecha).slice(0,10)):""}</span></div>
-     ${h?`<span class="chip ${h==="ok"?"c-good":"c-warn"}" style="align-self:flex-start">${h==="ok"?"✓ Se queda · se actualiza en unos minutos":"⏳ Pasa a revisión en unos minutos"}</span>`:`<div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn sm" data-sh="${esc(x.uid)}|ok">✅ Es socio o cliente</button><button class="btn sm ghost" data-sh="${esc(x.uid)}|rev">⏳ Pasar a revisión</button>${r.patrocinadorUid?`<button class="btn sm ghost" data-sh="${esc(x.uid)}|wa">💬 Preguntar al patrocinador</button>`:""}</div>`}</div>`}).join("")}</div>`}
+   ${L.map(x=>{const r=x.registro||{},w=String(r.whatsapp||"").replace(/\D/g,""),h=shHechos[x.uid];return `<div class="shI" style="display:flex;flex-direction:column;gap:6px;padding:8px 0;border-top:1px solid var(--line)"><div class="small"><b>${esc(r.nombre||"")}</b><br><span class="muted">${esc(x.email||"")}${r.correo&&r.correo!==String(x.email||"").toLowerCase()?"<br>inCruises: "+esc(r.correo):""}${w?" · +"+esc(w):""}<br>Patrocinador: ${esc(r.patrocinador||"—")}${r.fecha?" · registro "+esc(String(r.fecha).slice(0,10)):""}</span></div>
+     ${h?`<span class="chip ${h==="ok"?"c-good":"c-warn"}" style="align-self:flex-start">${h==="ok"?"✓ Se queda · se actualiza en unos minutos":"⏳ Pasa a revisión en unos minutos"}</span>`:`<div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn sm" data-sh="${esc(x.uid)}|ok">✅ Es socio o cliente</button><button class="btn sm ghost" data-sh="${esc(x.uid)}|ed">✏️ Corregir datos de inCruises</button><button class="btn sm ghost" data-sh="${esc(x.uid)}|rev">⏳ Pasar a revisión</button>${r.patrocinadorUid?`<button class="btn sm ghost" data-sh="${esc(x.uid)}|wa">💬 Preguntar al patrocinador</button>`:""}</div>`}</div>`}).join("")}</div>`}
 function shBind(b){const c=b.querySelector("#shAdm");if(!c)return;c.querySelectorAll("[data-sh]").forEach(bt=>bt.onclick=async()=>{const [u,k]=bt.dataset.sh.split("|"),x=(socios||[]).find(y=>y.uid===u);if(!x)return;const r=x.registro||{};
   if(k==="wa"){const p=(socios||[]).find(y=>y.uid===r.patrocinadorUid),pr=(p&&p.registro)||{},pw=String(pr.whatsapp||"").replace(/\D/g,""),pn=String(pr.nombre||r.patrocinador||"").split(" ")[0];
     const t=`Hola${pn?" "+pn:""} 👋\n\nUna consulta rápida: *${r.nombre||""}* está registrado en la app como parte de su equipo, pero no lo encontramos en inCruises.\n\n¿Ya está activo como socio o cliente? ¿Con qué correo se registró en inCruises?\n\n¡Gracias!`+(miNombreCorto()?"\n\n*"+miNombreCorto()+"*":"");
     waIr("https://wa.me/"+(pw.length>=8?pw:"")+"?text="+encodeURIComponent(t));return}
+  if(k==="ed"){icEditar(u,ap=>{if(ap)shHechos[u]="ok";try{renderEquipo()}catch(e){}});return}
   if(k==="rev"&&!confirmar2(bt))return;bt.disabled=true;
   try{await store.db.doc("aprob/"+u).set({ok:k==="ok",por:store.uid,t:Date.now()});shHechos[u]=k==="ok"?"ok":"rev";toast(k==="ok"?"✅ Listo, se queda":"⏳ Pasa a revisión en unos minutos");try{renderEquipo()}catch(e){}}
   catch(e){bt.disabled=false;toast("No se pudo guardar ("+errCod(e)+")")}})}
+// 11 nov: el admin corrige el correo/WhatsApp de inCruises de una cuenta (tarjeta de aprobadas sin inCruises y Por aprobar).
+function icEditar(u,fin){const x=(socios||[]).find(y=>y.uid===u)||(mios||[]).find(y=>y.uid===u);if(!x||!isAdmin)return;const r=x.registro||{};
+  openSheet(`<p class="eyebrow">DATOS DE INCRUISES</p><h3 style="margin:4px 0 6px">✏️ ${esc(r.nombre||"")}</h3><p class="small muted" style="margin:0 0 10px">Ponga el correo y el WhatsApp con los que está registrado en inCruises.</p>
+   <div class="field"><label for="icE">Correo de inCruises</label><input class="inp" id="icE" type="email" inputmode="email" value="${esc(r.correo||x.email||"")}"></div>
+   <div class="field"><label for="icW">WhatsApp (con código de país)</label><input class="inp" id="icW" type="tel" inputmode="tel" value="${esc(String(r.whatsapp||"").replace(/\D/g,""))}"></div>
+   <p class="small" id="icErr" style="color:var(--bad)" hidden></p>
+   <button class="btn" id="icOk" style="width:100%">✅ Guardar y aprobar</button><button class="btn ghost" id="icSolo" style="width:100%">Solo guardar (que el sistema lo busque)</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
+   const go2=async ap=>{const e=$("#icE").value.trim().toLowerCase(),w=$("#icW").value.replace(/\D/g,""),er=$("#icErr");
+     if(e&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)){er.textContent="Revise el correo.";er.hidden=false;return}if(w&&w.length<8){er.textContent="El WhatsApp está incompleto.";er.hidden=false;return}
+     $("#icOk").disabled=$("#icSolo").disabled=true;
+     try{const reg={};if(e)reg.correo=e;if(w)reg.whatsapp=w.slice(0,15);await store.db.doc("users/"+u).set(Object.assign({registro:reg},ap?{}:{apRe:Date.now()}),{merge:true});Object.assign(x.registro||(x.registro={}),reg);
+       if(ap)await store.db.doc("aprob/"+u).set({ok:true,por:store.uid,t:Date.now()});closeSheet();if(fin)fin(ap);toast(ap?"✅ Guardado y aprobado · se aplica en unos minutos":"Guardado · el sistema lo revisa en unos minutos")}
+     catch(e2){$("#icOk").disabled=$("#icSolo").disabled=false;toast("No se pudo guardar ("+errCod(e2)+")")}};
+   $("#icOk").onclick=()=>go2(true);$("#icSolo").onclick=()=>go2(false)})}
 // admin
 function solPend(){return (socios||[]).flatMap(x=>Object.values(x.sol||{}).filter(s=>s.st==="p").map(s=>({x,s}))).sort((a,b)=>a.s.t-b.s.t)}
 function solAdminCard(){if(!isAdmin)return"";const L=solPend();if(!L.length)return"";
@@ -3205,7 +3220,7 @@ function invPlan(cb){openSheet(`<p class="eyebrow">INVITAR</p><h2 style="margin:
     try{await store.db.doc("invitaciones/"+id).set({by:store.uid,byNombre:miRegistro().nombre||"",plan,gen:1,t:Date.now()})}catch(e){b.disabled=false;toast("No se pudo crear el enlace ("+errCod(e)+")");return}
     cb(miEnlace()+"&b="+id,plan)})})}
 function invPlanHoja(){if(!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}invPlan((u,plan)=>{const yo=miNombreCorto()||"";
-  const t=`¡Hola! 👋\n\nBienvenido/a a *Action Leaders+*, la app de nuestro equipo.\n\nAhí tiene su Plan de Inicio Rápido, su rutina, la academia y todo para arrancar con todo.\n\nRegístrese con este enlace (es solo para usted):\n${u}`+(yo?"\n\n*"+yo+"*":"");
+  const t=`¡Hola! 👋\n\nBienvenido/a a *Action Leaders+*, la app de nuestro equipo.\n\nAhí tiene su Plan de Inicio Rápido, su rutina, la academia y todo para arrancar con todo.\n\nRegístrese con este enlace (es solo para usted):\n${u}\n\n📌 Regístrese con el mismo correo y WhatsApp que usó en inCruises.`+(yo?"\n\n*"+yo+"*":"");
   openSheet(`<p class="eyebrow">ENLACE ${plan==="Premium"?"★ PREMIUM":plan.toUpperCase()}</p><h2 style="margin:2px 0 8px">🔗 Listo, mándeselo</h2><p class="small muted" style="margin:0">Es para una sola persona. Para otro socio, cree otro enlace.</p><div class="card" style="word-break:break-all;font-weight:600">${esc(u)}</div>
    <button class="btn" id="ipWa" style="width:100%;background:#25D366;color:#fff">💬 Mandar por WhatsApp</button><button class="btn ghost" id="ipCp" style="width:100%">Copiar enlace</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
    $("#ipWa").onclick=()=>{location.href="https://wa.me/?text="+encodeURIComponent(t)};$("#ipCp").onclick=async()=>{try{await navigator.clipboard.writeText(u);toast("Enlace copiado")}catch(x){toast("No se pudo copiar")}}})})}
@@ -4759,7 +4774,7 @@ function snvBind(b){const d=b.querySelector("#snvCard");if(!d)return;d.ontoggle=
   d.querySelectorAll("[data-snl]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snl);if(!f)return;let lk="";
     {const plan=/premium/i.test(f.a.paquete||"")?"Premium":/starter/i.test(f.a.paquete||"")?"Starter":"Classic",id=Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4);
       try{await store.db.doc("invitaciones/"+id).set({by:store.uid,byNombre:miRegistro().nombre||"",nombre:bonitoN(f.a.socio),plan,gen:1,t:Date.now()});lk=miEnlace()+"&b="+id}catch(e){toast("No se pudo crear el enlace ("+errCod(e)+")");return}}
-    const t=f.inc?`¡Hola, ${pn(f.a.socio)}! 👋\n\nVi que ya entró a la app *Action Leaders+*, pero le falta terminar su registro.\n\n👉 Entre con este enlace y complete sus datos (toma 1 minuto):\n${lk}\n\nAsí empieza su Plan de Inicio Rápido. Cualquier duda, aquí estoy. 💪`:`¡Hola, ${pn(f.a.socio)}! 🎉\n\nBienvenido/a al equipo. Para empezar con todo, descargue nuestra app *Action Leaders+*: ahí tiene su Plan de Inicio Rápido, su rutina y todas las herramientas.\n\n👉 Regístrese aquí con mi enlace:\n${lk}\n\nCualquier duda, aquí estoy. 💪`;
+    const t=f.inc?`¡Hola, ${pn(f.a.socio)}! 👋\n\nVi que ya entró a la app *Action Leaders+*, pero le falta terminar su registro.\n\n👉 Entre con este enlace y complete sus datos (toma 1 minuto):\n${lk}\n\n📌 Regístrese con el mismo correo y WhatsApp que usó en inCruises.\n\nAsí empieza su Plan de Inicio Rápido. Cualquier duda, aquí estoy. 💪`:`¡Hola, ${pn(f.a.socio)}! 🎉\n\nBienvenido/a al equipo. Para empezar con todo, descargue nuestra app *Action Leaders+*: ahí tiene su Plan de Inicio Rápido, su rutina y todas las herramientas.\n\n👉 Regístrese aquí con mi enlace:\n${lk}\n\n📌 Regístrese con el mismo correo y WhatsApp que usó en inCruises.\n\nCualquier duda, aquí estoy. 💪`;
     location.href="https://wa.me/?text="+encodeURIComponent(firma(t))});
   d.querySelectorAll("[data-snp]").forEach(x=>x.onclick=async()=>{const f=de(x.dataset.snp);if(!f||!f.pu)return;const w=waSocio(f.pu)||await dtWa(f.pu.uid);
     const t=`¡Hola, ${pn((f.pu.registro||{}).nombre||"")}! 🙌\n\nFelicidades por la activación de ${pn(f.a.socio)}. 🎉\n\n${f.inc?"Veo que entró a la app Action Leaders+ pero no ha terminado su registro. ¿Le ayuda a terminarlo?":"Veo que todavía no ha entrado a la app Action Leaders+.\n\n¿Va a hacer el negocio o solo entró como cliente? Márquelo en la app, en Equipo → Socios nuevos. Si va a trabajar, mándele su enlace para que empiece su Plan de Inicio Rápido."}\n\nSi necesita apoyo, aquí estoy. 💪`;
@@ -4837,7 +4852,7 @@ Es un gusto tenerle en el equipo. 💪
 👉 Su primer paso: entre a nuestra app
 ${lk||"https://actionleadersplus.com"}
 
-Entre con Google, complete su registro y vea su video de bienvenida.
+Entre con Google, complete su registro y use el mismo correo y WhatsApp que dio en inCruises y vea su video de bienvenida.
 
 ¡Hasta que funcione! 🚀
 ${pat}`;
@@ -7136,9 +7151,10 @@ function renderWel(){const el=$("#wel");
      ${invData&&invData.nombre?`<div class="small" style="background:var(--surface-2);border-radius:12px;padding:8px 12px;text-align:left">Esta invitación es para <b>${esc(invData.nombre)}</b>. <button type="button" id="rgNoSoy" style="border:0;background:none;color:var(--brand);font:inherit;font-weight:700;padding:0;text-decoration:underline">No soy yo</button></div>`:""}
      <form id="regF" style="display:flex;flex-direction:column;gap:10px;text-align:left" novalidate>
       <div class="field"><label for="rg_nombre">Nombre completo</label><input class="inp" id="rg_nombre" autocomplete="name" value="${esc(R0.nombre||(invData&&invData.nombre)||(fbUser&&fbUser.displayName)||"")}"></div>
+      <div class="field"><label for="rg_ic">Correo con el que se registró en inCruises <span style="color:var(--bad)">*</span></label><input class="inp" id="rg_ic" type="email" inputmode="email" autocomplete="email" value="${esc(R0.correo||(fbUser&&fbUser.email)||"")}"><span class="small muted">Debe ser el mismo de inCruises para activar su cuenta.</span></div>
       ${invSponsor?`<div class="card" style="text-align:left;gap:4px;padding:12px 14px"><span class="small muted">Tu patrocinador</span><b style="font-weight:600">${esc(invSponsor.nombre||"Tu patrocinador")} ✓</b>${invData&&invData.plan?`<span class="small muted" style="margin-top:4px">Tu paquete</span><b style="font-weight:600">${esc(invData.plan)} ✓</b>`:""}</div>`:`<div class="field"><label for="rg_patro">Nombre de tu patrocinador</label><input class="inp" id="rg_patro" value=""></div>`}
       ${invData&&invData.plan?`<div class="field"><label>Plan de inicio</label><div class="inp" style="font-weight:700">${invData.plan==="Premium"?"★ Premium":esc(invData.plan)}</div></div>`:""}
-      ${(()=>{const pw=invData&&invData.wa?splitPhone("+"+String(invData.wa).replace(/\D/g,"")):null,cc0=pw&&pw.cc?pw.cc:(LS.get("lastCC")||"504");return `<div class="field"><label for="rg_wa">${pw?"¿Este es su WhatsApp?":"Tu WhatsApp"} <span style="color:var(--bad)">*</span></label><div class="row" style="gap:8px"><select class="inp" id="rg_cc" style="max-width:110px">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===cc0?"selected":""}>+${k}</option>`).join("")}</select><input class="inp grow" id="rg_wa" type="tel" placeholder="Para que tu patrocinador te escriba" required inputmode="tel" autocomplete="tel-national" style="min-width:0" value="${pw?esc(pw.num):""}"></div>${pw?`<span class="small muted">Revise que sea su número. Si no lo es, corríjalo aquí.</span>`:""}</div>`})()}
+      ${(()=>{const pw=invData&&invData.wa?splitPhone("+"+String(invData.wa).replace(/\D/g,"")):null,cc0=pw&&pw.cc?pw.cc:(LS.get("lastCC")||"504");return `<div class="field"><label for="rg_wa">${pw?"¿Este es su WhatsApp?":"Tu WhatsApp"} <span style="color:var(--bad)">*</span></label><div class="row" style="gap:8px"><select class="inp" id="rg_cc" style="max-width:110px">${PAISES.map(([pn,k])=>`<option value="${k}" ${k===cc0?"selected":""}>+${k}</option>`).join("")}</select><input class="inp grow" id="rg_wa" type="tel" placeholder="Para que tu patrocinador te escriba" required inputmode="tel" autocomplete="tel-national" style="min-width:0" value="${pw?esc(pw.num):""}"></div><span class="small muted">${pw?"Revise que sea su número. Si no lo es, corríjalo aquí. ":""}Debe ser el mismo número que dio en inCruises.</span></div>`})()}
       <p class="small" id="regErr" style="color:var(--bad)" hidden></p>
       <button class="btn pill dark" id="regOk" type="submit">${invSponsor?"Entrar al equipo":"Enviar mi registro"}</button></form></div>`);
     const F=$("#regF");if(F)F.onsubmit=async ev=>{ev.preventDefault();const g=k=>$("#rg_"+k).value.trim(),err=$("#regErr");
@@ -7146,7 +7162,7 @@ function renderWel(){const el=$("#wel");
       if(invSponsor){let sl=[];try{const fd=await store.db.doc("fotos/"+invSponsor.uid).get();if(fd.exists&&Array.isArray(fd.data().linea))sl=fd.data().linea}catch(x){}d.linea=[invSponsor.uid].concat(sl.filter(u=>u&&u!==invSponsor.uid&&u!==store.uid)).slice(0,60)}
       if(invData){d.invId=invData.id;d.planPor="patrocinador";if(invData.pais)d.pais=invData.pais;if(invData.wa)d.whatsapp=String(invData.wa).replace(/\D/g,"").slice(0,15)}
       {const we=$("#rg_wa");if(we&&we.value.trim()){const sp=splitPhone(we.value),n=sp.cc?sp.cc+sp.num:waNum(we.value,$("#rg_cc").value);if(n.length>=8){d.whatsapp=n.slice(0,15);d.waOk=true}}}try{d.inv=(localStorage.getItem("alp:inv")||"").slice(0,60)}catch(x){};
-      const lab={nombre:"Nombre completo",patrocinador:"Patrocinador"};if(!d.plan)d.plan="";
+      const lab={nombre:"Nombre completo",patrocinador:"Patrocinador"};if(!d.plan)d.plan="";{const ic=g2("ic").toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(ic)){err.textContent="Escriba el correo con el que se registró en inCruises.";err.hidden=false;const e=$("#rg_ic");if(e)e.focus();return}d.correo=ic}
       for(const k in lab)if(!d[k]){err.textContent="Completa: "+lab[k];err.hidden=false;return}
       if(String(d.whatsapp||"").replace(/\D/g,"").length<8){err.textContent="Escribe tu número de WhatsApp completo para que tu patrocinador pueda escribirte.";err.hidden=false;const we=$("#rg_wa");if(we)we.focus();return}
       if(telAviso(d.whatsapp)){err.textContent=telAviso(d.whatsapp);err.hidden=false;const cs=$("#rg_cc");if(cs){cs.focus();cs.style.outline="2px solid var(--bad)"}return}
@@ -7872,10 +7888,10 @@ function aprCard(b){if(!b||!store.uid)return;const L=aprLista(),n=L.filter(x=>!a
   b.prepend(el);const v=el.querySelector("#aprVer");if(v)v.onclick=aprHoja}
 async function aprAbrir(){go("equipo");try{eqTab="mios";setSeg("eqSeg","mios")}catch(e){}try{if(isAdmin&&!socios)await loadSocios(true);if(mios===null)await loadMios(true)}catch(e){}try{renderEquipo()}catch(e){}aprHoja()}
 function aprHoja(){const L=aprLista();openSheet(`<p class="eyebrow">CUENTAS NUEVAS</p><h3 style="margin:4px 0 6px">📝 Por aprobar</h3><p class="muted small" style="margin:0 0 12px">Apruebe solo a quien usted conoce y se asoció o es su cliente. Al rechazar, la persona no puede usar la app.</p>
-  ${L.length?L.map(x=>{const r=x.registro||{},h=aprHechos[x.uid],w=String(r.whatsapp||"").replace(/\D/g,"");return `<div class="aprR" data-u="${x.uid}"><div><b>${esc(r.nombre||"")}</b><span class="small muted">${esc(x.email||r.correo||"")}${w?" · +"+esc(w):""}${isAdmin&&r.patrocinador?"<br>Patrocinador: "+esc(r.patrocinador):""}${x.apX==="inv"?"<br>⚠️ Entró con invitación y en 3 días no apareció en inCruises":""}</span></div>
-   ${h?`<span class="chip ${h==="ok"?"c-good":"c-warn"}">${h==="ok"?"✓ Aprobado":"Rechazado"}</span>`:`<div class="aprB"><button class="btn sm" data-ap="ok">✅ Aprobar</button><button class="btn sm ghost" data-ap="no">Rechazar</button></div>`}</div>`}).join(""):`<p class="muted">No hay cuentas esperando aprobación.</p>`}
+  ${L.length?L.map(x=>{const r=x.registro||{},h=aprHechos[x.uid],w=String(r.whatsapp||"").replace(/\D/g,"");return `<div class="aprR" data-u="${x.uid}"><div><b>${esc(r.nombre||"")}</b><span class="small muted">${esc(x.email||r.correo||"")}${w?" · +"+esc(w):""}${isAdmin&&r.patrocinador?"<br>Patrocinador: "+esc(r.patrocinador):""}${x.apX==="inv"?"<br>⚠️ Entró con invitación y en 3 días no apareció en inCruises":x.apX==="dup"?"<br>⚠️ Usa el correo o WhatsApp de inCruises de OTRA cuenta":""}</span></div>
+   ${h?`<span class="chip ${h==="ok"?"c-good":"c-warn"}">${h==="ok"?"✓ Aprobado":"Rechazado"}</span>`:`<div class="aprB"><button class="btn sm" data-ap="ok">✅ Aprobar</button>${isAdmin?`<button class="btn sm ghost" data-ap="ed">✏️ Datos</button>`:""}<button class="btn sm ghost" data-ap="no">Rechazar</button></div>`}</div>`}).join(""):`<p class="muted">No hay cuentas esperando aprobación.</p>`}
   <p class="small muted" style="margin:12px 0 0">La aprobación se activa en unos minutos.</p><button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{
-  document.querySelectorAll(".aprR [data-ap]").forEach(bt=>bt.onclick=async()=>{const u=bt.closest(".aprR").dataset.u,ok=bt.dataset.ap==="ok";
+  document.querySelectorAll(".aprR [data-ap]").forEach(bt=>bt.onclick=async()=>{const u=bt.closest(".aprR").dataset.u,ok=bt.dataset.ap==="ok";if(bt.dataset.ap==="ed"){icEditar(u,ap=>{if(ap)aprHechos[u]="ok";aprHoja()});return}
     if(!ok&&!confirmar2(bt))return;bt.disabled=true;
     try{await store.db.doc("aprob/"+u).set({ok,por:store.uid,t:Date.now()});aprHechos[u]=ok?"ok":"no";toast(ok?"✅ Aprobado. Se activa en unos minutos":"Cuenta rechazada");aprHoja();try{renderEquipo()}catch(e){}}
     catch(e){bt.disabled=false;toast("No se pudo guardar ("+errCod(e)+")")}})})}
@@ -8048,7 +8064,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261111173845";var busy=false,pend=null;
+(function(){var V="20261111175326";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

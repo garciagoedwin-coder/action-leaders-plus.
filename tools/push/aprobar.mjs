@@ -64,11 +64,13 @@ async function main() {
   const _n = new Date(), hora = FULL || (_n.getUTCHours() % 6 === 0 && _n.getUTCMinutes() < 10); // cada 6 h: todas las cuentas
   // Aprobaciones manuales (patrocinador o admin): aprob/{uid} {ok, por, t}
   const M = (await db.collection("aprob").get()).docs;
+  // 11 nov: el admin corrigió el correo/WhatsApp de inCruises («Solo guardar») → users.apRe; se revisa en esta corrida.
+  const RE = new Set((await db.collection("users").where("apRe", ">", 0).get()).docs.map(d => d.id));
   const man = new Map(M.map(d => [d.id, d.data()]));
   // Cada 10 min solo se leen las cuentas sin veredicto o con aprobación manual nueva; cada 6 horas, todas (miembros y re-chequeo).
   // nr = cuenta sin registro (ap=false). Si volvió a entrar en la última hora, se revisa: puede que se esté registrando ahora.
   const reciente = a => Date.now() - Date.parse(a.metadata.lastRefreshTime || a.metadata.lastSignInTime || 0) < 3600e3;
-  const leer = A.filter(a => { const c = a.customClaims || {}; return c.ap === undefined || c.pv || man.has(a.uid) || (c.ap === false && c.nr && reciente(a)); });
+  const leer = A.filter(a => { const c = a.customClaims || {}; return c.ap === undefined || c.pv || man.has(a.uid) || RE.has(a.uid) || (c.ap === false && c.nr && reciente(a)); });
   let docs;
   if (GRAND || hora) docs = (await db.collection("users").get()).docs;
   else docs = leer.length ? await db.getAll(...leer.map(a => db.doc("users/" + a.uid))) : [];
@@ -77,7 +79,12 @@ async function main() {
   const mem = (GRAND || hora) ? miembros(team, [...U.values()]) : null;
   const ADM_MAIL = ["garciagoedwin@gmail.com", "actionleadersoficial@gmail.com", "edwing.go@gmail.com"];
   const ADM = A.filter(a => ADM_MAIL.includes(String(a.email || "").toLowerCase())).map(a => a.uid);
-  let nAp = 0, nAuto = 0, nMan = 0, nNo = 0, nPend = 0, nSis = 0, nCl = 0, nPlan = 0, nInv = 0, nConf = 0, nVen = 0, nSinH = 0; const avisos = [], aprobados = [], vencidos = [], nuevosSH = []; let nRev = 0;
+  let nAp = 0, nAuto = 0, nMan = 0, nNo = 0, nPend = 0, nSis = 0, nCl = 0, nPlan = 0, nInv = 0, nConf = 0, nVen = 0, nSinH = 0; const avisos = [], aprobados = [], vencidos = [], nuevosSH = []; let nRev = 0, nDup = 0; const dupU = new Set();
+  const okU = new Set(A.filter(x => (x.customClaims || {}).ap === true).map(x => x.uid));
+  const dupDe = async (a, u) => { const r = u.registro || {}, e = String(r.correo || u.email || "").trim().toLowerCase(), w = String(r.whatsapp || "").replace(/\D/g, ""), Q = [];
+    if (e.includes("@")) { Q.push(db.collection("users").where("registro.correo", "==", e).limit(5).get(), db.collection("users").where("email", "==", e).limit(5).get()); }
+    if (w.length >= 8) Q.push(db.collection("users").where("registro.whatsapp", "==", w).limit(5).get());
+    const R = await Promise.all(Q).catch(() => []); return R.some(q => q.docs.some(d => d.id !== a.uid && okU.has(d.id))); };
   const PV_MS = 72 * 3600e3; // 11 nov (Edwin): entrada por invitación con paquete = provisional 72 h hasta aparecer en inCruises
   // 10 nov (Edwin): el paquete real sale del correo de activación de inCruises (team.json activaciones[].paquete), reconocido por la huella del correo o WhatsApp.
   // Manda sobre lo que puso el patrocinador; no toca lo que cambió un admin (planPor "admin") ni lo del reporte mensual (planPor "reporte").
@@ -88,6 +95,8 @@ async function main() {
     const c = a.customClaims || {}, u = U.get(a.uid); let ap = c.ap, sis = !!c.sis, apE = null, pv = c.pv || 0, rv = !!c.rv, apX;
     const reg = !!(u && u.registro && u.registro.nombre), vieja = Date.now() - Date.parse(a.metadata.creationTime) > 2 * 3600e3;
     const enH = !!(u && [a.emailVerified ? ahKe(a.email) : null, ...claveDe(u)].filter(Boolean).some(x => H.has(x)));
+    // Solo por datos que escribió la persona (no por su correo de Google verificado): si otra cuenta aprobada ya usa ese correo/WhatsApp → revisión.
+    const porCuenta = !!(a.emailVerified && H.has(ahKe(a.email)));
     // Provisional por invitación: se confirma al aparecer en inCruises; a las 72 h sin aparecer → revisión (solo un admin la reabre).
     // 11 nov: admin revisa una cuenta YA aprobada que no aparece en inCruises (tarjeta «Aprobadas sin inCruises»): ok → se queda; no → revisión.
     const m0 = man.get(a.uid), adm0 = !!(m0 && ADM.includes(m0.por)); let shOk = false;
@@ -104,6 +113,7 @@ async function main() {
       else if (m && m.ok === false) { ap = false; apE = "no"; nNo++; }
       else if (u && u.apE === "no") { ap = false; nNo++; }
       else if (reg && GRAND) { ap = true; apE = "ok"; }
+      else if (reg && enH && !porCuenta && await dupDe(a, u)) { ap = false; apE = "p"; apX = "dup"; nDup++; dupU.add(a.uid); if (!avisados[a.uid]) avisos.push(u); }
       else if (reg && enH) { ap = true; nAuto++; apE = "ok"; rv = false; apX = null; } /* con contraseña solo cuenta el correo ya confirmado */
       else if (reg && !rv) { const r = u.registro, sp = A.find(x => x.uid === r.patrocinadorUid);
         // Invitación con paquete del patrocinador (invitaciones/{invId}): acceso al instante, provisional.
@@ -119,11 +129,11 @@ async function main() {
     const nr = ap === false && !reg;
     const okA = !!c.okA || shOk;
     if (ap !== c.ap || sis !== !!c.sis || nr !== !!c.nr || pv !== (c.pv || 0) || rv !== !!c.rv || okA !== !!c.okA) { nCl++; if (!DRY) { const nc = { ...c, sis }; if (ap === undefined) delete nc.ap; else nc.ap = ap; if (nr) nc.nr = true; else delete nc.nr; if (pv) nc.pv = pv; else delete nc.pv; if (rv) nc.rv = true; else delete nc.rv; if (okA) nc.okA = true; else delete nc.okA; await auth.setCustomUserClaims(a.uid, nc); } }
-    if (u && !DRY && ((apE && u.apE !== apE) || (apX !== undefined && (u.apX || null) !== apX) || apSH !== undefined || apOkA)) await db.doc("users/" + a.uid).set({ ...(apE ? { apE, apT: Date.now() } : {}), ...(apX !== undefined ? { apX: apX || FieldValue.delete() } : {}), ...(apSH !== undefined ? { apSH: apSH || FieldValue.delete() } : {}), ...(apOkA ? { apOkA } : {}) }, { merge: true });
+    if (u && !DRY && ((apE && u.apE !== apE) || (apX !== undefined && (u.apX || null) !== apX) || apSH !== undefined || apOkA || u.apRe)) await db.doc("users/" + a.uid).set({ ...(u.apRe ? { apRe: FieldValue.delete() } : {}), ...(apE ? { apE, apT: Date.now() } : {}), ...(apX !== undefined ? { apX: apX || FieldValue.delete() } : {}), ...(apSH !== undefined ? { apSH: apSH || FieldValue.delete() } : {}), ...(apOkA ? { apOkA } : {}) }, { merge: true });
     if (u && reg && !["admin", "reporte"].includes(u.registro.planPor)) { const ks = [a.emailVerified ? ahKe(a.email) : null, ...claveDe(u)].filter(Boolean); const pq = ks.map(k => actK.get(k)).find(Boolean);
       if (pq && pq !== u.registro.plan) { nPlan++; if (!DRY) await db.doc("users/" + a.uid).set({ registro: { plan: pq, planPor: "inCruises", planCambio: new Date().toISOString() } }, { merge: true }); } }
   }
-  console.log("invitación", nInv, "confirmadas", nConf, "a revisión (72 h sin inCruises)", nVen, (GRAND || hora) ? "aprobadas sin huella de inCruises " + nSinH + " (nuevas " + nuevosSH.length + ")" : "", "pasadas a revisión por admin", nRev);
+  console.log("invitación", nInv, "confirmadas", nConf, "a revisión (72 h sin inCruises)", nVen, (GRAND || hora) ? "aprobadas sin huella de inCruises " + nSinH + " (nuevas " + nuevosSH.length + ")" : "", "pasadas a revisión por admin", nRev, "correo/WhatsApp de otra cuenta", nDup);
   console.log("cuentas", A.length, "docs", U.size, "aprobadas", nAp, "auto", nAuto, "manual", nMan, "rechazadas", nNo, "pendientes", nPend, "miembros", nSis, "claims cambiados", nCl, "planes corregidos", nPlan, DRY ? "(prueba)" : "");
   if (mem) { console.log("filas de liderazgo sin cuenta:", mem.sin.length); if (!DRY) await db.doc("team/sisU").set({ sin: mem.sin, n: mem.uids.size, t: Date.now() }); }
   if (DRY) return;
@@ -135,7 +145,7 @@ async function main() {
     await fcm.send({ token: p.tk, notification: { title, body }, webpush: { fcmOptions: { link: "https://actionleadersplus.com/?av=" + v }, notification: { icon: "https://actionleadersplus.com/icon-192.png" } } });
     await db.doc("push/" + uid).set({ h: [...(p.h || []), { t: Date.now(), ti: title, b: body, v }].slice(-30) }, { merge: true }); } catch (e) { console.log("push falló", e.code || "error"); } };
   for (const u of avisos) { const n = String((u.registro || {}).nombre || "Alguien").split(" ").slice(0, 2).join(" "), sp = (u.registro || {}).patrocinadorUid;
-    const t = "📝 " + n + " pide entrar a la app", b = "No reconocimos su correo ni su WhatsApp de inCruises. Toque para aprobarlo o rechazarlo.";
+    const t = "📝 " + n + " pide entrar a la app", b = dupU.has(u.uid) ? "Usa el correo o WhatsApp de inCruises de OTRA cuenta de la app. Revise antes de aprobarlo." : "No reconocimos su correo ni su WhatsApp de inCruises. Toque para aprobarlo o rechazarlo.";
     for (const id of new Set([...ADM, sp].filter(Boolean))) await env(id, t, b, "apr"); avisados[u.uid] = Date.now(); }
   for (const u of vencidos) { const n = String((u.registro || {}).nombre || "Alguien").split(" ").slice(0, 2).join(" "), sp = (u.registro || {}).patrocinadorUid;
     const t = "⚠️ " + n + " no aparece en inCruises", b = "Entró con invitación hace 3 días y no encontramos su correo ni su WhatsApp. Su cuenta pasó a revisión; solo un administrador puede reabrirla.";
