@@ -3562,8 +3562,10 @@ const CM_LLENO=[
 function cmPick(L,uid,cat){const k="cmV:"+(uid||"")+":"+cat;let i=parseInt(ahF((store.uid||"")+"|"+(uid||"")+"|"+TODAY+"|"+cat),16)%L.length;const last=LS.get(k);if(last===i&&L.length>1)i=(i+1)%L.length;LS.set(k,i);return L[i]}
 function constMsg(x){const n0=String(x.nombre||"").split(" ")[0],n=n0?n0.charAt(0).toUpperCase()+n0.slice(1):"",p=hoyPts(x),f=ROUTINE.length-p,r=+x.racha||0,url="https://actionleadersplus.com";
   let yo="";try{yo=String((miRegistro().nombre||"")||(fbUser&&fbUser.displayName)||"").trim().split(" ")[0]}catch(e){}if(!yo&&isAdmin)yo="Edwin";const firma=yo?`\n\n${yo}`:"";
-  if(p>=ROUTINE.length)return cmPick(CM_LLENO,x.uid,"l")(n,r>1?` y ya lleva *${r} días de racha*`:"")+firma;
-  if(p>0)return cmPick(CM_MEDIO,x.uid,"m")(n,url,p,f===1?"Solo le falta 1":"Le faltan "+f,r?` y mantiene su racha de ${r} ${r===1?"día":"días"} 🔥`:" y empieza su racha 🔥")+firma;
+  // 10 nov (Edwin): si su racha actual es menor que su mejor del mes, se habla de la mejor (no "1 día")
+  const mj=+x.mesMejor||0,baja=mj>r&&mj>1;
+  if(p>=ROUTINE.length)return cmPick(CM_LLENO,x.uid,"l")(n,baja?` y retoma su racha (su mejor este mes: *${mj} días* 🔥, ¡vamos a superarla!)`:r>1?` y ya lleva *${r} días de racha*`:"")+firma;
+  if(p>0)return cmPick(CM_MEDIO,x.uid,"m")(n,url,p,f===1?"Solo le falta 1":"Le faltan "+f,baja?` y retoma su racha (su mejor este mes: ${mj} días 🔥)`:r>1?` y mantiene su racha de ${r} días 🔥`:" y empieza su racha 🔥")+firma;
   return cmPick(CM_CERO,x.uid,"c")(n,url)+firma}
 const cwaHoy=()=>{const o=LS.get("cwaEnv")||{};return o.d===TODAY?o:{d:TODAY,u:{}}};
 const cwaMarca=(uid,tipo)=>{const o=cwaHoy();o.u[uid]=tipo;LS.set("cwaEnv",o);if(store.db)store.set("mensajes-"+TODAY,{d:TODAY,u:o.u}).catch(()=>{})};
@@ -7905,7 +7907,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261110200515";var busy=false,pend=null;
+(function(){var V="20261110232130";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
