@@ -124,7 +124,9 @@ def main():
     reg_cambio = est.get('registros_hash_app') != reg_h
     if os.environ.get('FORZAR') == '1': reg_cambio = True  # recalcular el ranking a mano (p. ej. cambió una regla)
     log('pendientes', len(pend), '· registros', len(regs), '(cambiaron)' if reg_cambio else '(sin cambios)', '· DRY' if DRY else '')
-    if not pend and not reg_cambio:
+    hoy_hn = time.strftime('%Y-%m-%d', time.gmtime(time.time() - 6 * 3600))
+    tl_dia = est.get('tl_dia') != hoy_hn  # 12 nov: el nivel Team Leader se recalcula al menos una vez al día (ventana de 30 días)
+    if not pend and not reg_cambio and not tl_dia:
         log('Nada nuevo'); return
     EVK = llave()
     import ahorro as A
@@ -222,6 +224,18 @@ def main():
                 if c and a.get('id'): args.append('%s|%s|%s' % (a['id'], c[0], c[1]))
             if args: py('tools/nuevos.py', 'add', *args)
             OUT['acts'] = len(nuevas)
+    # ---- pagos (para el nivel Team Leader): todos los correos de pago de la hoja; pagos.py ignora los repetidos ----
+    try:
+        pg = []
+        for r in correos:
+            if len(r) >= 5 and r[2].strip() == 'pago':
+                try: nm = (json.loads(r[4] or '{}').get('nombre') or '').strip()
+                except Exception: nm = ''
+                if nm and r[1].strip(): pg.append('%s|%s' % (nm.replace('|', ' '), r[1].strip()))
+        if pg: log(py('tools/pagos.py', 'add', *pg).strip().splitlines()[-1])
+        log(py('tools/tl.py').strip().splitlines()[0])
+    except Exception as e:
+        log('Team Leader: error', type(e).__name__)
     cambios = subprocess.run(['git', 'status', '--porcelain', 'data'], capture_output=True, text=True).stdout.strip()
     OUT['ahorro'] = int('data/ahorro.enc' in cambios)
     if DRY:
@@ -247,6 +261,10 @@ def main():
     hora = time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime())
     escribir([{'range': 'Correos!F%d:G%d' % (f, f), 'values': [[e, hora]]} for f, e in estados.items()])
     agregar('Salida!A:D', [[hora, t, tx, ''] for t, tx in salida])
+    if tl_dia:
+        k = list(est.keys())
+        if 'tl_dia' in k: escribir([{'range': 'Estado!B%d' % (k.index('tl_dia') + 2), 'values': [[hoy_hn]]}])
+        else: agregar('Estado!A:B', [['tl_dia', hoy_hn]])
     if reg_cambio:
         k = list(est.keys())
         if 'registros_hash_app' in k:
