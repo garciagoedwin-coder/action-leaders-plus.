@@ -7895,10 +7895,14 @@ async function apClaims(force){try{if(window.__T&&window.__T.claims)return windo
 async function apRevisar(force){const c=await apClaims(force),e=regDoc&&regDoc.apE;
   if(c.ap===true){if(apTm){clearInterval(apTm);apTm=null}if(apVisto)location.reload();return}
   if(c.ap===false||e==="p"||e==="no")apMostrar(e==="no"?"no":(c.nr&&e!=="p")?"v":"p");
-  if(!apTm)apTm=setInterval(()=>apRevisar(true).catch(()=>{}),(c.ap===false||apVisto)?60e3:180e3)}
+  // 12 nov: la aprobación es instantánea (Cloud Functions) → con la pantalla de revisión abierta, revisa cada 5 s los primeros 3 min.
+  if(apVisto&&!window._apF){window._apF=Date.now();if(apTm){clearInterval(apTm);apTm=null}}
+  const rapido=window._apF&&Date.now()-window._apF<180e3;
+  if(apTm&&!rapido&&window._apR){clearInterval(apTm);apTm=null}
+  if(!apTm){apTm=setInterval(()=>apRevisar(true).catch(()=>{}),rapido?5e3:(c.ap===false||apVisto)?60e3:180e3);window._apR=rapido}}
 function apMostrar(k){let d=$("#apGate");if(!d){d=document.createElement("div");d.id="apGate";document.body.appendChild(d)}apVisto=true;document.body.style.overflow="hidden";
   const r=(regDoc&&regDoc.registro)||{},sp=String(r.patrocinador||"").split(" ").slice(0,2).join(" ");
-  d.innerHTML=k==="v"?`<div class="apC"><div class="apI">🔎</div><h2>Estamos verificando su cuenta</h2><p>Tarda unos minutos. Cuando termine, la app se abre sola.</p><p class="small">Puede dejar esta pantalla abierta o volver más tarde.</p><button class="btn" id="apRe">🔄 Revisar de nuevo</button><button class="btn ghost" id="apOut">Salir</button></div>`:k==="no"?`<div class="apC"><div class="apI">🔒</div><h2>Su cuenta no fue aprobada</h2><p>Si cree que es un error, hable con ${sp?"<b>"+esc(sp)+"</b>, su patrocinador":"su patrocinador"} para que la revise.</p><button class="btn ghost" id="apOut">Salir</button></div>`
+  d.innerHTML=k==="v"?`<div class="apC"><div class="apI">🔎</div><h2>Estamos verificando su cuenta</h2><p>Tarda unos segundos. Cuando termine, la app se abre sola.</p><p class="small">Puede dejar esta pantalla abierta o volver más tarde.</p><button class="btn" id="apRe">🔄 Revisar de nuevo</button><button class="btn ghost" id="apOut">Salir</button></div>`:k==="no"?`<div class="apC"><div class="apI">🔒</div><h2>Su cuenta no fue aprobada</h2><p>Si cree que es un error, hable con ${sp?"<b>"+esc(sp)+"</b>, su patrocinador":"su patrocinador"} para que la revise.</p><button class="btn ghost" id="apOut">Salir</button></div>`
   :`<div class="apC"><div class="apI">⏳</div><h2>Su cuenta está en revisión</h2>${regDoc&&regDoc.apX==="sh"?`<p>No encontramos su correo en inCruises. Escriba el correo con el que se registró en inCruises y la revisamos en unos minutos.</p><input class="inp" id="apIc" type="email" inputmode="email" value="${esc(((regDoc.registro||{}).correo)||(fbUser&&fbUser.email)||"")}" style="width:100%;margin:6px 0"><button class="btn" id="apIcOk">Guardar mi correo</button>`:""}<p>${regDoc&&regDoc.apX==="sh"?"":regDoc&&regDoc.apX==="inv"?"No encontramos su registro en inCruises. Un administrador la revisará pronto.":"No encontramos su correo ni su WhatsApp en inCruises. "+(sp?"<b>"+esc(sp)+"</b>, su patrocinador,":"Su patrocinador")+" o el administrador la aprobarán pronto."}</p><p class="small">${regDoc&&regDoc.apX==="sh"?"Cuando la confirmemos, la app se abre sola.":"Cuando la aprueben, la app se abre sola. No necesita hacer nada más."}</p><button class="btn" id="apRe">🔄 Revisar de nuevo</button><button class="btn ghost" id="apOut">Salir</button></div>`;
   {const ib=d.querySelector("#apIcOk");if(ib)ib.onclick=async()=>{ib.disabled=true;try{await icMiGuardar(d.querySelector("#apIc").value);ib.textContent="✅ Recibido · la app se abre sola al confirmarlo"}catch(e){ib.disabled=false;toast(e&&e.code==="correo"?"Revise el correo":"No se pudo guardar ("+errCod(e)+")")}}}
   const re=d.querySelector("#apRe");if(re)re.onclick=async()=>{re.disabled=true;re.textContent="Revisando…";await apRevisar(true).catch(()=>{});if($("#apRe")){re.disabled=false;re.textContent="🔄 Revisar de nuevo";toast("Todavía está en revisión")}};
@@ -8086,7 +8090,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261111224111";var busy=false,pend=null;
+(function(){var V="20261112010640";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
