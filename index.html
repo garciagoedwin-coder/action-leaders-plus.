@@ -2444,55 +2444,124 @@ const certRgTx=i=>{const n=(RANGOS[i]||{}).n||"";return (CERT_RG[n]||n).toUpperC
 const certEsEdwin=n=>sameN(n||"","Edwin Garcia Go")||sameN(n||"","Edwin García Go");
 function certMesTx(d){d=d||new Date();return MESES_ES_C[d.getMonth()].toUpperCase()+" "+d.getFullYear()}
 const MESES_ES_C=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-async function certCanvas(o){await certFonts();const S=300,W=5.5*S,H=8.5*S,pt=S/72,px=S/96,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
+// 12 nov (Edwin): reconocimientos por nivel/rango. Llaves: tl md smd rd nd id ed bod. [acento, claro, muy claro, rgb]
+const RECO_K=["tl","md","smd","rd","nd","id","ed","bod"];
+const RECO_AC={tl:["#2AC1F1","#7FE0FF","#C9F3FF","42,193,241"],md:["#22C55E","#86EFAC","#DCFCE7","34,197,94"],smd:["#3B82F6","#93C5FD","#DBEAFE","59,130,246"],rd:["#F97316","#FDBA74","#FFEDD5","249,115,22"],nd:["#E11D48","#FDA4AF","#FFE4E6","225,29,72"],id:["#9333EA","#D8B4FE","#F3E8FF","147,51,234"],ed:["#9CA3AF","#E5E7EB","#FFFFFF","156,163,175"],bod:["#EAB308","#FDE047","#FEF9C3","234,179,8"]};
+const RECO_T={tl:"TEAM LEADER",md:"MARKETING DIRECTOR",smd:"SENIOR MARKETING DIRECTOR",rd:"REGIONAL DIRECTOR",nd:"NATIONAL DIRECTOR",id:"INTERNATIONAL DIRECTOR",ed:"EXECUTIVE DIRECTOR",bod:"BOARD OF DIRECTORS"};
+const RECO_N={tl:"Team Leader",md:"Marketing Director",smd:"Senior Marketing Director",rd:"Regional Director",nd:"National Director",id:"International Director",ed:"Executive Director",bod:"Board of Directors"};
+const recoRk=i=>i===1?"tl":i>=2&&i<=8?RECO_K[i-1]:null;
+async function certCanvas(o){await certFonts();const rk=o.rk||"tl",AC=RECO_AC[rk]||RECO_AC.tl;const S=300,W=5.5*S,H=8.5*S,pt=S/72,px=S/96,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
   let gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,"#060607");gr.addColorStop(.6,"#121316");gr.addColorStop(1,"#1a1b1f");g.fillStyle=gr;g.fillRect(0,0,W,H);
-  g.save();g.translate(W/2,H*.3);g.scale(1,(H*.28)/(W*.6));const rgd=g.createRadialGradient(0,0,0,0,0,W*.6);rgd.addColorStop(0,"rgba(214,176,92,.10)");rgd.addColorStop(.7,"rgba(214,176,92,0)");g.fillStyle=rgd;g.fillRect(-W,-W*2,W*2,W*4);g.restore();
+  g.save();g.translate(W/2,H*.3);g.scale(1,(H*.28)/(W*.6));const rgd=g.createRadialGradient(0,0,0,0,0,W*.6);rgd.addColorStop(0,`rgba(${AC[3]},.13)`);rgd.addColorStop(.7,`rgba(${AC[3]},0)`);g.fillStyle=rgd;g.fillRect(-W,-W*2,W*2,W*4);g.restore();
   g.save();g.strokeStyle="rgba(255,255,255,.018)";g.lineWidth=2*px;for(let k=0;k<W+H;k+=9*px){g.beginPath();g.moveTo(k,0);g.lineTo(k-H,H);g.stroke()}g.restore();
-  const fi=.19*S;g.strokeStyle="#C9A55A";g.lineWidth=1.2*px;g.strokeRect(fi,fi,W-2*fi,H-2*fi);g.strokeStyle="rgba(201,165,90,.45)";g.lineWidth=.6*px;g.strokeRect(fi+3*px,fi+3*px,W-2*fi-6*px,H-2*fi-6*px);
-  const ci=.15*S,cs=.32*S,ct=4*px;g.fillStyle="#E2C27A";[[ci,ci,1,1],[W-ci,ci,-1,1],[ci,H-ci,1,-1],[W-ci,H-ci,-1,-1]].forEach(([x,y,sx,sy])=>{g.fillRect(sx>0?x:x-cs,sy>0?y:y-ct,cs,ct);g.fillRect(sx>0?x:x-ct,sy>0?y:y-cs,ct,cs)});
+  const fi=.19*S;g.strokeStyle=AC[0];g.lineWidth=1.2*px;g.strokeRect(fi,fi,W-2*fi,H-2*fi);g.strokeStyle=`rgba(${AC[3]},.45)`;g.lineWidth=.6*px;g.strokeRect(fi+3*px,fi+3*px,W-2*fi-6*px,H-2*fi-6*px);
+  const ci=.15*S,cs=.32*S,ct=4*px;g.fillStyle=AC[1];[[ci,ci,1,1],[W-ci,ci,-1,1],[ci,H-ci,1,-1],[W-ci,H-ci,-1,-1]].forEach(([x,y,sx,sy])=>{g.fillRect(sx>0?x:x-cs,sy>0?y:y-ct,cs,ct);g.fillRect(sx>0?x:x-ct,sy>0?y:y-cs,ct,cs)});
   const tx=(t,cy,font,color,em,cx,mw)=>{cx=cx==null?W/2:cx;g.font=font;g.fillStyle=color;g.textBaseline="middle";const fs=parseFloat(font.match(/([\d.]+)px/)[1]),sp=(em||0)*fs,ch=[...String(t)];
     if(!sp){g.textAlign="center";g.fillText(t,cx,cy);return}g.textAlign="left";const ws=ch.map(c=>g.measureText(c).width),tw=ws.reduce((a,b)=>a+b,0)+sp*(ch.length-1);let x=cx-tw/2;ch.forEach((c,i)=>{g.fillText(c,x,cy);x+=ws[i]+sp})};
   const fit=(t,f,max,min,mw)=>{let z=max;g.font=f.replace("{s}",z);while(g.measureText(t).width>mw&&z>min){z-=1;g.font=f.replace("{s}",z)}return f.replace("{s}",z)};
   const diam=(cx,cy,sz,col)=>{g.save();g.translate(cx,cy);g.rotate(Math.PI/4);g.fillStyle=col;g.fillRect(-sz/2,-sz/2,sz,sz);g.restore()};
   const linea=(x1,x2,cy,col,w)=>{const l=g.createLinearGradient(x1,0,x2,0);l.addColorStop(0,"rgba(0,0,0,0)");l.addColorStop(1,col);g.fillStyle=l;g.fillRect(Math.min(x1,x2),cy-w/2,Math.abs(x2-x1),w)};
-  const [logo,pin,casco]=await Promise.all([certImg("media/cert/logo-blanco.png"),certImg("media/cert/pin-tl.png"),certImg("media/casco.png")]);
+  const [logo,pin,casco]=await Promise.all([certImg("media/cert/logo-blanco.png"),certImg("media/cert/pin-"+(rk==="tl"?"tl2":rk)+".png"),certImg("media/casco.png")]);
+  if(casco){const z=4.6*S,c3=document.createElement("canvas");c3.width=c3.height=Math.round(z/2);const h3=c3.getContext("2d"),k3=Math.min(c3.width/casco.width,c3.height/casco.height),w3=casco.width*k3,hh3=casco.height*k3;h3.drawImage(casco,(c3.width-w3)/2,(c3.height-hh3)/2,w3,hh3);h3.globalCompositeOperation="source-in";h3.fillStyle=AC[1];h3.fillRect(0,0,c3.width,c3.height);g.save();g.globalAlpha=.06;g.drawImage(c3,W/2-z/2,.47*H-z/2,z,z);g.restore()}
   if(logo){const w=2.55*S;g.drawImage(logo,(W-w)/2,.75*S,w,w*logo.height/logo.width)}
-  {const cy=1.294*S,d=4*pt,gp=6*pt,L=.42*S;diam(W/2,cy,d,"#C9A55A");linea(W/2-d/2-gp-L,W/2-d/2-gp,cy,"#C9A55A",1*px);linea(W/2+d/2+gp+L,W/2+d/2+gp,cy,"#C9A55A",1*px)}
-  if(pin){const w=1.32*S,h=w*pin.height/pin.width,x=(W-w)/2,y=1.521*S;const gl=g.createRadialGradient(W/2,y+h/2,0,W/2,y+h/2,w*.75);gl.addColorStop(0,"rgba(214,176,92,.16)");gl.addColorStop(1,"rgba(214,176,92,0)");g.fillStyle=gl;g.fillRect(x-w,y-h,w*3,h*3);
+  {const cy=1.294*S,d=4*pt,gp=6*pt,L=.42*S;diam(W/2,cy,d,AC[0]);linea(W/2-d/2-gp-L,W/2-d/2-gp,cy,AC[0],1*px);linea(W/2+d/2+gp+L,W/2+d/2+gp,cy,AC[0],1*px)}
+  if(pin){let w=1.32*S,h=w*pin.height/pin.width;if(h>1.3*S){h=1.3*S;w=h*pin.width/pin.height}const x=(W-w)/2,y=1.521*S;const gl=g.createRadialGradient(W/2,y+h/2,0,W/2,y+h/2,w*.75);gl.addColorStop(0,`rgba(${AC[3]},.22)`);gl.addColorStop(1,`rgba(${AC[3]},0)`);g.fillStyle=gl;g.fillRect(x-w,y-h,w*3,h*3);
     g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=14*px;g.shadowOffsetY=6*px;g.drawImage(pin,x,y,w,h);g.restore()}
   tx("CERTIFICADO DE RECONOCIMIENTO",3.0525*S,`600 ${8*pt}px CMont, Figtree, sans-serif`,"#fff",.42);
   tx("Se otorga con orgullo a",3.358*S,`italic 400 ${11*pt}px CLora, Georgia, serif`,"#E6E6E6");
   {const f=fit(o.nm,"500 {s}px CLora, Georgia, serif",30*pt,18*pt,4.4*S);tx(o.nm,3.738*S,f,"#fff")}
-  {const cy=4.1575*S,d=8*pt,gp=7*pt,L=.78*S;diam(W/2,cy,d,"#E2C27A");linea(W/2-d/2-gp-L,W/2-d/2-gp,cy,"#9aa0aa",1*px);linea(W/2+d/2+gp+L,W/2+d/2+gp,cy,"#9aa0aa",1*px)}
-  tx("TEAM LEADER",4.4735*S,`600 ${16*pt}px CMont, Figtree, sans-serif`,"#fff",.42);
-  tx("NIVEL ALCANZADO EN INCRUISES · "+(o.mes||certMesTx()),4.758*S,`500 ${6.4*pt}px CMont, Figtree, sans-serif`,"#C9A55A",.36);
+  {const cy=4.1575*S,d=8*pt,gp=7*pt,L=.78*S;diam(W/2,cy,d,AC[1]);linea(W/2-d/2-gp-L,W/2-d/2-gp,cy,"#9aa0aa",1*px);linea(W/2+d/2+gp+L,W/2+d/2+gp,cy,"#9aa0aa",1*px)}
+  {const T=RECO_T[rk]||"TEAM LEADER";let z=16*pt,ls=.42;const mw=4.5*S,wd=()=>{g.font=`600 ${z}px CMont, Figtree, sans-serif`;return [...T].reduce((a,ch)=>a+g.measureText(ch).width,0)+ls*z*(T.length-1)};while(wd()>mw&&z>10*pt){if(ls>.24)ls-=.04;else z-=.5*pt}tx(T,4.4735*S,`600 ${z}px CMont, Figtree, sans-serif`,"#fff",ls)}
+  tx((rk==="tl"?"NIVEL":"RANGO")+" ALCANZADO EN INCRUISES · "+(o.mes||certMesTx()),4.758*S,`500 ${6.4*pt}px CMont, Figtree, sans-serif`,AC[1],.36);
   {const Q="Por su visión, su disciplina y su liderazgo. Lo que hoy conquistó es el comienzo de lo que está dispuesto a construir.",f=`italic 400 ${11*pt}px CLora, Georgia, serif`;g.font=f;const w=Q.split(" ");let best=null;
     for(let i=1;i<w.length;i++){const a=w.slice(0,i).join(" "),b=w.slice(i).join(" "),m=Math.max(g.measureText(a).width,g.measureText(b).width);if(m<=4.3*S&&(!best||m<best[0]))best=[m,a,b]}
     const lh=.2368*S,y0=5.004*S+lh/2;if(best){tx(best[1],y0,f,"#E2E2E2");tx(best[2],y0+lh,f,"#E2E2E2")}else tx(Q,y0,f,"#E2E2E2")}
   const firmas=[{n:"Edwin García Go",r:"NATIONAL DIRECTOR"}];if(o.por&&!certEsEdwin(o.por))firmas.push({n:o.por,r:o.porR||""});
   firmas.forEach((F,k)=>{const cx=firmas.length===1?W/2:W/2+(k?1:-1)*1.075*S;
-    g.save();g.translate(cx,6.145*S);g.rotate(-3*Math.PI/180);const f=fit(F.n,"{s}px CertK, cursive",17*pt,10*pt,1.95*S);g.font=f;g.fillStyle="#E2C27A";g.textAlign="center";g.textBaseline="middle";g.fillText(F.n,0,0);g.restore();
-    tx(F.n,6.433*S,fit(F.n,"500 {s}px CLora, Georgia, serif",9.5*pt,7*pt,2*S),"#fff",0,cx);if(F.r)tx(F.r,6.61*S,`500 ${6.4*pt}px CMont, Figtree, sans-serif`,"#C9A55A",.36,cx)});
-  {const cx=W/2,cy=7.212*S,r=.31*S;g.strokeStyle="#C9A55A";g.lineWidth=1.3*px;g.beginPath();g.arc(cx,cy,r,0,7);g.stroke();g.strokeStyle="rgba(201,165,90,.6)";g.lineWidth=1*px;g.beginPath();g.arc(cx,cy,r-4*px,0,7);g.stroke();
-    const sw=.3*S,sh=.34*S,x=cx-sw/2,y=cy-sh/2;g.beginPath();[[.5,0],[1,.14],[1,.52],[.5,1],[0,.52],[0,.14]].forEach(([a,b],i)=>g[i?"lineTo":"moveTo"](x+a*sw,y+b*sh));g.closePath();const sg=g.createLinearGradient(x,y,x+sw,y+sh);sg.addColorStop(0,"#F4DC9C");sg.addColorStop(1,"#C9A55A");g.fillStyle=sg;g.fill();
+    g.save();g.translate(cx,6.145*S);g.rotate(-3*Math.PI/180);const f=fit(F.n,"{s}px CertK, cursive",17*pt,10*pt,1.95*S);g.font=f;g.fillStyle=AC[1];g.textAlign="center";g.textBaseline="middle";g.fillText(F.n,0,0);g.restore();
+    tx(F.n,6.433*S,fit(F.n,"500 {s}px CLora, Georgia, serif",9.5*pt,7*pt,2*S),"#fff",0,cx);if(F.r)tx(F.r,6.61*S,`500 ${6.4*pt}px CMont, Figtree, sans-serif`,AC[1],.36,cx)});
+  {const cx=W/2,cy=7.212*S,r=.31*S;g.strokeStyle=AC[0];g.lineWidth=1.3*px;g.beginPath();g.arc(cx,cy,r,0,7);g.stroke();g.strokeStyle=`rgba(${AC[3]},.6)`;g.lineWidth=1*px;g.beginPath();g.arc(cx,cy,r-4*px,0,7);g.stroke();
+    const sw=.3*S,sh=.34*S,x=cx-sw/2,y=cy-sh/2;g.beginPath();[[.5,0],[1,.14],[1,.52],[.5,1],[0,.52],[0,.14]].forEach(([a,b],i)=>g[i?"lineTo":"moveTo"](x+a*sw,y+b*sh));g.closePath();const sg=g.createLinearGradient(x,y,x+sw,y+sh);sg.addColorStop(0,AC[2]);sg.addColorStop(1,AC[0]);g.fillStyle=sg;g.fill();
     if(casco){const z=.22*S,c2=document.createElement("canvas");c2.width=c2.height=Math.round(z);const h2=c2.getContext("2d");const k=Math.min(z/casco.width,z/casco.height),dw=casco.width*k,dh=casco.height*k;h2.drawImage(casco,(z-dw)/2,(z-dh)/2,dw,dh);h2.globalCompositeOperation="source-in";h2.fillStyle="#16110a";h2.fillRect(0,0,z,z);g.drawImage(c2,cx-z/2,cy-z/2)}}
   tx("SISTEMA DE LIDERAZGO",7.7145*S,`600 ${8*pt}px CMont, Figtree, sans-serif`,"#fff",.42);
-  {const d=new Date();tx(("Honduras · "+d.getDate()+" de "+MESES_ES_C[d.getMonth()]+" de "+d.getFullYear()).toUpperCase(),7.918*S,`500 ${6.4*pt}px CMont, Figtree, sans-serif`,"#C9A55A",.36)}
+  {const d=new Date();tx(("Honduras · "+d.getDate()+" de "+MESES_ES_C[d.getMonth()]+" de "+d.getFullYear()).toUpperCase(),7.918*S,`500 ${6.4*pt}px CMont, Figtree, sans-serif`,AC[1],.36)}
+  return cv}
+// Flyer de nuevo nivel/rango (diseño tools/flyer/rango/rango.html). fmt "h" = historia 1080×1920, "p" = publicación 1080×1350.
+const RECO_FC={tl:{c0:"#E0F7FF",c1:"#7FE0FF",c2:"#2AC1F1",c3:"#0A7DAD",tx:"#062B3A",g:"42,193,241",g2:"127,224,255",b0:"#020c16",b1:"#05223a",b2:"#083b60"},
+ md:{c0:"#DCFCE7",c1:"#86EFAC",c2:"#22C55E",c3:"#15803D",tx:"#062B12",g:"52,211,113",g2:"134,239,172",b0:"#03140b",b1:"#06301a",b2:"#0a4a26"},
+ smd:{c0:"#DBEAFE",c1:"#93C5FD",c2:"#3B82F6",c3:"#1D4ED8",tx:"#04153D",g:"59,130,246",g2:"147,197,253",b0:"#030a1c",b1:"#071a44",b2:"#0b2a6b"},
+ rd:{c0:"#FFEDD5",c1:"#FDBA74",c2:"#F97316",c3:"#C2410C",tx:"#3A1503",g:"249,115,22",g2:"253,186,116",b0:"#170802",b1:"#3a1606",b2:"#5e240a"},
+ nd:{c0:"#FFE4E6",c1:"#FDA4AF",c2:"#E11D48",c3:"#9F1239",tx:"#3B0412",g:"225,29,72",g2:"253,164,175",b0:"#160308",b1:"#3d0716",b2:"#640b24"},
+ id:{c0:"#F3E8FF",c1:"#D8B4FE",c2:"#9333EA",c3:"#6B21A8",tx:"#24063F",g:"147,51,234",g2:"216,180,254",b0:"#0d0418",b1:"#250b45",b2:"#3b1170"},
+ ed:{c0:"#FFFFFF",c1:"#E5E7EB",c2:"#9CA3AF",c3:"#4B5563",tx:"#0B0B0C",g:"200,205,214",g2:"229,231,235",b0:"#050506",b1:"#141518",b2:"#25272c"},
+ bod:{c0:"#FFF9D6",c1:"#FDE047",c2:"#FACC15",c3:"#B8860B",tx:"#1A1300",g:"250,204,21",g2:"212,175,55",b0:"#010714",b1:"#04163a",b2:"#082863"}};
+const RECO_TT={tl:["TEAM","LEADER"],md:["MARKETING","DIRECTOR"],smd:["SENIOR MARKETING","DIRECTOR"],rd:["REGIONAL","DIRECTOR"],nd:["NATIONAL","DIRECTOR"],id:["INTERNATIONAL","DIRECTOR"],ed:["EXECUTIVE","DIRECTOR"],bod:["BOARD OF","DIRECTORS"]};
+let rgFontsP=null;
+function rgFonts(){if(rgFontsP)return rgFontsP;const F=[["RgP","media/fonts/Poppins-SemiBold.ttf",{weight:"600"}],["RgF","media/fonts/Figtree-VF.ttf",{weight:"100 900"}],["RgB","media/fonts/BarlowCondensed-Bold.ttf",{weight:"700"}]];
+  rgFontsP=Promise.all(F.map(([f,u,d])=>{try{const ff=new FontFace(f,`url(${u})`,d);return ff.load().then(x=>{document.fonts.add(x)}).catch(()=>{})}catch(e){return null}}));return rgFontsP}
+async function rgCanvas(o,fmt){await rgFonts();const rk=o.rk||"tl",C=RECO_FC[rk]||RECO_FC.tl,H=fmt==="p"?1350:1920,W=1080,h=fmt!=="p";
+  const cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");const cy0=H*(h?.44:.47);
+  let gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,C.b0);gr.addColorStop(.4,C.b1);gr.addColorStop(.62,C.b2);gr.addColorStop(1,C.b0);g.fillStyle=gr;g.fillRect(0,0,W,H);
+  const elip=(cx,cy,rx,ry,col)=>{g.save();g.translate(cx,cy);g.scale(1,ry/rx);const r=g.createRadialGradient(0,0,0,0,0,rx);r.addColorStop(0,col);r.addColorStop(.7,col.replace(/[\d.]+\)$/,"0)"));g.fillStyle=r;g.fillRect(-rx,-rx,rx*2,rx*2);g.restore()};
+  elip(W/2,H*.42,W*.7,H*.4,`rgba(${C.g},.55)`);elip(W,0,W*.6,H*.3,`rgba(${C.g2},.25)`);
+  {const c2=document.createElement("canvas");c2.width=W;c2.height=H;const q=c2.getContext("2d");q.fillStyle="rgba(255,255,255,.045)";for(let a=0;a<360;a+=14){const r1=a*Math.PI/180,r2=(a+4)*Math.PI/180,R=2000;q.beginPath();q.moveTo(W/2,cy0);q.lineTo(W/2+Math.sin(r1)*R,cy0-Math.cos(r1)*R);q.lineTo(W/2+Math.sin(r2)*R,cy0-Math.cos(r2)*R);q.closePath();q.fill()}
+    q.globalCompositeOperation="destination-in";q.save();q.translate(W/2,cy0);q.scale(1,(H*.45)/(W*.6));const m=q.createRadialGradient(0,0,0,0,0,W*.6);m.addColorStop(0,"#000");m.addColorStop(.2,"#000");m.addColorStop(.75,"rgba(0,0,0,0)");q.fillStyle=m;q.fillRect(-W,-W*2,W*2,W*4);q.restore();g.drawImage(c2,0,0)}
+  const [logo,pin,casco]=await Promise.all([certImg("media/cert/logo-blanco.png"),certImg("media/cert/pin-"+(rk==="tl"?"tl2":rk)+".png"),certImg("media/casco.png")]);
+  if(casco){const z=900,c3=document.createElement("canvas");c3.width=c3.height=450;const h3=c3.getContext("2d"),k3=Math.min(450/casco.width,450/casco.height),w3=casco.width*k3,hh3=casco.height*k3;h3.drawImage(casco,(450-w3)/2,(450-hh3)/2,w3,hh3);h3.globalCompositeOperation="source-in";h3.fillStyle=C.c1;h3.fillRect(0,0,450,450);g.save();g.globalAlpha=.06;g.drawImage(c3,W/2-z/2,cy0-z/2,z,z);g.restore()}
+  const tx=(t,cx,cy,font,col,em)=>{g.font=font;g.fillStyle=col;g.textBaseline="middle";const fs=parseFloat(font.match(/(\d+(\.\d+)?)px/)[1]),sp=(em||0)*fs;if(!sp){g.textAlign="center";g.fillText(t,cx,cy);return}
+    g.textAlign="left";const ch=[...String(t)],ws=ch.map(c=>g.measureText(c).width),tw=ws.reduce((a,b)=>a+b,0)+sp*(ch.length-1);let x=cx-tw/2;ch.forEach((c,i)=>{g.fillText(c,x,cy);x+=ws[i]+sp});return tw};
+  const spW=(t,font,em)=>{g.font=font;const fs=parseFloat(font.match(/(\d+(\.\d+)?)px/)[1]);return [...String(t)].reduce((a,c)=>a+g.measureText(c).width,0)+em*fs*([...String(t)].length-1)};
+  let y=h?190:64;
+  if(logo){const lh=64,lw=lh*logo.width/logo.height;g.drawImage(logo,W/2-lw/2,y,lw,lh)}y+=64;
+  // píldora
+  {y+=h?38:40;const fs=h?28:22,kt="★ "+(rk==="tl"?"NUEVO NIVEL":"NUEVO RANGO"),f=`800 ${fs}px RgF, Figtree, sans-serif`,tw=spW(kt,f,.32),ph=h?58:51,pw=tw+56;
+    g.save();g.shadowColor=`rgba(${C.g},.35)`;g.shadowBlur=30;g.shadowOffsetY=10;const pg=g.createLinearGradient(W/2-pw/2,0,W/2+pw/2,0);pg.addColorStop(0,C.c1);pg.addColorStop(1,C.c2);g.fillStyle=pg;g.beginPath();g.roundRect(W/2-pw/2,y,pw,ph,ph/2);g.fill();g.restore();
+    tx(kt,W/2+2,y+ph/2+1,f,C.tx,.32);y+=ph}
+  // título
+  {const T=RECO_TT[rk]||RECO_TT.tl,lg=T[0].length>12,f1=h?(lg?84:112):(lg?66:86),f2=h?112:86;y+=h?26:20;
+    const l1=f1*.95,l2=f2*.95;g.save();g.shadowColor="rgba(0,0,0,.35)";g.shadowBlur=40;g.shadowOffsetY=8;tx(T[0],W/2,y+l1/2,`600 ${f1}px RgP, Poppins, sans-serif`,"#fff");g.restore();y+=l1;
+    const tg=g.createLinearGradient(0,y,0,y+l2);tg.addColorStop(0,C.c0);tg.addColorStop(1,C.c1);tx(T[1],W/2,y+l2/2,`600 ${f2}px RgP, Poppins, sans-serif`,tg);y+=l2}
+  // foto con anillo y pin
+  {y+=h?52:40;const D=h?430:360,r=D/2,cx=W/2,cy=y+r;
+    g.save();g.shadowColor=`rgba(${C.g},.55)`;g.shadowBlur=40;const cg=g.createConicGradient?g.createConicGradient(200*Math.PI/180,cx,cy):null;if(cg){[[0,C.c0],[.25,C.c2],[.5,C.c3],[.75,C.c1],[1,C.c0]].forEach(([a,c])=>cg.addColorStop(a,c));g.fillStyle=cg}else g.fillStyle=C.c2;g.beginPath();g.arc(cx,cy,r+26,0,7);g.fill();g.restore();
+    g.fillStyle=C.b1;g.beginPath();g.arc(cx,cy,r+12,0,7);g.fill();
+    await circFoto(g,o.foto||"",cx,cy,r,1,()=>{g.fillStyle="#dfe3e8";g.fillRect(cx-r,cy-r,D,D);g.fillStyle="#6b7380";g.font=`600 ${Math.round(r*.7)}px RgP, Poppins, sans-serif`;g.textAlign="center";g.textBaseline="middle";g.fillText(initials(o.nm||""),cx,cy+4)});
+    if(pin){const pw=h?215:180,phh=pw*pin.height/pin.width,pb=y+D+(h?88:74);g.save();g.shadowColor="rgba(0,0,0,.55)";g.shadowBlur=22;g.shadowOffsetY=12;g.drawImage(pin,cx-pw/2,pb-phh,pw,phh);g.restore()}
+    y+=D}
+  // nombre
+  {y+=h?100:88;const fs0=h?74:56;let fs=fs0;const nm=String(o.nm||"");while(fs>36){g.font=`600 ${fs}px RgP, Poppins, sans-serif`;if(g.measureText(nm).width<=940)break;fs-=2}const lh=Math.round(fs0*1.05);tx(nm,W/2,y+lh/2,`600 ${fs}px RgP, Poppins, sans-serif`,"#fff");y+=lh}
+  // línea
+  {y+=22;const t=rk==="tl"?"SU NUEVO NIVEL EN INCRUISES":rk==="md"?"SU PRIMER RANGO EN INCRUISES":"NUEVO RANGO EN INCRUISES",f="800 26px RgF, Figtree, sans-serif",tw=spW(t,f,.3);const cy=y+16;tx(t,W/2,cy,f,C.c1,.3);
+    [[-1],[1]].forEach(([d])=>{const x1=W/2+d*(tw/2+14),x2=x1+d*90,lg=g.createLinearGradient(x2,0,x1,0);lg.addColorStop(0,"rgba(0,0,0,0)");lg.addColorStop(1,C.c1);g.fillStyle=lg;g.fillRect(Math.min(x1,x2),cy-1,90,2)});y+=32}
+  // frase
+  {y+=h?24:16;const fs=h?35:28,lh=fs*1.35;const L=[[["¡Felicidades! Lo que construyó con",0]],[["disciplina y liderazgo",1],[" hoy tiene nombre.",0]],[["Este es solo el comienzo.",0]]];
+    L.forEach(seg=>{let tw=0;seg.forEach(([t,b])=>{g.font=`${b?700:400} ${fs}px RgF, Figtree, sans-serif`;tw+=g.measureText(t).width});let x=W/2-tw/2;g.textBaseline="middle";g.textAlign="left";
+      seg.forEach(([t,b])=>{g.font=`${b?700:400} ${fs}px RgF, Figtree, sans-serif`;g.fillStyle=b?"#fff":"rgba(255,255,255,.88)";g.fillText(t,x,y+lh/2);x+=g.measureText(t).width});y+=lh})}
+  // escalera (solo historia)
+  if(h){y+=34;const AB=["TL","MD","SMD","RD","ND","ID","ED","BOD"],ix=RECO_K.indexOf(rk),f="700 26px RgB, 'Barlow Condensed', sans-serif",ch=48,ar=20,gp=6;g.font=f;
+    const ws=AB.map((a,i)=>spW((i<=ix?"✓ ":"")+a,f,.08)+24),aw=(()=>{g.font="400 20px RgF, sans-serif";return g.measureText("›").width})(),tot=ws.reduce((a,b)=>a+b,0)+(AB.length-1)*(aw+gp*2);let x=W/2-tot/2;
+    AB.forEach((a,i)=>{const w=ws[i],on=i===ix,ya=i<ix;g.save();if(on){g.shadowColor=`rgba(${C.g},.5)`;g.shadowBlur=24}g.beginPath();g.roundRect(x,y,w,ch,ch/2);g.fillStyle=on?C.c2:"rgba(255,255,255,.04)";g.fill();g.restore();
+      if(!on){g.strokeStyle=ya?"rgba(255,255,255,.35)":"rgba(255,255,255,.16)";g.lineWidth=1.5;g.beginPath();g.roundRect(x,y,w,ch,ch/2);g.stroke()}
+      tx((i<=ix?"✓ ":"")+a,x+w/2,y+ch/2+1,f,on?C.tx:ya?"rgba(255,255,255,.85)":"rgba(255,255,255,.55)",.08);x+=w;
+      if(i<AB.length-1){tx("›",x+gp+aw/2,y+ch/2,"400 20px RgF, sans-serif","rgba(255,255,255,.35)");x+=aw+gp*2}});
+    y+=ch+12;tx("SU CAMINO EN INCRUISES",W/2,y+12,"700 20px RgF, Figtree, sans-serif","rgba(255,255,255,.5)",.28);y+=24}
+  // cierre
+  {y+=h?40:30;const fb=h?38:28;tx("#HASTAQUEFUNCIONE",W/2,y+fb*.75,`600 ${fb}px RgP, Poppins, sans-serif`,"#fff",.04);y+=fb*1.5+10;tx("CAMINO A MI LIBERTAD",W/2,y+13,"400 22px RgF, Figtree, sans-serif","rgba(255,255,255,.65)",.24)}
   return cv}
 let jspdfP=null;
 function certJsPdf(){if(window.jspdf)return Promise.resolve(window.jspdf);if(jspdfP)return jspdfP;jspdfP=new Promise((ok,no)=>{const sc=document.createElement("script");sc.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";sc.onload=()=>window.jspdf?ok(window.jspdf):no(new Error("jspdf"));sc.onerror=()=>{jspdfP=null;no(new Error("jspdf"))};document.head.appendChild(sc)});return jspdfP}
 async function certAbrir(o){if(!o||!o.nm){toast("Falta el nombre");return}
-  openSheet(`<div data-nofocus></div><h2 style="margin:0">🎓 Certificado de Team Leader</h2><p class="small muted" style="margin:2px 0 10px">${esc(o.nm)} · media carta (5.5 × 8.5 in), listo para imprimir.</p><div id="certPv" style="border-radius:12px;overflow:hidden;background:#0b0b0d;aspect-ratio:5.5/8.5;display:grid;place-items:center;color:#C9A55A;font-weight:700">Preparando…</div>
+  openSheet(`<div data-nofocus></div><h2 style="margin:0">🎓 Diploma · ${esc(RECO_N[o.rk||"tl"])}</h2><p class="small muted" style="margin:2px 0 10px">${esc(o.nm)} · media carta (5.5 × 8.5 in), listo para imprimir.</p><div id="certPv" style="border-radius:12px;overflow:hidden;background:#0b0b0d;aspect-ratio:5.5/8.5;display:grid;place-items:center;color:#C9A55A;font-weight:700">Preparando…</div>
     <button class="btn" id="certPdf" style="width:100%;margin-top:12px">⬇️ Descargar PDF para imprimir</button><button class="btn ghost" id="certSh" style="width:100%;margin-top:8px">📲 Compartir imagen</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,async()=>{
     let cv=null;try{cv=await certCanvas(o)}catch(e){toast("No se pudo preparar el certificado");return}
     const url=cv.toDataURL("image/jpeg",.92),pv=$("#certPv");if(pv)pv.innerHTML=`<img src="${url}" alt="" style="width:100%;height:100%;object-fit:contain;display:block">`;
-    const nom="Certificado Team Leader - "+String(o.nm).replace(/[^\w áéíóúñÁÉÍÓÚÑ.-]/g,"").trim();
+    const nom="Diploma "+RECO_N[o.rk||"tl"]+" - "+String(o.nm).replace(/[^\w áéíóúñÁÉÍÓÚÑ.-]/g,"").trim();
     const bajar=(blob,fn)=>{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000)};
     const share=async(blob,fn,type)=>{try{const f=new File([blob],fn,{type});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:nom});return true}}catch(e){if(e&&e.name==="AbortError")return true}return false};
     const pb=$("#certPdf");if(pb)pb.onclick=async()=>{pb.disabled=true;pb.textContent="Preparando PDF…";try{const J=await certJsPdf();const d=new J.jsPDF({orientation:"portrait",unit:"in",format:[5.5,8.5]});d.addImage(url,"JPEG",0,0,5.5,8.5);const blob=d.output("blob");if(!(await share(blob,nom+".pdf","application/pdf")))bajar(blob,nom+".pdf");toast("✅ PDF listo")}catch(e){toast("No se pudo crear el PDF. Use «Compartir imagen».")}pb.disabled=false;pb.textContent="⬇️ Descargar PDF para imprimir"};
     const sb=$("#certSh");if(sb)sb.onclick=()=>cv.toBlob(async b=>{if(!b)return;if(!(await share(b,nom+".jpg","image/jpeg")))bajar(b,nom+".jpg")},"image/jpeg",.92)})}
 function certPorDe(lin){for(const x of lin||[]){let i=-1;try{i=rangoActualIdx0({},x.n)}catch(e){}if(i>=2)return{n:nv(x.n)||x.n,r:certRgTx(i)}}return null}
-function certMio(){const n=miNombreFull()||miNombreCorto();if(!tlEs(n)){tlInfo();return}const p=certPorDe(miLinea());certAbrir({nm:nv(n)||n,mes:certMesTx(),por:p&&p.n,porR:p&&p.r})}
+function certMio(){recoMio()}
 function certYoFirma(){const n=miNombreFull()||miNombreCorto();const i=rangoActualIdx0(miRegistro(),n);return{n:nv(n)||n,r:i>=2?certRgTx(i):""}}
 function certPuedeGenerar(){try{return isAdmin||rangoActualIdx0(miRegistro(),miNombreFull()||miNombreCorto())>=2}catch(e){return isAdmin}}
 function tlInfo(){const n=miNombreFull()||miNombreCorto(),t=tlDe(n),C=tlCfg()||{},m=C.meta||500,p=t?t.p:0,es=p>=m;
@@ -2500,7 +2569,7 @@ function tlInfo(){const n=miNombreFull()||miNombreCorto(),t=tlDe(n),C=tlCfg()||{
     <div style="background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:26px;font-family:'Barlow Condensed',sans-serif">${fmt(p)} <span class="small muted" style="font-family:inherit">de ${fmt(m)} pts</span></b>${es?`<span style="color:#12805C;font-weight:800">✅ Team Leader</span>`:`<span class="small muted">Le faltan ${fmt(m-p)}</span>`}</div>
     <div style="height:8px;border-radius:9px;background:var(--surface-2);margin-top:8px;overflow:hidden"><i style="display:block;height:100%;width:${Math.min(100,Math.round(p*100/m))}%;background:${es?"#16A34A":"linear-gradient(90deg,#2AC1F1,#0A7DAD)"}"></i></div>${t?`<p class="small muted" style="margin-top:8px">${t.a} ${t.a===1?"directo suma":"directos suman"} puntos.</p>`:""}</div>
     <p class="small" style="margin:12px 0 6px"><b>Cómo se cuenta (solo directos):</b></p><p class="small muted" style="line-height:1.6;margin:0">🚀 Entró en los últimos 30 días: Premium 500 · Classic 200 · Starter 50<br>💰 Pagó su ahorro en los últimos 30 días: Premium 250 · Classic 100 · Starter 50<br>⏳ Ahorro pendiente: 0<br>Su propia membresía no cuenta. Se actualiza solo con los reportes y correos de inCruises.</p>
-    ${es?`<button class="btn" id="tlCert" style="width:100%;margin-top:12px">🎓 Descargar mi certificado</button>`:""}<button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{const b=$("#tlCert");if(b)b.onclick=()=>{closeSheet();setTimeout(certMio,250)}})}
+    ${es?`<button class="btn" id="tlCert" style="width:100%;margin-top:12px">🏅 Mi flyer y mi diploma</button>`:""}<button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{const b=$("#tlCert");if(b)b.onclick=()=>{closeSheet();setTimeout(certMio,250)}})}
 function certLista(){const C=tlCfg()||{},m=C.meta||500,yo=certYoFirma();let L=[];
   if(isAdmin)L=(C.l||[]).filter(x=>x.p>=m&&rangoActualIdx0({},x.n)<2).map(x=>({n:x.n,p:x.p}));
   else L=(mios||[]).map(x=>{const n=(x.registro||{}).nombre||"";const t=n&&tlDe(n);return t&&t.p>=m&&rangoActualIdx0(x.registro||{},n)<2?{n,p:t.p}:null}).filter(Boolean);
@@ -2511,9 +2580,53 @@ function certLista(){const C=tlCfg()||{},m=C.meta||500,yo=certYoFirma();let L=[]
     <button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{
     const P=$("#sheetPanel");P.querySelectorAll("[data-crt]").forEach(b=>b.onclick=()=>{const x=L[+b.dataset.crt];closeSheet();setTimeout(()=>certAbrir({nm:nv(x.n)||x.n,mes:certMesTx(),por:yo.n,porR:yo.r}),250)});
     $("#crtGo").onclick=()=>{const n=String($("#crtN").value||"").trim(),m2=String($("#crtM").value||"").trim().toUpperCase();if(n.split(/\s+/).length<2){toast("Escriba nombre y apellido");return}closeSheet();setTimeout(()=>certAbrir({nm:n,mes:m2||certMesTx(),por:yo.n,porR:yo.r}),250)}})}
-function certPfHTML(){try{if(!tlCfg())return "";const n=miNombreFull()||miNombreCorto(),C=tlCfg(),m=C.meta||500;let h="";
-  if(certPuedeGenerar())h+=`<button class="pf-it" id="pfCert"><span class="ic">🎓</span>Certificados de Team Leader</button>`;
-  if(!isAdmin||!esSoloAdminYo()){if(rangoActualIdx0(miRegistro(),n)<2){const t=tlDe(n),p=t?t.p:0;h+=`<button class="pf-it" id="pfTl"><span class="ic">⚡</span>${p>=m?"Soy Team Leader · mi certificado":"Camino a Team Leader · "+fmt(p)+" de "+fmt(m)+" pts"}</button>`}}
+// ---------- Reconocimientos (12 nov, Edwin): flyer + diploma por nivel/rango ----------
+function recoDe(reg,nm){try{return recoRk(rangoActualIdx(reg||{},nm||""))}catch(e){return null}}
+function miReco(){return recoDe(miRegistro(),miNombreFull()||miNombreCorto())}
+const RECO_FEL=[(p,X)=>`¡Felicidades, ${p}! 🎉 Llegó a *${X}*. Su disciplina está dando fruto y este es solo el comienzo. ¡Vamos por más! #HASTAQUEFUNCIONE`,
+ (p,X)=>`${p}, ¡qué orgullo! 🏅 Ya es *${X}*. Gracias por su ejemplo para el equipo. ¡A seguir construyendo! 💪`,
+ (p,X)=>`¡Lo logró, ${p}! 🚀 *${X}*. Celebre hoy, que mañana seguimos construyendo. #HASTAQUEFUNCIONE`];
+function recoTexto(o,modo){const X=RECO_N[o.rk]||"",p=String(nv(o.nm)||o.nm||"").split(" ")[0];
+  if(modo==="yo")return `🎉 ¡Hoy llegué a *${X}* en inCruises! Gracias a mi equipo y a mis líderes. Esto es solo el comienzo. 💪\n\n#HASTAQUEFUNCIONE`;
+  if(modo==="grupo")return `🎉 ¡Felicitamos a *${nv(o.nm)||o.nm}* por llegar a *${X}*! Su disciplina y su liderazgo hoy tienen nombre. ¡Vamos por más, equipo!\n\n#HASTAQUEFUNCIONE`;
+  return RECO_FEL[ahF((store.uid||"")+"|"+(o.uid||o.nm)+"|"+o.rk)%RECO_FEL.length](p,X)}
+function recoFirma(o){if(o.mio){const p=certPorDe(miLinea());return p?{por:p.n,porR:p.r}:{}}const y=certYoFirma();return certEsEdwin(y.n)||!y.r?{}:{por:y.n,porR:y.r}}
+async function reconoAbrir(o){if(!o||!o.rk||!o.nm)return;const X=RECO_N[o.rk];let fmt="h",cv=null;const foto=o.mio?miFotoUrl():(o.uid||o.nm?fotoDe(o.nm,0,o.uid):"");
+  openSheet(`<div data-nofocus></div><h2 style="margin:0">🏅 ${esc(X)}</h2><p class="small muted" style="margin:2px 0 10px">${esc(nv(o.nm)||o.nm)} · ${o.rk==="tl"?"nuevo nivel":"nuevo rango"} en inCruises</p>
+    <div class="seg" style="display:flex;gap:6px;margin-bottom:10px"><button class="btn sm" data-rf="h" type="button" style="flex:1">📱 Historia</button><button class="btn sm ghost" data-rf="p" type="button" style="flex:1">🖼️ Publicación</button></div>
+    <div id="rcPv" style="border-radius:14px;overflow:hidden;background:#0b0b0d;display:grid;place-items:center;color:#9aa0aa;font-weight:700;aspect-ratio:9/16;max-height:56vh;margin:0 auto">Preparando…</div>
+    ${!foto?`<p class="small" style="margin:8px 0 0;color:var(--muted)">📷 Sin foto de perfil: se ven las iniciales. Una foto con fondo claro se ve mejor.</p>`:""}
+    <button class="btn" id="rcSh" type="button" style="width:100%;margin-top:12px">📲 Compartir flyer</button>
+    <button class="btn ghost" id="rcDip" type="button" style="width:100%;margin-top:8px">🎓 ${o.mio?"Mi diploma":"Generar diploma"} (PDF media carta)</button>
+    ${!o.mio&&o.uid?`<button class="btn" id="rcFel" type="button" style="width:100%;margin-top:8px;background:#25D366;color:#fff">💬 Felicitar a ${esc(String(nv(o.nm)||o.nm).split(" ")[0])}</button>`:""}
+    <button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{
+    const P=$("#sheetPanel"),pv=$("#rcPv");
+    const pinta=async()=>{pv.style.aspectRatio=fmt==="p"?"4/5":"9/16";pv.textContent="Preparando…";try{cv=await rgCanvas({rk:o.rk,nm:nv(o.nm)||o.nm,foto},fmt);pv.innerHTML=`<img src="${cv.toDataURL("image/jpeg",.9)}" alt="" style="width:100%;height:100%;object-fit:contain;display:block">`}catch(e){pv.textContent="No se pudo preparar el flyer"}};
+    const rfP=()=>P.querySelectorAll("[data-rf]").forEach(x=>{const on=x.dataset.rf===fmt;x.style.background=on?"var(--brand)":"var(--surface-2)";x.style.color=on?"#fff":"var(--ink)"});rfP();
+    P.querySelectorAll("[data-rf]").forEach(b=>b.onclick=()=>{fmt=b.dataset.rf;rfP();pinta()});
+    $("#rcSh").onclick=()=>{if(!cv)return;const tx=recoTexto(o,o.mio?"yo":"grupo");cv.toBlob(async bl=>{if(!bl)return;const fn="Flyer "+X+" - "+(nv(o.nm)||o.nm)+".jpg";try{const f=new File([bl],fn,{type:"image/jpeg"});if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.clipboard.writeText(tx)}catch(e){}await navigator.share({files:[f],text:tx});return}}catch(e){if(e&&e.name==="AbortError")return}
+      const a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download=fn;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);try{await navigator.clipboard.writeText(tx);toast("✅ Flyer descargado · texto copiado")}catch(e){toast("✅ Flyer descargado")}},"image/jpeg",.92)};
+    $("#rcDip").onclick=()=>{const f=recoFirma(o);closeSheet();setTimeout(()=>certAbrir({nm:nv(o.nm)||o.nm,rk:o.rk,mes:certMesTx(),por:f.por,porR:f.porR}),250)};
+    const fb=$("#rcFel");if(fb)fb.onclick=()=>{const x=(mios||[]).find(y=>y.uid===o.uid)||((socios||[]).find(y=>y.uid===o.uid));const w=x?waSocio(x):"";waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(recoTexto(o,"fel")))};
+    pinta()})}
+function recoMio(){const n=miNombreFull()||miNombreCorto(),rk=miReco();if(!rk){tlInfo();return}reconoAbrir({nm:n,rk,mio:1,uid:store.uid})}
+function recoLista(){if(!isAdmin&&!(mios&&mios.length)&&!recoLista._ya){recoLista._ya=1;toast("Cargando su equipo…");Promise.resolve(loadMios()).catch(()=>{}).finally(()=>recoLista());return}const src=(isAdmin&&Array.isArray(socios)&&socios.length?socios:(mios||[]));let L=src.filter(x=>x&&x.uid!==store.uid&&x.registro&&x.registro.nombre).map(x=>({uid:x.uid,nm:x.registro.nombre,rk:recoDe(x.registro,x.registro.nombre)})).filter(x=>x.rk);
+  L.sort((a,b)=>RECO_K.indexOf(b.rk)-RECO_K.indexOf(a.rk)||String(a.nm).localeCompare(b.nm,"es"));let f="all";
+  openSheet(`<div data-nofocus></div><h2 style="margin:0">🏅 Reconocimientos de mi equipo</h2><p class="small muted" style="margin:2px 0 10px">${isAdmin?"Todo el equipo":"Su línea"}: Team Leaders y rangos. Genere su flyer y su diploma, y felicítelos.</p>
+    <div class="mqlF">${[["all","Todos · "+L.length],["tl","⚡ Team Leaders · "+L.filter(x=>x.rk==="tl").length],["rg","⭐ Rangos · "+L.filter(x=>x.rk!=="tl").length]].map(([k,t])=>`<button type="button" data-rcf="${k}" class="${k==="all"?"on":""}">${t}</button>`).join("")}</div>
+    <div id="rcL"></div>
+    <div style="margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px"><b class="small">✍️ ¿No aparece alguien? Hágalo a mano</b><input id="crtN" placeholder="Nombre completo" autocomplete="off" style="width:100%;margin-top:8px;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit">
+      <select id="crtR" style="width:100%;margin-top:8px;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit">${RECO_K.map(k=>`<option value="${k}">${RECO_N[k]}</option>`).join("")}</select>
+      <button class="btn" id="crtGo" type="button" style="width:100%;margin-top:8px">🏅 Generar flyer y diploma</button></div>
+    <button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{
+    const P=$("#sheetPanel");const pinta=()=>{const V=L.filter(x=>f==="all"||(f==="tl"?x.rk==="tl":x.rk!=="tl"));
+      $("#rcL").innerHTML=V.length?V.map(x=>{const c=RECO_AC[x.rk];return `<div class="mqlR"><span class="mqlA">${avV(x.nm,x.uid)}</span><div class="mqlT"><b>${esc(nv(x.nm)||x.nm)}</b><span style="display:inline-block;margin-top:4px;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:99px;background:${c[0]};color:${x.rk==="ed"||x.rk==="bod"||x.rk==="tl"?"#0b0b0c":"#fff"}">${RECO_N[x.rk]}</span></div><button class="btn sm" data-rco="${esc(x.uid)}" type="button">🏅 Ver</button></div>`}).join(""):`<p class="small muted" style="text-align:center;padding:12px 0">Nadie por aquí todavía.</p>`;
+      $("#rcL").querySelectorAll("[data-rco]").forEach(b=>b.onclick=()=>{const x=L.find(y=>y.uid===b.dataset.rco);closeSheet();setTimeout(()=>reconoAbrir(x),250)})};
+    P.querySelectorAll("[data-rcf]").forEach(b=>b.onclick=()=>{f=b.dataset.rcf;P.querySelectorAll("[data-rcf]").forEach(z=>z.classList.toggle("on",z===b));pinta()});
+    $("#crtGo").onclick=()=>{const n=String($("#crtN").value||"").trim();if(n.split(/\s+/).length<2){toast("Escriba nombre y apellido");return}const rk=$("#crtR").value;closeSheet();setTimeout(()=>reconoAbrir({nm:n,rk}),250)};pinta()})}
+function certPfHTML(){try{const n=miNombreFull()||miNombreCorto(),C=tlCfg(),m=(C&&C.meta)||500;let h="";
+  if(certPuedeGenerar())h+=`<button class="pf-it" id="pfCert"><span class="ic">🏅</span>Reconocimientos de mi equipo</button>`;
+  if(!esSoloAdminYo()){const rk=miReco();if(rk)h+=`<button class="pf-it" id="pfTl"><span class="ic">🏅</span>Mi reconocimiento · ${RECO_N[rk]}</button>`;else if(C){const t=tlDe(n),p=t?t.p:0;h+=`<button class="pf-it" id="pfTl"><span class="ic">⚡</span>Camino a Team Leader · ${fmt(p)} de ${fmt(m)} pts</button>`}}
   return h}catch(e){return ""}}
 const avV=(n,uid)=>avHTML(n,false,false,uid).replace(/ data-(foto|fu)="[^"]*"/g,"").replace(/ title="(Poner foto|Cambiar tu foto)"/g,"");
 const MQL_C={ok:"#16A34A",cam:"#D97706",cero:"#DC2626"};
@@ -3561,7 +3674,7 @@ function renderMios(b){if(!store.db||!store.uid){b.innerHTML=emptyCard("Inicia s
   if(isAdmin&&socios===null&&!window._ldS){window._ldS=1;loadSocios()}
   const inv=`<div class="card"><h3 style="margin:0">🔗 Tu enlace de invitación</h3><p class="small muted" style="margin:0">Los socios que se registren con tu enlace aparecen aquí con su avance.</p>
     <button class="btn" id="miosCopy" style="width:100%">🔗 Crear enlace para un socio nuevo</button></div>`;
-  const bind=()=>{{const hm=b.querySelector("#hoyMas");if(hm)hm.onclick=()=>{hoyAll=!hoyAll;renderEquipo()}}b.querySelectorAll("[data-mcp]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mcp);if(!x)return;const w=waSocio(x);waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(compMsg(x)))});b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=waSocio(x);
+  const bind=()=>{{const hm=b.querySelector("#hoyMas");if(hm)hm.onclick=()=>{hoyAll=!hoyAll;renderEquipo()}}b.querySelectorAll("[data-reco]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.reco);if(!x||!x.registro)return;const rk=recoDe(x.registro,x.registro.nombre);if(rk)reconoAbrir({uid:x.uid,nm:x.registro.nombre,rk})});b.querySelectorAll("[data-mcp]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mcp);if(!x)return;const w=waSocio(x);waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(compMsg(x)))});b.querySelectorAll("[data-presn]").forEach(x=>x.onclick=()=>openSheet(`<h2>🎯 Presentaciones de la semana</h2><div style="display:flex;flex-direction:column">${x.dataset.presn.split(" · ").map(n=>`<div style="padding:10px 0;border-bottom:1px solid var(--line);font-weight:600">${esc(n)}</div>`).join("")}</div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`));b.querySelectorAll("[data-mv]").forEach(x=>x.onclick=()=>{miosVista=x.dataset.mv;renderEquipo()});b.querySelectorAll("[data-mot]").forEach(bt=>bt.onclick=async()=>{const x=mios.find(y=>y.uid===bt.dataset.mot);if(!x)return;const t=msgMotiva(x),w=waSocio(x);
     if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t));return}pedirWaSocio(x,t)});b.querySelectorAll("[data-wnum]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.wnum);if(x)cambiarNumSocio(x)});b.querySelectorAll("[data-gst]").forEach(bt=>bt.onclick=()=>{const [u,k]=bt.dataset.gst.split("|"),x=(mios||[]).find(y=>y.uid===u);if(x)gestHoja(x,k)});b.querySelectorAll("[data-mah]").forEach(bt=>bt.onclick=()=>{const x=(mios||[]).find(y=>y.uid===bt.dataset.mah);if(!x)return;const nm=((x.registro||{}).nombre||"").split(" ")[0],ah=ahSoc(x)||{},t=`¡Hola${nm?", "+nm:""}! 🙌 Vi que su ahorro de este mes en inCruises quedó pendiente. Póngase al día${ah.lim&&!ah.bloq?" antes del "+ahFecha(ah.lim):""} para que no se le inactive la cuenta ni pierda sus puntos dobles 🛳️ ¿Le ayudo con algo?`,w=waSocio(x);if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t));return}pedirWaSocio(x,t)});b.querySelectorAll("[data-ip]").forEach(x=>x.onclick=()=>{idxPer=x.dataset.ip;renderEquipo()});b.querySelectorAll("[data-idxv]").forEach(x=>x.onclick=()=>{idxStk=[""];idxSheet("")});b.querySelectorAll("[data-reac]").forEach(x=>x.onclick=abrirReactivar);const c=$("#miosCopy");if(c)c.onclick=()=>invPlanHoja();const r=$("#miosReload");if(r)r.onclick=()=>{mios=null;renderEquipo()}};
   if(miosErr){b.innerHTML=emptyCard("No se pudo cargar su equipo","Revise su conexión e intente de nuevo. Si sigue igual, avise al administrador.")+`<button class="btn sm ghost" id="miosReload">Intentar de nuevo</button>`+inv;bind();return}
   if(!mios.length){// 9 nov: sin socios en la app igual sale My Dream Team, para poder agregar CLIENTES
@@ -3636,7 +3749,7 @@ function miosFila(V,lvl0){let lvl=lvl0;const cname=k=>{const c=cursosL().find(x=
        ${(()=>{const rk=rankDe(nm);return rk?`<span class="chip ${rk.pPos&&rk.pPos<=10?"c-gold":"c-brand"}">🏆 Registros: ${rk.R}${rk.pPos?" · #"+rk.pPos:""}</span><span class="chip ${rk.aPos&&rk.aPos<=10?"c-gold":"c-brand"}">🚀 Activaciones: ${rk.A} · Vol. ${fmt(rk.V)}${rk.aPos?" · #"+rk.aPos:""}</span>`:`<span class="chip c-brand">🏆 Sin registros en el ranking</span>`})()}
        ${(()=>{const m=x.metas||{},R=proxRango(rangoActualIdx(x.registro,nm)),rg=R?R.n:"";if(!m.act&&!rg&&!m.sueno)return"";const dm=m.mes===mesMeta(),rk=rankDe(nm),a=rk?rk.A:0;return (dm&&m.act?`<span class="chip ${a>=m.act?"c-good":"c-gold"}">🎯 Meta: ${a}/${m.act} activaciones</span>`:"")+(R?`<span class="chip" style="background:${R.c};color:#fff">🏅 Próximo: ${esc(rg)}</span>`:"")+(m.sueno?`<span class="chip c-good">💰 Sueño: ${usd(m.sueno)}/mes</span>`:"")})()}${compChip(x,nm)}${irChip(x)}<button type="button" class="chip mk mfAll" data-mfall>Ver todo ▾</button>
        ${cs.length?cs.map(k=>`<span class="chip c-good">🎓 ${esc(cname(k))}</span>`).join(""):`<span class="chip c-brand">🎓 Sin cursos aún</span>`}
-      </div><div class="row mfBtns" style="gap:8px;margin-top:10px">${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<button class="btn sm grow" data-mah="${esc(x.uid)}" style="background:#B42335;color:#fff">💰 Motivar su ahorro</button>`:""})()}<button class="btn sm grow" data-mot="${esc(x.uid)}" style="background:#25D366;color:#fff">💬 Motivar por WhatsApp</button>${compPuede0()?`<button class="btn sm grow" data-mcp="${esc(x.uid)}" style="background:#16A34A;color:#fff">🎯 ${compDe(x)&&!compDe(x).no?"Motivar compromiso":"Pedir compromiso"}</button>`:""}<button class="btn sm ghost" data-wnum="${esc(x.uid)}" type="button" aria-label="Cambiar número de WhatsApp de ${esc(nm)}">✏️ Número</button></div></div>`}}
+      </div><div class="row mfBtns" style="gap:8px;margin-top:10px">${(()=>{const ah=ahSoc(x);return ah&&ah.pend?`<button class="btn sm grow" data-mah="${esc(x.uid)}" style="background:#B42335;color:#fff">💰 Motivar su ahorro</button>`:""})()}${(()=>{const rk=recoDe(r,nm);return rk?`<button class="btn sm grow" data-reco="${esc(x.uid)}" style="background:${RECO_AC[rk][0]};color:${rk==="ed"||rk==="bod"||rk==="tl"?"#0b0b0c":"#fff"}">🏅 Reconocer · ${RECO_N[rk]}</button>`:""})()}<button class="btn sm grow" data-mot="${esc(x.uid)}" style="background:#25D366;color:#fff">💬 Motivar por WhatsApp</button>${compPuede0()?`<button class="btn sm grow" data-mcp="${esc(x.uid)}" style="background:#16A34A;color:#fff">🎯 ${compDe(x)&&!compDe(x).no?"Motivar compromiso":"Pedir compromiso"}</button>`:""}<button class="btn sm ghost" data-wnum="${esc(x.uid)}" type="button" aria-label="Cambiar número de WhatsApp de ${esc(nm)}">✏️ Número</button></div></div>`}}
 const SOLO_ADMIN=["garciagoedwin@gmail.com"];const esSoloAdmin=x=>SOLO_ADMIN.includes(String(x.email||"").toLowerCase());
 function editarSocio(uid){const x=(socios||[]).find(y=>y.uid===uid);if(!x)return;const r=x.registro||{},nm=r.nombre||x.email||"Socio";
   const opts=(socios||[]).filter(y=>y.uid!==uid&&y.registro&&y.registro.nombre&&!esSoloAdmin(y)).sort((a,b)=>a.registro.nombre.localeCompare(b.registro.nombre,"es"));
@@ -5216,6 +5329,8 @@ function avScroll(id,n){n=n||0;setTimeout(()=>{const r=$(id);if(r&&!r.hidden){r.
 function avEq(t){eqTab=t;try{setSeg("eqSeg",eqTab)}catch(e){}go("equipo");try{renderEquipo()}catch(e){}}
 function avIr(k){try{
   if(k==="np"){go("academia");setTimeout(()=>{try{npCurso()}catch(e){}},300);return}
+  if(k==="recoyo"){setTimeout(()=>{try{recoMio()}catch(e){}},300);return}
+  if(k==="reco"){setTimeout(async()=>{try{if(!mios||!mios.length)await loadMios()}catch(e){}try{recoLista()}catch(e){}},300);return}
   if(k==="apr"){aprAbrir();return}
   if(k==="rep"){if(isAdmin)repAdmin();return}
   if(k==="via"){go("inicio");try{avBoxMostrar("viaStrip")}catch(e){}avScroll("#viaStrip");return}
@@ -7535,7 +7650,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
     $("#pfNombre").onclick=abrirMisDatos;$("#pfAvisos").onclick=()=>{closeSheet();setTimeout(misAvisos,250)};{const gp=$("#pfGrp");if(gp)gp.onclick=()=>{closeSheet();setTimeout(grpAdmin,250)}}{const rp=$("#pfRep");if(rp)rp.onclick=()=>{closeSheet();setTimeout(repAdmin,250)}}{const tz=$("#pfTz");if(tz)tz.onclick=()=>{closeSheet();setTimeout(trZoomAdmin,250)}}{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const cz=$("#pfCie");if(cz)cz.onclick=()=>{closeSheet();eqTab="cierre";go("equipo");renderEquipo()}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
-    $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfVia").onclick=()=>window.open(VIA_FORM,"_blank","noopener");{const b=$("#pfDecl");if(b)b.onclick=()=>{closeSheet();setTimeout(declAbrir,250)}}{const b=$("#pfCert");if(b)b.onclick=()=>{closeSheet();setTimeout(certLista,250)}}{const b=$("#pfTl");if(b)b.onclick=()=>{closeSheet();setTimeout(()=>{const n=miNombreFull()||miNombreCorto();tlEs(n)?certMio():tlInfo()},250)}}$("#pfMem").onclick=()=>memCompartir();$("#pfLzs").onclick=()=>{closeSheet();setTimeout(abrirLanzSocio,250)};$("#pfMemV").onclick=()=>memVisitas();
+    $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfVia").onclick=()=>window.open(VIA_FORM,"_blank","noopener");{const b=$("#pfDecl");if(b)b.onclick=()=>{closeSheet();setTimeout(declAbrir,250)}}{const b=$("#pfCert");if(b)b.onclick=()=>{closeSheet();setTimeout(recoLista,250)}}{const b=$("#pfTl");if(b)b.onclick=()=>{closeSheet();setTimeout(()=>{miReco()?recoMio():tlInfo()},250)}}$("#pfMem").onclick=()=>memCompartir();$("#pfLzs").onclick=()=>{closeSheet();setTimeout(abrirLanzSocio,250)};$("#pfMemV").onclick=()=>memVisitas();
     $("#pfInv").onclick=()=>{closeSheet();setTimeout(invPlanHoja,250)};
     $("#pfInst").onclick=()=>openSheet(`<h2>Instala la app</h2>
       <p><b>iPhone (Safari):</b> toca <b>Compartir</b> (cuadro con flecha) → <b>Agregar a pantalla de inicio</b> → <b>Agregar</b>.</p>
@@ -8216,7 +8331,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261112163143";var busy=false,pend=null;
+(function(){var V="20261112173616";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

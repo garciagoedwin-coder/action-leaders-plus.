@@ -139,6 +139,25 @@ export function msgAct(a, paraSponsor) {
 // Sistema de liderazgo: quien cruza 200 o 500 pts en este ciclo (mismo mes).
 // Nuevo en liderazgo (auto = mes) → bienvenida; ya era miembro → felicitación "sigue el próximo mes".
 const lzNivel = v => (v >= 500 ? 2 : v >= 200 ? 1 : 0);
+// 12 nov (Edwin): reconocimientos. Índice: 1 Team Leader (nivel calculado, config.tl), 2 MD … 8 Board.
+export function rkIdx(r) { r = nrm(r); return /board/.test(r) ? 8 : /executive/.test(r) ? 7 : /international/.test(r) ? 6 : /national/.test(r) ? 5 : /regional/.test(r) ? 4 : /senior|^sm |sm director|smd/.test(r) ? 3 : /marketing/.test(r) ? 2 : /team leader/.test(r) ? 1 : 0; }
+export const RK_N = ["", "Team Leader", "Marketing Director", "Senior Marketing Director", "Regional Director", "National Director", "International Director", "Executive Director", "Board of Directors"];
+export function tlPts(team, nombre) { const L = ((team.config || {}).tl || {}).l || []; const x = L.find(y => nrm(y.n) === nrm(nombre)) || L.find(y => mismoNombre(y.n, nombre)); return x ? +x.p || 0 : 0; }
+export function recoCambios(viejo, nuevo, users) {
+  const out = [], meta = +(((nuevo.config || {}).tl || {}).meta) || 500, hayTl = !!(((viejo.config || {}).tl || {}).l);
+  for (const u of users || []) {
+    const n = (u.registro || {}).nombre; if (!n) continue;
+    const a = rkIdx(rangoUsr(u, viejo)), b = rkIdx(rangoUsr(u, nuevo));
+    if (b >= 2 && b > a) { out.push({ uid: u.uid, n, rk: b, linea: (u.registro.linea || []).filter(Boolean) }); continue; }
+    if (b < 2 && hayTl && tlPts(viejo, n) < meta && tlPts(nuevo, n) >= meta) out.push({ uid: u.uid, n, rk: 1, linea: (u.registro.linea || []).filter(Boolean) });
+  }
+  return out;
+}
+export function msgReco(c, propio) {
+  const X = RK_N[c.rk], p = primer(c.n), nivel = c.rk === 1 ? "nivel" : "rango";
+  return propio ? { title: `🎉 ¡Felicidades, ${p}! Llegó a ${X}`, body: `Su nuevo ${nivel} en inCruises. Descargue su flyer y su diploma en Perfil › Mi reconocimiento 🏅` }
+    : { title: `🎉 ${p} llegó a ${X}`, body: `Felicítelo hoy 👏 Su flyer y su diploma están en Perfil › Reconocimientos de mi equipo.` };
+}
 export function lzCambios(viejo, nuevo) {
   const cv = (viejo.config || {}).lcMesClave, cn = (nuevo.config || {}).lcMesClave;
   if (!cn || cv !== cn) return [];
@@ -304,6 +323,7 @@ export function avDestino(modo, m) {
   const t = (m && m.title) || "";
   if (/^(racha|racha2|fin|manana)$/.test(modo)) return /compromiso|pts/i.test(t + " " + ((m && m.body) || "")) && modo === "manana" ? "comp" : "rut";
   if (modo === "act" && /compromiso/i.test(t)) return "comp";
+  if (modo === "act" && /llegó a /i.test(t)) return /Felicidades,/.test(t) ? "recoyo" : "reco";
   if (/^inc/.test(modo)) return "inc";
   if (modo === "agenda" || modo === "equipo") return "agenda";
   if (modo === "act") return /Sistema de liderazgo|Felicidades/i.test(t) ? "lz" : "snv";
@@ -404,8 +424,17 @@ async function main() {
     const VJ = leer(viejoP), NJ = leer(nuevoP);
     const N = actNuevas(VJ, NJ), LZ = lzCambios(VJ, NJ);
     const subio = (NJ.ranking || []).some(r => (+r.volumen || 0) > compVol(VJ, r.nombre));
-    if (!N.length && !LZ.length && !subio) { console.log("Sin activaciones nuevas ni calificados nuevos."); return; }
+    const tlCambio = JSON.stringify(((VJ.config || {}).tl || {}).l || []) !== JSON.stringify(((NJ.config || {}).tl || {}).l || []), rgCambio = JSON.stringify([VJ.liderazgo, (VJ.config || {}).rangos]) !== JSON.stringify([NJ.liderazgo, (NJ.config || {}).rangos]);
+    if (!N.length && !LZ.length && !subio && !tlCambio && !rgCambio) { console.log("Sin activaciones nuevas ni calificados nuevos."); return; }
     const users = (await db.collection("users").get()).docs.map(d => ({ uid: d.id, ...d.data() }));
+    let RC = [];
+    if (tlCambio || rgCambio) { // 12 nov: llegó a Team Leader o a un rango → aviso a él, a su línea de arriba con rango y a los admins (una vez)
+      const meta = db.doc("push_meta/reco"), M = (await meta.get()).data() || {}, ya = new Set(M.s || []), mes = new Date().toISOString().slice(0, 7);
+      const key = c => c.uid + ":" + c.rk + (c.rk === 1 ? ":" + mes : "");
+      RC = recoCambios(VJ, NJ, users).filter(c => !ya.has(key(c)));
+      console.log("Reconocimientos nuevos:", RC.length);
+      if (!DRY && RC.length) await meta.set({ s: [...ya, ...RC.map(key)].slice(-1500), t: Date.now() }, { merge: true });
+    }
     let CC = [];
     if (subio) { // 12 nov (Edwin): quien cumple su compromiso del mes → aviso a él y a su línea de arriba (una vez por mes)
       const C = {}; (await db.collection("constancia").where("comp.mes", "==", mesUTC()).get()).docs.forEach(d => C[d.id] = d.data());
@@ -421,6 +450,15 @@ async function main() {
       if (!sp) continue;
       const t1 = await pushDe(sp); if (t1) salida.push([sp, t1, msgAct(a, true)]);
       for (const u of arriba) { const t = await pushDe(u); if (t) salida.push([u, t, msgAct(a, false)]); }
+    }
+    if (RC.length) {
+      const adm = users.filter(u => ADMINS.includes(String(u.email || "").toLowerCase())).map(u => u.uid);
+      for (const c of RC) {
+        const d = await db.doc("push/" + c.uid).get(); const x = d.exists ? d.data() : {}; hist[c.uid] = hist[c.uid] || x.h || [];
+        if (x.tk) salida.push([c.uid, x.tk, msgReco(c, true)]);
+        const arriba = c.linea.slice(0, 10).filter(uid => { const y = users.find(z => z.uid === uid); return y && rkIdx(rangoUsr(y, NJ)) >= 2; });
+        for (const u of [...new Set([...arriba, ...adm])]) { if (u === c.uid) continue; const t = await pushDe(u); if (t) salida.push([u, t, msgReco(c, false)]); }
+      }
     }
     for (const c of CC) {
       const d = await db.doc("push/" + c.uid).get(); const x = d.exists ? d.data() : {}; hist[c.uid] = hist[c.uid] || x.h || [];
