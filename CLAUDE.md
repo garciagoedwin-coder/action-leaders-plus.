@@ -785,3 +785,4 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Rutina: en el punto «audio» (Aliméntese) npRutHTML: «🎓 Vea su video de hoy · N · título ▶» (data-npv) o «Video N visto ✓». El clic manual sigue funcionando.
 - Inicio: banner #npBan (order 1, después del saludo; ✕ = LS npBanX:uid para siempre; confeti 1 vez LS npBanC:uid). Se quita solo al terminar el curso.
 - Push: disparo.json modo "msg" con «Networker Pro» en el título → destino "np" (avDestino) → avIr("np") abre el curso.
+- (12 nov, 2 a.m., Edwin) Punto 2 de la rutina se llama «📚 Auto desarrollo personal» (nota «Audio, lectura o videos»). Mientras haya un video de Networker Pro pendiente HOY (npPend), el clic en ese punto NO marca: abre el video (se marca solo al terminarlo). Sin video pendiente (ya vio el de hoy, o el siguiente no se ha liberado) el clic funciona. El enlace de Spotify se oculta mientras el curso esté activo (npActivo).
