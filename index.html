@@ -924,6 +924,7 @@ button.hiPill{font:inherit;font-size:13px;font-weight:700;cursor:pointer}.hiPill
 .decl{display:flex;align-items:center;gap:11px;margin:0 0 12px;padding:11px 12px;border-radius:18px;cursor:pointer;color:#fff;background:radial-gradient(160px 70px at 90% 0%,rgba(246,222,138,.35),transparent 70%),linear-gradient(110deg,#0A7DAD,#0B1220);box-shadow:0 8px 20px -10px rgba(10,125,173,.7)}
 .decl .di{width:38px;height:38px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:20px;background:rgba(255,255,255,.14);box-shadow:0 0 0 3px rgba(246,222,138,.35)}.decl .tx{flex:1;min-width:0;line-height:1.2}.decl .tx b{display:block;font-size:14.5px}.decl .tx span{display:block;font-size:12px;opacity:.85}
 .decl .db{background:#F6DE8A;color:#1d1402;font-weight:900;font-size:13px;border-radius:999px;padding:8px 12px;white-space:nowrap}
+.decl{flex-wrap:wrap}.decl .dAc{flex-basis:100%;margin-top:2px;border-radius:12px;padding:9px 11px;font-size:13.5px;font-weight:800;background:var(--surface-2);color:var(--brand)}.decl:not(.ok) .dAc{background:rgba(255,255,255,.14);color:#fff}.decl.acc{padding:8px 12px}.task.dAcc{background:linear-gradient(90deg,rgba(42,193,241,.14),transparent);margin:0 -14px;padding-left:14px;padding-right:14px;border-radius:10px}.task.dAcc .dAccT{display:inline-block;margin-top:4px;font-size:11.5px;font-weight:800;color:var(--brand)}#declOv .dmu{background:none;border:0;color:#fff;opacity:.8;font-size:19px;padding:6px}#declOv .dacL{width:100%;display:flex;flex-direction:column;gap:9px;text-align:left}#declOv .dacO{display:flex;align-items:center;gap:12px;width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:16px;padding:13px 14px;color:#fff;font:inherit;font-size:15.5px;font-weight:700;text-align:left}#declOv .dacO i{font-style:normal;font-size:22px}#declOv .dacO small{display:block;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.6)}#declOv .dacO.on{background:rgba(42,193,241,.16);border-color:#2AC1F1}#declOv .dacO.on:after{content:"✓";margin-left:auto;color:#2AC1F1;font-weight:900}#declOv .dacIn{width:100%;border-radius:14px;border:1.5px solid #2AC1F1;background:rgba(255,255,255,.08);color:#fff;font:inherit;font-size:15px;padding:12px}#declOv .dacC{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(42,193,241,.4);border-radius:20px;padding:18px}#declOv .dacC b{display:block;font-size:20px;margin-top:6px}#declOv .dc.dacW{justify-content:flex-start;padding-top:10px;overflow:auto}
 .decl .n21{flex:none;text-align:center;line-height:1;border-radius:12px;padding:6px 9px;background:#E7F6EE;border:1.5px solid #16A34A;color:#12805C}.decl .n21 b{font-size:18px;display:block}.decl .n21 small{font-size:9px;font-weight:800;letter-spacing:.06em}
 .decl.ok{background:var(--surface);color:var(--ink);border:1.5px solid #16A34A;box-shadow:none;padding:8px 12px}.decl.ok .di{background:#16A34A;color:#fff;box-shadow:none;width:30px;height:30px;font-size:16px}.decl.ok .tx span{color:var(--muted);opacity:1}
 #declOv{position:fixed;inset:0;z-index:9999;color:#fff;overflow:hidden;user-select:none;-webkit-user-select:none;background:radial-gradient(520px 400px at 50% 16%,rgba(42,193,241,.32),transparent 70%),linear-gradient(180deg,#0B1220,#06101c 60%,#03070d);font-family:Figtree,system-ui,sans-serif}
@@ -1945,7 +1946,7 @@ function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histS
     ra.innerHTML=h;
     if(ra.dataset.st!==st){ra.firstChild&&ra.firstChild.classList.add("shake");if(st==="ok"&&ra.dataset.st)rutJust=true;if(st==="ok"){try{if(LS.get("rutConf")!==TODAY){LS.set("rutConf",TODAY);setTimeout(()=>confeti($("#rutCard"),46),ra.dataset.st?350:900)}}catch(e){}}}ra.dataset.st=st;ra.dataset.key=key;
     const g=ra.querySelector("[data-rgo]");if(g)g.onclick=()=>{const k=g.dataset.rgo,t=$("#tasks");const el=k==="historia"?(day.hAtr&&t.querySelector("[data-hfly]"))||t.querySelector("[data-hist]"):t.querySelector(`[data-k="${k}"]`)||t.querySelector(`[data-inc="${k}"]`);if(el)el.click()}}}
-  rutFold(!falta);const rc=$("#rutCard");if(rc)rc.classList.toggle("done",!falta);clearTimeout(window._rcT);window._rcT=setTimeout(()=>{try{renderComp(true)}catch(e){}},400);
+  declAccMarca();rutFold(!falta);const rc=$("#rutCard");if(rc)rc.classList.toggle("done",!falta);clearTimeout(window._rcT);window._rcT=setTimeout(()=>{try{renderComp(true)}catch(e){}},400);
 }
 let saveDayT;function saveDay(){clearTimeout(saveDayT);saveDayT=setTimeout(()=>store.set("rutina-"+TODAY,day),600);weekCache[TODAY]=day;renderWeek()}
 $("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(ahGate())return;if(b.dataset.npv){npVer(+b.dataset.npv);return}if(b.dataset.hist){abrirHist();return}if(b.dataset.hfly){abrirFlyHoy();return}
@@ -4566,37 +4567,69 @@ function declHecha(){return !!(profile.dec&&profile.dec.d===declHoy())}
 function declRacha(){const x=profile.dec;if(!x||!x.d)return 0;const ay=new Date(Date.parse(declHoy()+"T12:00:00Z")-864e5).toISOString().slice(0,10);return x.d===declHoy()||x.d===ay?(+x.r||0):0}
 function declTx(t){const g=profile.decG==="f"?1:0;return esc(t.replace(/\{([^|}]*)\|([^}]*)\}/g,(m,a,b)=>g?b:a)).replace(/\*([^*]+)\*/g,'<span class="dg">$1</span>')}
 function declStrip(){const el=$("#declStrip");if(!el)return;if(!store.uid||esSoloAdminYo()){el.hidden=true;return}
-  const h=declHN().getUTCHours();if(h>=12){el.hidden=true;return}
-  const ok=declHecha(),r=declRacha(),k=(ok?"1":"0")+r;if(el.dataset.k===k&&!el.hidden)return;el.dataset.k=k;
-  el.className="decl"+(ok?" ok":"");
+  const h=declHN().getUTCHours(),acc=declAcc();if(h>=12&&!(declHecha()&&acc)){el.hidden=true;return}
+  const ok=declHecha(),r=declRacha(),k=(ok?"1":"0")+r+"|"+(h>=12)+"|"+(acc?acc.k+acc.t:"");if(el.dataset.k===k&&!el.hidden)return;el.dataset.k=k;
+  el.className="decl"+(ok?" ok":"")+(acc&&h>=12?" acc":"");
+  const accH=acc?`<div class="dAc" data-dac="1">🎯 Su acción de hoy: ${esc(acc.t)} ›</div>`:"";
+  if(acc&&h>=12){el.innerHTML=`<span class="di">🎯</span><div class="tx"><b>Su acción de hoy</b><span>${esc(acc.t)}</span></div><span class="db" style="background:var(--brand);color:#fff">Hacerla ›</span>`;el.onclick=()=>declAccIr(acc);el.hidden=false;return}
   const d21=ok?((r-1)%21)+1:(r%21)+1; // 11 nov (Edwin): Reto 21 días en el mismo banner
-  el.innerHTML=ok?`<span class="di">✓</span><div class="tx"><b>Declaración de hoy hecha</b><span>${d21===21?"🏆 ¡Completó su reto de 21 días!":"¡Gran inicio de día!"}</span></div><div class="n21"><b>${d21}</b><small>DE 21</small></div>`
+  el.innerHTML=ok?`<span class="di">✓</span><div class="tx"><b>Declaración de hoy hecha</b><span>${d21===21?"🏆 ¡Completó su reto de 21 días!":"¡Gran inicio de día!"}</span></div><div class="n21"><b>${d21}</b><small>DE 21</small></div>${accH}`
    :`<span class="di">☀️</span><div class="tx"><b>Su declaración de éxito</b><span>Reto 21 días · hoy es su día ${d21}</span></div><span class="db">Declarar ›</span>`;
-  el.onclick=declAbrir;el.hidden=false}
+  el.onclick=e=>{if(acc&&e.target.closest("[data-dac]")){declAccIr(acc);return}declAbrir()};el.hidden=false}
+// 12 nov (Edwin): acción más importante del día al terminar la declaración (profile.decA {d,k,t}) + música épica
+const DECL_ACC=[{k:"pres",ic:"🎤",t:"Presentar el plan a 1 persona",s:"Lo que más acerca a un socio nuevo",r:"presentaciones"},{k:"seg",ic:"🔁",t:"Dar seguimiento a 3 prospectos",r:"seguimientos"},{k:"lista",ic:"➕",t:"Agregar 5 personas a mi lista",r:"contactos"},{k:"l3",ic:"📞",t:"Hacer una llamada de 3"},{k:"otra",ic:"✏️",t:"Otra: escribirla yo"}];
+function declAcc(){const a=profile.decA;return a&&a.d===declHoy()&&a.t?a:null}
+function declAccIr(a){const o=DECL_ACC.find(x=>x.k===a.k);try{go("inicio")}catch(e){}
+  if(o&&o.k==="l3"){try{pedirL3(null)}catch(e){}return}
+  if(o&&o.r){setTimeout(()=>{const t=$("#tasks");if(!t)return;rutOpen=true;try{rutFold(false)}catch(e){}const b=t.querySelector(`[data-inc="${o.r}"]`);const tk=b&&b.closest(".task");if(tk){tk.scrollIntoView({behavior:"smooth",block:"center"});setTimeout(()=>b.click(),500)}},250);return}
+  toast("🎯 "+a.t+" · ¡Usted puede!")}
+function declAccMarca(){try{const a=declAcc(),o=a&&DECL_ACC.find(x=>x.k===a.k);const t=$("#tasks");if(!t)return;t.querySelectorAll(".dAcc").forEach(x=>{x.classList.remove("dAcc");const c=x.querySelector(".dAccT");if(c)c.remove()});if(!o||!o.r)return;const b=t.querySelector(`[data-inc="${o.r}"]`),tk=b&&b.closest(".task");if(!tk)return;tk.classList.add("dAcc");const g=tk.querySelector(".grow");if(g)g.insertAdjacentHTML("beforeend",'<br><span class="dAccT">🎯 Su acción de hoy</span>')}catch(e){}}
+const DECL_MP3="media/audio/declaracion.mp3?v=1",DECL_HIT=87.25;
 function declAbrir(){let ov=$("#declOv");if(ov)ov.remove();ov=document.createElement("div");ov.id="declOv";document.body.appendChild(ov);document.body.style.overflow="hidden";
   const nm=(()=>{let b=String(miRegistro().nombre||profile.nombrePila||"").trim();try{b=nv(b)||b}catch(e){}const n=b.split(/\s+/).filter(Boolean);return n.length>1?n[0]+" "+n[n.length-1]:(n[0]||"")})().toUpperCase(),pila=(nm.split(" ")[0]||"");
-  const cerrar=()=>{ov.remove();document.body.style.overflow="";try{declStrip()}catch(e){}};
+  const dm=()=>LS.get("declMute")==1,st={dec:false,hold:false};let au=null;
+  const auIni=()=>{if(au)return au;try{au=new Audio(DECL_MP3);au.preload="auto";au.muted=dm();
+      au.addEventListener("timeupdate",()=>{if(!st.dec&&!st.hold&&au.currentTime>=86.6){au.currentTime=50}});
+      au.addEventListener("ended",()=>{try{au.currentTime=st.dec?100:50;au.play().catch(()=>{})}catch(e){}})}catch(e){au=null}return au};
+  const auPlay=t=>{const a=auIni();if(!a)return;try{if(t!=null)a.currentTime=t;a.play().catch(()=>{})}catch(e){}};
+  const auFin=()=>{if(!au)return;const a=au;au=null;let v=1;const iv=setInterval(()=>{v-=.1;try{a.volume=Math.max(0,v)}catch(e){}if(v<=0){clearInterval(iv);try{a.pause()}catch(e){}}},70)};
+  const muBtn=()=>`<button class="dmu" aria-label="Sonido">${dm()?"🔇":"🔊"}</button>`;
+  const vis=()=>{if(document.hidden&&au)try{au.pause()}catch(e){}};document.addEventListener("visibilitychange",vis);
+  const cerrar=()=>{document.removeEventListener("visibilitychange",vis);auFin();ov.remove();document.body.style.overflow="";try{declStrip()}catch(e){}try{declAccMarca()}catch(e){}};
   let i=-1;const N=DECL.length;
-  const pinta=()=>{const bar=`<div class="dbar"><b style="width:${Math.max(0,(i+1)/(N+1)*100)}%"></b></div>`,top=`<div class="dtop"><span>${i<0?"DECLARACIÓN DE ÉXITO":(Math.min(i+1,N+1))+" DE "+(N+1)}</span><button class="dx" aria-label="Cerrar">✕</button></div>`;
+  const pinta=()=>{const bar=`<div class="dbar"><b style="width:${Math.max(0,(i+1)/(N+1)*100)}%"></b></div>`,top=`<div class="dtop"><span>${i<0?"DECLARACIÓN DE ÉXITO":(Math.min(i+1,N+1))+" DE "+(N+1)}</span><span>${muBtn()}<button class="dx" aria-label="Cerrar">✕</button></span></div>`;
     if(i<0){ov.innerHTML=`<div class="dwm"></div>${top}<div class="dc"><div class="dk">☀️ BUENOS DÍAS${pila?", "+esc(pila):""}</div><div class="dh">¡YO${nm?`, <span class="dg">${esc(nm)}</span>,`:","}<br>HOY DECLARO<br>QUIÉN SOY!</div><div class="ds">Póngase de pie. Léala <b>en voz alta</b>,<br>con fuerza y convicción. 🔥</div>
       ${profile.decG?"":`<div class="dgen"><span>¿Cómo quiere su declaración?</span><div><button data-g="m">🙋‍♂️ Masculino</button><button data-g="f">🙋‍♀️ Femenino</button></div></div>`}</div>
       <div class="dbot"><button class="dgo" ${profile.decG?"":"disabled"}>🗣️ Empezar mi declaración</button><div class="dhint">Toma 2 minutos${declRacha()?` · 🔥 ${declRacha()} días seguidos`:""}${profile.decG?` · <a href="#" class="dcg">Cambiar a ${profile.decG==="f"?"masculino":"femenino"}</a>`:""}</div></div>`;
       ov.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{profile.decG=b.dataset.g;store.set("perfil",profile);pinta()});
       const cg=ov.querySelector(".dcg");if(cg)cg.onclick=e=>{e.preventDefault();profile.decG=profile.decG==="f"?"m":"f";store.set("perfil",profile);pinta()};
-      ov.querySelector(".dgo").onclick=()=>{i=0;pinta()}}
+      ov.querySelector(".dgo").onclick=()=>{i=0;auPlay(0);pinta()}}
     else if(i<N){ov.innerHTML=`<div class="dwm"></div>${top}${bar}<div class="dc dtap">${DECL[i].map((t,j)=>`<div class="dl" style="animation-delay:${j*.45}s">${declTx(t)}</div>`).join("")}</div><div class="dbot"><div class="dhint">Toque la pantalla para seguir ›</div></div>`;
       ov.querySelector(".dtap").parentNode.onclick=e=>{if(e.target.closest(".dx"))return;i++;pinta()}}
     else{ov.innerHTML=`<div class="dwm"></div>${top}${bar}<div class="dc" style="bottom:300px"><div class="dl">¡LO CREO!</div><div class="dl" style="animation-delay:.45s">¡LO DECLARO!</div><div class="dl" style="animation-delay:.9s">¡Y LO HAGO <span class="dy">REALIDAD!</span></div><div class="ds dl" style="animation-delay:1.4s">¡Porque nací para crecer, prosperar y ganar!</div></div>
       <div class="dbot"><button class="dhold" aria-label="Mantener presionado"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46"/></svg><span>🔥<br>¡LO<br>DECLARO!</span></button><div class="dhint">Mantenga presionado 2 segundos</div></div>`;
       const hb=ov.querySelector(".dhold"),cir=hb.querySelector("circle");let t0=0,raf=0;const L=289;cir.style.strokeDasharray=L;cir.style.strokeDashoffset=L;
-      const fin=()=>{cancelAnimationFrame(raf);const hoy=declHoy(),r=declRacha();if(!declHecha()){const nr=r+1;profile.dec={d:hoy,r:nr,b:Math.max(nr,+(profile.dec&&profile.dec.b)||0)};store.set("perfil",profile)}
+      const fin=()=>{cancelAnimationFrame(raf);t0=0;ov.onclick=null;st.dec=true;st.hold=false;if(au){const c=au.currentTime;if(c<DECL_HIT-.6||c>DECL_HIT+1.2)try{au.currentTime=DECL_HIT-.05}catch(x){}if(au.paused)auPlay()}const hoy=declHoy(),r=declRacha();if(!declHecha()){const nr=r+1;profile.dec={d:hoy,r:nr,b:Math.max(nr,+(profile.dec&&profile.dec.b)||0)};store.set("perfil",profile)}
         const rr=declRacha(),d21=((rr-1)%21)+1;
-        ov.innerHTML=`<div class="dwm"></div><div class="dc">${d21===21?`<div class="dk">🏆 RETO DE 21 DÍAS</div><div class="dh">¡LO <span class="dy">LOGRÓ</span>!<br>21 DÍAS<br>DECLARANDO</div><div class="ds">Su mente ya es otra. Mañana empieza un reto nuevo.<br>#HASTAQUEFUNCIONE</div>`:`<div class="dk">✅ DÍA ${d21} DE 21</div><div class="dh">¡HOY ES<br>SU <span class="dy">DÍA</span>!</div><div class="ds">${21-d21===1?"¡Mañana completa su reto de 21 días!":`Faltan ${21-d21} días para completar su reto 🔥`}<br>#HASTAQUEFUNCIONE</div>`}</div><div class="dbot"><button class="dgo">Vamos por el día ›</button></div>`;
-        try{confeti(ov.querySelector(".dc"),120)}catch(e){}try{navigator.vibrate&&navigator.vibrate([60,40,120])}catch(e){}ov.querySelector(".dgo").onclick=cerrar};
+        ov.innerHTML=`<div class="dwm"></div><div class="dc">${d21===21?`<div class="dk">🏆 RETO DE 21 DÍAS</div><div class="dh">¡LO <span class="dy">LOGRÓ</span>!<br>21 DÍAS<br>DECLARANDO</div><div class="ds">Su mente ya es otra. Mañana empieza un reto nuevo.<br>#HASTAQUEFUNCIONE</div>`:`<div class="dk">✅ DÍA ${d21} DE 21</div><div class="dh">¡HOY ES<br>SU <span class="dy">DÍA</span>!</div><div class="ds">${21-d21===1?"¡Mañana completa su reto de 21 días!":`Faltan ${21-d21} días para completar su reto 🔥`}<br>#HASTAQUEFUNCIONE</div>`}</div><div class="dbot"><button class="dgo">Vamos por el día ›</button></div><div class="dtop"><span></span><span>${muBtn()}</span></div>`;
+        try{confeti(ov.querySelector(".dc"),120)}catch(e){}try{navigator.vibrate&&navigator.vibrate([60,40,120])}catch(e){}ov.querySelector(".dgo").onclick=accPinta;muBind()};
       const tick=()=>{const p=Math.min(1,(performance.now()-t0)/2000);cir.style.strokeDashoffset=L*(1-p);hb.style.transform=`scale(${1+p*.08})`;if(p>=1)return fin();raf=requestAnimationFrame(tick)};
-      const down=e=>{e.preventDefault();t0=performance.now();raf=requestAnimationFrame(tick)},up=()=>{if(!t0)return;cancelAnimationFrame(raf);t0=0;cir.style.strokeDashoffset=L;hb.style.transform=""};
+      const down=e=>{e.preventDefault();t0=performance.now();st.hold=true;if(au&&(au.currentTime<84||au.currentTime>86.2))try{au.currentTime=DECL_HIT-2}catch(x){}if(au&&au.paused)auPlay();raf=requestAnimationFrame(tick)},up=()=>{if(!t0)return;cancelAnimationFrame(raf);t0=0;st.hold=false;cir.style.strokeDashoffset=L;hb.style.transform=""};
       hb.addEventListener("pointerdown",down);["pointerup","pointerleave","pointercancel"].forEach(ev=>hb.addEventListener(ev,up));hb.oncontextmenu=e=>e.preventDefault()}
-    const x=ov.querySelector(".dx");if(x)x.onclick=e=>{e.stopPropagation();cerrar()}};
+    const x=ov.querySelector(".dx");if(x)x.onclick=e=>{e.stopPropagation();cerrar()};muBind()};
+  function muBind(){const m=ov.querySelector(".dmu");if(m)m.onclick=e=>{e.stopPropagation();const v=dm()?0:1;LS.set("declMute",v);if(au)au.muted=!!v;else if(!v&&st.dec)auPlay(100);m.textContent=v?"🔇":"🔊"}}
+  function accPinta(){ov.onclick=null;const prev=declAcc();let sel=prev?prev.k:"pres",otro=prev&&prev.k==="otra"?prev.t:"";
+    const top=`<div class="dtop"><span>MI DECLARACIÓN</span><span>${muBtn()}<button class="dx" aria-label="Cerrar">✕</button></span></div>`;
+    const draw=()=>{ov.innerHTML=`<div class="dwm"></div>${top}<div class="dc dacW"><div class="dk" style="color:#2AC1F1">AHORA, A LA ACCIÓN</div><div class="dh" style="text-transform:none;font-size:clamp(24px,7vw,30px)">¿Cuál es su <span class="dg">acción más importante</span> de hoy?</div><div class="ds" style="margin-top:-6px">Una sola. La que más mueve su negocio.</div>
+      <div class="dacL">${DECL_ACC.map(o=>`<button class="dacO${sel===o.k?" on":""}" data-ac="${o.k}"><i>${o.ic}</i><div>${esc(o.t)}${o.s?`<small>${esc(o.s)}</small>`:""}</div></button>`).join("")}${sel==="otra"?`<input class="dacIn" id="dacIn" maxlength="70" placeholder="Escriba su acción de hoy" value="${esc(otro)}">`:""}</div></div>
+      <div class="dbot"><button class="dgo" id="dacOk">🔥 Me comprometo</button></div>`;
+      ov.querySelectorAll("[data-ac]").forEach(b=>b.onclick=()=>{const q=$("#dacIn");if(q)otro=q.value;sel=b.dataset.ac;draw();if(sel==="otra")setTimeout(()=>{const q=$("#dacIn");if(q)q.focus()},50)});
+      ov.querySelector(".dx").onclick=e=>{e.stopPropagation();cerrar()};muBind();
+      $("#dacOk").onclick=()=>{const o=DECL_ACC.find(x=>x.k===sel);let t=o.t;if(sel==="otra"){t=String(($("#dacIn")||{}).value||"").trim();if(!t){toast("Escriba su acción de hoy");return}}
+        profile.decA={d:declHoy(),k:sel,t:t};store.set("perfil",profile);cierre(o,t)}};
+    draw()}
+  function cierre(o,t){ov.innerHTML=`<div class="dwm"></div><div class="dtop"><span>MI DECLARACIÓN</span><span>${muBtn()}</span></div><div class="dc"><div class="dh" style="text-transform:none">Lo declaró.<br>Ahora <span class="dg">hágalo.</span></div><div class="dacC"><div class="dk" style="color:#2AC1F1">SU ACCIÓN DE HOY</div><b>${o.ic} ${esc(t)}</b></div><div class="ds">Se la vamos a recordar en Inicio.<br>Cuando la haga, márquela en su rutina.</div></div><div class="dbot"><button class="dgo">Empezar mi día ›</button></div>`;
+    muBind();ov.querySelector(".dgo").onclick=()=>{cerrar();try{go("inicio")}catch(e){}}}
   pinta()}
 setInterval(()=>{try{if(document.visibilityState==="visible")declStrip()}catch(e){}},30000);setTimeout(()=>{try{declStrip()}catch(e){}},2500);
 // 11 nov (Edwin): BANNERS DE COMPETENCIA (opción A, tinte suave). Mañana 7–12: Mi Racha (Libros Go Pro, top 3) + Incentivo de viaje (1.º en volumen), se deslizan.
@@ -8039,7 +8072,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261112022435";var busy=false,pend=null;
+(function(){var V="20261112113805";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
