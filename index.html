@@ -1198,6 +1198,8 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
 .npFt{text-align:center;font-size:11.5px;opacity:.6;margin:8px 0 0}
 .acaOtros{margin:4px 0 6px}.acaOtros>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
 .acaOtros>summary::-webkit-details-marker{display:none}.acaOtros>summary em{font-style:normal;font-size:13px;color:var(--brand);font-weight:700}.acaOtros>summary i{font-style:normal;display:inline-block;transition:transform .2s}.acaOtros[open]>summary i{transform:rotate(180deg)}
+.npAprob{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;color:#14532D;background:#DCFCE7;border:1.5px solid #86EFAC;border-radius:16px;padding:12px 14px;margin-top:10px;cursor:pointer}
+.npAprob b{display:block;font-size:14.5px}.npAprob small{font-size:12px;color:#166534}.npAprob em{font-style:normal;margin-left:auto;font-size:20px}.npAi{font-size:24px}
 .npQ{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:6px}
 .npQp{margin:0;font-weight:700;font-size:14px}
 .npO{text-align:left;font:inherit;font-size:13.5px;color:var(--ink);background:var(--surface-2);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}
@@ -6914,7 +6916,7 @@ function npCurso(){const E=npEstado();if(!E){toast("El curso todavía no está d
   openSheet(`<div class="npHero"><p class="npK">CURSO · ${esc(String(E.c.nivel||"").toUpperCase())}</p><div class="npT">NETWORKER <b>PRO</b></div><p class="npS">${esc(E.c.sub||"")}. Cada video: mentalidad, habilidad y una acción con la app.</p>
      <div class="npSt"><div><b>${E.vistos}/${E.tot}</b>vistos</div><div><b>${E.nDisp}</b>disponibles</div><div><b>1</b>video al día</div></div></div>
     <div class="npL">${E.V.map((v,i)=>{const n=i+1,ok=!!E.s.v[n],d=E.disp(n),cur=!ok&&d&&n===E.sig;
-      return ok?`<button type="button" class="npI ok" data-npv="${n}"><i>✓</i><span><b>${esc(v.t)}</b><small>Video ${n} · visto${E.s.d[n]?" el "+npF(E.s.d[n]):""}${Array.isArray(v.q)&&v.q.length&&!E.s.q[n]?" · 📝 responda las preguntas":""}</small></span><em class="tok">Visto</em></button>`
+      return ok?`<button type="button" class="npI ok" data-npv="${n}"><i>✓</i><span><b>${esc(v.t)}</b><small>Video ${n} · visto${E.s.d[n]?" el "+npF(E.s.d[n]):""}${Array.isArray(v.q)&&v.q.length?(E.s.q[n]?" · ✅ aprobado":" · 📝 responda las preguntas"):""}</small></span><em class="tok">Visto</em></button>`
         :d?`<button type="button" class="npI${cur?" cur":""}" data-npv="${n}"><i>${n}</i><span><b>${esc(v.t)}</b><small>Video ${n} · ${E.s.w[n]?"📝 falta responder las preguntas":cur?"su video de hoy":"disponible"}</small></span>${cur?`<em class="tnew">NUEVO</em>`:""}</button>`
         :`<div class="npI lk"><i>${n}</i><span><b>${esc(v.t)}</b><small>${esc(E.motivo(n))}</small></span><em class="tlk">🔒</em></div>`}).join("")}
      <button type="button" class="npDip${E.fin?" on":""}" id="npDipB"><span class="npDi">🎓</span><span><b>Diploma Networker Pro</b><small>${E.fin?"¡Lo logró! Toque para descargarlo":"Al ver los 8 videos · con sus insignias"}</small><span class="npIns">${npInsHTML()}</span></span></button></div>
@@ -6934,10 +6936,11 @@ function npVer(n){const E=npEstado();if(!E)return;const v=E.V[n-1];if(!v)return;
     <div class="npPts"><span>🧠 Mentalidad</span><span>🎯 Habilidad</span><span>📲 En la app</span></div>
     <div class="card" style="gap:6px;margin-top:10px"><b>✅ Su tarea</b><p class="small" style="margin:0">${esc(v.tarea||"")}</p>${v.ir?`<button class="btn" id="npIrB" style="width:100%">${esc(v.bt||"Ir")}</button>`:""}</div>
     <div id="npQz"></div>
+    ${E.s.q[n]&&Array.isArray(v.q)&&v.q.length?`<button type="button" class="npAprob" id="npRev"><span class="npAi">✅</span><span><b>Preguntas aprobadas · ${v.q.length} de ${v.q.length}</b><small>Aprobado el ${esc(npF(new Date(E.s.q[n]-216e5).toISOString().slice(0,10)))} · toque para ver las respuestas</small></span><em>›</em></button>`:""}
     <div class="card" style="gap:6px"><b>${ya?"✓ Video completado":"Terminar el video"}</b><p class="small muted" style="margin:0" id="npEst">${ya?"Puede verlo de nuevo cuando quiera.":E.s.w[n]?"Ya vio el video. Responda las 3 preguntas para completarlo.":"Al ver el 90 % del video, sin adelantar, salen 3 preguntas. Al acertarlas se completa."}</p>
       ${n<E.tot&&!ya?`<p class="small muted" style="margin:0">🔔 El video ${n+1} se abre al día siguiente de terminar este.</p>`:""}</div>
     <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
-    const ib=$("#npIrB");if(ib)ib.onclick=()=>npIr(v.ir);npPlayer(n,v.yt,ya||!!E.s.w[n]);if((!ya&&E.s.w[n])||(ya&&Array.isArray(v.q)&&v.q.length&&!E.s.q[n]))npQuiz(n)})}
+    const ib=$("#npIrB");if(ib)ib.onclick=()=>npIr(v.ir);const rv=$("#npRev");if(rv)rv.onclick=()=>{rv.remove();npRepaso(n)};npPlayer(n,v.yt,ya||!!E.s.w[n]);if((!ya&&E.s.w[n])||(ya&&Array.isArray(v.q)&&v.q.length&&!E.s.q[n]))npQuiz(n)})}
 async function npPlayer(n,yt,ya){const box=$("#npYT");if(!box)return;const K="np:"+(store.uid||"")+":"+n;let maxG=+(LS.get(K)||0),wT=Date.now(),hecho=ya,lastS=0;
   try{await welLoadYT()}catch(e){box.innerHTML=`<div class="npErr">No pudimos cargar el video. Revise su conexión.</div>`;return}if(!$("#npYT"))return;
   const P=new YT.Player("npYT",{videoId:yt,host:"https://www.youtube-nocookie.com",playerVars:{rel:0,modestbranding:1,playsinline:1,iv_load_policy:3,fs:1,start:ya?0:Math.floor(maxG)},
@@ -6953,6 +6956,9 @@ function npVisto(n){const E=npEstado();if(!E)return;const v=E.V[n-1],s=npSt();if
   if(!s.w[n]){s.w[n]=Date.now();store.set("perfil",profile);try{renderTasks()}catch(e){}}
   const es=$("#npEst");if(es)es.textContent="¡Muy bien! Ahora responda las 3 preguntas 👇";npQuiz(n);toast("📝 ¡Video visto! Responda las 3 preguntas")}
 function npMez(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function npRepaso(n){const box=$("#npQz"),E=npEstado();if(!box||!E)return;const Q=(E.V[n-1]||{}).q||[];
+  box.innerHTML=`<div class="card npQz" style="gap:10px"><b>✅ Sus respuestas · aprobado</b>`+Q.map((q,i)=>`<div class="npQ hecha"><p class="npQp">${i+1}. ${esc(q.p)}</p>${[q.ok,...(q.no||[])].map(o=>`<div class="npO${o===q.ok?" bien":""}">${o===q.ok?"✓ ":""}${esc(o)}</div>`).join("")}${q.ex?`<p class="npQe small ok">${esc(q.ex)}</p>`:""}</div>`).join("")+`</div>`;
+  box.scrollIntoView({behavior:"smooth",block:"start"})}
 function npQuiz(n){const box=$("#npQz"),E=npEstado();if(!box||!E)return;const Q=(E.V[n-1]||{}).q||[];if(!Q.length){npMarcar(n);return}const ok=new Set();
   box.innerHTML=`<div class="card npQz" style="gap:10px"><b>📝 Responda para completar el video</b><p class="small muted" style="margin:0">Acierte las ${Q.length} preguntas. Si se equivoca, puede intentarlo otra vez.</p>`+Q.map((q,i)=>`<div class="npQ" data-q="${i}"><p class="npQp">${i+1}. ${esc(q.p)}</p>${npMez([q.ok,...(q.no||[])]).map(o=>`<button type="button" class="npO" data-o="${esc(o)}">${esc(o)}</button>`).join("")}<p class="npQe small" hidden></p></div>`).join("")+`</div>`;
   box.querySelectorAll(".npQ").forEach(d=>{const i=+d.dataset.q,q=Q[i],ex=d.querySelector(".npQe");
@@ -8033,7 +8039,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261112021857";var busy=false,pend=null;
+(function(){var V="20261112022435";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
