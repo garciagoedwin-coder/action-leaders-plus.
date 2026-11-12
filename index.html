@@ -6891,7 +6891,7 @@ function acaLogos(){const F={};
 // config.np en team.json {id,t,sub,nivel,desde,videos:[{t,yt,tarea,ir,bt,f?}]}. Avance en profile.np {v:{n:t}, d:{n:"AAAA-MM-DD"}}.
 // Uno por día: el video n se abre el día DESPUÉS de terminar el n-1. Se marca solo al ver el 90 % sin adelantar.
 const npCfg=()=>{const c=(T.config||{}).np;return c&&Array.isArray(c.videos)&&c.videos.length&&(!c.desde||Date.now()>=Date.parse(c.desde)||isAdmin)?c:null};
-const npSt=()=>{const s=profile.np||(profile.np={});s.v=s.v||{};s.d=s.d||{};s.w=s.w||{};return s};
+const npSt=()=>{const s=profile.np||(profile.np={});s.v=s.v||{};s.d=s.d||{};s.w=s.w||{};s.q=s.q||{};return s};
 const npF=f=>{try{return new Date(f+"T12:00:00").toLocaleDateString("es-HN",{weekday:"long",day:"numeric",month:"short"})}catch(e){return f}};
 function npEstado(){const c=npCfg();if(!c)return null;const s=npSt(),V=c.videos,tot=V.length;let vistos=0;V.forEach((v,i)=>{if(s.v[i+1])vistos++});
   const hoyN=+(Object.keys(s.d).find(n=>s.d[n]===TODAY)||0);
@@ -6914,7 +6914,7 @@ function npCurso(){const E=npEstado();if(!E){toast("El curso todavía no está d
   openSheet(`<div class="npHero"><p class="npK">CURSO · ${esc(String(E.c.nivel||"").toUpperCase())}</p><div class="npT">NETWORKER <b>PRO</b></div><p class="npS">${esc(E.c.sub||"")}. Cada video: mentalidad, habilidad y una acción con la app.</p>
      <div class="npSt"><div><b>${E.vistos}/${E.tot}</b>vistos</div><div><b>${E.nDisp}</b>disponibles</div><div><b>1</b>video al día</div></div></div>
     <div class="npL">${E.V.map((v,i)=>{const n=i+1,ok=!!E.s.v[n],d=E.disp(n),cur=!ok&&d&&n===E.sig;
-      return ok?`<button type="button" class="npI ok" data-npv="${n}"><i>✓</i><span><b>${esc(v.t)}</b><small>Video ${n} · visto${E.s.d[n]?" el "+npF(E.s.d[n]):""}</small></span><em class="tok">Visto</em></button>`
+      return ok?`<button type="button" class="npI ok" data-npv="${n}"><i>✓</i><span><b>${esc(v.t)}</b><small>Video ${n} · visto${E.s.d[n]?" el "+npF(E.s.d[n]):""}${Array.isArray(v.q)&&v.q.length&&!E.s.q[n]?" · 📝 responda las preguntas":""}</small></span><em class="tok">Visto</em></button>`
         :d?`<button type="button" class="npI${cur?" cur":""}" data-npv="${n}"><i>${n}</i><span><b>${esc(v.t)}</b><small>Video ${n} · ${E.s.w[n]?"📝 falta responder las preguntas":cur?"su video de hoy":"disponible"}</small></span>${cur?`<em class="tnew">NUEVO</em>`:""}</button>`
         :`<div class="npI lk"><i>${n}</i><span><b>${esc(v.t)}</b><small>${esc(E.motivo(n))}</small></span><em class="tlk">🔒</em></div>`}).join("")}
      <button type="button" class="npDip${E.fin?" on":""}" id="npDipB"><span class="npDi">🎓</span><span><b>Diploma Networker Pro</b><small>${E.fin?"¡Lo logró! Toque para descargarlo":"Al ver los 8 videos · con sus insignias"}</small><span class="npIns">${npInsHTML()}</span></span></button></div>
@@ -6937,7 +6937,7 @@ function npVer(n){const E=npEstado();if(!E)return;const v=E.V[n-1];if(!v)return;
     <div class="card" style="gap:6px"><b>${ya?"✓ Video completado":"Terminar el video"}</b><p class="small muted" style="margin:0" id="npEst">${ya?"Puede verlo de nuevo cuando quiera.":E.s.w[n]?"Ya vio el video. Responda las 3 preguntas para completarlo.":"Al ver el 90 % del video, sin adelantar, salen 3 preguntas. Al acertarlas se completa."}</p>
       ${n<E.tot&&!ya?`<p class="small muted" style="margin:0">🔔 El video ${n+1} se abre al día siguiente de terminar este.</p>`:""}</div>
     <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
-    const ib=$("#npIrB");if(ib)ib.onclick=()=>npIr(v.ir);npPlayer(n,v.yt,ya||!!E.s.w[n]);if(!ya&&E.s.w[n])npQuiz(n)})}
+    const ib=$("#npIrB");if(ib)ib.onclick=()=>npIr(v.ir);npPlayer(n,v.yt,ya||!!E.s.w[n]);if((!ya&&E.s.w[n])||(ya&&Array.isArray(v.q)&&v.q.length&&!E.s.q[n]))npQuiz(n)})}
 async function npPlayer(n,yt,ya){const box=$("#npYT");if(!box)return;const K="np:"+(store.uid||"")+":"+n;let maxG=+(LS.get(K)||0),wT=Date.now(),hecho=ya,lastS=0;
   try{await welLoadYT()}catch(e){box.innerHTML=`<div class="npErr">No pudimos cargar el video. Revise su conexión.</div>`;return}if(!$("#npYT"))return;
   const P=new YT.Player("npYT",{videoId:yt,host:"https://www.youtube-nocookie.com",playerVars:{rel:0,modestbranding:1,playsinline:1,iv_load_policy:3,fs:1,start:ya?0:Math.floor(maxG)},
@@ -6959,7 +6959,7 @@ function npQuiz(n){const box=$("#npQz"),E=npEstado();if(!box||!E)return;const Q=
     d.querySelectorAll(".npO").forEach(b=>b.onclick=()=>{if(ok.has(i))return;const bien=b.dataset.o===q.ok;
       d.querySelectorAll(".npO").forEach(x=>x.classList.remove("mal"));b.classList.add(bien?"bien":"mal");
       ex.hidden=false;ex.className="npQe small "+(bien?"ok":"no");ex.textContent=(bien?"✅ ¡Correcto! ":"❌ Esa no es. Intente otra vez. ")+(bien&&q.ex?q.ex:"");
-      if(bien){ok.add(i);d.classList.add("hecha");if(ok.size===Q.length){box.querySelector(".npQz").insertAdjacentHTML("beforeend",`<p class="npQe ok" style="font-weight:700">🎉 ¡Aprobó las ${Q.length} preguntas!</p>`);npMarcar(n)}}})})}
+      if(bien){ok.add(i);d.classList.add("hecha");if(ok.size===Q.length){box.querySelector(".npQz").insertAdjacentHTML("beforeend",`<p class="npQe ok" style="font-weight:700">🎉 ¡Aprobó las ${Q.length} preguntas!</p>`);const s=npSt();s.q[n]=Date.now();if(s.v[n]){store.set("perfil",profile);try{confeti($("#sheetPanel"),40)}catch(e){}toast("🎉 ¡Aprobó las preguntas del video "+n+"!");try{renderAca()}catch(e){}}else npMarcar(n)}}})})}
 function npMarcar(n){const E0=npEstado();if(!E0)return;const s=npSt();if(s.v[n])return;s.v[n]=Date.now();s.d[n]=TODAY;delete s.w[n];store.set("perfil",profile);
   if(!((day.audio||0)>=1)){day.audio=1;saveDay()}try{renderTasks()}catch(e){}try{renderAca()}catch(e){}try{npBan()}catch(e){}
   const E=npEstado(),es=$("#npEst");if(es)es.textContent="✓ ¡Completado! Su punto «Auto desarrollo personal» de hoy quedó marcado.";
@@ -8033,7 +8033,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261112021431";var busy=false,pend=null;
+(function(){var V="20261112021857";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
