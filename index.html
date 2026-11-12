@@ -375,7 +375,7 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 .mqCard h3{margin:0;font:800 30px/1.1 'Bricolage Grotesque',Figtree,sans-serif;color:#fff}
 .mq-row{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;margin-top:4px}.mq-row b{font-size:16px}.mq-row small{font-weight:600;opacity:.75;font-size:12px}
 .mq-bar{height:10px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}.mq-bar i{display:block;height:100%;border-radius:99px;transition:width .6s}.mq-bar i.c{background:linear-gradient(90deg,#2AC1F1,#7dd3fc)}.mq-bar i.l{background:linear-gradient(90deg,#F5B700,#FDE047)}
-.mq-who{margin-top:6px;border-top:1px solid rgba(255,255,255,.15);padding-top:8px}.mq-who small{font-size:12px;font-weight:700;opacity:.85}
+.mq-who{margin-top:6px;border-top:1px solid rgba(255,255,255,.15);padding-top:8px}.mq-who small{font-size:12px;font-weight:700;opacity:.85}.mq-who{cursor:pointer}.mq-who .mq-all{float:right;font-size:12px;font-weight:800;color:#9BE8FF}.mqlS{display:flex;gap:7px;margin:4px 0 10px}.mqlS div{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px 9px;min-width:0}.mqlS b{display:block;font-family:"Barlow Condensed",sans-serif;font-size:25px;line-height:1}.mqlS span{display:block;font-size:10px;font-weight:800;color:var(--muted);white-space:nowrap;margin-top:3px}.mqlF{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px}.mqlF button{border:0;font:inherit;font-size:12.5px;font-weight:700;padding:7px 11px;border-radius:999px;background:var(--surface-2);color:var(--muted)}.mqlF button.on{background:var(--brand);color:#fff}.mqlR{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:9px 11px;margin-bottom:7px}.mqlR.me{border:1.5px solid var(--brand)}.mqlA{position:relative;flex:none}.mqlA .av{width:42px;height:42px}.mqlA i{position:absolute;right:-2px;bottom:-2px;width:17px;height:17px;border-radius:50%;border:2.5px solid var(--surface);display:grid;place-items:center;font-style:normal;font-size:9px;color:#fff;font-weight:900}.mqlT{flex:1;min-width:0}.mqlT b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mqlT b em{font-style:normal;font-size:11px;font-weight:800;color:var(--brand);margin-left:4px}.mqlB{height:6px;border-radius:9px;background:var(--surface-2);margin-top:6px;overflow:hidden}.mqlB u{display:block;height:100%;border-radius:9px}.mqlN{text-align:right;flex:none;line-height:1.1}.mqlN b{font-family:"Barlow Condensed",sans-serif;font-size:20px}.mqlN small{display:block;font-size:11.5px;color:var(--muted);font-weight:700}
 .mq-av{display:flex;gap:10px;overflow-x:auto;padding:6px 2px 2px;scrollbar-width:none}.mq-av::-webkit-scrollbar{display:none}
 .mq-p{flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;width:58px}.mq-p .av{width:44px;height:44px;box-shadow:0 0 0 2px #F5B700}.mq-p .av.badge{box-shadow:none;border-radius:0}.mq-p b{font-size:11.5px;max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mq-p i{font-style:normal;font-size:11px;color:#FDE047;font-weight:700}
 .mq-less{text-align:center;font-size:12px;font-weight:700;opacity:.7;margin-top:2px}.mq-p0{margin:4px 0 0;font-size:13.5px;opacity:.9}.mqCard .mq-btn{align-self:stretch;margin-top:6px;background:#F5B700;color:#0b1020;border:0}
@@ -2410,16 +2410,36 @@ function renderMetaEq(cargado){const c=$("#metaEq");if(!c)return;const M=mqCfg()
    <h3><span class="mq-lg">${fmt(log)}</span> <small>de ${fmt(meta)} pts</small></h3>
    <div class="mq-row"><span>🤝 Comprometido</span><b>${fmt(comp)} <small>de ${fmt(meta)}</small></b></div><div class="mq-bar"><i class="c" style="width:${pc(comp)}%"></i></div>
    <div class="mq-row"><span>⚡ Logrado</span><b>${fmt(log)} <small>de ${fmt(meta)}</small></b></div><div class="mq-bar"><i class="l" style="width:${pc(log)}%"></i></div>
-   ${L.length?`<div class="mq-who"><small>${L.length} ${L.length===1?"socio comprometido":"socios comprometidos"}</small><div class="mq-av">${L.slice(0,40).map(x=>`<span class="mq-p" title="${esc(x.n)}">${avHTML(x.n,false,false)}<b>${esc(dtFirst(x.n))}</b><i>${fmt(x.v)}</i></span>`).join("")}</div></div>`:`<p class="mq-p0">Sea el primero en hacer su compromiso 💪</p>`}
+   ${L.length?`<div class="mq-who" data-mql><small>${L.length} ${L.length===1?"socio comprometido":"socios comprometidos"}</small><span class="mq-all">Ver lista ›</span><div class="mq-av">${L.slice(0,40).map(x=>`<span class="mq-p" title="${esc(x.n)}">${avHTML(x.n,false,false)}<b>${esc(dtFirst(x.n))}</b><i>${fmt(x.v)}</i></span>`).join("")}</div></div>`:`<p class="mq-p0">Sea el primero en hacer su compromiso 💪</p>`}
    ${puede?`<button type="button" class="btn sm mq-btn" data-comp>🎯 Hacer mi compromiso</button>`:""}<div class="mq-less">Toque para cerrar ▴</div>`;
   c.querySelectorAll("[data-comp]").forEach(b=>b.onclick=e=>{e.stopPropagation();compAbrir()});
-  c.onclick=e=>{if(e.target.closest("button,a,[data-foto]"))return;try{LS.set("mqOpen","")}catch(x){}renderMetaEq()};c.style.cursor="pointer";
+  window._mqLAll=L;
+  c.onclick=e=>{if(e.target.closest("[data-mql]")){mqLista();return}if(e.target.closest("button,a,[data-foto]"))return;try{LS.set("mqOpen","")}catch(x){}renderMetaEq()};c.style.cursor="pointer";
   if(cargado&&mqL){const K="mqSeen:"+mesMeta();let seen=null;try{seen=JSON.parse(LS.get(K)||"null")}catch(e){}const ids=mqL.map(x=>x.uid);
     if(seen){const nw=mqL.filter(x=>!seen.includes(x.uid)&&x.uid!==store.uid).sort((a,b)=>b.t-a.t).slice(0,2);nw.forEach((x,i)=>setTimeout(()=>{try{avisoTop(`🎉 ${dtFirst(x.n)} se comprometió con ${fmt(x.v)} pts`,`Meta del equipo · ${fmt(comp)} de ${fmt(meta)} comprometidos`,()=>{go&&go("inicio")})}catch(e){}},1500+i*5000))}
     try{LS.set(K,JSON.stringify(ids))}catch(e){}}}
 
 // ---------- Compromiso: vista de líder (Mi equipo) y recordatorio de mitad de mes ----------
 function compDe(x){const c=x&&x.comp;return c&&c.mes===mesMeta()?c:null}
+// 12 nov (Edwin): lista completa de compromisos del mes (al tocar «N socios comprometidos»). 🟢 cumplió · 🟡 en camino · 🔴 en 0. 0 lecturas.
+const MQL_C={ok:"#16A34A",cam:"#D97706",cero:"#DC2626"};
+function mqLista(){const M=mqCfg();const L=(window._mqLAll||[]).map(x=>{let V=0;try{const rk=rankDe(x.n);V=rk?+rk.V||0:0}catch(e){}const st=x.v&&V>=x.v?"ok":V>0?"cam":"cero";return{...x,V,st,pc:x.v?Math.min(1,V/x.v):0}});
+  const ord={ok:0,cam:1,cero:2};L.sort((a,b)=>ord[a.st]-ord[b.st]||b.pc-a.pc||b.V-a.V||a.n.localeCompare(b.n));
+  const N=k=>L.filter(x=>x.st===k).length,comp=L.reduce((a,x)=>a+x.v,0);
+  const ms=new Date(new Date().getFullYear(),new Date().getMonth()+1,1)-new Date(),dias=Math.max(0,Math.ceil(ms/864e5));
+  let f="all",q="";
+  openSheet(`<div data-nofocus></div><h2 style="margin:0">🤝 Compromisos · ${esc(mesNom())}</h2><p class="small muted" style="margin:2px 0 0">${L.length} ${L.length===1?"socio se comprometió":"socios se comprometieron"} · ⏳ quedan ${dias} ${dias===1?"día":"días"}</p>
+    <div class="mqlS"><div><b style="color:${MQL_C.ok}">${N("ok")}</b><span>🟢 CUMPLIERON</span></div><div><b style="color:${MQL_C.cam}">${N("cam")}</b><span>🟡 EN CAMINO</span></div><div><b style="color:${MQL_C.cero}">${N("cero")}</b><span>🔴 EN CERO</span></div></div>
+    <div class="mqlF">${[["all","Todos · "+L.length],["ok","🟢 Cumplieron"],["cam","🟡 En camino"],["cero","🔴 En cero"]].map(([k,t])=>`<button type="button" data-mf="${k}" class="${k==="all"?"on":""}">${t}</button>`).join("")}</div>
+    <input id="mqlQ" placeholder="🔎 Buscar socio" autocomplete="off" style="width:100%;margin-bottom:10px;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit">
+    <div id="mqlL"></div><p class="small muted" style="text-align:center;margin:4px 0 0">🤝 ${fmt(comp)} pts comprometidos${M?` · meta del equipo ${fmt(+M.pts)}`:""}</p>
+    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
+    const pinta=()=>{const qq=nrmN(q);const V=L.filter(x=>(f==="all"||x.st===f)&&(!qq||nrmN(x.n).includes(qq)));
+      $("#mqlL").innerHTML=V.length?V.map(x=>{const me=x.uid===store.uid,col=MQL_C[x.st],pc=Math.round(x.pc*100);
+        return `<div class="mqlR${me?" me":""}"><span class="mqlA">${avHTML(x.n,false,false,x.uid)}<i style="background:${col}">${x.st==="ok"?"✓":""}</i></span><div class="mqlT"><b>${esc(nv(x.n)||x.n)}${me?"<em>USTED</em>":""}</b><div class="mqlB"><u style="width:${Math.max(x.V?4:0,pc)}%;background:${col}"></u></div></div>
+          <div class="mqlN"><b>${fmt(x.V)}</b><small>de ${fmt(x.v)}</small>${x.st==="ok"?`<small style="color:${MQL_C.ok};font-weight:800">✓ Cumplió</small>`:`<small>${pc}%</small>`}</div></div>`}).join(""):`<p class="small muted" style="text-align:center;padding:14px 0">Nadie por aquí todavía.</p>`};
+    $("#sheetPanel").querySelectorAll("[data-mf]").forEach(b=>b.onclick=()=>{f=b.dataset.mf;$("#sheetPanel").querySelectorAll("[data-mf]").forEach(x=>x.classList.toggle("on",x===b));pinta()});
+    $("#mqlQ").oninput=e=>{q=e.target.value;pinta()};pinta()})}
 function compAvance(c,nm){let rk=null;try{rk=rankDe(nm)}catch(e){}return{A:rk?rk.A:0,V:rk?rk.V:0,vol:+c.vol||(+c.act||0)*200}}
 function compChip(x,nm){if(!compPuede0())return"";const c=compDe(x);
   if(!c)return `<span class="chip c-warn mk">🎯 Sin compromiso de ${esc(mesNom())}</span>`;
@@ -7701,7 +7721,7 @@ function irInicio(){simBar();const v=$("#v-inicio");if(!v)return;const on=irSimp
   const am=$("#agMia");if(on&&am&&pf.previousElementSibling!==am)am.insertAdjacentElement("afterend",pf);
   else if(!on&&v&&pf.parentNode!==v){const a=$("#nextEvents");v.insertBefore(pf,a?a.nextSibling:null)}}
 // ---- Rankings sin "Registros inCruises" (beta) ----
-let mqRT=null;function mqEnRanking(){const b=$("#eqBody"),o=$("#metaEq");clearInterval(mqRT);if(!b||!o||eqTab!=="ranking"||rankMetric!=="nuevos"||!o.innerHTML.trim())return;const segs=$("#rankSeg")||$("#rankMetric");if(!segs)return;let c=$("#metaEqR");if(!c){c=document.createElement("div");c.id="metaEqR";segs.insertAdjacentElement("afterend",c);c.onclick=e=>{if(e.target.closest("a"))return;o.click();setTimeout(cp,60)}}const cp=()=>{const x=$("#metaEqR");if(!x){clearInterval(mqRT);return}x.className=o.className;x.hidden=false;x.innerHTML=o.innerHTML};cp();mqRT=setInterval(cp,3500)}
+let mqRT=null;function mqEnRanking(){const b=$("#eqBody"),o=$("#metaEq");clearInterval(mqRT);if(!b||!o||eqTab!=="ranking"||rankMetric!=="nuevos"||!o.innerHTML.trim())return;const segs=$("#rankSeg")||$("#rankMetric");if(!segs)return;let c=$("#metaEqR");if(!c){c=document.createElement("div");c.id="metaEqR";segs.insertAdjacentElement("afterend",c);c.onclick=e=>{if(e.target.closest("a"))return;if(e.target.closest("[data-mql]")){mqLista();return}o.click();setTimeout(cp,60)}}const cp=()=>{const x=$("#metaEqR");if(!x){clearInterval(mqRT);return}x.className=o.className;x.hidden=false;x.innerHTML=o.innerHTML};cp();mqRT=setInterval(cp,3500)}
 function rankBeta(){if(!irSimple())return;try{mqEnRanking()}catch(e){}try{const g=$("#actVacGo");if(g)g.onclick=()=>go("crm");if(eqTab==="ranking"&&rankMetric!=="liderazgo"){document.querySelectorAll("#eqBody b,#eqBody .nm,#eqBody .pd-n").forEach(el=>{if(el.dataset.ins||el.children.length)return;const h=insigDe(el.textContent);el.dataset.ins=1;if(h)el.insertAdjacentHTML("beforeend",h)})}}catch(e){}document.querySelectorAll('#rankMetric [data-k="presentaciones"]').forEach(b=>b.remove());document.querySelectorAll('#rankMetric [data-k="liderazgo"]').forEach(b=>{b.textContent="⭐ Sistema de liderazgo"})}
 // ---- Vista del patrocinador ----
 let irVals=null,irValsT=0;
@@ -8072,7 +8092,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261112113805";var busy=false,pend=null;
+(function(){var V="20261112115758";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

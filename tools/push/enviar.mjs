@@ -40,6 +40,42 @@ export function msgManana(uid, c, hoy, ayer, lider) {
     { title: `☀️ Un nuevo día${n ? ", " + n : ""}`, body: lider ? `${lider} va primero por el incentivo de viaje. Su lugar también se construye hoy.` : `Los 3 primeros de Mi Racha se llevan los Libros Go Pro. Hoy es un buen día para sumar.` },
     { title: `☀️ Buenos días${n ? ", " + n : ""}`, body: `Los 3 primeros de Mi Racha se llevan los Libros Go Pro. Empiece su día con su declaración.` }], seed);
 }
+// 12 nov (Edwin): el aviso de las 7 a.m. lleva el avance del compromiso del mes a quien lo hizo (sin avisos nuevos).
+export const mesUTC = (ms = Date.now()) => new Date(ms).toISOString().slice(0, 7);
+export const diasMes = (ms = Date.now()) => { const d = new Date(ms); return Math.max(0, Math.ceil((Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1) - ms) / 864e5)); };
+export function compVol(team, nombre) { const r = (team.ranking || []).find(x => nrm(x.nombre) === nrm(nombre)) || (team.ranking || []).filter(x => mismoNombre(x.nombre, nombre)).sort((a, b) => (+b.volumen || 0) - (+a.volumen || 0))[0]; return r ? +r.volumen || 0 : 0; }
+const fmtN = v => Number(v || 0).toLocaleString("en-US");
+export function msgCompManana(uid, c, team, hoy, ms = Date.now()) {
+  const cp = c && c.comp; if (!cp || cp.no || cp.mes !== mesUTC(ms)) return null;
+  const meta = +cp.vol || (+cp.act || 0) * 200; if (!meta) return null;
+  const n = primer(c.nombre), V = compVol(team, c.nombre || ""), d = diasMes(ms), dd = d === 1 ? "queda 1 día" : `quedan ${d} días`, seed = uid + hoy + "c";
+  if (V >= meta) return pick([
+    { title: `🏆 ¡Ya cumplió su compromiso${n ? ", " + n : ""}!`, body: `Lleva ${fmtN(V)} de ${fmtN(meta)} pts. Vaya por más: hoy también suma 🔥` },
+    { title: `🏆 Compromiso cumplido${n ? ", " + n : ""}`, body: `${fmtN(V)} pts de ${fmtN(meta)}. Su ejemplo arrastra al equipo. ¡A superarlo! 💪` }], seed);
+  if (!V) return pick([
+    { title: `☀️ Buenos días${n ? ", " + n : ""}`, body: `Su compromiso de ${fmtN(meta)} pts empieza con una presentación hoy. ${dd[0].toUpperCase() + dd.slice(1)} 🎯` },
+    { title: `🎯 Su compromiso: ${fmtN(meta)} pts`, body: `${n ? n + ", h" : "H"}oy es un gran día para su primera activación del mes. ${dd[0].toUpperCase() + dd.slice(1)}.` }], seed);
+  return pick([
+    { title: `☀️ Buenos días${n ? ", " + n : ""}`, body: `Su compromiso: ${fmtN(V)} de ${fmtN(meta)} pts. Le faltan ${fmtN(meta - V)} y ${dd}. ¡Hoy suma! 🎯` },
+    { title: `🎯 Va en ${fmtN(V)} de ${fmtN(meta)} pts`, body: `${n ? n + ", l" : "L"}e faltan ${fmtN(meta - V)} para cumplir su compromiso y ${dd}. Una presentación hoy lo acerca 💪` }], seed);
+}
+// Quien cruza su compromiso en este ciclo (volumen viejo < meta ≤ volumen nuevo). C = constancia por uid.
+export function compCumplidos(viejo, nuevo, C, users, ms = Date.now()) {
+  const mes = mesUTC(ms), out = [];
+  for (const [uid, c] of Object.entries(C || {})) {
+    const cp = c && c.comp; if (!cp || cp.no || cp.mes !== mes) continue;
+    const meta = +cp.vol || (+cp.act || 0) * 200; if (!meta) continue;
+    const u = (users || []).find(x => x.uid === uid), nm = (u && u.registro && u.registro.nombre) || c.nombre || ""; if (!nm) continue;
+    const a = compVol(viejo, nm), b = compVol(nuevo, nm);
+    if (a < meta && b >= meta) out.push({ uid, nombre: nm, meta, v: b, linea: [...new Set(((u && u.registro && u.registro.linea) || []).filter(Boolean))].slice(0, 6) });
+  }
+  return out;
+}
+export function msgCompOk(c, propio) {
+  const n = primer(c.nombre);
+  return propio ? { title: `🏆 ¡Cumplió su compromiso, ${n}!`, body: `Llegó a ${fmtN(c.v)} de ${fmtN(c.meta)} pts este mes. ¡Vaya por más! 🔥` }
+    : { title: `🏆 ${n} cumplió su compromiso`, body: `Llegó a ${fmtN(c.v)} pts de los ${fmtN(c.meta)} que se comprometió. Felicítelo hoy 👏` };
+}
 // "fin": unos minutos antes de medianoche, a todos los que tienen avisos de racha.
 export function msgFin(uid, c, hoy, ayer, ms = Date.now()) {
   const { pts, racha } = estadoRutina(c, hoy, ayer), n = primer(c && c.nombre);
@@ -266,7 +302,8 @@ export function msgEqz(e) {
 // 6 nov: a dónde lleva cada aviso al tocarlo (campanita y notificación del teléfono)
 export function avDestino(modo, m) {
   const t = (m && m.title) || "";
-  if (/^(racha|racha2|fin|manana)$/.test(modo)) return "rut";
+  if (/^(racha|racha2|fin|manana)$/.test(modo)) return /compromiso|pts/i.test(t + " " + ((m && m.body) || "")) && modo === "manana" ? "comp" : "rut";
+  if (modo === "act" && /compromiso/i.test(t)) return "comp";
   if (/^inc/.test(modo)) return "inc";
   if (modo === "agenda" || modo === "equipo") return "agenda";
   if (modo === "act") return /Sistema de liderazgo|Felicidades/i.test(t) ? "lz" : "snv";
@@ -297,8 +334,10 @@ async function main() {
     P.forEach(p => hist[p.uid] = p.h || []);
     if (!P.length) { console.log("Nadie con avisos activos."); return; }
     const C = {}; (await db.collection("constancia").get()).docs.forEach(d => C[d.id] = d.data());
-    let lider = ""; try { const TJ = JSON.parse(fs.readFileSync("../../data/team.json", "utf8")); const V = (TJ.ranking || []).filter(r => +r.volumen > 0).sort((a, b) => (+b.volumen) - (+a.volumen)); lider = V[0] ? primer(V[0].nombre) : ""; } catch (e) {}
-    for (const p of P) { const m = modo === "fin" ? msgFin(p.uid, C[p.uid], hoy, ayer) : modo === "manana" ? msgManana(p.uid, C[p.uid], hoy, ayer, lider) : msgRacha(modo, p.uid, C[p.uid], hoy, ayer); if (m) salida.push([p.uid, p.tk, m]); }
+    let lider = "", TJ = {}; try { TJ = JSON.parse(fs.readFileSync("../../data/team.json", "utf8")); const V = (TJ.ranking || []).filter(r => +r.volumen > 0).sort((a, b) => (+b.volumen) - (+a.volumen)); lider = V[0] ? primer(V[0].nombre) : ""; } catch (e) {}
+    let nComp = 0;
+    for (const p of P) { let m = null; if (modo === "manana") { m = msgCompManana(p.uid, C[p.uid], TJ, hoy); if (m) nComp++; else m = msgManana(p.uid, C[p.uid], hoy, ayer, lider); } else m = modo === "fin" ? msgFin(p.uid, C[p.uid], hoy, ayer) : msgRacha(modo, p.uid, C[p.uid], hoy, ayer); if (m) salida.push([p.uid, p.tk, m]); }
+    if (modo === "manana") console.log("Con compromiso en el aviso:", nComp);
   } else if (modo === "msg") {
     // 10 nov: aviso manual a TODOS los que tienen avisos (título y texto en disparo.json)
     const D = JSON.parse(fs.readFileSync("disparo.json", "utf8"));
@@ -364,8 +403,17 @@ async function main() {
     const leer = f => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch { return {}; } };
     const VJ = leer(viejoP), NJ = leer(nuevoP);
     const N = actNuevas(VJ, NJ), LZ = lzCambios(VJ, NJ);
-    if (!N.length && !LZ.length) { console.log("Sin activaciones nuevas ni calificados nuevos."); return; }
+    const subio = (NJ.ranking || []).some(r => (+r.volumen || 0) > compVol(VJ, r.nombre));
+    if (!N.length && !LZ.length && !subio) { console.log("Sin activaciones nuevas ni calificados nuevos."); return; }
     const users = (await db.collection("users").get()).docs.map(d => ({ uid: d.id, ...d.data() }));
+    let CC = [];
+    if (subio) { // 12 nov (Edwin): quien cumple su compromiso del mes → aviso a él y a su línea de arriba (una vez por mes)
+      const C = {}; (await db.collection("constancia").where("comp.mes", "==", mesUTC()).get()).docs.forEach(d => C[d.id] = d.data());
+      const meta = db.doc("push_meta/compok"), M = (await meta.get()).data() || {}, ya = new Set(M.s || []);
+      CC = compCumplidos(VJ, NJ, C, users).filter(c => !ya.has(c.uid + ":" + mesUTC()));
+      console.log("Compromisos cumplidos en este ciclo:", CC.length);
+      if (!DRY && CC.length) await meta.set({ s: [...ya, ...CC.map(c => c.uid + ":" + mesUTC())].slice(-600), t: Date.now() }, { merge: true });
+    }
     const tkDe = {}; const pushDe = async uid => { if (!(uid in tkDe)) { const d = await db.doc("push/" + uid).get(); const x = d.exists ? d.data() : {}; hist[uid] = x.h || []; tkDe[uid] = x.tk && (x.pr || {}).act !== false ? x.tk : null; } return tkDe[uid]; };
     for (const a of N) {
       const { sp, arriba } = destinosAct(a, users);
@@ -373,6 +421,11 @@ async function main() {
       if (!sp) continue;
       const t1 = await pushDe(sp); if (t1) salida.push([sp, t1, msgAct(a, true)]);
       for (const u of arriba) { const t = await pushDe(u); if (t) salida.push([u, t, msgAct(a, false)]); }
+    }
+    for (const c of CC) {
+      const d = await db.doc("push/" + c.uid).get(); const x = d.exists ? d.data() : {}; hist[c.uid] = hist[c.uid] || x.h || [];
+      if (x.tk) salida.push([c.uid, x.tk, msgCompOk(c, true)]);
+      for (const u of c.linea) { if (u === c.uid) continue; const t = await pushDe(u); if (t) salida.push([u, t, msgCompOk(c, false)]); }
     }
     for (const c of LZ) {
       const U = users.filter(u => u.registro && mismoNombre(u.registro.nombre, c.nombre));
