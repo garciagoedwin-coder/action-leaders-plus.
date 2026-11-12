@@ -1,0 +1,60 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Compromisos del equipo · maqueta</title>
+<style>
+@font-face{font-family:P;src:url(../../media/fonts/Poppins-SemiBold.ttf);font-weight:600}
+@font-face{font-family:F;src:url(../../media/fonts/Figtree-VF.ttf);font-weight:100 900}
+@font-face{font-family:B;src:url(../../media/fonts/BarlowCondensed-Bold.ttf);font-weight:700}
+*{box-sizing:border-box;margin:0}
+body{background:#DCE3EA;font-family:F,sans-serif;padding:36px;display:flex;gap:30px;width:max-content}
+.cap{font-family:P;font-size:15px;color:#4A5563;margin:0 0 10px 6px}
+.ph{width:390px;height:844px;border-radius:44px;overflow:hidden;position:relative;box-shadow:0 20px 60px rgba(10,30,60,.2)}
+.L{--bg:#F3F6F9;--sf:#fff;--s2:#E8EFF4;--ink:#2B2A2D;--mu:#5D6470;--ln:#DAE1E8;--br:#0A7DAD}
+.D{--bg:#17181B;--sf:#222327;--s2:#2D2F34;--ink:#EEF1F4;--mu:#A3A9B3;--ln:#383B41;--br:#4CCBF4}
+.ph{background:rgba(0,0,0,.45)}
+.sh{position:absolute;left:0;right:0;bottom:0;top:70px;background:var(--bg);color:var(--ink);border-radius:26px 26px 0 0;padding:10px 16px 0;overflow:hidden}
+.gr{width:40px;height:5px;border-radius:9px;background:var(--ln);margin:0 auto 12px}
+.hd{display:flex;align-items:center;justify-content:space-between}
+.hd h2{font-family:P;font-size:20px}
+.x{width:32px;height:32px;border-radius:50%;background:var(--s2);display:grid;place-items:center;font-size:14px;color:var(--mu)}
+.sub{font-size:13px;color:var(--mu);margin:2px 0 12px}
+.sum{display:flex;gap:8px;margin-bottom:12px}
+.sum div{flex:1;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:9px 10px}
+.sum b{font-family:B;font-size:26px;display:block;line-height:1}
+.sum span{display:block;white-space:nowrap;font-size:10.5px;color:var(--mu);font-weight:800;margin-top:4px}
+.sum .g b{color:#12805C}.sum .r b{color:#B42335}
+.fl{display:flex;gap:6px;margin-bottom:10px}
+.fl span{font-size:12.5px;font-weight:700;padding:7px 11px;border-radius:999px;background:var(--s2);color:var(--mu)}
+.fl span.on{background:var(--br);color:#fff}
+.q{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:9px 12px;font-size:13.5px;color:var(--mu);margin-bottom:10px}
+.ls{display:flex;flex-direction:column;gap:7px}
+.r{display:flex;align-items:center;gap:11px;background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:9px 11px}
+.r.me{border:1.5px solid var(--br)}
+.av{position:relative;width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;font-family:P;font-size:15px;color:#fff}
+.av i{position:absolute;right:-2px;bottom:-2px;width:17px;height:17px;border-radius:50%;border:2.5px solid var(--sf);display:grid;place-items:center;font-style:normal;font-size:9px;color:#fff;font-weight:900}
+.av i.ok{background:#16A34A}.av i.no{background:#DC2626}
+.tx{flex:1;min-width:0}
+.tx b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx b em{font-style:normal;font-size:11px;font-weight:800;color:var(--br);margin-left:4px}
+.br{height:6px;border-radius:9px;background:var(--s2);margin-top:6px;overflow:hidden}
+.br u{display:block;height:100%;border-radius:9px;background:#DC2626}
+.br u.ok{background:#16A34A}
+.nm{text-align:right;flex:none;line-height:1.1}
+.nm b{font-family:B;font-size:20px}
+.nm small{display:block;font-size:11.5px;color:var(--mu);font-weight:700}
+.nm .ck{color:#12805C;font-size:12px;font-weight:800}
+.fade{position:absolute;left:0;right:0;bottom:0;height:60px;background:linear-gradient(transparent,var(--bg))}
+</style></head><body>
+<script>
+const P=[["Santos",1000,1000,"#5B4636"],["Josué",1500,1000,"#2F4858"],["Edwin",700,700,"#1F3A5F",1],["Miriam",700,1000,"#6B4226"],["Francia",600,1500,"#8A5A44"],["Kirian",500,2000,"#4A3B2F"],["Karla",200,1000,"#5D4A66"],["Luis",0,500,"#355C4F"],["Andrea",0,1000,"#7A4E3A"],["Roger",0,500,"#3C4F76"]];
+function ph(cls,cap){const rows=P.map(([n,v,m,c,me])=>{const ok=v>=m,pc=Math.min(100,Math.round(v/m*100));
+ return `<div class="r${me?" me":""}"><div class="av" style="background:${c}">${n[0]}<i class="${ok?"ok":"no"}">${ok?"✓":""}</i></div>
+ <div class="tx"><b>${n} Apellido${me?"<em>USTED</em>":""}</b><div class="br"><u class="${ok?"ok":""}" style="width:${Math.max(pc,3)}%"></u></div></div>
+ <div class="nm"><b>${v.toLocaleString("en-US")}</b><small>de ${m.toLocaleString("en-US")}</small>${ok?'<span class="ck">✓ Cumplió</span>':`<small>${pc}%</small>`}</div></div>`}).join("");
+document.write(`<div><p class="cap">${cap}</p><div class="ph ${cls}"><div class="sh"><div class="gr"></div>
+ <div class="hd"><h2>🤝 Compromisos · Noviembre</h2><span class="x">✕</span></div>
+ <p class="sub">95 socios se comprometieron · ⏳ quedan 19 días</p>
+ <div class="sum"><div class="g"><b>12</b><span>✅ CUMPLIERON</span></div><div class="r"><b>83</b><span>🔴 FALTAN</span></div><div><b>66,100</b><span>🤝 COMPROMETIDO</span></div></div>
+ <div class="fl"><span class="on">Todos · 95</span><span>✅ Cumplieron</span><span>🔴 Faltan</span></div>
+ <div class="q">🔎 Buscar socio</div>
+ <div class="ls">${rows}</div><div class="fade"></div></div></div></div>`)}
+ph("L","Al tocar «95 socios comprometidos» · claro");ph("D","Modo oscuro");
+</script></body></html>
