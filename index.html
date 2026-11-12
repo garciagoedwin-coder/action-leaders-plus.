@@ -3230,7 +3230,7 @@ function dtFicha(x){const img=dtFoto(x.u,x.n),f=dtFirst(x.n),mes=x.f?MONTHS[new 
 // 10 nov (Edwin): el patrocinador elige el paquete ANTES de mandar el enlace → invitaciones/{id} {by, plan, gen} y el enlace lleva &b=id.
 // El socio se registra sin elegir plan. Si alguien usa un enlace viejo, queda "por confirmar" y lo corrige el correo de inCruises (aprobar.mjs).
 function invPlan(cb){openSheet(`<p class="eyebrow">INVITAR</p><h2 style="margin:2px 0 6px">¿Con qué paquete entró?</h2><p class="small muted" style="margin:0 0 12px">Se crea un enlace solo para esa persona, con su paquete ya puesto. Al registrarse no tiene que elegir nada.</p>
-  <div class="ipL"><button type="button" data-ip="Starter"><b>Starter</b><small>50 pts</small></button><button type="button" data-ip="Classic"><b>Classic</b><small>200 pts</small></button><button type="button" data-ip="Premium" class="pr"><b>★ Premium</b><small>500 pts</small></button></div>
+  <div class="ipL"><button type="button" data-ip="Starter"><b>Starter</b><small>solo socio · sin volumen</small></button><button type="button" data-ip="Classic"><b>Classic</b><small>200 pts</small></button><button type="button" data-ip="Premium" class="pr"><b>★ Premium</b><small>500 pts</small></button></div>
   <button class="btn ghost" data-close style="width:100%;margin-top:12px">Cancelar</button>`,()=>{document.querySelectorAll("[data-ip]").forEach(b=>b.onclick=async()=>{const plan=b.dataset.ip;b.disabled=true;
     const id=Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4);
     try{await store.db.doc("invitaciones/"+id).set({by:store.uid,byNombre:miRegistro().nombre||"",plan,gen:1,t:Date.now()})}catch(e){b.disabled=false;toast("No se pudo crear el enlace ("+errCod(e)+")");return}
@@ -3705,8 +3705,10 @@ function rcSame(a,b){a=rcN(a);b=rcN(b);if(!a||!b)return false;if(a===b)return tr
 function rcCfg(){const R=(T.config||{}).retoCierre;if(!R||!R.desde||!R.hasta)return null;const t=Date.now();if(t<Date.parse(R.desde)||t>Date.parse(R.hasta)+18*3600e3)return null;return R}
 function rcEquiv(f){const p=Math.ceil(f/500),c=Math.ceil(f/200);return `≈ ${p} Premium o ${c} Classic`}
 function rcPrem(v){return v>=1500?"3+ Premium":v%500===0&&v>0?(v/500)+" Premium":v.toLocaleString("en-US")+" pts"}
+// 11 nov (Edwin): quien entra solo como socio (Starter) o ya era miembro (ps) o solo código (sc) NO suma volumen ni activación.
+const actSinVol=a=>!!(a&&(a.ps||a.sc||/starter/i.test(a.paquete||"")));
 function rcDatos(){const R=rcCfg();if(!R)return null;const V={Starter:50,Classic:200,Premium:500};
-  const acts=(T.activaciones||[]).filter(a=>a.fecha>=R.desde&&a.fecha<R.hasta&&!a.ps&&!a.sc);
+  const acts=(T.activaciones||[]).filter(a=>a.fecha>=R.desde&&a.fecha<R.hasta&&!actSinVol(a));
   const rows=(R.comp||[]).map(c=>({n:c.n,k:[c.n].concat(c.k||[]),v:+c.v||0,l:0,pr:0}));
   (rcJ||[]).forEach(j=>{if(!j.n||rows.some(r=>r.k.some(k=>rcSame(k,j.n))))return;rows.push({n:j.n.split(/\s+/).slice(0,2).join(" "),k:[j.n],v:+j.v||500,l:0,pr:0,app:1})});
   let tot=0;acts.forEach(a=>{const v=V[a.paquete]||0;tot+=v;let r=rows.find(x=>x.k.some(k=>rcSame(k,a.patrocinador)));
@@ -4013,7 +4015,7 @@ function renderEquipo0(){const b=$("#eqBody");redProbe();redBtn();
     const PKV={Starter:50,Classic:200,Premium:500},nrm=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim();
     const same=(a,b)=>{a=nrm(a);b=nrm(b);if(!a||!b)return false;if(a===b)return true;const A=a.split(" "),B=b.split(" "),[S,L]=A.length<=B.length?[A,B]:[B,A];return S.length>=2&&S.every(w=>L.includes(w))};
     const wk0=(()=>{const h=new Date(Date.now()-216e5);const dw=(h.getUTCDay()+6)%7;return Date.UTC(h.getUTCFullYear(),h.getUTCMonth(),h.getUTCDate()-dw)+216e5})();
-    const acts=(T.activaciones||[]).filter(a=>!a.ps&&!a.sc);
+    const acts=(T.activaciones||[]).filter(a=>!actSinVol(a));
     d.forEach(x=>{if(!sem&&x.volumen!=null&&x.volumen!==""){x.vol=num(x.volumen);return}
       const mine=acts.filter(a=>same(a.patrocinador,x.nombre)&&(!sem||Date.parse(a.fecha)>=wk0));x.vol=mine.reduce((t,a)=>t+(PKV[a.paquete]||0),0)});
     const vcls=v=>v>=500?"good":v>=200?"warn":"bad";
@@ -4030,7 +4032,7 @@ function renderEquipo0(){const b=$("#eqBody");redProbe();redBtn();
     const per=T.config&&T.config.rankingSemanaLabel;
     const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="${rankMetric==="nuevos"}" data-k="nuevos">Activaciones</button><button aria-selected="${rankMetric==="presentaciones"}" data-k="presentaciones">Registros inCruises</button><button aria-selected="false" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button><button aria-selected="false" data-k="liderazgo">⭐ Liderazgo</button></div>
      <div class="seg" role="tablist" id="rankSeg" hidden><button aria-selected="true" data-k="mes">Este mes</button></div>
-     <p class="small muted">${rankMetric==="nuevos"?"Ordenado por volumen (Starter 50 · Classic 200 · Premium 500).":"Solo cuentan los prospectos registrados gratis en inCruises."}</p>`;
+     <p class="small muted">${rankMetric==="nuevos"?"Ordenado por volumen (Classic 200 · Premium 500; quien entra solo como socio no suma).":"Solo cuentan los prospectos registrados gratis en inCruises."}</p>`;
     if(!d.length){b.innerHTML=segs+(irSimple()&&rankMetric==="nuevos"?actVacio():emptyCard(rankMetric==="nuevos"?"Aún no hay socios nuevos en este periodo":"Aún no hay registros en este periodo","El primero en sumar toma el primer lugar."));bindRank();return}
     const pod=(p,i)=>p?`<div class="pod p${i+1}">${avHTML(p.nombre,p.me,true)}<span class="nm">${esc(nv(p.nombre))}</span>${premN(p.nombre)}${tags(p)}${rankMetric==="nuevos"?`<div class="block"><b>${p.rk}</b><span class="small num">Vol. ${fmt(p.v)}</span></div>`:`<div class="block"><b>${fmt(p.v)}</b><span class="small num">${u(p.v)}</span><span class="small num" style="font-weight:800;opacity:.9">#${p.rk}${p.rk===1?" Top":""}</span></div>`}</div>`:"<div></div>";
     const max=Math.max(...d.map(x=>x.v),1);
@@ -4746,7 +4748,7 @@ function snvDatos(o){if(o===undefined)o=snvM;const ini=snvIni(o),fin=snvIni(o-1)
 function snvFiltra(L){return snvF==="sin"?L.filter(f=>!f.app&&!f.cli):snvF==="cli"?L.filter(f=>f.cli):snvF==="s1"?L.filter(f=>f.app&&!f.m1):snvF==="ok"?L.filter(f=>f.m1):L}
 function snvFila(f){const a=f.a,E=f.E,id=esc(a.id||a.socio),pl=/premium/i.test(a.paquete||"")?"Premium":/starter/i.test(a.paquete||"")?"Starter":"Classic";
   const dc=f.dec?(f.dec.s==="c"?`<span class="chip" style="background:#64748B;color:#fff;font-weight:700">🧳 Cliente</span>`:`<span class="chip c-gold" style="font-weight:700">🚀 Va a trabajar</span>`)+`<span class="small muted" style="align-self:center">${esc(f.dec.pn?"por "+f.dec.pn.split(" ")[0]:"")}</span>`:"";
-  const ap=(f.cli?dc:f.app?`<span class="chip c-good">✅ En la app</span>`:f.inc?`<span class="chip c-gold">⏳ Registro incompleto</span>`:f.ver?`<span class="chip c-bad">📵 Sin app</span>`:`<span class="chip">❔ Sin verificar</span>`)+(!f.cli&&f.dec?dc:!f.app&&!f.dec&&!f.inc?`<span class="chip" style="background:#FEE2E2;color:#B91C1C;font-weight:700">❓ Sin decidir</span>`:"")+(a.ps?`<span class="chip c-brand">🔄 Pasó a socio · sin volumen</span>`:"")+(a.sc?`<span class="chip c-brand">🔑 Solo código · sin volumen</span>`:"");
+  const ap=(f.cli?dc:f.app?`<span class="chip c-good">✅ En la app</span>`:f.inc?`<span class="chip c-gold">⏳ Registro incompleto</span>`:f.ver?`<span class="chip c-bad">📵 Sin app</span>`:`<span class="chip">❔ Sin verificar</span>`)+(!f.cli&&f.dec?dc:!f.app&&!f.dec&&!f.inc?`<span class="chip" style="background:#FEE2E2;color:#B91C1C;font-weight:700">❓ Sin decidir</span>`:"")+(a.ps?`<span class="chip c-brand">🔄 Pasó a socio · sin volumen</span>`:"")+(a.sc?`<span class="chip c-brand">🔑 Solo código · sin volumen</span>`:!a.ps&&/starter/i.test(a.paquete||"")?`<span class="chip c-brand">🔑 Entró como socio · sin volumen</span>`:"");
   const irT=!f.app||(!f.m1&&!f.ir.w)?"":f.m1?`<span class="chip" style="background:linear-gradient(120deg,#FBEFC0,#D4AF37);color:#3b2a00;font-weight:800">🏅 Completó la primera fase</span>`:`<span class="chip c-brand">🚀 Semana 1 · ${f.ir.n||0}/${f.ir.tot||12}</span>`;
   const rt=!E?"":E.gano?`<span class="chip" style="background:#FBEFC0;color:#3b2a00;font-weight:800">🚀 Despegó</span>`:E.venc?`<span class="chip">⌛ Despegue vencido</span>`:`<span class="chip c-gold">⏳ Despegue: quedan ${raQueda(E.lim-Date.now())}</span>`;
   let bt="";
@@ -8084,7 +8086,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261111181314";var busy=false,pend=null;
+(function(){var V="20261111224111";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

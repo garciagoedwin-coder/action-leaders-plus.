@@ -10,6 +10,9 @@ on:
       dry:
         description: "1 = prueba (no guarda, no marca la hoja, no avisa)"
         default: "1"
+      forzar:
+        description: "1 = recalcular el ranking aunque no haya nada nuevo"
+        default: ""
 concurrency: buzon
 permissions:
   contents: write
@@ -28,6 +31,7 @@ jobs:
           FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
           BUZON_ID: ${{ secrets.BUZON_ID }}
           DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry == '1' && '1' || '' }}
+          FORZAR: ${{ github.event_name == 'workflow_dispatch' && inputs.forzar || '' }}
         run: |
           cp data/team.json /tmp/viejo.json
           python3 tools/buzon/buzon.py

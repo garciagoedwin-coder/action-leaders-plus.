@@ -73,7 +73,8 @@ if _pend:
                 a['ps'] = 1; a['rv'] = 1; print('YA ERA MIEMBRO (no suma volumen):', a['socio'])
             else:
                 print('REVISAR con el reporte de Compensación:', a['socio'], '· en la red como', r.get('t'))
-NUEVO = lambda a: not a.get('ps') and not a.get('sc')
+# 11 nov (Edwin): quien entra solo como socio (paquete Starter) tampoco suma (inCruises no lo cuenta en Compensación).
+NUEVO = lambda a: not a.get('ps') and not a.get('sc') and 'starter' not in str(a.get('paquete', '')).lower()
 
 VOL = {"Starter": 50, "Classic": 200, "Premium": 500}
 # config.rankingUnir {"Nombre en inCruises": "Nombre al que se suma"}: cuentas que trabaja otra persona (ej. la cuenta de la esposa de Edwin suma a Edwin)
@@ -172,6 +173,6 @@ for e in new:
 if cambio: cfg['rankingActualizado'] = (now - datetime.timedelta(hours=6)).strftime('%Y-%m-%dT%H:%M:00-06:00')
 cfg['rankingFuente'] = 'drive-csv'
 json.dump(d, open('data/team.json', 'w'), ensure_ascii=False, indent=1)
-print('volumen nuevo del mes', sum(VOL.get(a['paquete'], 0) for a in acts), '· sin volumen (ps/sc):', [a['socio'] for a in d['activaciones'] if a['fecha'] >= mes0 and not NUEVO(a)])
+print('volumen nuevo del mes', sum(VOL.get(a['paquete'], 0) for a in acts), '· sin volumen (ps/sc/Starter):', [a['socio'] for a in d['activaciones'] if a['fecha'] >= mes0 and not NUEVO(a)])
 print('socios', len(new), 'registros', sum(e['registros'] for e in new), 'semana', sum(e['regSemana'] for e in new), 'activaciones mes', len(acts))
 print(sorted([(e['nombre'], e['registros']) for e in new], key=lambda x: -x[1])[:8])

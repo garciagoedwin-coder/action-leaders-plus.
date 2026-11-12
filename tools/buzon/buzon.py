@@ -122,6 +122,7 @@ def main():
     reg_h = hashlib.sha256(reg_txt.encode()).hexdigest()[:16]
     est = {r[0]: (r[1] if len(r) > 1 else '') for r in leer('Estado!A2:B') if r}
     reg_cambio = est.get('registros_hash_app') != reg_h
+    if os.environ.get('FORZAR') == '1': reg_cambio = True  # recalcular el ranking a mano (p. ej. cambió una regla)
     log('pendientes', len(pend), '· registros', len(regs), '(cambiaron)' if reg_cambio else '(sin cambios)', '· DRY' if DRY else '')
     if not pend and not reg_cambio:
         log('Nada nuevo'); return
