@@ -2,7 +2,7 @@
 <html lang="es"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Confirme su asistencia · Action Leaders+</title>
+<title>Confirme su asistencia · Action Leaders</title>
 <meta name="description" content="Junta de negocios: confirme su asistencia en 10 segundos.">
 <meta property="og:title" content="Le invito a una Junta de negocios 🤝">
 <meta property="og:description" content="Descubra cómo viajar más, gastar menos y emprender desde su celular. Confirme aquí su asistencia.">
@@ -71,14 +71,14 @@ const dn=E.dn||"",dn1=dn.split(" ")[0]||"";
 const ds=[1,2,3].includes(+E.ds)?+E.ds:1,bg=bx?"media/eventos/bx.jpg":"media/eventos/f-"+(gran?"g":"j")+ds+".jpg"+(gran?"":"?v=3");
 const bxH=()=>{const w=esc(tipo.toUpperCase()).split(/\s+/);if(w.length<2)return w[0];const i=Math.ceil(w.length/2);return w.slice(0,i).join(" ")+" <span>"+w.slice(i).join(" ")+"</span>"};
 document.title=tipo+" · Confirme su asistencia";
-$("#app").innerHTML=`<div class="hero" style="background-image:url('${bg}')"><img class="logo" src="media/logo-al.png" alt="Action Leaders+"><div class="hc"><span class="pill">${E.z?"VIRTUAL":"PRESENCIAL"}</span><h1>${bx?bxH():gran?"GRAN EVENTO <span>DE NEGOCIOS</span>":"JUNTA DE <span>NEGOCIOS</span>"}</h1>${bx&&E.bs?`<div class="city" style="font-weight:600;letter-spacing:.06em">${esc(E.bs)}</div>`:""}<div class="city">${esc(E.c||(E.z?"En línea":""))}</div></div></div>
+$("#app").innerHTML=`<div class="hero" style="background-image:url('${bg}')"><img class="logo" src="media/logo-al.png" alt="Action Leaders"><div class="hc"><span class="pill">${E.z?"VIRTUAL":"PRESENCIAL"}</span><h1>${bx?bxH():gran?"GRAN EVENTO <span>DE NEGOCIOS</span>":"JUNTA DE <span>NEGOCIOS</span>"}</h1>${bx&&E.bs?`<div class="city" style="font-weight:600;letter-spacing:.06em">${esc(E.bs)}</div>`:""}<div class="city">${esc(E.c||(E.z?"En línea":""))}</div></div></div>
 <div class="w">
  ${dn?`<div class="inv"><div class="av" id="dav">${esc(ini(dn))}</div><div><small>Le invita</small><b>${esc(dn)}</b></div></div>`:""}
  <div class="grid"><div class="c"><small>FECHA</small><b>${esc(fechaC)}</b></div><div class="c"><small>HORA</small><b>${esc(h12)} 🇭🇳</b></div>
  <div class="c full"><div style="min-width:0"><small>LUGAR</small><b>${E.z?"🎥 Por Zoom":"📍 "+esc(E.l||"")}</b>${!E.z&&E.ls?`<div class="sub2">${esc(E.ls)}</div>`:""}${E.z?`<div class="sub2">Le enviaremos el enlace por WhatsApp</div>`:""}</div>${!E.z&&E.m&&/^https:\/\//.test(E.m)?`<a class="map" href="${esc(E.m)}" target="_blank" rel="noopener">📍 Mapa</a>`:""}</div></div>
  ${(E.a||[]).length?`<div class="an">${bx?"INVITADO ESPECIAL Y PONENTES":gran?"INVITADOS":"ANFITRIONES"}</div><div class="hs">${E.a.map(x=>`<div class="h"><div class="av">${esc(ini(x[0]))}</div>${esc(x[0])}${x[1]==="esp"?" ⭐":""}</div>`).join("")}</div>`:""}
  <div class="f" id="F"></div>
- <p class="foot">Descubra cómo viajar más, gastar menos y emprender desde su celular.<br>Action Leaders+</p>
+ <p class="foot">Descubra cómo viajar más, gastar menos y emprender desde su celular.<br>Action Leaders</p>
 </div>`;
 const K="rsvp:"+E.e;
 const gcal=()=>{const a=new Date(Date.UTC(Y,M-1,D,hh+6,mm)),b=new Date(a.getTime()+2*36e5),g=d=>d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");

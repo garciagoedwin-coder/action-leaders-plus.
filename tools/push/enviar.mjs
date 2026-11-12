@@ -1,4 +1,4 @@
-// Avisos (notificaciones push) de Action Leaders+.
+// Avisos (notificaciones push) de Action Leaders.
 // Corre en GitHub Actions con el secreto FIREBASE_SA (clave de la cuenta de servicio; NUNCA en el repo).
 //   node enviar.mjs racha            → 7:00 p.m. HN: a quien no ha completado su rutina hoy
 //   node enviar.mjs racha2           → 9:30 p.m. HN: solo racha de 3+ días que está por perderse

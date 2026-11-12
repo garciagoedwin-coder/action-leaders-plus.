@@ -201,7 +201,7 @@ const safe=u=>{try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href
 if(P){const nm=P.nombre||"Tu invitador",first=nm.split(" ")[0];$("sNm").textContent=nm;$("sNm2").textContent=first;
   const av=$("sAv");if(P.foto){av.style.backgroundImage="url("+P.foto+")";av.textContent=""}else av.textContent=nm.split(" ").map(w=>w[0]).slice(0,2).join("");
   document.title=first+" te invita · Action Leaders";
-  if(P.wa){const h="https://wa.me/"+P.wa+"?text="+encodeURIComponent("Hola "+first+", acabo de ver su página de Action Leaders+ y me interesa conocer más de la oportunidad.");$("wa").href=$("wa2").href=h;document.querySelectorAll(".js-wa").forEach(a=>a.href=h)}else{$("wa").style.display="none";$("wa2").style.display="none";document.querySelectorAll(".mid-cta").forEach(a=>a.style.display="none")}
+  if(P.wa){const h="https://wa.me/"+P.wa+"?text="+encodeURIComponent("Hola "+first+", acabo de ver su página de Action Leaders y me interesa conocer más de la oportunidad.");$("wa").href=$("wa2").href=h;document.querySelectorAll(".js-wa").forEach(a=>a.href=h)}else{$("wa").style.display="none";$("wa2").style.display="none";document.querySelectorAll(".mid-cta").forEach(a=>a.style.display="none")}
   const r=safe(P.ref||"");if(r)$("ref").href=r;else $("ref").style.display="none";
   $("sNm3").textContent=first;
   $("lead").onsubmit=async e=>{e.preventDefault();const b=$("lBtn");const n=$("ln").value.trim(),t=$("lt").value.replace(/\D/g,"");
