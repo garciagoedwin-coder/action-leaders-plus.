@@ -59,27 +59,38 @@ async function main() {
   const key = Buffer.from(k.replace(/-/g, "+").replace(/_/g, "/"), "base64");
   const H = huellas(team, leerEnc(key, "../../data/red.enc"), leerEnc(key, "../../data/nuevos.enc"), leerEnc(key, "../../data/ahorro.enc"));
   // Cuentas de Firebase Auth (gratis, sin lecturas de Firestore)
-  const A = []; let pt; do { const r = await auth.listUsers(1000, pt); A.push(...r.users); pt = r.pageToken; } while (pt);
+  let A = []; let pt; do { const r = await auth.listUsers(1000, pt); A.push(...r.users); pt = r.pageToken; } while (pt);
+  const ADM_MAIL = ["garciagoedwin@gmail.com", "actionleadersoficial@gmail.com", "edwing.go@gmail.com"];
+  const ADM = A.filter(a => ADM_MAIL.includes(String(a.email || "").toLowerCase())).map(a => a.uid);
+  // 11 nov: «🗑️ Eliminar cuenta» del admin → users/{uid}.del {por, t}. Borra la cuenta de Firebase y sus datos (no se puede deshacer).
+  let nDel = 0; const DELD = (await db.collection("users").where("del.t", ">", 0).get()).docs.filter(d => ADM.includes((d.data().del || {}).por) && !ADM.includes(d.id));
+  for (const d of DELD) { nDel++; if (DRY) continue; const id = d.id;
+    await auth.deleteUser(id).catch(() => {});
+    await db.recursiveDelete(db.doc("users/" + id)).catch(() => {});
+    for (const c of ["fotos", "constancia", "push", "aprob"]) await db.doc(c + "/" + id).delete().catch(() => {});
+    for (const pf of (await db.collection("perfiles").where("uid", "==", id).get()).docs) await pf.ref.delete().catch(() => {}); }
+  if (nDel && !DRY) { const del = new Set(DELD.map(d => d.id)); A = A.filter(a => !del.has(a.uid)); }
   // Documentos de users: TODOS solo cuando hace falta (primera vez o cada hora para los miembros); si no, solo los que aún no están aprobados.
   const _n = new Date(), hora = FULL || (_n.getUTCHours() % 6 === 0 && _n.getUTCMinutes() < 10); // cada 6 h: todas las cuentas
   // Aprobaciones manuales (patrocinador o admin): aprob/{uid} {ok, por, t}
   const M = (await db.collection("aprob").get()).docs;
   // 11 nov: el admin corrigió el correo/WhatsApp de inCruises («Solo guardar») → users.apRe; se revisa en esta corrida.
   const RE = new Set((await db.collection("users").where("apRe", ">", 0).get()).docs.map(d => d.id));
+  // Cuentas con aviso de correo de inCruises (apSH): se revisan en cada corrida (plazo, recordatorio, suspensión).
+  const SHQ = new Set((await db.collection("users").where("apSH.t", ">", 0).get()).docs.map(d => d.id));
   const man = new Map(M.map(d => [d.id, d.data()]));
   // Cada 10 min solo se leen las cuentas sin veredicto o con aprobación manual nueva; cada 6 horas, todas (miembros y re-chequeo).
   // nr = cuenta sin registro (ap=false). Si volvió a entrar en la última hora, se revisa: puede que se esté registrando ahora.
   const reciente = a => Date.now() - Date.parse(a.metadata.lastRefreshTime || a.metadata.lastSignInTime || 0) < 3600e3;
-  const leer = A.filter(a => { const c = a.customClaims || {}; return c.ap === undefined || c.pv || man.has(a.uid) || RE.has(a.uid) || (c.ap === false && c.nr && reciente(a)); });
+  const leer = A.filter(a => { const c = a.customClaims || {}; return c.ap === undefined || c.pv || man.has(a.uid) || RE.has(a.uid) || SHQ.has(a.uid) || (c.ap === false && c.nr && reciente(a)); });
   let docs;
   if (GRAND || hora) docs = (await db.collection("users").get()).docs;
   else docs = leer.length ? await db.getAll(...leer.map(a => db.doc("users/" + a.uid))) : [];
   const U = new Map(); for (const d of docs) if (d.exists) U.set(d.id, { uid: d.id, ...d.data() });
   const meta = db.doc("push_meta/aprob"), mt = (await meta.get()).data() || {}, avisados = mt.n || {};
   const mem = (GRAND || hora) ? miembros(team, [...U.values()]) : null;
-  const ADM_MAIL = ["garciagoedwin@gmail.com", "actionleadersoficial@gmail.com", "edwing.go@gmail.com"];
-  const ADM = A.filter(a => ADM_MAIL.includes(String(a.email || "").toLowerCase())).map(a => a.uid);
-  let nAp = 0, nAuto = 0, nMan = 0, nNo = 0, nPend = 0, nSis = 0, nCl = 0, nPlan = 0, nInv = 0, nConf = 0, nVen = 0, nSinH = 0; const avisos = [], aprobados = [], vencidos = [], nuevosSH = []; let nRev = 0, nDup = 0; const dupU = new Set();
+  let nAp = 0, nAuto = 0, nMan = 0, nNo = 0, nPend = 0, nSis = 0, nCl = 0, nPlan = 0, nInv = 0, nConf = 0, nVen = 0, nSinH = 0; const avisos = [], aprobados = [], vencidos = [], nuevosSH = []; let nRev = 0, nDup = 0, nSusp = 0, nCorr = 0; const dupU = new Set(), avU = [], corrU = [];
+  const SH_MS = 5 * 86400e3; // 11 nov (Edwin): 5 días para poner su correo de inCruises
   const okU = new Set(A.filter(x => (x.customClaims || {}).ap === true).map(x => x.uid));
   const dupDe = async (a, u) => { const r = u.registro || {}, e = String(r.correo || u.email || "").trim().toLowerCase(), w = String(r.whatsapp || "").replace(/\D/g, ""), Q = [];
     if (e.includes("@")) { Q.push(db.collection("users").where("registro.correo", "==", e).limit(5).get(), db.collection("users").where("email", "==", e).limit(5).get()); }
@@ -104,12 +115,18 @@ async function main() {
     if (ap === true && pv && u) { if (enH) { pv = 0; nConf++; } else if (Date.now() > pv) { ap = false; pv = 0; rv = true; apE = "p"; apX = "inv"; nVen++; vencidos.push(u); } }
     let apSH, apOkA; // undefined = sin cambio
     if (u && reg && !ADM_MAIL.includes(String(a.email || "").toLowerCase())) {
-      if (ap === true && !pv && !enH && !shOk && !c.okA) { nSinH++; if ((GRAND || hora) && !u.apSH) { apSH = { t: Date.now() }; nuevosSH.push(u); } }
-      else if (u.apSH) apSH = null;
-      if (shOk) apOkA = Date.now(); }
+      const ahora = Date.now(), okH = enH && (porCuenta || !(u.apSH || u.apRe) || !(await dupDe(a, u)));
+      if (ap === true && !pv && !okH && !shOk && !c.okA) { nSinH++; const s0 = u.apSH;
+        if (!s0) { if (GRAND || hora) { apSH = { t: ahora, f: ahora + SH_MS, n: ahora }; nuevosSH.push(u); avU.push([a.uid, "ini", apSH.f]); } }
+        else if (!s0.f) { apSH = { ...s0, f: ahora + SH_MS, n: ahora }; avU.push([a.uid, "ini", apSH.f]); }
+        else if (u.apRe && !s0.c) { apSH = { ...s0, c: ahora }; nCorr++; corrU.push(u); }          // corrigió pero no aparece → decide el admin (no se suspende sola)
+        else if (!s0.c && ahora > s0.f) { ap = false; rv = true; apE = "p"; apX = "sh"; nSusp++; } // no corrigió a tiempo → revisión (se reabre sola al poner el correo correcto)
+        else if (!s0.c && ahora > s0.f - 86400e3 && !s0.r) { apSH = { ...s0, r: ahora }; avU.push([a.uid, "rec", s0.f]); } }
+      else if (u.apSH && (ap === true || okH)) apSH = null;
+      if (shOk) apOkA = ahora; }
     if (ap !== true && !apX) {
       const m = man.get(a.uid), mAdm = m && ADM.includes(m.por);
-      if (m && m.ok === true && (!rv || mAdm)) { ap = true; nMan++; apE = "ok"; rv = false; apX = null; }
+      if (m && m.ok === true && (!rv || mAdm)) { ap = true; nMan++; apE = "ok"; rv = false; apX = null; if (mAdm) { shOk = true; apOkA = Date.now(); if (u && u.apSH) apSH = null; } }
       else if (m && m.ok === false) { ap = false; apE = "no"; nNo++; }
       else if (u && u.apE === "no") { ap = false; nNo++; }
       else if (reg && GRAND) { ap = true; apE = "ok"; }
@@ -133,13 +150,13 @@ async function main() {
     if (u && reg && !["admin", "reporte"].includes(u.registro.planPor)) { const ks = [a.emailVerified ? ahKe(a.email) : null, ...claveDe(u)].filter(Boolean); const pq = ks.map(k => actK.get(k)).find(Boolean);
       if (pq && pq !== u.registro.plan) { nPlan++; if (!DRY) await db.doc("users/" + a.uid).set({ registro: { plan: pq, planPor: "inCruises", planCambio: new Date().toISOString() } }, { merge: true }); } }
   }
-  console.log("invitación", nInv, "confirmadas", nConf, "a revisión (72 h sin inCruises)", nVen, (GRAND || hora) ? "aprobadas sin huella de inCruises " + nSinH + " (nuevas " + nuevosSH.length + ")" : "", "pasadas a revisión por admin", nRev, "correo/WhatsApp de otra cuenta", nDup);
+  console.log("invitación", nInv, "confirmadas", nConf, "a revisión (72 h sin inCruises)", nVen, (GRAND || hora) ? "aprobadas sin huella de inCruises " + nSinH + " (nuevas " + nuevosSH.length + ")" : "", "pasadas a revisión por admin", nRev, "correo/WhatsApp de otra cuenta", nDup, "avisos de correo", avU.length, "corrigieron sin aparecer", nCorr, "suspendidas por no corregir", nSusp, "eliminadas", nDel);
   console.log("cuentas", A.length, "docs", U.size, "aprobadas", nAp, "auto", nAuto, "manual", nMan, "rechazadas", nNo, "pendientes", nPend, "miembros", nSis, "claims cambiados", nCl, "planes corregidos", nPlan, DRY ? "(prueba)" : "");
   if (mem) { console.log("filas de liderazgo sin cuenta:", mem.sin.length); if (!DRY) await db.doc("team/sisU").set({ sin: mem.sin, n: mem.uids.size, t: Date.now() }); }
   if (DRY) return;
   for (const d of M) await d.ref.delete();
   // Avisos push: pendientes → admins + patrocinador (una vez); aprobados → al socio
-  const P = {}; const need = new Set([...ADM, ...aprobados, ...[...avisos, ...vencidos].map(u => (u.registro || {}).patrocinadorUid).filter(Boolean)]);
+  const P = {}; const need = new Set([...ADM, ...aprobados, ...avU.map(x => x[0]), ...[...avisos, ...vencidos].map(u => (u.registro || {}).patrocinadorUid).filter(Boolean)]);
   if (need.size) { const pd = await db.getAll(...[...need].map(id => db.doc("push/" + id))); pd.forEach(d => { if (d.exists) P[d.id] = d.data(); }); }
   const env = async (uid, title, body, v) => { const p = P[uid]; if (!p || !p.tk) return; try {
     await fcm.send({ token: p.tk, notification: { title, body }, webpush: { fcmOptions: { link: "https://actionleadersplus.com/?av=" + v }, notification: { icon: "https://actionleadersplus.com/icon-192.png" } } });
@@ -150,6 +167,12 @@ async function main() {
   for (const u of vencidos) { const n = String((u.registro || {}).nombre || "Alguien").split(" ").slice(0, 2).join(" "), sp = (u.registro || {}).patrocinadorUid;
     const t = "⚠️ " + n + " no aparece en inCruises", b = "Entró con invitación hace 3 días y no encontramos su correo ni su WhatsApp. Su cuenta pasó a revisión; solo un administrador puede reabrirla.";
     for (const id of new Set([...ADM, sp].filter(Boolean))) await env(id, t, b, "apr"); avisados[u.uid] = Date.now(); }
+  const fHN = f => new Date(f).toLocaleDateString("es-HN", { timeZone: "America/Tegucigalpa", weekday: "long", day: "numeric", month: "long" });
+  for (const [uid, k, f] of avU) await env(uid, k === "rec" ? "⏰ Mañana vence: su correo de inCruises" : "📧 Revise su correo de inCruises",
+    (k === "rec" ? "Todavía no encontramos su cuenta. " : "Su correo no coincide con el de inCruises. ") + "Escriba en la app el correo con el que se registró en inCruises antes del " + fHN(f) + " para que su cuenta siga activa.", "ic");
+  if (corrU.length) { const n1 = String((corrU[0].registro || {}).nombre || "Alguien").split(" ").slice(0, 2).join(" ");
+    for (const id of ADM) await env(id, corrU.length === 1 ? "📧 " + n1 + " corrigió su correo, pero no aparece" : "📧 " + corrU.length + " socios corrigieron su correo, pero no aparecen", "Revise en la lista de aprobadas sin inCruises si son socios o clientes.", "sinh"); }
+  if (nSusp) for (const id of ADM) await env(id, "⏸️ " + nSusp + (nSusp === 1 ? " cuenta pasó" : " cuentas pasaron") + " a revisión", "No pusieron su correo de inCruises a tiempo. Se reabren solas si lo corrigen, o desde su lista.", "sinh");
   if (nuevosSH.length) { const n1 = String((nuevosSH[0].registro || {}).nombre || "Alguien").split(" ").slice(0, 2).join(" ");
     const t = nuevosSH.length === 1 ? "🔎 " + n1 + " no aparece en inCruises" : "🔎 " + nuevosSH.length + " cuentas aprobadas no aparecen en inCruises", b = "Tienen acceso a la app, pero no encontramos su correo ni su WhatsApp en inCruises. Toque para revisarlas.";
     for (const id of ADM) await env(id, t, b, "sinh"); }
