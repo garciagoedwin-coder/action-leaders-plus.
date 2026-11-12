@@ -1196,6 +1196,14 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
 .npRw b{display:block;font-size:13px;color:#fff}.npRw .au b{color:#E8B54A}
 .npBtn{display:block;width:100%;margin-top:14px;border:0;background:#2AC1F1;color:#0B1220;font:inherit;font-weight:700;font-size:15px;padding:13px;border-radius:14px;cursor:pointer;position:relative;z-index:1}
 .npFt{text-align:center;font-size:11.5px;opacity:.6;margin:8px 0 0}
+.acaOtros{margin:4px 0 6px}.acaOtros>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-bottom:10px}
+.acaOtros>summary::-webkit-details-marker{display:none}.acaOtros>summary em{font-style:normal;font-size:13px;color:var(--brand);font-weight:700}.acaOtros>summary i{font-style:normal;display:inline-block;transition:transform .2s}.acaOtros[open]>summary i{transform:rotate(180deg)}
+.npQ{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+.npQp{margin:0;font-weight:700;font-size:14px}
+.npO{text-align:left;font:inherit;font-size:13.5px;color:var(--ink);background:var(--surface-2);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}
+.npO.bien{background:#DCFCE7;border-color:#16A34A;color:#14532D}.npO.mal{background:#FEE2E2;border-color:#DC2626;color:#7F1D1D}
+.npQ.hecha .npO:not(.bien){opacity:.45}
+.npQe{margin:0}.npQe.ok{color:#15803D}.npQe.no{color:#B91C1C}
 @media (prefers-reduced-motion:reduce){.npTag i{animation:none}}
 </style>
 
@@ -6883,7 +6891,7 @@ function acaLogos(){const F={};
 // config.np en team.json {id,t,sub,nivel,desde,videos:[{t,yt,tarea,ir,bt,f?}]}. Avance en profile.np {v:{n:t}, d:{n:"AAAA-MM-DD"}}.
 // Uno por día: el video n se abre el día DESPUÉS de terminar el n-1. Se marca solo al ver el 90 % sin adelantar.
 const npCfg=()=>{const c=(T.config||{}).np;return c&&Array.isArray(c.videos)&&c.videos.length&&(!c.desde||Date.now()>=Date.parse(c.desde)||isAdmin)?c:null};
-const npSt=()=>{const s=profile.np||(profile.np={});s.v=s.v||{};s.d=s.d||{};return s};
+const npSt=()=>{const s=profile.np||(profile.np={});s.v=s.v||{};s.d=s.d||{};s.w=s.w||{};return s};
 const npF=f=>{try{return new Date(f+"T12:00:00").toLocaleDateString("es-HN",{weekday:"long",day:"numeric",month:"short"})}catch(e){return f}};
 function npEstado(){const c=npCfg();if(!c)return null;const s=npSt(),V=c.videos,tot=V.length;let vistos=0;V.forEach((v,i)=>{if(s.v[i+1])vistos++});
   const hoyN=+(Object.keys(s.d).find(n=>s.d[n]===TODAY)||0);
@@ -6896,7 +6904,7 @@ const npPend=()=>{const E=npEstado();return E&&!E.hoyN&&E.sig&&E.disp(E.sig)?E.s
 const npActivo=()=>{const E=npEstado();return !!(E&&!E.fin)};
 function npRutHTML(){const E=npEstado();if(!E)return "";
   if(E.hoyN)return `<br><span class="chip c-good" style="display:inline-flex;margin-top:6px">🎓 Video ${E.hoyN} de Networker Pro visto ✓</span>`;
-  if(E.sig&&E.disp(E.sig))return `<br><button type="button" class="npRut" data-npv="${E.sig}">🎓 Vea su video de hoy · <b>${E.sig} · ${esc(E.V[E.sig-1].t)}</b> ▶</button>`;return ""}
+  if(E.sig&&E.disp(E.sig))return `<br><button type="button" class="npRut" data-npv="${E.sig}">${E.s.w[E.sig]?"📝 Responda las 3 preguntas del video":"🎓 Vea su video de hoy"} · <b>${E.sig} · ${esc(E.V[E.sig-1].t)}</b> ▶</button>`;return ""}
 function npCardHTML(){const E=npEstado();if(!E)return "";const p=Math.round(E.vistos*100/E.tot),nx=E.sig&&E.disp(E.sig)?E.sig:0,nuevo=nx&&!E.hoyN;
   const go=E.fin?`<span class="npGo"><i>🎓</i><span><b>¡Curso completado!</b><small>Toque para ver su diploma</small></span></span>`
     :nx?`<span class="npGo"><i>▶</i><span><b>Siga con: ${nx} · ${esc(E.V[nx-1].t)}</b><small>${E.vistos?"Su video de hoy":"Empiece aquí"}</small></span></span>`
@@ -6907,7 +6915,7 @@ function npCurso(){const E=npEstado();if(!E){toast("El curso todavía no está d
      <div class="npSt"><div><b>${E.vistos}/${E.tot}</b>vistos</div><div><b>${E.nDisp}</b>disponibles</div><div><b>1</b>video al día</div></div></div>
     <div class="npL">${E.V.map((v,i)=>{const n=i+1,ok=!!E.s.v[n],d=E.disp(n),cur=!ok&&d&&n===E.sig;
       return ok?`<button type="button" class="npI ok" data-npv="${n}"><i>✓</i><span><b>${esc(v.t)}</b><small>Video ${n} · visto${E.s.d[n]?" el "+npF(E.s.d[n]):""}</small></span><em class="tok">Visto</em></button>`
-        :d?`<button type="button" class="npI${cur?" cur":""}" data-npv="${n}"><i>${n}</i><span><b>${esc(v.t)}</b><small>Video ${n} · ${cur?"su video de hoy":"disponible"}</small></span>${cur?`<em class="tnew">NUEVO</em>`:""}</button>`
+        :d?`<button type="button" class="npI${cur?" cur":""}" data-npv="${n}"><i>${n}</i><span><b>${esc(v.t)}</b><small>Video ${n} · ${E.s.w[n]?"📝 falta responder las preguntas":cur?"su video de hoy":"disponible"}</small></span>${cur?`<em class="tnew">NUEVO</em>`:""}</button>`
         :`<div class="npI lk"><i>${n}</i><span><b>${esc(v.t)}</b><small>${esc(E.motivo(n))}</small></span><em class="tlk">🔒</em></div>`}).join("")}
      <button type="button" class="npDip${E.fin?" on":""}" id="npDipB"><span class="npDi">🎓</span><span><b>Diploma Networker Pro</b><small>${E.fin?"¡Lo logró! Toque para descargarlo":"Al ver los 8 videos · con sus insignias"}</small><span class="npIns">${npInsHTML()}</span></span></button></div>
     <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
@@ -6925,10 +6933,11 @@ function npVer(n){const E=npEstado();if(!E)return;const v=E.V[n-1];if(!v)return;
   openSheet(`<div class="npVid"><div id="npYT"></div></div><p class="npK" style="margin:12px 0 0">NETWORKER PRO · VIDEO ${n} DE ${E.tot}</p><h2 style="margin:2px 0 6px">${esc(v.t)}</h2>
     <div class="npPts"><span>🧠 Mentalidad</span><span>🎯 Habilidad</span><span>📲 En la app</span></div>
     <div class="card" style="gap:6px;margin-top:10px"><b>✅ Su tarea</b><p class="small" style="margin:0">${esc(v.tarea||"")}</p>${v.ir?`<button class="btn" id="npIrB" style="width:100%">${esc(v.bt||"Ir")}</button>`:""}</div>
-    <div class="card" style="gap:6px"><b>${ya?"✓ Video completado":"Terminar el video"}</b><p class="small muted" style="margin:0" id="npEst">${ya?"Puede verlo de nuevo cuando quiera.":"Se marca solo al ver el 90 % del video, sin adelantar."}</p>
+    <div id="npQz"></div>
+    <div class="card" style="gap:6px"><b>${ya?"✓ Video completado":"Terminar el video"}</b><p class="small muted" style="margin:0" id="npEst">${ya?"Puede verlo de nuevo cuando quiera.":E.s.w[n]?"Ya vio el video. Responda las 3 preguntas para completarlo.":"Al ver el 90 % del video, sin adelantar, salen 3 preguntas. Al acertarlas se completa."}</p>
       ${n<E.tot&&!ya?`<p class="small muted" style="margin:0">🔔 El video ${n+1} se abre al día siguiente de terminar este.</p>`:""}</div>
     <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
-    const ib=$("#npIrB");if(ib)ib.onclick=()=>npIr(v.ir);npPlayer(n,v.yt,ya)})}
+    const ib=$("#npIrB");if(ib)ib.onclick=()=>npIr(v.ir);npPlayer(n,v.yt,ya||!!E.s.w[n]);if(!ya&&E.s.w[n])npQuiz(n)})}
 async function npPlayer(n,yt,ya){const box=$("#npYT");if(!box)return;const K="np:"+(store.uid||"")+":"+n;let maxG=+(LS.get(K)||0),wT=Date.now(),hecho=ya,lastS=0;
   try{await welLoadYT()}catch(e){box.innerHTML=`<div class="npErr">No pudimos cargar el video. Revise su conexión.</div>`;return}if(!$("#npYT"))return;
   const P=new YT.Player("npYT",{videoId:yt,host:"https://www.youtube-nocookie.com",playerVars:{rel:0,modestbranding:1,playsinline:1,iv_load_policy:3,fs:1,start:ya?0:Math.floor(maxG)},
@@ -6936,9 +6945,22 @@ async function npPlayer(n,yt,ya){const box=$("#npYT");if(!box)return;const K="np
         const now=Date.now(),st=P.getPlayerState?P.getPlayerState():1,lim=maxG+4+Math.max(0,(now-wT)/1000)*1.5;
         if(!hecho&&!isAdmin&&t>lim){wT=now;try{P.seekTo(Math.max(0,maxG-1),true)}catch(e){}toast("Mire el video completo, sin adelantar");return}
         if(st===1||st===3)maxG=Math.max(maxG,t);wT=now;if(now-lastS>5000){lastS=now;try{LS.set(K,Math.floor(maxG))}catch(e){}}
-        if(!hecho&&d>30){const pc=Math.min(100,Math.round(maxG*100/d)),es=$("#npEst");if(es)es.textContent="Va en "+pc+" % · se marca solo al llegar al 90 %";if(maxG/d>=.9){hecho=true;npMarcar(n)}}},1000)},
-      onStateChange:e=>{if(e.data===0&&!hecho){hecho=true;npMarcar(n)}}}})}
-function npMarcar(n){const E0=npEstado();if(!E0)return;const s=npSt();if(s.v[n])return;s.v[n]=Date.now();s.d[n]=TODAY;store.set("perfil",profile);
+        if(!hecho&&d>30){const pc=Math.min(100,Math.round(maxG*100/d)),es=$("#npEst");if(es)es.textContent="Va en "+pc+" % · se marca solo al llegar al 90 %";if(maxG/d>=.9){hecho=true;npVisto(n)}}},1000)},
+      onStateChange:e=>{if(e.data===0&&!hecho){hecho=true;npVisto(n)}}}})}
+// 12 nov (Edwin): al ver el 90 % salen 3 preguntas (config.np.videos[i].q {p, ok, no[], ex}); las opciones van en orden aleatorio. Al acertar las 3 → npMarcar.
+function npVisto(n){const E=npEstado();if(!E)return;const v=E.V[n-1],s=npSt();if(s.v[n])return;
+  if(!v||!Array.isArray(v.q)||!v.q.length){npMarcar(n);return}
+  if(!s.w[n]){s.w[n]=Date.now();store.set("perfil",profile);try{renderTasks()}catch(e){}}
+  const es=$("#npEst");if(es)es.textContent="¡Muy bien! Ahora responda las 3 preguntas 👇";npQuiz(n);toast("📝 ¡Video visto! Responda las 3 preguntas")}
+function npMez(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function npQuiz(n){const box=$("#npQz"),E=npEstado();if(!box||!E)return;const Q=(E.V[n-1]||{}).q||[];if(!Q.length){npMarcar(n);return}const ok=new Set();
+  box.innerHTML=`<div class="card npQz" style="gap:10px"><b>📝 Responda para completar el video</b><p class="small muted" style="margin:0">Acierte las ${Q.length} preguntas. Si se equivoca, puede intentarlo otra vez.</p>`+Q.map((q,i)=>`<div class="npQ" data-q="${i}"><p class="npQp">${i+1}. ${esc(q.p)}</p>${npMez([q.ok,...(q.no||[])]).map(o=>`<button type="button" class="npO" data-o="${esc(o)}">${esc(o)}</button>`).join("")}<p class="npQe small" hidden></p></div>`).join("")+`</div>`;
+  box.querySelectorAll(".npQ").forEach(d=>{const i=+d.dataset.q,q=Q[i],ex=d.querySelector(".npQe");
+    d.querySelectorAll(".npO").forEach(b=>b.onclick=()=>{if(ok.has(i))return;const bien=b.dataset.o===q.ok;
+      d.querySelectorAll(".npO").forEach(x=>x.classList.remove("mal"));b.classList.add(bien?"bien":"mal");
+      ex.hidden=false;ex.className="npQe small "+(bien?"ok":"no");ex.textContent=(bien?"✅ ¡Correcto! ":"❌ Esa no es. Intente otra vez. ")+(bien&&q.ex?q.ex:"");
+      if(bien){ok.add(i);d.classList.add("hecha");if(ok.size===Q.length){box.querySelector(".npQz").insertAdjacentHTML("beforeend",`<p class="npQe ok" style="font-weight:700">🎉 ¡Aprobó las ${Q.length} preguntas!</p>`);npMarcar(n)}}})})}
+function npMarcar(n){const E0=npEstado();if(!E0)return;const s=npSt();if(s.v[n])return;s.v[n]=Date.now();s.d[n]=TODAY;delete s.w[n];store.set("perfil",profile);
   if(!((day.audio||0)>=1)){day.audio=1;saveDay()}try{renderTasks()}catch(e){}try{renderAca()}catch(e){}try{npBan()}catch(e){}
   const E=npEstado(),es=$("#npEst");if(es)es.textContent="✓ ¡Completado! Su punto «Auto desarrollo personal» de hoy quedó marcado.";
   try{confeti($("#sheetPanel"),40)}catch(e){}
@@ -6987,14 +7009,15 @@ async function npDiploma(){const E=npEstado();if(!E)return;try{await flFonts()}c
 function renderAca(){const b=$("#acaBody");if(ahBloqYo()){b.innerHTML=`<div class="card" style="gap:8px;text-align:center"><b style="font-size:17px">🔒 Academia en pausa</b><p class="small muted" style="margin:0">Su ahorro de inCruises está pendiente. Póngase al día para reactivar sus cursos y herramientas.</p><button class="btn" style="background:#25D366;color:#fff" onclick="ahHablarSp()">💬 Hablar con mi patrocinador</button></div>`;return}
   if(ACA_PRONTO){$("#acaSeg").hidden=true;const cv=profile.cursos||{};
     try{acaHero()}catch(e){}const CL=cursosL(),nOk=CL.filter(c=>cv[c.k]).length,sig=CL.findIndex(c=>!cv[c.k]);
-    b.innerHTML=npCardHTML()+`<div class="acaSec"><b>🎓 Su ruta de aprendizaje</b><em>${nOk} de ${CL.length}</em></div><div class="acaPath">`+CL.map((c,i)=>{const ok=!!cv[c.k],now=i===sig;if(!cursoOpen[c.k])return `<button type="button" class="acaSt${ok?" ok":now?" now":""}" data-cabre="${c.k}"><i>${ok?"✓":i+1}</i><span class="acaTh" style="background-image:url(https://i.ytimg.com/vi/${c.yt}/mqdefault.jpg),linear-gradient(135deg,#1e293b,#0A7DAD)">▶</span><span class="grow"><b>${esc(c.t)}</b><small>${ok?"Completado · toque para verlo de nuevo":now?"Siga aquí"+(c.pdf?" · 📄 con material":""):"Curso "+(i+1)+(c.pdf?" · 📄 con material":"")}</small></span></button>`;return `<div class="acaOpen"><i class="acaN${ok?" ok":now?" now":""}">${ok?"✓":i+1}</i><div class="card curso">
+    b.innerHTML=npCardHTML()+`<details class="acaOtros"${LS.get("acaOtros")==1?" open":""}><summary><b>📚 Otros cursos</b><em>${nOk} de ${CL.length} <i>▾</i></em></summary><div class="acaPath">`+CL.map((c,i)=>{const ok=!!cv[c.k],now=i===sig;if(!cursoOpen[c.k])return `<button type="button" class="acaSt${ok?" ok":now?" now":""}" data-cabre="${c.k}"><i>${ok?"✓":i+1}</i><span class="acaTh" style="background-image:url(https://i.ytimg.com/vi/${c.yt}/mqdefault.jpg),linear-gradient(135deg,#1e293b,#0A7DAD)">▶</span><span class="grow"><b>${esc(c.t)}</b><small>${ok?"Completado · toque para verlo de nuevo":now?"Siga aquí"+(c.pdf?" · 📄 con material":""):"Curso "+(i+1)+(c.pdf?" · 📄 con material":"")}</small></span></button>`;return `<div class="acaOpen"><i class="acaN${ok?" ok":now?" now":""}">${ok?"✓":i+1}</i><div class="card curso">
       <div class="row between" style="align-items:flex-start;gap:10px"><div><span class="chip ${ok?"c-good":"c-gold"}">Curso ${i+1}${ok?" · Completado ✓":""}</span><h2 style="margin:8px 0 0">${esc(c.t)}</h2><p class="small muted" style="margin:4px 0 0">${esc(c.d)}</p></div></div>
       <div class="yt"><iframe src="https://www.youtube.com/embed/${c.yt}?rel=0&playsinline=1" referrerpolicy="strict-origin-when-cross-origin" title="${esc(c.t)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>
       ${c.pdf?`<button class="btn" data-pdf="${c.pdf}" data-pdfn="${esc(c.pdfN||"material.pdf")}" style="width:100%;justify-content:center">📄 ${esc(c.pdfT||"Descargar material")}</button>`:""}
       ${ok?`<button class="btn ghost" data-ccierra="${c.k}" style="width:100%">Cerrar</button>`:`<div class="row" style="gap:8px"><button class="btn ghost" data-ccierra="${c.k}" style="flex:1">Cerrar</button><button class="btn dark" data-curso="${c.k}" style="flex:2">Marcar como visto</button></div>`}</div></div>`}).join("")+
-     `<div class="acaSt lock"><i>${CL.length+1}</i><span class="acaTh">🔒</span><span class="grow"><b>Más cursos</b><small>Muy pronto</small></span></div></div>
+     `<div class="acaSt lock"><i>${CL.length+1}</i><span class="acaTh">🔒</span><span class="grow"><b>Más cursos</b><small>Muy pronto</small></span></div></div></details>
      <div class="acaSec"><b>🧰 Herramientas</b></div><div class="acaTools"><button type="button" id="acaIA">🤖 <span>Prompts IA<small>Textos listos para usar</small></span></button><button type="button" id="acaMat">📄 <span>Materiales<small>Hojas y presentación</small></span></button></div>`;
     {const a=$("#acaIA");if(a)a.onclick=()=>go("ia");const m=$("#acaMat");if(m)m.onclick=acaMateriales}
+    {const od=b.querySelector(".acaOtros");if(od)od.ontoggle=()=>{try{LS.set("acaOtros",od.open?1:0)}catch(e){}}}
     {const nc=b.querySelector("[data-npc]");if(nc)nc.onclick=()=>{const E=npEstado();if(E&&E.fin){npDiploma();return}npCurso()}}
     b.querySelectorAll("[data-pdf]").forEach(x=>{const u=x.dataset.pdf,n=x.dataset.pdfn;pdfFile(u,n);x.onclick=()=>bajarPdf(u,n)});
     b.querySelectorAll("[data-cabre]").forEach(x=>x.onclick=()=>{cursoOpen[x.dataset.cabre]=1;renderAca()});
@@ -8010,7 +8033,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261112015928";var busy=false,pend=null;
+(function(){var V="20261112021431";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

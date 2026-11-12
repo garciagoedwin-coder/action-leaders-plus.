@@ -4448,35 +4448,180 @@
      "yt": "GU9STSQOwbA",
      "tarea": "Complete hoy su rutina de 5 puntos. Una racha empieza con un solo día.",
      "ir": "rutina",
-     "bt": "🔥 Ir a mi rutina"
+     "bt": "🔥 Ir a mi rutina",
+     "q": [
+      {
+       "p": "Según el video, ¿qué es usted ahora?",
+       "ok": "Dueño de un negocio que está construyendo un sistema",
+       "no": [
+        "Un vendedor de membresías",
+        "Un cliente que solo compra viajes"
+       ],
+       "ex": "«Tal vez no lo ves de forma física, pero eres dueño de un negocio… estás construyendo un sistema»."
+      },
+      {
+       "p": "Según el video, ¿qué es lo más importante para que su negocio funcione?",
+       "ok": "Ser consistente: avanzar un poco todos los días",
+       "no": [
+        "Trabajar muy duro un solo día y luego descansar",
+        "Dejarlo si el primer mes no hay resultados"
+       ],
+       "ex": "«La consistencia vence a la intensidad»: poco todos los días le gana a mucho una sola vez."
+      },
+      {
+       "p": "¿Cuál es la regla con su rutina diaria en la app?",
+       "ok": "No irse a dormir sin haberla hecho",
+       "no": [
+        "Hacerla solo cuando tenga ánimo",
+        "Hacerla una vez por semana"
+       ],
+       "ex": "«Esa rutina es que no te vayas a dormir sin que esa rutina se haga»."
+      }
+     ]
     },
     {
      "t": "Su lista de contactos",
      "yt": "J8fi7pfGEyk",
      "tarea": "Agregue 5 personas nuevas a su lista. Piense en familia, amigos, compañeros y conocidos.",
      "ir": "lista",
-     "bt": "📝 Agregar a mi lista"
+     "bt": "📝 Agregar a mi lista",
+     "q": [
+      {
+       "p": "¿Cuál es el error más caro al hacer su lista?",
+       "ok": "Prejuzgar: decidir por los demás",
+       "no": [
+        "Escribir muchos nombres",
+        "Incluir a la familia"
+       ],
+       "ex": "Usted no decide por nadie: comparta la oportunidad y deje que cada persona decida."
+      },
+      {
+       "p": "¿Qué dato clave conviene anotar de cada persona?",
+       "ok": "Qué sueña o qué necesita",
+       "no": [
+        "Cuánto gana",
+        "Nada, solo el nombre"
+       ],
+       "ex": "Ese dato le ayuda a invitarla pensando en lo que a ella le importa."
+      },
+      {
+       "p": "¿Cada cuánto se alimenta su lista?",
+       "ok": "Todos los días, agregando personas nuevas",
+       "no": [
+        "Una sola vez al empezar",
+        "Solo cuando se acaban los nombres"
+       ],
+       "ex": "Una lista grande le quita el miedo al «no»."
+      }
+     ]
     },
     {
      "t": "La invitación",
      "yt": "ETmCgjm5HJg",
      "tarea": "Invite a 5 personas de su lista con el camino guiado del CRM: «👉 Siguiente paso» le da el mensaje listo.",
      "ir": "crm",
-     "bt": "👥 Ir a mi CRM"
+     "bt": "👥 Ir a mi CRM",
+     "q": [
+      {
+       "p": "¿Cuál es el objetivo de la invitación?",
+       "ok": "Que la persona vea la información",
+       "no": [
+        "Explicarle todo el negocio",
+        "Convencerla de entrar"
+       ],
+       "ex": "Usted invita a ver, no a comprar."
+      },
+      {
+       "p": "¿Qué es tener postura?",
+       "ok": "Hablar con seguridad, sin rogar ni convencer",
+       "no": [
+        "Insistir hasta que diga que sí",
+        "Esperar a que la persona pregunte"
+       ],
+       "ex": "Si usted está emocionado con lo que tiene, la gente lo siente."
+      },
+      {
+       "p": "¿Cómo se cierra una buena invitación?",
+       "ok": "Con día y hora concretos",
+       "no": [
+        "«Cuando pueda me avisa»",
+        "Mandando toda la información por WhatsApp"
+       ],
+       "ex": "Agende y confirme. Nunca deje un «cuando puedas»."
+      }
+     ]
     },
     {
      "t": "Cómo presentar el negocio",
      "yt": "T2mq2_mv7Y4",
      "tarea": "Presente el plan a 1 persona esta semana con la presentación interactiva de la app.",
      "ir": "pres",
-     "bt": "🎤 Dar presentación"
+     "bt": "🎤 Dar presentación",
+     "q": [
+      {
+       "p": "En una presentación, ¿quién presenta y quién conecta?",
+       "ok": "La herramienta presenta y usted conecta",
+       "no": [
+        "Usted tiene que saberlo todo",
+        "El prospecto investiga solo"
+       ],
+       "ex": "No necesita saberlo todo: la herramienta hace el trabajo y usted pone la relación."
+      },
+      {
+       "p": "Mientras se presenta, ¿qué hace usted?",
+       "ok": "Escucha y anota lo que le llama la atención",
+       "no": [
+        "Interrumpe para explicar más",
+        "Revisa su teléfono"
+       ],
+       "ex": "Durante la presentación: calle y escuche."
+      },
+      {
+       "p": "¿Qué no debe faltar al terminar?",
+       "ok": "Agendar el siguiente paso",
+       "no": [
+        "Despedirse y esperar",
+        "Pedirle que lo piense sin fecha"
+       ],
+       "ex": "Nunca se despida sin agendar el siguiente paso."
+      }
+     ]
     },
     {
      "t": "Seguimiento y cierre",
      "yt": "AYvApR_MT3s",
      "tarea": "Dé seguimiento a 3 prospectos de su CRM y lleve a «Por cerrar» a los que estén listos.",
      "ir": "seg",
-     "bt": "🔁 Registrar seguimiento"
+     "bt": "🔁 Registrar seguimiento",
+     "q": [
+      {
+       "p": "¿Cuándo es el mejor momento para el primer seguimiento?",
+       "ok": "Entre 24 y 48 horas después",
+       "no": [
+        "Al mes",
+        "Solo si la persona escribe"
+       ],
+       "ex": "Mientras la información está fresca."
+      },
+      {
+       "p": "¿Qué pregunta ayuda en el seguimiento?",
+       "ok": "«¿Qué fue lo que más le gustó?»",
+       "no": [
+        "«¿Entonces sí o no?»",
+        "«¿Por qué no ha decidido?»"
+       ],
+       "ex": "Pregunte más, hable menos. No presione."
+      },
+      {
+       "p": "¿Qué herramienta de la app le da más confianza a su prospecto?",
+       "ok": "La Llamada de 3 con su patrocinador o un líder",
+       "no": [
+        "Mandarle muchos mensajes",
+        "Esperar a que se decida solo"
+       ],
+       "ex": "Apóyese en su línea: su invitado escucha a alguien con más experiencia."
+      }
+     ]
     },
     {
      "t": "Arranque del nuevo socio",
