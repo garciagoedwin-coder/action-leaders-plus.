@@ -4743,7 +4743,7 @@ const BIEN_TH={classic:{img:"media/flyers/bienvenida-classic.jpg?v=7",a:"#5FD3F7
 // 'Bebas Neue' → Barlow Condensed Bold (números y titulares angostos), 'Cormorant Caps' y ALBG/ALP → Poppins SemiBold, ALO/ALOR/Figtree → Figtree.
 // Excepción: el logotipo "ACTION LEADERS Training!" sigue con Bebas (ALBB) + Kaushan (ALKS).
 // Primero solo admin y cuenta de prueba (marcaBeta); los demás siguen con las letras de antes hasta abrirlo a todos (MARCA_TODOS=true).
-const MARCA_TODOS=false;function marcaBeta(){if(MARCA_TODOS)return true;try{return !!isAdmin||yoPrueba()}catch(e){return !!isAdmin}}
+const MARCA_TODOS=true;function marcaBeta(){if(MARCA_TODOS)return true;try{return !!isAdmin||yoPrueba()}catch(e){return !!isAdmin}}
 let bienFont=null;function bienFonts(){if(!bienFont)bienFont=Promise.all((marcaBeta()?[["Bebas Neue","media/fonts/BarlowCondensed-Bold.ttf"],["Cormorant Caps","media/fonts/Poppins-SemiBold.ttf"],["ALBB","media/fonts/BebasNeue-Regular.ttf"],["ALP","media/fonts/Poppins-SemiBold.ttf"],["ALBC","media/fonts/BarlowCondensed-Bold.ttf"]]:[["Bebas Neue","media/fonts/BebasNeue-Regular.ttf"],["Cormorant Caps","media/fonts/Cormorant-500-caps.ttf"],["ALBB","media/fonts/BebasNeue-Regular.ttf"],["ALBC","media/fonts/BarlowCondensed-Bold.ttf"]]).map(([n,u])=>{try{const f=new FontFace(n,"url("+u+")");return f.load().then(x=>document.fonts.add(x)).catch(()=>{})}catch(e){return null}}));return bienFont}
 async function bienFotoPat(){try{if(fotosFs===null||fotosFs===undefined)await cargarFotos()}catch(e){}
   const mine=(fotosFs||[]).find(x=>x.id===store.uid&&x.img);const C=[fotoDe(miNombreFull()),fotoDe(miRegistro().nombre||""),fotoDe(miNombreCorto()),mine&&mine.img,fbUser&&fbUser.photoURL].filter(Boolean);
@@ -7852,7 +7852,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261112011621";var busy=false,pend=null;
+(function(){var V="20261112012438";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
