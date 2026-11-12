@@ -2502,7 +2502,7 @@ function tlInfo(){const n=miNombreFull()||miNombreCorto(),t=tlDe(n),C=tlCfg()||{
     <p class="small" style="margin:12px 0 6px"><b>Cómo se cuenta (solo directos):</b></p><p class="small muted" style="line-height:1.6;margin:0">🚀 Entró en los últimos 30 días: Premium 500 · Classic 200 · Starter 50<br>💰 Pagó su ahorro en los últimos 30 días: Premium 250 · Classic 100 · Starter 50<br>⏳ Ahorro pendiente: 0<br>Su propia membresía no cuenta. Se actualiza solo con los reportes y correos de inCruises.</p>
     ${es?`<button class="btn" id="tlCert" style="width:100%;margin-top:12px">🎓 Descargar mi certificado</button>`:""}<button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{const b=$("#tlCert");if(b)b.onclick=()=>{closeSheet();setTimeout(certMio,250)}})}
 function certLista(){const C=tlCfg()||{},m=C.meta||500,yo=certYoFirma();let L=[];
-  if(isAdmin)L=(C.l||[]).filter(x=>x.p>=m).map(x=>({n:x.n,p:x.p}));
+  if(isAdmin)L=(C.l||[]).filter(x=>x.p>=m&&rangoActualIdx0({},x.n)<2).map(x=>({n:x.n,p:x.p}));
   else L=(mios||[]).map(x=>{const n=(x.registro||{}).nombre||"";const t=n&&tlDe(n);return t&&t.p>=m&&rangoActualIdx0(x.registro||{},n)<2?{n,p:t.p}:null}).filter(Boolean);
   L.sort((a,b)=>b.p-a.p);
   openSheet(`<div data-nofocus></div><h2 style="margin:0">🎓 Certificados de Team Leader</h2><p class="small muted" style="margin:2px 0 10px">${isAdmin?"Todo el equipo":"Su línea"} · ${L.length} ${L.length===1?"Team Leader":"Team Leaders"} este mes. Firma: Edwin García Go${certEsEdwin(yo.n)?"":" y "+esc(yo.n)}.</p>
@@ -8216,7 +8216,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261112162309";var busy=false,pend=null;
+(function(){var V="20261112163143";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
