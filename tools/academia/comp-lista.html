@@ -20,7 +20,7 @@ body{background:#DCE3EA;font-family:F,sans-serif;padding:36px;display:flex;gap:3
 .sum div{flex:1;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:9px 10px}
 .sum b{font-family:B;font-size:26px;display:block;line-height:1}
 .sum span{display:block;white-space:nowrap;font-size:10.5px;color:var(--mu);font-weight:800;margin-top:4px}
-.sum .g b{color:#12805C}.sum .r b{color:#B42335}
+.sum .g b{color:#12805C}.sum .rd b{color:#B42335}
 .fl{display:flex;gap:6px;margin-bottom:10px}
 .fl span{font-size:12.5px;font-weight:700;padding:7px 11px;border-radius:999px;background:var(--s2);color:var(--mu)}
 .fl span.on{background:var(--br);color:#fff}
@@ -52,7 +52,7 @@ function ph(cls,cap){const rows=P.map(([n,v,m,c,me])=>{const ok=v>=m,pc=Math.min
 document.write(`<div><p class="cap">${cap}</p><div class="ph ${cls}"><div class="sh"><div class="gr"></div>
  <div class="hd"><h2>🤝 Compromisos · Noviembre</h2><span class="x">✕</span></div>
  <p class="sub">95 socios se comprometieron · ⏳ quedan 19 días</p>
- <div class="sum"><div class="g"><b>12</b><span>✅ CUMPLIERON</span></div><div class="r"><b>83</b><span>🔴 FALTAN</span></div><div><b>66,100</b><span>🤝 COMPROMETIDO</span></div></div>
+ <div class="sum"><div class="g"><b>12</b><span>✅ CUMPLIERON</span></div><div class="rd"><b>83</b><span>🔴 FALTAN</span></div><div><b>66,100</b><span>🤝 COMPROMETIDO</span></div></div>
  <div class="fl"><span class="on">Todos · 95</span><span>✅ Cumplieron</span><span>🔴 Faltan</span></div>
  <div class="q">🔎 Buscar socio</div>
  <div class="ls">${rows}</div><div class="fade"></div></div></div></div>`)}
