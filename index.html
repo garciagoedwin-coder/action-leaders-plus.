@@ -4793,7 +4793,15 @@ const declHN=()=>new Date(Date.now()-6*36e5),declHoy=()=>{const d=declHN();retur
 function declHecha(){return !!(profile.dec&&profile.dec.d===declHoy())}
 function declRacha(){const x=profile.dec;if(!x||!x.d)return 0;const ay=new Date(Date.parse(declHoy()+"T12:00:00Z")-864e5).toISOString().slice(0,10);return x.d===declHoy()||x.d===ay?(+x.r||0):0}
 function declTx(t){const g=profile.decG==="f"?1:0;return esc(t.replace(/\{([^|}]*)\|([^}]*)\}/g,(m,a,b)=>g?b:a)).replace(/\*([^*]+)\*/g,'<span class="dg">$1</span>')}
-function declStrip(){const el=$("#declStrip");if(!el)return;if(!store.uid||esSoloAdminYo()){el.hidden=true;return}
+// 12 nov: si el teléfono cree que no ha declarado, confirma 1 vez con el servidor (otro teléfono o datos viejos en caché)
+let declSyncT=0;
+async function declSync(){if(!store.db||!store.uid||declHecha()||Date.now()-declSyncT<20*60e3)return;declSyncT=Date.now();
+  try{const r=await store.get("perfil");if(!r)return;const hoy=declHoy();let ch=false;
+    if(r.dec&&r.dec.d===hoy&&!declHecha()){profile.dec=r.dec;ch=true}
+    if(r.decA&&r.decA.d===hoy&&!declAcc()){profile.decA=r.decA;ch=true}
+    if(ch){const el=$("#declStrip");if(el)el.dataset.k="";declStrip();try{declAccMarca()}catch(e){}}}catch(e){}}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(declSync,1500)});
+function declStrip(){const el=$("#declStrip");if(!el)return;if(!store.uid||esSoloAdminYo()){el.hidden=true;return}if(!declHecha())setTimeout(declSync,800);
   const h=declHN().getUTCHours(),acc=declAcc();
   if(h>=12&&!declHecha()){ // 12 nov (Edwin): después del mediodía, franja pequeña para quien aún no declaró (✕ = oculta por hoy)
     let x="";try{x=LS.get("declTX")}catch(e){}if(x===declHoy()){el.hidden=true;return}
@@ -8331,7 +8339,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261112173616";var busy=false,pend=null;
+(function(){var V="20261112174147";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
