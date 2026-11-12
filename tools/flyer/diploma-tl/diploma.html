@@ -25,7 +25,8 @@ body{background:#0b0b0d;font-family:Montserrat,sans-serif;color:#fff;-webkit-pri
 .og{font-family:Lora,serif;font-style:italic;font-size:11pt;color:#E6E6E6;margin-top:10pt}
 .nm{font-family:Lora,serif;font-weight:500;font-size:30pt;line-height:1.08;margin-top:4pt;max-width:4.4in;white-space:nowrap}
 .dv{display:flex;align-items:center;gap:7pt;margin:10pt 0 9pt}.dv i{width:.78in;height:1px;background:linear-gradient(90deg,transparent,#9aa0aa)}.dv i:last-child{transform:scaleX(-1)}.dv b{width:8pt;height:8pt;background:#E2C27A;transform:rotate(45deg)}
-.rg{font-weight:600;font-size:16pt;letter-spacing:.42em;margin-right:-.42em}
+.rg{font-weight:600;font-size:16pt;letter-spacing:.42em;margin-right:-.42em;white-space:nowrap;display:inline-block}
+.pin{max-height:1.3in;width:auto!important}
 .ic{font-weight:500;font-size:6.4pt;letter-spacing:.36em;margin-right:-.36em;color:#C9A55A;margin-top:7pt}
 .q{font-family:Lora,serif;font-style:italic;font-size:11pt;line-height:1.55;color:#E2E2E2;margin-top:14pt;max-width:4.3in;text-wrap:balance}
 .sp{flex:1}
@@ -43,13 +44,13 @@ body{background:#0b0b0d;font-family:Montserrat,sans-serif;color:#fff;-webkit-pri
  <div class="in">
   <img class="lg" src="logo-blanco.png" alt="Action Leaders">
   <div class="orn"><i></i><b></b><i></i></div>
-  <img class="pin" src="pin.png" alt="">
+  <img class="pin" id="pin" src="pin.png" alt="">
   <div class="cert">CERTIFICADO DE RECONOCIMIENTO</div>
   <div class="og">Se otorga con orgullo a</div>
   <div class="nm" id="nm">Nombre del Líder</div>
   <div class="dv"><i></i><b></b><i></i></div>
-  <div class="rg">TEAM LEADER</div>
-  <div class="ic">NIVEL ALCANZADO EN INCRUISES · <span id="mes">NOVIEMBRE 2026</span></div>
+  <div class="rg" id="rg">TEAM LEADER</div>
+  <div class="ic"><span id="tp">NIVEL</span> ALCANZADO EN INCRUISES · <span id="mes">NOVIEMBRE 2026</span></div>
   <div class="q">Por su visión, su disciplina y su liderazgo. Lo que hoy conquistó es el comienzo de lo que está dispuesto a construir.</div>
   <div class="sp"></div>
   <div class="fi">
@@ -62,6 +63,10 @@ body{background:#0b0b0d;font-family:Montserrat,sans-serif;color:#fff;-webkit-pri
  </div>
 </div>
 <script>
+// ?pin=md|smd|rd|nd|id|ed|bod (pines de media/cert) &rg=TÍTULO &tp=RANGO|NIVEL
+{const q0=new URLSearchParams(location.search);if(q0.get("pin"))document.getElementById("pin").src="../../../media/cert/pin-"+q0.get("pin")+".png";if(q0.get("rg"))document.getElementById("rg").textContent=q0.get("rg");if(q0.get("tp"))document.getElementById("tp").textContent=q0.get("tp");
+ document.fonts.ready.then(()=>{const r=document.getElementById("rg");let f=16,ls=.42;while(r.scrollWidth>4.5*96&&f>10){if(ls>.24)ls-=.04;else f-=.5;r.style.fontSize=f+"pt";r.style.letterSpacing=ls+"em";r.style.marginRight=-ls+"em"}})}
+
 const q=new URLSearchParams(location.search);for(const k of ["nm","mes","por","porR","lu"])if(q.get(k))document.getElementById(k).textContent=q.get(k);if(q.get("por"))porF.textContent=q.get("por");
 // nombre largo: se achica hasta caber en una línea
 document.fonts.ready.then(()=>{const n=document.getElementById("nm");let f=30;while(n.scrollWidth>n.clientWidth+1&&f>18){f-=1;n.style.fontSize=f+"pt"}});

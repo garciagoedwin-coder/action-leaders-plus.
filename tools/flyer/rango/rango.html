@@ -49,6 +49,7 @@ h1 b{display:block;font-weight:600;background:linear-gradient(180deg,var(--c0),v
 <script>
 // Colores por rango (pines de inCruises). Llave: md smd rd nd id ed bod
 const R={
+ tl:{t:["TEAM","LEADER"],c0:"#E0F7FF",c1:"#7FE0FF",c2:"#2AC1F1",c3:"#0A7DAD",tx:"#062B3A",g:"42,193,241",g2:"127,224,255",b0:"#020c16",b1:"#05223a",b2:"#083b60"},
  md:{t:["MARKETING","DIRECTOR"],c0:"#DCFCE7",c1:"#86EFAC",c2:"#22C55E",c3:"#15803D",tx:"#062B12",g:"52,211,113",g2:"134,239,172",b0:"#03140b",b1:"#06301a",b2:"#0a4a26"},
  smd:{t:["SENIOR MARKETING","DIRECTOR"],c0:"#DBEAFE",c1:"#93C5FD",c2:"#3B82F6",c3:"#1D4ED8",tx:"#04153D",g:"59,130,246",g2:"147,197,253",b0:"#030a1c",b1:"#071a44",b2:"#0b2a6b"},
  rd:{t:["REGIONAL","DIRECTOR"],c0:"#FFEDD5",c1:"#FDBA74",c2:"#F97316",c3:"#C2410C",tx:"#3A1503",g:"249,115,22",g2:"253,186,116",b0:"#170802",b1:"#3a1606",b2:"#5e240a"},
@@ -56,19 +57,19 @@ const R={
  id:{t:["INTERNATIONAL","DIRECTOR"],c0:"#F3E8FF",c1:"#D8B4FE",c2:"#9333EA",c3:"#6B21A8",tx:"#24063F",g:"147,51,234",g2:"216,180,254",b0:"#0d0418",b1:"#250b45",b2:"#3b1170"},
  ed:{t:["EXECUTIVE","DIRECTOR"],c0:"#FFFFFF",c1:"#E5E7EB",c2:"#9CA3AF",c3:"#4B5563",tx:"#0B0B0C",g:"200,205,214",g2:"229,231,235",b0:"#050506",b1:"#141518",b2:"#25272c"},
  bod:{t:["BOARD OF","DIRECTORS"],c0:"#FFF9D6",c1:"#FDE047",c2:"#FACC15",c3:"#B8860B",tx:"#1A1300",g:"250,204,21",g2:"212,175,55",b0:"#010714",b1:"#04163a",b2:"#082863"}};
-const K=["md","smd","rd","nd","id","ed","bod"],AB=["MD","SMD","RD","ND","ID","ED","BOD"];
+const K=["tl","md","smd","rd","nd","id","ed","bod"],AB=["TL","MD","SMD","RD","ND","ID","ED","BOD"];
 const q=new URLSearchParams(location.search),rk=q.get("r")||"md",V=R[rk],ix=K.indexOf(rk);
 function F(cls){const st=Object.entries(V).filter(([k])=>k!=="t").map(([k,v])=>`--${k}:${v}`).join(";");
  const lad=AB.map((a,i)=>`<span class="${i===ix?"on":i<ix?"ya":""}">${i<=ix?"✓ ":""}${a}</span>`).join("<i>›</i>");
  document.write(`<div><div class="f ${cls}" style="${st}"><div class="rays"></div><div class="wm"></div><div class="in">
  <img class="logo" src="../diploma-tl/logo-blanco.png">
- <span class="k">★ NUEVO RANGO</span>
+ <span class="k">★ ${rk==="tl"?"NUEVO NIVEL":"NUEVO RANGO"}</span>
  <h1 style="${V.t[0].length>12?"font-size:"+(cls?66:84)+"px":""}">${V.t[0]}<b style="${V.t[0].length>12?"font-size:"+(cls?86:112)+"px":""}">${V.t[1]}</b></h1>
- <div class="ph"><img class="fo" src="/tmp-foto.jpg"><img class="pin" src="../../../media/cert/pin-${rk}.png"></div>
+ <div class="ph"><img class="fo" src="/tmp-foto.jpg"><img class="pin" src="../../../media/cert/pin-${rk==="tl"?"tl2":rk}.png"></div>
  <div class="nm">${q.get("n")||"Karla Calderón"}</div>
- <div class="ln"><i></i>${rk==="md"?"SU PRIMER RANGO EN INCRUISES":"NUEVO RANGO EN INCRUISES"}<i></i></div>
+ <div class="ln"><i></i>${rk==="tl"?"SU NUEVO NIVEL EN INCRUISES":rk==="md"?"SU PRIMER RANGO EN INCRUISES":"NUEVO RANGO EN INCRUISES"}<i></i></div>
  <p class="sb">¡Felicidades! Lo que construyó con <b>disciplina y liderazgo</b> hoy tiene nombre.<br>Este es solo el comienzo.</p>
- <div class="lad${ix>=3?" mu":""}">${lad}</div><div class="ladT">SU CAMINO DE RANGOS EN INCRUISES</div>
+ <div class="lad mu">${lad}</div><div class="ladT">SU CAMINO EN INCRUISES</div>
   <div class="ft"><span>CAMINO A MI LIBERTAD</span><b>#HASTAQUEFUNCIONE</b></div>
 </div></div></div>`)}
 F("");F("p");
