@@ -18,7 +18,8 @@ body{background:#0b0b0d;font-family:Montserrat,sans-serif;color:#fff;-webkit-pri
 .in{position:absolute;inset:.19in;display:flex;flex-direction:column;align-items:center;text-align:center;padding:.5in .42in .34in}
 .k{font-weight:600;font-size:8.6pt;letter-spacing:.42em;margin-right:-.42em}
 .dr{font-family:K;font-size:44pt;line-height:1;margin:2pt 0 -2pt;background:linear-gradient(180deg,#F4DC9C,#C9A55A 55%,#A9873F);-webkit-background-clip:text;background-clip:text;color:transparent}
-.sub{font-weight:500;font-size:6.6pt;letter-spacing:.34em;margin-right:-.34em;color:#E9D8AE;margin-top:6pt}
+.lg{width:3.35in;margin-top:.02in}
+.sub{font-weight:500;font-size:6.6pt;letter-spacing:.34em;margin-right:-.34em;color:#E9D8AE;margin-top:10pt}
 .sub b{font-weight:700;color:#fff}
 .pin{width:1.32in;margin:.24in 0 .2in;filter:drop-shadow(0 6px 14px rgba(0,0,0,.6)) drop-shadow(0 0 20px rgba(214,176,92,.18))}
 .cert{font-weight:600;font-size:8pt;letter-spacing:.44em;margin-right:-.44em}
@@ -30,7 +31,7 @@ body{background:#0b0b0d;font-family:Montserrat,sans-serif;color:#fff;-webkit-pri
 .q{font-family:Lora,serif;font-style:italic;font-size:10.6pt;line-height:1.55;color:#E2E2E2;margin-top:12pt;max-width:4.2in}
 .sp{flex:1}
 .fi{display:flex;gap:.36in;width:100%;justify-content:center;margin-bottom:.2in}
-.fi div{width:1.75in}.fi i{display:block;height:1px;background:rgba(226,194,122,.7);margin-bottom:5pt}
+.fi div{width:1.85in}.fi em{display:block;font-family:K;font-style:normal;font-size:19pt;line-height:1.1;color:#E2C27A;transform:rotate(-4deg);margin-bottom:4pt;white-space:nowrap}
 .fi b{display:block;font-family:Lora,serif;font-weight:500;font-size:10pt}.fi span{display:block;font-weight:500;font-size:5.8pt;letter-spacing:.24em;color:#C9A55A;margin-top:2pt}
 .sh{width:.62in;height:.62in;border-radius:50%;border:1.3px solid #C9A55A;display:grid;place-items:center;box-shadow:inset 0 0 0 3px #111,inset 0 0 0 4px rgba(201,165,90,.6)}
 .sh i{width:.3in;height:.34in;background:linear-gradient(160deg,#F4DC9C,#C9A55A);clip-path:polygon(50% 0,100% 14%,100% 52%,50% 100%,0 52%,0 14%);display:grid;place-items:center}
@@ -41,8 +42,7 @@ body{background:#0b0b0d;font-family:Montserrat,sans-serif;color:#fff;-webkit-pri
 <div class="p">
  <div class="fr"></div><i class="c c1"></i><i class="c c2"></i><i class="c c3"></i><i class="c c4"></i>
  <div class="in">
-  <div class="k">GO FOR YOUR</div>
-  <div class="dr">Dreams</div>
+  <img class="lg" src="../../../media/logo-al.png" alt="Action Leaders">
   <div class="sub">RECONOCIMIENTO DE RANGO · <b>INCRUISES</b></div>
   <img class="pin" src="pin.png" alt="">
   <div class="cert">CERTIFICADO DE RECONOCIMIENTO</div>
@@ -54,8 +54,8 @@ body{background:#0b0b0d;font-family:Montserrat,sans-serif;color:#fff;-webkit-pri
   <div class="q">Por su visión, su disciplina y su liderazgo. Lo que hoy conquistó es el comienzo de lo que está dispuesto a construir.</div>
   <div class="sp"></div>
   <div class="fi">
-   <div><i></i><b>Edwin García Go</b><span>NATIONAL DIRECTOR</span></div>
-   <div><i></i><b id="por">Nombre de su líder</b><span id="porR">MARKETING DIRECTOR</span></div>
+   <div><em>Edwin García Go</em><b>Edwin García Go</b><span>NATIONAL DIRECTOR</span></div>
+   <div><em id="porF">Josué Delgado</em><b id="por">Nombre de su líder</b><span id="porR">MARKETING DIRECTOR</span></div>
   </div>
   <div class="sh"><i><u></u></i></div>
   <div class="ft">Sistema de Liderazgo Action Leaders</div>
@@ -63,6 +63,6 @@ body{background:#0b0b0d;font-family:Montserrat,sans-serif;color:#fff;-webkit-pri
  </div>
 </div>
 <script>
-const q=new URLSearchParams(location.search);for(const k of ["nm","mes","por","porR","lu"])if(q.get(k))document.getElementById(k).textContent=q.get(k);
+const q=new URLSearchParams(location.search);for(const k of ["nm","mes","por","porR","lu"])if(q.get(k))document.getElementById(k).textContent=q.get(k);if(q.get("por"))porF.textContent=q.get("por");
 </script>
 </body></html>
