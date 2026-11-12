@@ -276,6 +276,7 @@ export function avDestino(modo, m) {
   if (modo === "viaje") return "via";
   if (modo === "sinapp") return "snv";
   if (modo === "rhito") return "rach";
+  if (modo === "msg" && /Networker Pro/i.test(t)) return "np";
   return "inicio";
 }
 async function main() {

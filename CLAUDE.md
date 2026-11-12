@@ -776,3 +776,12 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - OJO: el script principal de index.html NO es type=module (es un <script> con IIFE). Para revisar sintaxis: extraer el <script> más grande y `node --check`. Para quitar funciones de nivel superior: /tmp/claude-0/dorm.js (acorn de /opt/node-tools).
 - Juntas/eventos de otros: el admin ve «🗑️ Cancelar (admin)» (cancelación real, igual que el creador; las reglas ya permitían update al admin) y «⛔ Eliminar definitivamente (admin)» (evaBor → delete). Regla nueva en respaldo/firestore.rules: agendaEv delete || isAdmin() — EDWIN DEBE PEGARLA. team/evCancel sigue funcionando para lo cancelado antes.
 - (12 nov, 1:25 a.m.) ABIERTO A TODOS: MARCA_TODOS=true → todos los socios usan las letras del manual de marca en los flyers y el flyer nuevo de la Píldora Millonaria (pildoraCanvas) reemplaza al viejo.
+
+## 🎓 Networker Pro (12 nov, Edwin) — curso de 8 videos
+- config.np en team.json {id, t, sub, nivel, desde, videos:[{t, yt, tarea, ir, bt, f?}]}. Agregar un video = poner su `yt` (id de YouTube) en team.json, SIN publicar. `f` (AAAA-MM-DD) opcional = «Se libera el …». Videos 1–4 cargados (GU9STSQOwbA, J8fi7pfGEyk, ETmCgjm5HJg, AYvApR_MT3s); 5–8 «Próximamente».
+- Avance en profile.np {v:{n:t}, d:{n:"AAAA-MM-DD"}} (perfil, 0 lecturas nuevas). Uno por día: el video n se abre el día después de terminar el n-1 (npEstado.disp). Admin ve todos los que tienen enlace. Posición de cada video en LS np:uid:n.
+- npVer(n): reproductor de YouTube (welLoadYT) sin adelantar (misma regla que la bienvenida: maxG + 4 s + 1.5 × tiempo real) y se marca solo al 90 % o al terminar → npMarcar: guarda, marca day.audio (punto «Aliméntese» de la rutina), confeti; al terminar los 8 → npDiploma (canvas 1080×1350 con nombre e insignias espartanas, las que faltan en gris; compartir).
+- Academia: npCardHTML arriba de «Su ruta de aprendizaje» → npCurso (hoja con hero, 8 videos: ✓ visto / NUEVO / 🔒 motivo, y diploma). Tarea de cada video con botón a la herramienta (npIr: rutina, lista, crm, pres, seg, equipo, hist, comp).
+- Rutina: en el punto «audio» (Aliméntese) npRutHTML: «🎓 Vea su video de hoy · N · título ▶» (data-npv) o «Video N visto ✓». El clic manual sigue funcionando.
+- Inicio: banner #npBan (order 1, después del saludo; ✕ = LS npBanX:uid para siempre; confeti 1 vez LS npBanC:uid). Se quita solo al terminar el curso.
+- Push: disparo.json modo "msg" con «Networker Pro» en el título → destino "np" (avDestino) → avIr("np") abre el curso.

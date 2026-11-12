@@ -4435,7 +4435,72 @@
     "pdfN": "Guia-El-poder-del-presencial.pdf",
     "desde": "2026-11-11T03:06:00Z"
    }
-  ]
+  ],
+  "np": {
+   "id": "np1",
+   "t": "Networker Pro",
+   "sub": "8 habilidades para construir su negocio",
+   "nivel": "Nivel Básico",
+   "desde": "2026-11-12T07:00:00Z",
+   "videos": [
+    {
+     "t": "Mentalidad y rutina de acción",
+     "yt": "GU9STSQOwbA",
+     "tarea": "Complete hoy su rutina de 5 puntos. Una racha empieza con un solo día.",
+     "ir": "rutina",
+     "bt": "🔥 Ir a mi rutina"
+    },
+    {
+     "t": "Su lista de contactos",
+     "yt": "J8fi7pfGEyk",
+     "tarea": "Agregue 5 personas nuevas a su lista. Piense en familia, amigos, compañeros y conocidos.",
+     "ir": "lista",
+     "bt": "📝 Agregar a mi lista"
+    },
+    {
+     "t": "La invitación",
+     "yt": "ETmCgjm5HJg",
+     "tarea": "Invite a 5 personas de su lista con el camino guiado del CRM: «👉 Siguiente paso» le da el mensaje listo.",
+     "ir": "crm",
+     "bt": "👥 Ir a mi CRM"
+    },
+    {
+     "t": "La presentación",
+     "yt": "AYvApR_MT3s",
+     "tarea": "Presente el plan a 1 persona esta semana con la presentación interactiva de la app.",
+     "ir": "pres",
+     "bt": "🎤 Dar presentación"
+    },
+    {
+     "t": "Seguimiento y cierre",
+     "yt": "",
+     "tarea": "Dé seguimiento a 3 prospectos de su CRM y lleve a «Por cerrar» a los que estén listos.",
+     "ir": "seg",
+     "bt": "🔁 Registrar seguimiento"
+    },
+    {
+     "t": "Arranque del nuevo socio",
+     "yt": "",
+     "tarea": "Revise el Plan de Inicio Rápido de su socio más nuevo y ayúdelo con su siguiente paso.",
+     "ir": "equipo",
+     "bt": "👥 Ir a Mi equipo"
+    },
+    {
+     "t": "Atracción en redes",
+     "yt": "",
+     "tarea": "Publique hoy su historia del día y su flyer de la presentación.",
+     "ir": "hist",
+     "bt": "📸 Mi historia del día"
+    },
+    {
+     "t": "Liderazgo",
+     "yt": "",
+     "tarea": "Haga o revise su compromiso del mes y comparta su meta con su equipo.",
+     "ir": "comp",
+     "bt": "🎯 Mi compromiso"
+    }
+   ]
+  }
  },
  "fotos": [
   {
