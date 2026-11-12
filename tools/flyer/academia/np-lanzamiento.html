@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Networker Pro · lanzamiento</title>
+<style>
+@font-face{font-family:P;src:url(../../../media/fonts/Poppins-SemiBold.ttf);font-weight:600}
+@font-face{font-family:F;src:url(../../../media/fonts/Figtree-VF.ttf);font-weight:100 900}
+@font-face{font-family:B;src:url(../../../media/fonts/BarlowCondensed-Bold.ttf);font-weight:700}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1350px;overflow:hidden;background:#0B1220}
+body.h{height:1920px}
+.f{position:relative;width:1080px;height:100%;color:#fff;font-family:F,sans-serif;overflow:hidden;
+ background:radial-gradient(70% 45% at 100% 0%,rgba(42,193,241,.30),rgba(42,193,241,0) 70%),
+ radial-gradient(60% 35% at 0% 100%,rgba(10,125,173,.22),rgba(10,125,173,0) 70%),#0B1220;
+ padding:80px 84px 70px;display:flex;flex-direction:column}
+.wm{position:absolute;right:-120px;top:260px;width:620px;height:620px;background:url(../../../media/casco.png) center/contain no-repeat;opacity:.05}
+.logo{height:62px;align-self:flex-start}
+.tg{margin-top:64px;font-weight:800;font-size:24px;letter-spacing:.24em;color:#2AC1F1;display:flex;align-items:center;gap:14px}
+.tg i{width:12px;height:12px;border-radius:50%;background:#2AC1F1;box-shadow:0 0 0 7px rgba(42,193,241,.2)}
+h1{font-family:P;font-weight:600;font-size:146px;line-height:.92;margin-top:20px;letter-spacing:-.01em}
+h1 b{color:#2AC1F1;font-weight:600}
+.sb{font-size:36px;line-height:1.35;color:rgba(255,255,255,.78);margin-top:26px;max-width:860px}
+.st{display:flex;gap:18px;margin-top:44px}
+.st div{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:20px 22px}
+.st b{display:block;font-family:B;font-size:72px;line-height:1;color:#fff}
+.st b em{font-style:normal;color:#2AC1F1}
+.st span{font-size:22px;letter-spacing:.12em;font-weight:700;color:rgba(255,255,255,.65)}
+.ls{margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:10px 22px}
+.it{display:flex;align-items:center;gap:16px;font-size:27px;font-weight:600;color:rgba(255,255,255,.9)}
+.it n{font-family:B;font-size:34px;width:52px;height:52px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#fff}
+.it.on n{background:#2AC1F1;border-color:#2AC1F1;color:#062B3A}
+.it.on{color:#fff}
+.it{min-height:52px}
+.it small{display:block;font-size:19px;font-weight:700;letter-spacing:.14em;color:#2AC1F1}
+.sp{flex:1}
+.go{margin-top:40px;display:flex;align-items:center;justify-content:center;gap:16px;background:#2AC1F1;color:#062B3A;font-weight:800;font-size:36px;border-radius:999px;padding:28px}
+.ft{display:flex;justify-content:space-between;align-items:center;margin-top:26px;font-size:24px;color:rgba(255,255,255,.6)}
+.ft b{font-family:P;font-weight:600;color:#fff;font-size:26px;letter-spacing:.02em}
+/* historia */
+body.h .f{padding:150px 84px 230px}
+body.h .tg{margin-top:120px}
+body.h h1{font-size:146px}
+body.h .st{margin-top:60px}
+body.h .ls{grid-template-columns:1fr;gap:16px;margin-top:56px}
+body.h .it{font-size:32px}
+</style></head><body>
+<div class="f">
+ <div class="wm"></div>
+ <img class="logo" src="../../../media/logo-al.png">
+ <div class="tg"><i></i>NUEVO CURSO · ACADEMIA</div>
+ <h1>NETWORKER<br><b>PRO</b></h1>
+ <p class="sb">El curso para convertirse en un networker profesional. <b style="color:#fff">Empieza hoy</b> en su app.</p>
+ <div class="st">
+  <div><b>8</b><span>VIDEOS</span></div>
+  <div><b><em>1</em> AL DÍA</b><span>EN SU RUTINA</span></div>
+  <div><b>8 DÍAS</b><span>Y SU DIPLOMA</span></div>
+ </div>
+ <div class="ls" id="ls"></div>
+ <div class="sp"></div>
+ <div class="go">▶ Abra su app › Academia</div>
+ <div class="ft"><span>Desde hoy, un video nuevo cada día</span><b>#HASTAQUEFUNCIONE</b></div>
+</div>
+<script>
+if(location.search.includes("h"))document.body.classList.add("h");
+const T=["Mentalidad y rutina","Su lista de contactos","La invitación","Cómo presentar","Seguimiento y cierre","Arranque del socio","Atracción en redes","Liderazgo"];
+ls.innerHTML=T.map((t,i)=>`<div class="it ${i?"":"on"}"><n>${i+1}</n><div>${i?"":"<small>HOY</small>"}${t}</div></div>`).join("");
+</script>
+</body></html>
