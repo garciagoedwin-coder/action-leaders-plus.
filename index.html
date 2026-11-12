@@ -4631,12 +4631,12 @@ function declAbrir(){let ov=$("#declOv");if(ov)ov.remove();ov=document.createEle
   const cerrar=()=>{document.removeEventListener("visibilitychange",vis);auFin();ov.remove();document.body.style.overflow="";try{declStrip()}catch(e){}try{declAccMarca()}catch(e){}};
   let i=-1;const N=DECL.length;
   const pinta=()=>{const bar=`<div class="dbar"><b style="width:${Math.max(0,(i+1)/(N+1)*100)}%"></b></div>`,top=`<div class="dtop"><span>${i<0?"DECLARACIÓN DE ÉXITO":(Math.min(i+1,N+1))+" DE "+(N+1)}</span><span>${muBtn()}<button class="dx" aria-label="Cerrar">✕</button></span></div>`;
-    if(i<0){ov.innerHTML=`<div class="dwm"></div>${top}<div class="dc"><div class="dk">☀️ BUENOS DÍAS${pila?", "+esc(pila):""}</div><div class="dh">¡YO${nm?`, <span class="dg">${esc(nm)}</span>,`:","}<br>HOY DECLARO<br>QUIÉN SOY!</div><div class="ds">Póngase de pie. Léala <b>en voz alta</b>,<br>con fuerza y convicción. 🔥</div>
+    if(i<0){ov.innerHTML=`<div class="dwm"></div>${top}<div class="dc"><div class="dk">${(()=>{const hh=declHN().getUTCHours();return hh<12?"☀️ BUENOS DÍAS":hh<19?"🌤️ BUENAS TARDES":"🌙 BUENAS NOCHES"})()}${pila?", "+esc(pila):""}</div><div class="dh">¡YO${nm?`, <span class="dg">${esc(nm)}</span>,`:","}<br>HOY DECLARO<br>QUIÉN SOY!</div><div class="ds">Póngase de pie. Léala <b>en voz alta</b>,<br>con fuerza y convicción. 🔥</div>
       ${profile.decG?"":`<div class="dgen"><span>¿Cómo quiere su declaración?</span><div><button data-g="m">🙋‍♂️ Masculino</button><button data-g="f">🙋‍♀️ Femenino</button></div></div>`}</div>
       <div class="dbot"><button class="dgo" ${profile.decG?"":"disabled"}>🗣️ Empezar mi declaración</button><div class="dhint">Toma 2 minutos${declRacha()?` · 🔥 ${declRacha()} días seguidos`:""}${profile.decG?` · <a href="#" class="dcg">Cambiar a ${profile.decG==="f"?"masculino":"femenino"}</a>`:""}</div></div>`;
       ov.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{profile.decG=b.dataset.g;store.set("perfil",profile);pinta()});
       const cg=ov.querySelector(".dcg");if(cg)cg.onclick=e=>{e.preventDefault();profile.decG=profile.decG==="f"?"m":"f";store.set("perfil",profile);pinta()};
-      ov.querySelector(".dgo").onclick=()=>{i=0;auPlay(0);pinta()}}
+      ov.querySelector(".dgo").onclick=()=>{i=0;if(!au||au.paused)auPlay();pinta()}}
     else if(i<N){ov.innerHTML=`<div class="dwm"></div>${top}${bar}<div class="dc dtap">${DECL[i].map((t,j)=>`<div class="dl" style="animation-delay:${j*.45}s">${declTx(t)}</div>`).join("")}</div><div class="dbot"><div class="dhint">Toque la pantalla para seguir ›</div></div>`;
       ov.querySelector(".dtap").parentNode.onclick=e=>{if(e.target.closest(".dx"))return;i++;pinta()}}
     else{ov.innerHTML=`<div class="dwm"></div>${top}${bar}<div class="dc" style="bottom:300px"><div class="dl">¡LO CREO!</div><div class="dl" style="animation-delay:.45s">¡LO DECLARO!</div><div class="dl" style="animation-delay:.9s">¡Y LO HAGO <span class="dy">REALIDAD!</span></div><div class="ds dl" style="animation-delay:1.4s">¡Porque nací para crecer, prosperar y ganar!</div></div>
@@ -4663,6 +4663,7 @@ function declAbrir(){let ov=$("#declOv");if(ov)ov.remove();ov=document.createEle
     draw()}
   function cierre(o,t){ov.innerHTML=`<div class="dwm"></div><div class="dtop"><span>MI DECLARACIÓN</span><span>${muBtn()}</span></div><div class="dc"><div class="dh" style="text-transform:none">Lo declaró.<br>Ahora <span class="dg">hágalo.</span></div><div class="dacC"><div class="dk" style="color:#2AC1F1">SU ACCIÓN DE HOY</div><b>${o.ic} ${esc(t)}</b></div><div class="ds">Se la vamos a recordar en Inicio.<br>Cuando la haga, márquela en su rutina.</div></div><div class="dbot"><button class="dgo">Empezar mi día ›</button></div>`;
     muBind();ov.querySelector(".dgo").onclick=()=>{cerrar();try{go("inicio")}catch(e){}}}
+  auPlay(0); // 12 nov (Edwin): la música arranca al abrir la declaración (el toque que la abre permite el sonido)
   pinta()}
 setInterval(()=>{try{if(document.visibilityState==="visible")declStrip()}catch(e){}},30000);setTimeout(()=>{try{declStrip()}catch(e){}},2500);
 // 11 nov (Edwin): BANNERS DE COMPETENCIA (opción A, tinte suave). Mañana 7–12: Mi Racha (Libros Go Pro, top 3) + Incentivo de viaje (1.º en volumen), se deslizan.
@@ -8128,7 +8129,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261112131333";var busy=false,pend=null;
+(function(){var V="20261112131758";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
