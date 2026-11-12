@@ -4781,6 +4781,16 @@
      "a": 6
     },
     {
+     "n": "Elmerjoel Almendares",
+     "p": 750,
+     "a": 6
+    },
+    {
+     "n": "Denia Rocha",
+     "p": 700,
+     "a": 6
+    },
+    {
      "n": "Josue Gerardo Delgado Moran",
      "p": 700,
      "a": 2
@@ -4794,16 +4804,6 @@
      "n": "Dahiana Peña",
      "p": 650,
      "a": 4
-    },
-    {
-     "n": "Denia Rocha",
-     "p": 650,
-     "a": 5
-    },
-    {
-     "n": "Elmerjoel Almendares",
-     "p": 650,
-     "a": 5
     },
     {
      "n": "Joel Enrrique Salgado Moradel",
@@ -4824,6 +4824,11 @@
      "n": "Guillermo Fuentes",
      "p": 550,
      "a": 4
+    },
+    {
+     "n": "Joany Isabel Perla Gamez",
+     "p": 550,
+     "a": 5
     },
     {
      "n": "Saby Isaguirre",
@@ -4854,6 +4859,11 @@
      "n": "Joel Salgado",
      "p": 500,
      "a": 4
+    },
+    {
+     "n": "Kevin Izaguirre",
+     "p": 500,
+     "a": 5
     },
     {
      "n": "Lizandro Castro",
@@ -4916,11 +4926,6 @@
      "a": 3
     },
     {
-     "n": "Joany Isabel Perla Gamez",
-     "p": 450,
-     "a": 4
-    },
-    {
      "n": "Telva Lacayo",
      "p": 450,
      "a": 3
@@ -4936,6 +4941,16 @@
      "a": 4
     },
     {
+     "n": "Dania Estrada",
+     "p": 400,
+     "a": 4
+    },
+    {
+     "n": "Francisco Caballero",
+     "p": 400,
+     "a": 4
+    },
+    {
      "n": "Genny Aguilar",
      "p": 400,
      "a": 4
@@ -4946,7 +4961,7 @@
      "a": 4
     },
     {
-     "n": "Kevin Izaguirre",
+     "n": "Lohani Membreño",
      "p": 400,
      "a": 4
     },
@@ -4981,19 +4996,9 @@
      "a": 3
     },
     {
-     "n": "Dania Estrada",
-     "p": 300,
-     "a": 3
-    },
-    {
      "n": "Dilcia",
      "p": 300,
      "a": 4
-    },
-    {
-     "n": "Francisco Caballero",
-     "p": 300,
-     "a": 3
     },
     {
      "n": "Gloria Virgilia De Jesus Sierra Serrano",
@@ -5012,11 +5017,6 @@
     },
     {
      "n": "Lidia Sosa",
-     "p": 300,
-     "a": 3
-    },
-    {
-     "n": "Lohani Membreño",
      "p": 300,
      "a": 3
     },
@@ -5361,7 +5361,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-12T22:21:46Z"
+   "t": "2026-11-12T22:23:36Z"
   }
  },
  "fotos": [
