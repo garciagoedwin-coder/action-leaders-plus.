@@ -55,7 +55,7 @@ const R={
  nd:{t:["NATIONAL","DIRECTOR"],c0:"#FFE4E6",c1:"#FDA4AF",c2:"#E11D48",c3:"#9F1239",tx:"#3B0412",g:"225,29,72",g2:"253,164,175",b0:"#160308",b1:"#3d0716",b2:"#640b24"},
  id:{t:["INTERNATIONAL","DIRECTOR"],c0:"#F3E8FF",c1:"#D8B4FE",c2:"#9333EA",c3:"#6B21A8",tx:"#24063F",g:"147,51,234",g2:"216,180,254",b0:"#0d0418",b1:"#250b45",b2:"#3b1170"},
  ed:{t:["EXECUTIVE","DIRECTOR"],c0:"#FFFFFF",c1:"#E5E7EB",c2:"#9CA3AF",c3:"#4B5563",tx:"#0B0B0C",g:"200,205,214",g2:"229,231,235",b0:"#050506",b1:"#141518",b2:"#25272c"},
- bod:{t:["BOARD OF","DIRECTORS"],c0:"#FEF9C3",c1:"#FDE68A",c2:"#EAB308",c3:"#A16207",tx:"#2A1A02",g:"234,179,8",g2:"253,230,138",b0:"#0c0822",b1:"#1c1550",b2:"#2a1f7a"}};
+ bod:{t:["BOARD OF","DIRECTORS"],c0:"#FFF9D6",c1:"#FDE047",c2:"#FACC15",c3:"#B8860B",tx:"#1A1300",g:"250,204,21",g2:"212,175,55",b0:"#010714",b1:"#04163a",b2:"#082863"}};
 const K=["md","smd","rd","nd","id","ed","bod"],AB=["MD","SMD","RD","ND","ID","ED","BOD"];
 const q=new URLSearchParams(location.search),rk=q.get("r")||"md",V=R[rk],ix=K.indexOf(rk);
 function F(cls){const st=Object.entries(V).filter(([k])=>k!=="t").map(([k,v])=>`--${k}:${v}`).join(";");
