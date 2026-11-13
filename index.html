@@ -842,7 +842,11 @@ body.beta #compSn{display:none!important}#agMia[hidden]+.card.perf{display:none}
 .tuTm{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:13px;margin:2px 0 8px;color:var(--muted)}.tuTm b{color:var(--ink)}.tuTmL{display:flex;flex-wrap:wrap;gap:5px}.tuTmL button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:5px 10px;font:inherit;font-size:12px;font-weight:700}.tuTmL button.on{background:var(--brand);border-color:var(--brand);color:#fff}
 .tuTag{font-size:11px;font-weight:800;border-radius:8px;padding:3px 7px;background:#FEF3C7;color:#8C6A12;white-space:nowrap}
 .tuSl{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line,#EDF1F5);margin-top:6px}.tuSl .r{font-size:12px;opacity:.65;width:60px;flex:none}.tuSl .who{flex:1;min-width:0;display:flex;align-items:center;gap:8px;font-size:14px}.tuSl .who .av{width:28px;height:28px;font-size:11px}
-.tuFree{color:#B45309;font-weight:800}.tuL{font-size:11.5px;opacity:.65;white-space:nowrap}
+.tuFree{color:#B45309;font-weight:800}.tuX{flex-wrap:wrap}.tuX .who{flex:1 1 calc(100% - 70px)}.tuX .tuBs,.tuX>.tuB:first-of-type{margin-left:68px}.tuBs{display:flex;gap:8px}.tuPd .who .av{opacity:.45;filter:grayscale(.4)}.tuPd .who b{opacity:.6}.tuPw{display:flex;flex-direction:column;min-width:0;line-height:1.2}.tuPw small{font-size:11.5px;font-weight:700;color:#B45309;white-space:normal}.tuRz{font-size:11.5px;font-weight:700;color:var(--bad)!important}
+#turStrip{display:flex;gap:12px;align-items:flex-start;padding:14px 40px 14px 14px;border-radius:18px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:5px solid #D4A72C;box-shadow:0 4px 14px rgba(20,33,61,.06)}#turStrip[hidden]{display:none}#turStrip .lzgB button{border:0;font:inherit;flex:1;border-radius:12px;padding:10px 8px;font-weight:800;font-size:13px;background:#D4A72C;color:#1b1400;cursor:pointer}
+.taL{display:flex;flex-direction:column;gap:6px;margin-top:8px;max-height:55vh;overflow:auto}.taR{display:flex;align-items:center;gap:9px;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:8px 10px;cursor:pointer}.taR.off{opacity:.45;cursor:default}.taN{font-family:var(--f-num);font-weight:800;font-size:16px;width:22px;text-align:center;color:var(--muted)}.taG{flex:1;min-width:0;display:flex;flex-direction:column}.taG b{font-size:14.5px}.taG small{font-size:12px;color:var(--muted);font-weight:600}.taC{display:flex;flex-direction:column;align-items:flex-end;gap:2px;font-size:12px;font-weight:800;color:var(--muted)}.taC .no{color:var(--bad)}
+.tuInv{text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;position:relative;overflow:hidden}.tuInvI{font-size:46px;line-height:1}.tuInv h2{margin:0}.tuInv p{margin:0}.tuInvE{display:flex;flex-direction:column;gap:3px;border:1.5px solid #D4A72C;border-radius:14px;padding:10px 14px;background:color-mix(in srgb,#D4A72C 10%,var(--surface));width:100%}.tuInvE span{font-size:13px;color:var(--muted);font-weight:600}
+.tcTot{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.tcTot div{border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center;font-size:11.5px;font-weight:700;color:var(--muted)}.tcTot b{display:block;font-family:var(--f-num);font-size:22px;color:var(--ink)}.tcR{border-bottom:1px solid var(--line);padding:8px 0}.tcR>summary{list-style:none;display:flex;align-items:center;gap:9px;cursor:pointer}.tcR>summary::-webkit-details-marker{display:none}.tcR summary small{display:block;font-size:12px;color:var(--muted);font-weight:600}.tcR em{font-style:normal;color:var(--muted)}.tcR[open] em{transform:rotate(90deg)}.tcL{font-size:12.5px;padding:6px 0 0 46px;color:var(--muted)}.tcL.no{color:var(--bad)}.tuL{font-size:11.5px;opacity:.65;white-space:nowrap}
 .tuB{font:inherit;font-size:12.5px;font-weight:800;border-radius:10px;padding:7px 9px;border:1.5px solid #0A7DAD;background:transparent;color:#0A7DAD;white-space:nowrap;cursor:pointer}.tuB.f{background:#0A7DAD;color:#fff}.tuB.g{border-color:#C9D4DE;color:#6b7785}
 .lzMiniL{display:none}.lz-hero.mini .lzMiniL{display:block;margin-top:6px;font-size:14px;opacity:.9}
 .lz-hero.mini .lz-cmp,.lz-hero.mini #lzLista,.lz-hero.mini .lz-sub,.lz-hero.mini .lz-cnt,.lz-hero.mini #lcBtn,.lz-hero.mini .lz-req{display:none!important}
@@ -1583,6 +1587,7 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
         <div class="avSl" data-k="lzgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="lzgS" id="lzgStrip" hidden></div></div>
         <div class="avSl" data-k="olvStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="olvS" id="olvStrip" hidden></div></div>
         <div class="avSl" data-k="eqzStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div id="eqzStrip" hidden></div></div>
+        <div class="avSl" data-k="turStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div id="turStrip" hidden></div></div>
         <div class="avSl" data-k="viaStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="viaS" id="viaStrip" hidden></div></div>
         <div class="avSl" data-k="evHoy" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div id="evHoy" hidden></div></div>
       </div><div class="avDots" id="avDots"></div></div>
@@ -4318,7 +4323,7 @@ function renderLiderazgo(b){{
     const L=T.lideres,C=calCfg(),cn={esp:0,lid:0,rango:0,pend:0};L.forEach(l=>cn[calLid(l).k]++);const nCal=cn.esp+cn.lid+cn.rango;if(!["cal","esp","lid","rango"].includes(leadCal))leadCal="cal";
     const per=(T.config&&T.config.liderazgoPeriodo)||C.mes||lcMes();
     const S=sisCfg();
-    const lzMini=!!(S&&irSimple()&&!LS.get("lzOpen"));b.innerHTML=rankSegsL()+`<div class="lz-hero${lzMini?" mini":""}${S&&irSimple()?" v2":""}"><div class="lz-k">${S&&irSimple()?"SISTEMA DE LIDERAZGO · ":""}${esc(String(per).toUpperCase())}</div><h2>⭐ ${S?"Sistema de liderazgo":"Calificados al sistema de liderazgo"}</h2>${S&&irSimple()&&(mqL||lzAsis())?`<div class="lzSt">${mqL?`<div><b>${L.filter(l=>lzComp(l)).length}<i>/${L.length}</i></b><span>🤝 Compromisos de ${esc(mesNom())}</span></div>`:""}${lzAsis()?`<div><b>${lzAsis().ids.length}<i>/${L.length}</i></b><span>📞 Asistieron · ${esc(niceDate(lzAsis().f))}</span></div>`:""}</div>`:""}${S&&irSimple()&&turPuede()&&lzgCfg()?`<button type="button" class="lzWa" id="lzgBtn">💬 Grupo de WhatsApp · ${esc(lzgMes())}${lzgYa()?" ✓":""}</button>`:""}${S&&irSimple()&&turPuede()?lzRow("tuBtn","📅","Turnos del sistema","Apúntese como ponente o a presentar"):""}${S&&irSimple()&&turPuede()?lzRow("fdBtn","📣","Flyer del día","Motive al equipo por WhatsApp","g"):""}${S&&isAdmin?lzRow("lzgAdm","🔗","Link del grupo del mes","Solo admin · "+(lzgCfg()?"✓ puesto":"sin poner")):""}${S&&isAdmin?lzRow("lzLista","✅","Pasar lista de la reunión","Solo admin"):""}${S&&irSimple()&&!isAdmin&&!lzSoyMiembro()?`<div class="lz-invit">🚀 <b>¡Usted también puede entrar!</b> Califique este mes con <b>🛡️ 200 pts</b> (Líder) o <b>⚔️ 500 pts</b> (Líder Espartano). Estos son los que calificaron el mes pasado.</div>`:""}${S?`<p class="lz-sub">Calificados al sistema de liderazgo en ${esc(String(S.mes||per).split(" ")[0].toLowerCase())} con sus puntos de ${esc(String(S.base||"").split(" ")[0].toLowerCase())}</p>`:""}
+    const lzMini=!!(S&&irSimple()&&!LS.get("lzOpen"));b.innerHTML=rankSegsL()+`<div class="lz-hero${lzMini?" mini":""}${S&&irSimple()?" v2":""}"><div class="lz-k">${S&&irSimple()?"SISTEMA DE LIDERAZGO · ":""}${esc(String(per).toUpperCase())}</div><h2>⭐ ${S?"Sistema de liderazgo":"Calificados al sistema de liderazgo"}</h2>${S&&irSimple()&&(mqL||lzAsis())?`<div class="lzSt">${mqL?`<div><b>${L.filter(l=>lzComp(l)).length}<i>/${L.length}</i></b><span>🤝 Compromisos de ${esc(mesNom())}</span></div>`:""}${lzAsis()?`<div><b>${lzAsis().ids.length}<i>/${L.length}</i></b><span>📞 Asistieron · ${esc(niceDate(lzAsis().f))}</span></div>`:""}</div>`:""}${S&&irSimple()&&turPuede()&&lzgCfg()?`<button type="button" class="lzWa" id="lzgBtn">💬 Grupo de WhatsApp · ${esc(lzgMes())}${lzgYa()?" ✓":""}</button>`:""}${S&&irSimple()&&turPuede()?lzRow("tuBtn","📅","Turnos del sistema","Apúntese como ponente o a presentar"):""}${S&&irSimple()&&turPuede()&&(isAdmin||miRangoIdx()>=1)?lzRow("tuCtl","📊","Control de turnos",isAdmin?"Solo admin · aceptados y rechazos":"Turnos de su equipo"):""}${S&&irSimple()&&turPuede()?lzRow("fdBtn","📣","Flyer del día","Motive al equipo por WhatsApp","g"):""}${S&&isAdmin?lzRow("lzgAdm","🔗","Link del grupo del mes","Solo admin · "+(lzgCfg()?"✓ puesto":"sin poner")):""}${S&&isAdmin?lzRow("lzLista","✅","Pasar lista de la reunión","Solo admin"):""}${S&&irSimple()&&!isAdmin&&!lzSoyMiembro()?`<div class="lz-invit">🚀 <b>¡Usted también puede entrar!</b> Califique este mes con <b>🛡️ 200 pts</b> (Líder) o <b>⚔️ 500 pts</b> (Líder Espartano). Estos son los que calificaron el mes pasado.</div>`:""}${S?`<p class="lz-sub">Calificados al sistema de liderazgo en ${esc(String(S.mes||per).split(" ")[0].toLowerCase())} con sus puntos de ${esc(String(S.base||"").split(" ")[0].toLowerCase())}</p>`:""}
       <div class="lz-cnt"><div><b>${cn.esp}</b><small>⚔️ Espartanos</small></div><div><b>${cn.lid}</b><small>🛡️ Líderes</small></div><div><b>${cn.rango}</b><small>✅ Por rango</small></div></div>
       ${lcLista0().length?`<button class="lz-fly" id="lcBtn" type="button">🎉 Ver flyers de los calificados (${lcLista0().length})</button>`:""}
       <p class="lz-req">${S?`Calificaron en ${esc(String(S.base||"").split(" ")[0].toLowerCase())} con su ahorro al día: 🛡️ Líder ${fmt(C.lider)}+ pts · ⚔️ Líder Espartano ${fmt(C.esp)}+ pts. De Marketing Director en adelante entran por su rango.`:`Requisitos: ahorro al día y puntos personales del mes (🛡️ Líder ${fmt(C.lider)} · ⚔️ Espartano ${fmt(C.esp)}). De Marketing Director en adelante califican al recalificar su rango.`}</p>${S&&irSimple()?`<button type="button" class="lzTog" id="lzTog">${lzMini?"Ver más ▾":"Ver menos ▴"}</button>`:""}</div>
@@ -4330,7 +4335,7 @@ function renderLiderazgo(b){{
      ${S&&!irSimple()?caminoHTML(L,C,S):""}${irSimple()?llamLzCard():""}
      <p class="small muted" style="margin:0">${S&&irSimple()?"🏆 General = activaciones del mes y, si empatan, ⚡ IC (Índice de Constancia: su rutina en la app). Toque a un líder para ver su ficha.":S?"Ordenados por sus puntos de "+esc(String(S.base||"").split(" ")[0].toLowerCase())+".":"Ordenados por volumen, del más alto al más bajo."} Toque a un líder para ver su ficha.</p>
      <p class="updated">${updatedTxt(T.config&&T.config.liderazgoActualizado)}</p>`;
-    bindRank();renderLeadList();liderResCargar();{const lb=$("#lcBtn");if(lb)lb.onclick=lcLista}{const ll=$("#lzLista");if(ll)ll.onclick=lzPasarLista}{const tb=$("#tuBtn");if(tb)tb.onclick=()=>turAbrir()}{const gb=$("#lzgBtn");if(gb)gb.onclick=()=>lzgAbrir()}{const ga=$("#lzgAdm");if(ga)ga.onclick=()=>lzgAdmin()}{const fb=$("#fdBtn");if(fb)fb.onclick=()=>fdAbrir()}{const tg=$("#lzTog");if(tg)tg.onclick=()=>{try{LS.set("lzOpen",LS.get("lzOpen")?"":1)}catch(e){}renderEquipo()}}
+    bindRank();renderLeadList();liderResCargar();{const lb=$("#lcBtn");if(lb)lb.onclick=lcLista}{const ll=$("#lzLista");if(ll)ll.onclick=lzPasarLista}{const tb=$("#tuBtn");if(tb)tb.onclick=()=>turAbrir()}{const tc=$("#tuCtl");if(tc)tc.onclick=()=>{openSheet(`<p class="muted small">Cargando…</p>`);turControl()}}{const gb=$("#lzgBtn");if(gb)gb.onclick=()=>lzgAbrir()}{const ga=$("#lzgAdm");if(ga)ga.onclick=()=>lzgAdmin()}{const fb=$("#fdBtn");if(fb)fb.onclick=()=>fdAbrir()}{const tg=$("#lzTog");if(tg)tg.onclick=()=>{try{LS.set("lzOpen",LS.get("lzOpen")?"":1)}catch(e){}renderEquipo()}}
     $("#leadQ").oninput=e=>{leadQ=e.target.value;renderLeadList()};
     $("#leadCal").onclick=e=>{const x=e.target.closest("button");if(!x)return;leadCal=x.dataset.c;renderEquipo()};
     {const lo=$("#leadOrd");if(lo)lo.onclick=e=>{const x=e.target.closest("button");if(!x)return;leadOrd=x.dataset.o;try{LS.set("leadOrd",leadOrd)}catch(e2){}lo.querySelectorAll("button").forEach(z=>z.setAttribute("aria-pressed",z===x));renderLeadList()}}
@@ -5453,7 +5458,7 @@ const avHace=t=>{const m=Math.round((Date.now()-t)/6e4);if(m<1)return"ahora";if(
 // 6 nov: el Centro de avisos muestra solo los de HOY (hora de Honduras) y cada aviso lleva a lo suyo (avIr). ?av=destino al tocar la notificación.
 function avHoy0(){const n=Date.now(),h=new Date(n-6*36e5);return Date.UTC(h.getUTCFullYear(),h.getUTCMonth(),h.getUTCDate())+6*36e5}
 function avDest(x){const v=x.v||"",t=x.ti||"";if(v&&!/^(inicio|equipo)$/.test(v))return v==="agenda"?"agenda":v;
-  if(/Materiales|Guía gratis/i.test(t))return "mat";if(/pide un cambio/i.test(t))return "sol";if(/no aparecen? en inCruises/i.test(t)&&isAdmin)return /cuentas aprobadas/i.test(t)?"sinh":"apr";if(/solicitud/i.test(t))return "dt";if(/ahorros? pendientes?/i.test(t))return "ahp";if(/inactiva|ya pag/i.test(t))return "urg";
+  if(/Materiales|Guía gratis/i.test(t))return "mat";if(/le confía|no puede (presentar|edificar|ser ponente)|aceptó (presentar|edificar|ser ponente)|aún no confirma/i.test(t+" "+(x.b||"")))return "tur";if(/pide un cambio/i.test(t))return "sol";if(/no aparecen? en inCruises/i.test(t)&&isAdmin)return /cuentas aprobadas/i.test(t)?"sinh":"apr";if(/solicitud/i.test(t))return "dt";if(/ahorros? pendientes?/i.test(t))return "ahp";if(/inactiva|ya pag/i.test(t))return "urg";
   if(/compromiso/i.test(t))return "comp";if(/grupo/i.test(t))return "lzg";if(/Sistema de liderazgo|Felicidades/i.test(t))return "lz";if(/socio en su equipo|nuevo socio/i.test(t))return "snv";if(/incentivo|cerrar/i.test(t))return "inc";
   return v==="equipo"?"eq":"rut"}
 function avFila(x,v){return `<button type="button" class="avIt avRow${(x.t||0)>v?" nuevo":""}" data-avd="${avDest(x)}"><span class="avIc">${(x.t||0)>v?"🔵":"🔔"}</span><div class="grow" style="min-width:0;text-align:left"><b>${esc(x.ti||"")}</b><small>${esc(x.b||"")}</small><small class="muted">${avHace(x.t||0)}</small></div><span class="avGo">›</span></button>`}
@@ -5466,6 +5471,7 @@ function avIr(k){try{
   if(k==="recoyo"){setTimeout(()=>{try{recoMio()}catch(e){}},300);return}
   if(k==="reco"){setTimeout(async()=>{try{if(!mios||!mios.length)await loadMios()}catch(e){}try{recoLista()}catch(e){}},300);return}
   if(k==="apr"){aprAbrir();return}
+  if(k==="tur"){const run=()=>{const P=turMisP();if(P.length)turResponder(P[0].e,P[0].k);else turAbrir()};turCargar(true).then(run,run);return}
   if(k==="rep"){if(isAdmin)repAdmin();return}
   if(k==="via"){go("inicio");try{avBoxMostrar("viaStrip")}catch(e){}avScroll("#viaStrip");return}
   if(k==="ag"||k==="agenda"){avisosVer();return}
@@ -5586,7 +5592,7 @@ const TR_TEMAS=["Mentalidad","Liderazgo","Redes sociales","Habilidades","Llamada
 const esTr=e=>/action leaders? training/i.test((e&&e.titulo)||"");
 let trFont=null;function trFonts(){if(!trFont)trFont=(async()=>{try{const f=new FontFace("ALKS","url(media/fonts/KaushanScript-Regular.ttf)");document.fonts.add(await f.load())}catch(e){}})();return trFont}
 function trTema(e){const s=((typeof turD!=="undefined"&&turD)||{})[e.id]||{};if(s.tema)return s.tema;if(e._tema0)return e._tema0;return parseK(e.fecha).getDay()===0?"Llamada de poder":""}
-function trPon(e){const s=((typeof turD!=="undefined"&&turD)||{})[e.id]||{};return TUR_KT.map(([k])=>s[k]).filter(x=>x&&x.n)}
+function trPon(e){const s=((typeof turD!=="undefined"&&turD)||{})[e.id]||{};return TUR_KT.map(([k])=>s[k]).filter(turOk)}
 function trOrden(L){return L.map((x,i)=>({n:x.n,u:x.u||"",t:+x.t||i,ri:rangoActualIdx({},x.n)})).sort((a,b)=>b.ri-a.ri||a.t-b.t)}
 function trRango(p){return (p.ri>=0&&RANGOS[p.ri]?RANGOS[p.ri].n:tituloFlyer(p.n)||"").toUpperCase()}
 function trZonas(e){const[y,m,dd]=e.fecha.split("-").map(Number),[h,mi]=(e.hora||"20:00").split(":").map(Number),t=new Date(Date.UTC(y,m-1,dd,h+6,mi||0));
@@ -8054,7 +8060,7 @@ async function irFlyer(w){try{await flFonts()}catch(e){}const g=!w,W=1080,H=1350
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],g?"graduado-inicio-rapido.jpg":"inicio-rapido-semana-"+w.n+".jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
-let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{eqzStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
+let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{eqzStrip()}catch(e){}try{turStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
   const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
   if(m==="actual"&&!st.ini){const no=LS.get("irNo:"+store.uid);if(no&&Date.now()<no){el.hidden=true;return}
     el.hidden=false;el.className="irMini";el.innerHTML=`<span class="ic">🚀</span><span class="tx"><b>Plan de Inicio Rápido</b> · Aprenda a duplicar en 30 días</span><button type="button" class="go" id="irEmp">Empezar ›</button><button type="button" class="x" id="irNo" aria-label="Quitar">✕</button>`;
@@ -8217,24 +8223,33 @@ let turD=null,turT=0,turDia=null;
 function turPuede(){try{return isAdmin||lzSoyMiembro()}catch(e){return false}}
 function turRango(){try{return isAdmin||rangoActualIdx(miRegistro(),miNombreFull())>=2}catch(e){return false}}
 const turYo=s=>!!s&&((store.uid&&s.u===store.uid)||(!s.u&&lzMismo(s.n,miNombreFull()||miRegistro().nombre||"")));
+// 13 nov: asignación con respuesta. st "p" = por confirmar (sombra, no sale en flyer/agenda), "ok" = aceptó, "no" = rechazó (lugar libre). Sin st = se apuntó solo.
+const turOc=v=>!!(v&&v.n&&v.st!=="no"),turOk=v=>!!(v&&v.n&&v.st!=="no"&&v.st!=="p");
+const turRol=(e,k)=>turSoloRango(e)?"ser ponente":k==="p"?"presentar":"edificar";
+const turPorN=v=>String((v&&v.por)||"Edwin").trim().split(/\s+/)[0];
+let turRzD={};
+function turVeRz(u){try{if(isAdmin)return true;return !!(u&&miRangoIdx()>=1&&(mios||[]).some(x=>x.uid===u))}catch(e){return false}}
 async function turCargar(force){if(!store.db||!fbUser)return;if(!force&&turD&&Date.now()-turT<6e5){turAplicar();return}turT=Date.now();
-  try{const d=await store.db.doc("turnos/"+TODAY.slice(0,7)).get();turD=(d.exists&&d.data().s)||{}}catch(e){turD=turD||{}}turAplicar();turAvisos()}
+  try{const d=await store.db.doc("turnos/"+TODAY.slice(0,7)).get();turD=(d.exists&&d.data().s)||{};turRzD=(d.exists&&d.data().rz)||{}}catch(e){turD=turD||{}}turAplicar();turAvisos();try{turStrip()}catch(e){}}
 function turAplicar(){if(!turD)return;let c=false;(T.eventos||[]).forEach(e=>{if(e._r0===undefined){e._r0=e.responsable||"";e._e0=e.edifica||"";e._tema0=e.tema||""}const s=turD[e.id]||{};
   if(turSoloRango(e)){const O=trOrden(trPon(e)).map(x=>x.n),tm=trTema(e),j=O.join("|");if(j!==(e._tr||[]).join("|")||tm!==e.tema){e._tr=O;e.tema=tm;e.responsable=O[0]||e._r0;e.edifica="";c=true}return}
-  const r=s.p&&s.p.n?s.p.n:e._r0,ed=s.e&&s.e.n?s.e.n:e._e0;if(r!==e.responsable||ed!==e.edifica){e.responsable=r;e.edifica=ed;c=true}});
+  const r=turOk(s.p)?s.p.n:e._r0,ed=turOk(s.e)?s.e.n:e._e0;if(r!==e.responsable||ed!==e.edifica){e.responsable=r;e.edifica=ed;c=true}});
   if(c){try{renderCal();renderNext()}catch(e){}}}
 function turLista(){return (T.eventos||[]).filter(e=>!TUR_NO(e)&&e.fecha>=TODAY&&e.fecha.slice(0,7)===TODAY.slice(0,7)&&turMs(e)>Date.now()-36e5).sort((a,b)=>(a.fecha+(a.hora||"")).localeCompare(b.fecha+(b.hora||"")))}
-function turResumen(){const L=turLista();let mis=0,cub=0;let tot=0;L.forEach(e=>{const s=(turD||{})[e.id]||{};if(turSoloRango(e)){tot++;const K=TUR_KT.filter(([k])=>s[k]&&s[k].n);if(K.length)cub++;if(K.some(([k])=>turYo(s[k])))mis++;return}turKs(e).forEach(([k])=>{tot++;if(s[k]&&s[k].n){cub++;if(turYo(s[k]))mis++}})});return {L,mis,cub,por:tot-cub}}
+function turResumen(){const L=turLista();let mis=0,cub=0;let tot=0;L.forEach(e=>{const s=(turD||{})[e.id]||{};if(turSoloRango(e)){tot++;const K=TUR_KT.filter(([k])=>turOc(s[k]));if(K.length)cub++;if(K.some(([k])=>turYo(s[k])&&turOk(s[k])))mis++;return}turKs(e).forEach(([k])=>{tot++;if(turOc(s[k])){cub++;if(turYo(s[k])&&turOk(s[k]))mis++}})});return {L,mis,cub,por:tot-cub}}
 function turAvisos(){try{if(!turPuede()||!turD)return;const man=dkey(new Date(Date.now()+864e5));(T.eventos||[]).forEach(e=>{if(e.fecha!==TODAY&&e.fecha!==man)return;if(turMs(e)<Date.now())return;const s=turD[e.id]||{};
-  turKs(e).forEach(([k,lb])=>{if(!turYo(s[k]))return;const K="turAv:"+e.id+":"+k+":"+TODAY;if(LS.get(K))return;LS.set(K,1);
+  turKs(e).forEach(([k,lb])=>{if(!turYo(s[k])||!turOk(s[k]))return;const K="turAv:"+e.id+":"+k+":"+TODAY;if(LS.get(K))return;LS.set(K,1);
     setTimeout(()=>{try{avisoTop("📣 "+(e.fecha===TODAY?"Hoy":"Mañana")+" le toca "+(turSoloRango(e)?"ser ponente":k==="p"?"presentar":"edificar"),e.titulo+" · "+h12(e.hora),()=>turAbrir(e.fecha))}catch(x){}},3500)})})}catch(e){}}
 async function turAbrir(dia){if(!turPuede()){toast("Los turnos son solo para el sistema de liderazgo");return}if(dia)turDia=dia;openSheet(`<p class="muted small">Cargando turnos…</p>`);await turCargar(true);turPinta()}
 function turPinta(){const R=turResumen(),L=R.L,dias=[...new Set(L.map(e=>e.fecha))];if(!turDia||!dias.includes(turDia))turDia=dias[0];const D=L.filter(e=>e.fecha===turDia);
   const dn=f=>{const d=parseK(f);return ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"][d.getDay()]+" "+d.getDate()};
   const slot=(e,k,lb)=>{const s=((turD||{})[e.id]||{})[k],mio=turYo(s),ms=turMs(e)-Date.now();
-    if(s&&s.n)return `<div class="tuSl"><span class="r">${lb}</span><span class="who">${avHTML(s.n,mio,true)}<b>${esc(nv(s.n))}${mio?" · usted":""}</b></span>${mio&&(isAdmin||ms>864e5)?`<button type="button" class="tuB g" data-tq="${esc(e.id)}|${k}">Soltar</button>`:mio?`<span class="tuL">🔒 Menos de 24 h</span>`:isAdmin?`<button type="button" class="tuB g" data-tq="${esc(e.id)}|${k}">Quitar</button>`:""}</div>`;
+    const ida=esc(e.id)+"|"+k;
+    if(s&&s.n&&s.st==="p"){const tarde=ms<12*36e5;return `<div class="tuSl tuPd tuX"><span class="r">${lb}</span><span class="who">${avHTML(s.n,mio,true)}<span class="tuPw"><b>${esc(nv(s.n))}${mio?" · usted":""}</b><small>⏳ Por confirmar · elegido por ${esc(turPorN(s))}${tarde&&(isAdmin||turVeRz(s.u))?" · ⚠️ sin respuesta":""}</small></span></span>${mio?`<span class="tuBs"><button type="button" class="tuB f" data-tok="${ida}">✅ Acepto</button><button type="button" class="tuB g" data-tno="${ida}">No puedo</button></span>`:isAdmin?`<span class="tuBs"><button type="button" class="tuB g" data-tas="${ida}">🔁 Reasignar</button><button type="button" class="tuB g" data-tq="${ida}">Quitar</button></span>`:""}</div>`}
+    const rz=s&&s.n&&s.st==="no"&&turVeRz(s.u)?`<small class="tuRz">✖ ${esc(nv(s.n).split(" ")[0])} no puede${s.mot?" · "+esc(s.mot):""}</small>`:"";
+    if(turOc(s))return `<div class="tuSl"><span class="r">${lb}</span><span class="who">${avHTML(s.n,mio,true)}<b>${esc(nv(s.n))}${mio?" · usted":""}</b></span>${mio&&(isAdmin||ms>864e5)?`<button type="button" class="tuB g" data-tq="${esc(e.id)}|${k}">Soltar</button>`:mio?`<span class="tuL">🔒 Menos de 24 h</span>`:isAdmin?`<button type="button" class="tuB g" data-tq="${esc(e.id)}|${k}">Quitar</button>`:""}</div>`;
     const bloq=(k==="p"||TUR_KT.some(([q])=>q===k))&&turSoloRango(e)&&!turRango();
-    return `<div class="tuSl"><span class="r">${lb}</span><span class="who tuFree">Libre</span>${bloq?`<span class="tuL">🔒 Marketing Director+</span>`:`<button type="button" class="tuB${k==="p"?" f":""}" data-ta="${esc(e.id)}|${k}">🙋 Apuntarme</button>`}${isAdmin?`<button type="button" class="tuB g" data-tas="${esc(e.id)}|${k}">Asignar</button>`:""}</div>`};
+    return `<div class="tuSl${rz?" tuX":""}"><span class="r">${lb}</span><span class="who tuFree">${rz?`<span class="tuPw"><span>Libre</span>${rz}</span>`:"Libre"}</span>${bloq?`<span class="tuL">🔒 Marketing Director+</span>`:`<button type="button" class="tuB${k==="p"?" f":""}" data-ta="${esc(e.id)}|${k}">🙋 Apuntarme</button>`}${isAdmin?`<button type="button" class="tuB g" data-tas="${esc(e.id)}|${k}">${rz||(s&&s.st==="no")?"🔁 Reasignar":"Asignar"}</button>`:""}</div>`};
   const ic=e=>/píldora|pildora/i.test(e.titulo)?"💊":/training/i.test(e.titulo)?"🛡️":/llamada/i.test(e.titulo)?"📞":"🎤";
   openSheet(`<div class="tuTop"><div class="k">⭐ Sistema de liderazgo</div><div class="t">📅 Turnos de ${esc(mesNom())}</div>
     <div class="tuSt"><div><b>${R.mis}</b>Mis turnos</div><div><b>${R.cub}</b>Cubiertos</div><div><b style="color:#FCD34D">${R.por}</b>Por cubrir</div></div></div>
@@ -8246,19 +8261,74 @@ function turPinta(){const R=turResumen(),L=R.L,dias=[...new Set(L.map(e=>e.fecha
     sh.querySelectorAll("[data-ta]").forEach(b=>b.onclick=()=>{const [id,k]=b.dataset.ta.split("|"),e=L.find(x=>x.id===id);if(e)turSet(e,k,{u:store.uid||"",n:miNombreFull()||miRegistro().nombre||"Socio",t:Date.now()})});
     sh.querySelectorAll("[data-tq]").forEach(b=>b.onclick=()=>{const [id,k]=b.dataset.tq.split("|"),e=L.find(x=>x.id===id);if(e)turSet(e,k,null)});
     sh.querySelectorAll("[data-tas]").forEach(b=>b.onclick=()=>{const [id,k]=b.dataset.tas.split("|"),e=L.find(x=>x.id===id);if(e)turAsignar(e,k)});
+    sh.querySelectorAll("[data-tok]").forEach(b=>b.onclick=async()=>{const [id,k]=b.dataset.tok.split("|"),e=L.find(x=>x.id===id);if(!e)return;b.disabled=true;if(await turResp(e,k,true))turPinta()});
+    sh.querySelectorAll("[data-tno]").forEach(b=>b.onclick=()=>{const [id,k]=b.dataset.tno.split("|"),e=L.find(x=>x.id===id);if(e)turNoPuedo(e,k,1)});
     sh.querySelectorAll("[data-ttm]").forEach(b=>b.onclick=()=>{const [id,t]=b.dataset.ttm.split("|"),e=L.find(x=>x.id===id);if(e)trTemaSet(e,t)})})}
 // Tema del Training: lo eligen los admins (turnos/{mes}.s[id].tema); domingo sin tema = "Llamada de poder"
 function trTemaHTML(e){const t=trTema(e);if(!isAdmin)return `<div class="tuTm">📚 Tema: <b>${esc(t||"Por definir")}</b></div>`;
   return `<div class="tuTm">📚 Tema:<span class="tuTmL">${TR_TEMAS.map(x=>`<button type="button" data-ttm="${esc(e.id)}|${esc(x)}" class="${x===t?"on":""}">${esc(x)}</button>`).join("")}</span></div>`}
 async function trTemaSet(e,t){const mes=e.fecha.slice(0,7);try{await store.db.doc("turnos/"+mes).set({s:{[e.id]:{tema:t}},t:Date.now()},{merge:true});turD=turD||{};turD[e.id]=Object.assign({},turD[e.id]||{},{tema:t});turAplicar();turPinta();toast("📚 Tema: "+t)}catch(x){toast("No se pudo guardar el tema")}}
-function turAsignar(e,k){const N=[...new Set((T.lideres||[]).map(l=>l.nombre).concat(["Edwin Garcia Go"]))].sort((a,b)=>a.localeCompare(b,"es"));let q="";
-  openSheet(`<h2>Asignar · ${turSoloRango(e)?"Ponente":k==="p"?"Presenta":"Edifica"}</h2><p class="small muted" style="margin:0">${esc(e.titulo)} · ${esc(niceDate(e.fecha))} · ${esc(h12(e.hora))}</p><input class="inp" id="taQ" placeholder="Buscar" style="margin-top:10px"><div id="taL" style="display:flex;flex-direction:column;gap:6px;margin-top:8px;max-height:55vh;overflow:auto"></div><button class="btn ghost" id="taBk" style="width:100%;margin-top:10px">‹ Volver</button>`,()=>{
-    const dr=()=>{$("#taL").innerHTML=N.filter(n=>!q||nrmN(n).includes(nrmN(q))).map(n=>`<button type="button" class="irTg" data-tn="${esc(n)}"><span class="ck"></span>${esc(n)}</button>`).join("")};dr();
+function turSoc(){return Array.isArray(socios)&&socios.length?socios:(mios||[])}
+function turCuenta(u,n){const R={ok:0,p:0,no:0};Object.values(turD||{}).forEach(S=>Object.values(S||{}).forEach(v=>{if(!v||typeof v!=="object"||!v.n)return;const es=v.u&&u?v.u===u:lzMismo(v.n,n);if(!es)return;if(v.st==="p")R.p++;else if(v.st!=="no")R.ok++}));
+  const z=(u&&turRzD[u])||{};R.no=Object.keys(z).filter(q=>q!=="n").length;return R}
+async function turAsignar(e,k){if(isAdmin&&socios===null){openSheet(`<p class="muted small">Cargando líderes…</p>`);try{await loadSocios()}catch(x){}}
+  const tr=turSoloRango(e),S0=(turD||{})[e.id]||{},yaEn=v=>Object.entries(S0).some(([q,w])=>q!==k&&w&&typeof w==="object"&&turOc(w)&&(w.u&&v.u?w.u===v.u:lzMismo(w.n,v.n)));
+  const L=leadOrdenB((T.lideres||[]).filter(l=>!tr||rangoActualIdx({},l.nombre)>=2)).map((l,i)=>{const x=liderMatch(l,turSoc()),u=x?x.uid:"",n=(x&&x.registro&&x.registro.nombre)||l.nombre;return {l,i,u,n,c:turCuenta(u,n),ic:lzPers(l),v:Number(l.volumen)||0}});let q="";
+  const cur=S0[k],rech=cur&&cur.st==="no"?cur:null;
+  openSheet(`<h2>${cur&&cur.n?"🔁 Reasignar":"Asignar"} · ${tr?"Ponente":k==="p"?"Presenta":"Edifica"}</h2><p class="small muted" style="margin:0">${esc(e.titulo)} · ${esc(niceDate(e.fecha))} · ${esc(h12(e.hora))}</p>
+   ${rech?`<p class="small" style="margin:6px 0 0;color:var(--bad)">✖ ${esc(nv(rech.n))} no puede${rech.mot?" · "+esc(rech.mot):""}</p>`:""}
+   <p class="small muted" style="margin:6px 0 0">Ordenados por rendimiento del mes. Al elegir, le llega un aviso para aceptar.</p>
+   <input class="inp" id="taQ" placeholder="Buscar" style="margin-top:10px"><div id="taL" class="taL"></div><button class="btn ghost" id="taBk" style="width:100%;margin-top:10px">‹ Volver</button>`,()=>{
+    const dr=()=>{$("#taL").innerHTML=L.filter(o=>!q||nrmN(o.l.nombre).includes(nrmN(q))||nrmN(o.n).includes(nrmN(q))).map(o=>{const ya=yaEn(o);
+      return `<button type="button" class="taR${ya?" off":""}" data-ti="${o.i}"><span class="taN">${o.i+1}</span>${avHTML(o.n,false,true,o.u)}<span class="taG"><b>${esc(nv(o.l.nombre))}</b><small>${fmt(o.v)} pts${o.ic!=null?` · <i style="font-style:normal;color:${IDX_C(o.ic)}">⚡ IC ${o.ic}%</i>`:""}${ya?" · ya está en esta actividad":!o.u?" · sin la app":""}</small></span><span class="taC"><span>📅 ${o.c.ok}</span>${o.c.p?`<span>⏳ ${o.c.p}</span>`:""}${o.c.no?`<span class="no">✖ ${o.c.no}</span>`:""}</span></button>`}).join("")||`<p class="small muted">Nadie con ese nombre.</p>`};dr();
     $("#taQ").oninput=()=>{q=$("#taQ").value;dr()};$("#taBk").onclick=()=>turPinta();
-    $("#taL").onclick=ev=>{const b=ev.target.closest("[data-tn]");if(!b)return;turSet(e,k,{u:"",n:b.dataset.tn,t:Date.now(),a:1})}})}
-async function turSet(e,k,val){const mes=e.fecha.slice(0,7);try{
-  if(val&&!isAdmin){const d=await store.db.doc("turnos/"+mes).get();const cur=((d.exists&&d.data().s)||{})[e.id]||{};if(cur[k]&&cur[k].n){turD[e.id]=cur;turAplicar();toast("Ese puesto ya lo tomó "+cur[k].n.split(" ")[0]);turPinta();return}}
-  await store.db.doc("turnos/"+mes).set({s:{[e.id]:{[k]:val}},t:Date.now()},{merge:true});turD=turD||{};turD[e.id]=Object.assign({},turD[e.id]||{},{[k]:val});turAplicar();turPinta();toast(val?"🙋 ¡Listo! Quedó en la agenda":"Puesto liberado")}
+    $("#taL").onclick=ev=>{const b=ev.target.closest("[data-ti]");if(!b||b.classList.contains("off"))return;const o=L.find(z=>z.i===+b.dataset.ti);if(o)turAsignarA(e,k,o)}})}
+async function turAsignarA(e,k,o){const yo=o.u&&o.u===store.uid,f=nv(o.n).split(" ")[0];
+  const val={u:o.u||"",n:o.n,t:Date.now(),a:1,pu:store.uid||"",por:miNombreFull()||miRegistro().nombre||"Edwin García Go",pt:isAdmin?"el Director Nacional Edwin García Go":"su líder "+nv(miNombreFull()||"")};
+  val.st=yo||!o.u?"ok":"p";
+  await turSet(e,k,val,yo?"✅ Usted quedó en la agenda":!o.u?"✅ Asignado. "+f+" no tiene la app: quedó directo en la agenda":"⏳ Asignado. A "+f+" le llega el aviso para aceptar")}
+// Respuesta del líder asignado
+async function turResp(e,k,ok,mot){const mes=e.fecha.slice(0,7);try{const d=await store.db.doc("turnos/"+mes).get();const cur=(((d.exists&&d.data().s)||{})[e.id]||{})[k];
+  if(!cur||cur.st!=="p"||!turYo(cur)){toast("Este turno ya cambió");await turCargar(true);return false}
+  const v=Object.assign({},cur,{st:ok?"ok":"no",rt:Date.now(),mot:mot||null}),w={s:{[e.id]:{[k]:v}},t:Date.now()};
+  if(!ok){const u=store.uid||"x";w.rz={[u]:{n:cur.n,[e.id+"_"+k]:{e:e.id,k,ti:e.titulo||"",f:e.fecha,h:e.hora||"",m:mot||"",t:Date.now(),por:cur.por||""}}};turRzD[u]=Object.assign({},turRzD[u]||{},w.rz[u])}
+  await store.db.doc("turnos/"+mes).set(w,{merge:true});turD=turD||{};turD[e.id]=Object.assign({},turD[e.id]||{},{[k]:v});turAplicar();try{turStrip()}catch(x){}
+  toast(ok?"✅ ¡Aceptado! Ya está en la agenda y en el flyer":"Listo. Le avisamos a "+turPorN(cur)+" para asignar a otra persona");return true}
+  catch(err){toast("No se pudo guardar ("+errCod(err)+")");return false}}
+function turMisP(){return turLista().flatMap(e=>turKs(e).map(([k])=>({e,k,v:((turD||{})[e.id]||{})[k]}))).filter(o=>o.v&&o.v.st==="p"&&turYo(o.v))}
+function turResponder(e,k){const v=((turD||{})[e.id]||{})[k];if(!v||v.st!=="p"||!turYo(v)){turAbrir(e.fecha);return}const f=nv(v.n).split(" ")[0],tm=turSoloRango(e)?trTema(e):"";
+  openSheet(`<div class="tuInv"><div class="tuInvI">🏅</div><h2>¡Felicidades, ${esc(f)}!</h2><p>Por su gran rendimiento, <b>${esc(v.pt||"el Director Nacional Edwin García Go")}</b> le confía <b>${esc(turRol(e,k))}</b> en:</p>
+    <div class="tuInvE"><b>${esc(e.titulo)}</b><span>${esc(niceDate(e.fecha))} · ${esc(h12(e.hora))} (hora de Honduras)</span>${tm?`<span>📚 Tema: ${esc(tm)}</span>`:""}</div>
+    <p class="small muted" style="margin:0">Es un privilegio que confiamos a nuestros mejores líderes.</p></div>
+   <button class="btn" id="tuAc" style="width:100%;background:#16A34A;color:#fff">✅ Acepto</button><button class="btn ghost" id="tuNo" style="width:100%">✖ No puedo</button><button class="btn ghost" data-close style="width:100%">Decidir después</button>`,()=>{
+    $("#tuAc").onclick=async()=>{const b=$("#tuAc");b.disabled=true;if(await turResp(e,k,true)){openSheet(`<div class="tuInv"><div class="tuInvI">🎉</div><h2>¡Gracias, ${esc(f)}!</h2><p>Ya está en la agenda y en el flyer de <b>${esc(e.titulo)}</b>.</p></div><button class="btn" data-close style="width:100%">Listo</button>`,()=>{try{confeti($("#sheet .tuInv"),60)}catch(x){}})}else b.disabled=false};
+    $("#tuNo").onclick=()=>turNoPuedo(e,k)})}
+function turNoPuedo(e,k,deTurnos){let m="";const v=((turD||{})[e.id]||{})[k]||{};
+  openSheet(`<h2>¿Por qué no puede?</h2><p class="small muted" style="margin:0">Se lo diremos a ${esc(turPorN(v))} para que asigne a otra persona.</p>
+   <div class="row wrap" id="tnM" style="gap:6px;margin-top:10px">${["💼 Trabajo","✈️ Viaje","🩺 Salud","👨‍👩‍👧 Familia","📝 Otro"].map(x=>`<button type="button" class="chip" data-m="${x}" style="border:1.5px solid var(--line);cursor:pointer;font:inherit">${x}</button>`).join("")}</div>
+   <textarea class="inp" id="tnN" rows="2" maxlength="140" placeholder="Nota (opcional)" style="margin-top:10px"></textarea>
+   <button class="btn" id="tnOk" style="width:100%;margin-top:10px" disabled>Enviar respuesta</button><button class="btn ghost" id="tnBk" style="width:100%">‹ Volver</button>`,()=>{
+    $("#tnM").onclick=ev=>{const b=ev.target.closest("[data-m]");if(!b)return;m=b.dataset.m;$("#tnM").querySelectorAll("[data-m]").forEach(x=>x.classList.toggle("c-brand",x===b));$("#tnOk").disabled=false};
+    $("#tnBk").onclick=()=>deTurnos?turPinta():turResponder(e,k);
+    $("#tnOk").onclick=async()=>{const n=$("#tnN").value.trim(),b=$("#tnOk");b.disabled=true;if(await turResp(e,k,false,(m.replace(/^\S+\s/,"")+(n?": "+n:"")).slice(0,160))){if(deTurnos)turPinta();else closeSheet()}else b.disabled=false}})}
+function turStrip(){const el=$("#turStrip");if(!el)return;const P=fbUser&&store.uid?turMisP():[];if(!P.length){el.hidden=true;el.innerHTML="";return}
+  const {e,k}=P[0];el.innerHTML=`<div class="lzgI">🏅</div><div class="lzgT"><b>Le confían ${esc(turRol(e,k))}</b><span>${esc(e.titulo)} · ${esc(niceDate(e.fecha))} · ${esc(h12(e.hora))}. ${P.length>1?"Tiene "+P.length+" turnos por responder.":"Confirme si puede."}</span><div class="lzgB"><button type="button" id="turStB">Ver y responder</button></div></div>`;el.hidden=false;
+  $("#turStB").onclick=()=>turResponder(e,k);
+  const K="turP:"+e.id+":"+k;if(!LS.get(K)&&$("#sheet").hidden){LS.set(K,1);setTimeout(()=>{try{avisoTop("🏅 Le confían "+turRol(e,k),e.titulo+" · "+niceDate(e.fecha)+" · Toque para responder",()=>turResponder(e,k))}catch(x){}},2500)}}
+async function turControl(){if(!isAdmin){try{if(!mios||!mios.length)await loadMios()}catch(x){}}await turCargar(true);
+  const P={},key=v=>v.u||"n:"+nrmN(v.n),ev=id=>(T.eventos||[]).find(x=>x.id===id)||{};
+  Object.entries(turD||{}).forEach(([id,S])=>Object.entries(S||{}).forEach(([k,v])=>{if(!v||typeof v!=="object"||!v.n||!v.a)return;if(!turVeRz(v.u))return;const p=P[key(v)]=P[key(v)]||{n:v.n,u:v.u,ok:0,p:[],no:[]};
+    if(v.st==="p")p.p.push({e:ev(id),k});else if(v.st!=="no")p.ok++}));
+  Object.entries(turRzD||{}).forEach(([u,z])=>{if(!turVeRz(u))return;const p=P[u]=P[u]||{n:z.n,u,ok:0,p:[],no:[]};Object.entries(z).forEach(([q,r])=>{if(q!=="n"&&r&&r.e)p.no.push(r)})});
+  const A=Object.values(P).sort((a,b)=>b.no.length-a.no.length||b.p.length-a.p.length||String(a.n).localeCompare(b.n,"es")),tot=A.reduce((t,x)=>({ok:t.ok+x.ok,p:t.p+x.p.length,no:t.no+x.no.length}),{ok:0,p:0,no:0});
+  openSheet(`<h2>📊 Control de turnos · ${esc(mesNom())}</h2><p class="small muted" style="margin:0">${isAdmin?"Turnos que usted asignó y cómo respondieron.":"Líderes de su equipo a los que se les asignó turno."} Solo usted${isAdmin?"":" y Edwin"} ve los rechazos.</p>
+   <div class="tcTot"><div><b>${tot.ok}</b>✅ Aceptados</div><div><b>${tot.p}</b>⏳ Por confirmar</div><div><b style="color:var(--bad)">${tot.no}</b>✖ Rechazos</div></div>
+   ${A.length?A.map(x=>`<details class="tcR"><summary>${avHTML(x.n,false,true,x.u)}<span class="grow"><b>${esc(nv(x.n))}</b><small>✅ ${x.ok} · ⏳ ${x.p.length} · <i style="font-style:normal;${x.no.length?"color:var(--bad);font-weight:800":""}">✖ ${x.no.length}</i></small></span><em>›</em></summary>
+     ${x.p.map(o=>`<div class="tcL">⏳ Por confirmar: ${esc(o.e.titulo||"")} · ${esc(niceDate(o.e.fecha||TODAY))}</div>`).join("")}${x.no.sort((a,b)=>b.t-a.t).map(r=>`<div class="tcL no">✖ ${esc(r.ti||"")} · ${esc(niceDate(r.f||TODAY))}${r.m?` · <b>${esc(r.m)}</b>`:""}</div>`).join("")}${!x.p.length&&!x.no.length?`<div class="tcL">Aceptó todos sus turnos 👏</div>`:""}</details>`).join(""):`<p class="small muted">Aún no hay turnos asignados este mes.</p>`}
+   <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`)}
+async function turSet(e,k,val,okMsg){const mes=e.fecha.slice(0,7);if(val&&typeof val==="object")val=Object.assign({st:null,nt:null,rr:null,n12:null,na:null,nk:null,rt:null,mot:null,a:null,por:null,pt:null,pu:null},val);try{
+  if(val&&!isAdmin){const d=await store.db.doc("turnos/"+mes).get();const cur=((d.exists&&d.data().s)||{})[e.id]||{};if(turOc(cur[k])){turD[e.id]=cur;turAplicar();toast("Ese puesto ya lo tomó "+cur[k].n.split(" ")[0]);turPinta();return}}
+  await store.db.doc("turnos/"+mes).set({s:{[e.id]:{[k]:val}},t:Date.now()},{merge:true});turD=turD||{};turD[e.id]=Object.assign({},turD[e.id]||{},{[k]:val});turAplicar();turPinta();toast(okMsg||(val?"🙋 ¡Listo! Quedó en la agenda":"Puesto liberado"))}
   catch(err){toast(errCod(err)==="permission-denied"?"Los turnos solo los toman los miembros del Sistema de liderazgo. Si usted ya es miembro, se activa en unas horas; si sigue, avise a Edwin.":"No se pudo guardar el turno ("+errCod(err)+")")}}
 
 function renderAll(){renderTasks();renderWeek();renderRetoMini();renderRef();renderEquipo();renderCRM();renderCal();renderNext();renderAca();renderMe()}
@@ -8495,7 +8565,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261113160342";var busy=false,pend=null;
+(function(){var V="20261113164819";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

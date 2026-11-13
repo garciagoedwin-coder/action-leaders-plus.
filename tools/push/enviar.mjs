@@ -342,6 +342,7 @@ export function avDestino(modo, m) {
   if (modo === "viaje") return "via";
   if (modo === "sinapp") return "snv";
   if (modo === "rhito") return "rach";
+  if (modo === "turnos") return "tur";
   if (modo === "recodia") return /Hoy es su día/.test(t) ? "recoyo" : "recodia";
   if (modo === "msg" && /Networker Pro/i.test(t)) return "np";
   if (modo === "msg" && /Materiales|Guía gratis/i.test(t)) return "mat";
@@ -556,6 +557,37 @@ async function main() {
       const upd = { solR: false }; L.forEach(s => upd["sol." + s.id + ".rt"] = Date.now()); L2.forEach(s => upd["sol." + s.id + ".rat"] = Date.now()); W.push([d.id, upd]);
     }
     if (!DRY) for (const [uid, u] of W) await db.doc("users/" + uid).update(u);
+  } else if (modo === "turnos") {
+    // 13 nov: turnos asignados por el admin → aviso al elegido (le confía…), recordatorio a las 24 h,
+    // y al que asignó: aceptó / no puede / aún no confirma (12 h antes). Marcas en el mismo slot (nt, rr, n12, na, nk).
+    vista = "agenda";
+    let cal = []; try { cal = JSON.parse(fs.readFileSync(viejoP || "../../data/team.json", "utf8")).calendario || []; } catch {}
+    const EV = {}; cal.forEach(e => { if (e && e.id) EV[e.id] = e; });
+    const ahora = Date.now(), mes = new Date(ahora - 6 * 36e5).toISOString().slice(0, 7);
+    const ref = db.doc("turnos/" + mes), d = await ref.get();
+    if (!d.exists) { console.log("Sin turnos este mes."); return; }
+    const S = d.data().s || {}, W = {}, TK = {};
+    const pushDe = async uid => { if (uid in TK) return TK[uid]; const x = (await db.doc("push/" + uid).get()).data() || {}; hist[uid] = x.h || []; return TK[uid] = x.tk || null; };
+    const marca = (id, k, f) => { W[id] = W[id] || {}; W[id][k] = Object.assign(W[id][k] || {}, { [f]: ahora }); };
+    const rolTx = (e, k) => /action leaders training/i.test(e.titulo || "") ? "ser ponente" : k === "p" ? "presentar" : "edificar";
+    const cuando = e => { const dt = new Date(e.fecha + "T12:00:00Z"); const [h, m] = String(e.hora || "00:00").split(":").map(Number); return DIAS[dt.getUTCDay()] + " " + dt.getUTCDate() + " de " + MESES[dt.getUTCMonth()] + ", " + ((h % 12) || 12) + ":" + String(m).padStart(2, "0") + (h < 12 ? " a.m." : " p.m."); };
+    let n = 0;
+    for (const id in S) {
+      const e = EV[id]; if (!e) continue;
+      const ms = Date.parse(e.fecha + "T" + (e.hora || "00:00") + ":00-06:00"); if (ms < ahora) continue;
+      for (const k of ["p", "e", "p3", "p4"]) {
+        const v = (S[id] || {})[k]; if (!v || typeof v !== "object" || !v.n || !v.a) continue;
+        const rol = rolTx(e, k), cu = cuando(e), quien = corto(v.n);
+        if (v.st === "p") {
+          if (!v.nt && v.u) { const tk = await pushDe(v.u); if (tk) salida.push([v.u, tk, { title: "🏅 ¡Felicidades, " + primer(v.n) + "!", body: "Por su gran rendimiento, " + (v.pt || "el Director Nacional Edwin García Go") + " le confía " + rol + " en " + e.titulo + " · " + cu + ". Abra la app para aceptar." }]); marca(id, k, "nt"); n++; }
+          else if (v.nt && !v.rr && v.u && ahora - (v.t || 0) > 24 * 36e5) { const tk = await pushDe(v.u); if (tk) salida.push([v.u, tk, { title: "⏳ " + primer(v.n) + ", ¿puede " + rol + "?", body: e.titulo + " · " + cu + ". Confirme en la app si acepta su turno." }]); marca(id, k, "rr"); n++; }
+          if (!v.n12 && v.pu && ms - ahora < 12 * 36e5) { const tk = await pushDe(v.pu); if (tk) salida.push([v.pu, tk, { title: "⏳ " + quien + " aún no confirma", body: "Su turno para " + rol + " en " + e.titulo + " · " + cu + ". Toque para reasignar o esperar." }]); marca(id, k, "n12"); n++; }
+        } else if (v.st === "no" && !v.na && v.pu) { const tk = await pushDe(v.pu); if (tk) salida.push([v.pu, tk, { title: "✖ " + quien + " no puede " + rol, body: e.titulo + " · " + cu + (v.mot ? ". Motivo: " + v.mot : "") + ". Toque para reasignar." }]); marca(id, k, "na"); n++; }
+        else if (v.st === "ok" && v.rt && !v.nk && v.pu) { const tk = await pushDe(v.pu); if (tk) salida.push([v.pu, tk, { title: "✅ " + quien + " aceptó " + rol, body: e.titulo + " · " + cu + ". Ya sale en la agenda y en el flyer." }]); marca(id, k, "nk"); n++; }
+      }
+    }
+    console.log("Turnos con aviso:", n);
+    if (!DRY && Object.keys(W).length) await ref.set({ s: W }, { merge: true });
   } else if (modo === "lzg" || modo === "lzg-sync") {
     // Grupo de WhatsApp del Sistema de liderazgo: quién ya se presentó (users.lzG.m == mes) → team/liderazgo.grp;
     // modo lzg además avisa a los miembros (push.sis == 1) que aún no se presentan.
