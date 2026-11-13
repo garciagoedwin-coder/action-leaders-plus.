@@ -2941,12 +2941,18 @@ function abrirReactivar(){const P=idxPool().filter(x=>!idxActivo(x)).sort((a,b)=
      const w=waSocio(x);if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t));return}pedirWaSocio(x,t)})})}
 // Resumen de Liderazgo: lo calcula la app del admin y lo guarda en team/liderazgo (1 lectura para cada socio)
 let liderRes=null,liderResT=0;
-function liderMatch(l,S){const ns=[l.nombre,l.nombreRanking].map(nrmN2).filter(Boolean);return S.find(x=>ns.includes(nrmN2((x.registro||{}).nombre)))}
-async function liderResGuardar(){if(!isAdmin||!socios||!constL||!T.lideres.length)return;try{if(Date.now()-(+LS.get("lidResT")||0)<36e5)return}catch(e){}
+// 13 nov: igual que lzMiL — nombre del registro, de fotos (rk/invNombre), de su activación (huella de correo/WhatsApp) y alias; luego coincidencia única por palabras.
+function liderCands(x){const R=x.registro||{},f=(fotosFs||[]).find(z=>z.id===x.uid)||{},ke=[ahKe(x.email),ahKe(R.correo),ahKe(R.email)].filter(Boolean),kw=ahKw(R.whatsapp);
+  const A=(T.activaciones||[]).filter(a=>(a.ek&&ke.includes(a.ek))||(a.wk&&kw&&a.wk===kw)).map(a=>a.socio),C0=[R.nombre,f.rk,f.invNombre,f.nombre].concat(A).filter(Boolean).map(z=>String(z).trim());
+  return [...new Set(C0.concat(C0.map(aliasRank)))].filter(Boolean)}
+function liderMatch(l,S){const ns=[l.nombre,l.nombreRanking].map(nrmN2).filter(Boolean);let x=S.find(y=>ns.includes(nrmN2((y.registro||{}).nombre)));if(x)return x;
+  const Ln=lzNs(l);x=S.find(y=>liderCands(y).map(nrmN).some(n=>Ln.includes(n)));if(x)return x;
+  const M=S.filter(y=>liderCands(y).some(c=>Ln.some(n=>lzMismo(c,n))));return M.length===1?M[0]:null}
+async function liderResGuardar(){if(!isAdmin||!socios||!constL||!T.lideres.length)return;try{if(Date.now()-(+LS.get("lidResT2")||0)<36e5)return}catch(e){}
   const S=socios.filter(x=>x.registro&&x.registro.nombre&&!esSoloAdmin(x)),prev=idxPer;idxPer="mes";const L={};
   try{T.lideres.forEach(l=>{const x=liderMatch(l,S);if(!x)return;const c=idxC(x.uid)||{},E=idxDesc(x.uid,S),EA=E.filter(idxCuenta);
     L[l.id]={p:c.mes===TODAY.slice(0,7)?(+c.mesPres||0):0,prod:idxPersX(x),idx:E.length?idxEq(E):null,a:E.filter(idxActivo).length,n:E.length}})}finally{idxPer=prev}
-  try{await store.db.doc("team/liderazgo").set({t:Date.now(),mes:TODAY.slice(0,7),L},{merge:true});LS.set("lidResT",Date.now());liderRes={t:Date.now(),mes:TODAY.slice(0,7),L}}catch(e){}}
+  try{await store.db.doc("team/liderazgo").set({t:Date.now(),mes:TODAY.slice(0,7),L},{merge:true});LS.set("lidResT2",Date.now());liderRes={t:Date.now(),mes:TODAY.slice(0,7),L}}catch(e){}}
 async function liderResCargar(){if(liderRes&&Date.now()-liderResT<6e5)return;liderResT=Date.now();try{const d=await store.db.doc("team/liderazgo").get();if(d.exists){liderRes=d.data();if(eqTab==="ranking"&&rankMetric==="liderazgo"){try{renderEquipo()}catch(e){renderLeadList()}}}}catch(e){}}
 function liderDe(l){const r=liderRes&&liderRes.mes===TODAY.slice(0,7)&&liderRes.L?liderRes.L[l.id]:null;return r||null}
 // ---------- Calificación del sistema de Liderazgo (Líder / Líder Espartano) ----------
@@ -8465,7 +8471,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261113124730";var busy=false,pend=null;
+(function(){var V="20261113130404";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
