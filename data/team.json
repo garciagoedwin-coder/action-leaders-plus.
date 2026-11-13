@@ -143,6 +143,18 @@
    "activaciones": 1,
    "volumen": 500,
    "actSemana": 1
+  },
+  {
+   "nombre": "Adela izamara Zelaya",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "adela-izamara-zelaya",
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -678,6 +690,21 @@
    "id": "edwin-garcia-go",
    "volumenHoja": 0,
    "ptsBase": 0
+  },
+  {
+   "nombre": "Adela Izamara Zelaya",
+   "nombreRanking": "Adela izamara Zelaya",
+   "rango": "",
+   "linea": "",
+   "meta": 500,
+   "nuevos": 0,
+   "presentaciones": 0,
+   "volumen": 500,
+   "volumenDetalle": "",
+   "id": "adela-izamara-zelaya",
+   "volumenHoja": 0,
+   "ptsBase": 500,
+   "auto": "2026-11"
   }
  ],
  "calendario": [
@@ -3115,6 +3142,17 @@
    "fuente": "gmail",
    "id": "marcelina-del-carmen",
    "rv": 1
+  },
+  {
+   "socio": "Oscar Torres",
+   "paquete": "Premium",
+   "patrocinador": "Adela izamara Zelaya",
+   "fecha": "2026-11-13T01:55:02Z",
+   "ek": "e7355c",
+   "wk": "7ef35a",
+   "fuente": "gmail",
+   "id": "oscar-torres",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3148,7 +3186,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-11T00:55:06Z",
+  "activacionesCorte": "2026-11-13T01:55:02Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3157,7 +3195,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-11T22:41:00-06:00",
+  "rankingActualizado": "2026-11-12T20:17:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -4842,6 +4880,11 @@
      "a": 4
     },
     {
+     "n": "Adela Izamara Zelaya",
+     "p": 500,
+     "a": 1
+    },
+    {
      "n": "Erick Miranda",
      "p": 500,
      "a": 5
@@ -5367,7 +5410,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-12T22:23:36Z"
+   "t": "2026-11-13T02:17:59Z"
   }
  },
  "fotos": [
