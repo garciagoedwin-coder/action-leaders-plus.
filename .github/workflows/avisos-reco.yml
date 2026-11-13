@@ -1,0 +1,27 @@
+name: Aviso del Día de reconocimientos
+# El 1 de cada mes, 8:30 a.m. HN: celebra a quienes llegaron por primera vez a Team Leader o a un rango el mes pasado (team/reco).
+on:
+  schedule:
+    - cron: "30 14 1 * *"
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: "1 = solo mostrar, no enviar"
+        default: "1"
+concurrency: avisos-reco
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci --no-audit --no-fund
+        working-directory: tools/push
+      - name: Enviar
+        working-directory: tools/push
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+          DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry == '1' && '1' || '' }}
+        run: node enviar.mjs recodia

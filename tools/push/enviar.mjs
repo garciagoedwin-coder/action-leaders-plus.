@@ -153,6 +153,15 @@ export function recoCambios(viejo, nuevo, users) {
   }
   return out;
 }
+const MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+export const mesNom = k => MESES[+String(k).slice(5, 7) - 1] || "";
+export const mesSig = k => { const [y, m] = String(k).split("-").map(Number); return m === 12 ? (y + 1) + "-01" : y + "-" + String(m + 1).padStart(2, "0"); };
+// 13 nov (Edwin): Team Leader y cada rango se reconocen UNA sola vez. Al lograrlo: aviso solo a la persona (diploma ya disponible);
+// el flyer y la felicitación del equipo se liberan el 1 del mes siguiente (modo "recodia").
+export function msgRecoYa(c, mes) {
+  const X = RK_N[c.rk], p = primer(c.n);
+  return { title: `🎉 ¡Felicidades, ${p}! Llegó a ${X}`, body: `Ya puede descargar su diploma en Perfil › Mi reconocimiento 🎓 Su reconocimiento con el equipo es el 1 de ${mesNom(mesSig(mes))}.` };
+}
 export function msgReco(c, propio) {
   const X = RK_N[c.rk], p = primer(c.n), nivel = c.rk === 1 ? "nivel" : "rango";
   return propio ? { title: `🎉 ¡Felicidades, ${p}! Llegó a ${X}`, body: `Su nuevo ${nivel} en inCruises. Descargue su flyer y su diploma en Perfil › Mi reconocimiento 🏅` }
@@ -333,6 +342,7 @@ export function avDestino(modo, m) {
   if (modo === "viaje") return "via";
   if (modo === "sinapp") return "snv";
   if (modo === "rhito") return "rach";
+  if (modo === "recodia") return /Hoy es su día/.test(t) ? "recoyo" : "recodia";
   if (modo === "msg" && /Networker Pro/i.test(t)) return "np";
   if (modo === "msg" && /Materiales|Guía gratis/i.test(t)) return "mat";
   return "inicio";
@@ -366,6 +376,31 @@ async function main() {
     const P = (await db.collection("push").get()).docs.map(d => ({ uid: d.id, ...d.data() })).filter(p => p.tk);
     P.forEach(p => hist[p.uid] = p.h || []);
     for (const p of P) salida.push([p.uid, p.tk, { title: D.title, body: D.body }]);
+  } else if (modo === "recodia") {
+    // 13 nov (Edwin): DÍA DE RECONOCIMIENTOS, el 1 de cada mes. Quienes llegaron por primera vez a Team Leader o a un rango el mes pasado
+    // (team/reco.h[uid][rk] == mes pasado): aviso a cada uno, a su línea de arriba con rango (agrupado) y a los admins; a todos los demás, aviso general.
+    vista = "recodia";
+    const ant = mesUTC(Date.now() - 3 * 864e5), meta = db.doc("push_meta/recodia"), M = (await meta.get()).data() || {};
+    if (M.m === ant && !DRY) { console.log("Ya se avisó este mes."); return; }
+    const H = ((await db.doc("team/reco").get()).data() || {}).h || {};
+    const E = Object.entries(H).map(([uid, o]) => ({ uid, rk: Math.max(...Object.entries(o || {}).filter(([, m]) => m === ant).map(([k]) => +k), 0) })).filter(e => e.rk > 0);
+    console.log("Reconocidos del mes", ant + ":", E.length);
+    if (!E.length) { if (!DRY) await meta.set({ m: ant, t: Date.now() }); return; }
+    const users = (await db.collection("users").get()).docs.map(d => ({ uid: d.id, ...d.data() }));
+    let NJ = {}; try { NJ = JSON.parse(fs.readFileSync(viejoP || "../../data/team.json", "utf8")); } catch {}
+    const P = {}; (await db.collection("push").get()).docs.forEach(d => { const x = d.data(); hist[d.id] = x.h || []; if (x.tk) P[d.id] = x.tk; });
+    const adm = users.filter(u => ADMINS.includes(String(u.email || "").toLowerCase())).map(u => u.uid), ya = new Set(), grupo = {}, MN = mesNom(ant);
+    for (const e of E) {
+      const u = users.find(z => z.uid === e.uid); if (!u || !(u.registro || {}).nombre) continue; e.n = u.registro.nombre;
+      if (P[e.uid]) { salida.push([e.uid, P[e.uid], { title: `🏅 ¡Hoy es su día, ${primer(e.n)}!`, body: `Hoy celebramos que llegó a ${RK_N[e.rk]} en ${MN}. Ya puede compartir su flyer 📣` }]); ya.add(e.uid); }
+      const arriba = (u.registro.linea || []).filter(Boolean).slice(0, 10).filter(x => { const y = users.find(z => z.uid === x); return y && rkIdx(rangoUsr(y, NJ)) >= 2; });
+      for (const x of [...new Set([...arriba, ...adm])]) { if (x === e.uid) continue; (grupo[x] = grupo[x] || []).push(e); }
+    }
+    for (const [x, L] of Object.entries(grupo)) { if (!P[x] || ya.has(x)) continue; ya.add(x);
+      const nm = L.slice(0, 3).map(e => primer(e.n)).join(", ") + (L.length > 3 ? " y " + (L.length - 3) + " más" : "");
+      salida.push([x, P[x], { title: L.length === 1 ? `🏅 Hoy se celebra: ${primer(L[0].n)} llegó a ${RK_N[L[0].rk]}` : `🏅 Hoy se celebra a ${L.length} de su equipo`, body: (L.length === 1 ? "" : nm + ". ") + "Felicítelos y comparta su flyer en sus grupos 👏" }]); }
+    for (const [x, tk] of Object.entries(P)) if (!ya.has(x)) salida.push([x, tk, { title: `🏅 Ya están los reconocimientos de ${MN}`, body: `Entre a la app y celebre a los nuevos Team Leader y rangos del equipo 🎉` }]);
+    if (!DRY) await meta.set({ m: ant, t: Date.now() });
   } else if (modo === "inc1" || modo === "inc2") {
     let cfg = null; try { cfg = (JSON.parse(fs.readFileSync(viejoP || "../../data/team.json", "utf8")).config || {}).incentivo; } catch {}
     const m = msgInc(modo, cfg);
@@ -429,12 +464,12 @@ async function main() {
     if (!N.length && !LZ.length && !subio && !tlCambio && !rgCambio) { console.log("Sin activaciones nuevas ni calificados nuevos."); return; }
     const users = (await db.collection("users").get()).docs.map(d => ({ uid: d.id, ...d.data() }));
     let RC = [];
-    if (tlCambio || rgCambio) { // 12 nov: llegó a Team Leader o a un rango → aviso a él, a su línea de arriba con rango y a los admins (una vez)
-      const meta = db.doc("push_meta/reco"), M = (await meta.get()).data() || {}, ya = new Set(M.s || []), mes = new Date().toISOString().slice(0, 7);
-      const key = c => c.uid + ":" + c.rk + (c.rk === 1 ? ":" + mes : "");
-      RC = recoCambios(VJ, NJ, users).filter(c => !ya.has(key(c)));
+    if (tlCambio || rgCambio) { // 13 nov: llegó a Team Leader o a un rango POR PRIMERA VEZ → se guarda el mes en team/reco.h[uid][rk] (una sola vez)
+      const ref = db.doc("team/reco"), H = ((await ref.get()).data() || {}).h || {}, mes = mesUTC();
+      RC = recoCambios(VJ, NJ, users).filter(c => !(H[c.uid] || {})[c.rk]);
       console.log("Reconocimientos nuevos:", RC.length);
-      if (!DRY && RC.length) await meta.set({ s: [...ya, ...RC.map(key)].slice(-1500), t: Date.now() }, { merge: true });
+      if (!DRY && RC.length) { const up = {}; RC.forEach(c => { up[c.uid] = Object.assign({}, up[c.uid], { [c.rk]: mes }); }); await ref.set({ h: up, t: Date.now() }, { merge: true }); }
+      RC.forEach(c => c.mes = mes);
     }
     let CC = [];
     if (subio) { // 12 nov (Edwin): quien cumple su compromiso del mes → aviso a él y a su línea de arriba (una vez por mes)
@@ -456,9 +491,7 @@ async function main() {
       const adm = users.filter(u => ADMINS.includes(String(u.email || "").toLowerCase())).map(u => u.uid);
       for (const c of RC) {
         const d = await db.doc("push/" + c.uid).get(); const x = d.exists ? d.data() : {}; hist[c.uid] = hist[c.uid] || x.h || [];
-        if (x.tk) salida.push([c.uid, x.tk, msgReco(c, true)]);
-        const arriba = c.linea.slice(0, 10).filter(uid => { const y = users.find(z => z.uid === uid); return y && rkIdx(rangoUsr(y, NJ)) >= 2; });
-        for (const u of [...new Set([...arriba, ...adm])]) { if (u === c.uid) continue; const t = await pushDe(u); if (t) salida.push([u, t, msgReco(c, false)]); }
+        if (x.tk) salida.push([c.uid, x.tk, msgRecoYa(c, c.mes)]); // solo a la persona; su línea lo celebra el día 1
       }
     }
     for (const c of CC) {
