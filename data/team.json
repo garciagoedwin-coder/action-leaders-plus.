@@ -4397,12 +4397,12 @@
    "t": "Reunión del sistema de liderazgo"
   },
   "novedad": {
-   "id": "guia-presencial-10nov",
-   "t": "🎁 Guía gratis: El poder del presencial",
-   "sub": "Del entrenamiento de hoy. Toque Ver para descargarla: está aquí solo 30 minutos, luego queda en Academia › Materiales.",
-   "u": "https://actionleadersplus.com/media/guias/el-poder-del-presencial.pdf",
-   "desde": "2026-11-11T02:50:00Z",
-   "hasta": "2026-11-11T03:20:00Z"
+   "id": "guia-cierre-12nov",
+   "t": "🎁 Guía gratis: Del seguimiento al cierre",
+   "sub": "Del Action Leaders Training de hoy. Toque Ver para descargarla; también queda en Academia › Materiales.",
+   "u": "https://actionleadersplus.com/media/guias/del-seguimiento-al-cierre.pdf",
+   "desde": "2026-11-13T02:06:52Z",
+   "hasta": "2026-11-13T05:59:00Z"
   },
   "retoArranque": {
    "id": "arr-nov26",
@@ -4427,6 +4427,12 @@
    "Edwin Alexander Garcia Gomez"
   ],
   "materiales": [
+   {
+    "t": "Guía · Del seguimiento al cierre",
+    "d": "Action Leaders Training · 12 nov · Flor Reyes y Nuvia Martínez",
+    "pdf": "media/guias/del-seguimiento-al-cierre.pdf",
+    "pdfN": "Guia-Del-seguimiento-al-cierre.pdf"
+   },
    {
     "t": "Guía · El poder del presencial",
     "d": "Action Leaders Training · 10 nov",
