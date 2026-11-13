@@ -1,0 +1,69 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Día de reconocimientos · muestra</title>
+<style>
+@font-face{font-family:Fig;src:url(../../../media/fonts/Figtree-VF.ttf)}
+@font-face{font-family:Bri;src:url(../../../media/fonts/BricolageGrotesque-Bold.ttf)}
+@font-face{font-family:Bar;src:url(../../../media/fonts/BarlowCondensed-Bold.ttf)}
+@font-face{font-family:Cor;src:url(../../../media/fonts/Cormorant-500-caps.ttf)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#F3F6F9;font-family:Fig,sans-serif;color:#2B2A2D;width:430px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 6px}
+.top img{height:26px;filter:invert(1) brightness(.2)}
+.av0{width:40px;height:40px;border-radius:50%;background:#0A7DAD;box-shadow:0 0 0 3px #2AC1F1}
+.hi{padding:6px 20px 12px}.hi small{letter-spacing:.14em;font-weight:700;color:#6b7280;font-size:12px}.hi h1{font-family:Bri;font-size:34px;margin-top:2px}.hi h1 b{color:#0A7DAD}
+.rc{position:relative;margin:0 14px;border-radius:24px;overflow:hidden;color:#fff;
+ background:radial-gradient(120% 60% at 50% 0%,rgba(234,179,8,.28),transparent 60%),linear-gradient(170deg,#0b1730,#0a2a47 55%,#062033);
+ box-shadow:0 18px 40px -12px rgba(6,32,51,.55);border:1.5px solid rgba(234,179,8,.55)}
+canvas#cf{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.in{position:relative;padding:20px 18px 18px}
+.k{font-weight:800;font-size:11px;letter-spacing:.24em;color:#F4DC9C;text-align:center}
+.tt{font-family:Cor;font-size:40px;line-height:1;text-align:center;margin-top:8px;background:linear-gradient(180deg,#FFF6D6,#E2C27A 60%,#C9A55A);-webkit-background-clip:text;background-clip:text;color:transparent}
+.st{text-align:center;font-size:14px;color:#cfe3f1;margin-top:6px}
+.orn{display:flex;justify-content:center;align-items:center;gap:6px;margin:12px 0 4px}.orn i{width:60px;height:1px;background:linear-gradient(90deg,transparent,#E2C27A)}.orn i:last-child{transform:scaleX(-1)}.orn b{width:6px;height:6px;background:#E2C27A;transform:rotate(45deg)}
+.yo{display:flex;gap:10px;align-items:center;background:linear-gradient(90deg,rgba(234,179,8,.22),rgba(234,179,8,.06));border:1px solid rgba(234,179,8,.5);border-radius:16px;padding:10px 12px;margin:10px 0 4px}
+.yo img{width:44px;height:44px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px #E2C27A}
+.yo div{flex:1;font-size:13px;line-height:1.3}.yo b{font-size:15px}
+.yo button{background:#E2C27A;color:#1b1406;border:0;border-radius:999px;font-weight:800;font-size:12.5px;padding:8px 11px;font-family:Fig}
+.sec{margin-top:14px}.sh{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;font-size:13px;letter-spacing:.06em;color:#9fc6df;text-transform:uppercase}
+.sh span{font-family:Bar;font-size:22px;color:#fff;letter-spacing:0}
+.rk{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border-radius:14px;padding:8px 10px;margin-top:7px}
+.rk .f{position:relative;width:46px;height:46px}.rk .f img{width:46px;height:46px;border-radius:50%;object-fit:cover}.rk .f .p{position:absolute;right:-8px;bottom:-6px;width:26px;height:26px;border-radius:0;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
+.rk .n{flex:1;font-weight:800;font-size:15px}.rk .n small{display:block;font-weight:700;font-size:12px;margin-top:1px}
+.fel{background:#25D366;color:#fff;border:0;border-radius:999px;font-weight:800;font-size:12px;padding:7px 10px;font-family:Fig}
+.stack{display:flex;align-items:center;margin-top:8px}.stack img,.stack s{width:36px;height:36px;border-radius:50%;object-fit:cover;margin-right:-9px;box-shadow:0 0 0 2px #0a2a47;display:grid;place-items:center;text-decoration:none;font-weight:800;font-size:12px;color:#fff}
+.stack s{background:#2AC1F1;color:#062033}.stack .mas{margin-left:16px;font-size:13px;color:#cfe3f1}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.box{background:rgba(255,255,255,.06);border-radius:14px;padding:10px;text-align:center}.box .n{font-family:Bar;font-size:30px;line-height:1}.box .l{font-size:12px;color:#cfe3f1;margin-top:2px}
+.bt{display:flex;gap:8px;margin-top:16px}.bt button{flex:1;border:0;border-radius:14px;padding:13px 8px;font-weight:800;font-size:14px;font-family:Fig}
+.b1{background:linear-gradient(180deg,#F4DC9C,#C9A55A);color:#1b1406}.b2{background:rgba(255,255,255,.12);color:#fff}
+.x{position:absolute;right:10px;top:10px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;border:0;font-size:15px;z-index:2}
+.foot{text-align:center;font-size:11.5px;color:#9fc6df;margin-top:10px}
+.nx{margin:14px 14px 0;background:#fff;border-radius:20px;padding:16px;color:#6b7280;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+</style></head><body>
+<div class="top"><img src="../../../media/logo-al.png" alt=""><div class="av0"></div></div>
+<div class="hi"><small>MARTES 1 DE DICIEMBRE</small><h1>Hola, <b>Nancy</b> 👋</h1></div>
+<div class="rc"><canvas id="cf"></canvas><button class="x">✕</button><div class="in">
+ <div class="k">🏅 DÍA DE RECONOCIMIENTOS</div>
+ <div class="tt">¡Felicidades,<br>campeones de noviembre!</div>
+ <div class="st">Hoy celebramos a quienes subieron de nivel</div>
+ <div class="orn"><i></i><b></b><i></i></div>
+ <div class="yo"><img src="../../../media/fotos/n-nancy-diaz.jpg"><div><b>¡Usted está aquí, Nancy!</b><br>Llegó a Marketing Director 🎉</div><button>📣 Mi flyer</button></div>
+ <div class="sec"><div class="sh">⭐ Nuevos rangos <span>3</span></div>
+  <div class="rk"><div class="f"><img src="../../../media/fotos/n-nancy-diaz.jpg"><img class="p" src="../../../media/cert/pin-md.png"></div><div class="n">Nancy Díaz<small style="color:#4ADE80">Marketing Director</small></div><button class="fel">💬 Felicitar</button></div>
+  <div class="rk"><div class="f"><img src="../../../media/fotos/n-juan-carlos-granados-claros.jpg"><img class="p" src="../../../media/cert/pin-md.png"></div><div class="n">Juan Carlos Granados<small style="color:#4ADE80">Marketing Director</small></div><button class="fel">💬 Felicitar</button></div>
+  <div class="rk"><div class="f"><img src="../../../media/fotos/n-cecilia-hernandez.jpg"><img class="p" src="../../../media/cert/pin-smd.png"></div><div class="n">Cecilia Hernández<small style="color:#93C5FD">SM Director</small></div><button class="fel">💬 Felicitar</button></div>
+ </div>
+ <div class="sec"><div class="sh">🏅 Nuevos Team Leader <span>51</span></div>
+  <div class="stack"><img src="../../../media/fotos/n-lorena-velasquez.jpg"><img src="../../../media/fotos/n-maria-victoria-lopez-sauceda.jpg"><img src="../../../media/fotos/n-jose-luis-rodriguez.jpg"><img src="../../../media/fotos/n-zamir-fuentes.jpg"><s>KP</s><s>RN</s><span class="mas">+45 líderes</span></div>
+ </div>
+ <div class="sec"><div class="sh">⚔️ Sistema de liderazgo · Diciembre <span>40</span></div>
+  <div class="two"><div class="box"><div class="n" style="color:#F4DC9C">18</div><div class="l">⚔️ Líderes Espartanos</div></div><div class="box"><div class="n">22</div><div class="l">🛡️ Líderes</div></div></div>
+ </div>
+ <div class="bt"><button class="b1">🏅 Ver todos y felicitar</button><button class="b2">📣 Flyer del equipo</button></div>
+ <div class="foot">Disponible todo el día de hoy · #HASTAQUEFUNCIONE</div>
+</div></div>
+<div class="nx">🔥 Su rutina de hoy · 0 de 5 …</div>
+<script>
+const c=document.getElementById('cf'),g=c.getContext('2d'),R=c.getBoundingClientRect();c.width=R.width*2;c.height=R.height*2;g.scale(2,2);
+const C=['#E2C27A','#F4DC9C','#2AC1F1','#7FE0FF','#ffffff','#4ADE80','#F97316'];let s=7;const rnd=()=>(s=(s*9301+49297)%233280)/233280;
+for(let i=0;i<110;i++){const side=i%3,W=R.width,H=R.height;let x,y;if(side===0){x=rnd()*W;y=rnd()*34}else if(side===1){x=rnd()*14;y=rnd()*H}else{x=W-rnd()*14;y=rnd()*H}
+ const w=4+rnd()*6,h=2+rnd()*4;g.save();g.translate(x,y);g.rotate(rnd()*6.28);g.globalAlpha=.85;g.fillStyle=C[i%C.length];if(i%3)g.fillRect(-w/2,-h/2,w,h);else{g.beginPath();g.arc(0,0,2.2,0,7);g.fill()}g.restore()}
+</script></body></html>
