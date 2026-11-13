@@ -4597,36 +4597,36 @@
     {
      "t": "Cómo presentar el negocio",
      "yt": "T2mq2_mv7Y4",
-     "tarea": "Presente el plan a 1 persona esta semana con la presentación interactiva de la app.",
-     "ir": "pres",
-     "bt": "🎤 Dar presentación",
+     "tarea": "Lleve a 1 persona a una presentación esta semana: con su líder, a una presentación del equipo (Agenda) o enviándole la presentación virtual. Confírmele 15 minutos antes.",
+     "ir": "agenda",
+     "bt": "📅 Ver presentaciones en Agenda",
      "q": [
       {
-       "p": "En una presentación, ¿quién presenta y quién conecta?",
-       "ok": "La herramienta presenta y usted conecta",
+       "p": "Si todavía no sabe presentar el negocio, ¿qué hace?",
+       "ok": "Se apalanca de su líder y de las herramientas: le lleva personas y aprende viéndolo",
        "no": [
-        "Usted tiene que saberlo todo",
-        "El prospecto investiga solo"
+        "Espera a aprender bien antes de invitar a alguien",
+        "Le explica todo usted solo por WhatsApp"
        ],
-       "ex": "No necesita saberlo todo: la herramienta hace el trabajo y usted pone la relación."
+       "ex": "«Tú no tienes que saberlo todo al principio… La herramienta presenta. Tu herramienta principal ahorita es tu líder»."
       },
       {
-       "p": "Mientras se presenta, ¿qué hace usted?",
-       "ok": "Escucha y anota lo que le llama la atención",
+       "p": "Antes de enviar la presentación virtual, ¿qué pregunta clave le hace al prospecto?",
+       "ok": "«Si te la envío ahora, ¿cuándo la verías?», y agenda una llamada después",
        "no": [
-        "Interrumpe para explicar más",
-        "Revisa su teléfono"
+        "«¿Quieres que te mande información?»",
+        "«¿Cuándo puedes?»"
        ],
-       "ex": "Durante la presentación: calle y escuche."
+       "ex": "«Si yo te envío ahora esta presentación… ¿cuándo la verías? Esa es la pregunta clave»."
       },
       {
-       "p": "¿Qué no debe faltar al terminar?",
-       "ok": "Agendar el siguiente paso",
+       "p": "¿Qué no debe hacer al terminar una presentación?",
+       "ok": "Dejarlo ir sin agendarle otra reunión",
        "no": [
-        "Despedirse y esperar",
-        "Pedirle que lo piense sin fecha"
+        "Preguntarle qué fue lo que más le gustó",
+        "Invitarlo a una actividad del equipo"
        ],
-       "ex": "Nunca se despida sin agendar el siguiente paso."
+       "ex": "«El tip es no lo dejes ir sin agendarle otra reunión»."
       }
      ]
     },
