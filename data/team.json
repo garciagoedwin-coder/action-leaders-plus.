@@ -4561,36 +4561,36 @@
     {
      "t": "La invitación",
      "yt": "ETmCgjm5HJg",
-     "tarea": "Invite a 5 personas de su lista con el camino guiado del CRM: «👉 Siguiente paso» le da el mensaje listo.",
+     "tarea": "Invite a 5 personas nuevas desde su CRM: toque «👉 Siguiente paso» y le da el mensaje listo. Registre en la app cada paso con su prospecto.",
      "ir": "crm",
      "bt": "👥 Ir a mi CRM",
      "q": [
       {
-       "p": "¿Cuál es el objetivo de la invitación?",
-       "ok": "Que la persona vea la información",
+       "p": "¿Cuál es el primer paso antes de hablarle del negocio a alguien?",
+       "ok": "Conectar: saludarlo y preguntarle cómo está él y su familia",
        "no": [
-        "Explicarle todo el negocio",
-        "Convencerla de entrar"
+        "Mandarle un audio largo explicando todo el negocio",
+        "Enviarle un mensaje de texto con toda la información"
        ],
-       "ex": "Usted invita a ver, no a comprar."
+       "ex": "«Voy a conectar primero antes de invitarlo… no es que le mando un script completo»."
       },
       {
-       "p": "¿Qué es tener postura?",
-       "ok": "Hablar con seguridad, sin rogar ni convencer",
+       "p": "Cuando la persona le pregunta «¿de qué trata?», ¿qué hace?",
+       "ok": "No le da detalles por WhatsApp: lo invita a la reunión o a la presentación",
        "no": [
-        "Insistir hasta que diga que sí",
-        "Esperar a que la persona pregunte"
+        "Le explica el plan completo por WhatsApp",
+        "Le manda todos los detalles por texto para que lo piense"
        ],
-       "ex": "Si usted está emocionado con lo que tiene, la gente lo siente."
+       "ex": "«Nunca le des detalles por WhatsApp… no te lo puedo explicar por aquí»."
       },
       {
-       "p": "¿Cómo se cierra una buena invitación?",
-       "ok": "Con día y hora concretos",
+       "p": "¿Cómo agenda la reunión con su prospecto?",
+       "ok": "Le da opciones de día y hora y la confirma",
        "no": [
-        "«Cuando pueda me avisa»",
-        "Mandando toda la información por WhatsApp"
+        "Le pregunta «¿y cuándo puedes conectarte?»",
+        "Le dice que le avise cuando tenga tiempo"
        ],
-       "ex": "Agende y confirme. Nunca deje un «cuando puedas»."
+       "ex": "«Nunca le preguntes al prospecto ¿cuándo puedes?… Tú le das opciones»."
       }
      ]
     },
