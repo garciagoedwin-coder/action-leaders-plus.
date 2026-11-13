@@ -517,7 +517,10 @@ async function main() {
       const x = d.data(), L = Object.values(x.sol || {}).filter(s => (s.st === "ok" || s.st === "no") && !s.rt), tk = L.length ? await pushDe(d.id) : null;
       for (const s of L) if (tk) salida.push([d.id, tk, { title: s.st === "ok" ? "✅ Su solicitud fue aprobada" : "📝 Revisamos su solicitud",
         body: (s.st === "ok" ? "Aplicamos el cambio sobre " : "No aplicamos el cambio sobre ") + corto(s.n) + (s.r ? ": " + s.r : ".") }]);
-      const upd = { solR: false }; L.forEach(s => upd["sol." + s.id + ".rt"] = Date.now()); W.push([d.id, upd]);
+      // 13 nov: respuesta del admin SIN decidir (st sigue "p"): ra = cuándo respondió, rat = cuándo se avisó
+      const L2 = Object.values(x.sol || {}).filter(s => s.st === "p" && s.ra && s.r && !(s.rat >= s.ra)), tk2 = L2.length ? (tk || await pushDe(d.id)) : null;
+      for (const s of L2) if (tk2) salida.push([d.id, tk2, { title: "💬 Respuesta a su solicitud", body: "Sobre " + corto(s.n) + ": " + s.r }]);
+      const upd = { solR: false }; L.forEach(s => upd["sol." + s.id + ".rt"] = Date.now()); L2.forEach(s => upd["sol." + s.id + ".rat"] = Date.now()); W.push([d.id, upd]);
     }
     if (!DRY) for (const [uid, u] of W) await db.doc("users/" + uid).update(u);
   } else if (modo === "lzg" || modo === "lzg-sync") {
