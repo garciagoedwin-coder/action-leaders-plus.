@@ -7711,7 +7711,7 @@ function irSave(patch){const s=irSimM(),f=s?"irSim":"ir";regDoc=regDoc||{};regDo
 function irBump(k){try{if(!regDoc)return;["ir","irSim"].forEach(f=>{const s=regDoc[f];if(!s||!s.ini)return;const c=Object.assign({},s.c||{});c[k]=(c[k]||0)+1;regDoc[f]=Object.assign({},s,{c});irPend[f]=regDoc[f]});
   clearTimeout(irSaveT);irSaveT=setTimeout(()=>{const P=irPend;irPend={};if(store.db&&store.uid&&Object.keys(P).length)store.db.doc("users/"+store.uid).update(P).catch(()=>{})},700);setTimeout(irRender,400)}catch(e){}}
 // modo: "nuevo" (plan automático), "actual" (invitación), null (no aplica)
-function irModo(){const s=irSimM();if(s)return s;if(yoPrueba())return "nuevo";if(!irBeta()||isAdmin)return null;const r=miRegistro();if(!r||!r.nombre)return null;
+function irModo(){const s=irSimM();if(s)return s;if(yoPrueba())return "nuevo";if(!irBeta()||esSoloAdminYo())return null;const r=miRegistro();if(!r||!r.nombre)return null;
   return String(r.fecha||"")>=IR_DESDE?"nuevo":"actual"}
 function irActivo(){const m=irModo(),st=irSt();if(!m)return false;if(m==="nuevo")return true;return !!st.ini}
 function irIni(){const st=irSt();if(st.ini)return st.ini;const m=irModo();if(m==="nuevo"&&!irSimM()){const f=Date.parse(miRegistro().fecha||"");return isNaN(f)?Date.now():f}return Date.now()}
