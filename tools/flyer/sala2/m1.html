@@ -1,0 +1,122 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box}body{margin:0;background:#E9EEF3;font-family:Inter,-apple-system,system-ui,sans-serif;padding:30px;display:flex;flex-wrap:wrap;gap:26px;width:1660px}
+.ph{width:375px;height:780px;border-radius:44px;background:#05121C;position:relative;overflow:hidden;box-shadow:0 20px 50px #0003;color:#fff;border:10px solid #111}
+.lb{position:absolute;top:-2px;left:0;right:0;text-align:center;font:800 11px Inter;letter-spacing:.14em;color:#2AC1F1;opacity:.0}
+.cap{width:375px;font:700 15px Inter;color:#2B2A2D;margin-top:10px;text-align:center}
+.w{display:flex;flex-direction:column}
+.k{font-size:10.5px;letter-spacing:.18em;font-weight:800;color:#2AC1F1}
+.glow{position:absolute;inset:0;background:radial-gradient(120% 60% at 50% 0%,#0A7DAD55,transparent 60%)}
+/* 1 pase */
+.pass{position:absolute;left:22px;right:22px;top:120px;border-radius:22px;background:#fff;color:#0B1E2B;overflow:hidden;box-shadow:0 20px 50px #000a}
+.pass .t{background:linear-gradient(135deg,#0A7DAD,#2AC1F1);color:#fff;padding:16px 18px}
+.pass .t b{font:900 22px Inter;letter-spacing:.02em}.pass .t small{display:block;font-size:11px;letter-spacing:.2em;font-weight:800;opacity:.85}
+.rt{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 6px}.rt div b{font:900 30px Inter;display:block}.rt div small{font-size:10px;color:#64748B;font-weight:700;letter-spacing:.1em}
+.rt i{flex:1;margin:0 10px;border-top:2px dashed #CBD5E1;position:relative}.rt i:after{content:"✈️";position:absolute;left:45%;top:-13px;font-size:18px;font-style:normal}
+.fl{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;padding:10px 18px 16px}.fl small{display:block;font-size:9.5px;color:#64748B;font-weight:800;letter-spacing:.12em}.fl b{font-size:14px}
+.cut{border-top:2px dashed #CBD5E1;margin:0 14px;position:relative}.cut:before,.cut:after{content:"";position:absolute;top:-12px;width:24px;height:24px;border-radius:50%;background:#05121C}.cut:before{left:-26px}.cut:after{right:-26px}
+.inv{display:flex;align-items:center;gap:10px;padding:14px 18px}.av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#334155,#94A3B8);border:2px solid #2AC1F1;flex:none}
+.bar{height:46px;margin:0 18px 18px;background:repeating-linear-gradient(90deg,#0B1E2B 0 2px,transparent 2px 5px,#0B1E2B 5px 6px,transparent 6px 9px)}
+.btn{position:absolute;left:22px;right:22px;bottom:40px;height:58px;border-radius:18px;background:linear-gradient(135deg,#2AC1F1,#0A7DAD);display:flex;align-items:center;justify-content:center;font:900 18px Inter;box-shadow:0 10px 30px #2AC1F155}
+.hint{position:absolute;bottom:108px;left:0;right:0;text-align:center;font-size:12px;opacity:.7}
+/* 2 video */
+.vid{position:absolute;left:0;right:0;top:70px;height:212px;background:linear-gradient(135deg,#1E3A4A,#0B1E2B);display:flex;align-items:center;justify-content:center}
+.vid .p{width:92px;height:92px;border-radius:50%;background:radial-gradient(#94A3B8,#475569);border:3px solid #fff3}
+.vid .live{position:absolute;left:12px;top:12px;font-size:10px;font-weight:800;letter-spacing:.12em;background:#0008;padding:4px 8px;border-radius:8px}
+.top{position:absolute;top:22px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.route{position:absolute;left:18px;right:18px;top:300px}
+.route .ln{height:4px;border-radius:4px;background:#ffffff22;position:relative;margin:18px 6px 0}.route .ln s{position:absolute;left:0;top:0;bottom:0;width:46%;border-radius:4px;background:linear-gradient(90deg,#2AC1F1,#7FE0FF)}
+.route .pl{position:absolute;left:46%;top:-13px;font-size:20px;transform:translateX(-50%) rotate(0deg)}
+.stops{display:flex;justify-content:space-between;margin-top:10px}.stops span{font-size:9.5px;font-weight:700;opacity:.55;width:60px;text-align:center}.stops span.on{opacity:1;color:#7FE0FF}
+.dot{position:absolute;top:-4px;width:12px;height:12px;border-radius:50%;background:#05121C;border:2px solid #ffffff44}
+.card{position:absolute;left:18px;right:18px;border-radius:20px;padding:16px;background:linear-gradient(160deg,#0E2A3B,#0A1B27);border:1px solid #2AC1F144}
+.card .big{display:flex;align-items:center;gap:12px;margin-top:8px}.card .big b{font:900 36px Inter}.card .big em{font-style:normal;font-size:24px;color:#2AC1F1}
+.mini{display:flex;gap:6px;align-items:flex-end;height:90px;margin-top:12px}.mini i{flex:1;border-radius:6px 6px 2px 2px;background:linear-gradient(#2AC1F1,#0A7DAD)}
+/* 3 pregunta */
+.dim{position:absolute;inset:0;background:#05121Ccc;backdrop-filter:blur(3px)}
+.q{position:absolute;left:18px;right:18px;bottom:36px;border-radius:26px;background:#fff;color:#0B1E2B;padding:22px 18px}
+.q h3{margin:6px 0 14px;font:900 22px Inter;line-height:1.15}
+.op{display:flex;align-items:center;gap:12px;border:2px solid #E2E8F0;border-radius:16px;padding:14px;margin-top:10px;font-weight:800;font-size:16px}.op i{font-style:normal;font-size:26px}.op small{display:block;font-weight:600;color:#64748B;font-size:12px}
+.op.sel{border-color:#0A7DAD;background:#E0F2FE}
+.pz{display:inline-flex;gap:6px;align-items:center;font-size:10px;font-weight:800;letter-spacing:.12em;color:#0A7DAD}
+/* 4 destino */
+.tiles{position:absolute;left:14px;right:14px;top:150px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tl{height:250px;border-radius:22px;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:14px;font:900 20px Inter}
+.tl em{position:absolute;top:14px;left:14px;font-size:44px;font-style:normal}.tl small{display:block;font:600 11px Inter;opacity:.85}
+.tl.s{outline:3px solid #fff;box-shadow:0 0 0 7px #2AC1F1}
+/* 5 termometro */
+.sc{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:6px}.sc b{height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font:900 20px Inter;color:#fff}
+.lg{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:#64748B;margin-top:10px}
+/* 6 aterriza */
+.conf{position:absolute;inset:0;background:radial-gradient(circle at 20% 15%,#FDE04766 0 3px,transparent 4px),radial-gradient(circle at 70% 10%,#F472B666 0 3px,transparent 4px),radial-gradient(circle at 85% 30%,#34D39966 0 3px,transparent 4px),radial-gradient(circle at 40% 25%,#2AC1F166 0 3px,transparent 4px)}
+.cta{position:absolute;left:18px;right:18px;bottom:28px;display:flex;flex-direction:column;gap:10px}.cta div{height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font:800 16px Inter}
+/* 7 socio */
+.ph.l{background:#F3F6F9;color:#0B1E2B}
+.nt{margin:10px 14px;border-radius:18px;background:#fff;box-shadow:0 4px 14px #14213D14;padding:12px 14px;display:flex;gap:10px;font-size:13px}.nt b{display:block;font-size:14px}.nt small{color:#64748B;font-size:11.5px}
+.hot{border:2px solid #F97316;background:#FFF7ED}
+.wa{margin:8px 14px;border-radius:14px;background:#25D366;color:#fff;font:800 15px Inter;height:50px;display:flex;align-items:center;justify-content:center}
+</style></head><body>
+
+<div class="w"><div class="ph"><div class="glow"></div>
+ <div class="top"><span style="font:800 13px Inter">Action <span style="color:#2AC1F1">⛉</span> Leaders</span><span class="k">SU INVITACIÓN</span></div>
+ <div style="position:absolute;top:70px;left:24px;right:24px;font:800 22px Inter;line-height:1.2">Hola, María 👋<br><span style="font-weight:600;font-size:14px;opacity:.75">Josué le preparó este viaje de 20 minutos.</span></div>
+ <div class="pass"><div class="t"><small>PASE DE ABORDAR</small><b>Su próximo destino</b></div>
+  <div class="rt"><div><b>HOY</b><small>DONDE ESTÁ</small></div><i></i><div style="text-align:right"><b>???</b><small>USTED ELIGE</small></div></div>
+  <div class="fl"><div><small>PASAJERA</small><b>María López</b></div><div><small>DURACIÓN</small><b>20 min</b></div><div><small>ASIENTO</small><b>1A · VIP</b></div><div><small>PUERTA</small><b>Honduras 🇭🇳</b></div></div>
+  <div class="cut"></div><div class="inv"><div class="av"></div><div><small style="font-size:9.5px;color:#64748B;font-weight:800;letter-spacing:.12em">LE INVITA</small><b style="display:block">Josué Delgado</b></div></div>
+  <div class="bar"></div></div>
+ <div class="hint">Deslice o toque para abordar</div><div class="btn">✈️ Abordar</div></div><div class="cap">1 · Pase de abordar con su nombre</div></div>
+
+<div class="w"><div class="ph"><div class="top"><span class="k">EN VUELO · 06:12 / 20:28</span><span>🔊</span></div>
+ <div class="vid"><div class="p"></div><span class="live">EDWIN GARCÍA GO</span></div>
+ <div class="route"><div class="ln"><s></s><span class="pl">✈️</span><span class="dot" style="left:0;border-color:#2AC1F1;background:#2AC1F1"></span><span class="dot" style="left:22%;border-color:#2AC1F1;background:#2AC1F1"></span><span class="dot" style="left:44%;border-color:#2AC1F1;background:#2AC1F1"></span><span class="dot" style="left:66%"></span><span class="dot" style="left:86%"></span><span class="dot" style="left:99%"></span></div>
+  <div class="stops"><span>Bienvenida</span><span>Sus sueños</span><span class="on">Cómo se viaja</span><span>El negocio</span><span>Cómo empezar</span><span>Aterrizaje</span></div></div>
+ <div class="card" style="top:400px"><span class="k">✨ LO QUE ESTÁ VIENDO</span>
+  <div class="big"><div><small style="font-size:11px;opacity:.7">Usted ahorra</small><b>$100</b></div><em>→</em><div><small style="font-size:11px;opacity:.7">Recibe</small><b style="color:#7FE0FF">200 pts</b></div></div>
+  <div class="mini"><i style="height:16%"></i><i style="height:32%"></i><i style="height:48%"></i><i style="height:64%"></i><i style="height:82%"></i><i style="height:100%"></i></div>
+  <div style="display:flex;justify-content:space-between;font-size:10px;opacity:.6;margin-top:4px"><span>Mes 1</span><span>Mes 6 · 1,200 pts</span></div></div>
+ <div style="position:absolute;bottom:26px;left:18px;right:18px;font-size:12px;opacity:.65;text-align:center">Las tarjetas cambian solas con lo que Edwin explica</div>
+</div><div class="cap">2 · Video + avión que avanza + tarjetas vivas</div></div>
+
+<div class="w"><div class="ph"><div class="vid" style="top:70px"><div class="p"></div></div><div class="dim"></div>
+ <div class="q"><span class="pz">⏸ EDWIN LE PREGUNTA</span><h3>¿Qué tendría más valor para ti en este momento?</h3>
+  <div class="op"><i>🧳</i><div>Viajar más<small>Conocer el mundo con mi familia</small></div></div>
+  <div class="op"><i>💼</i><div>Emprender<small>Tener mi propio negocio</small></div></div>
+  <div class="op sel"><i>⭐</i><div>Ambas cosas<small>Viajar y emprender</small></div></div>
+  <div style="text-align:center;font-size:12px;color:#64748B;margin-top:12px">El video sigue cuando respondas</div></div>
+</div><div class="cap">3 · El video se pausa y Edwin pregunta</div></div>
+
+<div class="w"><div class="ph"><div class="top"><span class="k">⏸ PREGUNTA 2 DE 4</span><span></span></div>
+ <div style="position:absolute;top:62px;left:20px;right:20px;font:900 22px Inter;line-height:1.15">¿Qué te encantaría conocer en los próximos 24 meses?</div>
+ <div class="tiles">
+  <div class="tl" style="background:linear-gradient(160deg,#06B6D4,#0E7490)"><em>🏝️</em><div>Caribe<small>Aguas turquesa</small></div></div>
+  <div class="tl s" style="background:linear-gradient(160deg,#6366F1,#312E81)"><em>🗼</em><div>Europa<small>París, Roma, Barcelona</small></div></div>
+  <div class="tl" style="background:linear-gradient(160deg,#F43F5E,#7F1D1D)"><em>🏯</em><div>Asia<small>Japón, Tailandia</small></div></div>
+  <div class="tl" style="background:linear-gradient(160deg,#22C55E,#14532D)"><em>🏔️</em><div>Suramérica<small>Perú, Argentina</small></div></div></div>
+ <div style="position:absolute;bottom:30px;left:20px;right:20px;font-size:13px;opacity:.75;text-align:center">Tu destino aparece en el resto del viaje ✈️ → 🗼</div>
+</div><div class="cap">4 · Elige su destino soñado (con fotos reales)</div></div>
+
+<div class="w"><div class="ph"><div class="glow"></div><div class="top"><span class="k">⏸ PREGUNTA 4 DE 4</span><span></span></div>
+ <div class="q" style="bottom:auto;top:110px"><span class="pz">CON TODO LO QUE VISTE</span><h3>¿Qué tan listo te sientes para comenzar?</h3>
+  <div class="sc"><b style="background:#94A3B8">1</b><b style="background:#94A3B8">2</b><b style="background:#94A3B8">3</b><b style="background:#94A3B8">4</b><b style="background:#94A3B8">5</b><b style="background:#F59E0B">6</b><b style="background:#F59E0B">7</b><b style="background:#16A34A">8</b><b style="background:#16A34A;outline:3px solid #0B1E2B">9</b><b style="background:#16A34A">10</b></div>
+  <div class="lg"><span>1–5 Lo estoy pensando</span><span>6–7 Me falta info</span></div><div class="lg" style="margin-top:2px"><span></span><span style="color:#16A34A">8–10 ¡Estoy listo!</span></div>
+  <div style="margin-top:14px;border-radius:14px;background:#DCFCE7;color:#14532D;padding:12px;font-size:13px;font-weight:700">🔥 ¡9! Josué recibe tu respuesta para ayudarte a dar el siguiente paso.</div></div>
+</div><div class="cap">5 · Termómetro final del 1 al 10</div></div>
+
+<div class="w"><div class="ph"><div class="conf"></div><div class="glow"></div><div class="top"><span class="k">🛬 ATERRIZAJE</span><span></span></div>
+ <div style="position:absolute;top:66px;left:22px;right:22px;font:900 24px Inter;line-height:1.15">María, tu viaje a Europa ya tiene plan 🗼</div>
+ <div class="pass" style="top:140px"><div class="t" style="background:linear-gradient(135deg,#6366F1,#2AC1F1)"><small>PASE CONFIRMADO</small><b>Honduras → Europa</b></div>
+  <div class="fl" style="padding-top:14px"><div><small>CON PREMIUM</small><b>~5 meses</b></div><div><small>CON CLASSIC</small><b>~12 meses</b></div><div><small>TE INTERESA</small><b>⭐ Ambas</b></div><div><small>LISTA</small><b>9 / 10 🔥</b></div></div>
+  <div class="cut"></div><div class="inv"><div class="av"></div><div><small style="font-size:9.5px;color:#64748B;font-weight:800;letter-spacing:.12em">TU GUÍA</small><b style="display:block">Josué Delgado</b></div></div></div>
+ <div class="cta"><div style="background:linear-gradient(135deg,#2AC1F1,#0A7DAD)">🛳️ Crear mi cuenta ahora</div><div style="background:#25D366">💬 Escribirle a Josué</div><div style="background:#ffffff14;border:1px solid #ffffff33">📞 Tengo dudas · hablar con un líder</div></div>
+</div><div class="cap">6 · Aterrizaje: su pase y 3 botones</div></div>
+
+<div class="w"><div class="ph l"><div style="padding:24px 18px 6px;font:900 20px Inter">📡 Modo copiloto</div><div style="padding:0 18px 6px;font-size:12.5px;color:#64748B">Lo que hace María, en vivo</div>
+ <div class="nt"><span style="font-size:22px">👀</span><div><b>María abordó su presentación</b><small>Hace 18 min</small></div></div>
+ <div class="nt"><span style="font-size:22px">⭐</span><div><b>Le atrae: viajar y emprender</b><small>Minuto 1:24</small></div></div>
+ <div class="nt"><span style="font-size:22px">🗼</span><div><b>Sueña con Europa</b><small>Minuto 2:20</small></div></div>
+ <div class="nt"><span style="font-size:22px">✈️</span><div><b>Va en «El negocio» · 64%</b><small>Hace 6 min</small></div></div>
+ <div class="nt hot"><span style="font-size:22px">🔥</span><div><b>¡Terminó! Está lista: 9/10</b><small>Ahora · escríbale en los próximos 5 minutos</small></div></div>
+ <div class="wa">💬 Escribirle ahora (mensaje listo)</div>
+ <div style="margin:4px 14px;font-size:12px;color:#475569;background:#fff;border-radius:12px;padding:10px">«¡María! Vi que terminaste la presentación y que sueñas con Europa 🗼. Te paso tu link para que…»</div>
+</div><div class="cap">7 · Al socio le llega todo al teléfono, al instante</div></div>
+</body></html>
