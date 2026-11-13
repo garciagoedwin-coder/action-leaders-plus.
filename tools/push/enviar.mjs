@@ -334,6 +334,7 @@ export function avDestino(modo, m) {
   if (modo === "sinapp") return "snv";
   if (modo === "rhito") return "rach";
   if (modo === "msg" && /Networker Pro/i.test(t)) return "np";
+  if (modo === "msg" && /Materiales|Guía gratis/i.test(t)) return "mat";
   return "inicio";
 }
 async function main() {

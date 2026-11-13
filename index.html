@@ -5330,13 +5330,14 @@ const avHace=t=>{const m=Math.round((Date.now()-t)/6e4);if(m<1)return"ahora";if(
 // 6 nov: el Centro de avisos muestra solo los de HOY (hora de Honduras) y cada aviso lleva a lo suyo (avIr). ?av=destino al tocar la notificación.
 function avHoy0(){const n=Date.now(),h=new Date(n-6*36e5);return Date.UTC(h.getUTCFullYear(),h.getUTCMonth(),h.getUTCDate())+6*36e5}
 function avDest(x){const v=x.v||"",t=x.ti||"";if(v&&!/^(inicio|equipo)$/.test(v))return v==="agenda"?"agenda":v;
-  if(/pide un cambio/i.test(t))return "sol";if(/no aparecen? en inCruises/i.test(t)&&isAdmin)return /cuentas aprobadas/i.test(t)?"sinh":"apr";if(/solicitud/i.test(t))return "dt";if(/ahorros? pendientes?/i.test(t))return "ahp";if(/inactiva|ya pag/i.test(t))return "urg";
+  if(/Materiales|Guía gratis/i.test(t))return "mat";if(/pide un cambio/i.test(t))return "sol";if(/no aparecen? en inCruises/i.test(t)&&isAdmin)return /cuentas aprobadas/i.test(t)?"sinh":"apr";if(/solicitud/i.test(t))return "dt";if(/ahorros? pendientes?/i.test(t))return "ahp";if(/inactiva|ya pag/i.test(t))return "urg";
   if(/compromiso/i.test(t))return "comp";if(/grupo/i.test(t))return "lzg";if(/Sistema de liderazgo|Felicidades/i.test(t))return "lz";if(/socio en su equipo|nuevo socio/i.test(t))return "snv";if(/incentivo|cerrar/i.test(t))return "inc";
   return v==="equipo"?"eq":"rut"}
 function avFila(x,v){return `<button type="button" class="avIt avRow${(x.t||0)>v?" nuevo":""}" data-avd="${avDest(x)}"><span class="avIc">${(x.t||0)>v?"🔵":"🔔"}</span><div class="grow" style="min-width:0;text-align:left"><b>${esc(x.ti||"")}</b><small>${esc(x.b||"")}</small><small class="muted">${avHace(x.t||0)}</small></div><span class="avGo">›</span></button>`}
 function avScroll(id,n){n=n||0;setTimeout(()=>{const r=$(id);if(r&&!r.hidden){r.scrollIntoView({behavior:"smooth",block:"center"});r.classList.add("avFlash");setTimeout(()=>r.classList.remove("avFlash"),1600)}else if(n<12)avScroll(id,n+1)},350)}
 function avEq(t){eqTab=t;try{setSeg("eqSeg",eqTab)}catch(e){}go("equipo");try{renderEquipo()}catch(e){}}
 function avIr(k){try{
+  if(k==="mat"){go("academia");setTimeout(()=>{try{acaMateriales()}catch(e){}},300);return}
   if(k==="np"){go("academia");setTimeout(()=>{try{npCurso()}catch(e){}},300);return}
   if(k==="recoyo"){setTimeout(()=>{try{recoMio()}catch(e){}},300);return}
   if(k==="reco"){setTimeout(async()=>{try{if(!mios||!mios.length)await loadMios()}catch(e){}try{recoLista()}catch(e){}},300);return}
@@ -8340,7 +8341,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261112174147";var busy=false,pend=null;
+(function(){var V="20261112212855";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
