@@ -7377,7 +7377,7 @@ function npQuiz(n){const box=$("#npQz"),E=npEstado();if(!box||!E)return;const Q=
     d.querySelectorAll(".npO").forEach(b=>b.onclick=()=>{if(ok.has(i))return;const bien=b.dataset.o===q.ok;
       d.querySelectorAll(".npO").forEach(x=>x.classList.remove("mal"));b.classList.add(bien?"bien":"mal");
       ex.hidden=false;ex.className="npQe small "+(bien?"ok":"no");ex.textContent=(bien?"✅ ¡Correcto! ":"❌ Esa no es. Intente otra vez. ")+(bien&&q.ex?q.ex:"");
-      if(bien){ok.add(i);d.classList.add("hecha");if(ok.size===Q.length){box.querySelector(".npQz").insertAdjacentHTML("beforeend",`<p class="npQe ok" style="font-weight:700">🎉 ¡Aprobó las ${Q.length} preguntas!</p>`);const s=npSt();s.q[n]=Date.now();if(s.v[n]){store.set("perfil",profile);try{confeti($("#sheetPanel"),40)}catch(e){}toast("🎉 ¡Aprobó las preguntas del video "+n+"!");try{renderAca()}catch(e){}}else npMarcar(n)}}})})}
+      if(bien){ok.add(i);d.classList.add("hecha");if(ok.size===Q.length){box.querySelector(".npQz").insertAdjacentHTML("beforeend",`<p class="npQe ok" style="font-weight:700">🎉 ¡Aprobó las ${Q.length} preguntas!</p>`);const s=npSt();s.q[n]=Date.now();if(s.v[n]){store.set("perfil",profile);try{confeti($("#sheetPanel"),40)}catch(e){}toast("🎉 ¡Aprobó las preguntas del video "+n+"!");try{renderAca()}catch(e){}try{npComPinta(n,1)}catch(e){}}else npMarcar(n)}}})})}
 function npMarcar(n){const E0=npEstado();if(!E0)return;const s=npSt();if(s.v[n])return;s.v[n]=Date.now();s.d[n]=TODAY;delete s.w[n];store.set("perfil",profile);npPub();
   if(!((day.audio||0)>=1)){day.audio=1;saveDay()}try{renderTasks()}catch(e){}try{renderAca()}catch(e){}try{npBan()}catch(e){}
   const E=npEstado(),es=$("#npEst");if(es)es.textContent="✓ ¡Completado! Su punto «Auto desarrollo personal» de hoy quedó marcado.";
@@ -8452,7 +8452,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261113085949";var busy=false,pend=null;
+(function(){var V="20261113090853";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
