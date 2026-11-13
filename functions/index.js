@@ -117,3 +117,29 @@ exports.aprobarManual = functions.runWith({ memory: "256MB", timeoutSeconds: 60 
   await claims(a, { ap: false, nr: null }); await uref.set({ apE: "no", apT: Date.now() }, { merge: true }); await snap.ref.delete();
   console.log("manual rechazada");
 });
+
+// Presentación virtual v2 «Su próximo destino» (viaje.html, 13 nov 2026): MODO COPILOTO.
+// users/{uid}/sala/{id} con id "v_…" → aviso al socio (uid) en el momento en que el prospecto
+// aborda, responde cada pregunta, termina o toca un botón. Un solo aviso por escritura (el más importante).
+// Campos: n (nombre), r1 (valor), pais (destino), resp (lo que más conectó), pulso ("1".."10"), como (registro|whatsapp|lider), motivo ("fin" = terminó).
+exports.salaCopiloto = functions.runWith({ memory: "256MB", timeoutSeconds: 30 }).firestore.document("users/{uid}/sala/{id}").onWrite(async (ch, ctx) => {
+  if (!String(ctx.params.id).startsWith("v_") || !ch.after.exists) return;
+  const a = ch.after.data() || {}, b = ch.before.exists ? ch.before.data() || {} : null;
+  const n = String(a.n || "Su prospecto").trim().split(/\s+/)[0], nv = k => a[k] && (!b || a[k] !== b[k]);
+  const VAL = { viajar: "🧳 viajar más", ingresos: "💰 generar ingresos", ambas: "⭐ viajar y generar ingresos" };
+  let m = null;
+  if (nv("como")) m = a.como === "registro" ? ["🛳️ " + n + " tocó «Crear mi cuenta»", "Está por registrarse. Escríbale ahora para ayudarle con el pago."]
+    : a.como === "lider" ? ["📞 " + n + " quiere hablar con un líder", "Pidió una llamada. Arme la llamada de 3 hoy mismo."]
+    : ["💬 " + n + " le está escribiendo", "Tocó «Escribirle» al final de la presentación. Revise su WhatsApp."];
+  else if (nv("pulso")) { const p = +a.pulso || 0; m = p >= 8 ? ["🔥 ¡" + n + " terminó! Está lista/o: " + p + "/10", "Escríbale en los próximos 5 minutos con su link de registro."]
+    : p >= 6 ? ["🟠 " + n + " está casi: " + p + "/10", "Le falta información. Escríbale ahora y ofrézcale una llamada con un líder."]
+    : ["💭 " + n + " lo está pensando: " + p + "/10", "Escríbale con calma para resolver sus dudas."]; }
+  else if (nv("resp")) m = ["💡 A " + n + " lo que más le conectó: " + (VAL[a.resp] || a.resp), "Va en el cierre de la presentación."];
+  else if (nv("pais")) m = ["🗺️ " + n + " sueña con conocer " + a.pais, "Minuto 2:20 de la presentación. Úselo en su seguimiento."];
+  else if (nv("r1")) m = ["⭐ A " + n + " le atrae: " + (VAL[a.r1] || a.r1), "Acaba de empezar la presentación."];
+  else if (!b) m = ["👀 " + n + " abordó su presentación", "La está viendo ahora. Le avisamos cada vez que responda."];
+  else if (nv("motivo") && a.motivo === "fin" && !a.pulso) m = ["✅ " + n + " terminó la presentación", "Escríbale ahora."];
+  if (!m) return;
+  await push([ctx.params.uid], m[0], m[1], "sala");
+  console.log("copiloto", ctx.params.id.slice(0, 4), m[0].slice(0, 2));
+});

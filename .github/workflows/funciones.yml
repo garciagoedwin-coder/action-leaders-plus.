@@ -27,6 +27,6 @@ jobs:
         run: |
           umask 077; printf '%s' "$FIREBASE_SA" > /tmp/sa.json
           export GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json
-          npx -y firebase-tools@13.29.1 deploy --only functions:aprobarAlRegistrar,functions:aprobarManual --project action-leaders-plus-8f1b8 --non-interactive --force 2>&1 | sed -E 's/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+/<cuenta>/g' | sed -E 's/ya29\.[A-Za-z0-9._-]+/<tk>/g' ; test ${PIPESTATUS[0]} -eq 0
+          npx -y firebase-tools@13.29.1 deploy --only functions:aprobarAlRegistrar,functions:aprobarManual,functions:salaCopiloto --project action-leaders-plus-8f1b8 --non-interactive --force 2>&1 | sed -E 's/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+/<cuenta>/g' | sed -E 's/ya29\.[A-Za-z0-9._-]+/<tk>/g' ; test ${PIPESTATUS[0]} -eq 0
       - if: always()
         run: rm -f /tmp/sa.json

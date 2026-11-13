@@ -5471,6 +5471,7 @@ function avIr(k){try{
   if(k==="recoyo"){setTimeout(()=>{try{recoMio()}catch(e){}},300);return}
   if(k==="reco"){setTimeout(async()=>{try{if(!mios||!mios.length)await loadMios()}catch(e){}try{recoLista()}catch(e){}},300);return}
   if(k==="apr"){aprAbrir();return}
+  if(k==="sala"){LS.set("salaOn",1);loadSala(true).then(()=>abrirSala(),()=>abrirSala());return}
   if(k==="tur"){const run=()=>{const P=turMisP();if(P.length)turResponder(P[0].e,P[0].k);else turAbrir()};turCargar(true).then(run,run);return}
   if(k==="rep"){if(isAdmin)repAdmin();return}
   if(k==="via"){go("inicio");try{avBoxMostrar("viaStrip")}catch(e){}avScroll("#viaStrip");return}
@@ -6404,14 +6405,14 @@ function renderSalaCard(){const c=$("#salaCard");if(!c)return;if(!salaOk()){c.hi
   if(!V.length){c.hidden=true;return}c.hidden=false;
   c.innerHTML=`<div class="row between"><h3 style="margin:0">🎬 Su presentación virtual</h3><button class="btn sm ghost" id="scVer">Ver todo</button></div>${V.slice(0,3).map(v=>{const n=salaNivel(v);return `<div class="row" style="gap:10px;padding:8px 0;border-top:1px solid var(--line)"><div class="grow" style="min-width:0"><b style="font-weight:600">${esc(v.n||"Prospecto")}</b><div class="small muted">Vio el ${+v.pct||0}%${v.resp?" · Le interesa: "+esc(SALA_R[v.resp]):""}</div></div><span class="chip" style="color:${n[2]};font-weight:800">${esc(n[0])}</span></div>`}).join("")}`;
   $("#scVer").onclick=()=>abrirSala()}
-function salaUrl(nombre,cid){let u="https://actionleadersplus.com/sala.html?de="+miPCode();if(nombre)u+="&p="+encodeURIComponent(String(nombre).trim().slice(0,50));if(cid)u+="&c="+encodeURIComponent(cid);return u}
+function salaUrl(nombre,cid){let u="https://actionleadersplus.com/viaje.html?de="+miPCode();if(nombre)u+="&p="+encodeURIComponent(String(nombre).trim().slice(0,50));if(cid)u+="&c="+encodeURIComponent(cid);return u}
 async function salaPrep(){if(!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return false}
   if(!LS.get("salaPerf")){try{const r=regDoc.registro;let foto=miFotoUrl()||"";if(foto&&/^https?:/.test(foto)){const d=await urlADataUrl(foto,240);foto=d||""}
     const b={uid:store.uid,nombre:r.nombre||miNombreCorto(),waS:String(r.whatsapp||"").replace(/\D/g,""),t:Date.now()};if(foto&&foto.length<400000)b.foto=foto;
     await store.db.doc("perfiles/"+miPCode()).set(b,{merge:true});LS.set("salaPerf",1)}catch(e){toast("No se pudo preparar su sala. Revise su conexión.");return false}}
   LS.set("salaOn",1);return true}
 function salaMsgInv(nombre,u){const f=String(nombre||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"";
-  return `Hola${f?" "+f:""} 😊\n\nLe preparé una *presentación privada de 15 minutos* sobre cómo viajar más pagando menos y generar ingresos extra.\n\n🎬 Véala aquí cuando tenga un momento tranquilo:\n${u}\n\nAl final le hago una pregunta: su respuesta me ayuda a orientarle mejor. 🙌${yo?"\n\n*"+yo+"*":""}`}
+  return `Hola${f?" "+f:""} 😊\n\nLe preparé su *pase de abordar* ✈️: una presentación privada de 20 minutos sobre cómo viajar más pagando menos y generar ingresos.\n\n🎬 Véala aquí con sonido, en un momento tranquilo:\n${u}\n\nEn el camino le hacen unas preguntas: sus respuestas me ayudan a orientarle mejor. 🙌${yo?"\n\n*"+yo+"*":""}`}
 async function enviarSala(c){if(!c)return;if(ahGate())return;if(!(await salaPrep()))return;stAvanza(c,"Contactado","le envió la presentación virtual");const t=salaMsgInv(c.name,salaUrl(c.name,c.id)),n=waNum(c.phone,c.cc);
   if(n){waIr("https://wa.me/"+n+"?text="+encodeURIComponent(t));return}
   if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
@@ -6427,7 +6428,7 @@ async function abrirSala(){LS.set("salaSeen",Date.now());renderSalaCard();
      <div class="row between" style="gap:8px"><b style="font-weight:600;min-width:0">${esc(v.n||"Prospecto")}</b><span class="chip" style="color:${n[2]};font-weight:800;flex:none">${esc(n[0])}</span></div>
      <div style="height:6px;border-radius:9px;background:var(--line);overflow:hidden"><i style="display:block;height:100%;width:${Math.min(100,+v.pct||0)}%;background:var(--good)"></i></div>
      <div class="small muted">Vio el ${+v.pct||0}% · ${v.t?haceTxt(v.t):""}</div>
-     <div class="row wrap" style="gap:6px">${v.r1?`<span class="chip c-brand">Al inicio: ${esc(SALA_R[v.r1]||v.r1)}</span>`:""}${v.pais?`<span class="chip c-brand">🌍 ${esc(v.pais)}</span>`:""}${v.pulso?`<span class="chip c-brand">${v.pulso==="si"?"👍 Le gustaba":"🤔 Tenía dudas"}</span>`:""}${v.resp?`<span class="chip c-gold">Al final: ${esc(SALA_R[v.resp])}</span>`:""}${v.como?`<span class="chip c-good">Prefiere: ${esc(SALA_C[v.como]||v.como)}</span>`:""}${v.motivo?`<span class="chip c-brand">${esc(v.motivo)}</span>`:""}</div>
+     <div class="row wrap" style="gap:6px">${v.r1?`<span class="chip c-brand">Al inicio: ${esc(SALA_R[v.r1]||v.r1)}</span>`:""}${v.pais?`<span class="chip c-brand">🌍 ${esc(v.pais)}</span>`:""}${v.pulso?`<span class="chip c-brand">${/^\d+$/.test(String(v.pulso))?(+v.pulso>=8?"🔥 Lista/o: ":+v.pulso>=6?"🟠 Casi: ":"💭 Pensándolo: ")+v.pulso+"/10":v.pulso==="si"?"👍 Le gustaba":"🤔 Tenía dudas"}</span>`:""}${v.resp?`<span class="chip c-gold">Al final: ${esc(SALA_R[v.resp])}</span>`:""}${v.como?`<span class="chip c-good">Prefiere: ${esc(SALA_C[v.como]||v.como)}</span>`:""}${v.motivo?`<span class="chip c-brand">${esc(v.motivo)}</span>`:""}</div>
      <button class="btn sm" data-sseg="${esc(v.id)}" style="background:#25D366;color:#fff;align-self:flex-start">💬 ${v.resp==="no"?"Agradecer":"Darle seguimiento"}${ct?"":" (elegir chat)"}</button></div>`}).join(""):`<p class="small muted" style="margin:0">Aún nadie ha visto su presentación. Envíela desde el CRM (botón «🎬 Presentación») o con el botón de arriba.</p>`};
   openSheet(`<h2>🎬 Mi presentación virtual</h2><p class="small muted" style="margin:0">Una sala privada de 15 minutos. Aquí ve quién la vio, cuánto vio y qué respondió.</p>
    <div class="row" style="gap:8px"><input class="inp grow" id="slN" placeholder="Nombre de la persona" maxlength="50" style="min-width:0"><button class="btn sm" id="slSend" style="background:#25D366;color:#fff">Enviar</button></div>
@@ -8565,7 +8566,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261113164819";var busy=false,pend=null;
+(function(){var V="20261113172541";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

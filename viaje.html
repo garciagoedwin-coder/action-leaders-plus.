@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#05121C">
+<title>Su próximo destino · Action Leaders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* Presentación virtual v2 «Su próximo destino» (13 nov 2026). Prospecto habla de TÚ (igual que el video). */
+:root{--bg:#05121C;--c1:#2AC1F1;--c2:#0A7DAD;--c3:#7FE0FF;--ink:#0B1E2B;--mut:#64748B;--gold:#F5C542}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:#fff;font-family:Figtree,system-ui,sans-serif;min-height:100%}
+body{overscroll-behavior:none}
+button{font:inherit;cursor:pointer}
+.scr{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;position:relative;overflow:hidden;padding:max(18px,env(safe-area-inset-top)) 18px max(22px,env(safe-area-inset-bottom))}
+.scr[hidden]{display:none}
+.glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 55% at 50% 0%,#0A7DAD55,transparent 60%)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2}
+.logo{height:20px}
+.k{font-size:10.5px;letter-spacing:.18em;font-weight:800;color:var(--c1);text-transform:uppercase}
+/* pase de abordar */
+.hola{position:relative;margin-top:22px;font-weight:900;font-size:25px;line-height:1.15}
+.hola small{display:block;font-weight:600;font-size:15px;opacity:.75;margin-top:6px}
+.pass{position:relative;margin-top:18px;border-radius:22px;background:#fff;color:var(--ink);overflow:hidden;box-shadow:0 22px 60px #000b;transition:transform .7s cubic-bezier(.6,-0.3,.4,1),opacity .6s}
+.pass .t{background:linear-gradient(135deg,var(--c2),var(--c1));color:#fff;padding:16px 18px}
+.pass .t small{display:block;font-size:10.5px;letter-spacing:.22em;font-weight:800;opacity:.9}
+.pass .t b{font-weight:900;font-size:22px}
+.rt{display:flex;align-items:center;padding:16px 18px 4px}.rt div b{font:400 40px "Bebas Neue";display:block;line-height:1}.rt div small{font-size:10px;color:var(--mut);font-weight:800;letter-spacing:.12em}
+.rt i{flex:1;margin:0 10px;border-top:2px dashed #CBD5E1;position:relative}.rt i:after{content:"✈️";position:absolute;left:44%;top:-14px;font-size:19px;font-style:normal}
+.fl{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;padding:10px 18px 16px}.fl small{display:block;font-size:9.5px;color:var(--mut);font-weight:800;letter-spacing:.12em}.fl b{font-size:14.5px}
+.cut{border-top:2px dashed #CBD5E1;margin:0 14px;position:relative}.cut:before,.cut:after{content:"";position:absolute;top:-12px;width:24px;height:24px;border-radius:50%;background:var(--bg)}.cut:before{left:-26px}.cut:after{right:-26px}
+.inv{display:flex;align-items:center;gap:12px;padding:14px 18px}
+.av{width:46px;height:46px;border-radius:50%;background:#94A3B8 center/cover;border:2px solid var(--c1);flex:none;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff}
+.bar{height:44px;margin:0 18px 18px;background:repeating-linear-gradient(90deg,#0B1E2B 0 2px,transparent 2px 5px,#0B1E2B 5px 6px,transparent 6px 9px,#0B1E2B 9px 12px,transparent 12px 14px)}
+.go{position:relative;width:100%;height:60px;margin-top:22px;border:0;border-radius:18px;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;font-weight:900;font-size:19px;box-shadow:0 10px 30px #2AC1F155;animation:lat 2.2s ease-in-out infinite}
+@keyframes lat{50%{box-shadow:0 10px 44px #2AC1F199;transform:scale(1.015)}}
+.hint{position:relative;text-align:center;font-size:12.5px;opacity:.6;margin-top:10px}
+.pass.rip{transform:translateY(-120%) rotate(-8deg);opacity:0}
+/* sala */
+#room{padding-left:0;padding-right:0}
+#room .top{padding:0 18px}
+.vw{position:relative;margin-top:12px;aspect-ratio:16/9;background:#000}
+#yt,.vw iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.shield{position:absolute;inset:0;z-index:2}
+.shield.paused:after{content:"▶";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:70px;height:70px;border-radius:50%;background:#000a;display:flex;align-items:center;justify-content:center;font-size:28px}
+.ctl{display:flex;gap:8px;padding:10px 18px 0}.ctl button{flex:1;border:1px solid #ffffff2a;background:#ffffff10;color:#fff;border-radius:12px;padding:9px;font-weight:700;font-size:13px}
+.route{position:relative;margin:22px 24px 0}
+.ln{height:4px;border-radius:4px;background:#ffffff22;position:relative}
+.ln s{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:linear-gradient(90deg,var(--c1),var(--c3));width:0;transition:width .9s linear}
+.pl{position:absolute;top:-14px;font-size:21px;transform:translateX(-50%);transition:left .9s linear;left:0;filter:drop-shadow(0 0 8px #2AC1F1)}
+.dot{position:absolute;top:-4px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid #ffffff44;transform:translateX(-50%)}
+.dot.on{background:var(--c1);border-color:var(--c1)}
+.stops{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:14px;font-size:13px}.stops b{color:var(--c3);font-weight:800}.stops span{opacity:.55;font-size:12px;font-weight:600;text-align:right}
+.cards{position:relative;margin:24px 18px 0;min-height:250px}
+.card{position:absolute;inset:0 0 auto 0;border-radius:22px;padding:18px;background:linear-gradient(160deg,#0E2A3B,#0A1B27);border:1px solid #2AC1F144;opacity:0;transform:translateY(18px) scale(.98);transition:opacity .5s,transform .5s;pointer-events:none}
+.card.on{opacity:1;transform:none}
+.card h4{margin:8px 0 0;font-weight:900;font-size:21px;line-height:1.2}
+.card p{margin:8px 0 0;font-size:14.5px;opacity:.82;line-height:1.4}
+.big{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}.big b{font:400 46px "Bebas Neue";line-height:1}.big em{font-style:normal;font-size:26px;color:var(--c1)}.big small{display:block;font-size:11px;opacity:.65;font-weight:700}
+.gr{display:flex;gap:6px;align-items:flex-end;height:96px;margin-top:14px}.gr i{flex:1;border-radius:6px 6px 2px 2px;background:linear-gradient(var(--c1),var(--c2));position:relative}.gr i span{position:absolute;top:-17px;left:0;right:0;text-align:center;font-size:9.5px;font-style:normal;font-weight:800;color:var(--c3)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.chips span{border:1px solid #2AC1F155;background:#2AC1F112;border-radius:999px;padding:7px 11px;font-size:13px;font-weight:700}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.two div{border-radius:16px;padding:12px;background:#ffffff0c;border:1px solid #ffffff1a}.two b{display:block;font:400 34px "Bebas Neue";line-height:1;color:var(--c3)}.two small{font-size:12px;opacity:.75;font-weight:600}
+.two .g b{color:var(--gold)}
+.mine{position:absolute;right:14px;top:14px;font-size:11px;font-weight:800;color:var(--c3);opacity:.8}
+.cta1{position:fixed;left:50%;transform:translateX(-50%);bottom:max(14px,env(safe-area-inset-bottom));width:calc(min(480px,100%) - 36px);z-index:20;display:flex;gap:8px}
+.cta1[hidden]{display:none}
+.cta1 a,.cta1 button{flex:1;height:54px;border-radius:16px;border:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;text-decoration:none;color:#fff;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 10px 30px #0008}
+.cta1 [hidden]{display:none}.cta1 .w{background:#25D366;flex:0 0 64px;font-size:22px}
+/* pregunta */
+.qv{position:fixed;inset:0;z-index:30;background:#05121Cd9;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center}
+.qv[hidden]{display:none}
+.q{width:min(480px,100%);margin:0 auto;border-radius:28px 28px 0 0;background:#fff;color:var(--ink);padding:22px 18px max(22px,env(safe-area-inset-bottom));animation:up .45s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes up{from{transform:translateY(100%)}}
+.q .pz{display:inline-flex;gap:6px;align-items:center;font-size:10.5px;font-weight:900;letter-spacing:.14em;color:var(--c2)}
+.q h3{margin:6px 0 12px;font-weight:900;font-size:23px;line-height:1.15}
+.op{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:2px solid #E2E8F0;background:#fff;color:var(--ink);border-radius:16px;padding:13px 14px;margin-top:10px;font-weight:800;font-size:16.5px;transition:transform .15s}
+.op i{font-style:normal;font-size:28px}.op small{display:block;font-weight:600;color:var(--mut);font-size:12.5px}
+.op:active{transform:scale(.98)}.op.sel{border-color:var(--c2);background:#E0F2FE}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tl{height:170px;border-radius:20px;position:relative;overflow:hidden;border:0;padding:0;background:#ccc center/cover;display:flex;align-items:flex-end;color:#fff;text-align:left}
+.tl:before{content:"";position:absolute;inset:0;background:linear-gradient(transparent 45%,#000c)}
+.tl div{position:relative;padding:12px;font:400 26px "Bebas Neue";letter-spacing:.02em;line-height:1}.tl small{display:block;font:600 11.5px Figtree;opacity:.9;letter-spacing:0}
+.tl.sel{outline:3px solid #fff;box-shadow:0 0 0 6px var(--c1)}
+.sc{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.sc button{height:54px;border-radius:14px;border:0;font-weight:900;font-size:21px;color:#fff;transition:transform .15s}
+.sc button.sel{outline:3px solid var(--ink);transform:scale(1.06)}
+.lg{display:flex;justify-content:space-between;font-size:11.5px;font-weight:700;color:var(--mut);margin-top:10px;gap:8px}
+.qok{width:100%;margin-top:14px;height:54px;border:0;border-radius:16px;background:var(--c2);color:#fff;font-weight:900;font-size:16px}
+.qok:disabled{opacity:.35}
+.qmsg{margin-top:12px;border-radius:14px;padding:12px;font-size:13.5px;font-weight:700;display:none}
+/* aterrizaje */
+.conf{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.conf i{position:absolute;top:-12px;width:8px;height:14px;border-radius:2px;animation:cae linear forwards}
+@keyframes cae{to{transform:translateY(110vh) rotate(720deg)}}
+.land h2{position:relative;margin:20px 0 0;font-weight:900;font-size:26px;line-height:1.15}
+.cnt{position:relative;margin-top:14px;border-radius:16px;padding:12px 14px;background:#F5C54214;border:1px solid #F5C54266;display:flex;align-items:center;gap:12px}
+.cnt b{font:400 32px "Bebas Neue";color:var(--gold);letter-spacing:.04em;line-height:1}.cnt span{font-size:12.5px;font-weight:700;opacity:.85}
+.ctas{position:relative;display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.ctas a,.ctas button{height:56px;border-radius:16px;border:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;text-decoration:none;color:#fff}
+.ctas .a1{background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 10px 30px #2AC1F144}
+.ctas .a2{background:#25D366}
+.ctas .a3{background:#ffffff12;border:1px solid #ffffff33}
+.ctas [hidden]{display:none}
+.foot{position:relative;text-align:center;font-size:11.5px;opacity:.45;margin-top:18px}
+.err{padding:40px 10px;text-align:center}
+</style></head>
+<body>
+
+<!-- 1 · Pase de abordar -->
+<div class="scr" id="board"><div class="glow"></div>
+ <div class="top"><img class="logo" src="media/logo-al.png" alt="Action Leaders"><span class="k">Su invitación</span></div>
+ <div class="hola" id="bHola">Hola 👋<small>Te prepararon este viaje de 20 minutos.</small></div>
+ <div class="pass" id="bPass"><div class="t"><small>Pase de abordar</small><b>Tu próximo destino</b></div>
+  <div class="rt"><div><b>HOY</b><small>DONDE ESTÁS</small></div><i></i><div style="text-align:right"><b>???</b><small>TÚ ELIGES</small></div></div>
+  <div class="fl"><div><small>PASAJERO/A</small><b id="bNom">Invitado especial</b></div><div><small>DURACIÓN</small><b>20 min</b></div><div><small>ASIENTO</small><b>1A · VIP</b></div><div><small>CLASE</small><b>Primera ✨</b></div></div>
+  <div class="cut"></div>
+  <div class="inv"><div class="av" id="bAv"></div><div><small style="font-size:9.5px;color:var(--mut);font-weight:800;letter-spacing:.12em">TE INVITA</small><b style="display:block" id="bHost">Action Leaders</b></div></div>
+  <div class="bar"></div></div>
+ <button class="go" id="bGo" type="button">✈️ Abordar</button>
+ <div class="hint" id="bHint">Activa el sonido 🔊 · Edwin te hará 4 preguntas</div>
+</div>
+
+<!-- 2 · En vuelo -->
+<div class="scr" id="room" hidden>
+ <div class="top"><span class="k" id="rT">En vuelo</span><span class="k" id="rTime" style="color:#fff;opacity:.7">0:00</span></div>
+ <div class="vw"><div id="yt"></div><div class="shield" id="shield"></div></div>
+ <div class="ctl"><button id="bBack" type="button">↺ 10 s</button><button id="bPause" type="button">⏸ Pausar</button></div>
+ <div class="route"><div class="ln" id="ln"><s id="lnS"></s><span class="pl" id="pl">✈️</span></div><div class="stops" id="stops"></div></div>
+ <div class="cards" id="cards"></div>
+ <div class="cta1" id="cta1" hidden><a id="c1Reg" href="#" target="_blank" rel="noopener">🛳️ Crear mi cuenta ahora</a><a class="w" id="c1Wa" href="#" target="_blank" rel="noopener">💬</a></div>
+</div>
+
+<!-- preguntas -->
+<div class="qv" id="qv" hidden><div class="q" id="q"></div></div>
+
+<!-- 3 · Aterrizaje -->
+<div class="scr land" id="land" hidden><div class="glow"></div><div class="conf" id="conf"></div>
+ <div class="top"><img class="logo" src="media/logo-al.png" alt="Action Leaders"><span class="k">🛬 Aterrizaje</span></div>
+ <h2 id="lT">¡Llegaste!</h2>
+ <div class="pass" id="lPass"></div>
+ <div class="cnt" id="lCnt"><b id="lCntN">24:00:00</b><span>Tu beneficio de la herramienta Action Leaders si decides en las próximas 24 horas</span></div>
+ <div class="ctas"><a class="a1" id="lReg" href="#" target="_blank" rel="noopener">🛳️ Crear mi cuenta ahora</a><a class="a2" id="lWa" href="#" target="_blank" rel="noopener">💬 Escribirle a tu guía</a><a class="a3" id="lLid" href="#" target="_blank" rel="noopener">📞 Tengo dudas · hablar con un líder</a><button class="a3" id="lRe" type="button">↺ Ver la presentación otra vez</button></div>
+ <div class="foot">Action Leaders · Comunidad de emprendedores de inCruises</div>
+</div>
+
+<script type="module">
+// ===== Configuración (Edwin) =====
+const VIDEO="SXMWJyxvZzw";             // video de 20:28
+const CAPS=[["Bienvenida",0],["Tus sueños",75],["La compañía",163],["Cómo se viaja",274],["El negocio",620],["Cómo empezar",1044],["Tu decisión",1106]];
+const PREG={valor:84,dest:140,conecta:1128,listo:1168}; // segundos exactos del video
+const CTA_DESDE=1202;                  // 20:02 «Aquí está el link para que te registres»
+// Tarjetas vivas: [segundo, html]
+const CARDS=[
+ [0,`<span class="k">Tu anfitrión</span><h4>Edwin García Go</h4><p>National Director · San Pedro Sula, Honduras 🇭🇳<br>10 años en la banca → hoy conoce más de 20 países trabajando desde casa.</p>`],
+ [75,`<span class="k">Antes de avanzar</span><h4>Esto es para saber si esto es para ti</h4><p>Edwin te va a hacer unas preguntas. Tus respuestas le llegan a quien te invitó para ayudarte mejor.</p>`],
+ [163,`<span class="k">Tu sueño</span><h4 data-dest>Imagínate conociendo tu destino soñado</h4><p>París fue el sueño de Edwin… y lo cumplió con su papá.</p>`],
+ [178,`<span class="k">La compañía</span><h4>inCruises</h4><div class="two"><div><b>+190</b><small>países</small></div><div><b>+10</b><small>años en el mercado</small></div></div><p>100% regulada · 100% legal</p>`],
+ [196,`<span class="k">3 servicios</span><div class="chips"><span>🏨 Hoteles y resorts premium</span><span>🗺️ Tours y experiencias</span><span>🛳️ Cruceros de lujo</span></div>`],
+ [225,`<span class="k">¿Por qué crucero?</span><h4>Todo incluido</h4><div class="chips"><span>🌍 Varios países</span><span>🍽️ Comida ilimitada</span><span>🎭 Shows</span><span>🏊 Piscina y jacuzzi</span></div>`],
+ [274,`<span class="k">5 pasos</span><h4>Cómo vacacionamos todos los años</h4><div class="chips"><span>1 Ahorra</span><span>2 Acumula</span><span>3 Reserva</span><span>4 Comparte</span><span>5 Activa</span></div>`],
+ [281,`<span class="k">Paso 1 · Ahorra</span><div class="two"><div><small>Classic</small><b>$100</b><small>al mes</small></div><div class="g"><small>Premium</small><b>$250</b><small>al mes</small></div></div>`],
+ [299,`<span class="k">La magia: se duplica ✨</span><div class="big"><div><small>Ahorras</small><b>$100</b></div><em>→</em><div><small>Recibes</small><b style="color:var(--c3)">200 pts</b></div></div><div class="big"><div><small>Ahorras</small><b>$250</b></div><em>→</em><div><small>Recibes</small><b style="color:var(--gold)">500 pts</b></div></div>`],
+ [338,`<span class="k">Tu membresía</span><h4>👨‍👩‍👧 Lleva hasta 3 personas más</h4><p>Tu pareja, tus papás, tus hijos o tus amigos.</p>`],
+ [346,`<span class="k">Paso 2 · Acumula · Classic</span><div class="gr"><i style="height:16%"><span>200</span></i><i style="height:32%"><span>400</span></i><i style="height:48%"><span>600</span></i><i style="height:64%"><span>800</span></i><i style="height:82%"><span>1,000</span></i><i style="height:100%"><span>1,200</span></i></div><p style="font-size:12px">Mes 1 → Mes 6: <b>1,200 puntos dólar</b></p>`],
+ [380,`<span class="k">Paso 2 · Acumula · Premium</span><div class="big"><div><small>En 6 meses</small><b style="color:var(--gold)">3,000 pts</b></div></div><p>Premium viaja mucho más rápido.</p>`],
+ [398,`<span class="k">Paso 3 · Reserva</span><div class="two"><div><small>Opción 1</small><b>50 / 50</b><small>Mitad puntos, mitad efectivo · viaja en 30–90 días</small></div><div class="g"><small>Opción 2</small><b>100%</b><small>Todo con puntos · ×1.5</small></div></div>`],
+ [443,`<span class="k">Ejemplo</span><h4>Crucero promedio $1,600</h4><p>7 noches · 2 personas · todo incluido</p>`],
+ [456,`<span class="k">Opción 1 · mitad y mitad</span><div class="big"><div><small>Puntos</small><b style="color:var(--c3)">800</b></div><em>+</em><div><small>Efectivo</small><b>$800</b></div></div>`],
+ [479,`<span class="k">Opción 2 · sin sacar de tu bolsa</span><div class="big"><div><small>$1,600 × 1.5</small><b style="color:var(--gold)">2,400 pts</b></div></div>`],
+ [501,`<span class="k">¿En cuánto tiempo?</span><div class="two"><div><small>Classic</small><b>12 meses</b><small>2,400 pts</small></div><div class="g"><small>Premium</small><b>5 meses</b><small>crucero para 2</small></div></div><p data-dest-p>Ya tienes fecha para tu viaje.</p>`],
+ [548,`<span class="k">¿A dónde?</span><div class="big"><div><b style="color:var(--c3)">+21,000</b><small>opciones de crucero, de enero a diciembre</small></div></div>`],
+ [565,`<span class="k">Tu dinero protegido</span><h4>🛡️ Repayd</h4><p>Certificado que protege tu dinero o tu viaje.</p>`],
+ [596,`<span class="k">Importante</span><h4>Paga puntual</h4><div class="two"><div><b>5 días</b><small>tarde: ese mes no se duplica</small></div><div class="g"><b>60 días</b><small>pierdes la duplicación</small></div></div>`],
+ [620,`<span class="k">Segunda parte</span><h4>¿Cómo se gana?</h4><p>Como cualquier negocio: compartiendo lo que te gusta. No estás obligado: puedes quedarte solo como cliente.</p>`],
+ [738,`<span class="k">Beneficio 1</span><h4>Membresía gratis</h4><div class="two"><div><b>5 Classic</b><small>o 2 Premium → tu Classic no lo pagas</small></div><div class="g"><b>$150</b><small>pagas como Premium</small></div></div><p style="font-size:12.5px">Y la compañía te sigue dando tus puntos.</p>`],
+ [810,`<span class="k">Beneficio 2 · Bonos</span><div class="two"><div><small>Por cada Classic</small><b>$20</b></div><div class="g"><small>Por cada Premium</small><b>$50</b></div></div><p style="font-size:12.5px">+ bono mensual extra si ingresas más de 3.</p>`],
+ [856,`<span class="k">Ejemplo · 6 Premium en un mes</span><div class="big"><div><small>Bono 1</small><b>$300</b></div><em>+</em><div><small>Bono 2</small><b>$450</b></div><em>=</em><div><small>Total</small><b style="color:var(--gold)">$750</b></div></div>`],
+ [874,`<span class="k">Beneficio 3</span><h4>Bono de liderazgo</h4><p>Tu red crece con tu equipo: juntos llegan más rápido al rango.</p>`],
+ [918,`<span class="k">Primer rango</span><h4>Marketing Director = libertad</h4><p>¿Cómo sería ganar $300 o $600 al mes, aunque tengas tu empleo? Hay quien lo logró en 14 días.</p>`],
+ [980,`<span class="k">Beneficio 4</span><h4>Los rangos reservan con sus puntos</h4><p>Sin esperar 270 días ni hacer conversiones.</p>`],
+ [996,`<span class="k">No estás solo</span><div class="chips"><span>🎓 Formaciones</span><span>🤝 Mentorías</span><span>👥 Comunidad</span><span>📱 App Action Leaders</span></div><p>La app te dice qué hacer cada día.</p>`],
+ [1038,`<span class="k">⏳ Solo 24 horas</span><h4>La herramienta es tu beneficio si decides en las próximas 24 horas</h4>`],
+ [1044,`<span class="k">Cómo empezar</span><div class="two"><div><small>Classic</small><b>$200</b><small>cliente · $295 con código de socio</small></div><div class="g"><small>Premium</small><b>$500</b><small>cliente · $595 con código de socio</small></div></div>`],
+ [1072,`<span class="k">Bienvenida</span><div class="two"><div><b>350 pts</b><small>de regalo en Classic</small></div><div class="g"><b>800 pts</b><small>de regalo en Premium</small></div></div><p>Entras y ya estás en ganancia.</p>`],
+ [1094,`<span class="k">Lo peor que te puede pasar…</span><h4>¡que te vas de crucero! 🛳️</h4>`],
+ [1106,`<span class="k">Tu decisión</span><h4>Quien te invitó cree en ti</h4><p>Responde con sinceridad: le llega a tu guía para ayudarte de la mejor manera.</p>`],
+ [1202,`<span class="k">¡Listo!</span><h4>Aquí abajo está tu link para crear tu cuenta 👇</h4><p>O escríbele a tu guía si aún tienes dudas.</p>`]
+];
+const DEST={caribe:["Caribe","Aguas turquesa","media/viaje/caribe.jpg"],europa:["Europa","París, Roma, Barcelona","media/viaje/europa.jpg"],asia:["Asia","Japón, China, Tailandia","media/viaje/asia.jpg"],sudamerica:["Suramérica","Perú, Brasil, Argentina","media/viaje/sudamerica.jpg"]};
+const VAL={viajar:["🧳","Viajar más","Conocer el mundo con mi familia"],ingresos:["💰","Generar ingresos","Tener mi propio negocio"],ambas:["⭐","Ambas cosas","Viajar y generar ingresos"]};
+// ==================================
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,doc,getDoc,setDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});try{const _ac=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js");_ac.initializeAppCheck(app,{provider:new _ac.ReCaptchaEnterpriseProvider("6LfesRkuAAAAAJQPpPOr5UFCDPoy2WuclKV0hgdg"),isTokenAutoRefreshEnabled:true})}catch(e){}
+const db=getFirestore(app);const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const U=new URLSearchParams(location.search);
+const code=(U.get("de")||"").trim().toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60);
+const pName=(U.get("p")||"").replace(/[<>]/g,"").trim().slice(0,50),first=pName.split(/\s+/)[0]||"";
+const cid=(U.get("c")||"").replace(/[^A-Za-z0-9_-]/g,"").slice(0,40);
+const verSolo=U.get("ver")==="1"; // el socio revisa su propio link: no registra nada
+const LSg=k=>{try{return JSON.parse(localStorage.getItem("viaje:"+k))}catch(e){return null}},LSs=(k,v)=>{try{localStorage.setItem("viaje:"+k,JSON.stringify(v))}catch(e){}};
+let P=null;try{if(code){const d=await getDoc(doc(db,"perfiles",code));if(d.exists())P=d.data()}}catch(e){}
+const host=P&&P.nombre?String(P.nombre):"",hostF=host.split(/\s+/)[0]||"",hostWa=P?String(P.wa||P.waS||"").replace(/\D/g,""):"";
+const ref=P&&/^https:\/\//.test(String(P.ref||""))?String(P.ref):"";
+const ini=n=>String(n).split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+const avPinta=el=>{if(!el)return;if(P&&P.foto&&/^(data:image\/|https:\/\/)/.test(P.foto)){el.style.backgroundImage=`url("${P.foto}")`;el.textContent=""}else el.textContent=host?ini(host):"AL"};
+// ----- pase -----
+$("bHola").innerHTML=(first?`Hola, ${esc(first)} 👋`:"Hola 👋")+`<small>${host?esc(hostF)+" te preparó":"Te prepararon"} este viaje de 20 minutos.</small>`;
+if(pName)$("bNom").textContent=pName;if(host)$("bHost").textContent=host;avPinta($("bAv"));
+// ----- registro (un documento por prospecto; id v_… para la presentación v2) -----
+const vKey="v-"+code+"-"+(cid||pName.toLowerCase()||"anon");
+let V=LSg(vKey)||{id:null,pos:0,max:0,asked:{},r:{}};V.asked=V.asked||{};V.r=V.r||{};
+const D={};const canTrack=!!(P&&P.uid)&&!verSolo;
+let saveT;async function save(extra,now){Object.assign(D,extra||{});if(!canTrack)return;clearTimeout(saveT);const go=async()=>{try{
+  if(!V.id){V.id="v_"+Math.random().toString(36).slice(2,9)+Date.now().toString(36);LSs(vKey,V);D.t0=Date.now();D.n=(pName||"Sin nombre").slice(0,60);if(cid)D.c=cid}
+  D.t=Date.now();await setDoc(doc(db,"users",P.uid,"sala",V.id),D,{merge:true})}catch(e){}};if(now)await go();else saveT=setTimeout(go,900)}
+// ----- ruta y tarjetas -----
+const TOT=1228;let dur=TOT;
+const NC=CAPS.length;$("ln").insertAdjacentHTML("beforeend",CAPS.map((c,k)=>`<span class="dot" style="left:${k/(NC-1)*100}%"></span>`).join(""));
+$("cards").innerHTML=CARDS.map((c,i)=>`<div class="card" data-i="${i}">${c[1]}</div>`).join("");
+const destTx=()=>V.r.dest&&DEST[V.r.dest]?DEST[V.r.dest][0]:"";
+function personaliza(){const d=destTx();document.querySelectorAll("[data-dest]").forEach(h=>{if(d)h.textContent=`${first?first+", imagínate":"Imagínate"} en ${d} 🌍`});document.querySelectorAll("[data-dest-p]").forEach(p=>{if(d)p.textContent=`Ya tendrías fecha para tu viaje a ${d}.`})}
+let cardI=-1;const fmt=s=>{s=Math.max(0,Math.floor(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
+function pinta(t){let ci0=0;CAPS.forEach((c,k)=>{if(t>=c[1])ci0=k});const c0=CAPS[ci0][1],c1=ci0<NC-1?CAPS[ci0+1][1]:(dur||TOT),f=Math.min(1,(ci0+Math.min(1,(t-c0)/Math.max(1,c1-c0)))/(NC-1));$("lnS").style.width=f*100+"%";$("pl").style.left=f*100+"%";$("rTime").textContent=fmt(t)+" / "+fmt(dur||TOT);
+  let ci=0;CAPS.forEach((c,k)=>{if(t>=c[1])ci=k});$("stops").innerHTML=`<b>Escala ${ci+1} de ${NC} · ${esc(CAPS[ci][0])}</b>${ci<NC-1?`<span>Siguiente: ${esc(CAPS[ci+1][0])}</span>`:"<span>🛬 Aterrizaje</span>"}`;document.querySelectorAll("#ln .dot").forEach((d,k)=>d.classList.toggle("on",k<=ci));
+  $("rT").textContent="En vuelo · "+CAPS[ci][0];
+  let i=0;CARDS.forEach((c,k)=>{if(t>=c[0])i=k});if(i!==cardI){cardI=i;document.querySelectorAll(".card").forEach((c,k)=>c.classList.toggle("on",k===i));personaliza()}
+  $("cta1").hidden=!(t>=CTA_DESDE&&(ref||hostWa));
+  if(Math.abs((V._cs||-1)-ci)>0){V._cs=ci;save({motivo:"cap:"+CAPS[ci][0]})}}
+// ----- links -----
+const waTo=t=>hostWa?"https://wa.me/"+hostWa+"?text="+encodeURIComponent(t):"https://wa.me/?text="+encodeURIComponent(t);
+function resumen(){const r=V.r,o=[];if(r.valor)o.push("Lo que más valoro: "+VAL[r.valor][1].toLowerCase());if(r.dest)o.push("Sueño con conocer: "+destTx());if(r.listo)o.push("Qué tan listo/a estoy: "+r.listo+"/10");return o.join("\n")}
+const msgWa=()=>`¡Hola${hostF?", "+hostF:""}! 👋 Soy ${pName||"quien vio tu presentación"}. Ya terminé de ver la presentación de Edwin 🛳️\n\n${resumen()}\n\n¿Me ayudas con el siguiente paso?`;
+const msgLid=()=>`¡Hola${hostF?", "+hostF:""}! 👋 Soy ${pName||"quien vio tu presentación"}. Vi la presentación y tengo algunas dudas. ¿Podemos hablar con un líder en una llamada? 📞`;
+function links(){[$("c1Reg"),$("lReg")].forEach(a=>{a.hidden=!ref;if(ref)a.href=ref});$("c1Wa").href=waTo(msgWa());$("lWa").href=waTo(msgWa());$("lLid").href=waTo(msgLid());
+  if(host)$("lWa").textContent="💬 Escribirle a "+hostF}
+$("c1Reg").onclick=$("lReg").onclick=()=>save({como:"registro"},true);$("c1Wa").onclick=$("lWa").onclick=()=>save({como:"whatsapp"},true);$("lLid").onclick=()=>save({como:"lider"},true);
+// ----- YouTube sin salidas -----
+let YTP=null,ready=false,playing=false,inQ=false,ended=false;
+function loadYT(){return new Promise(ok=>{if(window.YT&&YT.Player)return ok();window.onYouTubeIframeAPIReady=ok;const s=document.createElement("script");s.src="https://www.youtube.com/iframe_api";document.head.appendChild(s)})}
+async function startPlayer(){await loadYT();YTP=new YT.Player("yt",{videoId:VIDEO,host:"https://www.youtube-nocookie.com",playerVars:{controls:0,disablekb:1,modestbranding:1,rel:0,fs:0,iv_load_policy:3,playsinline:1,cc_load_policy:0,start:Math.floor(V.pos||0)},
+  events:{onReady:()=>{ready=true;dur=YTP.getDuration()||TOT;play()},onStateChange:e=>{playing=e.data===1;$("shield").classList.toggle("paused",!playing&&!inQ);$("bPause").textContent=playing?"⏸ Pausar":"▶ Continuar";if(e.data===0)finish()}}})}
+function play(){if(!YTP||inQ||ended)return;try{YTP.playVideo()}catch(e){}}
+function pause(){try{YTP&&YTP.pauseVideo()}catch(e){}}
+$("shield").onclick=()=>{if(inQ||ended)return;playing?pause():play()};
+$("bPause").onclick=()=>{if(inQ||ended)return;playing?pause():play()};
+$("bBack").onclick=()=>{if(!YTP||inQ)return;try{YTP.seekTo(Math.max(0,YTP.getCurrentTime()-10),true)}catch(e){}};
+setInterval(()=>{if(!ready||!YTP||!YTP.getCurrentTime||ended)return;const t=YTP.getCurrentTime()||0;
+  if(t>V.max+(window.__vjT||12)){try{YTP.seekTo(V.max,true)}catch(e){}return}
+  V.pos=t;V.max=Math.max(V.max,t);LSs(vKey,V);pinta(t);
+  const pct=Math.min(99,Math.round(t/(dur||TOT)*100));if(pct>=(D.pct||0)+5)save({pct});
+  if(!inQ)for(const k of Object.keys(PREG))if(!V.asked[k]&&t>=PREG[k]){ask(k);break}},500);
+// ----- preguntas -----
+function abrirQ(html){$("q").innerHTML=html;$("qv").hidden=false}
+function cerrarQ(){$("qv").hidden=true;inQ=false;LSs(vKey,V);if(ended){finish(1);return}setTimeout(play,250)}
+function ask(k){inQ=true;pause();$("shield").classList.remove("paused");
+  if(k==="valor"||k==="conecta"){const tit=k==="valor"?"¿Qué tendría más valor para ti en este momento?":"¿Qué es lo que más conectó contigo?";
+    abrirQ(`<span class="pz">⏸ Edwin te pregunta · ${k==="valor"?"1":"3"} de 4</span><h3>${tit}</h3>${Object.entries(VAL).map(([v,[i,t,s]])=>`<button type="button" class="op" data-v="${v}"><i>${i}</i><div>${t}<small>${s}</small></div></button>`).join("")}<div style="text-align:center;font-size:12.5px;color:var(--mut);margin-top:12px">El video sigue cuando respondas</div>`);
+    $("q").querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{b.classList.add("sel");const v=b.dataset.v;V.asked[k]=1;if(k==="valor"){V.r.valor=v;save({r1:v},true)}else{V.r.conecta=v;save({resp:v},true)}setTimeout(cerrarQ,350)})}
+  else if(k==="dest"){abrirQ(`<span class="pz">⏸ Pregunta 2 de 4</span><h3>¿Qué te encantaría conocer en los próximos 24 meses?</h3><div class="tiles">${Object.entries(DEST).map(([v,[t,s,img]])=>`<button type="button" class="tl" data-v="${v}" style="background-image:url('${img}')"><div>${t}<small>${s}</small></div></button>`).join("")}</div><div style="text-align:center;font-size:12.5px;color:var(--mut);margin-top:12px">Elige uno ✈️</div>`);
+    $("q").querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{b.classList.add("sel");const v=b.dataset.v;V.asked.dest=1;V.r.dest=v;save({pais:DEST[v][0]},true);personaliza();setTimeout(cerrarQ,450)})}
+  else if(k==="listo"){const col=n=>n<=5?"#94A3B8":n<=7?"#F59E0B":"#16A34A";let sel=0;
+    abrirQ(`<span class="pz">⏸ Pregunta 4 de 4 · con todo lo que viste</span><h3>¿Qué tan listo/a te sientes para comenzar?</h3><div class="sc">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button type="button" data-n="${n}" style="background:${col(n)}">${n}</button>`).join("")}</div>
+     <div class="lg"><span>1–5 Lo estoy pensando</span><span>6–7 Me falta info</span><span style="color:#16A34A">8–10 ¡Listo!</span></div><div class="qmsg" id="qMsg"></div><button type="button" class="qok" id="qOk" disabled>Enviar mi respuesta</button>`);
+    $("q").querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{sel=+b.dataset.n;$("q").querySelectorAll("[data-n]").forEach(x=>x.classList.toggle("sel",x===b));$("qOk").disabled=false;const m=$("qMsg");m.style.display="block";
+      if(sel>=8){m.style.background="#DCFCE7";m.style.color="#14532D";m.textContent=`🔥 ¡${sel}! ${hostF||"Tu guía"} recibe tu respuesta para ayudarte a dar el siguiente paso.`}else if(sel>=6){m.style.background="#FEF3C7";m.style.color="#78350F";m.textContent=`🟠 ¡Estás muy cerca! ${hostF||"Tu guía"} te puede dar la información que te falta.`}else{m.style.background="#E0F2FE";m.style.color="#0C4A6E";m.textContent=`💭 Está bien pensarlo. ${hostF||"Tu guía"} puede resolver tus dudas cuando quieras.`}});
+    $("q").querySelector("#qOk").onclick=()=>{if(!sel)return;V.asked.listo=1;V.r.listo=sel;save({pulso:String(sel)},true);cerrarQ()}}}
+// ----- aterrizaje -----
+function confeti(){const c=$("conf");const col=["#FDE047","#F472B6","#34D399","#FFFFFF","#2AC1F1","#A78BFA"];for(let i=0;i<70;i++){const e=document.createElement("i");e.style.left=Math.random()*100+"%";e.style.background=col[i%col.length];e.style.animationDuration=(2.2+Math.random()*2.5)+"s";e.style.animationDelay=(Math.random()*.8)+"s";c.appendChild(e)}setTimeout(()=>c.innerHTML="",6000)}
+function finish(re){if(ended&&!re)return;ended=true;pause();const pend=["conecta","listo"].find(k=>!V.asked[k]);if(pend){ask(pend);return}if(re&&V.fin)return landing();V.max=dur;V.fin=V.fin||Date.now();LSs(vKey,V);save({pct:100,dur:Math.round(dur||TOT),motivo:"fin"},true);landing()}
+function landing(){$("board").hidden=true;$("room").hidden=true;$("qv").hidden=true;$("land").hidden=false;window.scrollTo(0,0);links();
+  const d=destTx(),r=V.r;$("lT").textContent=(first?first+", ":"")+(d?`tu viaje a ${d} ya tiene plan ✈️`:"tu viaje ya tiene plan ✈️");
+  $("lPass").innerHTML=`<div class="t" style="background:linear-gradient(135deg,#6366F1,var(--c1))"><small>Pase confirmado</small><b>Honduras → ${esc(d||"Tu destino")}</b></div>
+   <div class="fl" style="padding-top:14px"><div><small>CON PREMIUM</small><b>~5 meses</b></div><div><small>CON CLASSIC</small><b>~12 meses</b></div><div><small>TE INTERESA</small><b>${r.valor?VAL[r.valor][0]+" "+VAL[r.valor][1]:"—"}</b></div><div><small>QUÉ TAN LISTO/A</small><b>${r.listo?r.listo+" / 10"+(r.listo>=8?" 🔥":""):"—"}</b></div></div>
+   <div class="cut"></div><div class="inv"><div class="av" id="lAv"></div><div><small style="font-size:9.5px;color:var(--mut);font-weight:800;letter-spacing:.12em">TU GUÍA</small><b style="display:block">${esc(host||"Action Leaders")}</b></div></div>`;avPinta($("lAv"));
+  confeti();cuenta()}
+function cuenta(){const fin=(V.fin||Date.now())+864e5;const tk=()=>{const s=Math.max(0,Math.floor((fin-Date.now())/1000));$("lCntN").textContent=String(Math.floor(s/3600)).padStart(2,"0")+":"+String(Math.floor(s%3600/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");if(!s){$("lCnt").style.opacity=.5}};tk();clearInterval(cuenta._t);cuenta._t=setInterval(tk,1000)}
+$("lRe").onclick=()=>{V.pos=0;V.asked={};ended=false;LSs(vKey,V);location.reload()};
+// ----- abordar -----
+async function abordar(){links();$("bPass").classList.add("rip");$("bGo").disabled=true;save({pct:D.pct||0},true);setTimeout(()=>{$("board").hidden=true;$("room").hidden=false;window.scrollTo(0,0);pinta(V.pos||0);startPlayer()},650)}
+$("bGo").onclick=abordar;
+if(V.fin){$("board").hidden=true;landing()}else if(V.pos>5){$("bGo").textContent="✈️ Continuar mi viaje · "+fmt(V.pos);}
+</script>
+</body></html>
