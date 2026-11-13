@@ -1,11 +1,10 @@
-// Diagnóstico (12 nov): ¿quedó guardada la declaración de hoy de Edwin? Solo imprime fechas y conteos.
-import admin from "firebase-admin";
+// Arreglo puntual (13 nov, Edwin): a una cuenta se le puso por error el correo de inCruises de otra. Se quita solo de esa cuenta. Solo imprime conteos.
+import admin from "firebase-admin";import {createHash} from "crypto";
 admin.initializeApp({credential:admin.credential.cert(JSON.parse(process.env.FIREBASE_SA))});
-const db=admin.firestore();
+const db=admin.firestore(),FV=admin.firestore.FieldValue;
 const nrm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
-const U=(await db.collection("users").get()).docs.filter(x=>/edwin/.test(nrm((x.data().registro||{}).nombre))&&/garcia/.test(nrm((x.data().registro||{}).nombre)));
-console.log("cuentas",U.length);
-for(const d of U){const p=(await d.ref.collection("datos").doc("perfil").get()).data()||{};console.log("cuenta",U.indexOf(d),"dec",JSON.stringify(p.dec||null),"decA.d",(p.decA||{}).d||null,"perfil.t",p.t||p.updated||null)}
-const hoy=new Date(Date.now()-6*36e5).toISOString().slice(0,10);let n=0,m=0;
-for(const d of (await db.collectionGroup("datos").get()).docs){if(d.id!=="perfil")continue;const p=d.data();if(p.dec&&p.dec.d===hoy)n++;if(p.decA&&p.decA.d===hoy)m++}
-console.log("hoy",hoy,"· declaraciones",n,"· con acción",m);
+const H="11190096da2dab08fb3b62be375fe2ca0970b4d4eb240c14a1c08dfa4b3cf7ff",h=s=>createHash("sha256").update(String(s||"").trim().toLowerCase()).digest("hex");
+let n=0,m=0;
+for(const d of (await db.collection("users").get()).docs){const r=d.data().registro||{};if(h(r.correo)!==H)continue;m++;
+  if(/reyna/.test(nrm(r.nombre))&&/garcia/.test(nrm(r.nombre))){await d.ref.update({"registro.correo":FV.delete(),apRe:FV.delete()});n++}}
+console.log("cuentas con ese correo",m,"· corregidas",n);
