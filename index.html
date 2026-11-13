@@ -7227,7 +7227,7 @@ function npIns(){let md={},grad=false,W=[];try{const E=irEstado();md=(E.x.st&&E.
   return [1,2,3,4].map(n=>({n,ok:!!md[n]||!!(W[n-1]&&W[n-1].n2>=W[n-1].L.length)})).concat([{n:"g",ok:grad}])}
 function npInsHTML(){return npIns().map(x=>`<img src="${insSrc(x.n)}" alt="" class="${x.ok?"":"g"}" decoding="async">`).join("")}
 function npIr(k){closeSheet();setTimeout(()=>{try{
-  if(k==="rutina"){go("inicio");avScroll("#rutCard")}else if(k==="lista")editContact(null,null,{lista:1});else if(k==="crm")go("crm");else if(k==="pres")presElegir();
+  if(k==="rutina"){go("inicio");avScroll("#rutCard")}else if(k==="lista")editContact(null,null,{lista:1});else if(k==="crm")go("crm");else if(k==="agenda"){go("agenda");try{setAgVista("equipo")}catch(e){}}else if(k==="pres")presElegir();
   else if(k==="seg")abrirSeg();else if(k==="equipo")avEq("mios");else if(k==="hist")abrirHist();else if(k==="comp")compAbrir();else go("inicio")}catch(e){}},250)}
 let npTm=null;
 function npVer(n){const E=npEstado();if(!E)return;const v=E.V[n-1];if(!v)return;if(!E.disp(n)){toast(E.motivo(n)||"Todavía no está disponible");return}
