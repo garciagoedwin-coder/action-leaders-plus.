@@ -1726,12 +1726,12 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,onAuthStateChanged,signOut,setPersistence,browserLocalPersistence,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendEmailVerification,sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {initializeFirestore,persistentLocalCache,doc,collection,getDoc,setDoc,getDocs,getDocsFromCache,addDoc,deleteDoc,onSnapshot,serverTimestamp,query,where,limit,writeBatch,updateDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {initializeFirestore,persistentLocalCache,doc,collection,getDoc,getDocFromServer,setDoc,getDocs,getDocsFromCache,addDoc,deleteDoc,onSnapshot,serverTimestamp,query,where,limit,writeBatch,updateDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});try{const _ac=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js");_ac.initializeAppCheck(app,{provider:new _ac.ReCaptchaEnterpriseProvider("6LfesRkuAAAAAJQPpPOr5UFCDPoy2WuclKV0hgdg"),isTokenAutoRefreshEnabled:true})}catch(e){} /* App Check (10 nov 2026): solo la app oficial habla con Firebase */
 const auth=getAuth(app);
 let fdb;try{fdb=initializeFirestore(app,{localCache:persistentLocalCache(),ignoreUndefinedProperties:true})}catch(e){fdb=initializeFirestore(app,{ignoreUndefinedProperties:true})}
 const wrapS=q=>({docs:q.docs.map(d=>({id:d.id,data:()=>d.data()}))});
-const D=p=>({_p:p,update:b=>updateDoc(doc(fdb,p),b),get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>setDoc(doc(fdb,p),b,o||{}),delete:()=>deleteDoc(doc(fdb,p)),
+const D=p=>({_p:p,update:b=>updateDoc(doc(fdb,p),b),srv:async()=>{const x=await getDocFromServer(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>setDoc(doc(fdb,p),b,o||{}),delete:()=>deleteDoc(doc(fdb,p)),
   onSnapshot:(cb,er)=>onSnapshot(doc(fdb,p),x=>cb({exists:x.exists(),data:()=>x.data()}),er||(()=>{}))});
 const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),getCache:async()=>wrapS(await getDocsFromCache(collection(fdb,p))),where:(f,v,op)=>({limit:n=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v),limit(n))))}),get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v)))),getCache:async()=>wrapS(await getDocsFromCache(query(collection(fdb,p),where(f,op||"==",v)))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),where(f,op||"==",v)),q=>cb(wrapS(q)),er||(()=>{}))}),whereAll:L=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))),q=>cb(wrapS(q)),er||(()=>{}))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
   onSnapshot:(cb,er)=>onSnapshot(collection(fdb,p),q=>cb(wrapS(q)),er||(()=>{}))});
@@ -4796,10 +4796,11 @@ function declTx(t){const g=profile.decG==="f"?1:0;return esc(t.replace(/\{([^|}]
 // 12 nov: si el teléfono cree que no ha declarado, confirma 1 vez con el servidor (otro teléfono o datos viejos en caché)
 let declSyncT=0;
 async function declSync(){if(!store.db||!store.uid||declHecha()||Date.now()-declSyncT<20*60e3)return;declSyncT=Date.now();
-  try{const r=await store.get("perfil");if(!r)return;const hoy=declHoy();let ch=false;
+  // 12 nov (noche): SIEMPRE al servidor (nunca la copia del teléfono); si falla, reintenta al minuto
+  try{const d=store.mine().doc("perfil"),s=d.srv?await d.srv():await d.get(),r=s.exists?s.data():null;if(!r)return;const hoy=declHoy();let ch=false;
     if(r.dec&&r.dec.d===hoy&&!declHecha()){profile.dec=r.dec;ch=true}
     if(r.decA&&r.decA.d===hoy&&!declAcc()){profile.decA=r.decA;ch=true}
-    if(ch){const el=$("#declStrip");if(el)el.dataset.k="";declStrip();try{declAccMarca()}catch(e){}}}catch(e){}}
+    if(ch){const el=$("#declStrip");if(el)el.dataset.k="";declStrip();try{declAccMarca()}catch(e){}}}catch(e){declSyncT=Date.now()-19*60e3;setTimeout(declSync,61e3)}}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(declSync,1500)});
 function declStrip(){const el=$("#declStrip");if(!el)return;if(!store.uid||esSoloAdminYo()){el.hidden=true;return}if(!declHecha())setTimeout(declSync,800);
   const h=declHN().getUTCHours(),acc=declAcc();
