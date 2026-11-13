@@ -4633,36 +4633,36 @@
     {
      "t": "Seguimiento y cierre",
      "yt": "HS_7CHjxKwc",
-     "tarea": "Dé seguimiento a 3 prospectos de su CRM y lleve a «Por cerrar» a los que estén listos.",
+     "tarea": "Dé seguimiento a 3 prospectos de su CRM, póngales fecha de próximo seguimiento y lleve a «Por cerrar» a los que estén listos.",
      "ir": "seg",
      "bt": "🔁 Registrar seguimiento",
      "q": [
       {
-       "p": "¿Cuándo es el mejor momento para el primer seguimiento?",
-       "ok": "Entre 24 y 48 horas después",
+       "p": "¿Cuándo hace el primer seguimiento después de una presentación?",
+       "ok": "Entre 24 y 48 horas, mientras tiene fresca la información",
        "no": [
-        "Al mes",
-        "Solo si la persona escribe"
+        "A las dos semanas, para no presionar",
+        "Solo si la persona le escribe primero"
        ],
-       "ex": "Mientras la información está fresca."
+       "ex": "«No espero dos semanas para volverlo a contactar. En 24, 48 horas… porque tiene fresca la información»."
       },
       {
-       "p": "¿Qué pregunta ayuda en el seguimiento?",
-       "ok": "«¿Qué fue lo que más le gustó?»",
+       "p": "Al terminar una presentación, ¿qué pregunta hace?",
+       "ok": "«¿Qué fue lo que más te gustó?»",
        "no": [
-        "«¿Entonces sí o no?»",
-        "«¿Por qué no ha decidido?»"
+        "«¿Qué te pareció?»",
+        "«¿Entonces sí o no?»"
        ],
-       "ex": "Pregunte más, hable menos. No presione."
+       "ex": "«Nunca digas “qué te pareció”, es un error… Pregúntale con postura: ¿qué fue lo que más te gustó?»."
       },
       {
-       "p": "¿Qué herramienta de la app le da más confianza a su prospecto?",
-       "ok": "La Llamada de 3 con su patrocinador o un líder",
+       "p": "Si le dice que está en 7 de 10, ¿qué hace?",
+       "ok": "Le pregunta qué le falta para llegar a 10 y se apoya en su línea con una llamada de 3",
        "no": [
-        "Mandarle muchos mensajes",
-        "Esperar a que se decida solo"
+        "Le sigue explicando todo hasta convencerlo",
+        "Lo deja tranquilo y espera a que él le escriba"
        ],
-       "ex": "Apóyese en su línea: su invitado escucha a alguien con más experiencia."
+       "ex": "«¿Qué te hace falta para llegar a 10?… Apóyate de tu línea»."
       }
      ]
     },
