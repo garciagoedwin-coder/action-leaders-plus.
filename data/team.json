@@ -4669,9 +4669,38 @@
     {
      "t": "Arranque del nuevo socio",
      "yt": "qEu_ck7AVxU",
-     "tarea": "Revise el Plan de Inicio Rápido de su socio más nuevo y ayúdelo con su siguiente paso.",
+     "tarea": "Con su socio más nuevo: ayúdele a instalar la app, a llenar sus primeros 20 contactos y a avanzar su Plan de Inicio Rápido. Si no tiene socio nuevo todavía, repase estos pasos para estar listo.",
      "ir": "equipo",
-     "bt": "👥 Ir a Mi equipo"
+     "bt": "👥 Ir a Mi equipo",
+     "q": [
+      {
+       "p": "¿Qué significa para usted que una persona firme y entre al negocio?",
+       "ok": "Que es el inicio: ahora le toca acompañarla con un plan",
+       "no": [
+        "Que ya terminó su trabajo con esa persona",
+        "Que solo debe escribirle cuando le toque el ahorro mensual"
+       ],
+       "ex": "«La gente cree “ya finalé”; al contrario, para mí ahí es el inicio… Tienes que tener un plan»."
+      },
+      {
+       "p": "¿Qué tiempo define si un socio nuevo se queda o se va?",
+       "ok": "Sus primeras 48 horas",
+       "no": [
+        "Su primer mes completo",
+        "Su primera semana"
+       ],
+       "ex": "«Lo que hagas en sus primeras 48 horas define si se queda o se va»."
+      },
+      {
+       "p": "¿Dónde se manda su link personal al socio nuevo?",
+       "ok": "En privado, nunca en el grupo",
+       "no": [
+        "En el grupo de bienvenida, para que todos lo vean",
+        "En sus estados de WhatsApp"
+       ],
+       "ex": "«Tienes que mandarle el link en privado. Nunca vayas a mandar el link tuyo en el grupo»."
+      }
+     ]
     },
     {
      "t": "Atracción en redes",
