@@ -4525,36 +4525,36 @@
     {
      "t": "Su lista de contactos",
      "yt": "RmPI6_IbF2k",
-     "tarea": "Agregue 5 personas nuevas a su lista. Piense en familia, amigos, compañeros y conocidos.",
+     "tarea": "Agregue sus primeros 20 contactos en el CRM, con su WhatsApp y una nota de lo que quiere cada persona. Su meta: llegar a 100.",
      "ir": "lista",
      "bt": "📝 Agregar a mi lista",
      "q": [
       {
-       "p": "¿Cuál es el error más caro al hacer su lista?",
-       "ok": "Prejuzgar: decidir por los demás",
+       "p": "¿Cuál es el error más caro al crear su lista de contactos?",
+       "ok": "Prejuzgar: decidir por los demás quién entra y quién no",
        "no": [
-        "Escribir muchos nombres",
+        "Escribir demasiados nombres",
         "Incluir a la familia"
        ],
-       "ex": "Usted no decide por nadie: comparta la oportunidad y deje que cada persona decida."
+       "ex": "«No prejuzgues a nadie. La persona que crees que no le interesa puede ser tu próximo líder»."
       },
       {
-       "p": "¿Qué dato clave conviene anotar de cada persona?",
-       "ok": "Qué sueña o qué necesita",
+       "p": "Si alguien le dice que no a la oportunidad, ¿a quién le dijo que no?",
+       "ok": "A la oportunidad, no a usted",
        "no": [
-        "Cuánto gana",
-        "Nada, solo el nombre"
+        "A usted como persona",
+        "A su patrocinador"
        ],
-       "ex": "Ese dato le ayuda a invitarla pensando en lo que a ella le importa."
+       "ex": "«Si dicen que no, no te dicen que no a ti. ¿A quién le dijeron que no? A la oportunidad»."
       },
       {
-       "p": "¿Cada cuánto se alimenta su lista?",
-       "ok": "Todos los días, agregando personas nuevas",
+       "p": "¿Por qué hay que agregar personas a la lista todos los días?",
+       "ok": "Porque la lista es su principal activo y no debe quedarse sin personas a quién hablarle",
        "no": [
-        "Una sola vez al empezar",
-        "Solo cuando se acaban los nombres"
+        "Porque hay que hablarles del negocio a todos el mismo día",
+        "Porque la app borra los contactos viejos"
        ],
-       "ex": "Una lista grande le quita el miedo al «no»."
+       "ex": "«Lo que más frustra es que ya no tienen personas a quién hablarle… porque solo se enfocaron en la lista caliente»."
       }
      ]
     },
