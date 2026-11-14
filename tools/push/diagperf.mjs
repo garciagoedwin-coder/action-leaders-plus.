@@ -1,9 +1,8 @@
-// Arreglo puntual (13 nov, Edwin): su patrocinador real (Santiago, Puerto Rico) no usa la app → registro.patExt en SU cuenta de socio
-// (edwing.go@). Solo marca el paso «Conectado con su patrocinador» del Inicio Rápido; no cambia línea, rankings ni duplicación.
+// Conteo (14 nov, Edwin): cuántos escucharon el audio de Santiago Santiago. Solo números (los logs son públicos).
 import admin from "firebase-admin";
 admin.initializeApp({ credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SA)) });
 const db = admin.firestore();
-const U = (await db.collection("users").where("email", "==", "edwing.go@gmail.com").get()).docs;
-let n = 0;
-for (const d of U) { await d.ref.update({ "registro.patExt": "Santiago" }); n++; }
-console.log("cuentas actualizadas:", n);
+const S = await db.collection("constancia").get();
+let p = 0, f = 0;
+S.forEach(d => { const a = ((d.data().aud) || {})["santiago-1"]; if (a) { p++; if (a.f) f++; } });
+console.log("abrieron:", p, "· completo:", f, "· de", S.size);
