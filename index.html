@@ -1214,6 +1214,7 @@ body.acc3 #tasks .step-n{border:2px solid var(--line);background:var(--surface);
 body.acc3 #tasks .task:has(.check[aria-pressed="true"])::after{content:"Hecho";flex:none;font-size:11.5px;font-weight:800;border-radius:999px;padding:4px 9px;background:#DCFCE7;color:#15803D}
 body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px}body.acc3 #tasks .counter button{background:transparent;color:var(--brand)}
 .av3>*{margin:0!important}#avTrack[data-m3]{overflow-y:hidden;transition:height .3s ease}
+.agNav3{display:flex;gap:8px;justify-content:space-between}.agNav3 button{flex:1;border:1px solid var(--line);background:var(--surface);color:var(--brand);border-radius:12px;padding:10px;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
 .cjT{font-size:11px;letter-spacing:.14em;font-weight:800;color:var(--muted);margin:16px 2px 10px}.cjG{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 4px}
 .cjI{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font:inherit;font-size:11px;font-weight:700;line-height:1.2;color:var(--ink);background:none;border:0;padding:0;text-decoration:none;cursor:pointer}.cjI>span{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:24px;box-shadow:0 4px 10px rgba(0,0,0,.08)}
 .a3S{display:flex;justify-content:space-between;align-items:baseline;margin:20px 2px 2px}.a3S b{font-size:17px}.a3S span{font-size:13px;color:var(--brand);font-weight:800}
@@ -7434,15 +7435,18 @@ function renderMiAgenda(){const el=$("#agMia");if(!el||agVista!=="mia")return;if
   const W=ds.map(d=>{const k=dkey(d);return{k,d,L:citas.filter(c=>c.fecha===k).sort(citaSort)}}),tot=W.reduce((a,x)=>a+x.L.length,0),hrs=W.reduce((a,x)=>a+x.L.reduce((b,c)=>b+(c.dur||60),0),0)/60;
   const mx=Math.max(4,...W.map(x=>x.L.reduce((b,c)=>b+(c.dur||60),0)/60));const lleno=W.filter(x=>x.L.reduce((b,c)=>b+(c.dur||60),0)>=240).map(x=>DAYS[x.d.getDay()]);
   const rango=ds[0].getDate()+" "+MONTHS[ds[0].getMonth()].slice(0,3)+" – "+ds[6].getDate()+" "+MONTHS[ds[6].getMonth()].slice(0,3);
-  el.innerHTML=`   <div class="card" style="gap:10px"><div class="cal-head"><button id="wkPrev" aria-label="Semana anterior">‹</button><h3 style="margin:0">${agWk===0?"Próximos 7 días":agWk===1?"Siguientes 7 días":agWk===-1?"7 días anteriores":rango}</h3><button id="wkNext" aria-label="Semana siguiente">›</button></div>
+  const ag3=acc3On(),nav3=`<div class="agNav3"><button type="button" id="wkPrev">‹ ${agWk===0?"Días anteriores":"Anteriores"}</button>${agWk!==0?`<button type="button" id="wkHoy">Hoy</button>`:""}<button type="button" id="wkNext">Siguientes 7 días ›</button></div>`;
+  el.innerHTML=ag3?"":`   <div class="card" style="gap:10px"><div class="cal-head"><button id="wkPrev" aria-label="Semana anterior">‹</button><h3 style="margin:0">${agWk===0?"Próximos 7 días":agWk===1?"Siguientes 7 días":agWk===-1?"7 días anteriores":rango}</h3><button id="wkNext" aria-label="Semana siguiente">›</button></div>
     <p class="small muted" style="margin:0;text-align:center">${rango} · <b style="color:var(--ink)">${tot} ${tot===1?"cita":"citas"}</b> · ${hrs%1?hrs.toFixed(1):hrs} h${lleno.length?` · <span style="color:var(--warn);font-weight:700">${lleno.join(", ")} lleno</span>`:""}</p>
-    <div class="wkbars">${W.map(x=>{const h=x.L.reduce((b,c)=>b+(c.dur||60),0)/60;return `<div class="${x.k===TODAY?"hoy":""}"><span class="bw"><i style="height:${Math.round(h/mx*100)}%;background:${h>=4?"var(--warn)":"var(--brand)"}"></i></span><b>${x.L.length||""}</b><small>${DAYS[x.d.getDay()]} ${x.d.getDate()}</small></div>`}).join("")}</div></div>
+    <div class="wkbars">${W.map(x=>{const h=x.L.reduce((b,c)=>b+(c.dur||60),0)/60;return `<div class="${x.k===TODAY?"hoy":""}"><span class="bw"><i style="height:${Math.round(h/mx*100)}%;background:${h>=4?"var(--warn)":"var(--brand)"}"></i></span><b>${x.L.length||""}</b><small>${DAYS[x.d.getDay()]} ${x.d.getDate()}</small></div>`}).join("")}</div></div>`;
+  el.innerHTML+=`${ag3&&agWk!==0?`<p class="small muted" style="margin:0 4px;font-weight:700">${rango}</p>`:""}
    ${W.map(x=>{const man=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1)),nm=(x.k===TODAY?"Hoy · ":x.k===man?"Mañana · ":"")+DAYS_L[x.d.getDay()][0].toUpperCase()+DAYS_L[x.d.getDay()].slice(1)+" "+x.d.getDate();
      if(!x.L.length)return `<div class="card agLibre" style="flex-direction:row;align-items:center;justify-content:space-between;text-align:left;padding:8px 14px${x.k<TODAY?";opacity:.55":""}"><span><b style="font-size:14px">${nm}</b> <span class="small muted">· Libre</span></span>${x.k>=TODAY?`<button class="btn sm ghost" data-cinew="${x.k}">+</button>`:""}</div>`;
      return `<div class="card" style="gap:8px${x.k<TODAY?";opacity:.55":""}"><div class="row between"><h3 style="margin:0">${nm}</h3>${x.k>=TODAY?`<button class="btn sm ghost" data-cinew="${x.k}">+</button>`:""}</div>${x.L.map(citaCard).join("")}</div>`}).join("")}
    ${agWk===0?(()=>{const P=citas.filter(c=>c.fecha<TODAY&&c.fecha>=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()-7))).sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:citaSort(a,b));if(!P.length)return"";
      return `<details class="card agPas" style="gap:8px"><summary style="cursor:pointer;font-weight:700">🕘 Días anteriores <span class="small muted">(${P.length} ${P.length===1?"cita":"citas"})</span></summary>${P.map(c=>`<div class="small muted" style="margin-top:8px;font-weight:700">${(d=>DAYS_L[d.getDay()][0].toUpperCase()+DAYS_L[d.getDay()].slice(1)+" "+d.getDate())(parseK(c.fecha))}</div>${citaCard(c)}`).join("")}</details>`})():""}`;
-  $("#wkPrev").onclick=()=>{agWk--;renderMiAgenda()};$("#wkNext").onclick=()=>{agWk++;renderMiAgenda()};
+  if(ag3)el.insertAdjacentHTML("beforeend",nav3);
+  $("#wkPrev").onclick=()=>{agWk--;renderMiAgenda()};$("#wkNext").onclick=()=>{agWk++;renderMiAgenda()};{const h=$("#wkHoy");if(h)h.onclick=()=>{agWk=0;renderMiAgenda()}}
   el.querySelectorAll("[data-cinew]").forEach(b=>b.onclick=()=>abrirCita({fecha:b.dataset.cinew}));bindCitas(el)}
 function renderHoyCitas(){try{renderRecCard()}catch(e){}const c=$("#hoyCitas");if(!c)return;const L=citas.filter(x=>x.fecha===TODAY&&(citaIni(x).getTime()+(x.dur||60)*6e4>Date.now()||(x.tipo!=="lider"&&!x.hecha))).sort(citaSort);if(!L.length){c.hidden=true;return}c.hidden=false;
   const pend=L.filter(x=>citaIni(x).getTime()+(x.dur||60)*6e4>Date.now()).length;
@@ -8994,7 +8998,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114130017";var busy=false,pend=null;
+(function(){var V="20261114134655";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
