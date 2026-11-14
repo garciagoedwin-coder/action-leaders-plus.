@@ -6470,9 +6470,10 @@ function salaYoCard(el){if(!el)return;const v=salaYo(),fin=salaYoFin(v);salaYoPr
 function salaYoGate(){const v=salaYo();salaYoPrep();
   openSheet(`<h2 style="margin:0 0 4px">🔒 Primero véala usted</h2><p class="small muted" style="margin:0 0 10px">No tiene sentido enviar algo que usted no ha visto. Vívala como su prospecto (20 min): al terminarla se desbloquea para enviarla.</p><div id="syG"></div>
     ${isAdmin?`<button class="btn ghost" id="syAdm" style="width:100%;margin-top:8px">Enviar de todos modos (admin)</button>`:""}<button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{salaYoCard($("#syG"));const a=$("#syAdm");if(a)a.onclick=()=>{window._syAdm=1;closeSheet();setTimeout(salaCompartir,250)}})}
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState!=="visible")return;const p=+LS.get("salaYoP")||0;if(!p||Date.now()-p>6*36e5)return;
+function salaYoVolvio(){const p=+LS.get("salaYoP")||0;if(!p||Date.now()-p>6*36e5)return;
   setTimeout(async()=>{const antes=salaYoOk();try{await loadSala(true)}catch(e){}const a=$("#npSala");if(a)salaYoCard(a);const g=$("#syG");if(g)salaYoCard(g);
-    if(!antes&&salaYoOk()){try{LS.set("salaYoOk:"+(store.uid||""),1)}catch(e){}try{avisoTop("🔓 ¡Ya puede enviar su presentación virtual!","Ahora sabe exactamente lo que verán sus prospectos",()=>salaCompartir())}catch(e){}}},1200)});
+    if(!antes&&salaYoOk()){try{LS.set("salaYoOk:"+(store.uid||""),1)}catch(e){}try{avisoTop("🔓 ¡Ya puede enviar su presentación virtual!","Ahora sabe exactamente lo que verán sus prospectos",()=>salaCompartir())}catch(e){}}},1200)}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")salaYoVolvio()});setTimeout(()=>{try{if(store.uid)salaYoVolvio()}catch(e){}},6000);
 function memDe(cid){if(!cid)return null;const V=LS.get("salaV")||{};let b=null;for(const k in V){const v=V[k];if(k.startsWith("m_")&&v.c===cid&&(!b||(v.t||0)>(b.t||0)))b=v}return b}
 function memHace(t){const m=Math.round((Date.now()-t)/6e4);return m<2?"ahora":m<60?"hace "+m+" min":m<1440?"hace "+Math.round(m/60)+" h":"hace "+Math.round(m/1440)+" d"}
 function memAviso(x){try{avisoTop("👀 "+(String(x.n||"Un prospecto").split(/\s+/)[0])+" está viendo su página de membresía",x.como?"📲 Tocó el botón para escribirle":x.resp==="sim"?"🧮 Usó el simulador de cruceros":"Es buen momento para escribirle",()=>{try{go("crm")}catch(e){}})}catch(e){}}
@@ -8888,7 +8889,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114100342";var busy=false,pend=null;
+(function(){var V="20261114100743";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
