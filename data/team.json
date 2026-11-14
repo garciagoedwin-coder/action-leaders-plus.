@@ -167,6 +167,18 @@
    "activaciones": 1,
    "volumen": 500,
    "actSemana": 1
+  },
+  {
+   "nombre": "Denis josue Reyes",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "denis-josue-reyes",
+   "activaciones": 1,
+   "volumen": 200,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -731,6 +743,21 @@
    "id": "sergio-mauricio-garcia-lopez",
    "volumenHoja": 0,
    "ptsBase": 500,
+   "auto": "2026-11"
+  },
+  {
+   "nombre": "Denis Josue Reyes",
+   "nombreRanking": "Denis josue Reyes",
+   "rango": "",
+   "linea": "",
+   "meta": 500,
+   "nuevos": 0,
+   "presentaciones": 0,
+   "volumen": 200,
+   "volumenDetalle": "",
+   "id": "denis-josue-reyes",
+   "volumenHoja": 0,
+   "ptsBase": 200,
    "auto": "2026-11"
   }
  ],
@@ -3191,6 +3218,17 @@
    "fuente": "gmail",
    "id": "ingrid-fabiola-cerrato-juarez",
    "rv": 1
+  },
+  {
+   "socio": "Erika argentina Duarte",
+   "paquete": "Classic",
+   "patrocinador": "Denis josue Reyes",
+   "fecha": "2026-11-14T16:55:02Z",
+   "ek": "f1b521",
+   "wk": "d03da5",
+   "fuente": "gmail",
+   "id": "erika-argentina-duarte",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3224,7 +3262,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-14T02:55:02Z",
+  "activacionesCorte": "2026-11-14T16:55:02Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3233,7 +3271,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-13T21:53:00-06:00",
+  "rankingActualizado": "2026-11-14T11:23:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -5203,6 +5241,11 @@
      "a": 2
     },
     {
+     "n": "Denis Josue Reyes",
+     "p": 200,
+     "a": 1
+    },
+    {
      "n": "Dixiana Vasquez",
      "p": 200,
      "a": 2
@@ -5478,7 +5521,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-14T14:29:19Z"
+   "t": "2026-11-14T17:23:01Z"
   },
   "audioEsp": {
    "id": "santiago-1",
