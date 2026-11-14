@@ -6452,7 +6452,7 @@ function salaCache(){const V=LS.get("salaV")||{},o={};for(const k in V)if(!k.sta
 function salaYo(){const V=LS.get("salaV")||{};let b=null;for(const k in V){const v=V[k];if(v.c==="yo"&&(!b||(v.t||0)>(b.t||0)))b=v}return b}
 const salaYoFin=v=>!!v&&((+v.pct||0)>=90||v.motivo==="fin"||/^\d+$/.test(String(v.pulso||"")));
 function salaYoOk(){return salaYoFin(salaYo())||!!LS.get("salaYoOk:"+(store.uid||""))}
-function salaYoUrl(){return salaUrl(miNombreCorto()||miRegistro().nombre||"Socio","yo")+"&yo=1"}
+function salaYoUrl(){return salaUrl(miNombreCorto()||miRegistro().nombre||"Socio","yo")+"&yo=1&v="+Date.now().toString(36)}
 let salaYoListo=false;function salaYoPrep(){if(salaYoListo)return Promise.resolve(true);return salaPrep().then(ok=>{salaYoListo=!!ok;return ok})}
 function salaYoIr(){try{LS.set("salaYoP",Date.now());LS.set("salaOn",1)}catch(e){}const w=window.open(salaYoUrl(),"_blank");if(w)w.opener=null;else location.href=salaYoUrl()}
 function salaYoTk(v){const f=String(miNombreCorto()||"").split(" ")[0]||"Usted",fin=salaYoFin(v),n=v?+v.pulso||0:0,pct=v?Math.min(100,+v.pct||0):0;
@@ -8889,7 +8889,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114100743";var busy=false,pend=null;
+(function(){var V="20261114101320";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
