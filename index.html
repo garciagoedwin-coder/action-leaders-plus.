@@ -850,6 +850,33 @@ body.cv2 .contact .pbar{gap:0;max-width:none;height:6px;border-radius:6px;overfl
 body.cv2 .contact .pbar i{height:6px;border-radius:0;background:transparent}
 body.cv2 .contact .pbar i.on{background:var(--pc)}
 body.cv2 .contact .stpct b{font-size:21px}
+#cvTools,#cvOrd{display:none}body.cv2 #salaBtn,body.cv2 #presBtn,body.cv2 #bienBtn,body.cv2 #stageBar{display:none!important}
+body.cv2 #cvTools{display:flex;gap:8px;margin:2px 0 10px}body.cv2 #cvTools button{flex:1;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:9px 4px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+#cvSrow{display:flex;gap:8px;align-items:stretch}#cvSrow #crmSearch{flex:1;min-width:0}body.cv2 #cvOrd{display:block;flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:0 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;margin:0}
+.cvFun{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin:10px -2px 10px;padding:2px}.cvFun::-webkit-scrollbar{display:none}
+.cvFun button{flex:none;display:flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}.cvFun button b{color:var(--pc);font-weight:900}
+.cvFun button[aria-pressed="true"]{background:var(--pc);border-color:var(--pc);color:#fff}.cvFun button[aria-pressed="true"] b{color:#fff}.cvFun i{font-style:normal;background:#DC2626;color:#fff;border-radius:999px;font-size:11px;font-weight:800;padding:1px 6px}
+.cvNumMini{display:flex;align-items:center;gap:10px;width:100%;border:0;background:linear-gradient(135deg,#0B1A2B,#0F2F48);color:#fff;border-radius:16px;padding:11px 14px;font:inherit;font-size:13.5px;text-align:left;cursor:pointer;margin-bottom:6px}.cvNumMini span{flex:1;min-width:0;opacity:.9}.cvNumMini b{color:#2AC1F1}.cvNumMini em{font-style:normal;background:#2AC1F1;color:#062B3A;font-weight:800;border-radius:10px;padding:6px 10px;white-space:nowrap}
+body.cv2 .contact{padding:9px 12px!important;margin-top:7px!important;border-radius:15px!important;border-left-width:4px!important}
+body.cv2 .contact .ch{gap:10px}body.cv2 .contact .ch .av{width:36px!important;height:36px!important;min-width:36px;font-size:13px!important}
+body.cv2 .contact .ch .mid{flex-direction:row;flex-wrap:wrap;align-items:center;column-gap:6px;row-gap:3px}body.cv2 .contact .ch .nm{font-size:15.5px;flex:0 1 auto;max-width:100%}body.cv2 .contact .ch .mid .cvTag{flex:none;margin:0;font-size:10.5px;padding:1px 7px}
+body.cv2 .contact .ch .pbar{flex-basis:100%;height:4px;margin-top:4px}body.cv2 .contact .ch .pbar i{height:4px}body.cv2 .contact .stpct b{font-size:17px!important}
+.cvSt3{display:flex!important;gap:8px;align-items:center;flex-wrap:nowrap!important;width:100%}.cvSt3 .cvPill{flex:none}.cvDue{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.cvTk .t1 span+span{text-transform:none;letter-spacing:0;font-weight:700;opacity:.85}.cvDue{font-size:12.5px;font-weight:800;color:var(--muted)}.cvDue.bad{color:#DC2626}.cvDue.warn{color:#B45309}.cvSt3 .cvCg{margin-left:auto}
+.cvTk{width:100%;margin-top:10px;background:linear-gradient(135deg,#0B1A2B,#0F2F48);color:#fff;border-radius:14px;padding:11px 13px;position:relative}
+.cvTk:before,.cvTk:after{content:"";position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:var(--surface);transform:translateY(-50%)}.cvTk:before{left:-7px}.cvTk:after{right:-7px}
+.cvTk .t1{display:flex;justify-content:space-between;gap:8px;font-size:10.5px;letter-spacing:.14em;font-weight:800;color:#2AC1F1;text-transform:uppercase}.cvTk.vivo .t1 span:first-child{color:#F87171}
+.cvTk .t2{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:14.5px}.cvTk .t2 b{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:45%}.cvTk .t2 i{flex:1;border-top:1.5px dashed rgba(255,255,255,.35);position:relative}.cvTk .t2 i:after{content:"✈";position:absolute;left:50%;top:-10px;font-style:normal;font-size:13px;transform:translateX(-50%)}
+.cvTk .t3{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:9px}.cvTk .t3 span{text-align:center;font-size:11px;font-weight:700;border-radius:8px;padding:5px 2px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);white-space:nowrap}
+.cvTk .t3 .y{background:rgba(42,193,241,.22);color:#fff}.cvTk .t3 .f{background:linear-gradient(135deg,#F7953B,#EA580C);color:#fff}
+.cvTk .t4{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px;font-size:12px;color:rgba(255,255,255,.78)}.cvTk .t4 span{min-width:0}.cvTk .t4 button{flex:none;border:0;background:none;color:#2AC1F1;font:inherit;font-weight:800;font-size:12.5px;cursor:pointer;padding:2px 0}
+.cvAct{display:flex;gap:8px;width:100%;margin-top:10px}.cvWaB{flex:1;display:flex;align-items:center;justify-content:center;height:48px;border:0;border-radius:14px;background:#25D366;color:#fff;font:inherit;font-weight:800;font-size:15px;text-decoration:none;cursor:pointer}.cvWaB.off{background:var(--surface-2);color:var(--ink)}
+.cvDots{flex:none;width:52px;height:48px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:14px;font:inherit;font-size:20px;font-weight:900;cursor:pointer}
+.cvLast{width:100%;margin-top:8px;font-size:12.5px;color:var(--muted);background:var(--surface-2);border-radius:10px;padding:7px 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cvVa{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cvVa div{background:var(--surface-2);border-radius:12px;padding:9px 11px}.cvVa small{display:block;font-size:10px;letter-spacing:.12em;font-weight:800;color:var(--brand)}.cvVa b{font-size:14px}.cvVa .hot{background:linear-gradient(135deg,#F7953B,#EA580C);color:#fff}.cvVa .hot small{color:#fff}
+.cvTl{margin:14px 0 12px;position:relative;padding-left:18px}.cvTl:before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.cvTl p{position:relative;margin:0 0 8px;font-size:13.5px}.cvTl p:before{content:"";position:absolute;left:-17px;top:4px;width:10px;height:10px;border-radius:50%;background:#2AC1F1}.cvTl p.f:before{background:#EA580C}.cvTl p span{color:var(--muted);font-size:12px;margin-left:6px}
+.cvMg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cvMg button{border:0;background:var(--surface-2);color:var(--ink);border-radius:14px;padding:12px 4px;font:inherit;font-size:12.5px;font-weight:700;line-height:1.25;cursor:pointer}.cvMg button i{display:block;font-style:normal;font-size:22px;margin-bottom:4px}.cvMg .on{background:color-mix(in srgb,var(--brand) 14%,var(--surface));color:var(--brand)}
+.cvMl{margin-top:12px;border-top:1px solid var(--line)}.cvMl button{display:flex;justify-content:space-between;width:100%;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);padding:13px 2px;font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;text-align:left}.cvMl button span{color:var(--brand);font-weight:700}
 body.cv2 .contact .stpct .chip{background:none!important;color:var(--pc)!important;padding:0!important;font-weight:800;font-size:12px;border:0!important}
 .cvNum{border-radius:18px;padding:12px;background:linear-gradient(150deg,#0B2536,#05121C);color:#fff;margin-bottom:10px}.cvNumH{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.14em;font-weight:800;color:#2AC1F1;text-transform:uppercase}.cvNumH button{border:0;border-radius:12px;padding:8px 12px;font:inherit;font-weight:900;font-size:13px;letter-spacing:0;text-transform:none;background:linear-gradient(135deg,#2AC1F1,#0A7DAD);color:#fff;cursor:pointer}.cvOr{margin-top:10px;font-size:13px}.cvOr summary{cursor:pointer;font-weight:800;color:#7FE0FF;list-style:none}.cvOr summary::-webkit-details-marker{display:none}.cvOr div{display:flex;justify-content:space-between;gap:8px;padding:7px 2px;border-top:1px solid #ffffff1a}.cvOr span{opacity:.75;white-space:nowrap}
 .cvNumG{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}.cvNumG div{background:#ffffff10;border-radius:12px;padding:8px 2px;text-align:center;font-size:10px;font-weight:700;opacity:.95}.cvNumG b{display:block;font-family:var(--f-num);font-size:22px;line-height:1.1}.cvNumG .h b{color:#FDBA74}.cvNumG .g b{color:#86EFAC}
@@ -6425,7 +6452,7 @@ function memHace(t){const m=Math.round((Date.now()-t)/6e4);return m<2?"ahora":m<
 function memAviso(x){try{avisoTop("👀 "+(String(x.n||"Un prospecto").split(/\s+/)[0])+" está viendo su página de membresía",x.como?"📲 Tocó el botón para escribirle":x.resp==="sim"?"🧮 Usó el simulador de cruceros":"Es buen momento para escribirle",()=>{try{go("crm")}catch(e){}})}catch(e){}}
 function memUrl(nombre,cid){let u="https://actionleadersplus.com/membresia.html?de="+miPCode();if(nombre)u+="&p="+encodeURIComponent(String(nombre).trim().slice(0,50));if(cid)u+="&c="+encodeURIComponent(cid);return u}
 function memMsg(nombre,u){const f=String(nombre||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"";
-  return `Hola${f?" "+f:""} 😊\n\nLe preparé esta página para que vea, de forma sencilla, *cómo funciona la membresía de viajes*: cómo su dinero se convierte en el doble de puntos y cómo se reserva un crucero.\n\nTiene un *simulador* para calcular su próximo crucero:\n${u}\n\nCuando la vea, me cuenta qué le pareció. 🚢${yo?"\n\n*"+yo+"*":""}`}
+  return `Hola${f?" "+f:""} 😊\n\nLe preparé esta página para que vea, de forma sencilla, *cómo funciona la membresía de viajes*: cómo su dinero se convierte en el doble de puntos y cómo se reserva un crucero.\n\nTiene un *simulador* para calcular su próximo crucero:\n${u}\n\nCuando la vea, me cuenta ${crmV2On()?"qué fue lo que más le gustó":"qué le pareció"}. 🚢${yo?"\n\n*"+yo+"*":""}`}
 async function enviarMem(c){if(!c)return;if(!(await salaPrep()))return;LS.set("memOn",1);const E=LS.get("memEnv")||{};E[c.id]=Date.now();LS.set("memEnv",E);stAvanza(c,"Contactado","le envió la página de la membresía");
   const t=memMsg(c.name,memUrl(c.name,c.id)),n=waNum(c.phone,c.cc);if(n){waIr("https://wa.me/"+n+"?text="+encodeURIComponent(t));return}
   if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
@@ -6539,7 +6566,8 @@ function salaNums(){if(!crmV2On())return "";const V=Object.values(salaCache()).f
   const env=new Set(Object.keys(E));V.forEach(v=>{if(v.c)env.add(v.c);else env.add(v.id)});const fin=V.filter(v=>(+v.pct||0)>=100||v.motivo==="fin"||+v.pulso>0),hot=V.filter(v=>+v.pulso>=8),reg=V.filter(v=>v.c&&contacts.some(c=>c.id===v.c&&(c.stage==="Socio"||c.stage==="Cliente")));
   const b=(n,t,cl)=>`<div${cl?` class="${cl}"`:""}><b>${n}</b>${t}</div>`;
   const G={};V.forEach(v=>{const k=v.o||"👤 Personas";const g=G[k]=G[k]||{a:0,h:0};g.a++;if(+v.pulso>=8)g.h++});const GL=Object.entries(G).sort((a,b)=>b[1].a-a[1].a);
-  return `<div class="cvNum"><div class="cvNumH"><span>🎬 Mi presentación virtual</span><button type="button" id="cvNumGo">✈️ Enviar</button></div><div class="cvNumG">${b(env.size,"Enviadas")}${b(V.length,"Abordaron")}${b(fin.length,"Terminaron")}${b(hot.length,"🔥 Listos","h")}${b(reg.length,"✅ Cerraron","g")}</div>${GL.length>1||GL.length&&GL[0][0]!=="👤 Personas"?`<details class="cvOr"><summary>📍 Por origen</summary>${GL.map(([k,g])=>`<div><b>${k==="👤 Personas"?k:salaOrIc(k)+" "+esc(k)}</b><span>${g.a} ${g.a===1?"abordó":"abordaron"} · ${g.h} 🔥</span></div>`).join("")}</details>`:""}</div>`}
+  if(!LS.get("cvNumOp"))return `<button type="button" class="cvNumMini" data-cvnum="1">🎬<span><b>Presentación virtual</b> · ${env.size} ${env.size===1?"enviada":"enviadas"}${hot.length?" · 🔥 "+hot.length+" "+(hot.length===1?"listo":"listos"):""}</span><em>Ver ›</em></button>`;
+  return `<div class="cvNum"><div class="cvNumH"><span>🎬 Mi presentación virtual</span><span style="display:flex;gap:6px"><button type="button" id="cvNumGo">✈️ Enviar</button><button type="button" data-cvnum="0" aria-label="Cerrar" style="min-width:36px">▴</button></span></div><div class="cvNumG">${b(env.size,"Enviadas")}${b(V.length,"Abordaron")}${b(fin.length,"Terminaron")}${b(hot.length,"🔥 Listos","h")}${b(reg.length,"✅ Cerraron","g")}</div>${GL.length>1||GL.length&&GL[0][0]!=="👤 Personas"?`<details class="cvOr"><summary>📍 Por origen</summary>${GL.map(([k,g])=>`<div><b>${k==="👤 Personas"?k:salaOrIc(k)+" "+esc(k)}</b><span>${g.a} ${g.a===1?"abordó":"abordaron"} · ${g.h} 🔥</span></div>`).join("")}</details>`:""}</div>`}
 // 13 nov (Edwin, PRUEBA solo admin): la presentación virtual mueve la etapa del CRM sola (solo hacia arriba) y, si la ve completa, cuenta como presentación hecha.
 let salaAutoB=false;async function salaAuto(){if(!salaOk()||salaAutoB||!Array.isArray(contacts)||!window._ctOk)return;salaAutoB=true;try{
   const H=LS.get("salaAuto")||{};let cambio=false;
@@ -6579,7 +6607,7 @@ async function enviarSala(c){if(!c)return;if(ahGate())return;if(!(await salaPrep
   if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
 function salaSeg(v){const f=String(v.n||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"",pa=v.pais?` y vi que le gustaría conocer *${v.pais.split(",")[0].trim()}*`:"";
   if(v.resp==="no")return `Hola ${f} 😊\n\nGracias por tomarse el tiempo de ver la presentación. Respeto mucho su decisión.\n\nSi más adelante le surge alguna duda o quiere saber más, aquí estoy para ayudarle. 🙌${yo?"\n\n*"+yo+"*":""}`;
-  if(!v.resp)return `Hola ${f}, ¿cómo está? 😊\n\nVi que empezó a ver la presentación${pa}. ¿Qué le ha parecido hasta ahora?\n\nSi le quedó alguna duda, con gusto se la aclaro en unos minutos. 🙌${yo?"\n\n*"+yo+"*":""}`;
+  if(!v.resp)return `Hola ${f}, ¿cómo está? 😊\n\nVi que empezó a ver la presentación${pa}. ¿Qué es lo que más le ha gustado hasta ahora?\n\nSi le quedó alguna duda, con gusto se la aclaro en unos minutos. 🙌${yo?"\n\n*"+yo+"*":""}`;
   const que=v.resp==="ambas"?"*viajar más y generar ingresos*":v.resp==="viajar"?"*viajar más*":"*generar ingresos extra*";
   const l1=v.resp==="viajar"?"✅ Enseñarle cómo viajar más pagando menos":"✅ Enseñarle el plan para construir esos ingresos";
   return `Hola ${f}, ¿cómo está? 😊\n\nVi que terminó la presentación y que lo que más le llamó la atención fue ${que}${pa}. ${v.resp==="ambas"?"¡Excelente combinación! 🙌":"¡Excelente! 🙌"}\n\nMe gustaría reunirme con usted unos minutos para:\n\n${l1}\n✅ Despejar todas sus dudas\n✅ Mostrarle cómo empezar desde su celular\n\n¿Le queda mejor hoy o mañana?${yo?"\n\n*"+yo+"*":""}`}
@@ -6882,7 +6910,9 @@ function flMsg(c,k,v){const n=String(c.name||"").trim().split(/\s+/)[0]||"",U=!c
       :[x(`Hola ${n}, ¿qué le pareció la información? 😊\n\nSi le quedó alguna duda, me gustaría que hablemos unos 10 minutos con un líder de mi equipo. ¿Le parece?`,`Hola ${n}, ¿qué te pareció la información? 😊\n\nSi te quedó alguna duda, me gustaría que hablemos unos 10 minutos con un líder de mi equipo. ¿Te parece?`)],
    no:[x(`Le entiendo perfectamente, ${n}, gracias por su sinceridad. 🙏\n\nSi más adelante cambia de opinión, aquí estoy.`,`Te entiendo perfectamente, ${n}, gracias por tu sinceridad. 🙏\n\nSi más adelante cambias de opinión, aquí estoy.`)],
    re:[x(`Hola ${n}, ¿cómo ha estado? 😊 Hace tiempo no hablábamos. ¿Cómo va todo por allá?`,`Hola ${n}, ¿cómo has estado? 😊 Hace tiempo no hablábamos. ¿Cómo va todo por allá?`)]};
-  const L=M[k]||[""];let hh=0;for(const ch of String(c.id||""))hh=(hh*31+ch.charCodeAt(0))>>>0;return L[(hh+(v||0))%L.length]}
+  const L=M[k]||[""];let hh=0;for(const ch of String(c.id||""))hh=(hh*31+ch.charCodeAt(0))>>>0;let rr=L[(hh+(v||0))%L.length];if(k==="seg"&&crmV2On())rr=flGusto(rr);return rr}
+function flGusto(t){return String(t||"").replace(/¿Qué le pareció la información\?\n\n¿Qué le falta/,"¿Qué fue lo que más le gustó de la información?\n\nY cuénteme, ¿qué le falta").replace(/¿Qué te pareció la información\?\n\n¿Qué te falta/,"¿Qué fue lo que más te gustó de la información?\n\nY cuéntame, ¿qué te falta")
+  .replace(/, ¿qué le pareció la información\? 😊\n\nSi le quedó alguna duda, me gustaría que hablemos unos 10 minutos/," 😊 ¿Qué fue lo que más le gustó de la información?\n\nMe encantaría saberlo. Y si le quedó alguna duda, la resolvemos en 10 minutitos").replace(/, ¿qué te pareció la información\? 😊\n\nSi te quedó alguna duda, me gustaría que hablemos unos 10 minutos/," 😊 ¿Qué fue lo que más te gustó de la información?\n\nMe encantaría saberlo. Y si te quedó alguna duda, la resolvemos en 10 minutitos")}
 function flHTML(c){const P=flPaso(c),h=flH(c);
   const linea=`<div class="fl-l">${FL_PASOS.map(([k,t])=>`<span class="${flHecho(c,k)?"ok":""}">${flHecho(c,k)?"✓":"○"} ${t}</span>`).join("")}</div>`;
   let body="";
@@ -6950,6 +6980,7 @@ function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e
   const nCer=contacts.filter(c=>CERR.includes(c.stage)).length,nPro=contacts.length-nCer,enV=c=>!!q||(crmV==="cer"?CERR.includes(c.stage):!CERR.includes(c.stage)),VS=STAGES.filter(s=>crmV==="cer"?CERR.includes(s):!CERR.includes(s));
   {let t=$("#crmVseg");if(!t){t=document.createElement("div");t.id="crmVseg";t.className="seg";t.setAttribute("role","tablist");$("#crmSearch").before(t);t.onclick=e=>{const b=e.target.closest("button");if(!b)return;crmV=b.dataset.k;stageF="Todos";openC=null;try{LS.set("crmV",crmV)}catch(x){}renderCRM()}}
    t.hidden=!contacts.length;t.innerHTML=`<button aria-selected="${crmV==="proc"}" data-k="proc">🔥 En proceso <span style="opacity:.7">${nPro}</span></button><button aria-selected="${crmV==="cer"}" data-k="cer">✅ Cerrados <span style="opacity:.7">${nCer}</span></button>`}
+  try{cvTop3()}catch(e){}
   const counts={Todos:contacts.filter(enV).length};VS.forEach(s=>counts[s]=contacts.filter(c=>c.stage===s).length);
   $("#stageBar").innerHTML=["Todos"].concat(VS).map(s=>`<button aria-pressed="${s===stageF}" data-s="${s}">${s}<span class="n">${counts[s]}</span></button>`).join("");
   const list=contacts.filter(c=>enV(c)&&(!crmFrio||stFrio(c))&&(stageF==="Todos"||c.stage===stageF)&&(!q||(c.name+" "+(c.note||"")+" "+(c.seg||[]).map(x=>x.n||"").join(" ")).toLowerCase().includes(q))).sort(crmCmp());
@@ -6960,8 +6991,9 @@ function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e
   const nCl=contacts.filter(c=>c.stage==="Cliente").length,nSo=contacts.filter(c=>c.stage==="Socio").length;
   const cerHead=crmV==="cer"&&!q?`<div style="background:linear-gradient(135deg,#065F46,#10B981);color:#fff;border-radius:16px;padding:14px 16px;margin-bottom:8px"><div style="font-size:12px;font-weight:800;letter-spacing:.12em;opacity:.85">MI MARCADOR</div><div style="font-size:22px;font-weight:800;margin-top:2px">✅ ${nCer} ${nCer===1?"cierre":"cierres"}</div><div class="small" style="opacity:.9">${nCl} ${nCl===1?"cliente":"clientes"} · ${nSo} ${nSo===1?"socio":"socios"}. Cuídelos: un cliente feliz le da referidos.</div></div>`:"";
   const pipeSum=crmV==="cer"&&!q?"":pipeOk()?(()=>{const n=s=>contacts.filter(c=>c.stage===s).length,fr=contacts.filter(stFrio).length;return `<div class="stsum"><button type="button" data-sf="Por cerrar" style="background:#FFEDD5;color:#C2410C"><b>${n("Por cerrar")}</b>🔥 Por cerrar</button><button type="button" data-sf="Seguimiento" style="background:#FEF3C7;color:#B45309"><b>${n("Seguimiento")}</b>🔁 Seguimiento</button><button type="button" data-sf="Presentación" style="background:#E0F2FE;color:#0369A1"><b>${n("Presentación")}</b>🎤 Presentados</button></div>${crmFrio?`<button type="button" class="cvFrio" data-frio="0">⚠️ Viendo solo los ${fr} sin avanzar <em>✕ Ver todos</em></button>`:fr?(crmV2On()?`<button type="button" class="cvFrio" data-frio="1">⚠️ ${fr} ${fr===1?"prospecto lleva":"prospectos llevan"} +7 días sin avanzar <em>Ver ›</em></button>`:`<p class="small" style="margin:0 0 6px;color:#B45309;font-weight:700">⚠️ ${fr} ${fr===1?"prospecto lleva":"prospectos llevan"} más de 7 días sin avanzar ni seguimiento</p>`):""}`})():"";
-  const ordUI=pipeOk()?`<div class="crmord" role="group" aria-label="Ordenar contactos">${[["seg","📅 Seguimiento"],["rec","🆕 Recientes"],["pct","📈 Mayor %"]].map(([k,t])=>`<button type="button" data-ord="${k}" aria-pressed="${crmOrd===k}">${t}</button>`).join("")}</div>`:"";
-  $("#contactList").innerHTML=cerHead+(crmV==="cer"||q?"":salaNums())+(crmV==="cer"&&!q?"":ordUI)+pipeSum+list.map(c=>{const cer=CERR.includes(c.stage),late=!cer&&c.next&&c.next<TODAY,today=!cer&&c.next===TODAY,op=openC===c.id;
+  const CV3=crmV2On(),funUI=CV3&&contacts.length?cvFun(VS,counts):"";
+  const ordUI=CV3?"":pipeOk()?`<div class="crmord" role="group" aria-label="Ordenar contactos">${[["seg","📅 Seguimiento"],["rec","🆕 Recientes"],["pct","📈 Mayor %"]].map(([k,t])=>`<button type="button" data-ord="${k}" aria-pressed="${crmOrd===k}">${t}</button>`).join("")}</div>`:"";
+  $("#contactList").innerHTML=cerHead+(CV3?funUI:"")+(crmV==="cer"||q?"":salaNums())+(crmV==="cer"&&!q?"":ordUI)+(CV3?"":pipeSum)+list.map(c=>{const cer=CERR.includes(c.stage),late=!cer&&c.next&&c.next<TODAY,today=!cer&&c.next===TODAY,op=openC===c.id;
     const k=c.stage==="Cliente"?FLOW.length:c.stage==="No interesado"?0:FLOW.indexOf(c.stage)+1,pc=STAGE_COL[c.stage]||"var(--brand)";
     return `<div class="contact ${op?"open":""}" style="--pc:${pc}"><div class="ch" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}">
     <div class="av" style="box-shadow:0 0 0 2px ${pc}">${c.stage==="Socio"||c.stage==="Cliente"?"✓":esc(initials(c.name))}</div>
@@ -6984,10 +7016,61 @@ $("#contactList").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" 
 const crmMas=new Set(),crmSt=new Set();let crmFrio=false;
 // 13 nov (Edwin, PRUEBA solo admin): contacto del CRM rediseñado con la presentación virtual de protagonista.
 function crmV2On(){return !!(salaOk()&&irSimple())}
+// 14 nov (Edwin, solo admin): CRM más limpio — herramientas con nombre, etapas en una fila, orden en un botón, pase de abordar en boleto, ⋯ en ventana.
+const CV_STI={"Por cerrar":"🔥 ","Seguimiento":"🔁 ","Presentación":"🎤 ","Contactado":"💬 ","Nuevo":"🆕 ","No interesado":"✖ ","Socio":"🤝 ","Cliente":"🛳️ "};
+function cvTop3(){const on=crmV2On();let tb=$("#cvTools");
+  if(on&&!tb){tb=document.createElement("div");tb.id="cvTools";tb.innerHTML=`<button type="button" data-tl="salaBtn">✈️ Pres. virtual</button><button type="button" data-tl="presBtn">🎤 Presentar</button><button type="button" data-tl="bienBtn">🎉 Bienvenida</button>`;
+    const h=$("#v-crm > .row.between");if(h)h.after(tb);tb.onclick=e=>{const b=e.target.closest("[data-tl]");if(!b)return;const x=$("#"+b.dataset.tl);if(x)x.click()}}
+  if(on&&!$("#cvSrow")){const sI=$("#crmSearch"),w=document.createElement("div");w.id="cvSrow";sI.before(w);w.append(sI);const b=document.createElement("button");b.type="button";b.id="cvOrd";w.append(b);
+    b.onclick=()=>{const K=["seg","rec","pct"];crmOrd=K[(K.indexOf(crmOrd)+1)%3];try{LS.set("crmOrd",crmOrd)}catch(e){}renderCRM();toast("Ordenados por: "+({seg:"próximo seguimiento",rec:"más recientes",pct:"mayor %"}[crmOrd]))}}
+  const ob=$("#cvOrd");if(ob)ob.textContent="⇅ "+({seg:"Seguimiento",rec:"Recientes",pct:"Mayor %"}[crmOrd]||"Seguimiento")}
+function cvFun(VS,counts){const O=["Por cerrar","Seguimiento","Presentación","Contactado","Nuevo","Socio","Cliente","No interesado"].filter(x=>VS.includes(x)&&counts[x]);
+  const fr=contacts.filter(stFrio).length;
+  return `<div class="cvFun">${O.map(x=>{const f=contacts.filter(c=>c.stage===x&&stFrio(c)).length;return `<button type="button" data-sf="${esc(x)}" aria-pressed="${stageF===x}" style="--pc:${STAGE_COL[x]||"var(--brand)"}">${CV_STI[x]||""}${esc(x)} <b>${counts[x]}</b>${f?`<i data-frio="1" title="Llevan más de 7 días sin avanzar">${f}</i>`:""}</button>`}).join("")}</div>${crmFrio?`<button type="button" class="cvFrio" data-frio="0">⚠️ Viendo solo los ${fr} sin avanzar <em>✕ Ver todos</em></button>`:""}`}
+function crmV2Tk(c){const v=salaDe(c.id),e=(LS.get("salaEnv")||{})[c.id],f=String(c.name||"").trim().split(/\s+/)[0]||"",id=esc(c.id);
+  const fin=!!v&&((+v.pct||0)>=100||/^\d+$/.test(String(v.pulso||""))),n=v?+v.pulso||0:0,pct=v?Math.min(100,+v.pct||0):0,vivo=!!v&&!fin&&Date.now()-(v.t||0)<10*6e4;
+  const cap=v&&String(v.motivo||"").startsWith("cap:")?String(v.motivo).slice(4):"";
+  const S=(ok,t,cl)=>`<span class="${ok?(cl||"y"):""}">${ok?"✓ ":""}${t}</span>`;
+  const c3=fin?S(1,"Terminó"):v?`<span class="${pct?"y":""}">Vio ${pct}%</span>`:S(0,"Terminó");
+  const c4=n?`<span class="${n>=8?"f":"y"}">${n>=8?"🔥 ":n>=6?"🟠 ":"💭 "}${n}/10</span>`:`<span>— /10</span>`;
+  let pie;
+  if(!v&&!e)pie=`<span>Edwin le presenta en 20 min · usted ve cada respuesta</span><button type="button" data-sala="${id}">✈️ Enviar</button>`;
+  else if(!v)pie=`<span>Aún no aborda · le avisamos al teléfono</span><button type="button" data-sala="${id}">↻ Reenviar</button>`;
+  else{const at=[v.r1&&CV_VAL[v.r1]?"Le atrae: "+CV_VAL[v.r1].replace(/^\S+ /,""):"",v.resp&&CV_VAL[v.resp]?"Le conectó: "+CV_VAL[v.resp].replace(/^\S+ /,""):""].filter(Boolean).join(" · ");
+    pie=`<span>${esc(fin?at||"Terminó su presentación":cap?"Va en «"+cap+"»":"Está viendo su presentación")}</span><button type="button" data-cvtk="${id}">Ver todo ›</button>`}
+  const cu=v?memHace(v.t||Date.now()):e?memHace(e):"";
+  return `<div class="cvTk${vivo?" vivo":""}"><div class="t1"><span>${vivo?"📡 EN VIVO":"✈️ PASE DE ABORDAR"}</span><span>${esc(cu)}</span></div>
+    <div class="t2"><b>${esc(f)}</b><i></i><b>${v&&v.pais?"🗺️ "+esc(String(v.pais).split(",")[0]):"¿?"}</b></div>
+    <div class="t3">${S(!!(e||v),"Enviada")}${S(!!v,"Abordó")}${c3}${c4}</div><div class="t4">${pie}</div></div>`}
+function cvViaje(c){const v=salaDe(c.id);if(!v)return;const e=(LS.get("salaEnv")||{})[c.id],f=String(c.name||"").trim().split(/\s+/)[0]||"",num=waNum(c.phone,c.cc);
+  const fin=(+v.pct||0)>=100||/^\d+$/.test(String(v.pulso||"")),n=+v.pulso||0,pct=Math.min(100,+v.pct||0),dur=v.dur?Math.max(1,Math.round(v.dur/60)):0;
+  const wa=t=>num?"https://wa.me/"+num+"?text="+encodeURIComponent(t):"https://wa.me/?text="+encodeURIComponent(t);
+  const hr=t=>{try{return new Date(t).toLocaleString("es",{weekday:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}catch(x){return ""}};
+  const box=(k,val,hot)=>`<div class="${hot?"hot":""}"><small>${k}</small><b>${val?esc(val):"—"}</b></div>`;
+  const mot=String(v.motivo||"");
+  const T=[e?["Usted le envió el pase",e]:null,v.t0?["Abordó",v.t0]:null,fin?["Terminó"+(n?" · "+n+"/10"+(n>=8?" 🔥":""):""),v.t,1]:["Va en el "+pct+"%"+(mot.startsWith("cap:")?" · «"+mot.slice(4)+"»":""),v.t],
+    v.como?[v.como==="registro"?"🛳️ Tocó «Crear mi cuenta»":v.como==="lider"?"📞 Pidió hablar con un líder":"💬 Tocó «Escribirle»",0,1]:null,
+    v.resp==="no"&&mot&&!mot.startsWith("cap:")&&mot!=="fin"?["Por qué no: "+mot,0]:null].filter(Boolean);
+  openSheet(`<h2 style="margin:0">✈️ El viaje de ${esc(f)}</h2><p class="small muted" style="margin:4px 0 12px">Presentación virtual${dur?" · duró "+dur+" min":""} · vio el ${pct}%</p>
+    <div class="cvVa">${box("LE ATRAE",CV_VAL[v.r1]||"")}${box("SUEÑA CON",v.pais?"🗺️ "+v.pais:"")}${box("LE CONECTÓ",CV_VAL[v.resp]||"")}${box("LISTO",n?(n>=8?"🔥 ":n>=6?"🟠 ":"💭 ")+n+" / 10":"",n>=8)}</div>
+    <div class="cvTl">${T.map(x=>`<p class="${x[2]?"f":""}"><b>${esc(x[0])}</b>${x[1]?`<span>${esc(hr(x[1]))}</span>`:""}</p>`).join("")}</div>
+    <a class="btn" id="cvVwa" style="background:#25D366;color:#fff;width:100%;justify-content:center" href="${esc(wa(salaSeg(v)))}" target="_blank" rel="noopener">💬 Escribirle ahora · mensaje listo</a>
+    <button class="btn ghost" id="cvVre" style="width:100%;margin-top:8px">↻ Reenviar el pase</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,
+   ()=>{$("#cvVwa").onclick=()=>{notaPend(c,"wa");setTimeout(()=>stAvanza(c,"Contactado","le escribió por WhatsApp"),300);closeSheet()};$("#cvVre").onclick=()=>{closeSheet();enviarSala(c)}})}
+function cvMasSheet(c){const m=memDe(c.id)||(LS.get("memEnv")||{})[c.id],sv=salaDe(c.id)||(LS.get("salaEnv")||{})[c.id],nS=(c.seg||[]).length;
+  const g=(k,i,t,on)=>`<button type="button" data-cm="${k}" class="${on?"on":""}"><i>${i}</i>${t}</button>`;
+  openSheet(`<h2 style="margin:0">${esc(c.name)}</h2><p class="small muted" style="margin:4px 0 12px">${CV_STI[c.stage]||""}${esc(c.stage||"Nuevo")} · ${stPct(c)}%</p>
+    <div class="cvMg">${g("pres","🎤",c.pres&&c.pres.t?"✓ Presentado":"Presentar")}${g("l3","📞","Llamada de 3")}${g("cita","📅",flCita(c)?"✓ Cita":"Agendar cita")}${g("nota","📝","Nota")}${g("sala","✈️",sv?"Reenviar pase":"Enviar pase",1)}${g("mem","🛳️",m?"✓ Membresía":"Página de membresía")}</div>
+    <div class="cvMl"><button type="button" data-cm="st">🧭 Cambiar etapa<span>${esc(c.stage||"Nuevo")} ›</span></button>${nS?`<button type="button" data-cm="hist">🕘 Historial de seguimientos<span>${nS} ›</span></button>`:""}<button type="button" data-cm="tu">🗣️ Le hablo de<span>${c.tu?"Tú":"Usted"} ⇄</span></button><button type="button" data-cm="edit">✏️ Editar o eliminar contacto<span>›</span></button></div>
+    <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,
+   ()=>{$("#sheetPanel").querySelectorAll("[data-cm]").forEach(b=>b.onclick=()=>{const k=b.dataset.cm;closeSheet();
+     if(k==="pres")presAbrir(c);else if(k==="l3")pedirL3(c);else if(k==="cita")abrirCita(null,c);else if(k==="nota")notaAbrir(c,"nota");else if(k==="sala")enviarSala(c);else if(k==="mem")enviarMem(c);
+     else if(k==="st"){crmSt.add(c.id);openC=c.id;renderCRM()}else if(k==="hist")sgTodas(c);else if(k==="tu"){c.tu=!c.tu;flGuardar(c);toast("Le habla de: "+(c.tu?"tú":"usted"))}else if(k==="edit")editContact(c)})})}
 const CV_VAL={viajar:"🧳 Viajar más",ingresos:"💰 Generar ingresos",ambas:"⭐ Ambas cosas",no:"Por ahora no"};
 function crmV2Tag(c){const v=salaDe(c.id),e=(LS.get("salaEnv")||{})[c.id];let t,cl;
   if(v&&/^\d+$/.test(String(v.pulso||""))){const n=+v.pulso;t=(n>=8?"🔥 ":n>=6?"🟠 ":"💭 ")+n+"/10";cl=n>=8?"hot":"mid"}
   else if(v&&(+v.pct||0)>0){t="👀 Vio "+(+v.pct||0)+"%";cl="see"}else if(v||e){t="📨 Enviada";cl="sent"}else{t="✈️ Enviar";cl="send"}
+  if(crmV2On()){if(cl==="send")return "";return `<span class="cvTag ${cl}">${t.replace(/^\S+ /,"✈️ ")}</span>`}
   return `<span class="cvTag ${cl}">${t}</span>${c.org?`<span class="cvTag org">${salaOrIc(c.org)} ${esc(c.org.length>24?c.org.slice(0,23)+"…":c.org)}</span>`:""}`}
 function crmV2Hero(c){const v=salaDe(c.id),e=(LS.get("salaEnv")||{})[c.id],f=String(c.name||"").trim().split(/\s+/)[0]||"",num=waNum(c.phone,c.cc);
   const wa=t=>num?"https://wa.me/"+num+"?text="+encodeURIComponent(t):"https://wa.me/?text="+encodeURIComponent(t);
@@ -7007,21 +7090,21 @@ function crmV2Sig(c){let P=flPaso(c);const st=c.stage||"Nuevo",tarde=["Presentac
   if(P.k==="preg"){const Q=P.q==="sal"?["¿Le contestó?",[["si","✅ Sí"],["nr","⏳ Todavía no"],["no","✖ No"]]]:P.q==="inv"?["¿Qué respondió?",[["si","✅ Sí"],["pen","🤔 Lo pensará"],["no","✖ No"]]]:["¿Cómo va?",[["socio","🎉 Se registró"],["re2","🔁 Escribirle"],["no","✖ No por ahora"]]];
     return `<div class="cvN q"><b>👉 ${Q[0]}</b><div class="fl-q"><div>${Q[1].map(([v,t])=>`<button data-flr="${esc(c.id)}|${v}">${t}</button>`).join("")}</div></div></div>`}
   const sv=salaDe(c.id),cerrar=P.k==="seg"&&(st==="Por cerrar"||(sv&&+sv.pulso>=8));
-  const tit=cerrar?"🎉 Cerrar":FL_TIT[P.k]||P.k,sub=cerrar?(sv&&+sv.pulso>=8?"Está "+sv.pulso+"/10: mándele su link de registro":"Mándele su link de registro"):P.k==="seg"?"Pregúntele qué le pareció":P.k==="pres"?"Ya tiene cita: preséntele":"Mensaje listo para enviar";
+  const tit=cerrar?"🎉 Cerrar":FL_TIT[P.k]||P.k,sub=cerrar?(sv&&+sv.pulso>=8?"Está "+sv.pulso+"/10: mándele su link de registro":"Mándele su link de registro"):P.k==="seg"?"Pregúntele qué fue lo que más le gustó":P.k==="pres"?"Ya tiene cita: preséntele":"Mensaje listo para enviar";
   return `<div class="cvN"><div><b>👉 Siguiente: ${esc(tit)}</b><small>${esc(sub)}</small></div><em data-flgo="${esc(c.id)}|${P.k}">Hacerlo</em></div>`}
 function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fecha>=TODAY).sort(citaSort)[0],m=memDe(c.id),au=c.stAuto&&c.stT&&Date.now()-c.stT<14*864e5;
-  const chips=[late&&c.next?`<span class="cvC bad">⏰ Seguimiento atrasado · ${esc(niceDate(c.next))}</span>`:today?`<span class="cvC warn">⏰ Seguimiento hoy</span>`:c.next?`<span class="cvC">📅 Próximo: ${esc(niceDate(c.next))}</span>`:"",
+  const fc=f=>{try{return new Date(f+"T12:00:00").toLocaleDateString("es",{day:"numeric",month:"short"}).replace(".","")}catch(x){return f}};
+  const due=late&&c.next?`<span class="cvDue bad">⏰ Atrasado · ${esc(fc(c.next))}</span>`:today?`<span class="cvDue warn">⏰ Seguimiento hoy</span>`:c.next?`<span class="cvDue">📅 ${esc(fc(c.next))}</span>`:"";
+  const chips=["",
     ci?`<span class="cvC brand">📅 Cita: ${esc(citaCuando(ci))}</span>`:"",au?`<span class="cvC" title="${esc(c.stAuto)}">🤖 Avanzó solo</span>`:"",
     c.org?`<span class="cvC org">${salaOrIc(c.org)} ${esc(c.org)}</span>`:"",c.pres&&c.pres.t?`<span class="cvC">🎤 Presentado${c.pres.n?" · "+c.pres.n+"/10":""}</span>`:"",m?`<span class="cvC">🛳️ Vio la membresía ${+m.pct||0}%</span>`:""].filter(Boolean).join("");
   const wl=waLink(c);
   return `<div class="cvTop"><div class="grow" style="min-width:0">${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}
-     <button type="button" class="cvSt" data-stopen="${esc(c.id)}"><span class="cvPill" style="--pc:${STAGE_COL[c.stage]||"var(--brand)"}">${esc(c.stage||"Nuevo")} · ${stPct(c)}%</span><span class="cvBar"><s style="width:${stPct(c)}%;background:${STAGE_COL[c.stage]||"var(--brand)"}"></s></span><span class="cvCg">Cambiar</span></button></div>
-     ${wl?`<a class="cvWa" href="${esc(wl)}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" aria-label="WhatsApp a ${esc(c.name)}">💬</a>`:""}</div>
+     <button type="button" class="cvSt cvSt3" data-stopen="${esc(c.id)}"><span class="cvPill" style="--pc:${STAGE_COL[c.stage]||"var(--brand)"}">${CV_STI[c.stage]||""}${esc(c.stage||"Nuevo")}</span>${due}<span class="cvCg">Cambiar ›</span></button></div></div>
    ${crmSt.has(c.id)?stepsHTML(c):""}${chips?`<div class="cvCs">${chips}</div>`:""}${c.note?`<span class="note">${esc(c.note)}</span>`:""}
-   ${crmV2Hero(c)}${crmV2Sig(c)}
-   <div class="cvA"><button type="button" data-pres="${esc(c.id)}"><i>🎤</i>${c.pres&&c.pres.t?"Presentado":"Presentar"}</button><button type="button" data-l3="${esc(c.id)}"><i>📞</i>Llamada de 3</button><button type="button" data-cita="${esc(c.id)}"><i>📅</i>${flCita(c)?"Cita ✓":"Agendar"}</button><button type="button" data-nota="${esc(c.id)}"><i>📝</i>Nota</button><button type="button" data-cmas="${esc(c.id)}"><i>⋯</i>${crmMas.has(c.id)?"Menos":"Más"}</button></div>
-   ${crmMas.has(c.id)?`<div class="cvMas"><button class="btn sm ghost" data-mem="${esc(c.id)}">${m||(LS.get("memEnv")||{})[c.id]?"✓ Membresía":"🛳️ Página de membresía"}</button><button class="btn sm ghost" data-edit="${esc(c.id)}">✏️ Editar</button><button class="btn sm ghost" data-fltu="${esc(c.id)}">Le hablo de: ${c.tu?"Tú":"Usted"} ⇄</button></div>`:""}
-   ${sgHTML(c)}`}
+   ${crmV2Tk(c)}${crmV2Sig(c)}
+   <div class="cvAct">${wl?`<a class="cvWaB" href="${esc(wl)}" data-wac="${esc(c.id)}" target="_blank" rel="noopener">💬 Escribirle por WhatsApp</a>`:`<button type="button" class="cvWaB off" data-edit="${esc(c.id)}">➕ Agregar su WhatsApp</button>`}<button type="button" class="cvDots" data-cvmas="${esc(c.id)}" aria-label="Más opciones">⋯</button></div>
+   ${(()=>{const L=(c.seg||[]).filter(x=>x&&x.n),x=L[L.length-1];return x?`<div class="cvLast">📝 <span>${esc(x.n)}</span></div>`:""})()}`}
 function crmWa(c,k){const f=String(c.name||"").trim().split(/\s+/)[0]||"",w=c.phone?waNum(c.phone,c.cc):"",yo=miNombreCorto()||"";
   const T={ref:`¡Hola, ${f}! 👋\n\nGracias por confiar en mí y ser parte de la familia inCruises 🛳️\n\n¿Conoce a alguien a quien le encante viajar? Con gusto le comparto cómo ahorrar para sus vacaciones.\n\nSi se le ocurre alguien, mándeme su nombre por aquí 🙏`,
     neg:`¡Hola, ${f}! 👋\n\nUsted ya disfruta los beneficios de inCruises como cliente 🛳️\n\n¿Sabía que también puede compartirlo y hacerlo su negocio? Me encantaría mostrarle cómo funciona, sin compromiso.\n\n¿Le gustaría que conversemos? Respóndame por aquí 🙌`,
@@ -7033,7 +7116,10 @@ function crmAhorro(c){const a=ahDe([c.email],[c.phone?waNum(c.phone,c.cc):""]),p
    <p style="margin:0">${sin?"Todavía no hay reporte de ahorros cargado.":pend?`<span class="chip c-bad" style="font-weight:700">🔴 Ahorro pendiente</span>`:`<span class="chip c-good" style="font-weight:700">🚢 Ahorro al día</span>`}</p>
    <p class="small muted" style="margin:0">${pend?"Un recordatorio a tiempo ayuda a que no pierda sus beneficios.":"No aparece en el reporte de pendientes de inCruises."}${c.email?"":" Para revisarlo mejor, agregue su correo en el contacto."}</p>
    <button class="btn" id="cahW" style="width:100%;background:#25D366;color:#fff">${pend?"💬 Recordarle su ahorro":"💬 Saludarle"}</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#cahW").onclick=()=>crmWa(c,pend?"ah":"hola")})}
-$("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNumGo")){salaCompartir();return}{const fz=e.target.closest("[data-frio]");if(fz){crmFrio=fz.dataset.frio==="1";renderCRM();return}}{const mb=e.target.closest("[data-cmas]");if(mb){const k=mb.dataset.cmas;crmMas.has(k)?crmMas.delete(k):crmMas.add(k);renderCRM();return}const so=e.target.closest("[data-stopen]");if(so){crmSt.add(so.dataset.stopen);renderCRM();return}}const st=e.target.closest("[data-st]");
+$("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNumGo")){salaCompartir();return}
+  {const x=e.target.closest("[data-cvnum]");if(x){try{LS.set("cvNumOp",x.dataset.cvnum==="1"?1:0)}catch(y){}renderCRM();return}}
+  {const x=e.target.closest("[data-cvtk]");if(x){const c=contacts.find(y=>y.id===x.dataset.cvtk);if(c)cvViaje(c);return}}
+  {const x=e.target.closest("[data-cvmas]");if(x){const c=contacts.find(y=>y.id===x.dataset.cvmas);if(c)cvMasSheet(c);return}}{const fz=e.target.closest("[data-frio]");if(fz){crmFrio=fz.dataset.frio==="1";renderCRM();return}}{const mb=e.target.closest("[data-cmas]");if(mb){const k=mb.dataset.cmas;crmMas.has(k)?crmMas.delete(k):crmMas.add(k);renderCRM();return}const so=e.target.closest("[data-stopen]");if(so){crmSt.add(so.dataset.stopen);renderCRM();return}}const st=e.target.closest("[data-st]");
   const tg=e.target.closest("[data-tog]");if(tg){openC=openC===tg.dataset.tog?null:tg.dataset.tog;renderCRM();return}
   const sf=e.target.closest("[data-sf]");const od=e.target.closest("[data-ord]");if(od){crmOrd=od.dataset.ord;try{LS.set("crmOrd",crmOrd)}catch(e){}renderCRM();return}if(sf){stageF=stageF===sf.dataset.sf?"Todos":sf.dataset.sf;renderCRM();return}
   const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c){notaPend(c,"wa");setTimeout(()=>stAvanza(c,"Contactado","le escribió por WhatsApp"),300)}}
@@ -8776,7 +8862,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114032410";var busy=false,pend=null;
+(function(){var V="20261114093831";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
