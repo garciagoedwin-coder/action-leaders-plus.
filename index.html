@@ -816,6 +816,26 @@ body.beta #pfFront,body.beta #pfSala,body.beta #goPrompts{display:none!important
 .pf-h{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.55;margin:12px 4px 2px}
 .mfAll{display:none!important}
 .cbody:has(.cvTop){padding-left:4px;gap:0}.scAv{font-size:13px;line-height:1.4;border-radius:12px;padding:10px 12px;background:color-mix(in srgb,#F59E0B 14%,var(--surface));color:var(--ink)}.scCh{display:flex;flex-wrap:wrap;gap:6px}.scCh button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}.scCh button.on{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 14%,var(--surface));color:var(--brand)}.scLk{font-size:11.5px;word-break:break-all;background:var(--surface-2);border-radius:10px;padding:8px 10px;color:var(--muted);margin-top:8px}.scLk[hidden]{display:none}
+body.cv2 .card:has(> #contactList){background:transparent;box-shadow:none;border:0;padding:0}
+body.cv2 #contactList>*{border-top:0}
+body.cv2 .crmord{background:var(--surface-2);border-radius:14px;padding:4px;gap:2px;margin:12px 0}
+body.cv2 .crmord button{border:0;background:transparent;border-radius:11px;padding:8px 2px;font-weight:800;color:var(--muted)}
+body.cv2 .crmord button[aria-pressed="true"]{background:var(--surface);color:var(--brand);box-shadow:0 2px 6px rgba(0,0,0,.08)}
+body.cv2 .stsum{gap:8px;margin-bottom:10px}
+body.cv2 .stsum button{position:relative;overflow:hidden;border-radius:18px;padding:12px 10px;text-align:left;font-size:12px;font-weight:800;color:#fff!important}
+body.cv2 .stsum button:after{content:"";position:absolute;right:-18px;top:-18px;width:66px;height:66px;border-radius:50%;background:rgba(255,255,255,.18)}
+body.cv2 .stsum button b{font-size:28px;line-height:1.05}
+body.cv2 .stsum [data-sf="Por cerrar"]{background:linear-gradient(135deg,#FB923C,#EA580C)!important}
+body.cv2 .stsum [data-sf="Seguimiento"]{background:linear-gradient(135deg,#FBBF24,#D97706)!important}
+body.cv2 .stsum [data-sf="Presentación"]{background:linear-gradient(135deg,#38BDF8,#0A7DAD)!important}
+.cvFrio{display:flex;align-items:center;gap:8px;width:100%;margin:0 0 4px;background:color-mix(in srgb,#F97316 10%,var(--surface));border:1px solid color-mix(in srgb,#F97316 35%,transparent);color:#C2410C;font:inherit;font-weight:800;font-size:13px;border-radius:14px;padding:10px 12px;cursor:pointer;text-align:left}.cvFrio em{margin-left:auto;font-style:normal;font-size:12.5px;color:var(--brand);white-space:nowrap}
+body.cv2 .contact{background:var(--surface);border-radius:20px;padding:12px!important;margin-top:10px;box-shadow:0 3px 12px rgba(20,33,61,.07);border-left:5px solid var(--pc)}
+body.cv2 .contact .av{background:linear-gradient(135deg,color-mix(in srgb,var(--pc) 70%,#fff),var(--pc))!important;color:#fff!important;box-shadow:0 4px 10px color-mix(in srgb,var(--pc) 35%,transparent)!important;border:0!important;font-weight:900}
+body.cv2 .contact .pbar{gap:0;max-width:none;height:6px;border-radius:6px;overflow:hidden;background:var(--surface-2);margin-top:6px}
+body.cv2 .contact .pbar i{height:6px;border-radius:0;background:transparent}
+body.cv2 .contact .pbar i.on{background:var(--pc)}
+body.cv2 .contact .stpct b{font-size:21px}
+body.cv2 .contact .stpct .chip{background:none!important;color:var(--pc)!important;padding:0!important;font-weight:800;font-size:12px;border:0!important}
 .cvNum{border-radius:18px;padding:12px;background:linear-gradient(150deg,#0B2536,#05121C);color:#fff;margin-bottom:10px}.cvNumH{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.14em;font-weight:800;color:#2AC1F1;text-transform:uppercase}.cvNumH button{border:0;border-radius:12px;padding:8px 12px;font:inherit;font-weight:900;font-size:13px;letter-spacing:0;text-transform:none;background:linear-gradient(135deg,#2AC1F1,#0A7DAD);color:#fff;cursor:pointer}.cvOr{margin-top:10px;font-size:13px}.cvOr summary{cursor:pointer;font-weight:800;color:#7FE0FF;list-style:none}.cvOr summary::-webkit-details-marker{display:none}.cvOr div{display:flex;justify-content:space-between;gap:8px;padding:7px 2px;border-top:1px solid #ffffff1a}.cvOr span{opacity:.75;white-space:nowrap}
 .cvNumG{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}.cvNumG div{background:#ffffff10;border-radius:12px;padding:8px 2px;text-align:center;font-size:10px;font-weight:700;opacity:.95}.cvNumG b{display:block;font-family:var(--f-num);font-size:22px;line-height:1.1}.cvNumG .h b{color:#FDBA74}.cvNumG .g b{color:#86EFAC}
 .cvTop{display:flex;align-items:flex-start;gap:10px;width:100%}.cvWa{width:48px;height:48px;border-radius:14px;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:22px;text-decoration:none;flex:none}
@@ -6865,21 +6885,21 @@ async function flResp(c,v){c.fl=Object.assign({h:{},r:""},c.fl||{});
   if(v==="re2"){flEnviar(c,"re2");return}
   c.fl.r=v;if(v==="nr")c.fl.h=Object.assign({},c.fl.h,{resal:Date.now()});if(v==="pen")c.fl.h=Object.assign({},c.fl.h,{rinv:Date.now()});await flGuardar(c)}
 const CERR=["Socio","Cliente"];let crmV=(()=>{try{return LS.get("crmV")||"proc"}catch(e){return "proc"}})();
-function renderCRM(){pushResumen();try{olvStrip()}catch(e){}const q=$("#crmSearch").value.trim().toLowerCase();
+function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e){}pushResumen();try{olvStrip()}catch(e){}const q=$("#crmSearch").value.trim().toLowerCase();
   if(stageF!=="Todos")crmV=CERR.includes(stageF)?"cer":"proc";
   const nCer=contacts.filter(c=>CERR.includes(c.stage)).length,nPro=contacts.length-nCer,enV=c=>!!q||(crmV==="cer"?CERR.includes(c.stage):!CERR.includes(c.stage)),VS=STAGES.filter(s=>crmV==="cer"?CERR.includes(s):!CERR.includes(s));
   {let t=$("#crmVseg");if(!t){t=document.createElement("div");t.id="crmVseg";t.className="seg";t.setAttribute("role","tablist");$("#crmSearch").before(t);t.onclick=e=>{const b=e.target.closest("button");if(!b)return;crmV=b.dataset.k;stageF="Todos";openC=null;try{LS.set("crmV",crmV)}catch(x){}renderCRM()}}
    t.hidden=!contacts.length;t.innerHTML=`<button aria-selected="${crmV==="proc"}" data-k="proc">🔥 En proceso <span style="opacity:.7">${nPro}</span></button><button aria-selected="${crmV==="cer"}" data-k="cer">✅ Cerrados <span style="opacity:.7">${nCer}</span></button>`}
   const counts={Todos:contacts.filter(enV).length};VS.forEach(s=>counts[s]=contacts.filter(c=>c.stage===s).length);
   $("#stageBar").innerHTML=["Todos"].concat(VS).map(s=>`<button aria-pressed="${s===stageF}" data-s="${s}">${s}<span class="n">${counts[s]}</span></button>`).join("");
-  const list=contacts.filter(c=>enV(c)&&(stageF==="Todos"||c.stage===stageF)&&(!q||(c.name+" "+(c.note||"")+" "+(c.seg||[]).map(x=>x.n||"").join(" ")).toLowerCase().includes(q))).sort(crmCmp());
+  const list=contacts.filter(c=>enV(c)&&(!crmFrio||stFrio(c))&&(stageF==="Todos"||c.stage===stageF)&&(!q||(c.name+" "+(c.note||"")+" "+(c.seg||[]).map(x=>x.n||"").join(" ")).toLowerCase().includes(q))).sort(crmCmp());
   if(!contacts.length){$("#contactList").innerHTML=`<div class="empty"><h3>Tu lista de contactos está vacía</h3>
     <p class="small muted">Agrega a las personas con las que quieres compartir el negocio o el producto. Registra la etapa, una nota y la fecha del próximo seguimiento.</p>
     <button class="btn gold sm" id="addFirst">Agregar mi primer contacto</button></div>`;$("#addFirst").onclick=()=>editContact();return}
   if(!list.length){$("#contactList").innerHTML=crmV==="cer"&&!q?`<div class="empty"><h3>🏁 Aún no tiene cierres</h3><p class="small muted">Cuando un contacto pase a Cliente o Socio, aparece aquí. ¡Vamos por el primero!</p></div>`:`<p class="muted small">No hay contactos en esta vista.</p>`;return}
   const nCl=contacts.filter(c=>c.stage==="Cliente").length,nSo=contacts.filter(c=>c.stage==="Socio").length;
   const cerHead=crmV==="cer"&&!q?`<div style="background:linear-gradient(135deg,#065F46,#10B981);color:#fff;border-radius:16px;padding:14px 16px;margin-bottom:8px"><div style="font-size:12px;font-weight:800;letter-spacing:.12em;opacity:.85">MI MARCADOR</div><div style="font-size:22px;font-weight:800;margin-top:2px">✅ ${nCer} ${nCer===1?"cierre":"cierres"}</div><div class="small" style="opacity:.9">${nCl} ${nCl===1?"cliente":"clientes"} · ${nSo} ${nSo===1?"socio":"socios"}. Cuídelos: un cliente feliz le da referidos.</div></div>`:"";
-  const pipeSum=crmV==="cer"&&!q?"":pipeOk()?(()=>{const n=s=>contacts.filter(c=>c.stage===s).length,fr=contacts.filter(stFrio).length;return `<div class="stsum"><button type="button" data-sf="Por cerrar" style="background:#FFEDD5;color:#C2410C"><b>${n("Por cerrar")}</b>🔥 Por cerrar</button><button type="button" data-sf="Seguimiento" style="background:#FEF3C7;color:#B45309"><b>${n("Seguimiento")}</b>🔁 Seguimiento</button><button type="button" data-sf="Presentación" style="background:#E0F2FE;color:#0369A1"><b>${n("Presentación")}</b>🎤 Presentados</button></div>${fr?`<p class="small" style="margin:0 0 6px;color:#B45309;font-weight:700">⚠️ ${fr} ${fr===1?"prospecto lleva":"prospectos llevan"} más de 7 días sin avanzar ni seguimiento</p>`:""}`})():"";
+  const pipeSum=crmV==="cer"&&!q?"":pipeOk()?(()=>{const n=s=>contacts.filter(c=>c.stage===s).length,fr=contacts.filter(stFrio).length;return `<div class="stsum"><button type="button" data-sf="Por cerrar" style="background:#FFEDD5;color:#C2410C"><b>${n("Por cerrar")}</b>🔥 Por cerrar</button><button type="button" data-sf="Seguimiento" style="background:#FEF3C7;color:#B45309"><b>${n("Seguimiento")}</b>🔁 Seguimiento</button><button type="button" data-sf="Presentación" style="background:#E0F2FE;color:#0369A1"><b>${n("Presentación")}</b>🎤 Presentados</button></div>${crmFrio?`<button type="button" class="cvFrio" data-frio="0">⚠️ Viendo solo los ${fr} sin avanzar <em>✕ Ver todos</em></button>`:fr?(crmV2On()?`<button type="button" class="cvFrio" data-frio="1">⚠️ ${fr} ${fr===1?"prospecto lleva":"prospectos llevan"} +7 días sin avanzar <em>Ver ›</em></button>`:`<p class="small" style="margin:0 0 6px;color:#B45309;font-weight:700">⚠️ ${fr} ${fr===1?"prospecto lleva":"prospectos llevan"} más de 7 días sin avanzar ni seguimiento</p>`):""}`})():"";
   const ordUI=pipeOk()?`<div class="crmord" role="group" aria-label="Ordenar contactos">${[["seg","📅 Seguimiento"],["rec","🆕 Recientes"],["pct","📈 Mayor %"]].map(([k,t])=>`<button type="button" data-ord="${k}" aria-pressed="${crmOrd===k}">${t}</button>`).join("")}</div>`:"";
   $("#contactList").innerHTML=cerHead+(crmV==="cer"||q?"":salaNums())+(crmV==="cer"&&!q?"":ordUI)+pipeSum+list.map(c=>{const cer=CERR.includes(c.stage),late=!cer&&c.next&&c.next<TODAY,today=!cer&&c.next===TODAY,op=openC===c.id;
     const k=c.stage==="Cliente"?FLOW.length:c.stage==="No interesado"?0:FLOW.indexOf(c.stage)+1,pc=STAGE_COL[c.stage]||"var(--brand)";
@@ -6901,7 +6921,7 @@ $("#stageBar").addEventListener("click",e=>{const b=e.target.closest("button");i
 $("#crmSearch").addEventListener("input",renderCRM);
 $("#bienBtn").onclick=()=>abrirBienvenida();$("#addContact").onclick=()=>editContact();
 $("#contactList").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-tog]")){e.preventDefault();e.target.click()}});
-const crmMas=new Set(),crmSt=new Set();
+const crmMas=new Set(),crmSt=new Set();let crmFrio=false;
 // 13 nov (Edwin, PRUEBA solo admin): contacto del CRM rediseñado con la presentación virtual de protagonista.
 function crmV2On(){return !!(salaOk()&&irSimple())}
 const CV_VAL={viajar:"🧳 Viajar más",ingresos:"💰 Generar ingresos",ambas:"⭐ Ambas cosas",no:"Por ahora no"};
@@ -6953,7 +6973,7 @@ function crmAhorro(c){const a=ahDe([c.email],[c.phone?waNum(c.phone,c.cc):""]),p
    <p style="margin:0">${sin?"Todavía no hay reporte de ahorros cargado.":pend?`<span class="chip c-bad" style="font-weight:700">🔴 Ahorro pendiente</span>`:`<span class="chip c-good" style="font-weight:700">🚢 Ahorro al día</span>`}</p>
    <p class="small muted" style="margin:0">${pend?"Un recordatorio a tiempo ayuda a que no pierda sus beneficios.":"No aparece en el reporte de pendientes de inCruises."}${c.email?"":" Para revisarlo mejor, agregue su correo en el contacto."}</p>
    <button class="btn" id="cahW" style="width:100%;background:#25D366;color:#fff">${pend?"💬 Recordarle su ahorro":"💬 Saludarle"}</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#cahW").onclick=()=>crmWa(c,pend?"ah":"hola")})}
-$("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNumGo")){salaCompartir();return}{const mb=e.target.closest("[data-cmas]");if(mb){const k=mb.dataset.cmas;crmMas.has(k)?crmMas.delete(k):crmMas.add(k);renderCRM();return}const so=e.target.closest("[data-stopen]");if(so){crmSt.add(so.dataset.stopen);renderCRM();return}}const st=e.target.closest("[data-st]");
+$("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNumGo")){salaCompartir();return}{const fz=e.target.closest("[data-frio]");if(fz){crmFrio=fz.dataset.frio==="1";renderCRM();return}}{const mb=e.target.closest("[data-cmas]");if(mb){const k=mb.dataset.cmas;crmMas.has(k)?crmMas.delete(k):crmMas.add(k);renderCRM();return}const so=e.target.closest("[data-stopen]");if(so){crmSt.add(so.dataset.stopen);renderCRM();return}}const st=e.target.closest("[data-st]");
   const tg=e.target.closest("[data-tog]");if(tg){openC=openC===tg.dataset.tog?null:tg.dataset.tog;renderCRM();return}
   const sf=e.target.closest("[data-sf]");const od=e.target.closest("[data-ord]");if(od){crmOrd=od.dataset.ord;try{LS.set("crmOrd",crmOrd)}catch(e){}renderCRM();return}if(sf){stageF=stageF===sf.dataset.sf?"Todos":sf.dataset.sf;renderCRM();return}
   const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c){notaPend(c,"wa");setTimeout(()=>stAvanza(c,"Contactado","le escribió por WhatsApp"),300)}}
@@ -8687,7 +8707,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261113191718";var busy=false,pend=null;
+(function(){var V="20261113192936";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
