@@ -5732,13 +5732,13 @@ function presDatos(e){const d=parseK(e.fecha),eu=/europa/i.test(e.titulo||"");
   return{dia:DAYS_L[d.getDay()].toUpperCase(),num:String(d.getDate()).padStart(2,"0"),mes:MONTHS[d.getMonth()].slice(0,3).toUpperCase(),hora:hz("America/Tegucigalpa")||h12(e.hora).toUpperCase(),Z,
     p:e.responsable||"",ed:e.edifica||"",edL:(typeof edLbl==="function"?edLbl(e):"Edifica").toUpperCase(),fondo:PRES_DIA[d.getDay()]}}
 const PRES_L={
-  h:{W:1080,H:1920,logo:["c",1598,40],live:null,kick:[189,292,702,48],a:[354,172,196],m:[528,50,40],b:[582,196,220],sub:[790,100,36,"#e3e9f2"],
+  h:{W:1080,H:1920,logo:["c",1598,40],live:null,kick:[189,292,702,48],a:[380,150,160],m:[524,48,36],b:[574,170,180],sub:[770,100,34,"#e3e9f2"],
      card:{y:926,h:334,x:[68,551],w:461,ph:[946,184],col:1,small:[1142,30,24],name:[1174,46,42],rk:[1220,30,27]},
      when:[68,1308,944,166],day:[188,22,98,24],hn:[282,1320,80,90,27],ch:[1406,48,26],ft:[1508,56],tag:0},
-  p:{W:1080,H:1350,logo:[64,65,36],live:null,kick:[179,196,722,50],a:[260,182,212],m:[448,43,34],b:[501,200,232],sub:[721,81,30,"#c9d2df"],
-     card:{y:846,h:166,x:[64,551],w:465,ph:[865,128],col:0,small:[883,21,17],name:[910,35,33],rk:[949,26,21]},
+  p:{W:1080,H:1350,logo:[64,65,36],live:null,kick:[179,196,722,50],a:[282,150,158],m:[420,40,30],b:[458,160,170],sub:[630,81,28,"#c9d2df"],
+     card:{y:752,h:236,x:[64,551],w:465,ph:[782,176],col:0,small:[808,24,18],name:[842,40,36],rk:[892,28,23]},
      when:[64,1042,952,187],day:[230,22,112,24],hn:[321,1074,68,76,22],ch:[1156,41,20],ft:[1255,62],tag:0}};
-async function presCanvas(e,fmt,fondo){fmt=fmt==="p"?"p":"h";const L=PRES_L[fmt],D=presDatos(e),cv=document.createElement("canvas");cv.width=L.W;cv.height=L.H;const g=cv.getContext("2d");
+window.__presCanvas=(...a)=>presCanvas(...a);async function presCanvas(e,fmt,fondo){fmt=fmt==="p"?"p":"h";const L=PRES_L[fmt],D=presDatos(e),cv=document.createElement("canvas");cv.width=L.W;cv.height=L.H;const g=cv.getContext("2d");
   await flFonts();const K=flKit(g),{rr,fit,tx,tx2,sombra,sp}=K;const C=540;
   fondo=PRES_FONDOS.some(x=>x.k===fondo)?fondo:D.fondo;
   g.fillStyle="#04060b";g.fillRect(0,0,L.W,L.H);const bg=await imgLoad("media/flyers/pres/"+fondo+"-"+fmt+".jpg?v=2");if(bg)g.drawImage(bg,0,0,L.W,L.H);
@@ -5773,7 +5773,7 @@ async function presCanvas(e,fmt,fondo){fmt=fmt==="p"?"p":"h";const L=PRES_L[fmt]
       tx(lab,cx,cd.small[0],cd.small[1],"700 "+cd.small[2]+"px ALO, Figtree, sans-serif",FL_GOLD,"center","4px");
       fit(nd,"700 {s}px ALBG, Figtree, sans-serif",cd.name[2],w-36,24);tx(nd,cx,cd.name[0],cd.name[1],g.font,"#fff","center");
       if(rg){fit(rg,"400 {s}px ALOR, Figtree, sans-serif",cd.rk[2],w-36,16);tx(rg,cx,cd.rk[0],cd.rk[1],g.font,"#b9c3d1","center")}}
-    else{const R=cd.ph[1]/2,cx=x+21+R,tx0=x+169,mw=x+w-tx0-16;await flFoto(g,flFotoDe(n),n,cx,cd.ph[0]+R,R,5,4);
+    else{const R=cd.ph[1]/2,cx=x+21+R,tx0=x+21+cd.ph[1]+20,mw=x+w-tx0-16;await flFoto(g,flFotoDe(n),n,cx,cd.ph[0]+R,R,5,4);
       tx(lab,tx0,cd.small[0],cd.small[1],"700 "+cd.small[2]+"px ALO, Figtree, sans-serif",FL_GOLD,"left","4px");
       fit(nd,"700 {s}px ALBG, Figtree, sans-serif",cd.name[2],mw,20);tx(nd,tx0,cd.name[0],cd.name[1],g.font,"#fff","left");
       if(rg){fit(rg,"400 {s}px ALOR, Figtree, sans-serif",cd.rk[2],mw,14);tx(rg,tx0,cd.rk[0],cd.rk[1],g.font,"#b9c3d1","left")}}}
