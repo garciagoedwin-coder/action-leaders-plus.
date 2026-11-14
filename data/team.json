@@ -4891,11 +4891,6 @@
      "a": 6
     },
     {
-     "n": "Carlos Alberto Rubio Valladares",
-     "p": 900,
-     "a": 4
-    },
-    {
      "n": "Nuvia Martínez Hernández",
      "p": 850,
      "a": 7
@@ -4903,6 +4898,11 @@
     {
      "n": "Tesla Gomez",
      "p": 850,
+     "a": 4
+    },
+    {
+     "n": "Carlos Alberto Rubio Valladares",
+     "p": 800,
      "a": 4
     },
     {
@@ -5521,7 +5521,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-14T17:23:01Z"
+   "t": "2026-11-14T22:56:18Z"
   },
   "audioEsp": {
    "id": "santiago-1",
