@@ -1208,7 +1208,7 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
 body.acc3 #rutCard{border-top:0}
 body.acc3 #tasks .task.t3d{display:none}body.acc3 #tasks .task{gap:10px}body.acc3 #tasks .task .grow{font-size:14.5px;line-height:1.3}body.acc3 #tasks .task .grow .small{font-size:12px}body.acc3 #tasks .counter button{width:28px;height:28px}
 #rutChips{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 2px}#rutChips[hidden]{display:none}#rutChips button{border:0;background:#DCFCE7;color:#15803D;border-radius:999px;padding:6px 11px;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}#rutChips button.on{background:#15803D;color:#fff}
-body.acc3 #rutCard.rc3{position:relative;background:linear-gradient(180deg,color-mix(in srgb,var(--brand) 15%,var(--surface)),color-mix(in srgb,var(--brand) 9%,var(--surface)))!important;border:0!important;box-shadow:0 6px 22px rgba(10,125,173,.14)}
+body.acc3 #rutCard.rc3{position:relative;background:var(--surface)!important;border:0!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--brand) 18%,transparent),0 6px 20px color-mix(in srgb,var(--brand) 14%,transparent)}
 #rutCard.rc3 .rc3B{position:absolute;inset:0;border-radius:inherit;padding:2.5px;pointer-events:none;z-index:0;background:conic-gradient(from 0deg,#F97316 0 var(--rp,0%),color-mix(in srgb,var(--line) 90%,transparent) var(--rp,0%) 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;transition:--rp .8s ease}
 #rutCard.rc3.rc3ok .rc3B{background:#16A34A}#rutCard.rc3.rc3ok{box-shadow:0 0 0 4px rgba(22,163,74,.13),0 4px 18px rgba(20,33,61,.06)!important}
 #rutCard.rc3.rc3ok .rs3 i.on{background:#16A34A}#rutCard.rc3.rc3ok .rs3t b{color:#15803D}
@@ -2075,7 +2075,7 @@ setInterval(()=>{try{if(!fbUser||TODAY<HFLY_DESDE)return;const k=!!presHoyPend()
 function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histSync())saveDay();
   $("#tasks").innerHTML=ROUTINE.map(r=>{const v=day[r.k]||0,done=v>=1;
     if(r.type==="check")return `<div class="task"><button class="check" aria-pressed="${done}" data-k="${r.k}" aria-label="Marcar ${esc(r.t)}">${done?CHECK:""}</button><span class="grow"><span class="${done?"done-t":""}">${esc(r.k==="historia"&&presHoyL().length?"📸 Publique sus 2 historias del día":r.t)}</span>${r.k==="audio"?npRutHTML():""}${r.k==="historia"?histSubHTML(done):r.sub&&!done?`<br><span class="small muted">${esc(r.sub)}</span>`:r.nota?`<br><span class="small muted">${esc(r.nota)}</span>`:""}${r.link&&!(r.k==="audio"&&npActivo())?`<br><a class="chip c-good" style="display:inline-flex;margin-top:6px;text-decoration:none;font-weight:700" href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.linkT||"Abrir")}</a>`:""}</span></div>`;
-    return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:""}</span><span class="grow ${done?"done-t":""}">${esc(r.t)}<br><span class="small muted">${(day[r.lk]||[]).length?r.ic+" "+day[r.lk].map(x=>esc(String(x.n).split(" ")[0])).join(", "):v?"Mínimo 1"+(r.goal>1?" · ideal "+r.goal:""):esc(r.vac||"")}</span></span>
+    return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:""}</span><span class="grow ${done?"done-t":""}">${esc(acc3On()&&RT3N[r.k]||r.t)}<br><span class="small muted">${(day[r.lk]||[]).length?r.ic+" "+day[r.lk].map(x=>esc(String(x.n).split(" ")[0])).join(", "):v?"Mínimo 1"+(r.goal>1?" · ideal "+r.goal:""):esc(r.vac||"")}</span></span>
       <span class="counter"><button data-dec="${r.k}" aria-label="Restar">−</button><span class="num">${v}</span><button data-inc="${r.k}" aria-label="Sumar">+</button></span></div>`}).join("");
   const p=Math.round(dayScore(day)*100),RL=ROUTINE.filter(r=>!r.desde||TODAY>=r.desde),hechas=RL.filter(r=>(day[r.k]||0)>=1).length;$("#dayPct").textContent=hechas+" de "+RL.length;$("#dayBar").style.width=p+"%";
   const pend=RL.filter(r=>!((day[r.k]||0)>=1)),falta=pend.length,ra=$("#rutAlert");
@@ -2089,6 +2089,7 @@ function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histS
     const g=ra.querySelector("[data-rgo]");if(g)g.onclick=()=>{const k=g.dataset.rgo,t=$("#tasks");const el=k==="historia"?(day.hAtr&&t.querySelector("[data-hfly]"))||t.querySelector("[data-hist]"):t.querySelector(`[data-k="${k}"]`)||t.querySelector(`[data-inc="${k}"]`);if(el)el.click()}}}
   try{rut3(hechas,RL.length)}catch(e){}declAccMarca();rutFold(!falta);const rc=$("#rutCard");if(rc)rc.classList.toggle("done",!falta);clearTimeout(window._rcT);window._rcT=setTimeout(()=>{try{renderComp(true)}catch(e){}},400);
 }
+const RT3N={contactos:"📝 Nuevos contactos",presentaciones:"🎯 Presentar mi negocio",seguimientos:"🔁 Hacer seguimiento"};
 function rut3(h,n){const rc=$("#rutCard");if(!rc)return;let s=$("#rutSeg");if(!acc3On()){if(s)s.remove();return}
   if(!s){s=document.createElement("div");s.id="rutSeg";const bar=$("#dayBar"),row=bar&&bar.closest(".row");if(row)row.after(s);else rc.prepend(s)}
   const rach=(()=>{try{return +(String(($("#rutRacha")||{}).textContent||"").match(/\d+/)||[0])[0]}catch(e){return 0}})();
@@ -2096,7 +2097,7 @@ function rut3(h,n){const rc=$("#rutCard");if(!rc)return;let s=$("#rutSeg");if(!a
   // 14 nov (Edwin): lo hecho sube a chips; en la lista solo queda lo que falta (con su número de siempre) + contorno que avanza
   rc.classList.add("rc3");rc.style.setProperty("--rp",Math.round(h*100/Math.max(1,n))+"%");rc.classList.toggle("rc3ok",h>=n);
   if(!rc.querySelector(".rc3B")){const b=document.createElement("i");b.className="rc3B";rc.prepend(b)}
-  const CH={historia:"Historia del día",audio:"Auto desarrollo",contactos:"Agregar",presentaciones:"Presentar",seguimientos:"Seguimiento"};
+  const CH={historia:"Historia del día",audio:"Auto desarrollo",contactos:"Nuevos contactos",presentaciones:"Presentar mi negocio",seguimientos:"Hacer seguimiento"};
   const rows=[...$("#tasks").children],L=[];
   ROUTINE.forEach((r,i)=>{const row=rows[i];if(!row)return;const ok=(day[r.k]||0)>=1,num=row.querySelector(".check,.step-n");if(num)num.dataset.n=i+1;
     const ver=window._rt3V===r.k;row.classList.toggle("t3d",ok&&!ver);if(ok&&(!r.desde||TODAY>=r.desde))L.push(`<button type="button" class="${ver?"on":""}" data-rt3="${r.k}">✓ ${esc(CH[r.k]||String(r.t||"").replace(/^\S+\s/,""))}</button>`)});
@@ -9033,7 +9034,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114153015";var busy=false,pend=null;
+(function(){var V="20261114153739";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

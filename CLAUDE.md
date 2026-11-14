@@ -863,3 +863,4 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - (14 nov, SOLO ADMIN acc3On) Rutina v6: lo hecho sube a chips verdes (#rutChips, rut3; tocar «Historia» abre abrirHist, los demás muestran esa fila otra vez con window._rt3V) y en la lista quedan solo los pendientes con su número de siempre (data-n); contorno que avanza (.rc3B, conic con --rp = hechos/total; verde y brillo al completar); fondo con 6 % del color de marca; al completar ya no se pliega (rutFold no oculta para acc3).
 
 - (14 nov) Rutina v6: fondo de la tarjeta en celeste suave (degradado brand 15%→9% sobre --surface) + sombra azul, porque con 6% se confundía con el fondo de la app.
+- (14 nov) Rutina v6: vuelve a fondo blanco (var(--surface)) con realce celeste (anillo 1px brand 18% + sombra brand 14%). Nombres nuevos SOLO con acc3On (RT3N): 📝 Nuevos contactos, 🎯 Presentar mi negocio, 🔁 Hacer seguimiento; chips CH iguales. ROUTINE.t y nx (Siguiente paso) sin cambio.
