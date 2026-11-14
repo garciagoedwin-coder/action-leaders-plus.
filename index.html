@@ -1361,6 +1361,12 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .rc3Row .nm{display:block;font-size:15px;font-weight:700}.rc3Row small{display:block;font-size:12px;color:var(--muted)}
 .rc3N{text-align:right;flex:none}.rc3N b{font:700 26px 'Barlow Condensed',sans-serif;color:#EA580C;line-height:1;display:block}.rc3N small{font-size:11px;color:var(--muted)}
 .rc3S .rc3K{display:block;font:800 10.5px Figtree,sans-serif;letter-spacing:.1em;color:#B45309;margin-bottom:2px}
+
+/* Modo entrada (14 nov) */
+.enBar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin-top:6px}.enBar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#16A34A,#22C55E);transition:width .4s}
+.enR{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.enR b{display:block;font-weight:700;font-size:15px}.enR small{display:block;color:var(--muted);font-size:12.5px}.enR.ok b{color:#15803D}
+.enOk{background:#16A34A!important;color:#fff!important;flex:none}
+.enNew{display:flex;flex-direction:column;gap:8px;border:2px solid #EA580C;border-radius:14px;padding:12px;margin:8px 0}
 </style>
 
 </head>
@@ -6465,12 +6471,13 @@ async function evaVer(e){let file=null;const o=evaDatos(e),mio=e.cre===store.uid
    ${e.form?`<a class="btn ghost" href="${esc(safeUrl(e.form)||"#")}" target="_blank" rel="noopener" style="width:100%">📝 Ver formulario de registro</a>`:""}
    <div id="evaRsL"></div>
    <button class="btn ghost" id="evaRsvp" style="width:100%">📝 Confirmados <span id="evaRsvpN"></span></button>
+   ${e.modo!=="virtual"&&entPuede(e)?`<button class="btn" id="evaEnt" style="width:100%;background:#0F2340;color:#fff">🚪 Modo entrada · marcar quién llegó</button>`:""}${e.modo!=="virtual"&&entAdm(e)?`<button class="btn ghost" id="evaEntA" style="width:100%">👤 Encargados de la entrada${(e.ent||[]).length?" · "+(e.entN||[]).map(n=>String(n).split(" ")[0]).join(", "):""}</button>`:""}
    <button class="btn" id="evaInvB" style="width:100%;background:#25D366;color:#fff">📣 Invitar a mis prospectos${(LS.get("evInv:"+e.id)||[]).length?" ("+(LS.get("evInv:"+e.id)||[]).length+" invitados)":""}</button>${(LS.get("evInv:"+e.id)||[]).length?`<button class="btn ${e.fecha===TODAY?"gold":"ghost"}" id="evaRec" style="width:100%">⏰ Recordar a mis invitados</button>`:""}
    <div class="row" style="gap:8px"><button class="btn ghost grow" id="evaDl">⬇️ Guardar flyer</button><button class="btn ghost grow" id="evaTx">📋 Copiar script</button></div>
    ${mio||(e.lidU||[]).includes(store.uid)?`<button class="btn ghost" id="evaVis" style="width:100%">${evaAbierta(e)?"🔒 Volver a solo mi línea":"🌎 Abrir para todos los socios"}</button>`:""}
 ${mio||(e.lidU||[]).includes(store.uid)||isAdmin?`<button class="btn ghost" id="evaEd" style="width:100%">✏️ Editar fecha, hora, lugar o ponentes</button>`:""}${mio||(e.lidU||[]).includes(store.uid)||isAdmin?`<button class="btn ghost" id="evaDel" style="width:100%;color:var(--bad)">🗑️ Cancelar ${e.tipo==="gran"?"este evento":"esta junta"}${mio||(e.lidU||[]).includes(store.uid)?"":" (admin)"}</button>`:""}${isAdmin?`<button class="btn ghost" id="evaBor" style="width:100%;color:var(--bad);font-size:13px">⛔ Eliminar definitivamente (admin)</button>`:""}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     evaFile(o).then(f=>{file=f;const im=$("#evaImg"),w=$("#evaW");if(im){im.src=URL.createObjectURL(f);if(w)w.remove()}}).catch(()=>toast("No se pudo crear el flyer"));
-    $("#evaInvB").onclick=()=>{closeSheet();setTimeout(()=>evaInvitar(e),250)};$("#evaRsvp").onclick=()=>{closeSheet();setTimeout(()=>rsvpVer(e),250)};rsvpCuenta(e).then(n=>{const x=$("#evaRsvpN");if(x&&n!=null)x.textContent="· "+n;rsvpInline(e)}).catch(()=>{});
+    $("#evaInvB").onclick=()=>{closeSheet();setTimeout(()=>evaInvitar(e),250)};{const b1=$("#evaEnt");if(b1)b1.onclick=()=>{closeSheet();setTimeout(()=>entModo(e),250)};const b2=$("#evaEntA");if(b2)b2.onclick=()=>{closeSheet();setTimeout(()=>entAsignar(e),250)}}$("#evaRsvp").onclick=()=>{closeSheet();setTimeout(()=>rsvpVer(e),250)};rsvpCuenta(e).then(n=>{const x=$("#evaRsvpN");if(x&&n!=null)x.textContent="· "+n;rsvpInline(e)}).catch(()=>{});
     if(mio&&!e.vL)rsvpFixVL(e);{const el=$("#evaEd");if(el)el.onclick=()=>{closeSheet();setTimeout(()=>evaEditar(e),250)}}const ev=$("#evaVis");if(ev)ev.onclick=()=>{if(!confirmar2(ev))return;evaVisCambiar(e)};const er=$("#evaRec");if(er)er.onclick=()=>{closeSheet();setTimeout(()=>recLista(recEva(e)),250)};
     $("#evaTx").onclick=async()=>{let lk="";try{if(await rsvpPrep(e)){lk=rsvpLink(e);LS.set("rsvpI:"+e.id,1);if(!LS.get("rsvpSeen:"+e.id))LS.set("rsvpSeen:"+e.id,[])}}catch(x){}try{await navigator.clipboard.writeText(evaScript(e,"",lk));toast("Script copiado ✓")}catch(x){toast("No se pudo copiar")}};
     $("#evaDl").onclick=async()=>{if(!file){toast("El flyer aún se está creando");return}if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file]});return}catch(x){if(x&&x.name==="AbortError")return}}const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click()};
@@ -6515,12 +6522,58 @@ function rsvpLinkL(e){const o={...(e.bx?{bx:1,bt:String(e.bxT||BX_T).slice(0,34)
 function rsvpVL(lidU){const R=miRegistro()||{},S=new Set([store.uid,...(lidU||[])]);
   (Array.isArray(R.linea)?R.linea:[]).forEach(u=>{const f=(fotosFs||[]).find(x=>x.id===u),n=f&&(f.invNombre||f.nombre);if(n&&rangoActualIdx({},n)>=1)S.add(u)});return [...S].filter(Boolean)}
 async function rsvpFixVL(e){try{const vL=rsvpVL(e.lidU);await evCol().doc(e.id).set({vL},{merge:true});e.vL=vL}catch(x){}}
-const rsvpTodo=e=>isAdmin||e.cre===store.uid||(e.lidU||[]).includes(store.uid)||(e.vL||[]).includes(store.uid);
+const rsvpTodo=e=>isAdmin||e.cre===store.uid||(e.lidU||[]).includes(store.uid)||(e.vL||[]).includes(store.uid)||(e.ent||[]).includes(store.uid);
 const rsvpCol=e=>store.db.collection("agendaEv/"+e.id+"/rsvp");
 async function rsvpLeer(e){const q=await(rsvpTodo(e)?rsvpCol(e).get():rsvpCol(e).where("de",store.uid).get());return q.docs.map(d=>Object.assign({id:d.id},d.data())).sort((a,b)=>(b.t||0)-(a.t||0))}
 const rsvpN={};async function rsvpCuenta(e){if(rsvpN[e.id]&&Date.now()-rsvpN[e.id].t<6e4)return rsvpN[e.id].n;const L=await rsvpLeer(e);rsvpN[e.id]={n:L.length,t:Date.now(),L};return L.length}
 function rsvpMsg(e,r){if(evaCamPend(e,r))return evaCamMsg(e,r);const f=String(r.n||"").split(" ")[0],cu=e.fecha===TODAY?"*hoy*":e.fecha===addD(TODAY,1)?"*mañana*":"el *"+lzFechaTxt(e.fecha)+"*";
   return [`¡Hola, ${f}! 👋`,"",`Le recuerdo ${e.bx?"el *"+evaLarga(e)+"*":e.tipo==="gran"?"el *Gran evento de negocios*":"la *Junta de negocios*"} ${cu} a las *${h12(e.hora)}*.`,""].concat(e.modo==="virtual"?["🎥 Le comparto el enlace de Zoom en un momento."]:[`📍 ${e.lugar||""}${e.lugarSub?", "+e.lugarSub:""}`].concat(e.maps?["","🗺️ Cómo llegar:",e.maps]:[])).concat(["","¡Le espero! 🙌"]).join("\n")}
+
+// ---------- Modo entrada de juntas/eventos (14 nov, Edwin) ----------
+// El creador (o anfitrión/admin) asigna encargados de la entrada de su línea: agendaEv.ent[] (uids) y entN[] (nombres).
+// En la puerta: agendaEv/{id}/lleg/{rsvpId} {t, por, pn, p?} = llegó (p:1 = llegó sin confirmar, se crea su rsvp ahí mismo).
+const entPuede=e=>isAdmin||e.cre===store.uid||(e.lidU||[]).includes(store.uid)||(e.ent||[]).includes(store.uid);
+const entAdm=e=>isAdmin||e.cre===store.uid||(e.lidU||[]).includes(store.uid);
+const llegCol=e=>store.db.collection("agendaEv/"+e.id+"/lleg");
+function entAsignar(e){let sel=(e.ent||[]).map((u,i)=>({uid:u,n:(e.entN||[])[i]||""})),q="";
+  const yoL=(miRegistro().linea||[]),P=(fotosFs||[]).filter(f=>f.invNombre&&f.id!==e.cre&&(isAdmin||(f.linea||[]).includes(e.cre)||yoL.includes(f.id))).map(f=>({uid:f.id,n:f.invNombre})).sort((a,b)=>String(a.n).localeCompare(b.n,"es"));
+  openSheet(`<p class="eyebrow">MODO ENTRADA</p><h3 style="margin:4px 0 6px">🚪 Encargados de la entrada</h3><p class="small muted" style="margin:0 0 10px">Elija a quién(es) de su línea van a recibir a los invitados en la puerta. Verán la lista de confirmados y marcarán «✅ Llegó».</p>
+   <div id="enS" style="display:flex;flex-direction:column;gap:6px"></div><input class="inp" id="enQ" type="search" placeholder="🔍 Buscar socio de su línea" style="margin-top:8px"><div id="enG" style="display:flex;flex-direction:column;gap:4px;margin-top:6px"></div>
+   <button class="btn" id="enOk" style="width:100%;margin-top:12px">Guardar</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cancelar</button>`,()=>{
+   const pinta=()=>{$("#enS").innerHTML=sel.length?sel.map((x,i)=>`<div class="row between" style="gap:8px;border:1px solid var(--line);border-radius:12px;padding:6px 8px">${avV(x.n,x.uid)}<b class="grow" style="font-weight:600;min-width:0">${esc(nv(x.n))}</b><button type="button" class="btn sm ghost" data-enx="${i}">✕</button></div>`).join(""):`<p class="small muted" style="margin:0">Aún no hay encargados. Usted y los anfitriones siempre pueden marcar llegadas.</p>`};
+   const sug=()=>{const Q=nrmN(q);$("#enG").innerHTML=Q.length<2?"":P.filter(x=>!sel.some(y=>y.uid===x.uid)&&nrmN(x.n).includes(Q)).slice(0,6).map(x=>`<button type="button" class="ep-it" data-enp="${esc(x.uid)}">${avV(x.n,x.uid)}<b class="grow" style="font-weight:600;text-align:left">${esc(nv(x.n))}</b></button>`).join("")||`<p class="small muted" style="margin:6px 0">No está en su línea o no está en la app.</p>`};
+   pinta();$("#enQ").oninput=x=>{q=x.target.value;sug()};
+   $("#enG").onclick=x=>{const b=x.target.closest("[data-enp]");if(!b)return;const f=P.find(y=>y.uid===b.dataset.enp);if(f&&sel.length<6){sel.push(f);q="";$("#enQ").value="";sug();pinta()}};
+   $("#enS").onclick=x=>{const b=x.target.closest("[data-enx]");if(!b)return;sel.splice(+b.dataset.enx,1);pinta()};
+   $("#enOk").onclick=async()=>{const ent=sel.map(x=>x.uid),entN=sel.map(x=>x.n),up={ent,entN};
+     if(!(e.ver||[]).includes("all")){const add=ent.map(u=>"u:"+u);up.ver=[...new Set((e.ver||[]).concat(add))];if(e.verP)up.verP=[...new Set(e.verP.concat(add))]}
+     try{await store.db.doc("agendaEv/"+e.id).update(up);Object.assign(e,up);closeSheet();toast("Encargados de la entrada guardados ✓")}catch(x){toast("No se pudo guardar ("+errCod(x)+")")}}})}
+async function entModo(e){let L=[],G={},q="",ver="p";const yoN=miNombreCorto()||"";
+  openSheet(`<p class="eyebrow">🚪 MODO ENTRADA · ${esc(e.bx?evaNom(e):e.tipo==="gran"?"GRAN EVENTO":"JUNTA")}</p><h3 style="margin:4px 0 2px" id="enT">Cargando…</h3><div class="enBar"><i id="enB"></i></div>
+   <div class="row" style="gap:6px;margin:10px 0 6px"><input class="inp grow" id="enQ2" type="search" placeholder="🔍 Buscar por nombre"><button class="btn sm ghost" id="enR" title="Actualizar">↻</button></div>
+   <div class="seg" id="enV"><button aria-selected="true" data-env="p">⏳ Por llegar</button><button aria-selected="false" data-env="l">✅ Llegaron</button></div>
+   <div id="enL"></div><button class="btn" id="enN" style="width:100%;margin-top:10px;background:#EA580C">➕ Llegó sin confirmar</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,async()=>{
+   const carga=async()=>{try{const [a,b]=await Promise.all([rsvpCol(e).get(),llegCol(e).get()]);L=a.docs.map(d=>Object.assign({id:d.id},d.data()));G={};b.docs.forEach(d=>G[d.id]=d.data());pinta()}catch(x){$("#enT").textContent="No se pudo cargar";$("#enL").innerHTML=`<p class="small muted">Si el error sigue, hay que pegar las reglas nuevas en Firebase (${esc(errCod(x))}).</p>`}};
+   const pinta=()=>{const n=L.length,ll=L.filter(r=>G[r.id]).length;$("#enT").textContent=`Llegaron ${ll} de ${n}`;$("#enB").style.width=(n?Math.round(ll*100/n):0)+"%";
+     $("#enV").querySelectorAll("[data-env]").forEach(b=>{b.setAttribute("aria-selected",b.dataset.env===ver);b.textContent=b.dataset.env==="p"?`⏳ Por llegar · ${n-ll}`:`✅ Llegaron · ${ll}`});
+     const Q=nrmN(q),R=L.filter(r=>(ver==="l")===!!G[r.id]&&(!Q||nrmN(r.n).includes(Q)||String(r.w||"").includes(q.replace(/\D/g,"")||"~"))).sort((a,b)=>ver==="l"?(G[b.id].t-G[a.id].t):String(a.n).localeCompare(b.n,"es"));
+     $("#enL").innerHTML=R.length?R.map(r=>{const g=G[r.id];return `<div class="enR${g?" ok":""}"><span class="grow" style="min-width:0"><b>${esc(r.n)}</b><small>Invitado por ${esc(String(r.dn||"—").split(" ")[0])}${g?" · llegó "+esc(new Date(g.t).toLocaleTimeString("es-HN",{hour:"numeric",minute:"2-digit"}))+(g.p?" · sin confirmar":""):""}</small></span>${g?`<button type="button" class="btn sm ghost" data-enu="${esc(r.id)}">Deshacer</button>`:`<button type="button" class="btn sm enOk" data-enl="${esc(r.id)}">✅ Llegó</button>`}</div>`}).join(""):`<p class="small muted" style="margin:10px 0">${Q?"No hay nadie con ese nombre. Si vino sin confirmar, toque «➕ Llegó sin confirmar».":ver==="l"?"Todavía no ha llegado nadie.":"¡Ya llegaron todos! 🎉"}</p>`};
+   $("#enQ2").oninput=x=>{q=x.target.value;pinta()};$("#enR").onclick=()=>carga();
+   $("#enV").onclick=x=>{const b=x.target.closest("[data-env]");if(!b)return;ver=b.dataset.env;pinta()};
+   $("#enL").onclick=async x=>{const ok=x.target.closest("[data-enl]"),un=x.target.closest("[data-enu]");
+     if(ok){const id=ok.dataset.enl,d={t:Date.now(),por:store.uid,pn:yoN};ok.disabled=true;try{await llegCol(e).doc(id).set(d);G[id]=d;try{navigator.vibrate&&navigator.vibrate(30)}catch(z){}pinta()}catch(z){ok.disabled=false;toast("No se pudo marcar ("+errCod(z)+")")}}
+     if(un){if(!confirmar2(un))return;const id=un.dataset.enu;try{await llegCol(e).doc(id).delete();delete G[id];pinta()}catch(z){toast("No se pudo ("+errCod(z)+")")}}};
+   $("#enN").onclick=()=>entNuevo(e,L,G,()=>{ver="l";pinta()});
+   await carga()})}
+function entNuevo(e,L,G,fin){const inv={};(e.lid||[]).forEach(x=>inv[x.uid]=x.n);L.forEach(r=>{if(r.de&&r.dn)inv[r.de]=r.dn});if(e.cre)inv[e.cre]=e.creN||inv[e.cre]||"";
+  const op=Object.keys(inv).filter(u=>inv[u]).sort((a,b)=>String(inv[a]).localeCompare(inv[b],"es"));
+  const box=document.createElement("div");box.className="enNew";box.innerHTML=`<b>➕ Llegó sin confirmar</b><input class="inp" id="ennN" placeholder="Nombre completo" maxlength="60"><input class="inp" id="ennW" type="tel" inputmode="tel" placeholder="WhatsApp (ej. 9581 5838)" maxlength="15"><select class="inp" id="ennI"><option value="">¿Quién lo invitó?</option>${op.map(u=>`<option value="${esc(u)}">${esc(inv[u])}</option>`).join("")}<option value="-">Nadie / no sabe</option></select><button class="btn" id="ennOk" style="width:100%">✅ Registrar y marcar que llegó</button>`;
+  const l=$("#enL");l.parentNode.insertBefore(box,l);$("#enN").hidden=true;$("#ennN").focus();
+  $("#ennOk").onclick=async()=>{const n=$("#ennN").value.trim().replace(/\s+/g," "),w=$("#ennW").value.replace(/\D/g,""),iv=$("#ennI").value;
+    if(n.length<2){toast("Escriba el nombre");return}if(w.length<7){toast("Escriba su WhatsApp");return}if(!iv){toast("Elija quién lo invitó");return}
+    const de=iv==="-"?"":iv,dn=iv==="-"?"":String(inv[iv]||"").slice(0,60),id="p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),now=Date.now();
+    $("#ennOk").disabled=true;try{await rsvpCol(e).doc(id).set({n:n.slice(0,60),w:w.slice(0,15),cc:w.length>8?"":"504",de,dn,t:now});const g={t:now,por:store.uid,pn:miNombreCorto()||"",p:1};await llegCol(e).doc(id).set(g);
+      L.push({id,n,w,de,dn,t:now});G[id]=g;box.remove();$("#enN").hidden=false;toast("✅ "+n.split(" ")[0]+" registrado");fin&&fin()}catch(z){$("#ennOk").disabled=false;toast("No se pudo registrar ("+errCod(z)+")")}}}
 async function rsvpVer(e){let L=[];openSheet(`<h2>📝 Confirmados</h2><p class="small muted" style="margin:0">${esc(e.bx?evaLarga(e):e.tipo==="gran"?"Gran evento":"Junta de negocios")} · ${esc(e.ciudad||"En línea")} · ${esc(evaCuando(e))}</p><div id="rsL"><p class="small muted">Cargando…</p></div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,async()=>{
   try{L=await rsvpLeer(e);rsvpN[e.id]={n:L.length,t:Date.now(),L}}catch(x){$("#rsL").innerHTML=`<p class="small muted">No se pudo cargar la lista. Si el error sigue, hay que pegar las reglas nuevas en Firebase.</p>`;return}
   const todo=rsvpTodo(e),mios=L.filter(r=>r.de===store.uid).length,G={};L.forEach(r=>{const k=r.de===store.uid?"Usted":(r.dn||"Sin nombre");(G[k]=G[k]||[]).push(r)});
@@ -9113,7 +9166,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114173423";var busy=false,pend=null;
+(function(){var V="20261114175333";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

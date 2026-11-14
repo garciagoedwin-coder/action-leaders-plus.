@@ -148,8 +148,18 @@ service cloud.firestore {
         || request.auth.uid == get(/databases/$(database)/documents/agendaEv/$(eid)).data.cre
         || request.auth.uid in get(/databases/$(database)/documents/agendaEv/$(eid)).data.get('lidU', [])
         || request.auth.uid in get(/databases/$(database)/documents/agendaEv/$(eid)).data.get('vL', [])
+        || request.auth.uid in get(/databases/$(database)/documents/agendaEv/$(eid)).data.get('ent', [])
         || isAdmin());
       allow update, delete: if false;
+    }
+    // ---- Modo entrada: quién llegó (14 nov) ----
+    match /agendaEv/{eid}/lleg/{rid} {
+      allow read, create, delete: if request.auth != null && (
+        request.auth.uid == get(/databases/$(database)/documents/agendaEv/$(eid)).data.cre
+        || request.auth.uid in get(/databases/$(database)/documents/agendaEv/$(eid)).data.get('lidU', [])
+        || request.auth.uid in get(/databases/$(database)/documents/agendaEv/$(eid)).data.get('ent', [])
+        || isAdmin());
+      allow update: if false;
     }
     // ---- Red de inCruises: cierre de mes (31/10/2026) ----
     match /red/{id} {
