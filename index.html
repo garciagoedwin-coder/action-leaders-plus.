@@ -6468,14 +6468,27 @@ function audAbrir(a){a=a||audCfg();if(!a)return;LS.set("aud:"+a.id,1);
     <div class="audW" id="audW">${Array.from({length:34},(_,i)=>`<i style="--h:${18+Math.round(Math.abs(Math.sin(i*1.7)*70+Math.cos(i*.6)*12))}%;--d:${(i%7)*.09}s"></i>`).join("")}</div>
     <div class="audBar" id="audBar"><s id="audS"></s></div><div class="audTm"><span id="audA">0:00</span><span id="audD">${audFmt(a.dur)}</span></div>
     ${a.sub?`<p class="audSub">${esc(a.sub)}</p>`:""}<audio id="audEl" preload="auto" src="${esc(a.src)}"></audio></div>
-   <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{
+   ${isAdmin?`<button class="btn" id="audQ" style="width:100%;margin-top:10px">👂 Quiénes lo escucharon</button>`:""}
+   <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{if($("#audQ"))$("#audQ").onclick=()=>audQuien(a);
     const au=$("#audEl"),pb=$("#audP"),w=$("#audW");try{confeti($("#sheet .audC"),70)}catch(x){}
     const set=()=>{const p=au.paused;pb.textContent=p?"▶":"❚❚";w.classList.toggle("on",!p)};
     pb.onclick=()=>{au.paused?au.play().catch(()=>toast("Toque de nuevo para escuchar")):au.pause()};
-    au.onplay=set;au.onpause=set;au.onended=()=>{set();$("#audS").style.width="100%";LS.set("audFin:"+a.id,1);toast("🙌 ¡Gracias por escucharlo!")};
+    let marcado=false;au.onplay=()=>{set();if(!marcado){marcado=true;audMarca(a,"p")}};au.onpause=set;au.onended=()=>{set();$("#audS").style.width="100%";LS.set("audFin:"+a.id,1);audMarca(a,"f");toast("🙌 ¡Gracias por escucharlo!")};
     au.onloadedmetadata=()=>{if(au.duration&&isFinite(au.duration))$("#audD").textContent=audFmt(au.duration)};
     au.ontimeupdate=()=>{const d=au.duration||a.dur||1;$("#audS").style.width=Math.min(100,au.currentTime/d*100)+"%";$("#audA").textContent=audFmt(au.currentTime)};
     $("#audBar").onclick=ev=>{const r=$("#audBar").getBoundingClientRect(),d=au.duration||a.dur;if(d)au.currentTime=Math.max(0,Math.min(1,(ev.clientX-r.left)/r.width))*d}})}
+// quién lo escuchó: constancia/{uid}.aud[id] = {p: empezó, f: terminó} (+u para el resumen team/constres). Sin reglas nuevas.
+function audMarca(a,k){try{if(!store.db||!store.uid||esSoloAdminYo())return;const m=LS.get("audM:"+a.id)||{};if(m[k])return;m[k]=1;LS.set("audM:"+a.id,m);
+  store.db.doc("constancia/"+store.uid).set({u:Date.now(),nombre:miNombreFull()||miRegistro().nombre||"",aud:{[a.id]:{[k]:Date.now()}}},{merge:true}).catch(()=>{})}catch(e){}}
+async function audQuien(a){openSheet(`<p class="muted small">Cargando…</p>`);try{await loadConst(true)}catch(e){}
+  const L=(constL||[]).filter(x=>x.aud&&x.aud[a.id]).map(x=>({n:x.nombre||"",u:x.uid||x.id,f:x.aud[a.id].f,p:x.aud[a.id].p})),F=L.filter(x=>x.f).sort((x,y)=>y.f-x.f),P=L.filter(x=>!x.f).sort((x,y)=>y.p-x.p);
+  const fila=(x,t)=>`<div class="row" style="gap:10px;padding:8px 0;border-top:1px solid var(--line)">${avHTML(x.n,false,true,x.u)}<div class="grow"><b style="font-size:14.5px">${esc(nv(x.n))}</b><div class="small muted">${t}</div></div></div>`;
+  openSheet(`<h2>👂 Mensaje de ${esc(String(a.n||"").split(" ")[0])}</h2><p class="small muted" style="margin:0">Se actualiza cada pocos minutos.</p>
+   <div class="tcTot" style="grid-template-columns:1fr 1fr"><div><b>${F.length}</b>✅ Lo escucharon completo</div><div><b>${P.length}</b>▶ Lo empezaron</div></div>
+   ${F.length?`<div class="small" style="font-weight:800;margin-top:6px">✅ Completo</div>`+F.map(x=>fila(x,"✅ "+memHace(x.f))).join(""):""}
+   ${P.length?`<div class="small" style="font-weight:800;margin-top:12px">▶ Lo empezaron</div>`+P.map(x=>fila(x,"▶ "+memHace(x.p))).join(""):""}
+   ${!L.length?`<p class="small muted">Aún nadie lo ha escuchado.</p>`:""}
+   <button class="btn ghost" id="audQB" style="width:100%;margin-top:12px">‹ Volver al audio</button>`,()=>{$("#audQB").onclick=()=>audAbrir(a)})}
 function audStrip(){const el=$("#audStrip");if(!el)return;const a=audCfg();if(!a){el.hidden=true;el.innerHTML="";return}
   el.innerHTML=`<div class="audMi"><img src="${esc(a.foto||"")}" alt=""><div class="grow"><b>🎙️ Mensaje de ${esc(String(a.n||"").split(" ")[0])}</b><span>${esc(a.rg||"")} · ${LS.get("audFin:"+a.id)?"✅ Ya lo escuchó":"le dejó un audio"}</span></div><button type="button" id="audSB">▶ Escuchar</button></div>`;el.hidden=false;$("#audSB").onclick=()=>audAbrir(a)}
 window.__aud=()=>({c:audCfg(),abrir:audAbrir});function audRevisar(){audStrip();const a=audCfg();if(!a||LS.get("aud:"+a.id)||!$("#sheet").hidden)return;const vi=$("#v-inicio");if(vi&&vi.hidden)return;setTimeout(()=>{if($("#sheet").hidden)audAbrir(a)},1200)}
@@ -8754,7 +8767,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114000633";var busy=false,pend=null;
+(function(){var V="20261114001239";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
