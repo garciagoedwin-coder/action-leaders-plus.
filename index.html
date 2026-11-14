@@ -6491,7 +6491,7 @@ async function audQuien(a){openSheet(`<p class="muted small">Cargando…</p>`);t
    <button class="btn ghost" id="audQB" style="width:100%;margin-top:12px">‹ Volver al audio</button>`,()=>{$("#audQB").onclick=()=>audAbrir(a)})}
 function audStrip(){const el=$("#audStrip");if(!el)return;const a=audCfg();if(!a){el.hidden=true;el.innerHTML="";return}
   el.innerHTML=`<div class="audMi"><img src="${esc(a.foto||"")}" alt=""><div class="grow"><b>🎙️ Mensaje de ${esc(String(a.n||"").split(" ")[0])}</b><span>${esc(a.rg||"")} · ${LS.get("audFin:"+a.id)?"✅ Ya lo escuchó":"le dejó un audio"}</span></div><button type="button" id="audSB">▶ Escuchar</button></div>`;el.hidden=false;$("#audSB").onclick=()=>audAbrir(a)}
-window.__aud=()=>({c:audCfg(),abrir:audAbrir});function audRevisar(){audStrip();const a=audCfg();if(!a||LS.get("aud:"+a.id)||!$("#sheet").hidden)return;const vi=$("#v-inicio");if(vi&&vi.hidden)return;setTimeout(()=>{if($("#sheet").hidden)audAbrir(a)},1200)}
+window.__aud=()=>({c:audCfg(),abrir:audAbrir});function audRevisar(){audStrip();const a=audCfg();if(navigator.webdriver||!a||LS.get("aud:"+a.id)||!$("#sheet").hidden)return;const vi=$("#v-inicio");if(vi&&vi.hidden)return;setTimeout(()=>{if($("#sheet").hidden)audAbrir(a)},1200)}
 // 13 nov (Edwin, PRUEBA solo admin): enviar la presentación sin contacto. Sin nombre = link general (la persona llena nombre y WhatsApp).
 const SALA_OR=[["Campaña","📣","camp"],["Lista fría","🧊","fria"],["Prospección pasiva","🧲","pasiva"],["De un grupo","👥","grupo"],["De mi estado","📲","estado"],["Facebook","📘","fb"],["Instagram","📸","ig"],["TikTok","🎵","tt"],["Otro","✏️","otro"]];
 const salaSlug=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,30);
@@ -8776,7 +8776,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114001239";var busy=false,pend=null;
+(function(){var V="20261114032410";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
