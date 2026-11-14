@@ -815,6 +815,21 @@ nav.tabs button{z-index:0;isolation:isolate}
 body.beta #pfFront,body.beta #pfSala,body.beta #goPrompts{display:none!important}
 .pf-h{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.55;margin:12px 4px 2px}
 .mfAll{display:none!important}
+.audC{position:relative;overflow:hidden;border-radius:26px;padding:22px 18px 18px;background:linear-gradient(160deg,#16120a,#05070d 60%);color:#fff;text-align:center}
+.audGl{position:absolute;inset:-40% -20% auto;height:80%;background:radial-gradient(closest-side,#F5C54255,transparent);pointer-events:none}
+.audK{position:relative;font-size:11px;letter-spacing:.2em;font-weight:900;color:#F5C542;text-transform:uppercase}
+.audF{position:relative;width:148px;height:148px;margin:14px auto 6px}.audF img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid #F5C542;box-shadow:0 0 0 6px #F5C54233,0 10px 40px #F5C54255}
+.audB{position:absolute;left:50%;bottom:-10px;transform:translateX(-50%);white-space:nowrap;background:linear-gradient(135deg,#FDE68A,#D4A72C);color:#2a1d00;font-weight:900;font-size:10.5px;letter-spacing:.14em;border-radius:999px;padding:5px 11px;box-shadow:0 4px 12px #0006}
+.audC h2{position:relative;margin:16px 0 2px;font-size:24px;color:#fff}.audT{position:relative;margin:0;font-size:14px;opacity:.8}
+.audP{position:relative;width:74px;height:74px;border-radius:50%;border:0;margin:16px auto 6px;display:flex;align-items:center;justify-content:center;font-size:26px;color:#2a1d00;background:linear-gradient(135deg,#FDE68A,#D4A72C);box-shadow:0 10px 30px #D4A72C66;cursor:pointer;animation:audLat 2s ease-in-out infinite}
+@keyframes audLat{50%{box-shadow:0 10px 44px #D4A72Caa;transform:scale(1.04)}}
+.audW{position:relative;display:flex;align-items:center;gap:3px;height:46px;margin:6px 4px 8px}.audW i{flex:1;height:var(--h);border-radius:3px;background:linear-gradient(#FDE68A,#D4A72C);opacity:.45;transform-origin:center}
+.audW.on i{opacity:1;animation:audOnd .9s ease-in-out var(--d) infinite alternate}@keyframes audOnd{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+.audBar{position:relative;height:6px;border-radius:6px;background:#ffffff22;cursor:pointer;overflow:hidden}.audBar s{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#FDE68A,#D4A72C);border-radius:6px}
+.audTm{display:flex;justify-content:space-between;font-size:12px;opacity:.7;margin-top:6px;font-variant-numeric:tabular-nums}.audSub{position:relative;margin:12px 0 0;font-size:13.5px;opacity:.85}
+#audStrip{border-radius:18px;background:linear-gradient(135deg,#1b1508,#07090f);border:1px solid #D4A72C66;padding:12px 40px 12px 12px;color:#fff}#audStrip[hidden]{display:none}
+.audMi{display:flex;align-items:center;gap:12px}.audMi img{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid #F5C542;flex:none}.audMi b{display:block;font-size:15px}.audMi span{font-size:12.5px;opacity:.75}.audMi button{border:0;border-radius:12px;padding:10px 12px;font:inherit;font-weight:900;font-size:13px;background:linear-gradient(135deg,#FDE68A,#D4A72C);color:#2a1d00;cursor:pointer;white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.audP,.audW.on i{animation:none}}
 .cbody:has(.cvTop){padding-left:4px;gap:0}.scAv{font-size:13px;line-height:1.4;border-radius:12px;padding:10px 12px;background:color-mix(in srgb,#F59E0B 14%,var(--surface));color:var(--ink)}.scCh{display:flex;flex-wrap:wrap;gap:6px}.scCh button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}.scCh button.on{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 14%,var(--surface));color:var(--brand)}.scLk{font-size:11.5px;word-break:break-all;background:var(--surface-2);border-radius:10px;padding:8px 10px;color:var(--muted);margin-top:8px}.scLk[hidden]{display:none}
 body.cv2 .card:has(> #contactList){background:transparent;box-shadow:none;border:0;padding:0}
 body.cv2 #contactList>*{border-top:0}
@@ -1625,6 +1640,7 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
         <div class="avSl" data-k="lzgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="lzgS" id="lzgStrip" hidden></div></div>
         <div class="avSl" data-k="olvStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="olvS" id="olvStrip" hidden></div></div>
         <div class="avSl" data-k="eqzStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div id="eqzStrip" hidden></div></div>
+        <div class="avSl" data-k="audStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div id="audStrip" hidden></div></div>
         <div class="avSl" data-k="turStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div id="turStrip" hidden></div></div>
         <div class="avSl" data-k="viaStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="viaS" id="viaStrip" hidden></div></div>
         <div class="avSl" data-k="evHoy" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div id="evHoy" hidden></div></div>
@@ -3303,7 +3319,7 @@ function lcVentana(L,titulo){if(!L.length)return;let i=0;
       confeti($("#lcCel"),esp?60:40);const fe=$("#lcFel");if(fe)fe.onclick=()=>lcFelicitar(q);const sh=$("#lcSh");if(sh)sh.onclick=()=>lcCompartir(q,sh);
       const p=$("#lcPrev");if(p)p.onclick=()=>{i--;pinta()};const n=$("#lcNext");if(n)n.onclick=()=>{if(i<L.length-1){i++;pinta()}else closeSheet()}})};
   pinta()}
-let lcTry=0;function lcRevisar(){try{if(!store.uid||!(regDoc&&regDoc.registro||isAdmin))return;const vi=$("#v-inicio");if(!$("#sheet").hidden||(vi&&vi.hidden)){if(++lcTry<8)setTimeout(lcRevisar,20000);return}lzSisSync();try{lzgRevisar()}catch(e){}if(avParam())return;if(ahpRevisar())return;if(!lzBienYo())lcAvisoYo();const L=lcPendientes();if(!L.length)return;try{if(!popHoy("lc"))return}catch(e){}lcMarcar(L);lcVentana(L,L.every(r=>r.cie)?"🛡️ Líderes del mes de "+L[0].mes.split(" ")[0].toLowerCase():"🎉 Nuevos calificados del sistema de liderazgo")}catch(e){}}
+let lcTry=0;function lcRevisar(){try{audRevisar()}catch(e){}try{if(!store.uid||!(regDoc&&regDoc.registro||isAdmin))return;const vi=$("#v-inicio");if(!$("#sheet").hidden||(vi&&vi.hidden)){if(++lcTry<8)setTimeout(lcRevisar,20000);return}lzSisSync();try{lzgRevisar()}catch(e){}if(avParam())return;if(ahpRevisar())return;if(!lzBienYo())lcAvisoYo();const L=lcPendientes();if(!L.length)return;try{if(!popHoy("lc"))return}catch(e){}lcMarcar(L);lcVentana(L,L.every(r=>r.cie)?"🛡️ Líderes del mes de "+L[0].mes.split(" ")[0].toLowerCase():"🎉 Nuevos calificados del sistema de liderazgo")}catch(e){}}
 function lzSisSync(){try{if(!LS.get("pushTk"))return;const s=lzSoyMiembro()?1:0;if(LS.get("pushSis")!==s)pushGuardar(null)}catch(e){}}
 const LZB_MER=["Su constancia es la que sostiene al equipo. Se lo ganó con trabajo, y ese ejemplo es el que hace crecer a los demás. ¡Siga así! 💪","Esto no fue suerte: fue trabajo de todos los días. Su ejemplo le enseña al equipo que sí se puede. ¡Siga así! 💪","Mes a mes usted demuestra que el compromiso da frutos. Gracias por poner el ejemplo. ¡Vamos por más! 💪"];
 function lzBienYo(){try{const yo=miRegistro().nombre||miNombreFull();if(!yo||!store.uid)return false;const r=lcLista0().find(x=>sameN(x.n,yo));if(!r)return false;
@@ -5509,6 +5525,7 @@ function avIr(k){try{
   if(k==="recoyo"){setTimeout(()=>{try{recoMio()}catch(e){}},300);return}
   if(k==="reco"){setTimeout(async()=>{try{if(!mios||!mios.length)await loadMios()}catch(e){}try{recoLista()}catch(e){}},300);return}
   if(k==="apr"){aprAbrir();return}
+  if(k==="aud"){audAbrir();return}
   if(k==="sala"){LS.set("salaOn",1);loadSala(true).then(()=>abrirSala(),()=>abrirSala());return}
   if(k==="tur"){const run=()=>{const P=turMisP();if(P.length)turResponder(P[0].e,P[0].k);else turAbrir()};turCargar(true).then(run,run);return}
   if(k==="rep"){if(isAdmin)repAdmin();return}
@@ -6439,6 +6456,29 @@ async function loadSala(force){if(!store.db||!store.uid||!(salaOk()||LS.get("mem
     const V=LS.get("salaV")||{};let mx=since;q.docs.forEach(d=>{const x=d.data(),nv=!V[d.id];V[d.id]=Object.assign({id:d.id},x);mx=Math.max(mx,+x.t||0);if(since&&nv&&d.id.startsWith("m_"))memAviso(x)});
     const ks=Object.keys(V).sort((a,b)=>(V[b].t||0)-(V[a].t||0)).slice(0,80),N={};ks.forEach(k=>N[k]=V[k]);LS.set("salaV",N);LS.set("salaSync",mx);
     renderSalaCard();try{renderCRM()}catch(e){}try{salaAuto()}catch(e){}}catch(e){}}
+// 14 nov: MENSAJE DE AUDIO de un líder (config.audioEsp {id,n,rg,t,sub,src,foto,dur,desde,hasta,adm}). adm:1 = solo admins (prueba).
+// Una ventana grande una vez (LS aud:id) + slide en Avisos de hoy (#audStrip) mientras esté vigente. Cambiar el audio = team.json, sin publicar.
+function audCfg(){const a=((T||{}).config||{}).audioEsp;if(!a||!a.src)return null;const n=Date.now();if(a.hasta&&n>Date.parse(a.hasta))return null;if(!isAdmin&&(a.adm||(a.desde&&n<Date.parse(a.desde))))return null;return a}
+const audFmt=s=>{s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
+function audAbrir(a){a=a||audCfg();if(!a)return;LS.set("aud:"+a.id,1);
+  openSheet(`<div class="audC"><div class="audGl"></div><span class="audK">🎙️ Mensaje especial</span>
+    <div class="audF"><img src="${esc(a.foto||"")}" alt=""><span class="audB">${esc(String(a.rg||"").toUpperCase())}</span></div>
+    <h2>${esc(a.n||"")}</h2><p class="audT">${esc(a.t||"")}</p>
+    <button type="button" class="audP" id="audP" aria-label="Reproducir">▶</button>
+    <div class="audW" id="audW">${Array.from({length:34},(_,i)=>`<i style="--h:${18+Math.round(Math.abs(Math.sin(i*1.7)*70+Math.cos(i*.6)*12))}%;--d:${(i%7)*.09}s"></i>`).join("")}</div>
+    <div class="audBar" id="audBar"><s id="audS"></s></div><div class="audTm"><span id="audA">0:00</span><span id="audD">${audFmt(a.dur)}</span></div>
+    ${a.sub?`<p class="audSub">${esc(a.sub)}</p>`:""}<audio id="audEl" preload="auto" src="${esc(a.src)}"></audio></div>
+   <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{
+    const au=$("#audEl"),pb=$("#audP"),w=$("#audW");try{confeti($("#sheet .audC"),70)}catch(x){}
+    const set=()=>{const p=au.paused;pb.textContent=p?"▶":"❚❚";w.classList.toggle("on",!p)};
+    pb.onclick=()=>{au.paused?au.play().catch(()=>toast("Toque de nuevo para escuchar")):au.pause()};
+    au.onplay=set;au.onpause=set;au.onended=()=>{set();$("#audS").style.width="100%";LS.set("audFin:"+a.id,1);toast("🙌 ¡Gracias por escucharlo!")};
+    au.onloadedmetadata=()=>{if(au.duration&&isFinite(au.duration))$("#audD").textContent=audFmt(au.duration)};
+    au.ontimeupdate=()=>{const d=au.duration||a.dur||1;$("#audS").style.width=Math.min(100,au.currentTime/d*100)+"%";$("#audA").textContent=audFmt(au.currentTime)};
+    $("#audBar").onclick=ev=>{const r=$("#audBar").getBoundingClientRect(),d=au.duration||a.dur;if(d)au.currentTime=Math.max(0,Math.min(1,(ev.clientX-r.left)/r.width))*d}})}
+function audStrip(){const el=$("#audStrip");if(!el)return;const a=audCfg();if(!a){el.hidden=true;el.innerHTML="";return}
+  el.innerHTML=`<div class="audMi"><img src="${esc(a.foto||"")}" alt=""><div class="grow"><b>🎙️ Mensaje de ${esc(String(a.n||"").split(" ")[0])}</b><span>${esc(a.rg||"")} · ${LS.get("audFin:"+a.id)?"✅ Ya lo escuchó":"le dejó un audio"}</span></div><button type="button" id="audSB">▶ Escuchar</button></div>`;el.hidden=false;$("#audSB").onclick=()=>audAbrir(a)}
+window.__aud=()=>({c:audCfg(),abrir:audAbrir});function audRevisar(){audStrip();const a=audCfg();if(!a||LS.get("aud:"+a.id)||!$("#sheet").hidden)return;const vi=$("#v-inicio");if(vi&&vi.hidden)return;setTimeout(()=>{if($("#sheet").hidden)audAbrir(a)},1200)}
 // 13 nov (Edwin, PRUEBA solo admin): enviar la presentación sin contacto. Sin nombre = link general (la persona llena nombre y WhatsApp).
 const SALA_OR=[["Campaña","📣","camp"],["Lista fría","🧊","fria"],["Prospección pasiva","🧲","pasiva"],["De un grupo","👥","grupo"],["De mi estado","📲","estado"],["Facebook","📘","fb"],["Instagram","📸","ig"],["TikTok","🎵","tt"],["Otro","✏️","otro"]];
 const salaSlug=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,30);
@@ -8209,7 +8249,7 @@ async function irFlyer(w){try{await flFonts()}catch(e){}const g=!w,W=1080,H=1350
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],g?"graduado-inicio-rapido.jpg":"inicio-rapido-semana-"+w.n+".jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
-let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{eqzStrip()}catch(e){}try{turStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
+let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{eqzStrip()}catch(e){}try{audStrip()}catch(e){}try{turStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
   const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
   if(m==="actual"&&!st.ini){const no=LS.get("irNo:"+store.uid);if(no&&Date.now()<no){el.hidden=true;return}
     el.hidden=false;el.className="irMini";el.innerHTML=`<span class="ic">🚀</span><span class="tx"><b>Plan de Inicio Rápido</b> · Aprenda a duplicar en 30 días</span><button type="button" class="go" id="irEmp">Empezar ›</button><button type="button" class="x" id="irNo" aria-label="Quitar">✕</button>`;
@@ -8714,7 +8754,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261113224510";var busy=false,pend=null;
+(function(){var V="20261114000633";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

@@ -5478,6 +5478,19 @@
     }
    ],
    "t": "2026-11-14T03:53:17Z"
+  },
+  "audioEsp": {
+   "id": "santiago-1",
+   "n": "Santiago Santiago",
+   "rg": "Board of Director",
+   "t": "Un mensaje para el equipo Action Leaders",
+   "sub": "Escúchelo con atención, es para usted.",
+   "src": "media/audio/santiago-1.m4a",
+   "foto": "media/audio/santiago.jpg",
+   "dur": 45,
+   "desde": "2026-11-14T06:00:00Z",
+   "hasta": "2026-11-16T06:00:00Z",
+   "adm": 1
   }
  },
  "fotos": [
