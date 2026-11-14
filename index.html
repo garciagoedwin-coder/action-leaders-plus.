@@ -2058,7 +2058,7 @@ function dayScore(d,key){key=key||TODAY;const L=ROUTINE.filter(r=>!r.desde||key>
 const okIcon=CHECK;
 let rutOpen=false,rutJust=false,rutFT;
 function rutFold(ok){const t=$("#tasks"),bar=$("#dayBar")&&$("#dayBar").closest(".row"),tg=$("#rutTg");if(!t)return;
-  const hide=ok&&!rutOpen&&!acc3On();clearTimeout(rutFT);
+  const hide=ok&&!rutOpen;clearTimeout(rutFT);
   const ap=()=>{t.hidden=hide;if(bar)bar.hidden=hide;const g=$("#rutTg");if(g)g.textContent=hide?"▾":"▴";const rc=$("#rutCard");if(rc)rc.classList.toggle("mini",hide)};
   if(hide&&rutJust){rutJust=false;rutFT=setTimeout(ap,1400)}else ap();
   {const db=$("#rutDoneB");if(db)db.onclick=()=>{rutOpen=!rutOpen;rutFold(true)}}}
@@ -3110,15 +3110,16 @@ function rkInicio(){const c=$("#rkCard");if(!c)return;try{
   const yo=miNombreFull()||miNombreCorto()||"",mes=(m=>m.charAt(0).toUpperCase()+m.slice(1))(mesNom().split(" ")[0]);let L=[],mi=-1,cargando=false;
   if(rkTab==="rac"){if(!constL){cargando=true;if(!window._rkCL){window._rkCL=1;Promise.resolve(loadConst()).finally(()=>{window._rkCL=0;rkInicio()})}}
     else{L=acc3On()?constSort(constL.slice()).filter(x=>+x.mesComp>0).map(x=>({n:x.nombre,v:+x.mesComp,u:x.uid})):constSort(constL.slice()).filter(x=>+x.racha>0).map(x=>({n:x.nombre,v:+x.racha,u:x.uid}));mi=L.findIndex(x=>x.u===store.uid)}}
+  else if(acc3On()){L=(T.ranking||[]).filter(r=>+r.volumen>0).sort((a,b)=>(+b.volumen)-(+a.volumen)||(+b.activaciones||0)-(+a.activaciones||0)).map(r=>({n:r.nombre,v:+r.volumen}));mi=yo?L.findIndex(x=>sameN(x.n,yo)):-1}
   else{L=(T.ranking||[]).filter(r=>+r.activaciones>0).sort((a,b)=>(+b.activaciones)-(+a.activaciones)||(+b.volumen||0)-(+a.volumen||0)).map(r=>({n:r.nombre,v:+r.activaciones}));mi=yo?L.findIndex(x=>sameN(x.n,yo)):-1}
-  const md=["🥇","🥈","🥉"],T3=L.slice(0,3),w=rkTab==="rac"?["día","días"]:["activación","activaciones"];
+  const md=["🥇","🥈","🥉"],T3=L.slice(0,3),VOL=rkTab!=="rac"&&acc3On(),w=rkTab==="rac"?["día","días"]:VOL?["pt","pts"]:["activación","activaciones"];
   let pie="";if(!cargando){if(mi>=0&&mi<3)pie=`🔥 <b>¡Usted está en el top 3!</b> Defienda su lugar`;
-    else if(mi>=3){if(L[mi].v>=T3[2].v)pie=`Usted va <b>#${mi+1}</b> · empatado con el top 3: ${rkTab==="rac"?"sume presentaciones y puntos":"sume más volumen"} para subir 💪`;else{const f=T3[2].v-L[mi].v+1;pie=`Usted va <b>#${mi+1}</b> · le ${f===1?"falta":"faltan"} <b>${f}</b> ${f===1?w[0]:w[1]} para el top 3 💪`}}
+    else if(mi>=3){if(L[mi].v>=T3[2].v)pie=`Usted va <b>#${mi+1}</b> · empatado con el top 3: ${rkTab==="rac"?"sume presentaciones y puntos":"sume más volumen"} para subir 💪`;else{const f=T3[2].v-L[mi].v+1;pie=`Usted va <b>#${mi+1}</b> · le ${f===1?"falta":"faltan"} <b>${VOL?fmt(f):f}</b> ${f===1?w[0]:w[1]} para el top 3 💪`}}
     else pie=L.length<3?(rkTab==="rac"?"Haga su rutina hoy y entre al top 3 💪":"¡Una activación y entra al top 3! 💪"):(rkTab==="rac"?"Haga su rutina hoy y empiece su racha 🔥":"Su primera activación le pone en el ranking 💪")}
   const G=(T.config||{}).ganadores,gan=G&&G.hasta&&Date.now()<=Date.parse(G.hasta);
   c.hidden=false;c.innerHTML=`<div class="row between" style="align-items:center"><h3 style="margin:0;font-size:16px;min-width:0">🏆 Así va el ranking <span class="muted" style="font-weight:600;font-size:13px">· ${esc(mes)}</span></h3><button type="button" class="rkVer" id="rkVer">Ver todo ›</button></div>
    <div class="rkTabs"><button type="button" data-rk="act" aria-pressed="${rkTab==="act"}">🚀 Activaciones</button><button type="button" data-rk="rac" aria-pressed="${rkTab==="rac"}">🔥 Rachas</button></div>
-   ${cargando?`<p class="small muted" style="margin:6px 0">Cargando rachas…</p>`:T3.length?T3.map((x,i)=>`<div class="rkRow${i===mi?" yo":""}"><span class="md">${md[i]}</span><b class="grow">${esc(fdNom(x.n))}${i===mi?" · usted":""}</b><span class="v">${x.v}${rkTab==="rac"?"d":""}</span></div>`).join(""):`<p class="small muted" style="margin:6px 0">¿Quién abre el marcador este mes? 🚀</p>`}
+   ${cargando?`<p class="small muted" style="margin:6px 0">Cargando rachas…</p>`:T3.length?T3.map((x,i)=>`<div class="rkRow${i===mi?" yo":""}"><span class="md">${md[i]}</span><b class="grow">${esc(fdNom(x.n))}${i===mi?" · usted":""}</b><span class="v">${VOL?fmt(x.v)+'<small style="font-size:.5em;margin-left:3px">pts</small>':x.v}${rkTab==="rac"?"d":""}</span></div>`).join(""):`<p class="small muted" style="margin:6px 0">¿Quién abre el marcador este mes? 🚀</p>`}
    ${pie?`<div class="rkPie">${pie}</div>`:""}${gan?`<button type="button" class="rkGan" id="rkGan">🏆 Ver ganadores de ${esc(G.mesN||mesNom(G.mes))} ›</button>`:""}`;
   c.querySelectorAll("[data-rk]").forEach(b=>b.onclick=()=>{rkTab=b.dataset.rk;try{LS.set("rkTab",rkTab)}catch(e){}rkInicio()});
   $("#rkVer").onclick=()=>{eqTab="ranking";rankMetric=rkTab==="rac"?"rutina":"nuevos";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()};
@@ -9112,7 +9113,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114170832";var busy=false,pend=null;
+(function(){var V="20261114173423";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

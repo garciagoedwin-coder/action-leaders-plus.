@@ -876,3 +876,4 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Sin reglas nuevas (constOk permite campos nuevos).
 - (14 nov, tarde) Mi Racha v3: si un socio aún no tiene rv (app sin actualizar), se usa rr (racha real del mes) y no la racha semanal (salía "Racha 6" por el reinicio del lunes). Mis números se toman de constStats (más frescos). La lista muestra el nombre del nivel: "🔥🔥 En llamas · 13 días".
 - (14 nov) Edwin: la vida del mes empieza desde el lanzamiento (RC3_DESDE "2026-11-15"): se gana en un día ≥ esa fecha con 7+ días seguidos; sin vidas retroactivas. Chip de racha de la rutina = constStats().rv con acc3On.
+- (14 nov, tarde) acc3On: la rutina completa vuelve a plegarse (banner "¡Felicidades!" con ▾ y confeti); «Así va el ranking › Activaciones» de Inicio muestra VOLUMEN (pts) ordenado por volumen.
