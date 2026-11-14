@@ -39,7 +39,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{fon
 .hero .bs{display:grid;gap:10px}.prog{font-size:12.5px;color:var(--mut);text-align:center;margin-top:2px}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:22px}.stats div{background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center}.stats b{display:block;font-size:22px;font-weight:900;font-family:"Bricolage Grotesque",sans-serif}.stats small{font-size:11.5px;color:var(--mut)}
 /* secciones */
-.sec{padding:40px 0 8px}.sec .h{font-size:28px;margin:6px 0 14px}.sec p.lead{color:var(--mut);font-size:15px;line-height:1.55;margin:0 0 16px}
+.sec{padding:40px 0 8px}.sec .h{font-size:28px;margin:6px 0 14px}.sec p.intro{color:var(--mut);font-size:15px;line-height:1.55;margin:0 0 16px}
 .steps{display:grid;gap:10px}.st{display:flex;gap:13px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}.st i{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:grid;place-items:center;font-style:normal;font-weight:900;font-size:18px;flex:none}.st b{display:block;font-size:16px}.st small{color:var(--mut);font-size:13.5px}
 .x2{display:flex;align-items:center;justify-content:space-around;margin-top:12px;background:#fff;color:#0B1E2B;border-radius:18px;padding:16px}.x2 small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.12em;color:#64748B}.x2 b{font-size:30px;font-weight:900;font-family:"Bricolage Grotesque",sans-serif}.x2 em{font-style:normal;font-size:26px;color:var(--acc2)}
 .ej{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px}.ej .r{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.ej .r div{background:rgba(255,255,255,.06);border-radius:14px;padding:11px}.ej small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.1em;color:var(--acc)}.ej b{font-size:18px}.ej p{font-size:12px;color:var(--mut);margin:10px 0 0}
@@ -50,7 +50,12 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{fon
 .chips{display:flex;flex-wrap:wrap;gap:6px}.chips button{border:0;background:#fff;border-radius:10px;padding:8px 11px;font-weight:800;color:#3b1d0a}.chips button.on{background:#3b1d0a;color:#fff}
 .sim input[type=date]{width:100%;border:0;border-radius:12px;padding:12px;font:inherit;font-weight:700;background:#fff;color:#3b1d0a}
 .ro{background:#fff;border-radius:16px;padding:13px;margin-top:10px;border-left:5px solid #16A34A}.ro.no{border-left-color:#F59E0B}.ro h4{margin:0 0 6px;font-size:14.5px}.ro .g{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ro small{display:block;font-size:10px;font-weight:800;letter-spacing:.1em;color:#9A3412}.ro b{font-size:20px}.ro p{font-size:13px;margin:7px 0 0;line-height:1.45}.fl{font-weight:800}
-.simN{font-size:11.5px;color:#9A3412;margin:10px 0 0;line-height:1.4}
+.simN{font-size:11.5px;color:#9A3412;margin:12px 0 0;line-height:1.4}
+.prw{display:flex;align-items:center;gap:6px;background:#fff;border-radius:14px;padding:6px 14px}.prw span{font-size:26px;font-weight:900;color:#9A3412}.prw input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:30px;font-weight:900;color:#3b1d0a}
+#sRg{width:100%;margin:12px 0 10px;accent-color:#EA580C}
+.need{margin-top:14px;background:#3b1d0a;color:#fff;border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;font-size:13.5px}.need b{font-size:22px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.pc{background:#fff;border-radius:16px;padding:12px;position:relative;border:2px solid transparent}.pc.best{border-color:#EA580C}.pc .bd{position:absolute;top:-10px;right:10px;background:#EA580C;color:#fff;font-size:10px;font-weight:900;letter-spacing:.06em;border-radius:999px;padding:3px 8px}
+.pc h4{margin:0;font-size:16px}.pc .mt{font-size:12px;color:#9A3412;margin:2px 0 8px}.pc small{display:block;font-size:10px;font-weight:800;letter-spacing:.08em;color:#9A3412;margin-top:8px}.pc b{display:block;font-size:15px;line-height:1.25}.pc .big{font-size:24px;font-weight:900}
 /* planes */
 .two{display:grid;gap:10px}.pl{border-radius:22px;padding:18px;border:1.5px solid var(--line);background:var(--card)}.pl.s{background:linear-gradient(150deg,#0A3F5C,#0A7DAD);border:0}
 .pl .t{display:flex;align-items:center;justify-content:space-between}.pl .t b{font-size:19px}.pl .t span{font-size:11px;font-weight:800;letter-spacing:.1em;background:rgba(255,255,255,.14);border-radius:999px;padding:4px 9px}
@@ -105,12 +110,17 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}button{fon
    <p>Precio de ejemplo: varía según el crucero y la fecha.</p></div>
  </section>
 
- <section class="sec rv" id="sim"><span class="k">🧮 Simulador</span><h2 class="h">¿Cuánto te costaría tu crucero?</h2>
-  <div class="sim"><div class="seg" id="sPlan"><button data-p="c">Classic</button><button data-p="p" class="on">Premium</button></div>
-   <label>PRECIO DEL CRUCERO · <span id="sPv">$1,600</span></label><div class="chips" id="sCh"><button data-v="1200">$1,200</button><button data-v="1600" class="on">$1,600</button><button data-v="2000">$2,000</button><button data-v="2500">$2,500</button><button data-v="3500">$3,500</button></div><input type="hidden" id="sPr" value="1600">
-   <label>FECHA DEL CRUCERO</label><input type="date" id="sFe" value="2027-08-30">
-   <div id="sRes"></div>
-   <p class="simN">Cálculo de ejemplo con los puntos de bienvenida (Classic 350 · Premium 800) y tu ahorro mensual pagando a tiempo. No es una cotización.</p></div>
+ <section class="sec rv" id="sim"><span class="k">🧮 Simulador</span><h2 class="h">¿Cuándo te vas de crucero?</h2>
+  <p class="intro">Pagando tu crucero <b style="color:#fff">100% con puntos</b>: elige el precio y cuándo empiezas, y te decimos cuándo puedes reservar y desde cuándo puedes viajar.</p>
+  <div class="sim">
+   <label>PRECIO DEL CRUCERO</label>
+   <div class="prw"><span>$</span><input id="sPr" type="number" inputmode="numeric" min="300" max="20000" step="50" value="1600"></div>
+   <input id="sRg" type="range" min="500" max="8000" step="50" value="1600">
+   <div class="chips" id="sCh"><button data-v="1200">$1,200</button><button data-v="1600" class="on">$1,600</button><button data-v="2000">$2,000</button><button data-v="2500">$2,500</button><button data-v="3500">$3,500</button></div>
+   <label>¿CUÁNDO EMPIEZAS?</label><input type="date" id="sIn">
+   <div class="need" id="sNeed"></div>
+   <div class="cmp" id="sRes"></div>
+   <p class="simN">Todo con puntos = precio × 1.5 en puntos, reservando mínimo 270 días antes de viajar. Puntos de bienvenida: Classic 350 · Premium 800. Cada mes, pagando a tiempo: Classic 200 · Premium 500. Precio de ejemplo: varía según el crucero y la fecha. No es una cotización.</p></div>
  </section>
 
  <section class="sec rv"><span class="k">Elige tu camino</span><h2 class="h">¿Solo viajar o viajar y emprender?</h2>
@@ -172,19 +182,25 @@ addEventListener("scroll",()=>{$("stk").classList.toggle("on",scrollY>innerHeigh
 document.querySelectorAll(".yt").forEach(b=>{const id=b.dataset.yt;b.style.backgroundImage=`url(https://i.ytimg.com/vi/${id}/hqdefault.jpg)`;b.innerHTML='<span class="pb"><span>▶</span></span>';
  b.onclick=()=>{if(b.dataset.on)return;b.dataset.on=1;b.innerHTML=`<iframe src="https://www.youtube.com/embed/${id}?rel=0&playsinline=1&autoplay=1" title="Testimonio" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`}});
 // ----- simulador (mismo cálculo de membresia.html) -----
-let plan="p";const PL={c:{n:"Classic",m:200,w:350,u:100},p:{n:"Premium",m:500,w:800,u:250}};
-const fd=d=>d.getDate()+" de "+["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"][d.getMonth()]+" de "+d.getFullYear();
+const PL={c:{n:"Classic",m:200,w:350},p:{n:"Premium",m:500,w:800}};
+const MESL=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],fd=d=>d.getDate()+" de "+MESL[d.getMonth()]+" de "+d.getFullYear();
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+{const h=new Date();$("sIn").value=iso(h);$("sIn").min=iso(h)}
+const addM=(d,n)=>{const x=new Date(d);const dd=x.getDate();x.setDate(1);x.setMonth(x.getMonth()+n);const last=new Date(x.getFullYear(),x.getMonth()+1,0).getDate();x.setDate(Math.min(dd,last));return x};
 let used=false;
-function sim(touch){const P=PL[plan],pr=+$("sPr").value,fe=new Date(($("sFe").value||"2027-08-30")+"T12:00:00"),hoy=new Date();$("sPv").textContent="$"+fm(pr);
- const meses=pts=>Math.max(0,Math.ceil((pts-P.w)/P.m)),mHasta=d=>Math.max(0,(d.getFullYear()-hoy.getFullYear())*12+(d.getMonth()-hoy.getMonth())-(d.getDate()<hoy.getDate()?1:0));
- const card=(t,pts,cash,dias)=>{const lim=new Date(fe);lim.setDate(lim.getDate()-dias);const nec=meses(pts),hay=mHasta(lim),pas=lim<hoy,ok=!pas&&nec<=hay;
-  return `<div class="ro ${ok?"ok":"no"}"><h4>${t}</h4><div class="g"><div><small>PUNTOS</small><b>${fm(pts)}</b></div><div><small>DE TU BOLSILLO</small><b>$${fm(cash)}</b></div></div>
-   <p>⏱️ ${nec===0?`<span class="fl">¡Con tus ${fm(P.w)} puntos de bienvenida ya te alcanza!</span>`:`Juntas los puntos en unos <span class="fl">${nec} ${nec===1?"mes":"meses"}</span> con ${P.n}.`}</p>
-   <p>📅 Reservas a más tardar el <b>${fd(lim)}</b>.</p><p>${pas?"⚠️ Para esta fecha ya pasó el plazo. Elige un crucero más adelante.":ok?"✅ <b>Te alcanza el tiempo</b> si empiezas hoy.":`⚠️ Te faltarían unos ${nec-hay} meses. Elige la otra opción o un crucero más adelante.`}</p></div>`};
- $("sRes").innerHTML=card("Opción 1 · Mitad y mitad",pr/2,pr/2,90)+card("Opción 2 · Todo con puntos",pr*1.5,0,270);if(touch&&!used){used=true;save({resp:"sim"})}}
-$("sPlan").onclick=e=>{const b=e.target.closest("button");if(!b)return;plan=b.dataset.p;[...$("sPlan").children].forEach(x=>x.classList.toggle("on",x===b));sim(1)};
-$("sCh").onclick=e=>{const b=e.target.closest("button");if(!b)return;$("sPr").value=b.dataset.v;[...$("sCh").children].forEach(x=>x.classList.toggle("on",x===b));sim(1)};
-$("sFe").onchange=()=>sim(1);
+function sim(touch){let pr=Math.round(+$("sPr").value||0);if(pr<300)pr=300;if(pr>20000)pr=20000;const pts=Math.ceil(pr*1.5),ini=new Date(($("sIn").value||iso(new Date()))+"T12:00:00");
+ $("sNeed").innerHTML=`<span>Necesitas<br>(precio × 1.5)</span><b>${fm(pts)} pts</b>`;
+ const R=["c","p"].map(k=>{const P=PL[k],m=Math.max(0,Math.ceil((pts-P.w)/P.m)),res=addM(ini,m),via=new Date(res);via.setDate(via.getDate()+270);return {k,P,m,res,via}});
+ const best=R[0].m===R[1].m?"":(R[0].m<R[1].m?"c":"p");
+ $("sRes").innerHTML=R.map(x=>`<div class="pc${best===x.k?" best":""}">${best===x.k?'<span class="bd">MÁS RÁPIDO</span>':""}<h4>${x.P.n}</h4><div class="mt">Empiezas con ${fm(x.P.w)} pts · +${fm(x.P.m)} al mes</div>
+   <small>JUNTAS LOS PUNTOS EN</small><b class="big">${x.m===0?"¡Ya!":x.m+" "+(x.m===1?"mes":"meses")}</b>
+   <small>📅 YA PUEDES RESERVAR</small><b>${fd(x.res)}</b>
+   <small>🛳️ TU CRUCERO DESDE</small><b>${fd(x.via)}</b></div>`).join("");
+ if(touch&&!used){used=true;save({resp:"sim"})}}
+const setPr=(v,src)=>{v=Math.round(+v||0);if(src!=="n")$("sPr").value=v;if(src!=="r")$("sRg").value=Math.min(8000,Math.max(500,v));[...$("sCh").children].forEach(x=>x.classList.toggle("on",+x.dataset.v===v));sim(1)};
+$("sPr").oninput=()=>setPr($("sPr").value,"n");$("sRg").oninput=()=>setPr($("sRg").value,"r");
+$("sCh").onclick=e=>{const b=e.target.closest("button");if(!b)return;setPr(b.dataset.v)};
+$("sIn").onchange=()=>sim(1);
 // ----- socio que comparte -----
 let P=null,db=null;
 try{const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});try{const _ac=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js");_ac.initializeAppCheck(app,{provider:new _ac.ReCaptchaEnterpriseProvider("6LfesRkuAAAAAJQPpPOr5UFCDPoy2WuclKV0hgdg"),isTokenAutoRefreshEnabled:true})}catch(e){}
