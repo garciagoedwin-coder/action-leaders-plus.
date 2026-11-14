@@ -5436,7 +5436,7 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo){n=nv(n);pat=nv(p
   const P=String(n||"").trim().toUpperCase().split(/\s+/),l1=P[0]||"",R=P.slice(1);
   const wr=(z,mw)=>{g.font="400 "+z+"px "+BB;const L=[];let cur="";R.forEach(w=>{const t=cur?cur+" "+w:w;if(cur&&g.measureText(t).width>mw){L.push(cur);cur=w}else cur=t});if(cur)L.push(cur);return L};
   let z=76,RL=wr(z,920);const ZS=[184,172,160,150,140,132,124,116,108,100,92,84,76];
-  const L2T=yo?(window._L2T||"Elegí viajar más, conocer el mundo y construir algo propio al mismo tiempo."):(f?"Bienvenida":"Bienvenido")+" a bordo. El viaje apenas comienza.";g.font="700 40px "+BF;const NL=Math.min(3,wrap(L2T,860).length),FIN=1360,est=(zz,L)=>(1+L.length)*zz*.86+90+128+56*NL;
+  const L2T=yo?(window._L2T||"Elegí viajar más, conocer el mundo y construir algo propio al mismo tiempo."):"Hoy comienza a construir su nuevo destino: más viajes, más oportunidades, más libertad.";g.font="700 40px "+BF;const NL=Math.min(3,wrap(L2T,860).length),FIN=1360,est=(zz,L)=>(1+L.length)*zz*.86+90+128+56*NL;
   pick:for(const zz of ZS)for(const mw of [920,640,460]){const L=wr(zz,mw);g.font="400 "+zz+"px "+BB;if(1+L.length<=3&&785+est(zz,L)<=FIN&&g.measureText(l1).width<=920&&L.every(x=>g.measureText(x).width<=920)){z=zz;RL=L;break pick}}
   g.font="400 "+z+"px "+BB;const lh=z*.86;const slk=Math.max(0,FIN-785-(1+RL.length)*lh-90-128-56*NL),G1=90+slk*.3,G2=128+slk*.3;let yy=785+slk*.4+lh;g.textAlign="left";g.save();g.shadowColor="rgba(0,0,0,.6)";g.shadowBlur=30;g.shadowOffsetY=6;g.fillStyle="#fff";g.fillText(l1,76,yy);
   RL.forEach(t=>{yy+=lh;const w2=g.measureText(t).width;g.fillStyle=grad(76,76+w2);g.fillText(t,76,yy)});g.restore();
@@ -5444,8 +5444,8 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo){n=nv(n);pat=nv(p
   g.beginPath();g.roundRect(80,yb-40,lw,60,30);if(T.pill){g.fillStyle=grad(80,80+lw);g.fill()}else{g.fillStyle="rgba(42,193,241,.14)";g.fill();g.lineWidth=2;g.strokeStyle=T.a;g.stroke()}
   g.fillStyle=T.pill?"#111":"#fff";sp(T.lab,110,yb-1,5);
   if(pais){let x=80+lw+18;const fl=bandera(pais);if(fl){g.font="36px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";g.fillText(fl,x,yb+1);x+=g.measureText(fl).width+14}g.font="600 28px "+BF;g.fillStyle="#E5E7EB";sp(pais.toUpperCase(),x,yb-2,3.8)}
-  let yq=yb+G2;g.font="500 40px "+BF;g.textAlign="left";g.fillStyle="rgba(255,255,255,.9)";g.fillText(yo?"Este es mi nuevo comienzo.":"Hoy empieza su nueva historia.",80,yq);
-  g.font="700 40px "+BF;g.fillStyle=T.a;wrap(L2T,860).slice(0,3).forEach((t,i)=>g.fillText(t,80,yq+56*(i+1)));
+  let yq=yb+G2;g.font="500 40px "+BF;g.textAlign="left";g.fillStyle="rgba(255,255,255,.9)";g.fillText(yo?"Este es mi nuevo comienzo.":(f?"Bienvenida":"Bienvenido")+" a bordo.",80,yq);
+  g.font="700 40px "+BF;g.fillStyle=T.a;(yo?wrap(L2T,860).slice(0,3):["Hoy comienza a construir su nuevo destino:","más viajes, más oportunidades, más libertad."]).forEach((t,i)=>{let fz=40;g.font="700 "+fz+"px "+BF;while(g.measureText(t).width>920&&fz>28){fz--;g.font="700 "+fz+"px "+BF}g.fillText(t,80,yq+56*(i+1))});
   if(yo&&window._chips){let cx=80;const cy=yq+56*NL+44;g.font="700 26px "+BF;["✈️ Viajes","🚀 Emprendimiento","🤝 Equipo"].forEach(t=>{const w=g.measureText(t).width+40;g.beginPath();g.roundRect(cx,cy,w,52,26);g.fillStyle="rgba(255,255,255,.08)";g.fill();g.lineWidth=1.5;g.strokeStyle=T.a;g.stroke();g.fillStyle="#fff";g.textAlign="left";g.textBaseline="middle";g.fillText(t,cx+20,cy+27);g.textBaseline="alphabetic";cx+=w+12})}
   // tarjetas
   const card=(x,w,b,s)=>{g.beginPath();g.roundRect(x,1530,w,104,20);g.fillStyle="rgba(255,255,255,.07)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.15)";g.stroke();g.textAlign="left";g.fillStyle="#fff";g.font="700 30px "+BF;g.fillText(b,x+20,1576);g.fillStyle=T.a;g.font="700 14px "+BF;sp(s,x+20,1608,2.8)};
@@ -5459,14 +5459,17 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo){n=nv(n);pat=nv(p
   return cv}
 function fotoReduce400(file){return new Promise((ok,ko)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const M=1200,k=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);const x=c.getContext("2d");x.imageSmoothingEnabled=true;x.imageSmoothingQuality="high";x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL("image/jpeg",.93))};im.onerror=()=>{URL.revokeObjectURL(u);ko(new Error("img"))};im.src=u})}
 let bienPatP=null;const bienPat=()=>bienPatP||(bienPatP=bienFotoPat());
-function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,plan="classic",foto="",pais=c.ccN||(c.cc?(PAISES.find(x=>x[1]===c.cc)||[""])[0]:"")||"Honduras";let tel=c.phone?waNum(c.phone,c.cc):"";const pat=miNombreCorto()||"Tu patrocinador",sinTel=!c.phone;const invId=Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4),lk=miEnlace()+"&b="+invId;let invT;
+// 14 nov: Bienvenido/Bienvenida se adivina por el primer nombre (termina en "a" o está en la lista); el patrocinador lo cambia con el botón y entonces ya no se adivina.
+const GEN_F=new Set("isabel raquel maribel marisol carmen beatriz ines ruth mercedes dolores rocio pilar consuelo lourdes nicole michelle ivonne yaneth janeth lisbeth yamileth elizabeth ingrid astrid esther miriam karen evelyn jennifer dulce flor sol luz noemi abigail belen nohemi yasmin jazmin glenis glendy sharon katherine kathy cindy mary heidy leidy yessenia nancy iris lizeth ivette lilian marlen sonia gisel gissel ruby".split(" ")),GEN_M=new Set("luca joshua josua elia nikita".split(" "));
+function genF(n){const w=String(n||"").trim().split(/\s+/)[0].normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();if(!w)return false;if(GEN_M.has(w))return false;if(GEN_F.has(w))return true;return /a$/.test(w)}
+function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=genF(c.name),gT=false,file=null,plan="classic",foto="",pais=c.ccN||(c.cc?(PAISES.find(x=>x[1]===c.cc)||[""])[0]:"")||"Honduras";let tel=c.phone?waNum(c.phone,c.cc):"";const pat=miNombreCorto()||"Tu patrocinador",sinTel=!c.phone;const invId=Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4),lk=miEnlace()+"&b="+invId;let invT;
   const guardarInv=()=>{clearTimeout(invT);invT=setTimeout(()=>{if(!n||!store.db||!store.uid)return;const ccv=$("#bnCC")?$("#bnCC").value:(c.cc||"");store.db.doc("invitaciones/"+invId).set({by:store.uid,byNombre:miRegistro().nombre||pat,nombre:n,plan:(plan==="premium"?"Premium":plan==="starter"?"Starter":"Classic"),pais:pais||"",cc:String(ccv||""),wa:tel||"",f,t:Date.now()}).catch(()=>{})},300)};
   openSheet(`<h2>🎉 Bienvenida a socio nuevo</h2>
    <div class="field"><label for="bnN">Nombre del socio nuevo</label><input class="inp" id="bnN" value="${esc(n)}" placeholder="Nombre y apellido"></div>
    ${sinTel?`<div class="grid2"><div class="field"><label for="bnCC">País</label><select class="inp" id="bnCC">${PAISES.map(([pn,k],i)=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")&&i===PAISES.findIndex(x=>x[1]===(LS.get("lastCC")||"504"))?"selected":""}>${pn} (+${k})</option>`).join("")}</select></div>
    <div class="field"><label for="bnTel">WhatsApp <span class="muted">(opcional)</span></label><input class="inp" id="bnTel" type="tel" autocomplete="tel" placeholder="Solo el número"><p class="small" id="bnTelA" style="color:var(--bad);margin:4px 0 0" hidden></p></div></div>`:""}
    <div class="field"><label for="bnPais">País del socio</label><select class="inp" id="bnPais">${PAISES.filter((x,i,a)=>a.findIndex(y=>y[0]===x[0])===i).map(([pn])=>`<option ${pn===pais?"selected":""}>${pn}</option>`).join("")}<option value="">No mostrar país</option></select></div>
-   <div class="seg" id="bnG"><button aria-selected="true" data-g="m" type="button">Bienvenido</button><button aria-selected="false" data-g="f" type="button">Bienvenida</button></div>
+   <div class="seg" id="bnG"><button aria-selected="${!f}" data-g="m" type="button">♂ Bienvenido</button><button aria-selected="${f}" data-g="f" type="button">♀ Bienvenida</button></div>
    <div class="seg" id="bnP"><button aria-selected="false" data-p="starter" type="button">Starter</button><button aria-selected="true" data-p="classic" type="button">Classic</button><button aria-selected="false" data-p="premium" type="button">★ Premium</button></div>
    <label class="btn ghost" style="width:100%;justify-content:center;cursor:pointer">📷 Foto del socio nuevo<input type="file" id="bnFoto" accept="image/*" hidden></label>
    <div id="bnBox" style="aspect-ratio:9/16;width:100%;max-width:300px;margin:0 auto;border-radius:14px;background:#0b0b10;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Escribe el nombre…</span></div>
@@ -5477,13 +5480,13 @@ function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=false,file=null,
    <div class="row" style="gap:8px"><button class="btn ghost grow" id="bnCopy">Copiar celebración</button><button class="btn ghost grow" id="bnDl">Descargar flyer</button></div>
    <a id="bnWa" hidden></a>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
-    let tk=0;const upd=async()=>{n=$("#bnN").value.trim().replace(/\s+/g," ");const my=++tk;const box=$("#bnBox");if(!n){box.innerHTML='<span class="small" style="color:#fff">Escribe el nombre…</span>';file=null;return}
+    let tk=0;const upd=async()=>{n=$("#bnN").value.trim().replace(/\s+/g," ");if(!gT&&n){f=genF(n);$("#bnG").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",(x.dataset.g==="f")===f))}const my=++tk;const box=$("#bnBox");if(!n){box.innerHTML='<span class="small" style="color:#fff">Escribe el nombre…</span>';file=null;return}
       const cv=await bienCanvas(n,f,pat,plan,foto,pais,await bienPat());if(my!==tk)return;const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.95));file=new File([b],"Bienvenida-"+n.replace(/\s+/g,"-")+".jpg",{type:"image/jpeg"});
       box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im);
       const wa=$("#bnWa");if(wa)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat,lk));guardarInv()};
     let deb;$("#bnN").oninput=()=>{clearTimeout(deb);deb=setTimeout(upd,450)};
     const tI=$("#bnTel");if(tI){const syncTel=()=>{const v=tI.value;if(/^\s*(\+|00)/.test(v)){const sp=splitPhone(v);if(sp.cc){$("#bnCC").value=sp.cc;tI.value=sp.num}}tel=tI.value.trim()?waNum(tI.value,$("#bnCC").value):"";{const av=$("#bnTelA"),m=tel&&tI.value.replace(/\D/g,"").length>=6?telAviso(tel):"";if(av){av.textContent=m;av.hidden=!m}}const wa=$("#bnWa");wa.style.display=tel?"":"none";if(n)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat,lk));guardarInv()};tI.oninput=syncTel;tI.onchange=syncTel;$("#bnCC").onchange=()=>{LS.set("lastCC",$("#bnCC").value);{const ps=$("#bnPais"),pn=(PAISES.find(x=>x[1]===$("#bnCC").value)||[])[0];if(ps&&pn&&ps.value&&ps.value!==pn){ps.value=pn;pais=pn;upd()}}syncTel()}}
-    $("#bnG").onclick=e=>{const b=e.target.closest("[data-g]");if(!b)return;f=b.dataset.g==="f";$("#bnG").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));upd()};
+    $("#bnG").onclick=e=>{const b=e.target.closest("[data-g]");if(!b)return;gT=true;f=b.dataset.g==="f";$("#bnG").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));upd()};
     $("#bnPais").onchange=()=>{pais=$("#bnPais").value;{const cs=$("#bnCC"),k=(PAISES.find(x=>x[0]===pais)||[])[1];if(cs&&k&&cs.value!==k){cs.value=k;cs.dispatchEvent(new Event("change"))}}upd()};
     $("#bnP").onclick=e=>{const b=e.target.closest("[data-p]");if(!b)return;plan=b.dataset.p;$("#bnP").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));upd()};
     $("#bnFoto").onchange=async e=>{const fl=e.target.files&&e.target.files[0];if(!fl)return;try{foto=await fotoReduce400(fl);toast("Foto lista")}catch(x){toast("No se pudo usar esa foto")}upd()};
@@ -8991,7 +8994,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114104915";var busy=false,pend=null;
+(function(){var V="20261114115808";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
