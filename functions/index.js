@@ -143,7 +143,7 @@ exports.salaCopiloto = functions.runWith({ memory: "256MB", timeoutSeconds: 30 }
   else if (nv("resp")) m = ["💡 A " + n + " lo que más le conectó: " + (VAL[a.resp] || a.resp), "Va en el cierre de la presentación."];
   else if (nv("pais")) m = ["🗺️ " + n + " sueña con conocer " + a.pais, "Minuto 2:20 de la presentación. Úselo en su seguimiento."];
   else if (nv("r1")) m = ["⭐ A " + n + " le atrae: " + (VAL[a.r1] || a.r1), "Acaba de empezar la presentación."];
-  else if (!b) m = ["👀 " + n + " abordó su presentación", "La está viendo ahora. Le avisamos cada vez que responda."];
+  else if (!b || (nv("n") && b && !b.n)) m = ["👀 " + n + " abordó su presentación", (a.o ? "📍 " + String(a.o).slice(0, 60) + " · " : "") + "La está viendo ahora. Le avisamos cada vez que responda."];
   else if (nv("motivo") && a.motivo === "fin" && !a.pulso) m = ["✅ " + n + " terminó la presentación", "Escríbale ahora."];
   if (!m) return;
   await push([ctx.params.uid], m[0], m[1], "sala");

@@ -115,12 +115,12 @@ service cloud.firestore {
     }
     // ---- Presentación virtual (sala) ----
     match /users/{uid}/sala/{id} {
-      allow create, update: if request.resource.data.keys().hasOnly(['n','c','t0','t','pct','r1','pais','pulso','resp','como','motivo','dur','w'])
+      allow create, update: if request.resource.data.keys().hasOnly(['n','c','t0','t','pct','r1','pais','pulso','resp','como','motivo','dur','w','o'])
         && request.resource.data.n is string && request.resource.data.n.size() <= 60
         && request.resource.data.t is number
         && txtOk(request.resource.data, 'c', 40) && txtOk(request.resource.data, 'r1', 80) && txtOk(request.resource.data, 'pais', 80)
         && txtOk(request.resource.data, 'pulso', 80) && txtOk(request.resource.data, 'resp', 80) && txtOk(request.resource.data, 'como', 40)
-        && txtOk(request.resource.data, 'motivo', 80) && txtOk(request.resource.data, 'w', 20)
+        && txtOk(request.resource.data, 'motivo', 80) && txtOk(request.resource.data, 'w', 20) && txtOk(request.resource.data, 'o', 60)
         && numOk(request.resource.data, 't0') && numOk(request.resource.data, 'pct') && numOk(request.resource.data, 'dur');
     }
     function txtOk(d, k, n) { return !(k in d) || (d[k] is string && d[k].size() <= n); }

@@ -4,6 +4,11 @@
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#05121C">
 <title>Su próximo destino · Action Leaders</title>
+<meta property="og:title" content="✈️ Tu pase de abordar · Action Leaders">
+<meta property="og:description" content="Una presentación privada de 20 minutos sobre cómo viajar más pagando menos y emprender desde el celular.">
+<meta property="og:image" content="https://actionleadersplus.com/media/viaje/og.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
 /* Presentación virtual v2 «Su próximo destino» (13 nov 2026). Prospecto habla de TÚ (igual que el video). */
@@ -35,6 +40,7 @@ button{font:inherit;cursor:pointer}
 .go{position:relative;width:100%;height:60px;margin-top:22px;border:0;border-radius:18px;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;font-weight:900;font-size:19px;box-shadow:0 10px 30px #2AC1F155;animation:lat 2.2s ease-in-out infinite}
 @keyframes lat{50%{box-shadow:0 10px 44px #2AC1F199;transform:scale(1.015)}}
 .bForm{position:relative;margin-top:16px;background:#ffffff10;border:1px solid #ffffff26;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px}.bForm[hidden]{display:none}.bForm b{font-size:15px}.bForm label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;opacity:.9}.bForm input,.bForm select{font:inherit;font-size:16px;border-radius:12px;border:1px solid #ffffff33;background:#fff;color:#0B1E2B;padding:11px 12px;width:100%}.bForm .tel{display:flex;gap:6px}.bForm .tel select{width:auto;max-width:42%;padding:11px 6px}.bForm small{font-size:12px;opacity:.65}.fErr{color:#FCA5A5;font-size:13px;font-weight:700;min-height:0}
+.noSoy{position:relative;display:block;margin:14px auto 0;border:0;background:none;color:#7FE0FF;font:inherit;font-size:13.5px;font-weight:700;text-decoration:underline;cursor:pointer}.noSoy[hidden]{display:none}
 .hint{position:relative;text-align:center;font-size:12.5px;opacity:.6;margin-top:10px}
 .pass.rip{transform:translateY(-120%) rotate(-8deg);opacity:0}
 /* sala */
@@ -121,6 +127,7 @@ button{font:inherit;cursor:pointer}
   <label>Tu WhatsApp<span class="tel"><select id="fCC" aria-label="País"></select><input id="fT" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="Número"></span></label>
   <small id="fTx">Para que te envíen tu información.</small><div class="fErr" id="fErr"></div></div>
  <button class="go" id="bGo" type="button">✈️ Abordar</button>
+ <button class="noSoy" id="bNoSoy" type="button" hidden></button>
  <div class="hint" id="bHint">Activa el sonido 🔊 · Edwin te hará 4 preguntas</div>
 </div>
 
@@ -201,7 +208,12 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;"
 const U=new URLSearchParams(location.search);
 const code=(U.get("de")||"").trim().toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60);
 let pName=(U.get("p")||"").replace(/[<>]/g,"").trim().slice(0,50),first=pName.split(/\s+/)[0]||"";
-const cid=(U.get("c")||"").replace(/[^A-Za-z0-9_-]/g,"").slice(0,40);
+let cid=(U.get("c")||"").replace(/[^A-Za-z0-9_-]/g,"").slice(0,40);
+// 13 nov: «¿No eres X?» (otro=1) → es otra persona a la que X le reenvió el link; o = etiqueta de origen que eligió el socio
+const otroDe=U.get("otro")==="1"&&pName?pName:"";if(otroDe){pName="";first="";cid=""}
+const OR_K={camp:"Campaña",fria:"Lista fría",pasiva:"Prospección pasiva",grupo:"De un grupo",estado:"De mi estado",fb:"Facebook",ig:"Instagram",tt:"TikTok",otro:"Otro"};
+const orLbl=o=>{o=String(o||"").replace(/[^a-z0-9-]/gi,"").toLowerCase().slice(0,50);if(!o)return "";const [k,...r]=o.split("-"),n=r.join(" ").trim(),N=n?n[0].toUpperCase()+n.slice(1):"";return OR_K[k]?(OR_K[k]+(N?" · "+N:"")):(o.replace(/-/g," "))};
+const orig=otroDe?("Se lo compartió "+otroDe).slice(0,60):orLbl(U.get("o")).slice(0,60);
 const verSolo=U.get("ver")==="1"; // el socio revisa su propio link: no registra nada
 const LSg=k=>{try{return JSON.parse(localStorage.getItem("viaje:"+k))}catch(e){return null}},LSs=(k,v)=>{try{localStorage.setItem("viaje:"+k,JSON.stringify(v))}catch(e){}};
 let P=null;try{if(code){const d=await getDoc(doc(db,"perfiles",code));if(d.exists())P=d.data()}}catch(e){}
@@ -213,18 +225,19 @@ const avPinta=el=>{if(!el)return;if(P&&P.foto&&/^(data:image\/|https:\/\/)/.test
 $("bHola").innerHTML=(first?`Hola, ${esc(first)} 👋`:"Hola 👋")+`<small>${host?esc(hostF)+" te preparó":"Te prepararon"} este viaje de 20 minutos.</small>`;
 if(pName)$("bNom").textContent=pName;if(host)$("bHost").textContent=host;avPinta($("bAv"));
 // ----- registro (un documento por prospecto; id v_… para la presentación v2) -----
-const vKey="v-"+code+"-"+(cid||pName.toLowerCase()||"anon");
+const vKey="v-"+code+"-"+(otroDe?"otro-"+otroDe.toLowerCase():cid||pName.toLowerCase()||(orig?"o-"+orig.toLowerCase():"anon"));
 let V=LSg(vKey)||{id:null,pos:0,max:0,asked:{},r:{}};V.asked=V.asked||{};V.r=V.r||{};
 // 13 nov: link general (sin nombre ni contacto) → el prospecto llena nombre y WhatsApp (obligatorios)
 const pide=!pName&&!cid;if(pide&&V.n){pName=V.n;first=pName.split(/\s+/)[0]||""}
 const PA=[["🇭🇳 +504","504"],["🇺🇸 +1","1"],["🇪🇸 +34","34"],["🇬🇹 +502","502"],["🇸🇻 +503","503"],["🇳🇮 +505","505"],["🇨🇷 +506","506"],["🇵🇦 +507","507"],["🇲🇽 +52","52"],["🇨🇴 +57","57"],["🇻🇪 +58","58"],["🇵🇪 +51","51"],["🇪🇨 +593","593"],["🇨🇱 +56","56"],["🇦🇷 +54","54"],["🇩🇴 +1","1d"],["🇬🇧 +44","44"],["🇮🇹 +39","39"],["🇫🇷 +33","33"],["🇩🇪 +49","49"]];
 if(pide&&!V.n){$("bForm").hidden=false;$("fCC").innerHTML=PA.map(([t,v])=>`<option value="${v}">${t}</option>`).join("");if(hostF)$("fTx").textContent="Para que "+hostF+" te envíe tu información.";
   $("fT").oninput=()=>{$("fErr").textContent=""};$("fN").oninput=()=>{$("fErr").textContent="";const v=$("fN").value.trim();$("bNom").textContent=v||"Tu nombre";$("bHola").firstChild.textContent=v?`Hola, ${v.split(/\s+/)[0]} 👋`:"Hola 👋"};$("bNom").textContent="Tu nombre";$("bHint").textContent="Activa el sonido 🔊 · son 20 minutos"}
+if(pName&&!pide&&!V.fin&&!verSolo){const b=$("bNoSoy");b.hidden=false;b.textContent="¿No eres "+first+"? Toca aquí";b.onclick=()=>{const u=new URL(location.href);u.searchParams.set("otro","1");location.href=u.toString()}}
 const D={};const canTrack=!!(P&&P.uid)&&!verSolo;
 let saveT;async function save(extra,now){Object.assign(D,extra||{});if(!canTrack)return;clearTimeout(saveT);const go=async()=>{try{
-  if(!V.id){V.id="v_"+Math.random().toString(36).slice(2,9)+Date.now().toString(36);LSs(vKey,V);D.t0=Date.now();D.n=(pName||"Sin nombre").slice(0,60);if(cid)D.c=cid}
+  if(!V.id){V.id="v_"+Math.random().toString(36).slice(2,9)+Date.now().toString(36);LSs(vKey,V);D.t0=Date.now();D.n=(pName||"Sin nombre").slice(0,60);if(cid)D.c=cid;if(orig)D.o=orig}
   if(V.n&&!D.n)D.n=V.n.slice(0,60);if(V.w)D.w=V.w;D.t=Date.now();
-  try{await setDoc(doc(db,"users",P.uid,"sala",V.id),D,{merge:true})}catch(e){if(D.w){const X=Object.assign({},D);delete X.w;await setDoc(doc(db,"users",P.uid,"sala",V.id),X,{merge:true})}else throw e}}catch(e){}};if(now)await go();else saveT=setTimeout(go,900)}
+  try{await setDoc(doc(db,"users",P.uid,"sala",V.id),D,{merge:true})}catch(e){if(D.w||D.o){const X=Object.assign({},D);delete X.w;delete X.o;await setDoc(doc(db,"users",P.uid,"sala",V.id),X,{merge:true})}else throw e}}catch(e){}};if(now)await go();else saveT=setTimeout(go,900)}
 // ----- ruta y tarjetas -----
 const TOT=1228;let dur=TOT;
 const NC=CAPS.length;$("ln").insertAdjacentHTML("beforeend",CAPS.map((c,k)=>`<span class="dot" style="left:${k/(NC-1)*100}%"></span>`).join(""));
