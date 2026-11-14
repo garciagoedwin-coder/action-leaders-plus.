@@ -7126,7 +7126,7 @@ function crmV2On(){return !!(salaOk()&&irSimple())}
 // 14 nov (Edwin, solo admin): CRM más limpio — herramientas con nombre, etapas en una fila, orden en un botón, pase de abordar en boleto, ⋯ en ventana.
 const CV_STI={"Por cerrar":"🔥 ","Seguimiento":"🔁 ","Presentación":"🎤 ","Contactado":"💬 ","Nuevo":"🆕 ","No interesado":"✖ ","Socio":"🤝 ","Cliente":"🛳️ "};
 function cvTop3(){const on=crmV2On();let tb=$("#cvTools");
-  if(on&&!tb){tb=document.createElement("div");tb.id="cvTools";tb.innerHTML=`<button type="button" data-tl="salaBtn">✈️ Pres. virtual</button><button type="button" data-tl="presBtn">🎤 Presentar</button><button type="button" data-tl="bienBtn">🎉 Bienvenida</button>`;
+  if(false&&on&&!tb){tb=document.createElement("div");tb.id="cvTools";tb.innerHTML=`<button type="button" data-tl="salaBtn">✈️ Pres. virtual</button><button type="button" data-tl="presBtn">🎤 Presentar</button><button type="button" data-tl="bienBtn">🎉 Bienvenida</button>`;
     const h=$("#v-crm > .row.between");if(h)h.after(tb);tb.onclick=e=>{const b=e.target.closest("[data-tl]");if(!b)return;const x=$("#"+b.dataset.tl);if(x)x.click()}}
   if(on&&!$("#cvSrow")){const sI=$("#crmSearch"),w=document.createElement("div");w.id="cvSrow";sI.before(w);w.append(sI);const b=document.createElement("button");b.type="button";b.id="cvOrd";w.append(b);
     b.onclick=()=>{const K=["seg","rec","pct"];crmOrd=K[(K.indexOf(crmOrd)+1)%3];try{LS.set("crmOrd",crmOrd)}catch(e){}renderCRM();toast("Ordenados por: "+({seg:"próximo seguimiento",rec:"más recientes",pct:"mayor %"}[crmOrd]))}}
@@ -8994,7 +8994,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114115808";var busy=false,pend=null;
+(function(){var V="20261114130017";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
