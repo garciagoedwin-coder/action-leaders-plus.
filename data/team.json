@@ -155,6 +155,18 @@
    "activaciones": 1,
    "volumen": 500,
    "actSemana": 1
+  },
+  {
+   "nombre": "Sergio mauricio Garcia lopez",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "sergio-mauricio-garcia-lopez",
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -702,6 +714,21 @@
    "volumen": 500,
    "volumenDetalle": "",
    "id": "adela-izamara-zelaya",
+   "volumenHoja": 0,
+   "ptsBase": 500,
+   "auto": "2026-11"
+  },
+  {
+   "nombre": "Sergio Mauricio Garcia Lopez",
+   "nombreRanking": "Sergio mauricio Garcia lopez",
+   "rango": "",
+   "linea": "",
+   "meta": 500,
+   "nuevos": 0,
+   "presentaciones": 0,
+   "volumen": 500,
+   "volumenDetalle": "",
+   "id": "sergio-mauricio-garcia-lopez",
    "volumenHoja": 0,
    "ptsBase": 500,
    "auto": "2026-11"
@@ -3153,6 +3180,17 @@
    "fuente": "gmail",
    "id": "oscar-torres",
    "rv": 1
+  },
+  {
+   "socio": "Ingrid fabiola Cerrato juarez",
+   "paquete": "Premium",
+   "patrocinador": "Sergio mauricio Garcia lopez",
+   "fecha": "2026-11-14T02:55:02Z",
+   "ek": "63b2f9",
+   "wk": "5091f3",
+   "fuente": "gmail",
+   "id": "ingrid-fabiola-cerrato-juarez",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3186,7 +3224,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-13T01:55:02Z",
+  "activacionesCorte": "2026-11-14T02:55:02Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3195,7 +3233,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-12T20:17:00-06:00",
+  "rankingActualizado": "2026-11-13T21:53:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -4075,7 +4113,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-11-14T02:54:12Z",
+   "v": "2026-11-14T03:53:16Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "0225a9": "2026-10-27T10:09:44Z",
@@ -4115,7 +4153,6 @@
     "4a0eb8": "2026-11-01T00:36:17Z",
     "4cb87e": "2026-10-31T17:34:26Z",
     "4f2a6b": "2026-10-27T17:08:49Z",
-    "578fad": "2026-11-02T00:10:00Z",
     "5c143b": "2026-11-14T23:08:33Z",
     "5fc7fb": "2026-10-31T23:58:44Z",
     "6168c1": "2026-10-30T03:05:26Z",
@@ -4147,7 +4184,6 @@
     "8b574c": "2026-10-28T19:40:07Z",
     "8dae9e": "2026-10-25T06:45:37Z",
     "8ff3c1": "2026-10-31T23:15:42Z",
-    "8ffc66": "2026-11-02T00:10:00Z",
     "9109f7": "2026-11-01T17:34:35Z",
     "951a9a": "2026-10-28T11:41:24Z",
     "97977e": "2026-11-02T22:31:32Z",
@@ -4732,8 +4768,8 @@
     },
     {
      "n": "Edwin Garcia Go",
-     "p": 2000,
-     "a": 14
+     "p": 2100,
+     "a": 15
     },
     {
      "n": "Jorge Turcios",
@@ -4969,6 +5005,11 @@
      "n": "Oscar Amador",
      "p": 500,
      "a": 5
+    },
+    {
+     "n": "Sergio Mauricio Garcia Lopez",
+     "p": 500,
+     "a": 1
     },
     {
      "n": "Waleska Osiris Sevilla Bran",
@@ -5436,7 +5477,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-14T02:54:12Z"
+   "t": "2026-11-14T03:53:17Z"
   }
  },
  "fotos": [
