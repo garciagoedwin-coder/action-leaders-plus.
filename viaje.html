@@ -213,7 +213,7 @@ let cid=(U.get("c")||"").replace(/[^A-Za-z0-9_-]/g,"").slice(0,40);
 const soyYo=U.get("yo")==="1"&&!!pName;if(soyYo)cid="yo";
 // 13 nov: «¿No eres X?» (otro=1) → es otra persona a la que X le reenvió el link; o = etiqueta de origen que eligió el socio
 const otroDe=U.get("otro")==="1"&&pName?pName:"";if(otroDe){pName="";first="";cid=""}
-const OR_K={camp:"Campaña",fria:"Lista fría",pasiva:"Prospección pasiva",grupo:"De un grupo",estado:"De mi estado",fb:"Facebook",ig:"Instagram",tt:"TikTok",otro:"Otro"};
+const OR_K={camp:"Campaña",fria:"Lista fría",pasiva:"Prospección pasiva",grupo:"De un grupo",estado:"De mi estado",fb:"Facebook",ig:"Instagram",tt:"TikTok",otro:"Otro",pag:"Desde mi página"};
 const orLbl=o=>{o=String(o||"").replace(/[^a-z0-9-]/gi,"").toLowerCase().slice(0,50);if(!o)return "";const [k,...r]=o.split("-"),n=r.join(" ").trim(),N=n?n[0].toUpperCase()+n.slice(1):"";return OR_K[k]?(OR_K[k]+(N?" · "+N:"")):(o.replace(/-/g," "))};
 const orig=otroDe?("Se lo compartió "+otroDe).slice(0,60):orLbl(U.get("o")).slice(0,60);
 const verSolo=U.get("ver")==="1"; // el socio revisa su propio link: no registra nada
@@ -237,6 +237,12 @@ if(pide&&!V.n){$("bForm").hidden=false;$("fCC").innerHTML=PA.map(([t,v])=>`<opti
 if(soyYo){const y=document.createElement("div");y.style.cssText="display:inline-block;margin:0 0 10px;background:#2AC1F1;color:#062B3A;font:800 12.5px/1.2 system-ui,sans-serif;padding:7px 13px;border-radius:999px";y.textContent="🧪 Así la verán sus prospectos";$("bHola").before(y)}
 if(soyYo){const x=document.createElement("button");x.type="button";x.textContent="✕ Volver a la app";x.style.cssText="position:fixed;right:12px;bottom:max(14px,env(safe-area-inset-bottom));z-index:9999;border:1px solid rgba(255,255,255,.35);background:rgba(6,18,28,.85);color:#fff;font:800 13.5px/1 system-ui,sans-serif;padding:11px 14px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.4);cursor:pointer";
   x.onclick=async()=>{try{if(V.id)await save({},true)}catch(e){}if(history.length>1)history.back();else location.href="https://actionleadersplus.com/"};document.body.appendChild(x)}
+// 14 nov: vl=1 = llegó desde la landing (destino.html): botón para volver a la página y, al final, «Ver toda la información»
+const desdeLand=U.get("vl")==="1";
+const landUrl=()=>{const u=new URL("destino.html",location.href);["de","p","c","ver"].forEach(k=>{const v=U.get(k);if(v)u.searchParams.set(k,v)});return u.toString()};
+const aLand=()=>{try{if(V.id)save({},true)}catch(e){}if(history.length>1&&/destino\.html/.test(document.referrer))history.back();else location.href=landUrl()};
+if(desdeLand&&!soyYo){const x=document.createElement("button");x.type="button";x.textContent="← Volver a la página";x.style.cssText="position:fixed;left:12px;bottom:max(14px,env(safe-area-inset-bottom));z-index:9999;border:1px solid rgba(255,255,255,.35);background:rgba(6,18,28,.85);color:#fff;font:800 13px/1 system-ui,sans-serif;padding:11px 14px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.4);cursor:pointer";x.onclick=aLand;document.body.appendChild(x);setInterval(()=>{const c=document.querySelector(".cta1");const on=c&&!c.hidden&&c.offsetParent!==null;x.style.bottom=on?"calc(max(14px,env(safe-area-inset-bottom)) + 66px)":"max(14px,env(safe-area-inset-bottom))"},700);
+  const l=document.createElement("a");l.href="#";l.textContent="📄 Ver toda la información";l.style.cssText="display:block;text-align:center;margin:14px 0 4px;color:#7FE0FF;font-weight:800;font-size:14px;text-decoration:none;position:relative";l.onclick=e=>{e.preventDefault();aLand()};const ct=document.querySelector("#land .ctas");if(ct)ct.after(l)}
 if(pName&&!pide&&!V.fin&&!verSolo&&!soyYo){const b=$("bNoSoy");b.hidden=false;b.textContent="¿No eres "+first+"? Toca aquí";b.onclick=()=>{const u=new URL(location.href);u.searchParams.set("otro","1");location.href=u.toString()}}
 const D={};const canTrack=!!(P&&P.uid)&&!verSolo;
 let saveT;async function save(extra,now){Object.assign(D,extra||{});if(!canTrack)return;clearTimeout(saveT);const go=async()=>{try{
