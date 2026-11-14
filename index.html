@@ -870,7 +870,7 @@ body.cv2 .contact .ch .pbar{flex-basis:100%;height:4px;margin-top:4px}body.cv2 .
 .cvTk .t3 .y{background:rgba(42,193,241,.22);color:#fff}.cvTk .t3 .f{background:linear-gradient(135deg,#F7953B,#EA580C);color:#fff}
 .cvTk .t4{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px;font-size:12px;color:rgba(255,255,255,.78)}.cvTk .t4 span{min-width:0}.cvTk .t4 button{flex:none;border:0;background:none;color:#2AC1F1;font:inherit;font-weight:800;font-size:12.5px;cursor:pointer;padding:2px 0}
 .syC{gap:8px;margin-top:10px;border:1.5px solid color-mix(in srgb,#2AC1F1 45%,var(--line))}.syK{font-size:10.5px;letter-spacing:.16em;font-weight:800;color:#0A7DAD}.syT{font-size:16px;line-height:1.25}
-.cvAct{display:flex;gap:8px;width:100%;margin-top:10px}.cvWaB{flex:1;display:flex;align-items:center;justify-content:center;height:48px;border:0;border-radius:14px;background:#25D366;color:#fff;font:inherit;font-weight:800;font-size:15px;text-decoration:none;cursor:pointer}.cvWaB.off{background:var(--surface-2);color:var(--ink)}
+.cvAct{display:flex;gap:8px;width:100%;margin-top:10px}.cvTk .t4:has(.tkGo){flex-direction:column;align-items:stretch;gap:6px}.cvTk .t4 .tkGo{width:100%;min-height:48px;border-radius:14px;background:linear-gradient(135deg,#2AC1F1,#0A7DAD);color:#fff;font-size:15px;font-weight:900;box-shadow:0 8px 22px rgba(42,193,241,.35);animation:tkP 2.4s ease-in-out 3}.cvTk .tkS{text-align:center;font-size:11.5px;opacity:.75}@keyframes tkP{50%{transform:scale(1.03)}}.cvWaB{flex:1;display:flex;align-items:center;justify-content:center;height:48px;border:0;border-radius:14px;background:#25D366;color:#fff;font:inherit;font-weight:800;font-size:15px;text-decoration:none;cursor:pointer}.cvWaB.off{background:var(--surface-2);color:var(--ink)}
 .cvDots{flex:none;width:52px;height:48px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:14px;font:inherit;font-size:20px;font-weight:900;cursor:pointer}
 .cvLast{width:100%;margin-top:8px;font-size:12.5px;color:var(--muted);background:var(--surface-2);border-radius:10px;padding:7px 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cvVa{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cvVa div{background:var(--surface-2);border-radius:12px;padding:9px 11px}.cvVa small{display:block;font-size:10px;letter-spacing:.12em;font-weight:800;color:var(--brand)}.cvVa b{font-size:14px}.cvVa .hot{background:linear-gradient(135deg,#F7953B,#EA580C);color:#fff}.cvVa .hot small{color:#fff}
@@ -7157,7 +7157,7 @@ function crmV2Tk(c){const v=salaDe(c.id),e=(LS.get("salaEnv")||{})[c.id],f=Strin
   const c3=fin?S(1,"Terminó"):v?`<span class="${pct?"y":""}">Vio ${pct}%</span>`:S(0,"Terminó");
   const c4=n?`<span class="${n>=8?"f":"y"}">${n>=8?"🔥 ":n>=6?"🟠 ":"💭 "}${n}/10</span>`:`<span>— /10</span>`;
   let pie;
-  if(!v&&!e)pie=`<span>Edwin le presenta en 20 min · usted ve cada respuesta</span><button type="button" data-sala="${id}">✈️ Enviar</button>`;
+  if(!v&&!e)pie=`<button type="button" class="tkGo" data-sala="${id}">✈️ Enviarle mi presentación virtual</button><span class="tkS">Edwin le presenta en 20 min · usted ve cada respuesta en vivo</span>`;
   else if(!v)pie=`<span>Aún no aborda · le avisamos al teléfono</span><button type="button" data-sala="${id}">↻ Reenviar</button>`;
   else{const at=[v.r1&&CV_VAL[v.r1]?"Le atrae: "+CV_VAL[v.r1].replace(/^\S+ /,""):"",v.resp&&CV_VAL[v.resp]?"Le conectó: "+CV_VAL[v.resp].replace(/^\S+ /,""):""].filter(Boolean).join(" · ");
     pie=`<span>${esc(fin?at||"Terminó su presentación":cap?"Va en «"+cap+"»":"Está viendo su presentación")}</span><button type="button" data-cvtk="${id}">Ver todo ›</button>`}
@@ -9013,7 +9013,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114140413";var busy=false,pend=null;
+(function(){var V="20261114150610";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
