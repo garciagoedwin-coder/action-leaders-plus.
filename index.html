@@ -6463,18 +6463,25 @@ async function salaCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su
    $("#scTabs").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;tab=b.dataset.t;LS.set("scTab",tab);pinta()};
    $("#scOr").onclick=e=>{const b=e.target.closest("[data-o]");if(!b)return;ori=b.dataset.o;$("#scOr").querySelectorAll("[data-o]").forEach(x=>x.classList.toggle("on",x===b));pinta()};
    $("#scON").oninput=pinta;pinta();
-   const prep=async()=>{if(!(await salaPrep()))return null;LS.set("salaOn",1);
+   // 13 nov: todo SÍNCRONO al tocar (iPhone bloquea copiar/abrir después de un await). La sala se prepara al abrir la hoja.
+   let listo=!!LS.get("salaPerf");const btns=["#scWa","#scCp","#scSl"];if(!listo){btns.forEach(b=>$(b).disabled=true);salaPrep().then(ok=>{listo=ok;btns.forEach(b=>{const x=$(b);if(x)x.disabled=!ok})})}
+   const prep=()=>{if(!listo){toast("Un momento, preparando su presentación…");return null}LS.set("salaOn",1);
      if(tab==="o"){if(!ori){toast("Elija de dónde viene la persona");return null}return {n:"",num:"",u:salaUrl("","",oriTx())}}
      const n=$("#scN").value.replace(/[<>]/g,"").trim().slice(0,50);if(n.length<2){toast("Escriba el nombre de la persona");$("#scN").focus();return null}
      let cid="",num="";const cc=$("#scCC").value,t=$("#scT").value.replace(/\D/g,"");if(t)num=waNum(t,cc);
      if($("#scCrm").checked){let c=num?contacts.find(x=>x.phone&&String(waNum(x.phone,x.cc)).slice(-8)===num.slice(-8)):null;
-       if(!c){c={name:n,cc,phone:t,stage:"Contactado",note:"Le envió la presentación virtual",next:TODAY,creado:Date.now(),updated:Date.now()};const id=await store.saveContact(Object.assign({},c));if(id){c.id=id;contacts.push(c);try{conNuevo(c)}catch(x){}}}
-       if(c&&c.id){cid=c.id;try{stAvanza(c,"Contactado","le envió la presentación virtual")}catch(x){}const E=LS.get("salaEnv")||{};E[cid]=Date.now();LS.set("salaEnv",E);try{renderCRM()}catch(x){}}}
+       if(!c){c={id:"v"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:n,cc,phone:t,stage:"Contactado",note:"Le envió la presentación virtual",next:TODAY,creado:Date.now(),updated:Date.now()};contacts.push(c);
+         store.saveContact(Object.assign({},c)).then(id=>{if(id){try{conNuevo(c)}catch(x){}try{renderCRM()}catch(x){}}});}
+       cid=c.id;try{stAvanza(c,"Contactado","le envió la presentación virtual")}catch(x){}const E=LS.get("salaEnv")||{};E[cid]=Date.now();LS.set("salaEnv",E);setTimeout(()=>{try{renderCRM()}catch(x){}},600)}
      return {n,num,u:salaUrl(n,cid)}};
-   const cop=async t=>{try{await navigator.clipboard.writeText(t);toast("Copiado ✅ · péguelo en el chat de la persona")}catch(x){prompt("Copie:",t)}};
-   $("#scWa").onclick=async()=>{const r=await prep();if(!r)return;const t=salaMsgInv(r.n,r.u);closeSheet();waIr("https://wa.me/"+(r.num||"")+"?text="+encodeURIComponent(t))};
-   $("#scCp").onclick=async()=>{const r=await prep();if(!r)return;cop(salaMsgInv(r.n,r.u))};
-   $("#scSl").onclick=async()=>{const r=await prep();if(!r)return;cop(r.u)}})}
+   const cop=t=>{let ok=false;try{if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).catch(()=>{});ok=true}}catch(x){}
+     try{const ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.cssText="position:fixed;top:0;left:0;opacity:0;font-size:16px";document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,t.length);ok=document.execCommand("copy")||ok;ta.remove()}catch(x){}
+     toast(ok?"Copiado ✅ · péguelo en el chat de la persona":"No se pudo copiar: mantenga presionado para copiar")};
+   $("#scWa").onclick=()=>{const r=prep();if(!r)return;const t=salaMsgInv(r.n,r.u);
+     if(!r.num&&navigator.share){navigator.share({text:t}).catch(()=>{});return}
+     closeSheet();location.href=r.num?"https://api.whatsapp.com/send?phone="+r.num+"&text="+encodeURIComponent(t):"https://api.whatsapp.com/send?text="+encodeURIComponent(t)};
+   $("#scCp").onclick=()=>{const r=prep();if(!r)return;cop(salaMsgInv(r.n,r.u))};
+   $("#scSl").onclick=()=>{const r=prep();if(!r)return;cop(r.u)}})}
 function salaNums(){if(!crmV2On())return "";const V=Object.values(salaCache()).filter(v=>String(v.id||"").startsWith("v_")),E=LS.get("salaEnv")||{};
   const env=new Set(Object.keys(E));V.forEach(v=>{if(v.c)env.add(v.c);else env.add(v.id)});const fin=V.filter(v=>(+v.pct||0)>=100||v.motivo==="fin"||+v.pulso>0),hot=V.filter(v=>+v.pulso>=8),reg=V.filter(v=>v.c&&contacts.some(c=>c.id===v.c&&(c.stage==="Socio"||c.stage==="Cliente")));
   const b=(n,t,cl)=>`<div${cl?` class="${cl}"`:""}><b>${n}</b>${t}</div>`;
@@ -8707,7 +8714,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261113202102";var busy=false,pend=null;
+(function(){var V="20261113213315";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
