@@ -2101,7 +2101,7 @@ function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histS
       <span class="counter"><button data-dec="${r.k}" aria-label="Restar">−</button><span class="num">${v}</span><button data-inc="${r.k}" aria-label="Sumar">+</button></span></div>`}).join("");
   const p=Math.round(dayScore(day)*100),RL=ROUTINE.filter(r=>!r.desde||TODAY>=r.desde),hechas=RL.filter(r=>(day[r.k]||0)>=1).length;$("#dayPct").textContent=hechas+" de "+RL.length;$("#dayBar").style.width=p+"%";
   const pend=RL.filter(r=>!((day[r.k]||0)>=1)),falta=pend.length,ra=$("#rutAlert");
-  const rach=(()=>{let r=0;for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=i===0?dayScore(day):dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)r++;else break}return r})();try{rhRevisar(rach,!falta)}catch(e){}try{rc3Vida()}catch(e){}
+  const rach=(()=>{let r=0;for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=i===0?dayScore(day):dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)r++;else break}if(acc3On()){try{r=constStats().rv}catch(e){}}return r})();try{rhRevisar(rach,!falta)}catch(e){}try{rc3Vida()}catch(e){}
   if(ra){const st=falta?"pend":"ok",hr=new Date().getHours(),nx=pend[0],key=st+"|"+falta+"|"+(hr>=18)+"|"+rach+"|"+(day.hAtr?1:0);if(ra.dataset.key!==key){
     let h;if(!falta)h=`<div class="rut-al ok rutDone" id="rutDoneB"><span class="rdChk">✓</span><span class="grow" style="min-width:0"><b>¡Felicidades! Su rutina de hoy está hecha 🎉</b><span class="rdS">🔥 Racha de ${rach} ${rach===1?"día":"días"} · mañana va por ${rach+1}</span></span><button type="button" class="rutTg" id="rutTg">${rutOpen?"▴":"▾"}</button></div>`;
     else{const tarde=hr>=18&&rach>0,txt=tarde?`⏰ <b>Le ${falta===1?"falta 1 paso":"faltan "+falta+" pasos"} para no perder su racha de ${rach} ${rach===1?"día":"días"}</b>`:hechas===0&&nx.k==="historia"&&!day.hAtr?`👉 <b>Empiece por lo fácil:</b> <span>publique su historia (1 minuto)</span>`:`👉 <b>Siguiente paso:</b> <span>${esc(nx.k==="historia"&&day.hAtr?"publique el flyer de la presentación de hoy":nx.nx||nx.t)}</span>`;
@@ -2231,9 +2231,11 @@ function constStats(){const ini=k=>k<CONST_INI?CONST_INI:k,sc=k=>dayScore(k===TO
   else{const o=LS.get("wkp");if(o&&o.wk===pl)pSem=+o.pts||0}
   LS.set("wkp",{wk:lun,pts:W.pts});
   // 14 nov (Edwin): Mi Racha v3 — racha de por vida (rv) + 1 vida al mes (vg ganada al llegar a 7 días seguidos dentro del mes; vu = día que la usó; no se acumula)
-  const RV=(()=>{let run=0,broke=false,vg="",vu="";const m0=ini(mes+"-01");for(let d=parseK(m0);dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=sc(k);if(v>=1){run++;if(run>=7&&!vg)vg=k}else if(k!==TODAY){if(vg&&!vu)vu=k;else{run=0;broke=true}}}
+  const RV=(()=>{let run=0,broke=false,vg="",vu="";const m0=ini(mes+"-01");for(let d=parseK(m0);dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=sc(k);if(v>=1){run++;if(run>=7&&!vg&&k>=RC3_DESDE)vg=k}else if(k!==TODAY){if(vg&&!vu)vu=k;else{run=0;broke=true}}}
     const b=rvBase(mes);return{rv:broke?run:b+run,vg,vu,run,hoyOk:sc(TODAY)>=1}})();
   return{rv:RV.rv,vg:RV.vg,vu:RV.vu,vr:RV.run,rvOk:RV.hoyOk?1:0,wk:lun,si,pwk:pl,pSemPts:pSem,racha,rr,semDias:W.act,semComp:W.comp,semPres:W.pres,semPts:W.pts,mes,mesDias:M.act,mesComp:M.comp,mesMejor:M.best,mesPres:M.pres,mesPts:M.pts}}
+// 14 nov (Edwin): la vida del mes solo existe desde el lanzamiento (sin vidas retroactivas en noviembre)
+const RC3_DESDE="2026-11-15";
 // Base de la racha de por vida al empezar el mes: lo que traía el último día del mes anterior (profile.rvH = {f,n,ok,v,b:{m,n}})
 function rvBase(mes){const h=(profile&&profile.rvH)||{};if(h.b&&h.b.m===mes)return +h.b.n||0;
   const m0=parseK(mes+"-01"),lp=new Date(m0);lp.setDate(lp.getDate()-1);const L=dkey(lp),lp2=new Date(lp);lp2.setDate(lp2.getDate()-1);const L2=dkey(lp2);
@@ -9110,7 +9112,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114170047";var busy=false,pend=null;
+(function(){var V="20261114170832";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
