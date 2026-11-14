@@ -34,6 +34,7 @@ button{font:inherit;cursor:pointer}
 .bar{height:44px;margin:0 18px 18px;background:repeating-linear-gradient(90deg,#0B1E2B 0 2px,transparent 2px 5px,#0B1E2B 5px 6px,transparent 6px 9px,#0B1E2B 9px 12px,transparent 12px 14px)}
 .go{position:relative;width:100%;height:60px;margin-top:22px;border:0;border-radius:18px;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;font-weight:900;font-size:19px;box-shadow:0 10px 30px #2AC1F155;animation:lat 2.2s ease-in-out infinite}
 @keyframes lat{50%{box-shadow:0 10px 44px #2AC1F199;transform:scale(1.015)}}
+.bForm{position:relative;margin-top:16px;background:#ffffff10;border:1px solid #ffffff26;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px}.bForm[hidden]{display:none}.bForm b{font-size:15px}.bForm label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;opacity:.9}.bForm input,.bForm select{font:inherit;font-size:16px;border-radius:12px;border:1px solid #ffffff33;background:#fff;color:#0B1E2B;padding:11px 12px;width:100%}.bForm .tel{display:flex;gap:6px}.bForm .tel select{width:auto;max-width:42%;padding:11px 6px}.bForm small{font-size:12px;opacity:.65}.fErr{color:#FCA5A5;font-size:13px;font-weight:700;min-height:0}
 .hint{position:relative;text-align:center;font-size:12.5px;opacity:.6;margin-top:10px}
 .pass.rip{transform:translateY(-120%) rotate(-8deg);opacity:0}
 /* sala */
@@ -115,6 +116,10 @@ button{font:inherit;cursor:pointer}
   <div class="cut"></div>
   <div class="inv"><div class="av" id="bAv"></div><div><small style="font-size:9.5px;color:var(--mut);font-weight:800;letter-spacing:.12em">TE INVITA</small><b style="display:block" id="bHost">Action Leaders</b></div></div>
   <div class="bar"></div></div>
+ <div class="bForm" id="bForm" hidden><b>✈️ Completa tu pase de abordar</b>
+  <label>Tu nombre<input id="fN" maxlength="50" autocomplete="name" placeholder="Nombre y apellido"></label>
+  <label>Tu WhatsApp<span class="tel"><select id="fCC" aria-label="País"></select><input id="fT" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="Número"></span></label>
+  <small id="fTx">Para que te envíen tu información.</small><div class="fErr" id="fErr"></div></div>
  <button class="go" id="bGo" type="button">✈️ Abordar</button>
  <div class="hint" id="bHint">Activa el sonido 🔊 · Edwin te hará 4 preguntas</div>
 </div>
@@ -195,7 +200,7 @@ const db=getFirestore(app);const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const U=new URLSearchParams(location.search);
 const code=(U.get("de")||"").trim().toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60);
-const pName=(U.get("p")||"").replace(/[<>]/g,"").trim().slice(0,50),first=pName.split(/\s+/)[0]||"";
+let pName=(U.get("p")||"").replace(/[<>]/g,"").trim().slice(0,50),first=pName.split(/\s+/)[0]||"";
 const cid=(U.get("c")||"").replace(/[^A-Za-z0-9_-]/g,"").slice(0,40);
 const verSolo=U.get("ver")==="1"; // el socio revisa su propio link: no registra nada
 const LSg=k=>{try{return JSON.parse(localStorage.getItem("viaje:"+k))}catch(e){return null}},LSs=(k,v)=>{try{localStorage.setItem("viaje:"+k,JSON.stringify(v))}catch(e){}};
@@ -210,10 +215,16 @@ if(pName)$("bNom").textContent=pName;if(host)$("bHost").textContent=host;avPinta
 // ----- registro (un documento por prospecto; id v_… para la presentación v2) -----
 const vKey="v-"+code+"-"+(cid||pName.toLowerCase()||"anon");
 let V=LSg(vKey)||{id:null,pos:0,max:0,asked:{},r:{}};V.asked=V.asked||{};V.r=V.r||{};
+// 13 nov: link general (sin nombre ni contacto) → el prospecto llena nombre y WhatsApp (obligatorios)
+const pide=!pName&&!cid;if(pide&&V.n){pName=V.n;first=pName.split(/\s+/)[0]||""}
+const PA=[["🇭🇳 +504","504"],["🇺🇸 +1","1"],["🇪🇸 +34","34"],["🇬🇹 +502","502"],["🇸🇻 +503","503"],["🇳🇮 +505","505"],["🇨🇷 +506","506"],["🇵🇦 +507","507"],["🇲🇽 +52","52"],["🇨🇴 +57","57"],["🇻🇪 +58","58"],["🇵🇪 +51","51"],["🇪🇨 +593","593"],["🇨🇱 +56","56"],["🇦🇷 +54","54"],["🇩🇴 +1","1d"],["🇬🇧 +44","44"],["🇮🇹 +39","39"],["🇫🇷 +33","33"],["🇩🇪 +49","49"]];
+if(pide&&!V.n){$("bForm").hidden=false;$("fCC").innerHTML=PA.map(([t,v])=>`<option value="${v}">${t}</option>`).join("");if(hostF)$("fTx").textContent="Para que "+hostF+" te envíe tu información.";
+  $("fT").oninput=()=>{$("fErr").textContent=""};$("fN").oninput=()=>{$("fErr").textContent="";const v=$("fN").value.trim();$("bNom").textContent=v||"Tu nombre";$("bHola").firstChild.textContent=v?`Hola, ${v.split(/\s+/)[0]} 👋`:"Hola 👋"};$("bNom").textContent="Tu nombre";$("bHint").textContent="Activa el sonido 🔊 · son 20 minutos"}
 const D={};const canTrack=!!(P&&P.uid)&&!verSolo;
 let saveT;async function save(extra,now){Object.assign(D,extra||{});if(!canTrack)return;clearTimeout(saveT);const go=async()=>{try{
   if(!V.id){V.id="v_"+Math.random().toString(36).slice(2,9)+Date.now().toString(36);LSs(vKey,V);D.t0=Date.now();D.n=(pName||"Sin nombre").slice(0,60);if(cid)D.c=cid}
-  D.t=Date.now();await setDoc(doc(db,"users",P.uid,"sala",V.id),D,{merge:true})}catch(e){}};if(now)await go();else saveT=setTimeout(go,900)}
+  if(V.n&&!D.n)D.n=V.n.slice(0,60);if(V.w)D.w=V.w;D.t=Date.now();
+  try{await setDoc(doc(db,"users",P.uid,"sala",V.id),D,{merge:true})}catch(e){if(D.w){const X=Object.assign({},D);delete X.w;await setDoc(doc(db,"users",P.uid,"sala",V.id),X,{merge:true})}else throw e}}catch(e){}};if(now)await go();else saveT=setTimeout(go,900)}
 // ----- ruta y tarjetas -----
 const TOT=1228;let dur=TOT;
 const NC=CAPS.length;$("ln").insertAdjacentHTML("beforeend",CAPS.map((c,k)=>`<span class="dot" style="left:${k/(NC-1)*100}%"></span>`).join(""));
@@ -277,7 +288,11 @@ function landing(){$("board").hidden=true;$("room").hidden=true;$("qv").hidden=t
 function cuenta(){const fin=(V.fin||Date.now())+864e5;const tk=()=>{const s=Math.max(0,Math.floor((fin-Date.now())/1000));$("lCntN").textContent=String(Math.floor(s/3600)).padStart(2,"0")+":"+String(Math.floor(s%3600/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");if(!s){$("lCnt").style.opacity=.5}};tk();clearInterval(cuenta._t);cuenta._t=setInterval(tk,1000)}
 $("lRe").onclick=()=>{V.pos=0;V.asked={};ended=false;LSs(vKey,V);location.reload()};
 // ----- abordar -----
-async function abordar(){links();$("bPass").classList.add("rip");$("bGo").disabled=true;save({pct:D.pct||0},true);setTimeout(()=>{$("board").hidden=true;$("room").hidden=false;window.scrollTo(0,0);pinta(V.pos||0);startPlayer()},650)}
+async function abordar(){if(!$("bForm").hidden){const n=$("fN").value.replace(/[<>]/g,"").trim().slice(0,50),cc=$("fCC").value.replace(/\D/g,""),t=$("fT").value.replace(/\D/g,"").replace(/^0+/,"");
+    if(n.length<3||!/\s/.test(n)&&n.length<3){$("fErr").textContent="Escribe tu nombre para tu pase de abordar.";$("fN").focus();return}
+    if(t.length<7){$("fErr").textContent="Escribe tu número de WhatsApp completo.";$("fT").focus();return}
+    pName=n;first=n.split(/\s+/)[0];V.n=n;V.w=(t.startsWith(cc)&&t.length>cc.length+6?"":cc)+t;LSs(vKey,V);$("bForm").hidden=true}
+  links();$("bPass").classList.add("rip");$("bGo").disabled=true;save({pct:D.pct||0},true);setTimeout(()=>{$("board").hidden=true;$("room").hidden=false;window.scrollTo(0,0);pinta(V.pos||0);startPlayer()},650)}
 $("bGo").onclick=abordar;
 if(V.fin){$("board").hidden=true;landing()}else if(V.pos>5){$("bGo").textContent="✈️ Continuar mi viaje · "+fmt(V.pos);}
 </script>

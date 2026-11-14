@@ -815,7 +815,8 @@ nav.tabs button{z-index:0;isolation:isolate}
 body.beta #pfFront,body.beta #pfSala,body.beta #goPrompts{display:none!important}
 .pf-h{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.55;margin:12px 4px 2px}
 .mfAll{display:none!important}
-.cbody:has(.cvTop){padding-left:4px;gap:0}.cvTop{display:flex;align-items:flex-start;gap:10px;width:100%}.cvWa{width:48px;height:48px;border-radius:14px;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:22px;text-decoration:none;flex:none}
+.cbody:has(.cvTop){padding-left:4px;gap:0}.cvNum{border-radius:18px;padding:12px;background:linear-gradient(150deg,#0B2536,#05121C);color:#fff;margin-bottom:10px}.cvNumH{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.14em;font-weight:800;color:#2AC1F1;text-transform:uppercase}.cvNumH button{border:0;border-radius:12px;padding:8px 12px;font:inherit;font-weight:900;font-size:13px;letter-spacing:0;text-transform:none;background:linear-gradient(135deg,#2AC1F1,#0A7DAD);color:#fff;cursor:pointer}.cvNumG{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}.cvNumG div{background:#ffffff10;border-radius:12px;padding:8px 2px;text-align:center;font-size:10px;font-weight:700;opacity:.95}.cvNumG b{display:block;font-family:var(--f-num);font-size:22px;line-height:1.1}.cvNumG .h b{color:#FDBA74}.cvNumG .g b{color:#86EFAC}
+.cvTop{display:flex;align-items:flex-start;gap:10px;width:100%}.cvWa{width:48px;height:48px;border-radius:14px;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:22px;text-decoration:none;flex:none}
 .cvSt{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;padding:0;margin-top:8px;font:inherit;cursor:pointer;color:inherit}.cvPill{font-weight:800;font-size:13px;border-radius:999px;padding:6px 11px;color:var(--pc);background:color-mix(in srgb,var(--pc) 15%,var(--surface));white-space:nowrap}
 .cvBar{flex:1;height:7px;border-radius:7px;background:var(--surface-2);overflow:hidden;position:relative}.cvBar s{position:absolute;left:0;top:0;bottom:0;border-radius:7px}.cvCg{font-size:12.5px;font-weight:800;color:var(--brand)}
 .cvCs{display:flex;flex-wrap:wrap;gap:6px;width:100%;margin-top:10px}.cvC{font-size:12px;font-weight:700;border-radius:999px;padding:5px 9px;background:var(--surface-2);color:var(--muted)}.cvC.bad{background:color-mix(in srgb,var(--bad) 14%,var(--surface));color:var(--bad)}.cvC.warn{background:color-mix(in srgb,#F59E0B 18%,var(--surface));color:#B45309}.cvC.brand{color:var(--brand)}
@@ -1661,7 +1662,7 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
 
     <!-- CRM -->
     <section class="view" id="v-crm" hidden>
-      <div class="row between"><div><p class="eyebrow">Tus contactos</p><h1>Mi CRM</h1></div><div class="row" style="gap:8px"><button class="btn ghost" id="presBtn" title="Dar presentación">🎤</button><button class="btn ghost" id="bienBtn" title="Bienvenida a socio nuevo">🎉</button><button class="btn gold" id="addContact">+ Contacto</button></div></div>
+      <div class="row between"><div><p class="eyebrow">Tus contactos</p><h1>Mi CRM</h1></div><div class="row" style="gap:8px"><button class="btn ghost" id="salaBtn" title="Enviar mi presentación virtual" hidden>✈️</button><button class="btn ghost" id="presBtn" title="Dar presentación">🎤</button><button class="btn ghost" id="bienBtn" title="Bienvenida a socio nuevo">🎉</button><button class="btn gold" id="addContact">+ Contacto</button></div></div>
       <input class="inp" id="crmSearch" type="search" placeholder="Buscar por nombre o nota">
       <div class="stage-bar" id="stageBar"></div>
       <div class="card"><div class="list" id="contactList"></div></div>
@@ -1674,7 +1675,7 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
     <section class="view" id="v-agenda" hidden>
       <div><p class="eyebrow">Planee y dé seguimiento</p><h1>Agenda</h1></div>
       <div class="ag-big" id="agBig"><button type="button" data-ab="l3" style="background:linear-gradient(135deg,#0A7DAD,#2AC1F1)">📞 Llamada de 3<small>Pídala a un líder</small></button><button type="button" data-ab="lz" style="background:linear-gradient(135deg,#B07D00,#F5B700)">🚀 Lanzamiento<small>Planee con su líder</small></button><button type="button" data-ab="ev" style="background:linear-gradient(135deg,#6D28D9,#A855F7)">🤝 Junta / Evento<small>Con flyer y script</small></button><button type="button" data-ab="ci" style="background:linear-gradient(135deg,#15803D,#22C55E)">➕ Cita<small>Con un prospecto</small></button><button type="button" data-ab="mas" class="agMas"><span class="agMi">🚀🎤🤝</span><span class="agMt"><b>Crear actividad</b><small>Lanzamiento, presentación, junta o evento</small></span><em>›</em></button></div>
-      <div class="presIni" id="presIni" hidden><span class="pmic">🎤</span><b>Dar presentación</b><p>Paso a paso, con la presentación del equipo</p><div class="pbs"><button type="button" id="piPro">👤 A un prospecto</button><button type="button" id="piGen">👥 General</button></div></div>
+      <div class="presIni" id="presIni" hidden><span class="pmic">🎤</span><b>Dar presentación</b><p>Paso a paso, con la presentación del equipo</p><div class="pbs"><button type="button" id="piPro">👤 A un prospecto</button><button type="button" id="piGen">👥 General</button><button type="button" id="piVir" hidden>✈️ Virtual</button></div></div>
       <div class="card" id="l3Card" hidden></div>
       <div class="card" id="evaInv" hidden style="border:1.5px solid #7C3AED"></div>
       <div class="card" id="recCard" hidden></div>
@@ -6416,9 +6417,41 @@ async function loadSala(force){if(!store.db||!store.uid||!(salaOk()||LS.get("mem
     const V=LS.get("salaV")||{};let mx=since;q.docs.forEach(d=>{const x=d.data(),nv=!V[d.id];V[d.id]=Object.assign({id:d.id},x);mx=Math.max(mx,+x.t||0);if(since&&nv&&d.id.startsWith("m_"))memAviso(x)});
     const ks=Object.keys(V).sort((a,b)=>(V[b].t||0)-(V[a].t||0)).slice(0,80),N={};ks.forEach(k=>N[k]=V[k]);LS.set("salaV",N);LS.set("salaSync",mx);
     renderSalaCard();try{renderCRM()}catch(e){}try{salaAuto()}catch(e){}}catch(e){}}
+// 13 nov (Edwin, PRUEBA solo admin): enviar la presentación sin contacto. Sin nombre = link general (la persona llena nombre y WhatsApp).
+async function salaCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}if(ahGate())return;
+  openSheet(`<h2>✈️ Enviar mi presentación</h2><p class="small muted" style="margin:0 0 10px">Edwin le presenta en 20 minutos y a usted le llega cada respuesta al teléfono.</p>
+   <div class="field"><label for="scN">¿Para quién es? <span class="muted">(opcional)</span></label><input class="inp" id="scN" placeholder="Nombre de la persona" maxlength="50"><span class="small muted">Si lo deja vacío, la persona escribe su nombre y WhatsApp al abrirla y se agrega sola a su CRM.</span></div>
+   <div id="scMas" hidden><div class="field"><label for="scT">WhatsApp <span class="muted">(opcional)</span></label><div class="row" style="gap:6px"><select class="inp" id="scCC" style="max-width:40%">${PAISES.map(([n,c])=>`<option value="${c}" ${c===(LS.get("lastCC")||"504")?"selected":""}>+${c} ${esc(n)}</option>`).join("")}</select><input class="inp grow" id="scT" type="tel" inputmode="tel" placeholder="Número"></div></div>
+   <label class="row" style="gap:8px;font-size:14px;font-weight:600;margin:0 0 12px"><input type="checkbox" id="scCrm" checked> ➕ Guardarlo también en mi CRM</label></div>
+   <div style="display:grid;gap:8px"><button class="btn" id="scWa" style="background:#25D366;color:#fff">📲 Enviar por WhatsApp</button><button class="btn ghost" id="scCp">🔗 Copiar link</button><button class="btn ghost" id="scVer">👀 Ver cómo se ve</button></div>
+   <button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{
+   $("#scN").oninput=()=>{$("#scMas").hidden=!$("#scN").value.trim()};
+   const prep=async()=>{if(!(await salaPrep()))return null;LS.set("salaOn",1);const n=$("#scN").value.replace(/[<>]/g,"").trim().slice(0,50);let cid="",num="";
+     if(n){const cc=$("#scCC").value,t=$("#scT").value.replace(/\D/g,"");if(t)num=waNum(t,cc);
+       if($("#scCrm").checked){let c=num?contacts.find(x=>x.phone&&String(waNum(x.phone,x.cc)).slice(-8)===num.slice(-8)):null;
+         if(!c){c={name:n,cc,phone:t,stage:"Contactado",note:"Le envió la presentación virtual",next:TODAY,creado:Date.now(),updated:Date.now()};const id=await store.saveContact(Object.assign({},c));if(id){c.id=id;contacts.push(c);try{conNuevo(c)}catch(x){}}}
+         if(c&&c.id){cid=c.id;try{stAvanza(c,"Contactado","le envió la presentación virtual")}catch(x){}const E=LS.get("salaEnv")||{};E[cid]=Date.now();LS.set("salaEnv",E);try{renderCRM()}catch(x){}}}}
+     return {n,num,u:salaUrl(n,cid)}};
+   $("#scWa").onclick=async()=>{const r=await prep();if(!r)return;const t=salaMsgInv(r.n,r.u);closeSheet();waIr("https://wa.me/"+(r.num||"")+"?text="+encodeURIComponent(t))};
+   $("#scCp").onclick=async()=>{const r=await prep();if(!r)return;try{await navigator.clipboard.writeText(r.u);toast("Link copiado ✅")}catch(x){prompt("Copie el link:",r.u)}};
+   $("#scVer").onclick=async()=>{const r=await prep();if(!r)return;window.open(r.u+"&ver=1","_blank")}})}
+function salaNums(){if(!crmV2On())return "";const V=Object.values(salaCache()).filter(v=>String(v.id||"").startsWith("v_")),E=LS.get("salaEnv")||{};
+  const env=new Set(Object.keys(E));V.forEach(v=>{if(v.c)env.add(v.c);else env.add(v.id)});const fin=V.filter(v=>(+v.pct||0)>=100||v.motivo==="fin"||+v.pulso>0),hot=V.filter(v=>+v.pulso>=8),reg=V.filter(v=>v.c&&contacts.some(c=>c.id===v.c&&(c.stage==="Socio"||c.stage==="Cliente")));
+  const b=(n,t,cl)=>`<div${cl?` class="${cl}"`:""}><b>${n}</b>${t}</div>`;
+  return `<div class="cvNum"><div class="cvNumH"><span>🎬 Mi presentación virtual</span><button type="button" id="cvNumGo">✈️ Enviar</button></div><div class="cvNumG">${b(env.size,"Enviadas")}${b(V.length,"Abordaron")}${b(fin.length,"Terminaron")}${b(hot.length,"🔥 Listos","h")}${b(reg.length,"✅ Cerraron","g")}</div></div>`}
 // 13 nov (Edwin, PRUEBA solo admin): la presentación virtual mueve la etapa del CRM sola (solo hacia arriba) y, si la ve completa, cuenta como presentación hecha.
 let salaAutoB=false;async function salaAuto(){if(!salaOk()||salaAutoB||!Array.isArray(contacts)||!contacts.length)return;salaAutoB=true;try{
   const H=LS.get("salaAuto")||{};let cambio=false;
+  // link general: el prospecto llenó nombre y WhatsApp → se une a su contacto (últimos 8 dígitos) o se crea uno nuevo (cuenta en la rutina: agregar personas nuevas)
+  const VV=LS.get("salaV")||{};
+  for(const v of Object.values(salaCache())){if(!String(v.id||"").startsWith("v_")||v.c||!v.w||(H[v.id]||{}).k)continue;const w8=String(v.w).replace(/\D/g,"").slice(-8);
+    let c=contacts.find(x=>x.phone&&String(waNum(x.phone,x.cc)).slice(-8)===w8),nuevo=false;
+    if(!c){c={name:String(v.n||"Prospecto").slice(0,60),phone:"+"+String(v.w).replace(/\D/g,""),cc:"",stage:"Contactado",stT:Date.now(),stAuto:"llenó sus datos en la presentación virtual",note:"Llegó por el link de la presentación virtual",next:TODAY,creado:Date.now(),updated:Date.now()};
+      const id=await store.saveContact(Object.assign({},c));if(!id)continue;c.id=id;contacts.push(c);nuevo=true;try{conNuevo(c)}catch(x){}}
+    v.c=c.id;if(VV[v.id])VV[v.id].c=c.id;H[v.id]=Object.assign(H[v.id]||{},{k:1});cambio=true;
+    try{await store.db.doc("users/"+store.uid+"/sala/"+v.id).set({c:c.id,t:Date.now()},{merge:true})}catch(x){}
+    try{avisoTop(nuevo?"✈️ "+String(v.n||"").split(" ")[0]+" llenó su pase de abordar":"✈️ "+String(c.name||"").split(" ")[0]+" abrió su presentación",nuevo?"Lo agregamos a su CRM y cuenta en su rutina de hoy":"Ya está unido a su contacto del CRM",()=>{go("crm")})}catch(x){}}
+  if(cambio){LS.set("salaV",VV)}
   for(const v of Object.values(salaCache())){if(!String(v.id||"").startsWith("v_")||!v.c)continue;const c=contacts.find(x=>x.id===v.c);if(!c)continue;
     const n=/^\d+$/.test(String(v.pulso||""))?+v.pulso:0,fin=(+v.pct||0)>=100||v.motivo==="fin"||n>0,f=String(c.name||"").split(" ")[0];
     const lv=n>=8||v.como==="registro"?3:fin?2:(+v.pct||0)>0?1:0,h=H[v.id]||{};
@@ -6826,7 +6859,7 @@ function renderCRM(){pushResumen();try{olvStrip()}catch(e){}const q=$("#crmSearc
   const cerHead=crmV==="cer"&&!q?`<div style="background:linear-gradient(135deg,#065F46,#10B981);color:#fff;border-radius:16px;padding:14px 16px;margin-bottom:8px"><div style="font-size:12px;font-weight:800;letter-spacing:.12em;opacity:.85">MI MARCADOR</div><div style="font-size:22px;font-weight:800;margin-top:2px">✅ ${nCer} ${nCer===1?"cierre":"cierres"}</div><div class="small" style="opacity:.9">${nCl} ${nCl===1?"cliente":"clientes"} · ${nSo} ${nSo===1?"socio":"socios"}. Cuídelos: un cliente feliz le da referidos.</div></div>`:"";
   const pipeSum=crmV==="cer"&&!q?"":pipeOk()?(()=>{const n=s=>contacts.filter(c=>c.stage===s).length,fr=contacts.filter(stFrio).length;return `<div class="stsum"><button type="button" data-sf="Por cerrar" style="background:#FFEDD5;color:#C2410C"><b>${n("Por cerrar")}</b>🔥 Por cerrar</button><button type="button" data-sf="Seguimiento" style="background:#FEF3C7;color:#B45309"><b>${n("Seguimiento")}</b>🔁 Seguimiento</button><button type="button" data-sf="Presentación" style="background:#E0F2FE;color:#0369A1"><b>${n("Presentación")}</b>🎤 Presentados</button></div>${fr?`<p class="small" style="margin:0 0 6px;color:#B45309;font-weight:700">⚠️ ${fr} ${fr===1?"prospecto lleva":"prospectos llevan"} más de 7 días sin avanzar ni seguimiento</p>`:""}`})():"";
   const ordUI=pipeOk()?`<div class="crmord" role="group" aria-label="Ordenar contactos">${[["seg","📅 Seguimiento"],["rec","🆕 Recientes"],["pct","📈 Mayor %"]].map(([k,t])=>`<button type="button" data-ord="${k}" aria-pressed="${crmOrd===k}">${t}</button>`).join("")}</div>`:"";
-  $("#contactList").innerHTML=cerHead+(crmV==="cer"&&!q?"":ordUI)+pipeSum+list.map(c=>{const cer=CERR.includes(c.stage),late=!cer&&c.next&&c.next<TODAY,today=!cer&&c.next===TODAY,op=openC===c.id;
+  $("#contactList").innerHTML=cerHead+(crmV==="cer"||q?"":salaNums())+(crmV==="cer"&&!q?"":ordUI)+pipeSum+list.map(c=>{const cer=CERR.includes(c.stage),late=!cer&&c.next&&c.next<TODAY,today=!cer&&c.next===TODAY,op=openC===c.id;
     const k=c.stage==="Cliente"?FLOW.length:c.stage==="No interesado"?0:FLOW.indexOf(c.stage)+1,pc=STAGE_COL[c.stage]||"var(--brand)";
     return `<div class="contact ${op?"open":""}" style="--pc:${pc}"><div class="ch" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}">
     <div class="av" style="box-shadow:0 0 0 2px ${pc}">${c.stage==="Socio"||c.stage==="Cliente"?"✓":esc(initials(c.name))}</div>
@@ -6898,7 +6931,7 @@ function crmAhorro(c){const a=ahDe([c.email],[c.phone?waNum(c.phone,c.cc):""]),p
    <p style="margin:0">${sin?"Todavía no hay reporte de ahorros cargado.":pend?`<span class="chip c-bad" style="font-weight:700">🔴 Ahorro pendiente</span>`:`<span class="chip c-good" style="font-weight:700">🚢 Ahorro al día</span>`}</p>
    <p class="small muted" style="margin:0">${pend?"Un recordatorio a tiempo ayuda a que no pierda sus beneficios.":"No aparece en el reporte de pendientes de inCruises."}${c.email?"":" Para revisarlo mejor, agregue su correo en el contacto."}</p>
    <button class="btn" id="cahW" style="width:100%;background:#25D366;color:#fff">${pend?"💬 Recordarle su ahorro":"💬 Saludarle"}</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#cahW").onclick=()=>crmWa(c,pend?"ah":"hola")})}
-$("#contactList").addEventListener("click",async e=>{{const mb=e.target.closest("[data-cmas]");if(mb){const k=mb.dataset.cmas;crmMas.has(k)?crmMas.delete(k):crmMas.add(k);renderCRM();return}const so=e.target.closest("[data-stopen]");if(so){crmSt.add(so.dataset.stopen);renderCRM();return}}const st=e.target.closest("[data-st]");
+$("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNumGo")){salaCompartir();return}{const mb=e.target.closest("[data-cmas]");if(mb){const k=mb.dataset.cmas;crmMas.has(k)?crmMas.delete(k):crmMas.add(k);renderCRM();return}const so=e.target.closest("[data-stopen]");if(so){crmSt.add(so.dataset.stopen);renderCRM();return}}const st=e.target.closest("[data-st]");
   const tg=e.target.closest("[data-tog]");if(tg){openC=openC===tg.dataset.tog?null:tg.dataset.tog;renderCRM();return}
   const sf=e.target.closest("[data-sf]");const od=e.target.closest("[data-ord]");if(od){crmOrd=od.dataset.ord;try{LS.set("crmOrd",crmOrd)}catch(e){}renderCRM();return}if(sf){stageF=stageF===sf.dataset.sf?"Todos":sf.dataset.sf;renderCRM();return}
   const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c){notaPend(c,"wa");setTimeout(()=>stAvanza(c,"Contactado","le escribió por WhatsApp"),300)}}
@@ -8618,7 +8651,7 @@ async function startApp(u){
   if(u&&!(regDoc&&regDoc.registro))await cargarInvitacion();
   await loadMine();
   if(u&&!isAdmin&&regDoc&&regDoc.registro)apRevisar().catch(()=>{});
-  {const pi=$("#presIni");if(pi)pi.hidden=!(u&&regDoc&&regDoc.registro)}
+  {const pi=$("#presIni");if(pi)pi.hidden=!(u&&regDoc&&regDoc.registro)}{const ok=!!(u&&salaOk());const a=$("#piVir");if(a){a.hidden=!ok;a.onclick=salaCompartir}const b=$("#salaBtn");if(b){b.hidden=!ok;b.onclick=salaCompartir}}
   if(u){setTimeout(()=>{try{premCargar()}catch(e){}},2500);setTimeout(()=>{try{trHoy()}catch(e){}},900);setInterval(()=>{try{if(!document.hidden)trHoy()}catch(e){}},5*6e4)}
   if(regDoc&&regDoc.registro){welState.registro=true;publicarInv();if(profile.waPublico)setTimeout(publicarPerfil,4000)}
   renderWel();renderAviso();renderAccesos();
@@ -8632,7 +8665,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261113183832";var busy=false,pend=null;
+(function(){var V="20261113185030";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

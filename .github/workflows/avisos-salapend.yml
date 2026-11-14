@@ -1,0 +1,26 @@
+name: Avisos de la presentación virtual
+on:
+  schedule:
+    - cron: "17,47 * * * *"   # cada 30 min
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: "1 = solo mostrar, no enviar ni guardar"
+        default: "1"
+concurrency: avisos-salapend
+jobs:
+  enviar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci --no-audit --no-fund
+        working-directory: tools/push
+      - name: Enviar
+        working-directory: tools/push
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+          DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry == '1' && '1' || '' }}
+        run: node enviar.mjs salapend

@@ -343,6 +343,7 @@ export function avDestino(modo, m) {
   if (modo === "sinapp") return "snv";
   if (modo === "rhito") return "rach";
   if (modo === "turnos") return "tur";
+  if (modo === "salapend") return "sala";
   if (modo === "recodia") return /Hoy es su día/.test(t) ? "recoyo" : "recodia";
   if (modo === "msg" && /Networker Pro/i.test(t)) return "np";
   if (modo === "msg" && /Materiales|Guía gratis/i.test(t)) return "mat";
@@ -588,6 +589,21 @@ async function main() {
     }
     console.log("Turnos con aviso:", n);
     if (!DRY && Object.keys(W).length) await ref.set({ s: W }, { merge: true });
+  } else if (modo === "salapend") {
+    // Presentación virtual (13 nov): rescate a las 24 h (no terminó) y alerta cuando quedan 3 h del beneficio de 24 h (8–10 sin registrarse).
+    vista = "sala";
+    const ahora = Date.now(), Q = (await db.collection("salaPend").get()).docs, W = [], TK = {};
+    const pushDe = async uid => { if (uid in TK) return TK[uid]; const x = (await db.doc("push/" + uid).get()).data() || {}; hist[uid] = x.h || []; return TK[uid] = x.tk || null; };
+    for (const d of Q) { const x = d.data(), f = primer(x.n || "Su prospecto");
+      if (ahora - (x.t0 || 0) > 4 * 864e5) { W.push([d.ref, null]); continue; }
+      if (!x.fin && x.pct > 0 && !x.rs && ahora - (x.t0 || 0) > 24 * 36e5) { const tk = await pushDe(x.u); if (tk) salida.push([x.u, tk, { title: "⏰ " + f + " no terminó su presentación", body: "Se quedó en " + (x.cap ? "«" + x.cap + "» " : "") + "(" + x.pct + "%). Escríbale para que la termine hoy." }]); W.push([d.ref, { rs: ahora }]); }
+      if (x.fin && x.pulso >= 8 && x.tf && !x.as && ahora - x.tf >= 21 * 36e5 && ahora - x.tf < 24 * 36e5 && x.como !== "registro") {
+        let socio = false; if (x.c) { try { const c = (await db.doc("users/" + x.u + "/crm/" + x.c).get()).data() || {}; socio = c.stage === "Socio" || c.stage === "Cliente"; } catch {} }
+        if (!socio) { const tk = await pushDe(x.u); if (tk) salida.push([x.u, tk, { title: "⏳ A " + f + " le quedan 3 horas de su beneficio", body: "Marcó " + x.pulso + "/10 y aún no se registra. Escríbale ahora con su link." }]); }
+        W.push([d.ref, { as: ahora }]); }
+    }
+    console.log("Pendientes:", Q.length, "· cambios:", W.length);
+    if (!DRY) for (const [r, u] of W) { if (u) await r.set(u, { merge: true }); else await r.delete(); }
   } else if (modo === "lzg" || modo === "lzg-sync") {
     // Grupo de WhatsApp del Sistema de liderazgo: quién ya se presentó (users.lzG.m == mes) → team/liderazgo.grp;
     // modo lzg además avisa a los miembros (push.sis == 1) que aún no se presentan.

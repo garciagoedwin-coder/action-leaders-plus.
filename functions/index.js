@@ -125,6 +125,12 @@ exports.aprobarManual = functions.runWith({ memory: "256MB", timeoutSeconds: 60 
 exports.salaCopiloto = functions.runWith({ memory: "256MB", timeoutSeconds: 30 }).firestore.document("users/{uid}/sala/{id}").onWrite(async (ch, ctx) => {
   if (!String(ctx.params.id).startsWith("v_") || !ch.after.exists) return;
   const a = ch.after.data() || {}, b = ch.before.exists ? ch.before.data() || {} : null;
+  // Índice para los recordatorios (enviar.mjs salapend): quién no terminó a las 24 h y a quién le quedan 3 h de su beneficio.
+  try { const fin = (+a.pct || 0) >= 100 || a.motivo === "fin" || /^\d+$/.test(String(a.pulso || "")), ref = db.doc("salaPend/" + ctx.params.uid + "_" + ctx.params.id);
+    const o = { u: ctx.params.uid, id: ctx.params.id, n: String(a.n || "").slice(0, 60), c: a.c || "", t0: a.t0 || Date.now(), t: a.t || Date.now(), pct: +a.pct || 0, pulso: +a.pulso || 0, como: a.como || "", fin };
+    if (String(a.motivo || "").startsWith("cap:")) o.cap = String(a.motivo).slice(4, 40);
+    if (fin && !(b && ((+b.pct || 0) >= 100 || b.motivo === "fin" || /^\d+$/.test(String(b.pulso || ""))))) o.tf = Date.now();
+    await ref.set(o, { merge: true }); } catch (e) { console.log("salaPend falló", e.code || "error"); }
   const n = String(a.n || "Su prospecto").trim().split(/\s+/)[0], nv = k => a[k] && (!b || a[k] !== b[k]);
   const VAL = { viajar: "🧳 viajar más", ingresos: "💰 generar ingresos", ambas: "⭐ viajar y generar ingresos" };
   let m = null;
