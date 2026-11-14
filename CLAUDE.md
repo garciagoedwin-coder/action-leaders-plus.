@@ -864,3 +864,13 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 
 - (14 nov) Rutina v6: fondo de la tarjeta en celeste suave (degradado brand 15%→9% sobre --surface) + sombra azul, porque con 6% se confundía con el fondo de la app.
 - (14 nov) Rutina v6: vuelve a fondo blanco (var(--surface)) con realce celeste (anillo 1px brand 18% + sombra brand 14%). Nombres nuevos SOLO con acc3On (RT3N): 📝 Nuevos contactos, 🎯 Presentar mi negocio, 🔁 Hacer seguimiento; chips CH iguales. ROUTINE.t y nx (Siguiente paso) sin cambio.
+
+## Mi Racha v3 (14 nov, Edwin · SOLO ADMIN con acc3On)
+- Ranking › Mi Racha solo del MES: orden = días completos del mes (mesComp) → presentaciones (mesPres) → puntos (mesPts) → nombre (constSort si acc3On). Sin "Esta semana/Este mes" ni texto de reglas.
+- Dos números: 🔥 RACHA DE POR VIDA (constancia.rv; no se reinicia el día 1; base del mes = profile.rvH {f,n,ok,v,b:{m,n}} guardado por rvGuardar en pushResumen; empezó con la racha de noviembre) y 🏆 DÍAS DEL MES (mesComp).
+- VIDA DEL MES: 1 sola, se gana al llegar a 7 días seguidos dentro del mes (constancia.vg = día), no se acumula (se pierde el día 1). Si un día no completa, la vida salva la racha (vu = día; ese día no suma en el mes; rv no sube). Sin vida → rv vuelve a 0. Calculado en constStats (RV).
+- Niveles por rv (rcNivel): 🔥 1–6 Encendido, 🔥🔥 7–13 En llamas, 💎 14–29 Imparable, 👑 30+ Leyenda.
+- Pantalla (rc3HTML): franja del premio (rc3Premio), franja oscura plegable (rc3Mio, LS rc3Open: anillo, días seguidos, mes, calendario, vida, faltan hoy, leyenda), «🎯 Persiga a…» (rc3Persigue) y lista (rc3Lista: puesto/👑, anillo top 3, nivel+racha, ❤️/🛡️, hoy, botón WhatsApp). Inicio «Así va el ranking › Rachas» usa mesComp con acc3On.
+- Avisos de hoy: slide #rc3Strip (rc3Top, compara el top 3 con el último que vio este teléfono, LS rc3Top). Ventanas rc3Vida (ganó vida / vida usada; LS rc3vg/rc3vu:uid:mes).
+- Push (enviar.mjs, RC3_TODOS=false → solo admins por ahora): rc3 tras cada resumen de constancia (constancia-resumen.yml): «⚔️ X acaba de pasarlo» (1 al día al superado), vida ganada (socio + línea de arriba), vida usada; estado en push_meta/rc3 {m,pos,pas,vg,vu}. rc3top 9:30 p.m. (avisos-racha.yml) «Así quedó el top 3 de hoy». racha2 agrega la vida al texto (solo admins). Al liberar: RC3_TODOS=true y acc3On.
+- Sin reglas nuevas (constOk permite campos nuevos).

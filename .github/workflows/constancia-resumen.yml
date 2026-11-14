@@ -23,3 +23,8 @@ jobs:
           FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
           FULL: ${{ github.event.inputs.full || (github.event.schedule == '7 8 * * *' && '1' || '') }}
         run: node constres.mjs
+      - name: Mi Racha (adelantamientos y vidas)
+        working-directory: tools/push
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+        run: node enviar.mjs rc3 || true

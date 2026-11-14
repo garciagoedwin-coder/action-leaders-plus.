@@ -341,7 +341,7 @@ export function avDestino(modo, m) {
   if (/^lzg/.test(modo)) return /compromiso/i.test(t) ? "comp" : "lzg";
   if (modo === "viaje") return "via";
   if (modo === "sinapp") return "snv";
-  if (modo === "rhito") return "rach";
+  if (modo === "rhito" || /^rc3/.test(modo)) return "rach";
   if (modo === "turnos") return "tur";
   if (modo === "salapend") return "sala";
   if (modo === "recodia") return /Hoy es su día/.test(t) ? "recoyo" : "recodia";
@@ -369,7 +369,11 @@ async function main() {
     const C = {}; (await db.collection("constancia").get()).docs.forEach(d => C[d.id] = d.data());
     let lider = "", TJ = {}; try { TJ = JSON.parse(fs.readFileSync("../../data/team.json", "utf8")); const V = (TJ.ranking || []).filter(r => +r.volumen > 0).sort((a, b) => (+b.volumen) - (+a.volumen)); lider = V[0] ? primer(V[0].nombre) : ""; } catch (e) {}
     let nComp = 0;
-    for (const p of P) { let m = null; if (modo === "manana") { m = msgCompManana(p.uid, C[p.uid], TJ, hoy); if (m) nComp++; else m = msgManana(p.uid, C[p.uid], hoy, ayer, lider); } else m = modo === "fin" ? msgFin(p.uid, C[p.uid], hoy, ayer) : msgRacha(modo, p.uid, C[p.uid], hoy, ayer); if (m) salida.push([p.uid, p.tk, m]); }
+    const ADM3 = modo === "racha2" ? new Set((await db.collection("users").where("email", "in", ADMINS).get()).docs.map(d => d.id)) : null;
+    for (const p of P) { let m = null; if (modo === "manana") { m = msgCompManana(p.uid, C[p.uid], TJ, hoy); if (m) nComp++; else m = msgManana(p.uid, C[p.uid], hoy, ayer, lider); } else m = modo === "fin" ? msgFin(p.uid, C[p.uid], hoy, ayer) : msgRacha(modo, p.uid, C[p.uid], hoy, ayer);
+      // 14 nov: Mi Racha v3 — la vida del mes en el aviso de racha en peligro (por ahora solo admins)
+      if (m && modo === "racha2" && ADM3 && ADM3.has(p.uid)) { const c = C[p.uid] || {}; if (c.mes === hoy.slice(0, 7)) m.body += c.vg && !c.vu ? " Si no llega, usará su ❤️ vida del mes." : " No tiene vida este mes: ¡no la pierda!"; }
+      if (m) salida.push([p.uid, p.tk, m]); }
     if (modo === "manana") console.log("Con compromiso en el aviso:", nComp);
   } else if (modo === "msg") {
     // 10 nov: aviso manual a TODOS los que tienen avisos (título y texto en disparo.json)
@@ -647,6 +651,42 @@ async function main() {
       nuevos.push(key);
     }
     if (!DRY && nuevos.length) await db.doc("push_meta/rhito").set({ s: [...sent, ...nuevos].slice(-400), t: Date.now() }, { merge: true });
+  } else if (modo === "rc3" || modo === "rc3top") {
+    // 14 nov (Edwin): Mi Racha v3. Ranking del mes = días completos (mesComp), empate presentaciones y puntos. Lee team/constres (1 lectura).
+    // rc3 (cada 15 min tras el resumen): «⚔️ X lo acaba de pasar» (solo al superado, 1 al día), vida ganada (al socio + su línea de arriba) y vida usada.
+    // rc3top (9:30 p.m.): «Así quedó el top 3 de hoy». Mientras RC3_TODOS sea false, SOLO a los admins (la pantalla nueva es solo admin).
+    const RC3_TODOS = false, hoy = hoyHN(), mes = hoy.slice(0, 7);
+    const S = ((await db.doc("team/constres").get()).data() || {}).m || {};
+    const L = Object.entries(S).map(([uid, x]) => ({ uid, ...x })).filter(x => x.nombre && x.mes === mes && +x.mesComp > 0)
+      .sort((a, b) => (+b.mesComp - +a.mesComp) || ((+b.mesPres || 0) - (+a.mesPres || 0)) || ((+b.mesPts || 0) - (+a.mesPts || 0)) || String(a.nombre).localeCompare(String(b.nombre), "es"));
+    L.forEach((x, i) => x.rk = i + 1);
+    let aud = null; if (!RC3_TODOS) aud = new Set((await db.collection("users").where("email", "in", ADMINS).get()).docs.map(d => d.id));
+    const ok = uid => !aud || aud.has(uid), pushDe = async uid => { const p = await db.doc("push/" + uid).get(), x = p.exists ? p.data() : {}; if (x.tk) hist[uid] = x.h || []; return x.tk && (x.pr || {}).racha !== false ? x.tk : null; };
+    const nm2 = n => String(n || "").trim().split(/\s+/).slice(0, 2).join(" ");
+    if (modo === "rc3top") {
+      if (L.length < 3) { console.log("Menos de 3 en el ranking."); return; }
+      const t3 = L.slice(0, 3).map((x, i) => ["👑", "2.", "3."][i] + " " + primer(x.nombre) + " " + x.mesComp).join(" · ");
+      const P = (await db.collection("push").get()).docs.filter(d => d.data().tk && (d.data().pr || {}).racha !== false && ok(d.id));
+      for (const d of P) { hist[d.id] = d.data().h || []; const me = L.find(x => x.uid === d.id);
+        salida.push([d.id, d.data().tk, { title: "🔥 Así quedó el top 3 de hoy", body: t3 + (me ? (me.rk <= 3 ? ". ¡Usted está en el top 3! Defienda su lugar mañana." : `. Usted va #${me.rk} con ${me.mesComp} ${me.mesComp === 1 ? "día" : "días"}.`) : ". Complete su rutina mañana y entre al ranking.") }]); }
+    } else {
+      const ref = db.doc("push_meta/rc3"), M = (await ref.get()).data() || {}, mismo = M.m === mes, pos = mismo ? (M.pos || {}) : {}, pas = mismo ? (M.pas || {}) : {}, vg = mismo ? (M.vg || {}) : {}, vu = mismo ? (M.vu || {}) : {};
+      const nPos = {}; L.forEach(x => nPos[x.uid] = x.rk);
+      if (mismo) for (const x of L) {
+        const antes = pos[x.uid]; if (!antes || x.rk <= antes || pas[x.uid] === hoy || !ok(x.uid)) continue;
+        const sup = L.slice(0, x.rk - 1).filter(y => y.uid !== x.uid && pos[y.uid] && pos[y.uid] > antes).pop(); if (!sup) continue;
+        const tk = await pushDe(x.uid); if (!tk) continue; pas[x.uid] = hoy;
+        salida.push([x.uid, tk, pick([
+          { title: `⚔️ ${nm2(sup.nombre)} acaba de pasarlo`, body: `Usted bajó al #${x.rk} en Mi Racha. ¡Complete su rutina hoy y recupere su lugar!` },
+          { title: `⚔️ ¡${primer(sup.nombre)} lo pasó en Mi Racha!`, body: `Ahora va #${x.rk}. Un día completo más y vuelve a subir 💪` }], x.uid + hoy)]); }
+      for (const x of L) {
+        if (x.vg && !vg[x.uid]) { vg[x.uid] = 1; if (ok(x.uid)) { const tk = await pushDe(x.uid); if (tk) salida.push([x.uid, tk, { title: "❤️ ¡Ganó su vida del mes!", body: "7 días seguidos 🔥 Si un día no completa su rutina, su racha está protegida." }]); }
+          if (mismo) { const u = await db.doc("users/" + x.uid).get(), up = [...new Set((((u.exists ? u.data() : {}).registro || {}).linea || []).filter(Boolean))].slice(0, 6);
+            for (const l of up) { if (!ok(l)) continue; const tk = await pushDe(l); if (tk) salida.push([l, tk, { title: `❤️ ${nm2(x.nombre)} ganó su vida del mes`, body: "7 días seguidos con su rutina completa. Felicítelo desde Mi Racha 👏" }]); } } }
+        if (x.vu && !vu[x.uid]) { vu[x.uid] = 1; if (mismo && ok(x.uid)) { const tk = await pushDe(x.uid); if (tk) salida.push([x.uid, tk, { title: `🛡️ Su vida salvó su racha de ${+x.rv || 0} días`, body: "Ese día no sumó en el mes y ya no tiene vida. ¡Hoy a cumplir!" }]); } }
+      }
+      if (!DRY) await ref.set({ m: mes, pos: nPos, pas, vg, vu, t: Date.now() });
+    }
   } else if (modo === "viaje") {
     // 8 nov (Edwin): invitar a llenar el formulario de testimonios de viaje (cada semana) a quien NO ha respondido
     // (users.viaj = "Ya lo hice"/"No me interesa") y NO tiene testimonio publicado (data/hist.json tx[].n).
