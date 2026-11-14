@@ -1200,7 +1200,32 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
 .acaTh{flex:none;width:76px;height:46px;border-radius:10px;background:linear-gradient(135deg,#1e293b,#0A7DAD) center/cover;display:grid;place-items:center;color:#fff;font-size:16px;text-shadow:0 1px 4px rgba(0,0,0,.6)}
 .acaSt b{display:block;font-size:14.5px}.acaSt small{font-size:12px;color:var(--muted)}.acaSt.lock{opacity:.55;cursor:default}.acaOpen{position:relative}.acaOpen .acaN{top:26px;transform:none}
 .acaTools{display:grid;grid-template-columns:1fr 1fr;gap:10px}.acaTools a{display:flex;gap:10px;align-items:center;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:12px;font-size:20px;text-decoration:none}.acaTools a span{font-size:14px;font-weight:800}.acc3N{font-size:9.5px;background:#F5B700;color:#2a1c00;border-radius:5px;padding:1px 5px;vertical-align:middle}
-#v-inicio.simple>#acc3{order:6}body.acc3 #presIni{display:none!important}
+#v-inicio.simple>#acc3{order:6}body.acc3 #v-inicio.simple>#compStrip{order:0}
+.cp3{background:linear-gradient(135deg,#0f2440,#1d4a72);color:#fff;border-radius:18px;padding:11px 14px;cursor:pointer}.cp3T{display:flex;align-items:baseline;gap:8px}.cp3T .k{font-size:10.5px;letter-spacing:.14em;font-weight:800;color:#7DD3FC;white-space:nowrap}.cp3T .v{margin-left:auto;font-weight:900;font-size:17px;white-space:nowrap}.cp3T .v small{font-size:12px;opacity:.7;font-weight:700}.cp3T i{font-style:normal;opacity:.7;margin-left:6px}
+.cp3B{height:8px;border-radius:9px;background:rgba(255,255,255,.15);overflow:hidden;margin-top:8px}.cp3B s{display:block;height:100%;background:linear-gradient(90deg,#2AC1F1,#7DD3FC);border-radius:9px}
+.cp3D .rg{display:inline-flex;font-size:12.5px;font-weight:700;background:rgba(255,255,255,.12);border-radius:999px;padding:4px 10px;margin:10px 0}.cp3D .g{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px}.cp3D .g div{background:rgba(255,255,255,.08);border-radius:12px;padding:8px 9px}.cp3D small{display:block;font-size:9.5px;letter-spacing:.1em;font-weight:800;color:#7DD3FC}.cp3D b{font-size:15px}
+.cp3D .ft{display:flex;justify-content:space-between;align-items:center;font-size:12px;opacity:.9;margin-top:10px}.cp3D .ft button{border:0;background:none;color:#7DD3FC;font:inherit;font-weight:800;cursor:pointer}
+body.acc3 #rutCard{border-top:4px solid #F97316}body.acc3 #rutCard .row:has(#dayBar){display:none!important}
+.rs3{display:flex;gap:5px;margin:4px 0 4px}.rs3 i{flex:1;height:8px;border-radius:9px;background:var(--surface-2)}.rs3 i.on{background:linear-gradient(90deg,#FB923C,#EA580C)}.rs3t{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);font-weight:600}.rs3t b{color:#C2410C}
+body.acc3 #rutAlert .rut-nx{background:#0f2440!important;color:#fff!important;border:0!important}body.acc3 #rutAlert .rut-nx b,body.acc3 #rutAlert .rut-nx span{color:#fff!important}body.acc3 #rutAlert .rut-nx .btn{background:#2AC1F1!important;color:#062B3A!important;font-weight:900}
+body.acc3 #tasks{counter-reset:rt}body.acc3 #tasks .task{counter-increment:rt;padding:10px 0;border-bottom:1px solid var(--line)}body.acc3 #tasks .task:last-child{border-bottom:0}
+body.acc3 #tasks .check{width:30px;height:30px;border-radius:50%;color:var(--muted);font-weight:900;font-size:13px}body.acc3 #tasks .check[aria-pressed="false"]::before{content:counter(rt)}body.acc3 #tasks .check[aria-pressed="true"]{background:#16A34A;border-color:#16A34A;color:#fff}
+body.acc3 #tasks .step-n{border:2px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:900}body.acc3 #tasks .step-n:not(.ok)::before{content:counter(rt)}body.acc3 #tasks .step-n.ok{background:#16A34A;border-color:#16A34A;color:#fff}
+body.acc3 #tasks .task:has(.check[aria-pressed="true"])::after{content:"Hecho";flex:none;font-size:11.5px;font-weight:800;border-radius:999px;padding:4px 9px;background:#DCFCE7;color:#15803D}
+body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px}body.acc3 #tasks .counter button{background:transparent;color:var(--brand)}
+.av3>*{margin:0!important}#avTrack[data-m3]{overflow-y:hidden;transition:height .3s ease}
+.cjT{font-size:11px;letter-spacing:.14em;font-weight:800;color:var(--muted);margin:16px 2px 10px}.cjG{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 4px}
+.cjI{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font:inherit;font-size:11px;font-weight:700;line-height:1.2;color:var(--ink);background:none;border:0;padding:0;text-decoration:none;cursor:pointer}.cjI>span{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:24px;box-shadow:0 4px 10px rgba(0,0,0,.08)}
+.a3S{display:flex;justify-content:space-between;align-items:baseline;margin:20px 2px 2px}.a3S b{font-size:17px}.a3S span{font-size:13px;color:var(--brand);font-weight:800}
+.a3Rail{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:8px 2px 4px;scroll-snap-type:x mandatory}.a3Rail::-webkit-scrollbar{display:none}
+.a3V,.a3C{flex:none;display:flex;flex-direction:column;gap:5px;text-align:left;background:none;border:0;padding:0;font:inherit;color:var(--ink);cursor:pointer;scroll-snap-align:start}.a3V{width:156px}
+.a3V .th,.a3C .th{display:block;width:100%;aspect-ratio:16/9;border-radius:12px;background:linear-gradient(135deg,#1e3a5f,#0A7DAD) center/cover;position:relative}.a3V .th:after,.a3C .th:after{content:"▶";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:18px;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.a3V.ok .th:before{content:"✓";position:absolute;right:6px;top:6px;width:22px;height:22px;border-radius:50%;background:#16A34A;color:#fff;font-size:12px;display:grid;place-items:center;z-index:1}
+.a3V.lk .th{filter:grayscale(1) brightness(.75)}.a3V.lk .th:after{content:"🔒"}.a3V b,.a3C b{font-size:12.5px;line-height:1.25}.a3V small,.a3C small{font-size:11px;color:var(--muted)}.a3C small.ok{color:#16A34A;font-weight:700}
+.a3G{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}.a3C{width:auto;background:var(--surface);border-radius:16px;padding:0 0 10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05)}.a3C .th{border-radius:0}.a3C b,.a3C small{padding:0 10px}
+.a3Ins{display:flex;align-items:center;gap:6px;width:100%;margin-top:8px;background:var(--surface);border:0;border-radius:16px;padding:10px 12px;font:inherit;color:var(--ink);cursor:pointer}.a3Ins img{width:40px;height:40px}.a3Ins img.g{filter:grayscale(1);opacity:.35}.a3Ins em{margin-left:auto;font-style:normal;font-size:12px;font-weight:800;color:var(--brand);text-align:right}
+.a3Gu{display:flex;flex-direction:column;gap:8px;margin-top:8px}.a3Gu button{display:flex;align-items:center;gap:10px;background:var(--surface);border:0;border-radius:14px;padding:12px;font:inherit;color:var(--ink);text-align:left;cursor:pointer}.a3Gu small{display:block;color:var(--muted);font-size:12px}.a3Gu em{font-style:normal;font-size:12px;font-weight:800;color:#B45309}.a3Gu em.ok{color:#16A34A}
+.a3Caja{display:flex;align-items:center;gap:12px;width:100%;margin-top:20px;background:var(--surface);border:1.5px dashed var(--line);border-radius:18px;padding:13px 14px;font:inherit;color:var(--ink);text-align:left;cursor:pointer}.a3Caja>span:first-child{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#64748B,#334155);display:grid;place-items:center;font-size:21px;flex:none}.a3Caja small{display:block;color:var(--muted);font-size:12px}.a3Caja em{font-style:normal;color:var(--brand);font-weight:900}body.acc3 #presIni{display:none!important}
 #acc3{padding:14px 12px}.acc3H{display:flex;align-items:center;justify-content:space-between;margin:0 4px 10px}.acc3H h3{margin:0;font-size:16px}.acc3H button{border:0;background:none;color:var(--brand);font:inherit;font-weight:800;font-size:13.5px;cursor:pointer}
 .acc3G{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.acc3G button{display:flex;flex-direction:column;align-items:center;gap:7px;border:0;background:none;color:var(--ink);font:inherit;font-size:11.5px;font-weight:700;line-height:1.2;text-align:center;cursor:pointer;padding:0}
 .acc3G button>span{width:56px;height:56px;border-radius:17px;display:grid;place-items:center;color:#fff;box-shadow:0 6px 14px rgba(0,0,0,.12)}.acc3G svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -2051,8 +2076,11 @@ function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histS
     ra.innerHTML=h;
     if(ra.dataset.st!==st){ra.firstChild&&ra.firstChild.classList.add("shake");if(st==="ok"&&ra.dataset.st)rutJust=true;if(st==="ok"){try{if(LS.get("rutConf")!==TODAY){LS.set("rutConf",TODAY);setTimeout(()=>confeti($("#rutCard"),46),ra.dataset.st?350:900)}}catch(e){}}}ra.dataset.st=st;ra.dataset.key=key;
     const g=ra.querySelector("[data-rgo]");if(g)g.onclick=()=>{const k=g.dataset.rgo,t=$("#tasks");const el=k==="historia"?(day.hAtr&&t.querySelector("[data-hfly]"))||t.querySelector("[data-hist]"):t.querySelector(`[data-k="${k}"]`)||t.querySelector(`[data-inc="${k}"]`);if(el)el.click()}}}
-  declAccMarca();rutFold(!falta);const rc=$("#rutCard");if(rc)rc.classList.toggle("done",!falta);clearTimeout(window._rcT);window._rcT=setTimeout(()=>{try{renderComp(true)}catch(e){}},400);
+  try{rut3(hechas,RL.length)}catch(e){}declAccMarca();rutFold(!falta);const rc=$("#rutCard");if(rc)rc.classList.toggle("done",!falta);clearTimeout(window._rcT);window._rcT=setTimeout(()=>{try{renderComp(true)}catch(e){}},400);
 }
+function rut3(h,n){const rc=$("#rutCard");if(!rc)return;let s=$("#rutSeg");if(!acc3On()){if(s)s.remove();return}
+  if(!s){s=document.createElement("div");s.id="rutSeg";const bar=$("#dayBar"),row=bar&&bar.closest(".row");if(row)row.after(s);else rc.prepend(s)}
+  s.innerHTML=`<div class="rs3">${Array.from({length:n},(_,i)=>`<i class="${i<h?"on":""}"></i>`).join("")}</div><div class="rs3t"><span><b>${h} de ${n}</b>${h<n?" · le "+(n-h===1?"falta 1":"faltan "+(n-h)):" · ¡día completo!"}</span><span>Día completo = ${n}</span></div>`}
 let saveDayT;function saveDay(){clearTimeout(saveDayT);saveDayT=setTimeout(()=>store.set("rutina-"+TODAY,day),600);weekCache[TODAY]=day;renderWeek()}
 $("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(ahGate())return;if(b.dataset.npv){npVer(+b.dataset.npv);return}if(b.dataset.hist){abrirHist();return}if(b.dataset.hfly){abrirFlyHoy();return}
   if(b.dataset.hs){const q=b.dataset.hs==="a"?"hAtr":"hFly";day[q]=day[q]?0:1}
@@ -2479,6 +2507,10 @@ function compStripHTML(mini){const C=miComp(),mn=mesNom();
   const bar=(a,b)=>`<div class="mtBar"><i style="width:${b?Math.min(100,Math.round(a*100/b)):0}%"></i></div>`;
   const pc=(a,b)=>b?Math.min(100,Math.round(a*100/b)):0,tot=Math.round(((C.vol?pc(V,C.vol):pc(A,C.act))+pc(p,C.pres))/2);
   let open=false;try{open=LS.get("cpOpen")==="1"}catch(e){}
+  if(mini&&acc3On()){const vm=+C.vol||0,val=vm?V:A,goal=vm||+C.act||1,pv=Math.min(100,Math.round(val*100/goal)),bx=(k,v)=>`<div><small>${k}</small><b>${v}</b></div>`;
+    const top=`<div class="cp3T"><span class="k">🎯 MI COMPROMISO DEL MES</span><span class="v">${fmt(val)} <small>/ ${fmt(goal)} ${vm?"pts":(goal===1?"activación":"activaciones")}</small><i>${open?"▾":"›"}</i></span></div><div class="cp3B"><s style="width:${Math.max(val?3:0,pv)}%"></s></div>`;
+    if(!open)return `<div class="cp3" data-cpt>${top}</div>`;
+    return `<div class="cp3 op" data-cpt>${top}<div class="cp3D"><span class="rg">${r.ic} ${esc(r.t)} · quedan ${d} ${d===1?"día":"días"}</span><div class="g">${vm?bx("VOLUMEN","⚡ "+fmt(V)+"/"+fmt(C.vol)):""}${bx("ACTIVACIONES","🚀 "+A+"/"+C.act)}${bx("PRESENT. SEMANA","🎤 "+p+"/"+C.pres)}</div><div class="ft"><span>${vm?(V<C.vol?"Le faltan "+fmt(C.vol-V)+" pts":"¡Meta de volumen lograda! 🎉"):""}</span><button type="button" data-comp>Editar ›</button></div></div></div>`}
   if(mini&&!open)return `<div class="compStrip cpMini cpHero cpC" data-cpt><div class="cpRow">${homeRing(tot,"#2AC1F1",tot+"%")}<div class="grow" style="min-width:0"><div class="ht">${r.ic} ${esc(r.t)}</div><div class="hs">Mi compromiso · quedan ${d} ${d===1?"día":"días"}</div>
    <div class="cpP">${C.vol?`<span class="${V>=C.vol?"ok":""}">⚡ ${fmt(V)}/${fmt(C.vol)}</span>`:""}<span class="${A>=C.act&&C.act?"ok":""}">🚀 ${A}/${C.act}</span><span class="${p>=C.pres?"ok":""}">🎤 ${p}/${C.pres}</span></div></div><span class="cp-chev">›</span></div></div>`;
   return `<div class="compStrip"${mini?" data-cpt":" data-comp"}><div class="row between"><small class="gn-e" style="color:inherit">🤝 Mi compromiso de ${esc(mn)}</small><small>⏳ ${d} ${d===1?"día":"días"}${mini?" ▴":""}</small></div>
@@ -2942,7 +2974,27 @@ function renderAcc3(){const c=$("#acc3");if(!c)return;const on=acc3On();document
   const sv=salaOk(),A=[sv?["sala","plane","Presentación virtual","a1"]:["hist","story","Historia del día","a5"],["pres","mic","Dar presentación","a3"],["dl","dl","Descargar presentación","a2"],["bien","party","Bienvenida socio nuevo","a6"]];
   c.innerHTML=`<div class="acc3H"><h3>⚡ Accesos directos</h3><button type="button" id="acc3Mas">Más ›</button></div><div class="acc3G">${A.map(([k,i,t,cl])=>`<button type="button" data-a3="${k}"><span class="${cl}">${acc3Ic(i)}</span>${t}</button>`).join("")}</div>`;
   c.querySelectorAll("[data-a3]").forEach(b=>b.onclick=()=>{const k=b.dataset.a3;if(k==="sala")salaCompartir();else if(k==="hist")abrirHist();else if(k==="pres")presElegir();else if(k==="dl"){const u=irPresUrl();if(!u){toast("La presentación del mes todavía no está cargada");return}const w=window.open(u,"_blank");if(w)w.opener=null}else if(k==="bien")abrirBienvenida()});
-  $("#acc3Mas").onclick=()=>{go("academia");setTimeout(()=>{const x=$("#acaTools3");if(x){x.scrollIntoView({behavior:"smooth",block:"center"});try{avFlash(x)}catch(e){}}},400)}}
+  $("#acc3Mas").onclick=()=>cajaAbrir();try{avBox3()}catch(e){}}
+// 14 nov (Edwin, SOLO ADMIN): un solo carrusel «HOY»: declaración (si falta), cierre/incentivo, Inicio Rápido, etc. pasan dentro de #avTrack; avanza solo cada 5 s (no si el aviso actual es urgente o si la persona lo tocó hace poco).
+const AV3=["declStrip","cieStrip","cmpStrip","incStrip","irCard","npBan","raStrip","pushStrip"];
+function avMover(){const tr=$("#avTrack");if(!tr||!tr.dataset.m3)return;let ref=tr.querySelector('.avSl[data-k="urgStrip"]');
+  AV3.forEach(id=>{let sl=tr.querySelector('.avSl[data-k="'+id+'"]');if(!sl){sl=document.createElement("div");sl.className="avSl av3";sl.dataset.k=id;sl.hidden=true;if(ref)ref.after(sl);else tr.prepend(sl)}ref=sl;
+    const el=document.getElementById(id);if(el&&el.parentNode!==sl){sl.append(el);avBoxQ()}})}
+function avBox3(){const tr=$("#avTrack");if(!tr||tr.dataset.m3)return;tr.dataset.m3="1";avMover();
+  const tq=()=>{window._avT=Date.now()};tr.addEventListener("touchstart",tq,{passive:true});tr.addEventListener("pointerdown",tq);
+  setInterval(()=>{try{avMover();if(document.hidden||Date.now()-(window._avT||0)<9000)return;const box=$("#avBox");if(!box||box.hidden)return;const vis=[...tr.querySelectorAll(".avSl")].filter(x=>!x.hidden);if(vis.length<2)return;
+    const cur=Math.max(0,Math.min(vis.length-1,Math.round(tr.scrollLeft/Math.max(1,tr.clientWidth+10))));if(vis[cur].dataset.k==="urgStrip")return;const nx=vis[(cur+1)%vis.length];tr.scrollTo({left:nx.offsetLeft-tr.offsetLeft,behavior:"smooth"})}catch(e){}},5000);avBoxQ()}
+// Caja de herramientas aparte (se abre desde «Más ›» y desde Academia)
+function cajaAbrir(){const L=((T.config&&Array.isArray(T.config.accesos))?T.config.accesos:[]).filter(a=>safeUrl(a.u)&&!(a.d&&Date.now()<Date.parse(a.d))&&!(a.x&&Date.now()>Date.parse(a.x)));
+  const it=(k,ic,bg,t,nv)=>`<button type="button" class="cjI" data-cj="${k}"><span style="background:${bg}">${ic}</span>${t}${nv?` <b class="acc3N">NUEVO</b>`:""}</button>`;
+  const nvA=a=>a.n&&(!a.h||Date.now()<Date.parse(a.h));
+  openSheet(`<h2 style="margin:0">🧰 Caja de herramientas</h2><p class="small muted" style="margin:4px 0 0">Todo lo que usa para invitar y presentar.</p>
+   <div class="cjT">ACCIONES</div><div class="cjG">${it("pros","👤","#DCFCE7","Agregar prospecto")}${it("l3","📞","#EDE9FE","Llamada de 3")}${it("hist","🌅","#FCE7F3","Historia del día")}${it("pres","🎤","#FFEDD5","Dar presentación")}</div>
+   <div class="cjT">PARA COMPARTIR</div><div class="cjG">${salaOk()?it("sala","✈️","#E0F2FE","Presentación virtual"):""}${it("bien","🎉","#FEF3C7","Bienvenida")}${it("mem","🛳️","#E0F2FE","Membresía")}${it("pag","🌐","#F1F5F9","Mi página")}</div>
+   <div class="cjT">MATERIALES DEL EQUIPO</div><div class="cjG">${L.map(a=>`<a class="cjI" href="${esc(a.u)}" target="_blank" rel="noopener"><span style="background:#F1F5F9">${esc(a.i||"🔗")}</span>${esc(a.t)}${nvA(a)?` <b class="acc3N">NUEVO</b>`:""}</a>`).join("")}${it("mat","📄","#F1F5F9","Hojas y guías")}</div>
+   <div class="cjT">CON INTELIGENCIA ARTIFICIAL</div><div class="cjG">${it("ia","🤖","#E0E7FF","Prompts IA")}</div>
+   <button class="btn ghost" data-close style="width:100%;margin-top:14px">Cerrar</button>`,()=>{$("#sheetPanel").querySelectorAll("[data-cj]").forEach(b=>b.onclick=()=>{const k=b.dataset.cj;closeSheet();setTimeout(()=>{
+     if(k==="pros")editContact();else if(k==="l3")pedirL3(null);else if(k==="hist")abrirHist();else if(k==="pres")presElegir();else if(k==="sala")salaCompartir();else if(k==="bien")abrirBienvenida();else if(k==="mem")memCompartir();else if(k==="pag")abrirMiPagina();else if(k==="mat")acaMateriales();else if(k==="ia")go("ia")},250)})})}
 function acc3Herr(){if(!acc3On())return "";const L=((T.config&&Array.isArray(T.config.accesos))?T.config.accesos:[]).filter(a=>safeUrl(a.u)&&!(a.d&&Date.now()<Date.parse(a.d))&&!(a.x&&Date.now()>Date.parse(a.x)));
   const nv=a=>a.n&&(!a.h||Date.now()<Date.parse(a.h))?` <b class="acc3N">NUEVO</b>`:"";
   return `<div class="acaSec" id="acaTools3"><b>📤 Para compartir</b></div><div class="acaTools"><button type="button" data-h3="hist">🌅 <span>Historia del día<small>Su historia de hoy</small></span></button><button type="button" data-h3="pros">👤 <span>Agregar prospecto<small>A su CRM</small></span></button><button type="button" data-h3="l3">📞 <span>Llamada de 3<small>Con un líder</small></span></button><button type="button" data-h3="mem">🛳️ <span>Membresía<small>Página con simulador</small></span></button><button type="button" data-h3="pag">🌐 <span>Mi página<small>Para prospectos</small></span></button></div>
@@ -4991,9 +5043,10 @@ function urgStrip(){const el=$("#urgStrip");if(!el)return;const L=urgLista();if(
 
 // ---------- Avisos de hoy (7 nov): urgStrip, lzgStrip y evHoy en una tarjeta deslizable con ✕ (oculta por hoy: LS avX:id = fecha) ----------
 let avBoxR=0;function avBoxPinta(){const box=$("#avBox"),tr=$("#avTrack");if(!box||!tr)return;const vis=[];
-  box.querySelectorAll(".avSl").forEach(sl=>{const c=document.getElementById(sl.dataset.k),off=LS.get("avX:"+sl.dataset.k)===TODAY,h=!c||c.hidden||off;if(sl.hidden!==h)sl.hidden=h;if(!h)vis.push(sl)});
+  box.querySelectorAll(".avSl").forEach(sl=>{const c=document.getElementById(sl.dataset.k),off=LS.get("avX:"+sl.dataset.k)===TODAY||(sl.dataset.k==="declStrip"&&(()=>{try{return declHecha()}catch(e){return false}})()),h=!c||c.hidden||off;if(sl.hidden!==h)sl.hidden=h;if(!h)vis.push(sl)});
   box.hidden=!vis.length;if(!vis.length)return;const ks=vis.map(x=>x.dataset.k).join();if(ks!==box.dataset.ks){box.dataset.ks=ks;tr.scrollLeft=0}const cur=Math.max(0,Math.min(vis.length-1,Math.round(tr.scrollLeft/Math.max(1,tr.clientWidth+10))));
-  $("#avBoxN").textContent="AVISOS DE HOY"+(vis.length>1?" · "+(cur+1)+" DE "+vis.length:"");$("#avDots").innerHTML=vis.length>1?vis.map((_,j)=>`<i class="${j===cur?"on":""}"></i>`).join(""):""}
+  if(tr.dataset.m3){const hh=vis[cur].offsetHeight;if(hh)tr.style.height=hh+"px"}
+  $("#avBoxN").textContent=(tr.dataset.m3?"HOY":"AVISOS DE HOY")+(vis.length>1?" · "+(cur+1)+" DE "+vis.length:"");$("#avDots").innerHTML=vis.length>1?vis.map((_,j)=>`<i class="${j===cur?"on":""}"></i>`).join(""):""}
 function avBoxQ(){if(avBoxR)return;avBoxR=requestAnimationFrame(()=>{avBoxR=0;try{avBoxPinta()}catch(e){}})}
 function avBoxMostrar(k){LS.set("avX:"+k,"");avBoxPinta();const sl=document.querySelector('#avBox .avSl[data-k="'+k+'"]'),tr=$("#avTrack");if(sl&&tr&&!sl.hidden)tr.scrollTo({left:sl.offsetLeft-tr.offsetLeft,behavior:"smooth"})}
 (function(){const tr=document.getElementById("avTrack");if(!tr)return;try{new MutationObserver(avBoxQ).observe(tr,{subtree:true,attributes:true,attributeFilter:["hidden"]})}catch(e){}
@@ -7814,7 +7867,31 @@ async function npDiploma(){const E=npEstado();if(!E)return;try{await flFonts()}c
       try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],text:tx});return}}catch(x){if(x&&x.name==="AbortError")return}
       const a=document.createElement("a");a.href=u;a.download=f.name;a.click();try{await navigator.clipboard.writeText(tx);toast("Imagen descargada y texto copiado")}catch(e){}}})}
 function npSocCargar(){try{npPub()}catch(e){}try{npSocPinta()}catch(e){}Promise.resolve(loadConst()).then(()=>{try{npSocPinta()}catch(e){}}).catch(()=>{})}
+// 14 nov (Edwin, SOLO ADMIN): Academia = Centro de entrenamiento (solo formación). Herramientas aparte en cajaAbrir().
+function aca3(b){const hd=$("#v-academia > .row.between");if(hd){const e=hd.querySelector(".eyebrow"),h=hd.querySelector("h1"),gp=$("#goPrompts");if(e)e.textContent="Academia";if(h)h.textContent="Centro de entrenamiento";if(gp)gp.hidden=true}
+  const E=npEstado(),cv=profile.cursos||{},CL=cursosL(),nOk=CL.filter(c=>cv[c.k]).length,yt=id=>`background-image:${id?`url(https://i.ytimg.com/vi/${id}/mqdefault.jpg),`:""}linear-gradient(135deg,#1e3a5f,#0A7DAD)`;
+  let h=npCardHTML()+(E?`<button type="button" class="npSoc" id="npSoc" hidden></button>`:"");
+  if(E){h+=`<div class="a3S"><b>🎬 Los ${E.tot} videos</b><span>${E.vistos} de ${E.tot}</span></div><div class="a3Rail">`+E.V.map((v,i)=>{const n=i+1,ok=!!E.s.v[n],dis=E.disp(n);
+      return `<button type="button" class="a3V${ok?" ok":dis?"":" lk"}" data-npv3="${n}"><span class="th" style="${yt(v.yt)}"></span><b>${n} · ${esc(v.t)}</b><small>${ok?"✓ Visto":dis?"Disponible":esc(E.motivo(n)||"Pronto")}</small></button>`}).join("")+`</div>`;
+    const I=npIns();h+=`<div class="a3S"><b>🏅 Mis insignias</b><span>${I.filter(x=>x.ok).length} de ${I.length}</span></div><button type="button" class="a3Ins" id="a3Ins">${npInsHTML()}<em>Plan de Inicio Rápido ›</em></button>`}
+  if(CL.length)h+=`<div class="a3S"><b>📚 Otros cursos</b><span>${nOk} de ${CL.length}${nOk===CL.length?" ✓":""}</span></div><div class="a3G">`+CL.map(c=>`<button type="button" class="a3C" data-c3="${esc(c.k)}"><span class="th" style="${yt(c.yt)}"></span><b>${esc(c.t)}</b><small class="${cv[c.k]?"ok":""}">${cv[c.k]?"✓ Completado":"Ver curso"+(c.pdf?" · 📄":"")}</small></button>`).join("")+`</div>`;
+  try{const D=LS.get("tourOk")||{},K=Object.keys(TOURS).filter(k=>!TOURS[k].ok||TOURS[k].ok());if(K.length)h+=`<div class="a3S"><b>🧭 Guías de la app</b><span>${K.filter(k=>D[k]).length} de ${K.length}</span></div><div class="a3Gu">`+K.map(k=>`<button type="button" data-tour="${k}"><span class="grow"><b>${esc(TOURS[k].t)}</b><small>${esc(TOURS[k].d)} · ${TOURS[k].min} min</small></span><em class="${D[k]?"ok":""}">${D[k]?"✓ Visto":"Ver ›"}</em></button>`).join("")+`</div>`}catch(e){}
+  h+=`<button type="button" class="a3Caja" id="a3Caja"><span>🧰</span><span class="grow"><b>Caja de herramientas</b><small>Materiales, compartir y Prompts IA</small></span><em>›</em></button>`;
+  b.innerHTML=h;
+  {const nc=b.querySelector("[data-npc]");if(nc)nc.onclick=()=>{const E2=npEstado();if(E2&&E2.fin){npDiploma();return}npCurso()}}
+  b.querySelectorAll("[data-npv3]").forEach(x=>x.onclick=()=>npVer(+x.dataset.npv3));
+  b.querySelectorAll("[data-c3]").forEach(x=>x.onclick=()=>{const c=CL.find(y=>y.k===x.dataset.c3);if(c)cursoSheet(c)});
+  b.querySelectorAll("[data-tour]").forEach(x=>x.onclick=()=>tourIr(x.dataset.tour));
+  {const a=$("#a3Caja");if(a)a.onclick=cajaAbrir;const i=$("#a3Ins");if(i)i.onclick=()=>{const g=$("#goIR");if(g)g.click()}}}
+function cursoSheet(c){const ok=!!(profile.cursos||{})[c.k];
+  openSheet(`<span class="chip ${ok?"c-good":"c-gold"}">${ok?"Completado ✓":"Curso"}</span><h2 style="margin:8px 0 4px">${esc(c.t)}</h2>${c.d?`<p class="small muted" style="margin:0 0 10px">${esc(c.d)}</p>`:""}
+    <div class="yt"><iframe src="https://www.youtube.com/embed/${esc(c.yt)}?rel=0&playsinline=1" referrerpolicy="strict-origin-when-cross-origin" title="${esc(c.t)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+    ${c.pdf?`<button class="btn" id="csPdf" style="width:100%;justify-content:center;margin-top:10px">📄 ${esc(c.pdfT||"Descargar material")}</button>`:""}
+    <div class="row" style="gap:8px;margin-top:10px"><button class="btn ghost" data-close style="flex:1">Cerrar</button>${ok?"":`<button class="btn dark" id="csOk" style="flex:2">Marcar como visto</button>`}</div>`,()=>{
+    const pd=$("#csPdf");if(pd){pdfFile(c.pdf,c.pdfN||"material.pdf");pd.onclick=()=>bajarPdf(c.pdf,c.pdfN||"material.pdf")}
+    const o=$("#csOk");if(o)o.onclick=()=>{profile.cursos=Object.assign({},profile.cursos||{});profile.cursos[c.k]=true;store.set("perfil",profile);pushResumen();closeSheet();renderAca();toast("¡Curso completado!")}})}
 function renderAca(){setTimeout(npSocCargar,0);const b=$("#acaBody");if(ahBloqYo()){b.innerHTML=`<div class="card" style="gap:8px;text-align:center"><b style="font-size:17px">🔒 Academia en pausa</b><p class="small muted" style="margin:0">Su ahorro de inCruises está pendiente. Póngase al día para reactivar sus cursos y herramientas.</p><button class="btn" style="background:#25D366;color:#fff" onclick="ahHablarSp()">💬 Hablar con mi patrocinador</button></div>`;return}
+  if(ACA_PRONTO&&acc3On()){$("#acaSeg").hidden=true;try{acaHero()}catch(e){}aca3(b);return}
   if(ACA_PRONTO){$("#acaSeg").hidden=true;const cv=profile.cursos||{};
     try{acaHero()}catch(e){}const CL=cursosL(),nOk=CL.filter(c=>cv[c.k]).length,sig=CL.findIndex(c=>!cv[c.k]);
     b.innerHTML=npCardHTML()+(npEstado()?`<button type="button" class="npSoc" id="npSoc" hidden></button>`:"")+`<details class="acaOtros"${LS.get("acaOtros")==1?" open":""}><summary><b>📚 Otros cursos</b><em>${nOk} de ${CL.length} <i>▾</i></em></summary><div class="acaPath">`+CL.map((c,i)=>{const ok=!!cv[c.k],now=i===sig;if(!cursoOpen[c.k])return `<button type="button" class="acaSt${ok?" ok":now?" now":""}" data-cabre="${c.k}"><i>${ok?"✓":i+1}</i><span class="acaTh" style="background-image:url(https://i.ytimg.com/vi/${c.yt}/mqdefault.jpg),linear-gradient(135deg,#1e293b,#0A7DAD)">▶</span><span class="grow"><b>${esc(c.t)}</b><small>${ok?"Completado · toque para verlo de nuevo":now?"Siga aquí"+(c.pdf?" · 📄 con material":""):"Curso "+(i+1)+(c.pdf?" · 📄 con material":"")}</small></span></button>`;return `<div class="acaOpen"><i class="acaN${ok?" ok":now?" now":""}">${ok?"✓":i+1}</i><div class="card curso">
@@ -8914,7 +8991,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114104022";var busy=false,pend=null;
+(function(){var V="20261114104915";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
