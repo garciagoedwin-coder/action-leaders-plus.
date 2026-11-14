@@ -126,7 +126,8 @@ exports.salaCopiloto = functions.runWith({ memory: "256MB", timeoutSeconds: 30 }
   if (!String(ctx.params.id).startsWith("v_") || !ch.after.exists) return;
   const a = ch.after.data() || {}, b = ch.before.exists ? ch.before.data() || {} : null;
   // Índice para los recordatorios (enviar.mjs salapend): quién no terminó a las 24 h y a quién le quedan 3 h de su beneficio.
-  try { const fin = (+a.pct || 0) >= 100 || a.motivo === "fin" || /^\d+$/.test(String(a.pulso || "")), ref = db.doc("salaPend/" + ctx.params.uid + "_" + ctx.params.id);
+  // 14 nov: c "yo" = el socio viendo su propia presentación (prueba): sin recordatorios de rescate, pero sí los avisos en vivo.
+  if (a.c !== "yo") try { const fin = (+a.pct || 0) >= 100 || a.motivo === "fin" || /^\d+$/.test(String(a.pulso || "")), ref = db.doc("salaPend/" + ctx.params.uid + "_" + ctx.params.id);
     const o = { u: ctx.params.uid, id: ctx.params.id, n: String(a.n || "").slice(0, 60), c: a.c || "", t0: a.t0 || Date.now(), t: a.t || Date.now(), pct: +a.pct || 0, pulso: +a.pulso || 0, como: a.como || "", fin };
     if (String(a.motivo || "").startsWith("cap:")) o.cap = String(a.motivo).slice(4, 40);
     if (fin && !(b && ((+b.pct || 0) >= 100 || b.motivo === "fin" || /^\d+$/.test(String(b.pulso || ""))))) o.tf = Date.now();

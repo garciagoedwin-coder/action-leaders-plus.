@@ -869,6 +869,7 @@ body.cv2 .contact .ch .pbar{flex-basis:100%;height:4px;margin-top:4px}body.cv2 .
 .cvTk .t3{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:9px}.cvTk .t3 span{text-align:center;font-size:11px;font-weight:700;border-radius:8px;padding:5px 2px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);white-space:nowrap}
 .cvTk .t3 .y{background:rgba(42,193,241,.22);color:#fff}.cvTk .t3 .f{background:linear-gradient(135deg,#F7953B,#EA580C);color:#fff}
 .cvTk .t4{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px;font-size:12px;color:rgba(255,255,255,.78)}.cvTk .t4 span{min-width:0}.cvTk .t4 button{flex:none;border:0;background:none;color:#2AC1F1;font:inherit;font-weight:800;font-size:12.5px;cursor:pointer;padding:2px 0}
+.syC{gap:8px;margin-top:10px;border:1.5px solid color-mix(in srgb,#2AC1F1 45%,var(--line))}.syK{font-size:10.5px;letter-spacing:.16em;font-weight:800;color:#0A7DAD}.syT{font-size:16px;line-height:1.25}
 .cvAct{display:flex;gap:8px;width:100%;margin-top:10px}.cvWaB{flex:1;display:flex;align-items:center;justify-content:center;height:48px;border:0;border-radius:14px;background:#25D366;color:#fff;font:inherit;font-weight:800;font-size:15px;text-decoration:none;cursor:pointer}.cvWaB.off{background:var(--surface-2);color:var(--ink)}
 .cvDots{flex:none;width:52px;height:48px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:14px;font:inherit;font-size:20px;font-weight:900;cursor:pointer}
 .cvLast{width:100%;margin-top:8px;font-size:12.5px;color:var(--muted);background:var(--surface-2);border-radius:10px;padding:7px 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -6446,7 +6447,32 @@ async function abrirCrearEva(){if(!store.db||!(regDoc&&regDoc.registro)){toast("
 function salaOk(){return !!isAdmin}
 const SALA_R={viajar:"Viajar más",ingresos:"Generar ingresos",ambas:"Ambas cosas",no:"Por ahora no"};
 const SALA_C={whatsapp:"WhatsApp ahora",llamada:"Agendar llamada",tarde:"Más tarde"};
-function salaCache(){const V=LS.get("salaV")||{},o={};for(const k in V)if(!k.startsWith("m_"))o[k]=V[k];return o}
+function salaCache(){const V=LS.get("salaV")||{},o={};for(const k in V)if(!k.startsWith("m_")&&V[k].c!=="yo")o[k]=V[k];return o}
+// 14 nov (Edwin): el socio VIVE su presentación virtual antes de enviarla (c "yo" en viaje.html?yo=1). Hasta verla (90 % o terminarla) no puede enviarla.
+function salaYo(){const V=LS.get("salaV")||{};let b=null;for(const k in V){const v=V[k];if(v.c==="yo"&&(!b||(v.t||0)>(b.t||0)))b=v}return b}
+const salaYoFin=v=>!!v&&((+v.pct||0)>=90||v.motivo==="fin"||/^\d+$/.test(String(v.pulso||"")));
+function salaYoOk(){return salaYoFin(salaYo())||!!LS.get("salaYoOk:"+(store.uid||""))}
+function salaYoUrl(){return salaUrl(miNombreCorto()||miRegistro().nombre||"Socio","yo")+"&yo=1"}
+let salaYoListo=false;function salaYoPrep(){if(salaYoListo)return Promise.resolve(true);return salaPrep().then(ok=>{salaYoListo=!!ok;return ok})}
+function salaYoIr(){try{LS.set("salaYoP",Date.now());LS.set("salaOn",1)}catch(e){}const w=window.open(salaYoUrl(),"_blank");if(w)w.opener=null;else location.href=salaYoUrl()}
+function salaYoTk(v){const f=String(miNombreCorto()||"").split(" ")[0]||"Usted",fin=salaYoFin(v),n=v?+v.pulso||0:0,pct=v?Math.min(100,+v.pct||0):0;
+  const S=(ok,t)=>`<span class="${ok?"y":""}">${ok?"✓ ":""}${t}</span>`,c3=fin?S(1,"Terminó"):v?`<span class="${pct?"y":""}">Vio ${pct}%</span>`:S(0,"Terminó"),c4=n?`<span class="${n>=8?"f":"y"}">${n>=8?"🔥 ":n>=6?"🟠 ":"💭 "}${n}/10</span>`:`<span>— /10</span>`;
+  const at=v?[v.r1&&CV_VAL[v.r1]?"Le atrae: "+CV_VAL[v.r1].replace(/^\S+ /,""):"",v.resp&&CV_VAL[v.resp]?"Le conectó: "+CV_VAL[v.resp].replace(/^\S+ /,""):""].filter(Boolean).join(" · "):"";
+  return `<div class="cvTk" style="margin-top:4px"><div class="t1"><span>✈️ SU PASE DE ABORDAR</span><span>${v?esc(memHace(v.t||Date.now())):""}</span></div><div class="t2"><b>${esc(f)}</b><i></i><b>${v&&v.pais?"🗺️ "+esc(String(v.pais).split(",")[0]):"¿?"}</b></div>
+    <div class="t3">${S(!!v,"Abordó")}${c3}${c4}<span class="${fin?"y":""}">${fin?"🔓 Lista":"🔒 Enviar"}</span></div>${at?`<div class="t4"><span>${esc(at)}</span></div>`:""}</div>`}
+function salaYoCard(el){if(!el)return;const v=salaYo(),fin=salaYoFin(v);salaYoPrep();
+  el.innerHTML=`<div class="card syC"><span class="syK">✈️ MI PRESENTACIÓN VIRTUAL</span><b class="syT">${fin?"✅ Ya la vivió · así la ven sus prospectos":v?"Va en el "+Math.min(100,+v.pct||0)+"% · termínela para enviarla":"Vívala primero, como su prospecto"}</b>
+    <p class="small muted" style="margin:0">${fin?"Cada prospecto le contestará lo mismo y usted recibirá sus respuestas al teléfono, en vivo, como acaba de pasar.":"Esto es exactamente lo que verán sus prospectos cuando usted se la envíe. Mientras la ve, le llegan al teléfono los mismos avisos que recibirá con ellos. Al terminarla se desbloquea para enviarla."}</p>
+    ${salaYoTk(v)}
+    <div style="display:flex;gap:8px;margin-top:4px">${fin?`<button class="btn" id="syEnv" style="flex:1">✈️ Enviarla a un prospecto</button><button class="btn ghost" id="syVer">▶ Ver de nuevo</button>`:`<button class="btn" id="syVer" style="flex:1">▶ ${v?"Continuar mi presentación":"Ver mi presentación virtual · 20 min"}</button>`}</div></div>`;
+  const b=el.querySelector("#syVer");if(b)b.onclick=()=>{if(!salaYoListo){toast("Un momento, preparando su presentación…");salaYoPrep().then(ok=>{if(ok)toast("Listo, tóquelo de nuevo")});return}salaYoIr()};
+  const e=el.querySelector("#syEnv");if(e)e.onclick=()=>{closeSheet();setTimeout(salaCompartir,250)}}
+function salaYoGate(){const v=salaYo();salaYoPrep();
+  openSheet(`<h2 style="margin:0 0 4px">🔒 Primero véala usted</h2><p class="small muted" style="margin:0 0 10px">No tiene sentido enviar algo que usted no ha visto. Vívala como su prospecto (20 min): al terminarla se desbloquea para enviarla.</p><div id="syG"></div>
+    ${isAdmin?`<button class="btn ghost" id="syAdm" style="width:100%;margin-top:8px">Enviar de todos modos (admin)</button>`:""}<button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{salaYoCard($("#syG"));const a=$("#syAdm");if(a)a.onclick=()=>{window._syAdm=1;closeSheet();setTimeout(salaCompartir,250)}})}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState!=="visible")return;const p=+LS.get("salaYoP")||0;if(!p||Date.now()-p>6*36e5)return;
+  setTimeout(async()=>{const antes=salaYoOk();try{await loadSala(true)}catch(e){}const a=$("#npSala");if(a)salaYoCard(a);const g=$("#syG");if(g)salaYoCard(g);
+    if(!antes&&salaYoOk()){try{LS.set("salaYoOk:"+(store.uid||""),1)}catch(e){}try{avisoTop("🔓 ¡Ya puede enviar su presentación virtual!","Ahora sabe exactamente lo que verán sus prospectos",()=>salaCompartir())}catch(e){}}},1200)});
 function memDe(cid){if(!cid)return null;const V=LS.get("salaV")||{};let b=null;for(const k in V){const v=V[k];if(k.startsWith("m_")&&v.c===cid&&(!b||(v.t||0)>(b.t||0)))b=v}return b}
 function memHace(t){const m=Math.round((Date.now()-t)/6e4);return m<2?"ahora":m<60?"hace "+m+" min":m<1440?"hace "+Math.round(m/60)+" h":"hace "+Math.round(m/1440)+" d"}
 function memAviso(x){try{avisoTop("👀 "+(String(x.n||"Un prospecto").split(/\s+/)[0])+" está viendo su página de membresía",x.como?"📲 Tocó el botón para escribirle":x.resp==="sim"?"🧮 Usó el simulador de cruceros":"Es buen momento para escribirle",()=>{try{go("crm")}catch(e){}})}catch(e){}}
@@ -6478,7 +6504,7 @@ async function memVisitas(){LS.set("memOn",1);try{await loadSala(true)}catch(x){
 let memVT=0;document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&LS.get("memOn")&&Date.now()-memVT>120000){memVT=Date.now();loadSala()}});
 function salaDe(cid){if(!cid)return null;const V=salaCache();let b=null;for(const k in V){const v=V[k];if(v.c===cid&&(!b||(v.t||0)>(b.t||0)))b=v}return b}
 function salaNivel(v){if(v.resp==="ambas")return["🔥 Caliente","c-bad","#C2410C"];if(v.resp==="viajar"||v.resp==="ingresos")return["🟠 Tibio","c-gold","#B45309"];if(v.resp==="no")return["❄️ No por ahora","c-brand","#0369A1"];return[(+v.pct||0)>=75?"👀 Casi termina":(+v.pct||0)>0?"⏳ Viéndola":"👋 Entró",(+v.pct||0)>=75?"c-gold":"c-brand","var(--muted)"]}
-async function loadSala(force){if(!store.db||!store.uid||!(salaOk()||LS.get("memOn")))return;if(!force&&!LS.get("salaOn")&&!LS.get("memOn"))return;const since=+LS.get("salaSync")||0;
+async function loadSala(force){if(!store.db||!store.uid||!(salaOk()||LS.get("memOn")||LS.get("salaYoP")))return;if(!force&&!LS.get("salaOn")&&!LS.get("memOn"))return;const since=+LS.get("salaSync")||0;
   try{const q=since?await store.db.collection("users/"+store.uid+"/sala").where("t",since,">").get():await store.db.collection("users/"+store.uid+"/sala").get();
     const V=LS.get("salaV")||{};let mx=since;q.docs.forEach(d=>{const x=d.data(),nv=!V[d.id];V[d.id]=Object.assign({id:d.id},x);mx=Math.max(mx,+x.t||0);if(since&&nv&&d.id.startsWith("m_"))memAviso(x)});
     const ks=Object.keys(V).sort((a,b)=>(V[b].t||0)-(V[a].t||0)).slice(0,80),N={};ks.forEach(k=>N[k]=V[k]);LS.set("salaV",N);LS.set("salaSync",mx);
@@ -6523,7 +6549,7 @@ window.__aud=()=>({c:audCfg(),abrir:audAbrir});function audRevisar(){audStrip();
 const SALA_OR=[["Campaña","📣","camp"],["Lista fría","🧊","fria"],["Prospección pasiva","🧲","pasiva"],["De un grupo","👥","grupo"],["De mi estado","📲","estado"],["Facebook","📘","fb"],["Instagram","📸","ig"],["TikTok","🎵","tt"],["Otro","✏️","otro"]];
 const salaSlug=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,30);
 const salaOrIc=o=>{const s=String(o||"");if(/^Se lo compartió/.test(s))return "🔁";const k=SALA_OR.find(([t])=>s.startsWith(t));return k?k[1]:"📍"};
-async function salaCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}if(ahGate())return;let tab=LS.get("scTab")||"p",ori="";
+async function salaCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}if(ahGate())return;if(!salaYoOk()&&!window._syAdm){salaYoGate();return}let tab=LS.get("scTab")||"p",ori="";
   const pinta=()=>{const P=tab==="p";$("#scTabs").querySelectorAll("[data-t]").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===tab));$("#scP").hidden=!P;$("#scO").hidden=P;
     $("#scSub").textContent=P?"Edwin le presenta en 20 minutos y a usted le llega cada respuesta al teléfono.":"Un mismo link para varias personas que vienen de un mismo lugar. Cada una escribe su nombre y WhatsApp al abrirlo.";
     $("#scWa").textContent=P?"📲 Enviar por WhatsApp":"📲 Enviar script por WhatsApp";
@@ -6602,7 +6628,7 @@ async function salaPrep(){if(!(regDoc&&regDoc.registro)){toast("Complete su regi
   LS.set("salaOn",1);return true}
 function salaMsgInv(nombre,u){const f=String(nombre||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"";
   return `¡Hola${f?", "+f:""}! 😊\n\nLe comparto mi *presentación privada de 20 minutos* ✈️ sobre cómo viajar más pagando menos y generar ingresos desde el celular.\n\n🎬 Véala aquí con sonido, en un momento tranquilo:\n👉 ${u}\n\n${f?"En el camino le hacen unas preguntas: sus respuestas me ayudan a orientarle mejor.":"Al abrirla le pide su nombre y WhatsApp para su pase de abordar. Sus respuestas me ayudan a orientarle mejor."} 🙌${yo?"\n\n*"+yo+"*":""}`}
-async function enviarSala(c){if(!c)return;if(ahGate())return;if(!(await salaPrep()))return;stAvanza(c,"Contactado","le envió la presentación virtual");const t=salaMsgInv(c.name,salaUrl(c.name,c.id)),n=waNum(c.phone,c.cc);try{LS.set("salaOn",1);const E=LS.get("salaEnv")||{};E[c.id]=Date.now();LS.set("salaEnv",E);setTimeout(renderCRM,800)}catch(x){}
+async function enviarSala(c){if(!c)return;if(ahGate())return;if(!salaYoOk()&&!window._syAdm){salaYoGate();return}if(!(await salaPrep()))return;stAvanza(c,"Contactado","le envió la presentación virtual");const t=salaMsgInv(c.name,salaUrl(c.name,c.id)),n=waNum(c.phone,c.cc);try{LS.set("salaOn",1);const E=LS.get("salaEnv")||{};E[c.id]=Date.now();LS.set("salaEnv",E);setTimeout(renderCRM,800)}catch(x){}
   if(n){waIr("https://wa.me/"+n+"?text="+encodeURIComponent(t));return}
   if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}
 function salaSeg(v){const f=String(v.n||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"",pa=v.pais?` y vi que le gustaría conocer *${v.pais.split(",")[0].trim()}*`:"";
@@ -7654,12 +7680,12 @@ function npVer(n){const E=npEstado();if(!E)return;const v=E.V[n-1];if(!v)return;
   openSheet(`<div class="npVid"><div id="npYT"></div></div><p class="npK" style="margin:12px 0 0">NETWORKER PRO · VIDEO ${n} DE ${E.tot}</p><h2 style="margin:2px 0 6px">${esc(v.t)}</h2>
     <div class="npPts"><span>🧠 Mentalidad</span><span>🎯 Habilidad</span><span>📲 En la app</span></div>
     <div class="card" style="gap:6px;margin-top:10px"><b>✅ Su tarea</b><p class="small" style="margin:0">${esc(v.tarea||"")}</p>${v.ir?`<button class="btn" id="npIrB" style="width:100%">${esc(v.bt||"Ir")}</button>`:""}</div>
-    <div id="npQz"></div>
+    ${n===4&&salaOk()?`<div id="npSala"></div>`:""}<div id="npQz"></div>
     ${E.s.q[n]&&Array.isArray(v.q)&&v.q.length?`<button type="button" class="npAprob" id="npRev"><span class="npAi">✅</span><span><b>Preguntas aprobadas · ${v.q.length} de ${v.q.length}</b><small>Aprobado el ${esc(npF(new Date(E.s.q[n]-216e5).toISOString().slice(0,10)))} · toque para ver las respuestas</small></span><em>›</em></button>`:""}
     <div class="card" style="gap:6px"><b>${ya?"✓ Video completado":"Terminar el video"}</b><p class="small muted" style="margin:0" id="npEst">${ya?"Puede verlo de nuevo cuando quiera.":E.s.w[n]?"Ya vio el video. Responda las 3 preguntas para completarlo.":"Al ver el 90 % del video, sin adelantar, salen 3 preguntas. Al acertarlas se completa."}</p>
       ${n<E.tot&&!ya?`<p class="small muted" style="margin:0">🔔 El video ${n+1} se abre al día siguiente de terminar este.</p>`:""}</div>
     <div id="npCom"></div>
-    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{npComPinta(n);
+    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{npComPinta(n);if(n===4&&salaOk())try{salaYoCard($("#npSala"))}catch(e){}
     const ib=$("#npIrB");if(ib)ib.onclick=()=>npIr(v.ir);const rv=$("#npRev");if(rv)rv.onclick=()=>{rv.remove();npRepaso(n)};npPlayer(n,v.yt,ya||!!E.s.w[n]);if((!ya&&E.s.w[n])||(ya&&Array.isArray(v.q)&&v.q.length&&!E.s.q[n]))npQuiz(n)})}
 async function npPlayer(n,yt,ya){const box=$("#npYT");if(!box)return;const K="np:"+(store.uid||"")+":"+n;let maxG=+(LS.get(K)||0),wT=Date.now(),hecho=ya,lastS=0;
   try{await welLoadYT()}catch(e){box.innerHTML=`<div class="npErr">No pudimos cargar el video. Revise su conexión.</div>`;return}if(!$("#npYT"))return;
@@ -8862,7 +8888,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114093831";var busy=false,pend=null;
+(function(){var V="20261114100342";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

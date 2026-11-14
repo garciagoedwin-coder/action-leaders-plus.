@@ -209,6 +209,8 @@ const U=new URLSearchParams(location.search);
 const code=(U.get("de")||"").trim().toLowerCase().replace(/[^a-z0-9-]/g,"").slice(0,60);
 let pName=(U.get("p")||"").replace(/[<>]/g,"").trim().slice(0,50),first=pName.split(/\s+/)[0]||"";
 let cid=(U.get("c")||"").replace(/[^A-Za-z0-9_-]/g,"").slice(0,40);
+// 14 nov: yo=1 → el socio vive su propia presentación (prueba). Se guarda con c "yo": no entra al CRM ni a los recordatorios.
+const soyYo=U.get("yo")==="1"&&!!pName;if(soyYo)cid="yo";
 // 13 nov: «¿No eres X?» (otro=1) → es otra persona a la que X le reenvió el link; o = etiqueta de origen que eligió el socio
 const otroDe=U.get("otro")==="1"&&pName?pName:"";if(otroDe){pName="";first="";cid=""}
 const OR_K={camp:"Campaña",fria:"Lista fría",pasiva:"Prospección pasiva",grupo:"De un grupo",estado:"De mi estado",fb:"Facebook",ig:"Instagram",tt:"TikTok",otro:"Otro"};
@@ -232,7 +234,8 @@ const pide=!pName&&!cid;if(pide&&V.n){pName=V.n;first=pName.split(/\s+/)[0]||""}
 const PA=[["🇭🇳 +504","504"],["🇺🇸 +1","1"],["🇪🇸 +34","34"],["🇬🇹 +502","502"],["🇸🇻 +503","503"],["🇳🇮 +505","505"],["🇨🇷 +506","506"],["🇵🇦 +507","507"],["🇲🇽 +52","52"],["🇨🇴 +57","57"],["🇻🇪 +58","58"],["🇵🇪 +51","51"],["🇪🇨 +593","593"],["🇨🇱 +56","56"],["🇦🇷 +54","54"],["🇩🇴 +1","1d"],["🇬🇧 +44","44"],["🇮🇹 +39","39"],["🇫🇷 +33","33"],["🇩🇪 +49","49"]];
 if(pide&&!V.n){$("bForm").hidden=false;$("fCC").innerHTML=PA.map(([t,v])=>`<option value="${v}">${t}</option>`).join("");if(hostF)$("fTx").textContent="Para que "+hostF+" te envíe tu información.";
   $("fT").oninput=()=>{$("fErr").textContent=""};$("fN").oninput=()=>{$("fErr").textContent="";const v=$("fN").value.trim();$("bNom").textContent=v||"Tu nombre";$("bHola").firstChild.textContent=v?`Hola, ${v.split(/\s+/)[0]} 👋`:"Hola 👋"};$("bNom").textContent="Tu nombre";$("bHint").textContent="Activa el sonido 🔊 · son 20 minutos"}
-if(pName&&!pide&&!V.fin&&!verSolo){const b=$("bNoSoy");b.hidden=false;b.textContent="¿No eres "+first+"? Toca aquí";b.onclick=()=>{const u=new URL(location.href);u.searchParams.set("otro","1");location.href=u.toString()}}
+if(soyYo){const y=document.createElement("div");y.style.cssText="display:inline-block;margin:0 0 10px;background:#2AC1F1;color:#062B3A;font:800 12.5px/1.2 system-ui,sans-serif;padding:7px 13px;border-radius:999px";y.textContent="🧪 Así la verán sus prospectos";$("bHola").before(y)}
+if(pName&&!pide&&!V.fin&&!verSolo&&!soyYo){const b=$("bNoSoy");b.hidden=false;b.textContent="¿No eres "+first+"? Toca aquí";b.onclick=()=>{const u=new URL(location.href);u.searchParams.set("otro","1");location.href=u.toString()}}
 const D={};const canTrack=!!(P&&P.uid)&&!verSolo;
 let saveT;async function save(extra,now){Object.assign(D,extra||{});if(!canTrack)return;clearTimeout(saveT);const go=async()=>{try{
   if(!V.id){V.id="v_"+Math.random().toString(36).slice(2,9)+Date.now().toString(36);LSs(vKey,V);D.t0=Date.now();D.n=(pName||"Sin nombre").slice(0,60);if(cid)D.c=cid;if(orig)D.o=orig}
