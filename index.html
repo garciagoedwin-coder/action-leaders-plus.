@@ -6415,7 +6415,18 @@ async function loadSala(force){if(!store.db||!store.uid||!(salaOk()||LS.get("mem
   try{const q=since?await store.db.collection("users/"+store.uid+"/sala").where("t",since,">").get():await store.db.collection("users/"+store.uid+"/sala").get();
     const V=LS.get("salaV")||{};let mx=since;q.docs.forEach(d=>{const x=d.data(),nv=!V[d.id];V[d.id]=Object.assign({id:d.id},x);mx=Math.max(mx,+x.t||0);if(since&&nv&&d.id.startsWith("m_"))memAviso(x)});
     const ks=Object.keys(V).sort((a,b)=>(V[b].t||0)-(V[a].t||0)).slice(0,80),N={};ks.forEach(k=>N[k]=V[k]);LS.set("salaV",N);LS.set("salaSync",mx);
-    renderSalaCard();try{renderCRM()}catch(e){}}catch(e){}}
+    renderSalaCard();try{renderCRM()}catch(e){}try{salaAuto()}catch(e){}}catch(e){}}
+// 13 nov (Edwin, PRUEBA solo admin): la presentación virtual mueve la etapa del CRM sola (solo hacia arriba) y, si la ve completa, cuenta como presentación hecha.
+let salaAutoB=false;async function salaAuto(){if(!salaOk()||salaAutoB||!Array.isArray(contacts)||!contacts.length)return;salaAutoB=true;try{
+  const H=LS.get("salaAuto")||{};let cambio=false;
+  for(const v of Object.values(salaCache())){if(!String(v.id||"").startsWith("v_")||!v.c)continue;const c=contacts.find(x=>x.id===v.c);if(!c)continue;
+    const n=/^\d+$/.test(String(v.pulso||""))?+v.pulso:0,fin=(+v.pct||0)>=100||v.motivo==="fin"||n>0,f=String(c.name||"").split(" ")[0];
+    const lv=n>=8||v.como==="registro"?3:fin?2:(+v.pct||0)>0?1:0,h=H[v.id]||{};
+    if(lv>(h.l||0)){const s=lv===3?"Por cerrar":lv===2?"Seguimiento":"Presentación",por=lv===3?(n>=8?"marcó "+n+"/10 en la presentación virtual":"tocó «Crear mi cuenta» en la presentación virtual"):lv===2?"terminó la presentación virtual"+(n?" ("+n+"/10)":""):"empezó a ver la presentación virtual";
+      await stAvanza(c,s,por);h.l=lv;cambio=true}
+    if(fin&&!h.p){h.p=1;cambio=true;if(!presSemana().some(x=>x.cid===c.id)){try{await sumarPres(c)}catch(x){}}}
+    H[v.id]=h}
+  if(cambio)LS.set("salaAuto",H)}finally{salaAutoB=false}}
 function renderSalaCard(){const c=$("#salaCard");if(!c)return;if(!salaOk()){c.hidden=true;return}const seen=+LS.get("salaSeen")||0,V=Object.values(salaCache()).filter(v=>(v.t||0)>seen&&(v.resp||(+v.pct||0)>=50)).sort((a,b)=>(b.t||0)-(a.t||0));
   if(!V.length){c.hidden=true;return}c.hidden=false;
   c.innerHTML=`<div class="row between"><h3 style="margin:0">🎬 Su presentación virtual</h3><button class="btn sm ghost" id="scVer">Ver todo</button></div>${V.slice(0,3).map(v=>{const n=salaNivel(v);return `<div class="row" style="gap:10px;padding:8px 0;border-top:1px solid var(--line)"><div class="grow" style="min-width:0"><b style="font-weight:600">${esc(v.n||"Prospecto")}</b><div class="small muted">Vio el ${+v.pct||0}%${v.resp?" · Le interesa: "+esc(SALA_R[v.resp]):""}</div></div><span class="chip" style="color:${n[2]};font-weight:800">${esc(n[0])}</span></div>`}).join("")}`;
@@ -8621,7 +8632,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261113183215";var busy=false,pend=null;
+(function(){var V="20261113183832";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
