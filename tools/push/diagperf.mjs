@@ -1,14 +1,9 @@
-// Arreglo puntual (13 nov, Edwin): la cuenta solo-admin (garciagoedwin@) no es socio: se renombra «Admin Edwin», sale de la línea de Edwin
-// (sin patrocinador ni línea), se marca soloAdm y se borra su constancia (y su entrada en team/constres). Solo conteos en el log.
+// Arreglo puntual (13 nov, Edwin): su patrocinador real (Santiago, Puerto Rico) no usa la app → registro.patExt en SU cuenta de socio
+// (edwing.go@). Solo marca el paso «Conectado con su patrocinador» del Inicio Rápido; no cambia línea, rankings ni duplicación.
 import admin from "firebase-admin";
 admin.initializeApp({ credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SA)) });
-const db = admin.firestore(), FV = admin.firestore.FieldValue;
-const U = (await db.collection("users").where("email", "==", "garciagoedwin@gmail.com").get()).docs;
+const db = admin.firestore();
+const U = (await db.collection("users").where("email", "==", "edwing.go@gmail.com").get()).docs;
 let n = 0;
-for (const d of U) { const id = d.id;
-  await d.ref.update({ "registro.nombre": "Admin Edwin", "registro.patrocinadorUid": FV.delete(), "registro.patrocinador": FV.delete(), "registro.invitadoPor": FV.delete(), "registro.linea": [], soloAdm: true });
-  await db.doc("constancia/" + id).delete().catch(() => {});
-  await db.doc("fotos/" + id).set({ oculto: true, invNombre: "Admin Edwin", t: Date.now() }, { merge: true });
-  await db.doc("team/constres").update({ ["m." + id]: FV.delete() }).catch(() => {});
-  n++; }
-console.log("cuentas solo-admin arregladas:", n);
+for (const d of U) { await d.ref.update({ "registro.patExt": "Santiago" }); n++; }
+console.log("cuentas actualizadas:", n);

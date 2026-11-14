@@ -8025,7 +8025,7 @@ function irCtx(){const st=irSt(),ini=irIni(),iniD=dkey(new Date(ini)),C=contacts
   return {st,ini,nC:C.length,cont:C.filter(x=>(x.stage||"Nuevo")!=="Nuevo").length,pc:C.filter(x=>["Por cerrar","Socio","Cliente"].includes(x.stage)).length,
    pres:c.pres||0,seg:c.seg||0,lid:lid.length,l3:lid.filter(x=>x.l3&&!x.lz&&!x.lzE).length,mk,
    herrN:IR_HERR.filter(h=>mk[h[0]]||(h[2]&&irHerrAuto(h[0]))).length,herrV:IR_HERR_V.every(k=>mk[k]),porque:!!(snInfo&&String(snInfo.porque||"").trim()),meta:!!(st.meta&&st.meta.tiempo),
-   pat:sim||!!miRegistro().patrocinadorUid,ref:!!String(profile.ref||"").trim(),val:!!st.val||!!irValOk,comp:!!(miComp()&&!miComp().no),
+   pat:sim||!!miRegistro().patrocinadorUid||!!miRegistro().patExt,ref:!!String(profile.ref||"").trim(),val:!!st.val||!!irValOk,comp:!!(miComp()&&!miComp().no),
    act1,soc:dir.length>0,grpYa:!!((profile.welPasos||{}).whatsapp)||!!(st.ini&&st.ini<GRP_DESDE),ayu:!!mk.ayu||dir.some(x=>x.ir&&x.ir.ini)||(citas||[]).some(x=>x.lzE&&String(x.fecha||"")>=iniD),racha:irRacha(),sim}}
 function irRacha(){let r=0;try{for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const k=dkey(d),s=dayScore(k===TODAY?day:weekCache[k],k);if(i===0&&s<1)continue;if(s>=1)r++;else break}}catch(e){}return r}
 const irGoCRM=()=>{closeSheet();go("crm");try{const D=LS.get("tourOk")||{};if(!D.crm&&!LS.get("tourAskCrm")){LS.set("tourAskCrm",1);setTimeout(()=>avisoTop("🧭 ¿Le enseño a usar su CRM?","Guía de 2 minutos · toque Ver",()=>tourIr("crm")),700)}}catch(e){}};
@@ -8714,7 +8714,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261113213315";var busy=false,pend=null;
+(function(){var V="20261113224510";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
