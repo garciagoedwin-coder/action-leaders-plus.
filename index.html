@@ -4326,7 +4326,9 @@ function renderSocios(b){if(!isAdmin){b.innerHTML="";return}if(socios===null){b.
   $("#socCsv").onclick=sociosCSV;{const ra=$("#raAdm");if(ra)ra.onclick=raAdmin}solAdmBind(b);shBind(b);const sv=$("#socVinc");if(sv)sv.onclick=abrirVincular;const sl=$("#socLin");if(sl)sl.onclick=async()=>{sl.disabled=true;sl.textContent="Reconstruyendo…";await reconstruirLineas(false);sl.disabled=false;sl.textContent="Reconstruir líneas"};$("#socReload").onclick=()=>{socios=null;renderEquipo()}}
 const asOpen=new Set();let constL=null,constT=0;
 let constVista="sem";
-const constSort=L=>{const sem=constVista==="sem";L.sort((a,b)=>acc3On()?(b.mesComp-a.mesComp||b.mesPres-a.mesPres||b.mesPts-a.mesPts||String(a.nombre).localeCompare(b.nombre,"es")):sem?(b.racha-a.racha||b.semPres-a.semPres||b.semPts-a.semPts):(b.mesMejor-a.mesMejor||b.mesPres-a.mesPres||b.mesPts-a.mesPts)||String(a.nombre).localeCompare(b.nombre,"es"));L.forEach((x,i)=>x.rk=i+1);return L};
+// 15 nov (Edwin): Mi Racha = días completos del mes → días seguidos (racha viva) → presentaciones → activaciones del mes → puntos.
+let _actNC={r:null,m:{}};const actMesN=n=>{if(_actNC.r!==T.ranking)_actNC={r:T.ranking,m:{}};const k=String(n||"");if(k in _actNC.m)return _actNC.m[k];let v=0;try{const nm=aliasRank(k),r=(T.ranking||[]).find(x=>sameN(x.nombre,nm));v=r?(+r.activaciones||0):0}catch(e){}return _actNC.m[k]=v};
+const constSort=L=>{const sem=constVista==="sem";L.sort((a,b)=>acc3On()?(b.mesComp-a.mesComp||(+b.rv||0)-(+a.rv||0)||b.mesPres-a.mesPres||actMesN(b.nombre)-actMesN(a.nombre)||b.mesPts-a.mesPts||String(a.nombre).localeCompare(b.nombre,"es")):sem?(b.racha-a.racha||b.semPres-a.semPres||b.semPts-a.semPts):(b.mesMejor-a.mesMejor||b.mesPres-a.mesPres||b.mesPts-a.mesPts)||String(a.nombre).localeCompare(b.nombre,"es"));L.forEach((x,i)=>x.rk=i+1);return L};
 async function constFuente(force){try{const s=await store.db.doc("team/constres").get();if(s.exists){const S=s.data()||{},m=Object.assign({},S.m||{});
   if(+S.b&&Date.now()-S.b<6*36e5){try{const q=await store.db.collection("constancia").where("u",(+S.u||0)-30*6e4,">").get();q.docs.forEach(d=>{m[d.id]=d.data()})}catch(e){}
   return{docs:Object.keys(m).map(k=>({id:k,data:()=>m[k]}))}}}}catch(e){}
@@ -4493,7 +4495,7 @@ function rc3Det(uid){const x=(constL||[]).find(y=>y.uid===uid);if(!x)return;cons
 document.addEventListener("click",e=>{const r=e.target.closest("[data-rc3d]");if(!r||e.target.closest("[data-cwa],.rc3Wa"))return;rc3Det(r.dataset.rc3d)});
 function rc3Persigue(L,mine){if(!mine)return `<div class="rc3Y">🎯 Complete su rutina hoy y entre al ranking del mes 💪</div>`;if(mine.rk===1)return `<div class="rc3Y">👑 <b>¡Usted va primero!</b> Defienda su lugar completando su rutina hoy</div>`;
   const a=L[mine.rk-2];if(!a)return"";const f=a.mesComp-mine.mesComp,n=esc(String(nv(a.nombre)).split(" ").slice(0,2).join(" "));
-  return `<div class="rc3Y">🎯 <b>Persiga a ${n}:</b> ${f<=0?`empatan en ${mine.mesComp} días · ${(+a.mesPres||0)>(+mine.mesPres||0)?`le saca ${(+a.mesPres||0)-(+mine.mesPres||0)} ${(+a.mesPres||0)-(+mine.mesPres||0)===1?"presentación":"presentaciones"}`:"le gana en puntos"}`:f===1?"va 1 día arriba · complete hoy y lo alcanza":`va ${f} días arriba · no afloje`} 💪</div>`}
+  return `<div class="rc3Y">🎯 <b>Persiga a ${n}:</b> ${f<=0?`empatan en ${mine.mesComp} días · ${(+a.rv||0)>(+mine.rv||0)?`su racha va ${(+a.rv||0)-(+mine.rv||0)} ${(+a.rv||0)-(+mine.rv||0)===1?"día":"días"} arriba · no la suelte`:(+a.mesPres||0)>(+mine.mesPres||0)?`le saca ${(+a.mesPres||0)-(+mine.mesPres||0)} ${(+a.mesPres||0)-(+mine.mesPres||0)===1?"presentación":"presentaciones"}`:"le gana en activaciones"}`:f===1?"va 1 día arriba · complete hoy y lo alcanza":`va ${f} días arriba · no afloje`} 💪</div>`}
 function rc3HTML(L,mine){return rc3Premio()+rc3Mio(L,mine)+rc3Persigue(L,mine)+rc3Lista(L)}
 document.addEventListener("click",e=>{if(!e.target.closest("[data-rc3t]"))return;LS.set("rc3Open",LS.get("rc3Open")?0:1);try{renderEquipo()}catch(x){}});
 // Banner "cambio en el top 3" en Avisos de hoy: compara el top 3 del mes con el último que vio este teléfono
@@ -9387,7 +9389,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115151841";var busy=false,pend=null;
+(function(){var V="20261115153407";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
