@@ -1398,6 +1398,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .cvActv{margin-top:14px}.cvActv>div:not(.k){display:flex;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}.cvActv small{color:var(--muted);font-size:12px;white-space:nowrap}
 .cvFt{display:flex;gap:8px;margin-top:14px}.cvFt>*{flex:1;text-align:center;background:var(--surface-2);color:var(--ink);border:0;border-radius:12px;padding:10px 4px;font:700 13px Figtree,sans-serif;text-decoration:none;cursor:pointer}.cvFt .w{background:#25D366;color:#fff}.cvFt [data-cvmas]{flex:0 0 46px}
 
+.mnT2 b{font:700 22px Bricolage Grotesque,Figtree,sans-serif!important;line-height:1.15;color:#fff}
 /* Control presentación virtual (15 nov) */
 .svR summary{display:flex;align-items:center;gap:12px;cursor:pointer;list-style:none}.svR summary::-webkit-details-marker{display:none}.svR summary b{display:block;font-size:15px}.svR summary small{display:block;color:var(--muted);font-size:12.5px}
 .svBar{width:70px;height:7px;border-radius:9px;background:var(--surface-2);overflow:hidden;flex:none}.svBar i{display:block;height:100%;background:linear-gradient(90deg,#2AC1F1,#0A7DAD)}
@@ -4033,7 +4034,7 @@ function idxEq(L){L=L.filter(idxCuenta);return L.length?Math.round(L.reduce((t,x
 function idxDesc(uid,P){return P.filter(y=>{const r=y.registro||{};return y.uid!==uid&&((Array.isArray(r.linea)&&r.linea.includes(uid))||r.patrocinadorUid===uid)})}
 function mnumSum(){let v=null,n=0,act=0;try{if(constL){const P=idxPool();n=P.length;v=idxEq(P);act=P.filter(x=>idxHoy(x.uid)).length}}catch(e){}
   const c=v==null?"#2AC1F1":IDX_C(v),msg=v==null?"Vea cómo va su equipo":v>=70?"¡Su equipo va excelente! 🔥":v>=40?"Su equipo puede dar más 💪":"Su equipo necesita su apoyo 🆘";
-  return `<summary class="mnS"><div class="mnR" style="--c:${c};--p:${v||0}"><b>${v==null?"⚡":v+"%"}</b></div><div class="mnT"><small>ÍNDICE DE DUPLICACIÓN · ${idxPer==="sem"?"SEMANA":"MES"}</small><b>${msg}</b><span>${n?`✅ ${act} de ${n} hicieron su rutina hoy`:"Toque para ver sus números"}</span></div><em class="mnGo">Ver ›</em></summary>`}
+  return `<summary class="mnS"><div class="mnR" style="--c:${c};--p:${v||0}"><b>${v==null?"⚡":v+"%"}</b></div><div class="mnT mnT2"><b>Índice de Duplicación</b></div><em class="mnGo">Ver ›</em></summary>`}
 function idxPerPer(x,per){const o=idxPer;idxPer=per;try{return idxPersX(x)}finally{idxPer=o}}
 function idxEqPer(L,per){const o=idxPer;idxPer=per;try{return idxEq(L)}finally{idxPer=o}}
 function idxCard(){const P=idxPool();if(!P.length)return"";if(!constL){if(!window._ldC){window._ldC=1;loadConst().then(()=>{try{renderEquipo()}catch(e){}})}return`<div class="card"><b>⚡ Índice de Duplicación</b><span class="small muted">Calculando…</span></div>`}
@@ -9330,7 +9331,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115121221";var busy=false,pend=null;
+(function(){var V="20261115121622";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
