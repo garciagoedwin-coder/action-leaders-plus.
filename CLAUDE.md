@@ -907,3 +907,8 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Tour Academia `TOURS.sala` (8 pasos, `nuevo:"2026-11-29"` muestra etiqueta NUEVO hasta esa fecha en tourCard y en la lista "Guías de la app").
 - avIr("pv") → Inicio + salaMenu(). enviar.mjs avDestino: msg con "Presentación virtual" → "pv".
 - team.json config.novedad id pv-2026-11-15 (hasta 22 nov). Push msg enviado vía disparo.json.
+
+## Categorías de contacto (15 nov)
+- c.cat = lista de claves: cal 🔥 Lista caliente, red 📱 Redes sociales, fri 🧊 Contacto frío, otro ✏️ Otro (CAT_FIJ) y "u:Nombre" = categorías del socio (profile.catsP, máx. 20; «＋ Crear categoría»). Opcional, varias a la vez.
+- Formulario de contacto: "¿De dónde viene?" (catChips/catBind/catSel). En la lista: etiqueta bajo el nombre (catTag) o «＋ Categoría» (data-catp → catPoner). Filtro #catBar arriba de las etapas (catF, LS catF; solo sale si algún contacto tiene categoría; incluye "Sin categoría"). 0 lecturas, sin reglas nuevas.
+- ARREGLO: editContact guardaba con set() solo nombre/teléfono/etapa/nota/fecha y BORRABA el historial del contacto (seg, reu, pres, fl…). Ahora parte de una copia completa del contacto.

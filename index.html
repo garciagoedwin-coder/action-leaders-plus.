@@ -458,6 +458,10 @@ h1.motto{overflow:hidden;height:1.3em;line-height:1.3em;margin-top:2px}
 .stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-size:12px}
 /* crm */
 .stage-bar{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.catBar{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:8px;scrollbar-width:none}.catBar::-webkit-scrollbar{display:none}.catBar button{flex:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:6px 11px;font:700 13px Figtree,sans-serif;white-space:nowrap;cursor:pointer}.catBar button[aria-pressed=true]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 12%,var(--surface));color:var(--brand)}.catBar .n{opacity:.65;margin-left:4px}
+.catT{display:flex;flex-wrap:wrap;gap:4px;margin:3px 0 2px}.catT span,.catT button{font:800 11px Figtree,sans-serif;padding:2px 8px;border-radius:99px;line-height:1.5}.catT .k1{background:#FFEDD5;color:#C2410C}.catT .k2{background:#EDE9FE;color:#6D28D9}.catT .k3{background:#E0F2FE;color:#0369A1}.catT .k4{background:var(--surface-2);color:var(--muted)}.catT button{border:1px dashed var(--line);background:none;color:var(--muted);cursor:pointer}
+:root[data-theme=dark] .catT .k1,.dark .catT .k1{background:#43210f;color:#FDBA74}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .catT .k1{background:#43210f;color:#FDBA74}:root:not([data-theme=light]) .catT .k2{background:#2e2350;color:#C4B5FD}:root:not([data-theme=light]) .catT .k3{background:#0c3247;color:#7DD3FC}}:root[data-theme=dark] .catT .k2{background:#2e2350;color:#C4B5FD}:root[data-theme=dark] .catT .k3{background:#0c3247;color:#7DD3FC}
+.catCh{display:flex;flex-wrap:wrap;gap:7px}.catCh button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:8px 12px;font:700 14px Figtree,sans-serif;cursor:pointer}.catCh button[aria-pressed=true]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 12%,var(--surface));color:var(--brand)}.catCh .add{border-style:dashed;color:var(--muted)}
 .stage-bar button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--muted)}
 .stage-bar button[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
 .stage-bar .n{font-family:var(--f-num);margin-left:4px}
@@ -1841,7 +1845,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
     <section class="view" id="v-crm" hidden>
       <div class="row between"><div><p class="eyebrow">Tus contactos</p><h1>Mi CRM</h1></div><div class="row" style="gap:8px"><button class="btn ghost" id="salaBtn" title="Enviar mi presentación virtual" hidden>✈️</button><button class="btn ghost" id="presBtn" title="Dar presentación">🎤</button><button class="btn ghost" id="bienBtn" title="Bienvenida a socio nuevo">🎉</button><button class="btn gold" id="addContact">+ Contacto</button></div></div>
       <input class="inp" id="crmSearch" type="search" placeholder="Buscar por nombre o nota">
-      <div class="stage-bar" id="stageBar"></div>
+      <div class="catBar" id="catBar" hidden></div><div class="stage-bar" id="stageBar"></div>
       <div class="card"><div class="list" id="contactList"></div></div>
       <p class="small muted" id="crmNote"></p>
       <div class="card" style="gap:8px"><h3>Respaldo de tus contactos</h3><p class="small muted">Guarda una copia antes de cambiar de teléfono o de navegador, y cárgala en el nuevo.</p>
@@ -7407,7 +7411,7 @@ function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e
   try{cvTop3()}catch(e){}
   const counts={Todos:contacts.filter(enV).length};VS.forEach(s=>counts[s]=contacts.filter(c=>c.stage===s).length);
   $("#stageBar").innerHTML=["Todos"].concat(VS).map(s=>`<button aria-pressed="${s===stageF}" data-s="${s}">${s}<span class="n">${counts[s]}</span></button>`).join("");
-  const list=contacts.filter(c=>enV(c)&&(!crmFrio||stFrio(c))&&(stageF==="Todos"||c.stage===stageF)&&(!q||(c.name+" "+(c.note||"")+" "+(c.seg||[]).map(x=>x.n||"").join(" ")).toLowerCase().includes(q))).sort(crmV==="mas"&&!q?(a,b)=>(a.stage===MA?0:1)-(b.stage===MA?0:1)||String(a.next||"9").localeCompare(String(b.next||"9")):crmCmp());
+  catBar(contacts.filter(enV));const list=contacts.filter(c=>enV(c)&&catOk(c)&&(!crmFrio||stFrio(c))&&(stageF==="Todos"||c.stage===stageF)&&(!q||(c.name+" "+(c.note||"")+" "+(c.seg||[]).map(x=>x.n||"").join(" ")).toLowerCase().includes(q))).sort(crmV==="mas"&&!q?(a,b)=>(a.stage===MA?0:1)-(b.stage===MA?0:1)||String(a.next||"9").localeCompare(String(b.next||"9")):crmCmp());
   if(!contacts.length){$("#contactList").innerHTML=`<div class="empty"><h3>Tu lista de contactos está vacía</h3>
     <p class="small muted">Agrega a las personas con las que quieres compartir el negocio o el producto. Registra la etapa, una nota y la fecha del próximo seguimiento.</p>
     <button class="btn gold sm" id="addFirst">Agregar mi primer contacto</button></div>`;$("#addFirst").onclick=()=>editContact();return}
@@ -7422,7 +7426,7 @@ function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e
     return `<div class="contact ${op?"open":""}" style="--pc:${pc}"><div class="ch" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}">
     <div class="av" style="box-shadow:0 0 0 2px ${pc}">${c.stage==="Socio"||c.stage==="Cliente"?"✓":esc(initials(c.name))}</div>
     <div class="mid"><span class="nm">${esc(c.name)}${late?'<span class="fdot" style="background:var(--bad)" title="Seguimiento atrasado"></span>':today?'<span class="fdot" style="background:var(--warn)" title="Seguimiento hoy"></span>':""}</span>
-    ${!cer&&crmV2On()?crmV2Tag(c):""}${!cer&&acc3On()&&!op?reuHTML(c,false):""}<div class="pbar" aria-label="Avance: ${esc(c.stage)}">${FLOW.map((_,i)=>`<i class="${i<k?"on":""}"></i>`).join("")}</div></div>
+    ${catTag(c,cer)}${!cer&&crmV2On()?crmV2Tag(c):""}${!cer&&acc3On()&&!op?reuHTML(c,false):""}<div class="pbar" aria-label="Avance: ${esc(c.stage)}">${FLOW.map((_,i)=>`<i class="${i<k?"on":""}"></i>`).join("")}</div></div>
     ${pipeOk()?`<span class="stpct"><b style="color:${pc}">${stPct(c)}%</b><span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage==="No interesado"?"No":c.stage)}</span>${stFrio(c)?`<em>⚠️ ${stDias(c)} días</em>`:""}</span>`:`<span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage==="No interesado"?"No":c.stage)}</span>`}<span class="chev">›</span></div>
     <div class="cbody">${!cer&&crmV2On()?crmV2(c,late,today):`${cer?`<div style="display:flex;gap:6px;flex-wrap:wrap;width:100%;margin-bottom:6px"><button class="btn sm ghost" data-cah="${esc(c.id)}">💰 Su ahorro</button><button class="btn sm ghost" data-cref="${esc(c.id)}">💬 Pedir referidos</button>${c.stage==="Cliente"?`<button class="btn sm gold" data-cneg="${esc(c.id)}">🚀 Invitarlo al negocio</button>`:""}</div>`:flHTML(c)}<div class="info">
     ${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}${c.note?`<span class="note">${esc(c.note)}</span>`:""}${sgHTML(c)}
@@ -7433,6 +7437,7 @@ function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e
     ${(()=>{const m=memDe(c.id),e=(LS.get("memEnv")||{})[c.id];return m?`<span class="small" style="font-weight:700;color:#0E7490">🛳️ Vio la membresía ${memHace(m.t)} · ${+m.pct||0}%${m.resp==="sim"?" · 🧮 usó el simulador":""}${m.como?" · 📲 tocó \"Quiero\"":""}</span>`:e?`<span class="small" style="color:var(--muted);font-weight:600">🛳️ Membresía enviada ${memHace(e)} · aún no la abre</span>`:""})()}
     ${c.next&&!cer?`<span class="small" style="color:var(--${late?"bad":today?"warn":"muted"});font-weight:600">${late?"Seguimiento atrasado: "+niceDate(c.next):today?"Seguimiento hoy":"Próximo seguimiento: "+niceDate(c.next)}</span>`:""}
     </div><div style="display:flex;flex-direction:column;gap:6px;flex:none">${waLink(c)?`<a class="btn sm" style="background:#25D366;color:#fff" href="${esc(waLink(c))}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp a ${esc(c.name)}">WhatsApp</a>`:""}${c.stage==="Socio"?`<button class="btn sm gold" data-bien="${esc(c.id)}">🎉 Bienvenida</button>`:""}${irSimple()?`<button class="btn sm ghost" data-cmas="${esc(c.id)}">${crmMas.has(c.id)?"Menos ▴":"⋯ Más"}</button>`:""}${!irSimple()||crmMas.has(c.id)?`${presOk()?`<button class="btn sm gold" data-pres="${esc(c.id)}">${c.pres&&c.pres.t?"✓ Presentado":"🎤 Presentar"}</button>`:""}${salaOk()?`<button class="btn sm ghost" data-sala="${esc(c.id)}">🎬 Presentación</button>`:""}<button class="btn sm ghost${(LS.get("memEnv")||{})[c.id]||memDe(c.id)?" fl-done":""}" data-mem="${esc(c.id)}">${(LS.get("memEnv")||{})[c.id]||memDe(c.id)?"✓ Membresía":"🛳️ Membresía"}</button><button class="btn sm ghost${flCita(c)?" fl-done":""}" data-cita="${esc(c.id)}">${flCita(c)?"✓ Cita":"📅 Agendar"}</button><button class="btn sm ghost" data-l3="${esc(c.id)}">📞 Llamada de 3</button><button class="btn sm ghost" data-nota="${esc(c.id)}">📝 Nota</button><button class="btn sm ghost" data-edit="${esc(c.id)}">Editar</button>`:""}</div>${irSimple()&&!crmSt.has(c.id)?`<button type="button" class="stLine" data-stopen="${esc(c.id)}"><span>Etapa: <b>${esc(c.stage||"Nuevo")}</b> · ${stPct(c)}%</span><span>Cambiar ›</span></button>`:stepsHTML(c)}`}</div></div>`}).join("")}
+$("#catBar").addEventListener("click",e=>{const b=e.target.closest("[data-cf]");if(!b)return;catF=b.dataset.cf;try{LS.set("catF",catF)}catch(x){}openC=null;renderCRM()});
 $("#stageBar").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;stageF=b.dataset.s;renderCRM()});
 $("#crmSearch").addEventListener("input",renderCRM);
 $("#bienBtn").onclick=()=>abrirBienvenida();$("#addContact").onclick=()=>editContact();
@@ -7560,7 +7565,7 @@ function crmAhorro(c){const a=ahDe([c.email],[c.phone?waNum(c.phone,c.cc):""]),p
    <p style="margin:0">${sin?"Todavía no hay reporte de ahorros cargado.":pend?`<span class="chip c-bad" style="font-weight:700">🔴 Ahorro pendiente</span>`:`<span class="chip c-good" style="font-weight:700">🚢 Ahorro al día</span>`}</p>
    <p class="small muted" style="margin:0">${pend?"Un recordatorio a tiempo ayuda a que no pierda sus beneficios.":"No aparece en el reporte de pendientes de inCruises."}${c.email?"":" Para revisarlo mejor, agregue su correo en el contacto."}</p>
    <button class="btn" id="cahW" style="width:100%;background:#25D366;color:#fff">${pend?"💬 Recordarle su ahorro":"💬 Saludarle"}</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#cahW").onclick=()=>crmWa(c,pend?"ah":"hola")})}
-$("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNumGo")){salaCompartir();return}{const sg=e.target.closest("[data-sgt]");if(sg){const c=contacts.find(y=>y.id===sg.dataset.sgt);if(c)sgTodas(c);return}const cn=e.target.closest("[data-cvn]");if(cn){const c=contacts.find(y=>y.id===cn.dataset.cvn);if(c)notaAbrir(c,"nota");return}}{const ru=e.target.closest("[data-reu]");if(ru){e.stopPropagation();const c=contacts.find(y=>y.id===ru.dataset.reu);if(c)reuSheet(c,ru.dataset.k||"u");return}}
+$("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNumGo")){salaCompartir();return}{const cp=e.target.closest("[data-catp]");if(cp){e.stopPropagation();catPoner(contacts.find(y=>y.id===cp.dataset.catp));return}}{const sg=e.target.closest("[data-sgt]");if(sg){const c=contacts.find(y=>y.id===sg.dataset.sgt);if(c)sgTodas(c);return}const cn=e.target.closest("[data-cvn]");if(cn){const c=contacts.find(y=>y.id===cn.dataset.cvn);if(c)notaAbrir(c,"nota");return}}{const ru=e.target.closest("[data-reu]");if(ru){e.stopPropagation();const c=contacts.find(y=>y.id===ru.dataset.reu);if(c)reuSheet(c,ru.dataset.k||"u");return}}
   {const x=e.target.closest("[data-cvnum]");if(x){try{LS.set("cvNumOp",x.dataset.cvnum==="1"?1:0)}catch(y){}renderCRM();return}}
   {const x=e.target.closest("[data-cvtk]");if(x){const c=contacts.find(y=>y.id===x.dataset.cvtk);if(c)cvViaje(c);return}}
   {const x=e.target.closest("[data-cvmas]");if(x){const c=contacts.find(y=>y.id===x.dataset.cvmas);if(c)cvMasSheet(c);return}}{const fz=e.target.closest("[data-frio]");if(fz){crmFrio=fz.dataset.frio==="1";renderCRM();return}}{const mb=e.target.closest("[data-cmas]");if(mb){const k=mb.dataset.cmas;crmMas.has(k)?crmMas.delete(k):crmMas.add(k);renderCRM();return}const so=e.target.closest("[data-stopen]");if(so){crmSt.add(so.dataset.stopen);renderCRM();return}}const st=e.target.closest("[data-st]");
@@ -7823,6 +7828,30 @@ function bindQuickFill(){const msg=$("#qfMsg"),err=t=>{msg.hidden=false;msg.styl
       const o=[...$("#cCC").options].find(x=>x.value===cc);const nc={name:v.name||("+"+cc+" "+sp.num),cc,ccN:o?o.dataset.n:"",phone:sp.num,stage:"Nuevo",note:"",next:"",updated:Date.now()};
       const id=await store.saveContact(nc);if(id){nc.id=id;contacts.push(nc);n++}}
       renderCRM();closeSheet();toast(n+" contactos agregados")}}}
+// ---------- Categorías de contacto (15 nov): de dónde viene cada persona ----------
+const CAT_FIJ=[["cal","🔥","Lista caliente","k1"],["red","📱","Redes sociales","k2"],["fri","🧊","Contacto frío","k3"],["otro","✏️","Otro","k4"]];
+let catF=(()=>{try{return LS.get("catF")||"*"}catch(e){return "*"}})();
+function catMias(){return (profile&&Array.isArray(profile.catsP)?profile.catsP:[]).filter(x=>typeof x==="string"&&x.trim()).slice(0,20)}
+function catInfo(k){const f=CAT_FIJ.find(x=>x[0]===k);if(f)return {k,ic:f[1],t:f[2],cl:f[3]};if(String(k).startsWith("u:"))return {k,ic:"🏷️",t:String(k).slice(2),cl:"k4"};return null}
+function catLista(){return CAT_FIJ.map(x=>x[0]).concat(catMias().map(n=>"u:"+n))}
+function catTag(c,cer){const L=(Array.isArray(c.cat)?c.cat:[]).map(catInfo).filter(Boolean);
+  if(L.length)return `<div class="catT">${L.map(x=>`<span class="${x.cl}">${x.ic} ${esc(x.t)}</span>`).join("")}</div>`;
+  return cer?"":`<div class="catT"><button type="button" data-catp="${esc(c.id)}">＋ Categoría</button></div>`}
+function catChips(sel){const S=new Set(sel||[]);return catLista().map(k=>{const x=catInfo(k);return `<button type="button" data-ck="${esc(k)}" aria-pressed="${S.has(k)}">${x.ic} ${esc(x.t)}</button>`}).join("")+`<button type="button" class="add" data-cknew>＋ Crear categoría</button>`}
+function catBind(box,onCh){box.onclick=e=>{const b=e.target.closest("button");if(!b)return;
+  if(b.hasAttribute("data-cknew")){const nm=(prompt("Nombre de la categoría (ej.: Iglesia, Trabajo, Gimnasio)")||"").trim().replace(/\s+/g," ").slice(0,24);if(!nm)return;
+    const L=catMias();if(!L.some(x=>x.toLowerCase()===nm.toLowerCase())){profile.catsP=L.concat([nm]);try{store.set("perfil",profile)}catch(x){}}
+    const k="u:"+(catMias().find(x=>x.toLowerCase()===nm.toLowerCase())||nm),sel=catSel(box);if(!sel.includes(k))sel.push(k);box.innerHTML=catChips(sel);if(onCh)onCh();return}
+  b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true");if(onCh)onCh()}}
+function catSel(box){return [...box.querySelectorAll("[data-ck][aria-pressed=true]")].map(b=>b.dataset.ck)}
+function catPoner(c){if(!c)return;openSheet(`<h2>¿De dónde viene ${esc((c.name||"").split(" ")[0])}?</h2><p class="small muted" style="margin:0 0 10px">Puede elegir varias. «Lista caliente» = personas que usted conoce.</p>
+  <div class="catCh" id="cpCh">${catChips(c.cat)}</div><div class="row" style="margin-top:14px"><button class="btn grow" id="cpOk">Guardar</button><button class="btn ghost" data-close>Cancelar</button></div>`,()=>{
+  catBind($("#cpCh"));$("#cpOk").onclick=async()=>{const sel=catSel($("#cpCh"));$("#cpOk").disabled=true;const o=Object.assign({},c,{cat:sel,updated:Date.now()});const id=await store.saveContact(o);if(!id){$("#cpOk").disabled=false;return}c.cat=sel;c.updated=o.updated;closeSheet();renderCRM();toast(sel.length?"🏷️ Categoría guardada":"Categoría quitada")}})}
+function catBar(base){const el=$("#catBar");if(!el)return;const usa=base.some(c=>Array.isArray(c.cat)&&c.cat.length);if(!usa&&catF==="*"){el.hidden=true;return}el.hidden=false;
+  const n=k=>base.filter(c=>k==="-"?!(Array.isArray(c.cat)&&c.cat.length):(c.cat||[]).includes(k)).length,K=catLista().filter(k=>n(k)||k===catF);
+  if(catF!=="*"&&catF!=="-"&&!K.includes(catF))K.push(catF);
+  el.innerHTML=`<button type="button" data-cf="*" aria-pressed="${catF==="*"}">Todas<span class="n">${base.length}</span></button>`+K.map(k=>{const x=catInfo(k)||{ic:"🏷️",t:k};return `<button type="button" data-cf="${esc(k)}" aria-pressed="${catF===k}">${x.ic} ${esc(x.t)}<span class="n">${n(k)}</span></button>`}).join("")+(n("-")?`<button type="button" data-cf="-" aria-pressed="${catF==="-"}">Sin categoría<span class="n">${n("-")}</span></button>`:"")}
+function catOk(c){return catF==="*"||(catF==="-"?!(Array.isArray(c.cat)&&c.cat.length):(c.cat||[]).includes(catF))}
 function editContact(c,onNew,opts){opts=opts||{};const esNuevo=!c;if(esNuevo&&ahGate())return;c=c||{name:"",phone:"",stage:"Nuevo",note:"",next:"",cc:LS.get("lastCC")||"504"};const ccSel=c.cc||(c.phone?"504":LS.get("lastCC")||"504");
   openSheet(`<h2>${c.id?"Editar contacto":opts.lista?"📝 Persona nueva a la lista":"Nuevo contacto"}</h2>${opts.lista?`<p class="small muted" style="margin:0">Solo cuentan personas que aún no están en su CRM. Se guarda en su CRM y suma en su rutina.</p>`:""}
   ${c.id?"":`<div class="qf"><p class="small muted" style="margin:0 0 8px">Llénalo rápido, sin escribir:</p><div class="qf-row">
@@ -7834,6 +7863,7 @@ function editContact(c,onNew,opts){opts=opts||{};const esNuevo=!c;if(esNuevo&&ah
   <div class="field"><label for="cName">Nombre</label><input class="inp" id="cName" autocomplete="name" value="${esc(c.name)}" placeholder="Nombre y apellido"></div>
   <div class="grid2"><div class="field"><label for="cCC">País</label><select class="inp" id="cCC">${(()=>{const ix=Math.max(0,PAISES.findIndex(([n,k])=>c.ccN?n===c.ccN:k===ccSel));return PAISES.map(([n,k],i)=>`<option value="${k}" data-n="${n}" ${i===ix?"selected":""}>${n} (+${k})</option>`).join("")})()}</select></div>
   <div class="field"><label for="cPhone">Teléfono / WhatsApp</label><input class="inp" id="cPhone" type="tel" autocomplete="tel" value="${esc(c.phone)}" placeholder="Solo el número"></div></div>
+  <div class="field"><label>¿De dónde viene? <span class="muted" style="font-weight:600">(opcional · puede elegir varias)</span></label><div class="catCh" id="cCat">${catChips(c.cat)}</div><p class="small muted" style="margin:6px 0 0">«Lista caliente» = personas que usted conoce.</p></div>
   <div class="grid2">
   <div class="field"><label for="cStage">Etapa</label><select class="inp" id="cStage">${STAGES.map(s=>`<option ${s===c.stage?"selected":""}>${s}</option>`).join("")}</select></div></div>
   <div class="field"><label for="cNext">Próximo seguimiento</label><input class="inp" id="cNext" type="date" value="${esc(c.next)}"></div>
@@ -7841,12 +7871,12 @@ function editContact(c,onNew,opts){opts=opts||{};const esNuevo=!c;if(esNuevo&&ah
   <p class="small" id="cErr" style="color:var(--bad)" hidden>Escribe el nombre del contacto.</p>
   <div class="row"><button class="btn grow" id="cSave">Guardar contacto</button><button class="btn ghost" data-close>Cancelar</button></div>
   ${c.id?`<div class="row" id="delRow"><button class="btn sm ghost" id="cDel" style="color:var(--bad)">Eliminar contacto</button></div>`:""}`,()=>{
-  if(!c.id)bindQuickFill();
+  if(!c.id)bindQuickFill();catBind($("#cCat"));
   {const ph=$("#cPhone"),fix=()=>{const v=ph.value;if(/^\s*(\+|00)/.test(v)||/[\s()\-.]/.test(v)){const sp=splitPhone(v);if(sp.cc){const o=[...$("#cCC").options].find(x=>x.value===sp.cc&&x.dataset.n===sp.ccN)||[...$("#cCC").options].find(x=>x.value===sp.cc);if(o)$("#cCC").value=o.value}ph.value=sp.num}};ph.addEventListener("change",fix);ph.addEventListener("blur",fix);setTimeout(()=>ph.addEventListener("input",()=>{if(ph.value.length>9&&/^\s*(\+|00)/.test(ph.value))fix()}),0)}
   $("#cSave").onclick=async()=>{const name=$("#cName").value.trim();if(!name){$("#cErr").textContent="Escriba el nombre del contacto.";$("#cErr").hidden=false;return}
     if(esNuevo){const dup=yaEnCRM(name,$("#cPhone").value);if(dup){$("#cErr").textContent="Esta persona ya está en su lista (CRM) como "+dup.name+". Solo cuentan personas nuevas.";$("#cErr").hidden=false;return}}
     {const pv=$("#cPhone").value.trim();if(pv&&pv.replace(/\D/g,"").length>=6){const m=telAviso(waNum(pv,$("#cCC").value));if(m&&!$("#cSave").dataset.tw){$("#cErr").textContent=m+" (Si está seguro, toque Guardar otra vez.)";$("#cErr").hidden=false;$("#cSave").dataset.tw=1;$("#cCC").style.outline="2px solid var(--bad)";return}}}
-    const ccE=$("#cCC");LS.set("lastCC",ccE.value);const nc={id:c.id,name,cc:ccE.value,ccN:ccE.selectedOptions[0].dataset.n,phone:$("#cPhone").value.trim(),stage:$("#cStage").value,note:$("#cNote").value.trim(),next:$("#cNext").value,updated:Date.now()};
+    const ccE=$("#cCC");LS.set("lastCC",ccE.value);const nc=Object.assign(c.id?JSON.parse(JSON.stringify(c)):{},{id:c.id,cat:catSel($("#cCat")),name,cc:ccE.value,ccN:ccE.selectedOptions[0].dataset.n,phone:$("#cPhone").value.trim(),stage:$("#cStage").value,note:$("#cNote").value.trim(),next:$("#cNext").value,updated:Date.now()});if(!nc.id)delete nc.id;if(!nc.cat.length)delete nc.cat;
     $("#cSave").disabled=true;const id=await store.saveContact(nc);if(!id){$("#cSave").disabled=false;return}
     nc.id=id;const i=contacts.findIndex(x=>x.id===id);if(i>=0)contacts[i]=nc;else contacts.push(nc);
     renderCRM();closeSheet();if(esNuevo){conNuevo(nc);if(onNew)onNew(nc);else toast("✅ "+name.split(" ")[0]+" agregado a la lista · suma en su rutina")}else toast("Contacto guardado")};
@@ -9346,7 +9376,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115123103";var busy=false,pend=null;
+(function(){var V="20261115132322";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
