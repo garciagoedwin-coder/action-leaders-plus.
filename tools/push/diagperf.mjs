@@ -9,4 +9,4 @@ const prod = ((rs.source || {}).files || [])[0]?.content || "", resp = fs.readFi
 const n = t => t.replace(/\s+/g, " ").trim();
 console.log("Publicadas:", rel.updateTime, "· líneas:", prod.split("\n").length);
 console.log("Iguales al respaldo:", n(prod) === n(resp));
-console.log("Tiene lleg:", prod.includes("/lleg/"), "· tiene ent en rsvp:", prod.includes("get('ent', [])"));
+console.log("Tiene lleg:", prod.includes("/lleg/"), "· lectura del invitador:", prod.includes("resource.data.get('de', '') == request.auth.uid"));
