@@ -1217,7 +1217,7 @@ body.acc3 #rutCard.rc3{position:relative;background:var(--surface)!important;bor
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #rutChips button{background:#143524;color:#6EE7A0}}
 :root[data-theme="dark"] #rutChips button{background:#143524;color:#6EE7A0}body.acc3 #rutCard .row:has(#dayBar){display:none!important}
 .rs3{display:flex;gap:5px;margin:4px 0 4px}.rs3 i{flex:1;height:8px;border-radius:9px;background:var(--surface-2)}.rs3 i.on{background:linear-gradient(90deg,#FB923C,#EA580C)}.rs3t{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);font-weight:600}.rs3t b{color:#C2410C}
-body.acc3 #rutAlert .rut-nx{background:#0f2440!important;color:#fff!important;border:0!important}body.acc3 #rutAlert .rut-nx b,body.acc3 #rutAlert .rut-nx span{color:#fff!important}body.acc3 #rutAlert .rut-nx .btn{background:#2AC1F1!important;color:#062B3A!important;font-weight:900}
+body.acc3 #rutAlert .rut-nx{background:color-mix(in srgb,#F97316 9%,var(--surface))!important;color:var(--ink)!important;border:1px solid color-mix(in srgb,#F97316 24%,transparent)!important}body.acc3 #rutAlert .rut-nx b{color:#C2410C!important}body.acc3 #rutAlert .rut-nx span{color:var(--ink)!important}body.acc3 #rutAlert .rut-nx .btn{background:#EA580C!important;color:#fff!important;font-weight:900}
 body.acc3 #tasks{counter-reset:rt}body.acc3 #tasks .task{counter-increment:rt;padding:10px 0;border-bottom:1px solid var(--line)}body.acc3 #tasks .task:last-child{border-bottom:0}
 body.acc3 #tasks .check{width:30px;height:30px;border-radius:50%;color:var(--muted);font-weight:900;font-size:13px}body.acc3 #tasks .check[aria-pressed="false"]::before{content:attr(data-n)}body.acc3 #tasks .check[aria-pressed="true"]{background:#16A34A;border-color:#16A34A;color:#fff}
 body.acc3 #tasks .step-n{border:2px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:900}body.acc3 #tasks .step-n:not(.ok)::before{content:attr(data-n)}body.acc3 #tasks .step-n.ok{background:#16A34A;border-color:#16A34A;color:#fff}
@@ -8899,7 +8899,8 @@ function lzFichaB(l){const c=calLid(l),R=liderDe(l),rg=RANGOS.find(g=>g.n===l.ra
 function llamLz(){const L=(T.config||{}).llamadaLz;if(!L||!L.zoom)return null;return L}
 function llamLzCard(){const L=llamLz();if(!L)return"";const hoy=new Date().getDay()===(L.dia||0);
   return `<div class="card lzCall"><div class="k">📞 Reunión del sistema de liderazgo</div><div style="font-weight:800;font-size:16px;margin-top:2px">Todos los domingos · ${esc(h12(L.hora||"21:15"))} (hora de Honduras)</div>${hoy?`<div class="small" style="margin-top:2px;color:#7DD3FC;font-weight:700">¡Hoy es la reunión!</div>`:""}<a class="btn sm" href="${esc(L.zoom)}" target="_blank" rel="noopener" style="margin-top:10px;background:#2AC1F1;color:#06384F;width:100%;justify-content:center">🎥 Entrar al Zoom</a></div>`}
-function renderLzCall(){const el=$("#lzCallStrip");if(!el)return;try{const L=llamLz(),d=new Date();if(!L||!irSimple()||!(isAdmin||lzSoyMiembro())||d.getDay()!==(L.dia||0)){el.hidden=true;return}
+function renderLzCall(){const el=$("#lzCallStrip");if(!el)return;if(acc3On()){el.hidden=true;return} // 15 nov (Edwin): la reunión del sistema ya está en la tarjeta del Sistema de liderazgo; no va en Inicio
+  try{const L=llamLz(),d=new Date();if(!L||!irSimple()||!(isAdmin||lzSoyMiembro())||d.getDay()!==(L.dia||0)){el.hidden=true;return}
   const [hh,mm]=String(L.hora||"21:15").split(":").map(Number),fin=hh*60+mm+75,ahora=d.getHours()*60+d.getMinutes();if(ahora>fin){el.hidden=true;return}
   el.hidden=false;el.innerHTML=`<span>📞 <b>Hoy ${esc(h12(L.hora))}</b> · Reunión del sistema de liderazgo</span><a href="${esc(L.zoom)}" target="_blank" rel="noopener">Entrar</a>`;if(!window._lzAv){window._lzAv=1;setTimeout(()=>{try{avisoTop("📞 Hoy "+h12(L.hora)+" · Reunión de liderazgo","Toque aquí para entrar al Zoom",()=>{window.open(L.zoom,"_blank")})}catch(e){}},2500)}}catch(e){el.hidden=true}}
 let mfOpen=new Set();
@@ -9263,7 +9264,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115000030";var busy=false,pend=null;
+(function(){var V="20261115003226";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

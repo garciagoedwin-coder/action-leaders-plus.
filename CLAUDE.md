@@ -889,3 +889,4 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - enviar.mjs RC3_TODOS=true (avisos de Mi Racha a todos).
 - conoce.html y membresia.html redirigen a destino.html (location.replace con la misma query).
 - Para revertir: acc3On=()=>isAdmin y salaOk(){return !!isAdmin} y publicar.
+- (15 nov, 00:40) Rutina: «Siguiente paso» en naranja pastel (color-mix #F97316 9% + borde 24%, texto tinta, botón naranja) en vez de azul marino. #lzCallStrip (reunión del sistema, domingos) ya no sale en Inicio con acc3On (está en la tarjeta del Sistema de liderazgo). Audio de Santiago terminado (audioEsp.hasta = 2026-11-15T06:00Z).
