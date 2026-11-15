@@ -3127,7 +3127,7 @@ function renderAcc3(){const c=$("#acc3");if(!c)return;const on=acc3On();document
   c.querySelectorAll("[data-a3]").forEach(b=>b.onclick=()=>{const k=b.dataset.a3;if(k==="sala")salaMenu();else if(k==="hist")abrirHist();else if(k==="pres")presElegir();else if(k==="dl"){const u=irPresUrl();if(!u){toast("La presentación del mes todavía no está cargada");return}const w=window.open(u,"_blank");if(w)w.opener=null}else if(k==="bien")abrirBienvenida();else if(k==="dest")destCompartir()});
   $("#acc3Mas").onclick=()=>cajaAbrir();try{avBox3()}catch(e){}}
 // 14 nov (Edwin, SOLO ADMIN): un solo carrusel «HOY»: declaración (si falta), cierre/incentivo, Inicio Rápido, etc. pasan dentro de #avTrack; avanza solo cada 5 s (no si el aviso actual es urgente o si la persona lo tocó hace poco).
-const AV3=["declStrip","cieStrip","cmpStrip","incStrip","irCard","npBan","raStrip","pushStrip"];
+const AV3=["trHoy","declStrip","cieStrip","cmpStrip","incStrip","irCard","npBan","raStrip","pushStrip"];
 function avMover(){const tr=$("#avTrack");if(!tr||!tr.dataset.m3)return;let ref=tr.querySelector('.avSl[data-k="urgStrip"]');
   AV3.forEach(id=>{let sl=tr.querySelector('.avSl[data-k="'+id+'"]');if(!sl){sl=document.createElement("div");sl.className="avSl av3";sl.dataset.k=id;sl.hidden=true;if(ref)ref.after(sl);else tr.prepend(sl)}ref=sl;
     const el=document.getElementById(id);if(el&&el.parentNode!==sl){sl.append(el);avBoxQ()}})}
@@ -7151,7 +7151,7 @@ async function trHoy(){const el=$("#trHoy");if(!el)return;try{
   if(trHoyX===e.id){el.hidden=true;return}
   // 12 nov (Edwin): en grande solo la 1.ª vez del día (LS trBig:id); después anuncio pequeño arriba con ▾ (desplegar) y ✕
   if(window._trBigId===undefined){let ya="";try{ya=LS.get("trBig:"+e.id)}catch(x){}window._trBigId=ya==="1"?"":e.id;try{LS.set("trBig:"+e.id,"1")}catch(x){}}
-  const abierto=window._trBigId===e.id||trHoyOpen===e.id;el.classList.toggle("mini",!abierto);
+  const abierto=acc3On()?trHoyOpen===e.id:(window._trBigId===e.id||trHoyOpen===e.id); // 15 nov: dentro del carrusel HOY siempre empieza pequeñoel.classList.toggle("mini",!abierto);
   const PP=trOrden(trPon(e)),pon=PP.map(x=>x.n),k=e.id+"|"+pon.join(",")+"|"+trTema(e);
   const vivo=Date.now()>=turMs(e)-10*6e4,falta=turMs(e)-Date.now();
   const cuando=vivo?"🔴 EN VIVO AHORA":falta<36e5?"⏰ EN "+Math.max(1,Math.round(falta/6e4))+" MIN":"HOY · "+h12(e.hora);
@@ -9264,7 +9264,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115003226";var busy=false,pend=null;
+(function(){var V="20261115003748";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
