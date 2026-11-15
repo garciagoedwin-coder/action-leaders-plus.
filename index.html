@@ -1372,11 +1372,14 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .maL{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:color-mix(in srgb,#0D9488 9%,var(--surface));border:1px solid color-mix(in srgb,#0D9488 30%,transparent);border-radius:12px;padding:9px 10px;margin:8px 0;font-size:13.5px}.maL .grow{min-width:60%}.maL.toca{border-color:#0D9488;box-shadow:0 0 0 2px color-mix(in srgb,#0D9488 25%,transparent)}
 .stp button.ma.cur{background:#0D9488;color:#fff}#maM .chip[aria-pressed=true],#maC .chip[aria-pressed=true]{background:#0D9488;color:#fff;border-color:#0D9488}.maDot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#0D9488;margin-left:4px;vertical-align:middle}
 
-/* Reuniones del prospecto (14 nov) */
-.reuP{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0 4px}.reuP button{display:inline-flex;align-items:center;gap:3px;font:700 12.5px Figtree,sans-serif;padding:4px 9px;border-radius:99px;background:var(--surface-2);color:var(--muted);border:1px dashed color-mix(in srgb,var(--muted) 45%,transparent);cursor:pointer}
-.reuP button.on{background:color-mix(in srgb,#10B981 14%,var(--surface));color:#047857;border:1px solid color-mix(in srgb,#10B981 40%,transparent)}.reuP button b{font:700 14px 'Barlow Condensed',sans-serif}
-.reuP.mini button{padding:2px 7px;font-size:12px}.reuP .sum{background:#0F2340;color:#fff;border-radius:99px;padding:4px 10px;font-weight:800;font-size:12.5px}
-:root[data-theme="dark"] .reuP button.on{color:#6EE7B7}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .reuP button.on{color:#6EE7B7}}
+/* Reuniones del prospecto (14 nov, minimalista) */
+.reuP{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 4px}
+.reuP button{display:inline-flex;align-items:center;gap:5px;font:600 12.5px Figtree,sans-serif;padding:4px 9px 4px 6px;border-radius:99px;background:transparent;color:var(--muted);border:1px solid var(--line);cursor:pointer;opacity:.75}
+.reuP button svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.reuP button.on{opacity:1;background:#10B981;border-color:#10B981;color:#fff}
+.reuP.mini{gap:4px;margin:4px 0 2px}.reuP.mini button{padding:0;width:22px;height:22px;justify-content:center;border:0;opacity:.35}.reuP.mini button svg{width:14px;height:14px}
+.reuP.mini button.on{opacity:1;background:color-mix(in srgb,#10B981 16%,transparent);color:#059669}
+.reuP .sum{font:700 13px 'Barlow Condensed',sans-serif;color:var(--muted);margin-left:2px}
 .reuO{display:grid;grid-template-columns:1fr 1fr;gap:8px}.reuO button{text-align:left;border:1.5px solid var(--line);border-radius:14px;padding:11px;background:var(--surface);color:var(--ink);cursor:pointer}.reuO button b{display:block;font-size:15px}.reuO button small{color:var(--muted);font-size:12px}.reuO button[aria-pressed=true]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 10%,var(--surface))}
 </style>
 
@@ -2242,8 +2245,12 @@ const presSemana=()=>{const l=semIni(),o=[];for(let d=parseK(l);dkey(d)<=TODAY;d
 const REU=[["u","🤝","1 a 1","Usted le presentó"],["z","🌎","Zoom global","Presentación del equipo"],["j","☕","Junta","Junta de negocios"],["e","🎤","Evento","Gran evento"]];
 function yaPresentado(c){if(!c)return false;if(c.presD)return c.presD;const u=((c.reu||{}).u||[]);if(u.length)return u[0];if(c.pres&&c.pres.t)return dkey(new Date(c.pres.t));
   for(const k in weekCache){const d=weekCache[k];if(k<TODAY&&d&&(d.presL||[]).some(x=>x.cid===c.id))return k}return false}
+// Íconos de línea minimalistas (14 nov): marcado = relleno verde; sin marcar = trazo tenue
+const REU_SVG={u:'<path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 20a6 6 0 0 1 12 0M17 11a2.5 2.5 0 1 0 0-5M21 19a5 5 0 0 0-4-4.9"/>',z:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',j:'<path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5V9zM16 10h1.5a2.5 2.5 0 0 1 0 5H16M8 3v3M11 3v3"/>',e:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/>'};
+const reuIc=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${REU_SVG[k]}</svg>`;
 function reuHTML(c,op){const r=c.reu||{},n=REU.filter(([k])=>(r[k]||[]).length).length;
-  return `<div class="reuP${op?"":" mini"}">${REU.map(([k,ic,t])=>{const m=(r[k]||[]).length;return `<button type="button" class="${m?"on":""}" data-reu="${esc(c.id)}" data-k="${k}" title="${t}">${ic}${op?" "+t+(m>1?` <b>×${m}</b>`:""):""}</button>`}).join("")}${op?`<span class="sum">${n} de 4</span>`:""}</div>`}
+  if(!op&&!n)return"";
+  return `<div class="reuP${op?"":" mini"}">${REU.map(([k,ic,t])=>{const m=(r[k]||[]).length;return `<button type="button" class="${m?"on":""}" data-reu="${esc(c.id)}" data-k="${k}" title="${t}${m?" ✓":""}" aria-label="${t}${m?": sí":": no"}">${reuIc(k)}${op?`<span>${t}${m>1?` ×${m}`:""}</span>`:""}</button>`}).join("")}${op?`<span class="sum">${n}/4</span>`:""}</div>`}
 async function reuAdd(c,k,f,nota,callado){c.reu=Object.assign({},c.reu||{});const L=(c.reu[k]||[]).slice();if(!L.includes(f))L.push(f);L.sort();c.reu[k]=L.slice(-20);
   const R=REU.find(x=>x[0]===k);c.seg=(c.seg||[]).concat([{t:Date.now(),k:"reu",n:`${R[1]} ${R[2]}${f!==TODAY?" ("+fmtDate(f)+")":""}${nota?" · "+nota:""}`}]).slice(-30);c.updated=Date.now();
   await store.saveContact(Object.assign({},c));if(!callado)toast(`${R[1]} ${R[2]} anotado para ${c.name.split(" ")[0]}`);try{renderCRM()}catch(e){}}
@@ -9248,7 +9255,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114201015";var busy=false,pend=null;
+(function(){var V="20261114221753";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
