@@ -1,5 +1,7 @@
 name: Diagnóstico link corto (página pública)
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs: { code: { required: false, default: '' } }
 jobs:
   d:
     runs-on: ubuntu-latest
@@ -8,4 +10,4 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - run: cd tools/push && npm ci --no-audit --no-fund >/dev/null && node diagperf.mjs
-        env: { FIREBASE_SA: "${{ secrets.FIREBASE_SA }}" }
+        env: { FIREBASE_SA: "${{ secrets.FIREBASE_SA }}", CODE: "${{ inputs.code }}" }
