@@ -1385,7 +1385,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 /* Contacto abierto limpio (15 nov) */
 .cvNx{display:flex!important;flex-direction:column;align-items:stretch!important;gap:2px;background:color-mix(in srgb,#22C55E 9%,var(--surface))!important;border:1px solid color-mix(in srgb,#22C55E 30%,transparent)!important;border-radius:16px!important;padding:13px 14px!important}
 .cvNx .kx{font:800 11px Figtree,sans-serif;letter-spacing:.12em;color:#15803D}.cvNx b{font-size:17px}.cvNx small{color:var(--muted);font-size:13px}
-.cvNx em{display:block;text-align:center;background:#25D366!important;color:#fff!important;font-style:normal;font-weight:800;border-radius:12px;padding:12px;margin-top:10px;font-size:15px;cursor:pointer}
+.cvNalt{background:none;border:0;color:var(--brand);font:700 13px Figtree,sans-serif;margin-top:8px;cursor:pointer;padding:4px}.cvNx em{display:block;text-align:center;background:#25D366!important;color:#fff!important;font-style:normal;font-weight:800;border-radius:12px;padding:12px;margin-top:10px;font-size:15px;cursor:pointer}
 :root[data-theme="dark"] .cvNx .kx{color:#4ADE80}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cvNx .kx{color:#4ADE80}}
 .cvCam{margin-top:12px}.cvCam .k,.cvActv .k{display:flex;justify-content:space-between;align-items:center;font:800 11px Figtree,sans-serif;letter-spacing:.12em;color:var(--muted)}.cvCam .k button,.cvActv .k button{background:none;border:0;color:var(--brand);font:800 12px Figtree,sans-serif;cursor:pointer;padding:0}
 .cvCamR{display:flex;justify-content:space-between;margin-top:10px;position:relative}.cvCamR:before{content:"";position:absolute;left:24px;right:24px;top:17px;height:2px;background:var(--line)}
@@ -7480,13 +7480,16 @@ function crmV2Sig(c){let P=flPaso(c);const st=c.stage||"Nuevo",tarde=["Presentac
   if(tarde&&P&&["sal","resal","inv","rinv","agd","espera"].includes(P.k)||tarde&&P&&P.k==="preg"&&P.q!=="seg")P={k:"seg"};
   // 15 nov (Edwin): si ya se le presentó (etapa Presentación o más, o ya tiene alguna reunión en su camino), el siguiente paso no puede ser «Presentar»
   if(P&&P.k==="pres"&&(tarde||yaPresentado(c)||REU.some(([k])=>(reuDe(c)[k]||[]).length)))P={k:"seg"};
+  // 15 nov (Edwin): «Contactado» ya fue saludado → el siguiente paso es invitarlo a la presentación (virtual o agendar), no volver a saludar
+  if(P&&st==="Contactado"&&["sal","resal"].includes(P.k))P={k:"inv"};
   if(!P)return `<div class="cvN"><div><b>🎉 Camino completo</b></div></div>`;
   if(P.k==="nada"||P.k==="espera")return `<div class="cvN"><div><b>${esc(P.txt)}</b></div>${P.k==="espera"?`<em data-flgo="${esc(c.id)}|${flH(c).inv?"rinv":"resal"}">Escribirle ya</em>`:""}</div>`;
   if(P.k==="preg"){const Q=P.q==="sal"?["¿Le contestó?",[["si","✅ Sí"],["nr","⏳ Todavía no"],["no","✖ No"]]]:P.q==="inv"?["¿Qué respondió?",[["si","✅ Sí"],["pen","🤔 Lo pensará"],["no","✖ No"]]]:["¿Cómo va?",[["socio","🎉 Se registró"],["re2","🔁 Escribirle"],["no","✖ No por ahora"]]];
     return `<div class="cvN q"><b>👉 ${Q[0]}</b><div class="fl-q"><div>${Q[1].map(([v,t])=>`<button data-flr="${esc(c.id)}|${v}">${t}</button>`).join("")}</div></div></div>`}
   const sv=salaDe(c.id),cerrar=P.k==="seg"&&(st==="Por cerrar"||(sv&&+sv.pulso>=8));
   const tit=cerrar?"🎉 Cerrar":FL_TIT[P.k]||P.k,sub=cerrar?(sv&&+sv.pulso>=8?"Está "+sv.pulso+"/10: mándele su link de registro":"Mándele su link de registro"):P.k==="seg"?"Pregúntele qué fue lo que más le gustó":P.k==="pres"?"Ya tiene cita: preséntele":"Mensaje listo para enviar";
-  const btn=cerrar?"💬 Mandarle el link por WhatsApp":P.k==="seg"?"💬 Escribirle · mensaje listo":P.k==="pres"?"🎤 Presentarle ahora":P.k==="agd"?"📅 Agendar su presentación":"👉 Hacerlo";
+  if(P.k==="inv"&&!salaDe(c.id)&&!(LS.get("salaEnv")||{})[c.id])return `<div class="cvN cvNx"><span class="kx">👉 SIGUIENTE PASO</span><b>💬 Invitarlo a la presentación</b><small>Envíele su presentación virtual: usted ve cada respuesta en vivo</small><em data-sala="${esc(c.id)}">✈️ Enviarle mi presentación virtual</em><button type="button" class="cvNalt" data-flgo="${esc(c.id)}|inv">o invitarlo a una cita · mensaje listo ›</button></div>`;
+  const btn=cerrar?"💬 Mandarle el link por WhatsApp":P.k==="seg"?"💬 Escribirle · mensaje listo":P.k==="inv"||P.k==="rinv"?"💬 Invitarlo · mensaje listo":P.k==="sal"||P.k==="resal"?"👋 Saludarlo · mensaje listo":P.k==="pres"?"🎤 Presentarle ahora":P.k==="agd"?"📅 Agendar su presentación":"👉 Hacerlo";
   return `<div class="cvN cvNx"><span class="kx">👉 SIGUIENTE PASO</span><b>${esc(tit)}</b><small>${esc(sub)}</small><em data-flgo="${esc(c.id)}|${P.k}">${btn}</em></div>`}
 function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fecha>=TODAY).sort(citaSort)[0],m=memDe(c.id),me=(LS.get("memEnv")||{})[c.id],au=c.stAuto&&c.stT&&Date.now()-c.stT<14*864e5;
   const fc=f=>{try{return new Date(f+"T12:00:00").toLocaleDateString("es",{day:"numeric",month:"short"}).replace(".","")}catch(x){return f}};
@@ -9303,7 +9306,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115012320";var busy=false,pend=null;
+(function(){var V="20261115012801";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
