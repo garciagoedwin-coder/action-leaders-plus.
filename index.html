@@ -1361,7 +1361,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .rc3Row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.rc3Row:first-child{border-top:0}
 .rc3Row.yo{background:color-mix(in srgb,#F97316 9%,var(--surface));margin:0 -14px;padding:10px 14px;border-radius:14px}
 .rc3Pos{width:24px;text-align:center;font:700 19px 'Barlow Condensed',sans-serif;color:var(--muted);flex:none}
-.rc3Av{border-radius:50%;padding:2px;flex:none;display:inline-flex}.t1 .rc3Av{background:#F59E0B}.t2 .rc3Av{background:#94A3B8}.t3 .rc3Av{background:#B45309}
+.rc3Av{border-radius:50%;padding:2px;flex:none;display:inline-flex;position:relative}.rc3Ok{position:absolute;right:-1px;bottom:-1px;width:13px;height:13px;border-radius:50%;background:#22C55E;border:2.5px solid var(--surface)}.rc3Row[data-rc3d]{cursor:pointer}.rc3Wa{flex:none;width:34px;height:34px;border-radius:50%;border:0;background:color-mix(in srgb,#25D366 16%,var(--surface));color:#16a34a;display:grid;place-items:center;cursor:pointer;padding:0}.rc3Wa svg{width:17px;height:17px}.rc3Wa.ya{background:var(--surface-2);color:var(--muted);font-size:14px;font-weight:800}.rc3Dt{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.rc3Dt div{background:var(--surface-2);border-radius:14px;padding:10px 12px}.rc3Dt b{display:block;font:700 26px "Barlow Condensed",sans-serif;color:#EA580C;line-height:1.1}.rc3Dt small{font-size:12px;color:var(--muted)}.t1 .rc3Av{background:#F59E0B}.t2 .rc3Av{background:#94A3B8}.t3 .rc3Av{background:#B45309}
 .rc3Row .nm{display:block;font-size:15px;font-weight:700}.rc3Row small{display:block;font-size:12px;color:var(--muted)}
 .rc3N{text-align:right;flex:none}.rc3N b{font:700 26px 'Barlow Condensed',sans-serif;color:#EA580C;line-height:1;display:block}.rc3N small{font-size:11px;color:var(--muted)}
 .rc3S .rc3K{display:block;font:800 10.5px Figtree,sans-serif;letter-spacing:.1em;color:#B45309;margin-bottom:2px}
@@ -4380,6 +4380,9 @@ let cwaNubeD="";async function cwaNube(){if(!store.db||!store.uid||cwaNubeD===TO
 const constBtn=x=>{if(!constUser(x))return"";const ok=hoyPts(x)>=ROUTINE.length,ya=cwaHoy().u[x.uid];
   if(ya&&(ya==="fel"||!ok))return `<span class="chip" style="margin-top:6px;display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;background:var(--good-soft);color:var(--good)">✓ ${ya==="fel"?"Felicitado":"Motivado"} hoy</span>`;
   return `<button type="button" class="chip" data-cwa="${esc(x.uid)}" style="border:0;font:inherit;font-size:13px;font-weight:700;margin-top:6px;cursor:pointer;background:#25D366;color:#fff;display:inline-flex;align-items:center;gap:5px">${WA_IC} ${ok?"Felicitar":"Motivar"}</button>`};
+const constIc=x=>{if(!constUser(x))return"";const ok=hoyPts(x)>=ROUTINE.length,ya=cwaHoy().u[x.uid];
+  if(ya&&(ya==="fel"||!ok))return `<span class="rc3Wa ya" title="${ya==="fel"?"Felicitado":"Motivado"} hoy">✓</span>`;
+  return `<button type="button" class="rc3Wa" data-cwa="${esc(x.uid)}" aria-label="${ok?"Felicitar":"Motivar"} por WhatsApp">${WA_IC}</button>`};
 const hoyTxt=x=>{const p=hoyPts(x);return `<span style="font-weight:700;color:${p>=ROUTINE.length?"var(--good,#1a8f5a)":p?"var(--ink)":"var(--bad,#c0392b)"}">Hoy ${p} pts</span>`};
 const constSub=x=>constVista==="sem"?`${rachaTxt(x.racha)} · 🎯 ${x.sinPres?"—":x.semPres} pres.`:`${rachaTxt(x.mesMejor,1)} · 🎯 ${x.sinPres?"—":x.mesPres} pres.`;
 // ---------- Reto del mes (config.premios): Roatán por volumen y libros por registros ----------
@@ -4471,7 +4474,7 @@ function rc3Premio(){const P=(T.config||{}).premios;if(!P||!P.racha||Date.now()>
 function rc3Mio(L,mine){const c=constStats(),op=!!LS.get("rc3Open"),N=rcNivel(c.rv),dm=diasMes(),hp=Math.round(dayScore(day)*ROUTINE.length),fal=ROUTINE.length-hp;
   const vida=c.vu?`🛡️ Vida usada el ${rcDiaN(c.vu)}`:c.vg?"❤️ Tiene su vida del mes":`❤️ Vida en ${Math.max(1,7-(+c.vr||0))} ${7-(+c.vr||0)===1?"día":"días"}`;
   const pct=Math.min(100,Math.round(c.mesComp*100/Math.max(1,dm)));
-  const top=`<div class="rc3M" data-rc3t><span class="rc3R" style="--p:${pct}%"><b>${c.rv}</b></span><span class="grow" style="min-width:0"><b class="t">${N.i?N.i+" ":""}${c.rv} ${c.rv===1?"día":"días"} seguidos${c.vg&&!c.vu?" · ❤️":c.vu?" · 🛡️":""}</b><small>${esc(mesNom().split(" ")[0].replace(/^./,m=>m.toUpperCase()))}: ${c.mesComp} de ${dm} días${mine?" · va #"+mine.rk:""}</small></span><span class="rc3V">${op?"Cerrar ▴":"Ver ▾"}</span></div>`;
+  const top=`<div class="rc3M" data-rc3t><span class="rc3R" style="--p:${pct}%"><b>${c.rv}</b></span><span class="grow" style="min-width:0"><b class="t">${N.i?N.i+" ":""}${c.rv} ${c.rv===1?"día":"días"} seguidos${c.vg&&!c.vu?" · ❤️":c.vu?" · 🛡️":""}</b><small>${esc(mesNom().split(" ")[0].replace(/^./,m=>m.toUpperCase()))} · ${c.mesComp}/${dm} días · ${+c.mesPres||0} present.${mine?" · va #"+mine.rk:""}</small></span><span class="rc3V">${op?"Cerrar ▴":"Ver ▾"}</span></div>`;
   if(!op)return `<div class="rc3W">${top}</div>`;
   const m0=TODAY.slice(0,7)+"-01",dd=parseK(m0),ult=new Date(dd.getFullYear(),dd.getMonth()+1,0).getDate();let cal="";
   for(let i=1;i<=ult;i++){const k=m0.slice(0,8)+String(i).padStart(2,"0");let cl="";if(k<=TODAY&&k>=CONST_INI){const v=dayScore(k===TODAY?day:weekCache[k],k);cl=v>=1?"f":k===c.vu?"v":k===TODAY?"h":"x"}cal+=`<span class="${cl}">${k===c.vu?"🛡️":i}</span>`}
@@ -4479,10 +4482,18 @@ function rc3Mio(L,mine){const c=constStats(),op=!!LS.get("rc3Open"),N=rcNivel(c.
    <div class="rc3Cal">${cal}</div><p class="rc3H">${vida}${c.vg?"":" · se gana con 7 días seguidos"} · 🛡️ = día salvado (no suma)${fal>0?` · Hoy <b>le ${fal===1?"falta 1 acción":"faltan "+fal+" acciones"}</b>`:" · <b>¡Hoy ya sumó! ✅</b>"}</p>
    <div class="rc3Lv"><span>🔥 1–6</span><span>🔥🔥 7–13</span><span>💎 14–29</span><span>👑 30+</span></div></div></div>`}
 function rc3Lista(L){if(!L.length)return"";const dm=diasMes();
-  return `<div class="card rc3L">${L.map(x=>{const N=rcNivel(+x.rv||0),vi=rcVidaI(x),yo=x.uid===store.uid;return `<div class="rc3Row${yo?" yo":""}${x.rk<=3?" t"+x.rk:""}"><span class="rc3Pos">${x.rk===1?"👑":x.rk}</span><span class="rc3Av">${avHTML(x.nombre,yo,false)}</span><span class="grow" style="min-width:0"><b class="nm">${yo?"Usted":esc(nv(x.nombre))}</b>${premN(x.nombre)}<small>${N.i?N.i+" "+N.t+" · "+(+x.rv||0)+" "+((+x.rv||0)===1?"día":"días"):"Sin racha"}${vi?" · "+vi:""} · ${hoyTxt(x)}</small>${constBtn(x)}</span><span class="rc3N"><b>${x.mesComp}</b><small>de ${dm} días</small></span></div>`}).join("")}</div>`}
+  // 15 nov (Edwin): fila limpia. Número grande = presentaciones del mes; línea = racha de por vida + días del mes; punto verde = rutina de hoy completa; detalle al tocar.
+  return `<div class="card rc3L">${L.map(x=>{const yo=x.uid===store.uid,rv=+x.rv||0,ok=hoyPts(x)>=ROUTINE.length,pr=+x.mesPres||0;return `<div class="rc3Row${yo?" yo":""}${x.rk<=3?" t"+x.rk:""}" data-rc3d="${esc(x.uid)}"><span class="rc3Pos">${x.rk===1?"👑":x.rk}</span><span class="rc3Av">${avHTML(x.nombre,yo,false)}${ok?'<i class="rc3Ok" title="Rutina de hoy completa"></i>':""}</span><span class="grow" style="min-width:0"><b class="nm">${yo?"Usted":esc(nv(x.nombre))}</b><small>${rv?"🔥 "+rv+" "+(rv===1?"día seguido":"días seguidos"):"Sin racha"} · ${+x.mesComp||0}/${dm}</small></span>${yo?"":constIc(x)}<span class="rc3N"><b>${pr}</b><small>${pr===1?"presentación":"present."}</small></span></div>`}).join("")}</div>`}
+function rc3Det(uid){const x=(constL||[]).find(y=>y.uid===uid);if(!x)return;const N=rcNivel(+x.rv||0),dm=diasMes(),yo=x.uid===store.uid,rv=+x.rv||0;
+  const vida=x.vu?"🛡️ Usó su vida del mes":x.vg?"❤️ Tiene su vida del mes":"Sin vida este mes";
+  openSheet(`<div class="row" style="gap:12px;align-items:center"><span class="rc3Av">${avHTML(x.nombre,yo,false)}</span><div class="grow" style="min-width:0"><h2 style="margin:0">${yo?"Usted":esc(nv(x.nombre))}</h2>${premN(x.nombre)}<small class="muted" style="display:block">${N.i?N.i+" "+N.t:"Sin racha"} · ${vida}</small></div></div>
+   <div class="rc3Dt"><div><b>${rv}</b><small>🔥 días seguidos</small></div><div><b>${+x.mesComp||0}/${dm}</b><small>🏆 días del mes</small></div><div><b>${+x.mesPres||0}</b><small>🎤 presentaciones del mes</small></div><div><b>${+x.mesPts||0}</b><small>⭐ pts del mes</small></div></div>
+   <p class="small" style="margin:0 0 6px">${hoyTxt(x)}</p>${yo?"":constBtn(x)}<div class="row" style="margin-top:14px"><button class="btn ghost grow" data-close>Cerrar</button></div>`,()=>{
+   const b=document.querySelector("#sheet [data-cwa]");if(b)b.onclick=()=>{closeSheet();const t=document.querySelector('.rc3L [data-cwa="'+uid+'"]');if(t)t.click()}})}
+document.addEventListener("click",e=>{const r=e.target.closest("[data-rc3d]");if(!r||e.target.closest("[data-cwa],.rc3Wa"))return;rc3Det(r.dataset.rc3d)});
 function rc3Persigue(L,mine){if(!mine)return `<div class="rc3Y">🎯 Complete su rutina hoy y entre al ranking del mes 💪</div>`;if(mine.rk===1)return `<div class="rc3Y">👑 <b>¡Usted va primero!</b> Defienda su lugar completando su rutina hoy</div>`;
   const a=L[mine.rk-2];if(!a)return"";const f=a.mesComp-mine.mesComp,n=esc(String(nv(a.nombre)).split(" ").slice(0,2).join(" "));
-  return `<div class="rc3Y">🎯 <b>Persiga a ${n}:</b> ${f<=0?`empatan en ${mine.mesComp} días · le gana en presentaciones y puntos`:f===1?"va 1 día arriba · complete hoy y lo alcanza":`va ${f} días arriba · no afloje`} 💪</div>`}
+  return `<div class="rc3Y">🎯 <b>Persiga a ${n}:</b> ${f<=0?`empatan en ${mine.mesComp} días · ${(+a.mesPres||0)>(+mine.mesPres||0)?`le saca ${(+a.mesPres||0)-(+mine.mesPres||0)} ${(+a.mesPres||0)-(+mine.mesPres||0)===1?"presentación":"presentaciones"}`:"le gana en puntos"}`:f===1?"va 1 día arriba · complete hoy y lo alcanza":`va ${f} días arriba · no afloje`} 💪</div>`}
 function rc3HTML(L,mine){return rc3Premio()+rc3Mio(L,mine)+rc3Persigue(L,mine)+rc3Lista(L)}
 document.addEventListener("click",e=>{if(!e.target.closest("[data-rc3t]"))return;LS.set("rc3Open",LS.get("rc3Open")?0:1);try{renderEquipo()}catch(x){}});
 // Banner "cambio en el top 3" en Avisos de hoy: compara el top 3 del mes con el último que vio este teléfono
@@ -9376,7 +9387,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115132322";var busy=false,pend=null;
+(function(){var V="20261115151841";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

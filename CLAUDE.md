@@ -912,3 +912,7 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - c.cat = lista de claves: cal 🔥 Lista caliente, red 📱 Redes sociales, fri 🧊 Contacto frío, otro ✏️ Otro (CAT_FIJ) y "u:Nombre" = categorías del socio (profile.catsP, máx. 20; «＋ Crear categoría»). Opcional, varias a la vez.
 - Formulario de contacto: "¿De dónde viene?" (catChips/catBind/catSel). En la lista: etiqueta bajo el nombre (catTag) o «＋ Categoría» (data-catp → catPoner). Filtro #catBar arriba de las etapas (catF, LS catF; solo sale si algún contacto tiene categoría; incluye "Sin categoría"). 0 lecturas, sin reglas nuevas.
 - ARREGLO: editContact guardaba con set() solo nombre/teléfono/etapa/nota/fecha y BORRABA el historial del contacto (seg, reu, pres, fl…). Ahora parte de una copia completa del contacto.
+
+## Mi Racha limpia (15 nov, Edwin)
+- rc3Lista: fila de 2 líneas: nombre + "🔥 N días seguidos (rv, de por vida) · mesComp/diasMes". Número grande = mesPres ("present."). Punto verde en la foto (.rc3Ok) = rutina de hoy completa. 💬 pequeño (constIc, mismo data-cwa). Tocar la fila (data-rc3d) → rc3Det: nivel, vida, días seguidos, días del mes, presentaciones, pts del mes, hoy y botón Felicitar/Motivar.
+- Orden SIN cambio: mesComp → mesPres → mesPts (constSort). Sin pestaña de nuevos (Edwin la descartó). Encabezado: "Mes · X/Y días · N present. · va #N". "Persiga a…" dice cuántas presentaciones le saca en empate.
