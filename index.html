@@ -3124,7 +3124,7 @@ const acc3Ic=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ACC3_SVG[k]||""}<
 function renderAcc3(){const c=$("#acc3");if(!c)return;const on=acc3On();document.body.classList.toggle("acc3",on);c.hidden=!on;if(!on)return;
   const sv=salaOk(),A=[sv?["sala","plane","Presentación virtual","a1"]:["hist","story","Historia del día","a5"],["pres","mic","Dar presentación","a3"],["dl","dl","Descargar presentación","a2"],["bien","party","Bienvenida socio nuevo","a6"],["dest","globe","Mi página","a7"]];
   c.innerHTML=`<div class="acc3H"><h3>⚡ Accesos directos</h3><button type="button" id="acc3Mas">Más ›</button></div><div class="acc3G">${A.map(([k,i,t,cl])=>`<button type="button" data-a3="${k}"><span class="${cl}">${acc3Ic(i)}</span>${t}</button>`).join("")}</div>`;
-  c.querySelectorAll("[data-a3]").forEach(b=>b.onclick=()=>{const k=b.dataset.a3;if(k==="sala")salaCompartir();else if(k==="hist")abrirHist();else if(k==="pres")presElegir();else if(k==="dl"){const u=irPresUrl();if(!u){toast("La presentación del mes todavía no está cargada");return}const w=window.open(u,"_blank");if(w)w.opener=null}else if(k==="bien")abrirBienvenida();else if(k==="dest")destCompartir()});
+  c.querySelectorAll("[data-a3]").forEach(b=>b.onclick=()=>{const k=b.dataset.a3;if(k==="sala")salaMenu();else if(k==="hist")abrirHist();else if(k==="pres")presElegir();else if(k==="dl"){const u=irPresUrl();if(!u){toast("La presentación del mes todavía no está cargada");return}const w=window.open(u,"_blank");if(w)w.opener=null}else if(k==="bien")abrirBienvenida();else if(k==="dest")destCompartir()});
   $("#acc3Mas").onclick=()=>cajaAbrir();try{avBox3()}catch(e){}}
 // 14 nov (Edwin, SOLO ADMIN): un solo carrusel «HOY»: declaración (si falta), cierre/incentivo, Inicio Rápido, etc. pasan dentro de #avTrack; avanza solo cada 5 s (no si el aviso actual es urgente o si la persona lo tocó hace poco).
 const AV3=["declStrip","cieStrip","cmpStrip","incStrip","irCard","npBan","raStrip","pushStrip"];
@@ -6776,7 +6776,14 @@ const salaYoFin=v=>!!v&&((+v.pct||0)>=90||v.motivo==="fin"||/^\d+$/.test(String(
 function salaYoOk(){return salaYoFin(salaYo())||!!LS.get("salaYoOk:"+(store.uid||""))}
 function salaYoUrl(){return salaUrl(miNombreCorto()||miRegistro().nombre||"Socio","yo")+"&yo=1&v="+Date.now().toString(36)}
 let salaYoListo=false;function salaYoPrep(){if(salaYoListo)return Promise.resolve(true);return salaPrep().then(ok=>{salaYoListo=!!ok;return ok})}
-function salaYoIr(){try{LS.set("salaYoP",Date.now());LS.set("salaOn",1)}catch(e){}const w=window.open(salaYoUrl(),"_blank");if(w)w.opener=null;else location.href=salaYoUrl()}
+function salaYoIr(nueva){try{LS.set("salaYoP",Date.now());LS.set("salaOn",1);if(nueva&&salaYoOk())LS.set("salaYoOk:"+(store.uid||""),1)}catch(e){}const u=salaYoUrl()+(nueva?"&n=1":"");const w=window.open(u,"_blank");if(w)w.opener=null;else location.href=u}
+// 14 nov (Edwin): acceso directo «Presentación virtual» → enviarla o verla uno mismo desde el inicio (para repasarla o enseñársela a un socio)
+function salaMenu(){openSheet(`<p class="eyebrow">✈️ PRESENTACIÓN VIRTUAL</p><h3 style="margin:4px 0 10px">¿Qué quiere hacer?</h3>
+  <button class="ep-op" id="smEnv"><span class="ic">✈️</span><span class="grow"><b>Enviarla a un prospecto</b><small>Por WhatsApp, con su nombre · le llega cada respuesta al teléfono</small></span><span>›</span></button>
+  <button class="ep-op" id="smVer" style="margin-top:8px"><span class="ic">👀</span><span class="grow"><b>Verla yo desde el inicio</b><small>Para repasarla o mostrarle a un socio cómo funciona · no cuenta como prospecto</small></span><span>›</span></button>
+  <button class="btn ghost" data-close style="width:100%;margin-top:12px">Cerrar</button>`,()=>{
+  $("#smEnv").onclick=()=>{closeSheet();setTimeout(()=>salaCompartir(),250)};
+  $("#smVer").onclick=()=>{if(!salaYoListo){toast("Un momento, preparando su presentación…");salaYoPrep().then(ok=>{if(ok){closeSheet();salaYoIr(true)}});return}closeSheet();salaYoIr(true)}})}
 function salaYoTk(v){const f=String(miNombreCorto()||"").split(" ")[0]||"Usted",fin=salaYoFin(v),n=v?+v.pulso||0:0,pct=v?Math.min(100,+v.pct||0):0;
   const S=(ok,t)=>`<span class="${ok?"y":""}">${ok?"✓ ":""}${t}</span>`,c3=fin?S(1,"Terminó"):v?`<span class="${pct?"y":""}">Vio ${pct}%</span>`:S(0,"Terminó"),c4=n?`<span class="${n>=8?"f":"y"}">${n>=8?"🔥 ":n>=6?"🟠 ":"💭 "}${n}/10</span>`:`<span>— /10</span>`;
   const at=v?[v.r1&&CV_VAL[v.r1]?"Le atrae: "+CV_VAL[v.r1].replace(/^\S+ /,""):"",v.resp&&CV_VAL[v.resp]?"Le conectó: "+CV_VAL[v.resp].replace(/^\S+ /,""):""].filter(Boolean).join(" · "):"";
@@ -6786,8 +6793,8 @@ function salaYoCard(el){if(!el)return;const v=salaYo(),fin=salaYoFin(v);salaYoPr
   el.innerHTML=`<div class="card syC"><span class="syK">✈️ MI PRESENTACIÓN VIRTUAL</span><b class="syT">${fin?"✅ Ya la vivió · así la ven sus prospectos":v?"Va en el "+Math.min(100,+v.pct||0)+"% · termínela para enviarla":"Vívala primero, como su prospecto"}</b>
     <p class="small muted" style="margin:0">${fin?"Cada prospecto le contestará lo mismo y usted recibirá sus respuestas al teléfono, en vivo, como acaba de pasar.":"Esto es exactamente lo que verán sus prospectos cuando usted se la envíe. Mientras la ve, le llegan al teléfono los mismos avisos que recibirá con ellos. Al terminarla se desbloquea para enviarla."}</p>
     ${salaYoTk(v)}
-    <div style="display:flex;gap:8px;margin-top:4px">${fin?`<button class="btn" id="syEnv" style="flex:1">✈️ Enviarla a un prospecto</button><button class="btn ghost" id="syVer">▶ Ver de nuevo</button>`:`<button class="btn" id="syVer" style="flex:1">▶ ${v?"Continuar mi presentación":"Ver mi presentación virtual · 20 min"}</button>`}</div></div>`;
-  const b=el.querySelector("#syVer");if(b)b.onclick=()=>{if(!salaYoListo){toast("Un momento, preparando su presentación…");salaYoPrep().then(ok=>{if(ok)toast("Listo, tóquelo de nuevo")});return}salaYoIr()};
+    <div style="display:flex;gap:8px;margin-top:4px">${fin?`<button class="btn" id="syEnv" style="flex:1">✈️ Enviarla a un prospecto</button><button class="btn ghost" id="syVer" data-n="1">▶ Ver desde el inicio</button>`:`<button class="btn" id="syVer" style="flex:1">▶ ${v?"Continuar mi presentación":"Ver mi presentación virtual · 20 min"}</button>`}</div></div>`;
+  const b=el.querySelector("#syVer");if(b)b.onclick=()=>{if(!salaYoListo){toast("Un momento, preparando su presentación…");salaYoPrep().then(ok=>{if(ok)toast("Listo, tóquelo de nuevo")});return}salaYoIr(b.dataset.n==="1")};
   const e=el.querySelector("#syEnv");if(e)e.onclick=()=>{closeSheet();setTimeout(salaCompartir,250)}}
 function salaYoGate(){const v=salaYo();salaYoPrep();
   openSheet(`<h2 style="margin:0 0 4px">🔒 Primero véala usted</h2><p class="small muted" style="margin:0 0 10px">No tiene sentido enviar algo que usted no ha visto. Vívala como su prospecto (20 min): al terminarla se desbloquea para enviarla.</p><div id="syG"></div>
@@ -9256,7 +9263,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114222117";var busy=false,pend=null;
+(function(){var V="20261114232339";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

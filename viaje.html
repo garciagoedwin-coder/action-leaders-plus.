@@ -229,6 +229,8 @@ if(pName)$("bNom").textContent=pName;if(host)$("bHost").textContent=host;avPinta
 // ----- registro (un documento por prospecto; id v_… para la presentación v2) -----
 const vKey="v-"+code+"-"+(otroDe?"otro-"+otroDe.toLowerCase():cid||pName.toLowerCase()||(orig?"o-"+orig.toLowerCase():"anon"));
 let V=LSg(vKey)||{id:null,pos:0,max:0,asked:{},r:{}};V.asked=V.asked||{};V.r=V.r||{};
+// 14 nov: el socio la vuelve a ver desde el inicio (yo=1&n=1): progreso limpio, documento nuevo
+if(soyYo&&U.get("n")==="1"){V={id:null,pos:0,max:0,asked:{},r:{}};LSs(vKey,V);try{const u=new URL(location.href);u.searchParams.delete("n");history.replaceState(null,"",u)}catch(e){}}
 // 13 nov: link general (sin nombre ni contacto) → el prospecto llena nombre y WhatsApp (obligatorios)
 const pide=!pName&&!cid;if(pide&&V.n){pName=V.n;first=pName.split(/\s+/)[0]||""}
 const PA=[["🇭🇳 +504","504"],["🇺🇸 +1","1"],["🇪🇸 +34","34"],["🇬🇹 +502","502"],["🇸🇻 +503","503"],["🇳🇮 +505","505"],["🇨🇷 +506","506"],["🇵🇦 +507","507"],["🇲🇽 +52","52"],["🇨🇴 +57","57"],["🇻🇪 +58","58"],["🇵🇪 +51","51"],["🇪🇨 +593","593"],["🇨🇱 +56","56"],["🇦🇷 +54","54"],["🇩🇴 +1","1d"],["🇬🇧 +44","44"],["🇮🇹 +39","39"],["🇫🇷 +33","33"],["🇩🇪 +49","49"]];
