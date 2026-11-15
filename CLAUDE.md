@@ -883,3 +883,9 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - (14 nov, 22:20) Reuniones del prospecto minimalistas: íconos de línea SVG (REU_SVG/reuIc). En la lista solo salen si tiene al menos una (íconos 14 px; marcados con fondo verde suave, sin marcar tenues). Abierto: pastillas con ícono + nombre; marcadas en verde sólido, sin marcar con borde fino; «N/4».
 - (14 nov, 22:30) Reuniones: 5.ª = ✈️ Presentación virtual (v), se marca sola con salaDe(c.id) pct≥90 / fin / resp (reuDe) o a mano; «N/5».
 - (14 nov, 23:30) Acceso directo «Presentación virtual» → salaMenu: ✈️ Enviarla a un prospecto (salaCompartir) / 👀 Verla yo desde el inicio (salaYoIr(true) → viaje.html …&yo=1&n=1: progreso limpio). Antes de reiniciar guarda LS salaYoOk:uid para no volver a bloquear el envío. Tarjeta de Academia: «▶ Ver desde el inicio».
+
+## 15 nov 00:00 — LIBERACIÓN A TODOS (Edwin)
+- acc3On=()=>true y salaOk()=>true (antes isAdmin): Inicio v5, rutina v6, accesos v3, Academia v3, Agenda nav, Mi Racha v3, CRM v3 (crmV2On), presentación virtual + verla primero, reuniones del prospecto, presentación solo persona nueva, llegadas al CRM.
+- enviar.mjs RC3_TODOS=true (avisos de Mi Racha a todos).
+- conoce.html y membresia.html redirigen a destino.html (location.replace con la misma query).
+- Para revertir: acc3On=()=>isAdmin y salaOk(){return !!isAdmin} y publicar.

@@ -655,7 +655,7 @@ async function main() {
     // 14 nov (Edwin): Mi Racha v3. Ranking del mes = días completos (mesComp), empate presentaciones y puntos. Lee team/constres (1 lectura).
     // rc3 (cada 15 min tras el resumen): «⚔️ X lo acaba de pasar» (solo al superado, 1 al día), vida ganada (al socio + su línea de arriba) y vida usada.
     // rc3top (9:30 p.m.): «Así quedó el top 3 de hoy». Mientras RC3_TODOS sea false, SOLO a los admins (la pantalla nueva es solo admin).
-    const RC3_TODOS = false, hoy = hoyHN(), mes = hoy.slice(0, 7);
+    const RC3_TODOS = true, hoy = hoyHN(), mes = hoy.slice(0, 7);
     const S = ((await db.doc("team/constres").get()).data() || {}).m || {};
     const L = Object.entries(S).map(([uid, x]) => ({ uid, ...x })).filter(x => x.nombre && x.mes === mes && +x.mesComp > 0)
       .sort((a, b) => (+b.mesComp - +a.mesComp) || ((+b.mesPres || 0) - (+a.mesPres || 0)) || ((+b.mesPts || 0) - (+a.mesPts || 0)) || String(a.nombre).localeCompare(String(b.nombre), "es"));
