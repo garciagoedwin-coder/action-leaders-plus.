@@ -4114,7 +4114,7 @@ function svDatos(){try{const ok=salaYoOk();let y=LS.get("svYd")||"";if(ok&&!y){c
 let svUlt="";function svRevisar(){try{const d=svDatos(),k=JSON.stringify(d);if(k===svUlt)return;const prev=LS.get("svUlt");svUlt=k;if(prev!==k){LS.set("svUlt",k);if(prev!=null||d.svY)pushResumen()}}catch(e){}}
 function svDe(uid){const x=(constL||[]).find(y=>y.uid===uid);return x?{y:x.svY||"",e:+x.svE||0,t:+x.svT||0,ok:!!x.svY}:null}
 function svChip(x){const v=svDe(x.id||x.uid);if(!v)return"";return v.ok?`✈️ Habilitado${v.e?" · "+v.e+" enviadas":""}${v.t?" · "+v.t+" ✓":""}`:"⏳ Aún no ve su presentación"}
-function svResumen(){try{if(!constL||!(mios||[]).length)return"";const L=(mios||[]).map(x=>({x,v:svDe(x.id)})).filter(o=>o.v);if(!L.length)return"";
+function svResumen(){try{if(!constL&&(mios||[]).length&&!window._svL){window._svL=1;loadConst().then(()=>{try{if(eqTab==="mios")renderEquipo()}catch(e){}}).catch(()=>{})}if(!constL||!(mios||[]).length)return"";const L=(mios||[]).map(x=>({x,v:svDe(x.id)})).filter(o=>o.v);if(!L.length)return"";
   const ok=L.filter(o=>o.v.ok),pe=L.filter(o=>!o.v.ok),env=ok.reduce((a,o)=>a+o.v.e,0),ter=ok.reduce((a,o)=>a+o.v.t,0),op=!!LS.get("svOpen");
   const fila=o=>{const nm=(o.x.registro||{}).nombre||"Socio";return `<div class="svF"><span class="grow"><b>${esc(nv(nm))}</b><small>${o.v.ok?"✅ Desde el "+esc(fmtDate(o.v.y))+(o.v.e?" · "+o.v.e+" enviadas":" · aún no envía")+(o.v.t?" · "+o.v.t+" la terminaron":""):"⏳ Aún no la ve"}</small></span>${o.v.ok?"":`<button type="button" class="btn sm" data-svw="${esc(o.x.id)}" style="background:#25D366;color:#fff">💬</button>`}</div>`};
   return `<details class="card svR"${op?" open":""}><summary><span class="grow"><b>✈️ Presentación virtual del equipo</b><small>${ok.length} de ${L.length} ya la vieron · ${env} enviadas · ${ter} terminadas</small></span><span class="svBar"><i style="width:${Math.round(ok.length*100/L.length)}%"></i></span></summary>
@@ -9330,7 +9330,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115120319";var busy=false,pend=null;
+(function(){var V="20261115121221";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
