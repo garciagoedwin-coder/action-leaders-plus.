@@ -7478,6 +7478,8 @@ function crmV2Hero(c){const v=salaDe(c.id),e=(LS.get("salaEnv")||{})[c.id],f=Str
     ${v.como?`<div class="cvS">${v.como==="registro"?"🛳️ Tocó «Crear mi cuenta»":v.como==="lider"?"📞 Pidió hablar con un líder":"💬 Tocó «Escribirle»"}</div>`:`<div class="cvS"><button type="button" class="cvRe" data-sala="${esc(c.id)}">↻ Reenviar el link</button></div>`}</div>`}
 function crmV2Sig(c){let P=flPaso(c);const st=c.stage||"Nuevo",tarde=["Presentación","Seguimiento","Por cerrar"].includes(st);
   if(tarde&&P&&["sal","resal","inv","rinv","agd","espera"].includes(P.k)||tarde&&P&&P.k==="preg"&&P.q!=="seg")P={k:"seg"};
+  // 15 nov (Edwin): si ya se le presentó (etapa Presentación o más, o ya tiene alguna reunión en su camino), el siguiente paso no puede ser «Presentar»
+  if(P&&P.k==="pres"&&(tarde||yaPresentado(c)||REU.some(([k])=>(reuDe(c)[k]||[]).length)))P={k:"seg"};
   if(!P)return `<div class="cvN"><div><b>🎉 Camino completo</b></div></div>`;
   if(P.k==="nada"||P.k==="espera")return `<div class="cvN"><div><b>${esc(P.txt)}</b></div>${P.k==="espera"?`<em data-flgo="${esc(c.id)}|${flH(c).inv?"rinv":"resal"}">Escribirle ya</em>`:""}</div>`;
   if(P.k==="preg"){const Q=P.q==="sal"?["¿Le contestó?",[["si","✅ Sí"],["nr","⏳ Todavía no"],["no","✖ No"]]]:P.q==="inv"?["¿Qué respondió?",[["si","✅ Sí"],["pen","🤔 Lo pensará"],["no","✖ No"]]]:["¿Cómo va?",[["socio","🎉 Se registró"],["re2","🔁 Escribirle"],["no","✖ No por ahora"]]];
@@ -9301,7 +9303,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115011818";var busy=false,pend=null;
+(function(){var V="20261115012320";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
