@@ -901,3 +901,4 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - (15 nov, 12:15) svResumen carga constancia (loadConst, caché 10 min) si Mi equipo aún no la tenía y repinta; antes la tarjeta solo salía si se había abierto Mi Racha.
 - (15 nov, 12:20) Mi equipo: el banner del Índice (mnumSum) quedó solo con el anillo %, «Índice de Duplicación» en grande y «Ver ›».
 - (15 nov, 12:25) Mi equipo: el Índice de Duplicación va arriba de My Dream Team.
+- (15 nov, 12:30) Arreglo: los socios de Mi equipo (mios) usan .uid, no .id → la tarjeta de presentación virtual y el chip salen bien. Índice: anillo 92 px con % en Barlow 27 px; rojo (<40) late y lanza una onda roja; ámbar (<70) borde suave.

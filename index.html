@@ -1398,6 +1398,11 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .cvActv{margin-top:14px}.cvActv>div:not(.k){display:flex;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}.cvActv small{color:var(--muted);font-size:12px;white-space:nowrap}
 .cvFt{display:flex;gap:8px;margin-top:14px}.cvFt>*{flex:1;text-align:center;background:var(--surface-2);color:var(--ink);border:0;border-radius:12px;padding:10px 4px;font:700 13px Figtree,sans-serif;text-decoration:none;cursor:pointer}.cvFt .w{background:#25D366;color:#fff}.cvFt [data-cvmas]{flex:0 0 46px}
 
+.mnR2{width:92px!important;height:92px!important}.mnR2 b{font-size:27px!important;font-family:'Barlow Condensed',sans-serif!important;font-weight:700!important}
+.mnR2.bad{animation:mnPulse 1.6s ease-in-out infinite}.mnR2.bad:after{content:"";position:absolute;inset:-6px;border-radius:50%;border:3px solid #EF4444;opacity:0;animation:mnRing 1.6s ease-out infinite}.mnR2.bad b{color:#FCA5A5}
+@keyframes mnPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}@keyframes mnRing{0%{opacity:.8;transform:scale(.92)}100%{opacity:0;transform:scale(1.25)}}
+.mnR2.mid:after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid #F59E0B;opacity:.5}
+@media (prefers-reduced-motion:reduce){.mnR2.bad,.mnR2.bad:after{animation:none}}
 .mnT2 b{font:700 22px Bricolage Grotesque,Figtree,sans-serif!important;line-height:1.15;color:#fff}
 /* Control presentación virtual (15 nov) */
 .svR summary{display:flex;align-items:center;gap:12px;cursor:pointer;list-style:none}.svR summary::-webkit-details-marker{display:none}.svR summary b{display:block;font-size:15px}.svR summary small{display:block;color:var(--muted);font-size:12.5px}
@@ -4034,7 +4039,7 @@ function idxEq(L){L=L.filter(idxCuenta);return L.length?Math.round(L.reduce((t,x
 function idxDesc(uid,P){return P.filter(y=>{const r=y.registro||{};return y.uid!==uid&&((Array.isArray(r.linea)&&r.linea.includes(uid))||r.patrocinadorUid===uid)})}
 function mnumSum(){let v=null,n=0,act=0;try{if(constL){const P=idxPool();n=P.length;v=idxEq(P);act=P.filter(x=>idxHoy(x.uid)).length}}catch(e){}
   const c=v==null?"#2AC1F1":IDX_C(v),msg=v==null?"Vea cómo va su equipo":v>=70?"¡Su equipo va excelente! 🔥":v>=40?"Su equipo puede dar más 💪":"Su equipo necesita su apoyo 🆘";
-  return `<summary class="mnS"><div class="mnR" style="--c:${c};--p:${v||0}"><b>${v==null?"⚡":v+"%"}</b></div><div class="mnT mnT2"><b>Índice de Duplicación</b></div><em class="mnGo">Ver ›</em></summary>`}
+  return `<summary class="mnS"><div class="mnR mnR2${v!=null&&v<40?" bad":v!=null&&v<70?" mid":""}" style="--c:${c};--p:${v||0}"><b>${v==null?"⚡":v+"%"}</b></div><div class="mnT mnT2"><b>Índice de Duplicación</b></div><em class="mnGo">Ver ›</em></summary>`}
 function idxPerPer(x,per){const o=idxPer;idxPer=per;try{return idxPersX(x)}finally{idxPer=o}}
 function idxEqPer(L,per){const o=idxPer;idxPer=per;try{return idxEq(L)}finally{idxPer=o}}
 function idxCard(){const P=idxPool();if(!P.length)return"";if(!constL){if(!window._ldC){window._ldC=1;loadConst().then(()=>{try{renderEquipo()}catch(e){}})}return`<div class="card"><b>⚡ Índice de Duplicación</b><span class="small muted">Calculando…</span></div>`}
@@ -4114,16 +4119,16 @@ function svDatos(){try{const ok=salaYoOk();let y=LS.get("svYd")||"";if(ok&&!y){c
   return{svY:ok?y:"",svE:env,svT:ter}}catch(e){return{}}}
 let svUlt="";function svRevisar(){try{const d=svDatos(),k=JSON.stringify(d);if(k===svUlt)return;const prev=LS.get("svUlt");svUlt=k;if(prev!==k){LS.set("svUlt",k);if(prev!=null||d.svY)pushResumen()}}catch(e){}}
 function svDe(uid){const x=(constL||[]).find(y=>y.uid===uid);return x?{y:x.svY||"",e:+x.svE||0,t:+x.svT||0,ok:!!x.svY}:null}
-function svChip(x){const v=svDe(x.id||x.uid);if(!v)return"";return v.ok?`✈️ Habilitado${v.e?" · "+v.e+" enviadas":""}${v.t?" · "+v.t+" ✓":""}`:"⏳ Aún no ve su presentación"}
-function svResumen(){try{if(!constL&&(mios||[]).length&&!window._svL){window._svL=1;loadConst().then(()=>{try{if(eqTab==="mios")renderEquipo()}catch(e){}}).catch(()=>{})}if(!constL||!(mios||[]).length)return"";const L=(mios||[]).map(x=>({x,v:svDe(x.id)})).filter(o=>o.v);if(!L.length)return"";
+function svChip(x){const v=svDe(x.uid||x.id);if(!v)return"";return v.ok?`✈️ Habilitado${v.e?" · "+v.e+" enviadas":""}${v.t?" · "+v.t+" ✓":""}`:"⏳ Aún no ve su presentación"}
+function svResumen(){try{if(!constL&&(mios||[]).length&&!window._svL){window._svL=1;loadConst().then(()=>{try{if(eqTab==="mios")renderEquipo()}catch(e){}}).catch(()=>{})}if(!constL||!(mios||[]).length)return"";const L=(mios||[]).map(x=>({x,v:svDe(x.uid||x.id)})).filter(o=>o.v);if(!L.length)return"";
   const ok=L.filter(o=>o.v.ok),pe=L.filter(o=>!o.v.ok),env=ok.reduce((a,o)=>a+o.v.e,0),ter=ok.reduce((a,o)=>a+o.v.t,0),op=!!LS.get("svOpen");
-  const fila=o=>{const nm=(o.x.registro||{}).nombre||"Socio";return `<div class="svF"><span class="grow"><b>${esc(nv(nm))}</b><small>${o.v.ok?"✅ Desde el "+esc(fmtDate(o.v.y))+(o.v.e?" · "+o.v.e+" enviadas":" · aún no envía")+(o.v.t?" · "+o.v.t+" la terminaron":""):"⏳ Aún no la ve"}</small></span>${o.v.ok?"":`<button type="button" class="btn sm" data-svw="${esc(o.x.id)}" style="background:#25D366;color:#fff">💬</button>`}</div>`};
+  const fila=o=>{const nm=(o.x.registro||{}).nombre||"Socio";return `<div class="svF"><span class="grow"><b>${esc(nv(nm))}</b><small>${o.v.ok?"✅ Desde el "+esc(fmtDate(o.v.y))+(o.v.e?" · "+o.v.e+" enviadas":" · aún no envía")+(o.v.t?" · "+o.v.t+" la terminaron":""):"⏳ Aún no la ve"}</small></span>${o.v.ok?"":`<button type="button" class="btn sm" data-svw="${esc(o.x.uid||o.x.id)}" style="background:#25D366;color:#fff">💬</button>`}</div>`};
   return `<details class="card svR"${op?" open":""}><summary><span class="grow"><b>✈️ Presentación virtual del equipo</b><small>${ok.length} de ${L.length} ya la vieron · ${env} enviadas · ${ter} terminadas</small></span><span class="svBar"><i style="width:${Math.round(ok.length*100/L.length)}%"></i></span></summary>
    ${pe.length?`<p class="small muted" style="margin:10px 0 2px"><b>⏳ Pendientes · ${pe.length}</b> — escríbales para que la vean y la puedan enviar</p>${pe.map(fila).join("")}`:""}
    ${ok.length?`<p class="small muted" style="margin:12px 0 2px"><b>✅ Habilitados · ${ok.length}</b></p>${ok.sort((a,b)=>b.v.e-a.v.e).map(fila).join("")}`:""}</details>`}catch(e){return""}}
 document.addEventListener("toggle",e=>{if(e.target.classList&&e.target.classList.contains("svR")){try{LS.set("svOpen",e.target.open?1:0)}catch(x){}}},true);
-document.addEventListener("click",async e=>{const b=e.target.closest("[data-svw]");if(!b)return;const x=(mios||[]).find(y=>y.id===b.dataset.svw);if(!x)return;const n=String((x.registro||{}).nombre||"").split(" ")[0];
-  const w=await dtWa(x.id);waIr("https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(`¡Hola, ${n}! 👋\n\n¿Ya vio su presentación virtual en la app? ✈️\n\nVéala completa primero (son 20 minutos) y así se le habilita para enviarla a sus prospectos.\n\nLa encuentra en Inicio › Accesos directos › «Presentación virtual» › «Verla yo desde el inicio». ¡Me cuenta qué le pareció!`))});
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-svw]");if(!b)return;const x=(mios||[]).find(y=>(y.uid||y.id)===b.dataset.svw);if(!x)return;const n=String((x.registro||{}).nombre||"").split(" ")[0];
+  const w=await dtWa(x.uid||x.id);waIr("https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(`¡Hola, ${n}! 👋\n\n¿Ya vio su presentación virtual en la app? ✈️\n\nVéala completa primero (son 20 minutos) y así se le habilita para enviarla a sus prospectos.\n\nLa encuentra en Inicio › Accesos directos › «Presentación virtual» › «Verla yo desde el inicio». ¡Me cuenta qué le pareció!`))});
 function hoyLlamar(){try{const L=[];(mios||[]).forEach(x=>{const nm=(x.registro||{}).nombre||"Socio",ah=ahSoc(x),p=(x.ir||{}).p,dd=new Date().getDate();let r=null,o=9,k="";
   if(ah&&ah.pend){r=ah.bloq?"💰 Ahorro vencido · está en pausa":"💰 Ahorro pendiente";o=1;k=ah.bloq?"ahv":"ah"}
   else if(p&&!p.g&&Date.now()-(p.u||0)>2*864e5){r="🚀 Inicio Rápido atrasado · semana "+(p.w||1);o=2;k="ir"}
@@ -9331,7 +9336,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115121657";var busy=false,pend=null;
+(function(){var V="20261115121955";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
