@@ -1380,7 +1380,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .reuP.mini{gap:4px;margin:4px 0 2px}.reuP.mini button{padding:0;width:22px;height:22px;justify-content:center;border:0;opacity:.35}.reuP.mini button svg{width:14px;height:14px}
 .reuP.mini button.on{opacity:1;background:color-mix(in srgb,#10B981 16%,transparent);color:#059669}
 .reuP .sum{font:700 13px 'Barlow Condensed',sans-serif;color:var(--muted);margin-left:2px}
-.reuO{display:grid;grid-template-columns:1fr 1fr;gap:8px}.reuO button{text-align:left;border:1.5px solid var(--line);border-radius:14px;padding:11px;background:var(--surface);color:var(--ink);cursor:pointer}.reuO button b{display:block;font-size:15px}.reuO button small{color:var(--muted);font-size:12px}.reuO button[aria-pressed=true]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 10%,var(--surface))}
+.reuO{display:grid;grid-template-columns:1fr 1fr;gap:8px}.reuO button:first-child{grid-column:1/-1}.reuO button{text-align:left;border:1.5px solid var(--line);border-radius:14px;padding:11px;background:var(--surface);color:var(--ink);cursor:pointer}.reuO button b{display:block;font-size:15px}.reuO button small{color:var(--muted);font-size:12px}.reuO button[aria-pressed=true]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 10%,var(--surface))}
 </style>
 
 </head>
@@ -2242,19 +2242,20 @@ const presSemana=()=>{const l=semIni(),o=[];for(let d=parseK(l);dkey(d)<=TODAY;d
 
 // ---------- Reuniones del prospecto (14 nov, Edwin): 🤝 1 a 1 · 🌎 Zoom global · ☕ Junta · 🎤 Evento ----------
 // c.reu = {u:[AAAA-MM-DD], z:[], j:[], e:[]}; notas en c.seg (k:"reu"). 1 a 1 se marca solo con sumarPres; Junta/Evento con el Modo entrada (llegRevisar).
-const REU=[["u","🤝","1 a 1","Usted le presentó"],["z","🌎","Zoom global","Presentación del equipo"],["j","☕","Junta","Junta de negocios"],["e","🎤","Evento","Gran evento"]];
+const REU=[["v","✈️","Presentación virtual","La vio completa"],["u","🤝","1 a 1","Usted le presentó"],["z","🌎","Zoom global","Presentación del equipo"],["j","☕","Junta","Junta de negocios"],["e","🎤","Evento","Gran evento"]];
 function yaPresentado(c){if(!c)return false;if(c.presD)return c.presD;const u=((c.reu||{}).u||[]);if(u.length)return u[0];if(c.pres&&c.pres.t)return dkey(new Date(c.pres.t));
   for(const k in weekCache){const d=weekCache[k];if(k<TODAY&&d&&(d.presL||[]).some(x=>x.cid===c.id))return k}return false}
 // Íconos de línea minimalistas (14 nov): marcado = relleno verde; sin marcar = trazo tenue
-const REU_SVG={u:'<path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 20a6 6 0 0 1 12 0M17 11a2.5 2.5 0 1 0 0-5M21 19a5 5 0 0 0-4-4.9"/>',z:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',j:'<path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5V9zM16 10h1.5a2.5 2.5 0 0 1 0 5H16M8 3v3M11 3v3"/>',e:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/>'};
+const REU_SVG={v:'<path d="M21 3 10 14M21 3l-6.5 18-3.5-7-7-3.5L21 3z"/>',u:'<path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 20a6 6 0 0 1 12 0M17 11a2.5 2.5 0 1 0 0-5M21 19a5 5 0 0 0-4-4.9"/>',z:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',j:'<path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5V9zM16 10h1.5a2.5 2.5 0 0 1 0 5H16M8 3v3M11 3v3"/>',e:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/>'};
 const reuIc=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${REU_SVG[k]}</svg>`;
-function reuHTML(c,op){const r=c.reu||{},n=REU.filter(([k])=>(r[k]||[]).length).length;
+function reuDe(c){const r=Object.assign({},c.reu||{});try{const v=salaDe(c.id);if(v&&((+v.pct||0)>=90||v.fin||v.resp)&&!(r.v||[]).length)r.v=[dkey(new Date(v.t||Date.now()))]}catch(e){}return r}
+function reuHTML(c,op){const r=reuDe(c),n=REU.filter(([k])=>(r[k]||[]).length).length;
   if(!op&&!n)return"";
-  return `<div class="reuP${op?"":" mini"}">${REU.map(([k,ic,t])=>{const m=(r[k]||[]).length;return `<button type="button" class="${m?"on":""}" data-reu="${esc(c.id)}" data-k="${k}" title="${t}${m?" ✓":""}" aria-label="${t}${m?": sí":": no"}">${reuIc(k)}${op?`<span>${t}${m>1?` ×${m}`:""}</span>`:""}</button>`}).join("")}${op?`<span class="sum">${n}/4</span>`:""}</div>`}
+  return `<div class="reuP${op?"":" mini"}">${REU.map(([k,ic,t])=>{const m=(r[k]||[]).length;return `<button type="button" class="${m?"on":""}" data-reu="${esc(c.id)}" data-k="${k}" title="${t}${m?" ✓":""}" aria-label="${t}${m?": sí":": no"}">${reuIc(k)}${op?`<span>${t}${m>1?` ×${m}`:""}</span>`:""}</button>`}).join("")}${op?`<span class="sum">${n}/${REU.length}</span>`:""}</div>`}
 async function reuAdd(c,k,f,nota,callado){c.reu=Object.assign({},c.reu||{});const L=(c.reu[k]||[]).slice();if(!L.includes(f))L.push(f);L.sort();c.reu[k]=L.slice(-20);
   const R=REU.find(x=>x[0]===k);c.seg=(c.seg||[]).concat([{t:Date.now(),k:"reu",n:`${R[1]} ${R[2]}${f!==TODAY?" ("+fmtDate(f)+")":""}${nota?" · "+nota:""}`}]).slice(-30);c.updated=Date.now();
   await store.saveContact(Object.assign({},c));if(!callado)toast(`${R[1]} ${R[2]} anotado para ${c.name.split(" ")[0]}`);try{renderCRM()}catch(e){}}
-function reuSheet(c,k0){let k=k0||"u";const r=c.reu||{};
+function reuSheet(c,k0){let k=k0||"u";const r=reuDe(c);
   const hist=REU.filter(([x])=>(r[x]||[]).length).map(([x,ic,t])=>`<div class="row between" style="padding:5px 0"><span>${ic} ${t}</span><span class="small muted">${(r[x]||[]).map(fmtDate).join(" · ")}</span></div>`).join("");
   openSheet(`<p class="eyebrow">REUNIONES DE ${esc(String(c.name||"").split(" ")[0].toUpperCase())}</p><h3 style="margin:4px 0 8px">¿A cuál asistió?</h3>
    <div class="reuO" id="reuO">${REU.map(([x,ic,t,d])=>`<button type="button" data-k="${x}" aria-pressed="${x===k}"><b>${ic} ${t}</b><small>${d}</small></button>`).join("")}</div>
@@ -2262,7 +2263,7 @@ function reuSheet(c,k0){let k=k0||"u";const r=c.reu||{};
    <input class="inp" id="reuN" placeholder="Nota (opcional): «vino con su esposo»" maxlength="100" style="margin-top:8px">
    <button class="btn" id="reuOk" style="width:100%;margin-top:12px">✅ Marcar que asistió</button>
    ${hist?`<div style="margin-top:14px;border-top:1px solid var(--line);padding-top:8px"><b class="small muted">HISTORIAL</b>${hist}</div>`:""}
-   <p class="small muted" style="margin:10px 0 0">🤝 1 a 1 se marca solo al registrar «Presentar». ☕ Junta y 🎤 Evento, cuando lo marcan «✅ Llegó» en la entrada.</p>
+   <p class="small muted" style="margin:10px 0 0">✈️ Presentación virtual se marca sola cuando la ve completa. 🤝 1 a 1, al registrar «Presentar». ☕ Junta y 🎤 Evento, cuando lo marcan «✅ Llegó» en la entrada.</p>
    <button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{
    $("#reuO").onclick=e=>{const b=e.target.closest("[data-k]");if(!b)return;k=b.dataset.k;$("#reuO").querySelectorAll("[data-k]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.k===k))};
    $("#reuOk").onclick=async()=>{const f=$("#reuF").value||TODAY;if(f>TODAY){toast("La fecha no puede ser futura");return}
@@ -9255,7 +9256,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114221753";var busy=false,pend=null;
+(function(){var V="20261114222117";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
