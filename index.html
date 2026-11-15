@@ -1381,6 +1381,22 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .reuP.mini button.on{opacity:1;background:color-mix(in srgb,#10B981 16%,transparent);color:#059669}
 .reuP .sum{font:700 13px 'Barlow Condensed',sans-serif;color:var(--muted);margin-left:2px}
 .reuO{display:grid;grid-template-columns:1fr 1fr;gap:8px}.reuO button:first-child{grid-column:1/-1}.reuO button{text-align:left;border:1.5px solid var(--line);border-radius:14px;padding:11px;background:var(--surface);color:var(--ink);cursor:pointer}.reuO button b{display:block;font-size:15px}.reuO button small{color:var(--muted);font-size:12px}.reuO button[aria-pressed=true]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 10%,var(--surface))}
+
+/* Contacto abierto limpio (15 nov) */
+.cvNx{display:flex!important;flex-direction:column;align-items:stretch!important;gap:2px;background:color-mix(in srgb,#22C55E 9%,var(--surface))!important;border:1px solid color-mix(in srgb,#22C55E 30%,transparent)!important;border-radius:16px!important;padding:13px 14px!important}
+.cvNx .kx{font:800 11px Figtree,sans-serif;letter-spacing:.12em;color:#15803D}.cvNx b{font-size:17px}.cvNx small{color:var(--muted);font-size:13px}
+.cvNx em{display:block;text-align:center;background:#25D366!important;color:#fff!important;font-style:normal;font-weight:800;border-radius:12px;padding:12px;margin-top:10px;font-size:15px;cursor:pointer}
+:root[data-theme="dark"] .cvNx .kx{color:#4ADE80}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cvNx .kx{color:#4ADE80}}
+.cvCam{margin-top:12px}.cvCam .k,.cvActv .k{display:flex;justify-content:space-between;align-items:center;font:800 11px Figtree,sans-serif;letter-spacing:.12em;color:var(--muted)}.cvCam .k button,.cvActv .k button{background:none;border:0;color:var(--brand);font:800 12px Figtree,sans-serif;cursor:pointer;padding:0}
+.cvCamR{display:flex;justify-content:space-between;margin-top:10px;position:relative}.cvCamR:before{content:"";position:absolute;left:24px;right:24px;top:17px;height:2px;background:var(--line)}
+.cvCamR button{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;width:62px;background:none;border:0;padding:0;cursor:pointer;font:700 11px/1.15 Figtree,sans-serif;color:var(--muted);text-align:center}
+.cvCamR i{width:36px;height:36px;border-radius:50%;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center}.cvCamR svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.cvCamR .on{color:#059669}.cvCamR .on i{background:#10B981;border-color:#10B981;color:#fff}
+.cvTkL{display:flex;align-items:center;gap:10px;width:100%;text-align:left;margin-top:12px;background:#0F2340;color:#fff;border:0;border-radius:14px;padding:11px 14px;font:inherit;cursor:pointer}.cvTkL b{display:block;font-size:14px}.cvTkL small{display:block;color:#94A3B8;font-size:12px}
+.cvTkL em{font-style:normal;font-weight:800;font-size:12.5px;background:#1E3A5F;border-radius:8px;padding:4px 9px;white-space:nowrap}.cvTkL em.f{background:#EA580C}.cvTkL i{font-style:normal;color:#7DD3FC;font-weight:800}.cvTkL .re{background:#1E3A5F;color:#fff;border:0;border-radius:8px;padding:6px 10px;font-weight:700;font-size:12.5px;cursor:pointer}
+.cvTkL.vivo{box-shadow:0 0 0 2px #EF4444}.cvTkGo{margin-top:12px;width:100%}
+.cvActv{margin-top:14px}.cvActv>div:not(.k){display:flex;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}.cvActv small{color:var(--muted);font-size:12px;white-space:nowrap}
+.cvFt{display:flex;gap:8px;margin-top:14px}.cvFt>*{flex:1;text-align:center;background:var(--surface-2);color:var(--ink);border:0;border-radius:12px;padding:10px 4px;font:700 13px Figtree,sans-serif;text-decoration:none;cursor:pointer}.cvFt .w{background:#25D366;color:#fff}.cvFt [data-cvmas]{flex:0 0 46px}
 </style>
 
 </head>
@@ -7375,7 +7391,7 @@ function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e
     return `<div class="contact ${op?"open":""}" style="--pc:${pc}"><div class="ch" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}">
     <div class="av" style="box-shadow:0 0 0 2px ${pc}">${c.stage==="Socio"||c.stage==="Cliente"?"✓":esc(initials(c.name))}</div>
     <div class="mid"><span class="nm">${esc(c.name)}${late?'<span class="fdot" style="background:var(--bad)" title="Seguimiento atrasado"></span>':today?'<span class="fdot" style="background:var(--warn)" title="Seguimiento hoy"></span>':""}</span>
-    ${!cer&&crmV2On()?crmV2Tag(c):""}${!cer&&acc3On()?reuHTML(c,op):""}<div class="pbar" aria-label="Avance: ${esc(c.stage)}">${FLOW.map((_,i)=>`<i class="${i<k?"on":""}"></i>`).join("")}</div></div>
+    ${!cer&&crmV2On()?crmV2Tag(c):""}${!cer&&acc3On()&&!op?reuHTML(c,false):""}<div class="pbar" aria-label="Avance: ${esc(c.stage)}">${FLOW.map((_,i)=>`<i class="${i<k?"on":""}"></i>`).join("")}</div></div>
     ${pipeOk()?`<span class="stpct"><b style="color:${pc}">${stPct(c)}%</b><span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage==="No interesado"?"No":c.stage)}</span>${stFrio(c)?`<em>⚠️ ${stDias(c)} días</em>`:""}</span>`:`<span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage==="No interesado"?"No":c.stage)}</span>`}<span class="chev">›</span></div>
     <div class="cbody">${!cer&&crmV2On()?crmV2(c,late,today):`${cer?`<div style="display:flex;gap:6px;flex-wrap:wrap;width:100%;margin-bottom:6px"><button class="btn sm ghost" data-cah="${esc(c.id)}">💰 Su ahorro</button><button class="btn sm ghost" data-cref="${esc(c.id)}">💬 Pedir referidos</button>${c.stage==="Cliente"?`<button class="btn sm gold" data-cneg="${esc(c.id)}">🚀 Invitarlo al negocio</button>`:""}</div>`:flHTML(c)}<div class="info">
     ${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}${c.note?`<span class="note">${esc(c.note)}</span>`:""}${sgHTML(c)}
@@ -7468,20 +7484,35 @@ function crmV2Sig(c){let P=flPaso(c);const st=c.stage||"Nuevo",tarde=["Presentac
     return `<div class="cvN q"><b>👉 ${Q[0]}</b><div class="fl-q"><div>${Q[1].map(([v,t])=>`<button data-flr="${esc(c.id)}|${v}">${t}</button>`).join("")}</div></div></div>`}
   const sv=salaDe(c.id),cerrar=P.k==="seg"&&(st==="Por cerrar"||(sv&&+sv.pulso>=8));
   const tit=cerrar?"🎉 Cerrar":FL_TIT[P.k]||P.k,sub=cerrar?(sv&&+sv.pulso>=8?"Está "+sv.pulso+"/10: mándele su link de registro":"Mándele su link de registro"):P.k==="seg"?"Pregúntele qué fue lo que más le gustó":P.k==="pres"?"Ya tiene cita: preséntele":"Mensaje listo para enviar";
-  return `<div class="cvN"><div><b>👉 Siguiente: ${esc(tit)}</b><small>${esc(sub)}</small></div><em data-flgo="${esc(c.id)}|${P.k}">Hacerlo</em></div>`}
-function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fecha>=TODAY).sort(citaSort)[0],m=memDe(c.id),au=c.stAuto&&c.stT&&Date.now()-c.stT<14*864e5;
+  const btn=cerrar?"💬 Mandarle el link por WhatsApp":P.k==="seg"?"💬 Escribirle · mensaje listo":P.k==="pres"?"🎤 Presentarle ahora":P.k==="agd"?"📅 Agendar su presentación":"👉 Hacerlo";
+  return `<div class="cvN cvNx"><span class="kx">👉 SIGUIENTE PASO</span><b>${esc(tit)}</b><small>${esc(sub)}</small><em data-flgo="${esc(c.id)}|${P.k}">${btn}</em></div>`}
+function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fecha>=TODAY).sort(citaSort)[0],m=memDe(c.id),me=(LS.get("memEnv")||{})[c.id],au=c.stAuto&&c.stT&&Date.now()-c.stT<14*864e5;
   const fc=f=>{try{return new Date(f+"T12:00:00").toLocaleDateString("es",{day:"numeric",month:"short"}).replace(".","")}catch(x){return f}};
+  const fT=t=>{try{return new Date(t).toLocaleDateString("es",{day:"numeric",month:"short"}).replace(".","")}catch(x){return ""}};
   const due=late&&c.next?`<span class="cvDue bad">⏰ Atrasado · ${esc(fc(c.next))}</span>`:today?`<span class="cvDue warn">⏰ Seguimiento hoy</span>`:c.next?`<span class="cvDue">📅 ${esc(fc(c.next))}</span>`:"";
-  const chips=["",
-    ci?`<span class="cvC brand">📅 Cita: ${esc(citaCuando(ci))}</span>`:"",au?`<span class="cvC" title="${esc(c.stAuto)}">🤖 Avanzó solo</span>`:"",
-    c.org?`<span class="cvC org">${salaOrIc(c.org)} ${esc(c.org)}</span>`:"",c.pres&&c.pres.t?`<span class="cvC">🎤 Presentado${c.pres.n?" · "+c.pres.n+"/10":""}</span>`:"",m?`<span class="cvC">🛳️ Vio la membresía ${+m.pct||0}%</span>`:""].filter(Boolean).join("");
-  const wl=waLink(c);
+  // 15 nov (Edwin): contacto abierto más limpio → estado · siguiente paso (tarjeta verde) · su camino · presentación virtual en una línea · actividad · accesos rápidos
+  const A=[];if(ci)A.push(["📅","Cita: "+citaCuando(ci),""]);if(au)A.push(["🤖","Avanzó solo: "+c.stAuto,c.stT?fT(c.stT):""]);if(c.org)A.push([salaOrIc(c.org),"Llegó desde: "+c.org,""]);
+  if(c.pres&&c.pres.t)A.push(["🎤","Presentado"+(c.pres.n?" · "+c.pres.n+"/10":""),fT(c.pres.t)]);if(m)A.push(["🛳️","Vio la membresía "+(+m.pct||0)+"%",m.t?fT(m.t):""]);else if(me)A.push(["🛳️","Le envié la membresía · aún no la abre",fT(me)]);
+  const S=(c.seg||[]).filter(x=>x&&x.n).slice(-3).reverse();S.forEach(x=>A.push(["📝",x.n,x.t?fT(x.t):""]));if(c.note)A.unshift(["🗒️",c.note,""]);
+  const nS=(c.seg||[]).length,wl=waLink(c);
   return `<div class="cvTop"><div class="grow" style="min-width:0">${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}
      <button type="button" class="cvSt cvSt3" data-stopen="${esc(c.id)}"><span class="cvPill" style="--pc:${STAGE_COL[c.stage]||"var(--brand)"}">${CV_STI[c.stage]||""}${esc(c.stage||"Nuevo")}</span>${due}<span class="cvCg">Cambiar ›</span></button></div></div>
-   ${crmSt.has(c.id)?stepsHTML(c):""}${chips?`<div class="cvCs">${chips}</div>`:""}${maLinea(c)}${c.note?`<span class="note">${esc(c.note)}</span>`:""}
-   ${crmV2Tk(c)}${crmV2Sig(c)}
-   <div class="cvAct">${wl?`<a class="cvWaB" href="${esc(wl)}" data-wac="${esc(c.id)}" target="_blank" rel="noopener">💬 Escribirle por WhatsApp</a>`:`<button type="button" class="cvWaB off" data-edit="${esc(c.id)}">➕ Agregar su WhatsApp</button>`}<button type="button" class="cvDots" data-cvmas="${esc(c.id)}" aria-label="Más opciones">⋯</button></div>
-   ${(()=>{const L=(c.seg||[]).filter(x=>x&&x.n),x=L[L.length-1];return x?`<div class="cvLast">📝 <span>${esc(x.n)}</span></div>`:""})()}`}
+   ${crmSt.has(c.id)?stepsHTML(c):""}${maLinea(c)}
+   ${crmV2Sig(c)}
+   ${reuCamino(c)}
+   ${crmV2TkL(c)}
+   ${A.length?`<div class="cvActv"><div class="k">ACTIVIDAD${nS?`<button type="button" data-sgt="${esc(c.id)}">Ver todo ›</button>`:""}</div>${A.slice(0,4).map(([i,t,f])=>`<div><span>${i}</span><span class="grow">${esc(t)}</span>${f?`<small>${esc(f)}</small>`:""}</div>`).join("")}</div>`:""}
+   <div class="cvFt">${wl?`<a href="${esc(wl)}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" class="w">💬 WhatsApp</a>`:`<button type="button" data-edit="${esc(c.id)}">➕ WhatsApp</button>`}<button type="button" data-cvn="${esc(c.id)}">📝 Nota</button><button type="button" data-cita="${esc(c.id)}">📅 Cita</button><button type="button" data-cvmas="${esc(c.id)}" aria-label="Más opciones">⋯</button></div>`}
+// Presentación virtual en una línea (si no se ha enviado, el botón grande para enviarla)
+function crmV2TkL(c){const v=salaDe(c.id),e=(LS.get("salaEnv")||{})[c.id],id=esc(c.id);
+  if(!v&&!e)return `<button type="button" class="tkGo cvTkGo" data-sala="${id}">✈️ Enviarle mi presentación virtual</button>`;
+  if(!v)return `<div class="cvTkL"><span>✈️</span><span class="grow"><b>Presentación virtual</b><small>Enviada ${esc(memHace(e))} · aún no aborda</small></span><button type="button" class="re" data-sala="${id}">↻ Reenviar</button></div>`;
+  const fin=(+v.pct||0)>=100||/^\d+$/.test(String(v.pulso||"")),n=+v.pulso||0,pct=Math.min(100,+v.pct||0),vivo=!fin&&Date.now()-(v.t||0)<10*6e4;
+  const at=v.r1&&CV_VAL[v.r1]?"le atrae: "+CV_VAL[v.r1].replace(/^\S+ /,"").toLowerCase():"";
+  return `<button type="button" class="cvTkL${vivo?" vivo":""}" data-cvtk="${id}"><span>${vivo?"📡":"✈️"}</span><span class="grow"><b>Presentación virtual</b><small>${vivo?"Viéndola ahora · "+pct+"%":fin?"Terminó"+(at?" · "+esc(at):""):"Vio el "+pct+"%"} · ${esc(memHace(v.t||Date.now()))}</small></span>${n?`<em class="${n>=8?"f":""}">${n>=8?"🔥 ":""}${n}/10</em>`:""}<i>›</i></button>`}
+// Su camino: las 5 reuniones en línea (verde = ya fue)
+function reuCamino(c){const r=reuDe(c),n=REU.filter(([k])=>(r[k]||[]).length).length;
+  return `<div class="cvCam"><div class="k">SU CAMINO · ${n} DE ${REU.length}<button type="button" data-reu="${esc(c.id)}" data-k="u">Marcar ›</button></div><div class="cvCamR">${REU.map(([k,ic,t])=>{const m=(r[k]||[]).length;return `<button type="button" class="${m?"on":""}" data-reu="${esc(c.id)}" data-k="${k}"><i>${reuIc(k)}</i><span>${t}${m>1?" ×"+m:""}</span></button>`}).join("")}</div></div>`}
 function crmWa(c,k){const f=String(c.name||"").trim().split(/\s+/)[0]||"",w=c.phone?waNum(c.phone,c.cc):"",yo=miNombreCorto()||"";
   const T={ref:`¡Hola, ${f}! 👋\n\nGracias por confiar en mí y ser parte de la familia inCruises 🛳️\n\n¿Conoce a alguien a quien le encante viajar? Con gusto le comparto cómo ahorrar para sus vacaciones.\n\nSi se le ocurre alguien, mándeme su nombre por aquí 🙏`,
     neg:`¡Hola, ${f}! 👋\n\nUsted ya disfruta los beneficios de inCruises como cliente 🛳️\n\n¿Sabía que también puede compartirlo y hacerlo su negocio? Me encantaría mostrarle cómo funciona, sin compromiso.\n\n¿Le gustaría que conversemos? Respóndame por aquí 🙌`,
@@ -7493,7 +7524,7 @@ function crmAhorro(c){const a=ahDe([c.email],[c.phone?waNum(c.phone,c.cc):""]),p
    <p style="margin:0">${sin?"Todavía no hay reporte de ahorros cargado.":pend?`<span class="chip c-bad" style="font-weight:700">🔴 Ahorro pendiente</span>`:`<span class="chip c-good" style="font-weight:700">🚢 Ahorro al día</span>`}</p>
    <p class="small muted" style="margin:0">${pend?"Un recordatorio a tiempo ayuda a que no pierda sus beneficios.":"No aparece en el reporte de pendientes de inCruises."}${c.email?"":" Para revisarlo mejor, agregue su correo en el contacto."}</p>
    <button class="btn" id="cahW" style="width:100%;background:#25D366;color:#fff">${pend?"💬 Recordarle su ahorro":"💬 Saludarle"}</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#cahW").onclick=()=>crmWa(c,pend?"ah":"hola")})}
-$("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNumGo")){salaCompartir();return}{const ru=e.target.closest("[data-reu]");if(ru){e.stopPropagation();const c=contacts.find(y=>y.id===ru.dataset.reu);if(c)reuSheet(c,ru.dataset.k||"u");return}}
+$("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNumGo")){salaCompartir();return}{const sg=e.target.closest("[data-sgt]");if(sg){const c=contacts.find(y=>y.id===sg.dataset.sgt);if(c)sgTodas(c);return}const cn=e.target.closest("[data-cvn]");if(cn){const c=contacts.find(y=>y.id===cn.dataset.cvn);if(c)notaAbrir(c,"nota");return}}{const ru=e.target.closest("[data-reu]");if(ru){e.stopPropagation();const c=contacts.find(y=>y.id===ru.dataset.reu);if(c)reuSheet(c,ru.dataset.k||"u");return}}
   {const x=e.target.closest("[data-cvnum]");if(x){try{LS.set("cvNumOp",x.dataset.cvnum==="1"?1:0)}catch(y){}renderCRM();return}}
   {const x=e.target.closest("[data-cvtk]");if(x){const c=contacts.find(y=>y.id===x.dataset.cvtk);if(c)cvViaje(c);return}}
   {const x=e.target.closest("[data-cvmas]");if(x){const c=contacts.find(y=>y.id===x.dataset.cvmas);if(c)cvMasSheet(c);return}}{const fz=e.target.closest("[data-frio]");if(fz){crmFrio=fz.dataset.frio==="1";renderCRM();return}}{const mb=e.target.closest("[data-cmas]");if(mb){const k=mb.dataset.cmas;crmMas.has(k)?crmMas.delete(k):crmMas.add(k);renderCRM();return}const so=e.target.closest("[data-stopen]");if(so){crmSt.add(so.dataset.stopen);renderCRM();return}}const st=e.target.closest("[data-st]");
@@ -9270,7 +9301,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115005510";var busy=false,pend=null;
+(function(){var V="20261115011818";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
