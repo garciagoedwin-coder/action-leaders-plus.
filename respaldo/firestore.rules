@@ -154,12 +154,12 @@ service cloud.firestore {
     }
     // ---- Modo entrada: quién llegó (14 nov) ----
     match /agendaEv/{eid}/lleg/{rid} {
-      allow read, create, delete: if request.auth != null && (
+      allow read: if request.auth != null && resource.data.get('de', '') == request.auth.uid;
+      allow read, create, update, delete: if request.auth != null && (
         request.auth.uid == get(/databases/$(database)/documents/agendaEv/$(eid)).data.cre
         || request.auth.uid in get(/databases/$(database)/documents/agendaEv/$(eid)).data.get('lidU', [])
         || request.auth.uid in get(/databases/$(database)/documents/agendaEv/$(eid)).data.get('ent', [])
         || isAdmin());
-      allow update: if false;
     }
     // ---- Red de inCruises: cierre de mes (31/10/2026) ----
     match /red/{id} {

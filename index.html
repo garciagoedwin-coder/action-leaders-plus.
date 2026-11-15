@@ -1371,6 +1371,13 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 /* Más adelante (14 nov) */
 .maL{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:color-mix(in srgb,#0D9488 9%,var(--surface));border:1px solid color-mix(in srgb,#0D9488 30%,transparent);border-radius:12px;padding:9px 10px;margin:8px 0;font-size:13.5px}.maL .grow{min-width:60%}.maL.toca{border-color:#0D9488;box-shadow:0 0 0 2px color-mix(in srgb,#0D9488 25%,transparent)}
 .stp button.ma.cur{background:#0D9488;color:#fff}#maM .chip[aria-pressed=true],#maC .chip[aria-pressed=true]{background:#0D9488;color:#fff;border-color:#0D9488}.maDot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#0D9488;margin-left:4px;vertical-align:middle}
+
+/* Reuniones del prospecto (14 nov) */
+.reuP{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0 4px}.reuP button{display:inline-flex;align-items:center;gap:3px;font:700 12.5px Figtree,sans-serif;padding:4px 9px;border-radius:99px;background:var(--surface-2);color:var(--muted);border:1px dashed color-mix(in srgb,var(--muted) 45%,transparent);cursor:pointer}
+.reuP button.on{background:color-mix(in srgb,#10B981 14%,var(--surface));color:#047857;border:1px solid color-mix(in srgb,#10B981 40%,transparent)}.reuP button b{font:700 14px 'Barlow Condensed',sans-serif}
+.reuP.mini button{padding:2px 7px;font-size:12px}.reuP .sum{background:#0F2340;color:#fff;border-radius:99px;padding:4px 10px;font-weight:800;font-size:12.5px}
+:root[data-theme="dark"] .reuP button.on{color:#6EE7B7}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .reuP button.on{color:#6EE7B7}}
+.reuO{display:grid;grid-template-columns:1fr 1fr;gap:8px}.reuO button{text-align:left;border:1.5px solid var(--line);border-radius:14px;padding:11px;background:var(--surface);color:var(--ink);cursor:pointer}.reuO button b{display:block;font-size:15px}.reuO button small{color:var(--muted);font-size:12px}.reuO button[aria-pressed=true]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 10%,var(--surface))}
 </style>
 
 </head>
@@ -2229,7 +2236,49 @@ function olvStrip(){const el=$("#olvStrip");if(!el)return;const L=fbUser&&store.
 // ---------- presentaciones con nombre ----------
 const semIni=()=>{const a=[lunesK(),TODAY.slice(0,7)+"-01",CONST_INI].sort();return a[2]}; // la semana empieza el lunes, pero nunca antes del día 1 del mes (todo lo de la app reinicia el día 1)
 const presSemana=()=>{const l=semIni(),o=[];for(let d=parseK(l);dkey(d)<=TODAY;d.setDate(d.getDate()+1)){const k=dkey(d),v=k===TODAY?day:weekCache[k];((v&&v.presL)||[]).forEach(x=>o.push(Object.assign({f:k},x)))}return o};
-async function sumarPres(c,ci){const ya=presSemana();if(c.id&&ya.some(x=>x.cid===c.id)){toast(c.name.split(" ")[0]+" ya cuenta como presentación esta semana");return false}
+
+// ---------- Reuniones del prospecto (14 nov, Edwin): 🤝 1 a 1 · 🌎 Zoom global · ☕ Junta · 🎤 Evento ----------
+// c.reu = {u:[AAAA-MM-DD], z:[], j:[], e:[]}; notas en c.seg (k:"reu"). 1 a 1 se marca solo con sumarPres; Junta/Evento con el Modo entrada (llegRevisar).
+const REU=[["u","🤝","1 a 1","Usted le presentó"],["z","🌎","Zoom global","Presentación del equipo"],["j","☕","Junta","Junta de negocios"],["e","🎤","Evento","Gran evento"]];
+function yaPresentado(c){if(!c)return false;if(c.presD)return c.presD;const u=((c.reu||{}).u||[]);if(u.length)return u[0];if(c.pres&&c.pres.t)return dkey(new Date(c.pres.t));
+  for(const k in weekCache){const d=weekCache[k];if(k<TODAY&&d&&(d.presL||[]).some(x=>x.cid===c.id))return k}return false}
+function reuHTML(c,op){const r=c.reu||{},n=REU.filter(([k])=>(r[k]||[]).length).length;
+  return `<div class="reuP${op?"":" mini"}">${REU.map(([k,ic,t])=>{const m=(r[k]||[]).length;return `<button type="button" class="${m?"on":""}" data-reu="${esc(c.id)}" data-k="${k}" title="${t}">${ic}${op?" "+t+(m>1?` <b>×${m}</b>`:""):""}</button>`}).join("")}${op?`<span class="sum">${n} de 4</span>`:""}</div>`}
+async function reuAdd(c,k,f,nota,callado){c.reu=Object.assign({},c.reu||{});const L=(c.reu[k]||[]).slice();if(!L.includes(f))L.push(f);L.sort();c.reu[k]=L.slice(-20);
+  const R=REU.find(x=>x[0]===k);c.seg=(c.seg||[]).concat([{t:Date.now(),k:"reu",n:`${R[1]} ${R[2]}${f!==TODAY?" ("+fmtDate(f)+")":""}${nota?" · "+nota:""}`}]).slice(-30);c.updated=Date.now();
+  await store.saveContact(Object.assign({},c));if(!callado)toast(`${R[1]} ${R[2]} anotado para ${c.name.split(" ")[0]}`);try{renderCRM()}catch(e){}}
+function reuSheet(c,k0){let k=k0||"u";const r=c.reu||{};
+  const hist=REU.filter(([x])=>(r[x]||[]).length).map(([x,ic,t])=>`<div class="row between" style="padding:5px 0"><span>${ic} ${t}</span><span class="small muted">${(r[x]||[]).map(fmtDate).join(" · ")}</span></div>`).join("");
+  openSheet(`<p class="eyebrow">REUNIONES DE ${esc(String(c.name||"").split(" ")[0].toUpperCase())}</p><h3 style="margin:4px 0 8px">¿A cuál asistió?</h3>
+   <div class="reuO" id="reuO">${REU.map(([x,ic,t,d])=>`<button type="button" data-k="${x}" aria-pressed="${x===k}"><b>${ic} ${t}</b><small>${d}</small></button>`).join("")}</div>
+   <div class="field" style="margin-top:10px"><label for="reuF">📅 Fecha</label><input class="inp" type="date" id="reuF" value="${TODAY}" max="${TODAY}"></div>
+   <input class="inp" id="reuN" placeholder="Nota (opcional): «vino con su esposo»" maxlength="100" style="margin-top:8px">
+   <button class="btn" id="reuOk" style="width:100%;margin-top:12px">✅ Marcar que asistió</button>
+   ${hist?`<div style="margin-top:14px;border-top:1px solid var(--line);padding-top:8px"><b class="small muted">HISTORIAL</b>${hist}</div>`:""}
+   <p class="small muted" style="margin:10px 0 0">🤝 1 a 1 se marca solo al registrar «Presentar». ☕ Junta y 🎤 Evento, cuando lo marcan «✅ Llegó» en la entrada.</p>
+   <button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{
+   $("#reuO").onclick=e=>{const b=e.target.closest("[data-k]");if(!b)return;k=b.dataset.k;$("#reuO").querySelectorAll("[data-k]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.k===k))};
+   $("#reuOk").onclick=async()=>{const f=$("#reuF").value||TODAY;if(f>TODAY){toast("La fecha no puede ser futura");return}
+     if(k==="u"&&f===TODAY&&!yaPresentado(c)){closeSheet();await sumarPres(c);return}
+     await reuAdd(c,k,f,$("#reuN").value.trim());if(k==="j"||k==="e")await stAvanza(c,"Presentación",k==="j"?"asistió a una junta":"asistió a un evento");closeSheet()}})}
+// Llegadas del Modo entrada → CRM del que invitó (en SU app; reglas: lleg read si de == yo)
+let llegT=0;async function llegRevisar(force){try{if(!acc3On()||!store.uid||!store.db)return;if(!force&&Date.now()-llegT<10*6e4)return;llegT=Date.now();
+  const E=(typeof EVA!=="undefined"&&EVA||[]).filter(e=>e.modo!=="virtual"&&e.fecha<=TODAY&&e.fecha>=addD(TODAY,-10));if(!E.length)return;
+  for(const e of E){let Q;try{Q=await llegCol(e).where("de",store.uid).get()}catch(x){continue}if(!Q.docs.length)continue;
+    let R=null;for(const d of Q.docs){const kk="llegP:"+e.id+":"+d.id;if(LS.get(kk))continue;
+      if(!R){try{R=(await rsvpCol(e).where("de",store.uid).get()).docs.map(x=>Object.assign({id:x.id},x.data()))}catch(x){R=[]}}
+      const r=R.find(x=>x.id===d.id);if(!r){LS.set(kk,1);continue}
+      const ult=String(r.w||"").replace(/\D/g,"").slice(-8);let c=contacts.find(x=>ult&&String(x.phone||"").replace(/\D/g,"").slice(-8)===ult)||contacts.find(x=>sameN&&sameN(x.name,r.n));
+      if(!c){c={name:String(r.n).slice(0,80),cc:r.cc||"504",phone:String(r.w||"").slice(0,15),stage:"Contactado",note:"",next:addD(TODAY,1),updated:Date.now(),creado:Date.now()};const id=await store.saveContact(c);if(!id)continue;c.id=id;contacts.push(c)}
+      const k=e.tipo==="gran"?"e":"j";await reuAdd(c,k,e.fecha,"Llegó a "+(k==="e"?(e.bx?evaNom(e):"el evento"):"la junta")+(e.ciudad?" en "+e.ciudad:""),true);
+      if(e.fecha===TODAY&&!c.presD&&!((c.reu||{}).u||[]).length&&!(day.presL||[]).some(x=>x.cid===c.id)){day.presL=(day.presL||[]).concat([{cid:c.id,n:String(c.name).slice(0,60)}]);day.presentaciones=Math.max((day.presentaciones||0)+1,day.presL.length);c.presD=TODAY;bumpReto("presentaciones",1);saveDay();renderTasks()}
+      await stAvanza(c,"Presentación",k==="e"?"llegó al evento":"llegó a la junta");LS.set(kk,1);
+      avisoTop(`🎉 ${String(r.n).split(" ")[0]} llegó ${k==="e"?"al evento":"a la junta"}`,"Ya está en su CRM como presentado · pregúntele qué fue lo que más le gustó",()=>{openC=c.id;go("crm");try{renderCRM()}catch(x){}})}}}catch(e){}}
+async function sumarPres(c,ci,tipo){const ya=presSemana();
+  // 14 nov (Edwin): la presentación suma punto SOLO la primera vez que se le presenta a esa persona. Si ya se le presentó, se anota la reunión y cuenta como seguimiento.
+  if(acc3On()&&c.id&&yaPresentado(c)){const f=yaPresentado(c);await reuAdd(c,tipo||"u",TODAY,"",true);let sg=false;try{sg=await sumarSeg(c)}catch(e){}try{if($("#psL"))closeSheet()}catch(e){}toast(`${c.name.split(" ")[0]} ya tenía presentación${typeof f==="string"?" ("+fmtDate(f)+")":""}: quedó anotado en su CRM${sg?" y cuenta como seguimiento":""}`);return false}
+  if(c.id&&ya.some(x=>x.cid===c.id)){toast(c.name.split(" ")[0]+" ya cuenta como presentación esta semana");return false}
+  if(c.id){c.presD=c.presD||TODAY;try{await reuAdd(c,tipo||"u",TODAY,"",true)}catch(e){}}
   day.presL=(day.presL||[]).concat([{cid:c.id||"",n:String(c.name||"").slice(0,60)}]);day.presentaciones=Math.max((day.presentaciones||0)+1,day.presL.length);bumpReto("presentaciones",1);renderTasks();saveDay();
   if(c.id&&FLOW.indexOf(c.stage||"Nuevo")<FLOW.indexOf("Presentación")&&c.stage!=="Cliente"&&c.stage!=="No interesado"){c.stage="Presentación";c.stT=Date.now();c.stAuto="le presentó el plan";c.updated=Date.now();await store.saveContact(Object.assign({},c));try{renderCRM()}catch(e){}}
   const cc=ci||citas.find(x=>x.fecha===TODAY&&x.cid&&x.cid===c.id&&!x.hecha);if(cc){cc.hecha=true;await saveCita(cc);renderHoyCitas();renderMiAgenda()}
@@ -2239,7 +2288,7 @@ function quitarPres(){if(!(day.presentaciones>0))return;const L=day.presL||[];if
 function abrirPres(){window._irV=0;let q="";const ya=new Set(presSemana().map(x=>x.cid).filter(Boolean)),hoyC=new Set(citas.filter(x=>x.fecha===TODAY&&x.cid).map(x=>x.cid));
   const pr=c=>hoyC.has(c.id)?0:({"Presentación":1,"Contactado":2,"Seguimiento":3,"Nuevo":4}[c.stage||"Nuevo"]||5);
   let ord=LS.get("psOrd")||"rec";const L=()=>contacts.filter(c=>!ya.has(c.id)&&c.stage!=="Socio"&&c.stage!=="Cliente"&&(!q||nrmN(c.name).includes(nrmN(q)))).sort((a,b)=>(hoyC.has(a.id)?0:1)-(hoyC.has(b.id)?0:1)||(ord==="az"?String(a.name).localeCompare(b.name,"es"):((b.creado||b.updated||0)-(a.creado||a.updated||0)))).slice(0,q?60:40);
-  openSheet(`<div data-nofocus></div><h2>🎯 ¿A quién le presentaste?</h2><p class="small muted" style="margin:0">Cada presentación lleva nombre. La misma persona cuenta una vez por semana.</p>
+  openSheet(`<div data-nofocus></div><h2>🎯 ¿A quién le presentaste?</h2><p class="small muted" style="margin:0">${acc3On()?"Cuenta solo la primera vez que le presenta a esa persona. Si ya le había presentado, cuenta como seguimiento.":"Cada presentación lleva nombre. La misma persona cuenta una vez por semana."}</p>
    <button class="ep-op" id="psNew"><span class="ic">➕</span><span class="grow"><b>Persona nueva</b><small>Se guarda en tu CRM</small></span><span>›</span></button>
    <div id="psNewF" style="display:none;flex-direction:column;gap:10px">
     <div class="field"><label for="psN">Nombre</label><input class="inp" id="psN" placeholder="Nombre y apellido"></div>
@@ -2249,7 +2298,7 @@ function abrirPres(){window._irV=0;let q="";const ya=new Set(presSemana().map(x=
    <div class="ep-sep"><span>o elígela de tu CRM</span></div>
    <input class="inp" id="psQ" placeholder="🔍 Buscar por nombre" autocomplete="off"><div class="seg" id="psO" style="margin-top:8px"><button aria-selected="${ord==="rec"}" data-o="rec">🆕 Recientes</button><button aria-selected="${ord==="az"}" data-o="az">🔤 A–Z</button></div><div id="psL" style="display:flex;flex-direction:column"></div>
    <button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
-    const draw=()=>{const R=L();$("#psL").innerHTML=R.length?R.map(c=>`<button type="button" class="ep-it" data-ps="${esc(c.id)}">${avHTML(c.name,false,false)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(c.name)}</b><span class="small muted">${hoyC.has(c.id)?"📅 Tiene cita hoy · ":""}${esc(c.stage||"Nuevo")}</span></span><span style="color:var(--brand);font-weight:800">+</span></button>`).join(""):`<p class="small muted" style="margin:8px 0">${q?"No hay contactos con ese nombre.":"No hay contactos disponibles. Agrega una persona nueva."}</p>`};draw();
+    const draw=()=>{const R=L();$("#psL").innerHTML=R.length?R.map(c=>`<button type="button" class="ep-it" data-ps="${esc(c.id)}">${avHTML(c.name,false,false)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(c.name)}</b><span class="small muted">${hoyC.has(c.id)?"📅 Tiene cita hoy · ":""}${esc(c.stage||"Nuevo")}${acc3On()&&yaPresentado(c)?" · 🎤 Ya presentado"+(typeof yaPresentado(c)==="string"?" el "+fmtDate(yaPresentado(c)):""):""}</span></span><span style="color:var(--brand);font-weight:800">+</span></button>`).join(""):`<p class="small muted" style="margin:8px 0">${q?"No hay contactos con ese nombre.":"No hay contactos disponibles. Agrega una persona nueva."}</p>`};draw();
     $("#psQ").oninput=()=>{q=$("#psQ").value.trim();draw()};$("#psO").onclick=e=>{const b=e.target.closest("[data-o]");if(!b)return;ord=b.dataset.o;LS.set("psOrd",ord);$("#psO").querySelectorAll("[data-o]").forEach(x=>x.setAttribute("aria-selected",x.dataset.o===ord));draw()};
     $("#psL").onclick=async e=>{const b=e.target.closest("[data-ps]");if(!b)return;if(await sumarPres(contacts.find(c=>c.id===b.dataset.ps))){closeSheet();irVolver()}};
     $("#psNew").onclick=()=>{const f=$("#psNewF"),o=f.style.display==="none";f.style.display=o?"flex":"none";if(o)$("#psN").focus()};
@@ -6317,7 +6366,7 @@ function evxPinta(){const box=$("#evAg");if(!box)return;const X=Object.values(EV
   box.insertAdjacentHTML("beforeend",`<div class="evX"><div class="small muted" style="font-weight:800;margin:10px 0 6px">🚫 Canceladas por un administrador</div>${X.map(e=>`<div class="evXr"><div><b>${esc(evaNom(e))}${e.ciudad?" · "+esc(e.ciudad):""} · ${esc(niceDate(e.fecha))}</b><small>Cancelada por ${esc(String(e._evc.por||"admin").split(" ").slice(0,2).join(" "))} (admin)${e._evc.t?" · "+esc(new Date(e._evc.t).toLocaleString("es",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})):""}${e._evc.mot?" · "+esc(e._evc.mot):""}</small></div>${isAdmin?`<button type="button" class="btn sm ghost" data-evre="${esc(e.id)}">↩️ Activar</button>`:""}</div>`).join("")}</div>`);
   box.querySelectorAll("[data-evre]").forEach(b=>b.onclick=()=>{if(!confirmar2(b))return;evcSet(b.dataset.evre,null).then(ok=>{if(ok)toast("↩️ Volvió a la agenda")})})}
 function renderEvA(){try{eqzPinta()}catch(x){}setTimeout(()=>{try{evaCamRevisar()}catch(x){}},1500);if(EVC===null&&store.db&&store.uid){EVC={};evcCargar(true).then(()=>{evcAplicar();renderEvA0();evxPinta()})}else evcAplicar();renderEvA0();evxPinta()}
-function renderEvA0(){setTimeout(()=>{try{rsvpRevisar()}catch(e){}},2000);try{evaHoyStrip(EVA)}catch(e){}try{renderRecCard()}catch(e){}const L=(EVA||[]).slice().sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora));
+function renderEvA0(){setTimeout(()=>{try{rsvpRevisar()}catch(e){}try{llegRevisar()}catch(e){}},2000);try{evaHoyStrip(EVA)}catch(e){}try{renderRecCard()}catch(e){}const L=(EVA||[]).slice().sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora));
   const box=$("#evAg");if(box){const L2=L.filter(e=>!evaFin(e)).concat(L.filter(e=>evaFin(e))),all=!!LS.get("evaAll"),V=all?L2:L2.slice(0,3),nH=L.filter(e=>e.fecha===TODAY&&!evaFin(e)).length,nG=L.filter(e=>e.tipo==="gran").length,nJ=L.length-nG;
     box.innerHTML=`<div class="row between" style="gap:8px"><div><b style="font-size:17px">🎤 Eventos y juntas</b>${L.length?"":`<div class="small muted">Planee una junta o un evento con su flyer</div>`}</div><button class="btn sm gold" id="evaNew" style="flex:none">➕ Crear</button></div>
      ${L.length?`<div class="evAl">${nH?`<span class="evCh hoy"><i></i>${nH} hoy</span>`:""}${nG?`<span class="evCh g">🎤 ${nG} ${nG===1?"evento":"eventos"}</span>`:""}${nJ?`<span class="evCh j">🤝 ${nJ} ${nJ===1?"junta":"juntas"}</span>`:""}</div>`:""}
@@ -6583,7 +6632,7 @@ async function entModo(e){let L=[],G={},q="",ver="p";const yoN=miNombreCorto()||
    <div class="row" style="gap:6px;margin:10px 0 6px"><input class="inp grow" id="enQ2" type="search" placeholder="🔍 Buscar por nombre"><button class="btn sm ghost" id="enR" title="Actualizar">↻</button></div>
    <div class="seg" id="enV"><button aria-selected="true" data-env="p">⏳ Por llegar</button><button aria-selected="false" data-env="l">✅ Llegaron</button></div>
    <div id="enL"></div><button class="btn" id="enN" style="width:100%;margin-top:10px;background:#EA580C">➕ Llegó sin confirmar</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,async()=>{
-   const carga=async()=>{try{const [a,b]=await Promise.all([rsvpCol(e).get(),llegCol(e).get()]);L=a.docs.map(d=>Object.assign({id:d.id},d.data()));G={};b.docs.forEach(d=>G[d.id]=d.data());pinta()}catch(x){$("#enT").textContent="No se pudo cargar";$("#enL").innerHTML=`<p class="small muted">Si el error sigue, hay que pegar las reglas nuevas en Firebase (${esc(errCod(x))}).</p>`}};
+   const carga=async()=>{try{const [a,b]=await Promise.all([rsvpCol(e).get(),llegCol(e).get()]);L=a.docs.map(d=>Object.assign({id:d.id},d.data()));G={};b.docs.forEach(d=>G[d.id]=d.data());pinta();L.forEach(r=>{const g=G[r.id];if(g&&g.de==null&&r.de){const n=Object.assign({},g,{de:r.de});llegCol(e).doc(r.id).set(n).then(()=>{G[r.id]=n}).catch(()=>{})}})}catch(x){$("#enT").textContent="No se pudo cargar";$("#enL").innerHTML=`<p class="small muted">Si el error sigue, hay que pegar las reglas nuevas en Firebase (${esc(errCod(x))}).</p>`}};
    const pinta=()=>{const n=L.length,ll=L.filter(r=>G[r.id]).length;$("#enT").textContent=`Llegaron ${ll} de ${n}`;$("#enB").style.width=(n?Math.round(ll*100/n):0)+"%";
      $("#enV").querySelectorAll("[data-env]").forEach(b=>{b.setAttribute("aria-selected",b.dataset.env===ver);b.textContent=b.dataset.env==="p"?`⏳ Por llegar · ${n-ll}`:`✅ Llegaron · ${ll}`});
      const Q=nrmN(q),R=L.filter(r=>(ver==="l")===!!G[r.id]&&(!Q||nrmN(r.n).includes(Q)||String(r.w||"").includes(q.replace(/\D/g,"")||"~"))).sort((a,b)=>ver==="l"?(G[b.id].t-G[a.id].t):String(a.n).localeCompare(b.n,"es"));
@@ -6591,7 +6640,7 @@ async function entModo(e){let L=[],G={},q="",ver="p";const yoN=miNombreCorto()||
    $("#enQ2").oninput=x=>{q=x.target.value;pinta()};$("#enR").onclick=()=>carga();
    $("#enV").onclick=x=>{const b=x.target.closest("[data-env]");if(!b)return;ver=b.dataset.env;pinta()};
    $("#enL").onclick=async x=>{const ok=x.target.closest("[data-enl]"),un=x.target.closest("[data-enu]");
-     if(ok){const id=ok.dataset.enl,d={t:Date.now(),por:store.uid,pn:yoN};ok.disabled=true;try{await llegCol(e).doc(id).set(d);G[id]=d;try{navigator.vibrate&&navigator.vibrate(30)}catch(z){}pinta()}catch(z){ok.disabled=false;toast("No se pudo marcar ("+errCod(z)+")")}}
+     if(ok){const id=ok.dataset.enl,rr=L.find(y=>y.id===id)||{},d={t:Date.now(),por:store.uid,pn:yoN,de:rr.de||""};ok.disabled=true;try{await llegCol(e).doc(id).set(d);G[id]=d;try{navigator.vibrate&&navigator.vibrate(30)}catch(z){}pinta()}catch(z){ok.disabled=false;toast("No se pudo marcar ("+errCod(z)+")")}}
      if(un){if(!confirmar2(un))return;const id=un.dataset.enu;try{await llegCol(e).doc(id).delete();delete G[id];pinta()}catch(z){toast("No se pudo ("+errCod(z)+")")}}};
    $("#enN").onclick=()=>entNuevo(e,L,G,()=>{ver="l";pinta()});
    await carga()})}
@@ -6602,7 +6651,7 @@ function entNuevo(e,L,G,fin){const inv={};(e.lid||[]).forEach(x=>inv[x.uid]=x.n)
   $("#ennOk").onclick=async()=>{const n=$("#ennN").value.trim().replace(/\s+/g," "),w=$("#ennW").value.replace(/\D/g,""),iv=$("#ennI").value;
     if(n.length<2){toast("Escriba el nombre");return}if(w.length<7){toast("Escriba su WhatsApp");return}if(!iv){toast("Elija quién lo invitó");return}
     const de=iv==="-"?"":iv,dn=iv==="-"?"":String(inv[iv]||"").slice(0,60),id="p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),now=Date.now();
-    $("#ennOk").disabled=true;try{await rsvpCol(e).doc(id).set({n:n.slice(0,60),w:w.slice(0,15),cc:w.length>8?"":"504",de,dn,t:now});const g={t:now,por:store.uid,pn:miNombreCorto()||"",p:1};await llegCol(e).doc(id).set(g);
+    $("#ennOk").disabled=true;try{await rsvpCol(e).doc(id).set({n:n.slice(0,60),w:w.slice(0,15),cc:w.length>8?"":"504",de,dn,t:now});const g={t:now,por:store.uid,pn:miNombreCorto()||"",p:1,de};await llegCol(e).doc(id).set(g);
       L.push({id,n,w,de,dn,t:now});G[id]=g;box.remove();$("#enN").hidden=false;toast("✅ "+n.split(" ")[0]+" registrado");fin&&fin()}catch(z){$("#ennOk").disabled=false;toast("No se pudo registrar ("+errCod(z)+")")}}}
 async function rsvpVer(e){let L=[];openSheet(`<h2>📝 Confirmados</h2><p class="small muted" style="margin:0">${esc(e.bx?evaLarga(e):e.tipo==="gran"?"Gran evento":"Junta de negocios")} · ${esc(e.ciudad||"En línea")} · ${esc(evaCuando(e))}</p><div id="rsL"><p class="small muted">Cargando…</p></div><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,async()=>{
   try{L=await rsvpLeer(e);rsvpN[e.id]={n:L.length,t:Date.now(),L}}catch(x){$("#rsL").innerHTML=`<p class="small muted">No se pudo cargar la lista. Si el error sigue, hay que pegar las reglas nuevas en Firebase.</p>`;return}
@@ -6652,7 +6701,7 @@ let rsvpRevT=0;async function rsvpRevisar(){if(!store.db||!store.uid||!EVA||Date
       else{c={name:String(r.n||"").slice(0,80),cc:String(r.cc||"504"),phone:String(r.w||"").slice(0,15),stage:"Contactado",note:nt,next:e.fecha,updated:Date.now()};try{const id=await store.saveContact(c);if(id){c.id=id;contacts.push(c)}}catch(z){}}}
     if(vis){const f=String(nuevos[0].n||"").split(" ")[0];avisoTop(nuevos.length>1?`🎉 ${nuevos.length} personas confirmaron`:`🎉 ${f} confirmó su asistencia`,(e.bx?evaLarga(e):e.tipo==="gran"?"Gran evento":"Junta de negocios")+" · "+niceDate(e.fecha)+" · ya está en su CRM",()=>rsvpVer(e))}
     try{renderCRM()}catch(z){}}catch(x){}}}
-document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(()=>{try{rsvpRevisar()}catch(e){}},1500)});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(()=>{try{rsvpRevisar()}catch(e){}try{llegRevisar()}catch(e){}},1500)});
 async function abrirCrearEva(){if(!store.db||!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}
   const ah=ahYo();if(ah&&ah.pend){openSheet(`<h2>🔒 Aún no puede crear juntas</h2><p>Para crear juntas y eventos necesita tener su ahorro al día.</p><button class="btn" style="width:100%;background:#25D366;color:#fff" onclick="ahHablarSp()">💬 Hablar con mi patrocinador</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`);return}
   if(!(fotosFs||[]).length)try{await cargarFotos()}catch(e){}
@@ -7305,7 +7354,7 @@ function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e
     return `<div class="contact ${op?"open":""}" style="--pc:${pc}"><div class="ch" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}">
     <div class="av" style="box-shadow:0 0 0 2px ${pc}">${c.stage==="Socio"||c.stage==="Cliente"?"✓":esc(initials(c.name))}</div>
     <div class="mid"><span class="nm">${esc(c.name)}${late?'<span class="fdot" style="background:var(--bad)" title="Seguimiento atrasado"></span>':today?'<span class="fdot" style="background:var(--warn)" title="Seguimiento hoy"></span>':""}</span>
-    ${!cer&&crmV2On()?crmV2Tag(c):""}<div class="pbar" aria-label="Avance: ${esc(c.stage)}">${FLOW.map((_,i)=>`<i class="${i<k?"on":""}"></i>`).join("")}</div></div>
+    ${!cer&&crmV2On()?crmV2Tag(c):""}${!cer&&acc3On()?reuHTML(c,op):""}<div class="pbar" aria-label="Avance: ${esc(c.stage)}">${FLOW.map((_,i)=>`<i class="${i<k?"on":""}"></i>`).join("")}</div></div>
     ${pipeOk()?`<span class="stpct"><b style="color:${pc}">${stPct(c)}%</b><span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage==="No interesado"?"No":c.stage)}</span>${stFrio(c)?`<em>⚠️ ${stDias(c)} días</em>`:""}</span>`:`<span class="chip ${STAGE_C[c.stage]||"c-brand"}">${esc(c.stage==="No interesado"?"No":c.stage)}</span>`}<span class="chev">›</span></div>
     <div class="cbody">${!cer&&crmV2On()?crmV2(c,late,today):`${cer?`<div style="display:flex;gap:6px;flex-wrap:wrap;width:100%;margin-bottom:6px"><button class="btn sm ghost" data-cah="${esc(c.id)}">💰 Su ahorro</button><button class="btn sm ghost" data-cref="${esc(c.id)}">💬 Pedir referidos</button>${c.stage==="Cliente"?`<button class="btn sm gold" data-cneg="${esc(c.id)}">🚀 Invitarlo al negocio</button>`:""}</div>`:flHTML(c)}<div class="info">
     ${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}${c.note?`<span class="note">${esc(c.note)}</span>`:""}${sgHTML(c)}
@@ -7423,7 +7472,7 @@ function crmAhorro(c){const a=ahDe([c.email],[c.phone?waNum(c.phone,c.cc):""]),p
    <p style="margin:0">${sin?"Todavía no hay reporte de ahorros cargado.":pend?`<span class="chip c-bad" style="font-weight:700">🔴 Ahorro pendiente</span>`:`<span class="chip c-good" style="font-weight:700">🚢 Ahorro al día</span>`}</p>
    <p class="small muted" style="margin:0">${pend?"Un recordatorio a tiempo ayuda a que no pierda sus beneficios.":"No aparece en el reporte de pendientes de inCruises."}${c.email?"":" Para revisarlo mejor, agregue su correo en el contacto."}</p>
    <button class="btn" id="cahW" style="width:100%;background:#25D366;color:#fff">${pend?"💬 Recordarle su ahorro":"💬 Saludarle"}</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#cahW").onclick=()=>crmWa(c,pend?"ah":"hola")})}
-$("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNumGo")){salaCompartir();return}
+$("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNumGo")){salaCompartir();return}{const ru=e.target.closest("[data-reu]");if(ru){e.stopPropagation();const c=contacts.find(y=>y.id===ru.dataset.reu);if(c)reuSheet(c,ru.dataset.k||"u");return}}
   {const x=e.target.closest("[data-cvnum]");if(x){try{LS.set("cvNumOp",x.dataset.cvnum==="1"?1:0)}catch(y){}renderCRM();return}}
   {const x=e.target.closest("[data-cvtk]");if(x){const c=contacts.find(y=>y.id===x.dataset.cvtk);if(c)cvViaje(c);return}}
   {const x=e.target.closest("[data-cvmas]");if(x){const c=contacts.find(y=>y.id===x.dataset.cvmas);if(c)cvMasSheet(c);return}}{const fz=e.target.closest("[data-frio]");if(fz){crmFrio=fz.dataset.frio==="1";renderCRM();return}}{const mb=e.target.closest("[data-cmas]");if(mb){const k=mb.dataset.cmas;crmMas.has(k)?crmMas.delete(k):crmMas.add(k);renderCRM();return}const so=e.target.closest("[data-stopen]");if(so){crmSt.add(so.dataset.stopen);renderCRM();return}}const st=e.target.closest("[data-st]");
@@ -9199,7 +9248,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114193135";var busy=false,pend=null;
+(function(){var V="20261114201015";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
