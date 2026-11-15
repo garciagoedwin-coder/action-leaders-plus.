@@ -2129,7 +2129,7 @@ function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histS
     ra.innerHTML=h;
     if(ra.dataset.st!==st){ra.firstChild&&ra.firstChild.classList.add("shake");if(st==="ok"&&ra.dataset.st)rutJust=true;if(st==="ok"){try{if(LS.get("rutConf")!==TODAY){LS.set("rutConf",TODAY);setTimeout(()=>confeti($("#rutCard"),46),ra.dataset.st?350:900)}}catch(e){}}}ra.dataset.st=st;ra.dataset.key=key;
     const g=ra.querySelector("[data-rgo]");if(g)g.onclick=()=>{const k=g.dataset.rgo,t=$("#tasks");const el=k==="historia"?(day.hAtr&&t.querySelector("[data-hfly]"))||t.querySelector("[data-hist]"):t.querySelector(`[data-k="${k}"]`)||t.querySelector(`[data-inc="${k}"]`);if(el)el.click()}}}
-  try{rut3(hechas,RL.length)}catch(e){}declAccMarca();rutFold(!falta);const rc=$("#rutCard");if(rc)rc.classList.toggle("done",!falta);clearTimeout(window._rcT);window._rcT=setTimeout(()=>{try{renderComp(true)}catch(e){}},400);
+  try{rut3(hechas,RL.length)}catch(e){}declAccMarca();try{declStrip()}catch(e){}rutFold(!falta);const rc=$("#rutCard");if(rc)rc.classList.toggle("done",!falta);clearTimeout(window._rcT);window._rcT=setTimeout(()=>{try{renderComp(true)}catch(e){}},400);
 }
 const RT3N={contactos:"📝 Nuevos contactos",presentaciones:"🎯 Presentar mi negocio",seguimientos:"🔁 Hacer seguimiento"};
 function rut3(h,n){const rc=$("#rutCard");if(!rc)return;let s=$("#rutSeg");if(!acc3On()){if(s)s.remove();return}
@@ -5292,9 +5292,12 @@ function declStrip(){const el=$("#declStrip");if(!el)return;if(!store.uid||esSol
     el.innerHTML=`<span class="di">☀️</span><div class="tx"><b>Todavía puede hacer su declaración de hoy</b><span>Reto 21 días · 2 minutos</span></div><span class="db">Declarar ›</span><button type="button" class="dTx" aria-label="Ocultar por hoy">✕</button>`;
     el.onclick=e=>{if(e.target.closest(".dTx")){e.stopPropagation();try{LS.set("declTX",declHoy())}catch(x){}el.hidden=true;return}declAbrir()};el.hidden=false;return}
   if(h>=12&&!acc){el.hidden=true;return}
-  const ok=declHecha(),r=declRacha(),k=(ok?"1":"0")+r+"|"+(h>=12)+"|"+(acc?acc.k+acc.t:"");if(el.dataset.k===k&&!el.hidden)return;el.dataset.k=k;
+  const ok=declHecha(),r=declRacha(),k=(ok?"1":"0")+r+"|"+(h>=12)+"|"+(acc?acc.k+acc.t+(declAccHecha(acc)?"✓":""):"");if(el.dataset.k===k&&!el.hidden)return;el.dataset.k=k;
   el.className="decl"+(ok?" ok":"")+(acc&&h>=12?" acc":"");
   const accH=acc?`<div class="dAc" data-dac="1">🎯 Su acción de hoy: ${esc(acc.t)} ›</div>`:"";
+  // 15 nov (Edwin): si la acción declarada ya se cumplió en la rutina de hoy (o la marcó hecha), no se vuelve a pedir
+  if(acc&&h>=12&&declAccHecha(acc)){el.hidden=true;return}
+  if(acc&&h>=12&&declAccManual(acc)){el.innerHTML=`<span class="di">🎯</span><div class="tx"><b>Su acción de hoy</b><span>${esc(acc.t)}</span></div><span class="db" style="background:var(--brand);color:#fff">Hacerla ›</span><button type="button" class="dTx dOk" aria-label="Ya la hice" style="width:auto;padding:0 10px;border-radius:99px;font-weight:800">✓ Ya</button>`;el.onclick=e=>{if(e.target.closest(".dOk")){e.stopPropagation();try{LS.set("declAccOk",declHoy())}catch(x){}el.hidden=true;toast("🎯 ¡Acción de hoy cumplida!");return}declAccIr(acc)};el.hidden=false;return}
   if(acc&&h>=12){el.innerHTML=`<span class="di">🎯</span><div class="tx"><b>Su acción de hoy</b><span>${esc(acc.t)}</span></div><span class="db" style="background:var(--brand);color:#fff">Hacerla ›</span>`;el.onclick=()=>declAccIr(acc);el.hidden=false;return}
   const d21=ok?((r-1)%21)+1:(r%21)+1; // 11 nov (Edwin): Reto 21 días en el mismo banner
   el.innerHTML=ok?`<span class="di">✓</span><div class="tx"><b>Declaración de hoy hecha</b><span>${d21===21?"🏆 ¡Completó su reto de 21 días!":"¡Gran inicio de día!"}</span></div><div class="n21"><b>${d21}</b><small>DE 21</small></div>${accH}`
@@ -5303,6 +5306,9 @@ function declStrip(){const el=$("#declStrip");if(!el)return;if(!store.uid||esSol
 // 12 nov (Edwin): acción más importante del día al terminar la declaración (profile.decA {d,k,t}) + música épica
 const DECL_ACC=[{k:"pres",ic:"🎤",t:"Presentar el plan a 1 persona",s:"Lo que más acerca a un socio nuevo",r:"presentaciones"},{k:"seg",ic:"🔁",t:"Dar seguimiento a 3 prospectos",r:"seguimientos"},{k:"lista",ic:"➕",t:"Agregar 5 personas a mi lista",r:"contactos"},{k:"l3",ic:"📞",t:"Hacer una llamada de 3"},{k:"otra",ic:"✏️",t:"Otra: escribirla yo"}];
 function declAcc(){const a=profile.decA;return a&&a.d===declHoy()&&a.t?a:null}
+const DECL_N={pres:1,seg:3,lista:5};
+function declAccHecha(a){try{if(!a)return false;if(LS.get("declAccOk")===declHoy())return true;const o=DECL_ACC.find(x=>x.k===a.k);if(!o||!o.r)return false;const v=+(day&&day[o.r])||0;return v>=(DECL_N[a.k]||1)}catch(e){return false}}
+function declAccManual(a){const o=a&&DECL_ACC.find(x=>x.k===a.k);return !o||!o.r}
 function declAccIr(a){const o=DECL_ACC.find(x=>x.k===a.k);try{go("inicio")}catch(e){}
   if(o&&o.k==="l3"){try{pedirL3(null)}catch(e){}return}
   if(o&&o.r){setTimeout(()=>{const t=$("#tasks");if(!t)return;rutOpen=true;try{rutFold(false)}catch(e){}const b=t.querySelector(`[data-inc="${o.r}"]`);const tk=b&&b.closest(".task");if(tk){tk.scrollIntoView({behavior:"smooth",block:"center"});setTimeout(()=>b.click(),500)}},250);return}
@@ -9264,7 +9270,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115003748";var busy=false,pend=null;
+(function(){var V="20261115005510";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
