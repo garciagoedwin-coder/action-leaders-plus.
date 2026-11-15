@@ -1789,7 +1789,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
         <div class="row" style="gap:10px;align-items:center"><div class="bar grow" style="margin:0"><i id="dayBar" style="width:0%"></i></div><span class="small" style="font-weight:800;white-space:nowrap" id="dayPct">0 de 5</span></div>
         <div id="rutAlert"></div>
         <div class="list" id="tasks"></div>
-        <div class="row" style="gap:8px"><button class="btn sm" id="rutVerRacha" type="button" style="flex:1">🔥 Ver Mi Racha</button><button class="btn sm ghost" id="rutVerIdx" type="button" style="flex:1">⚡ Índice de Duplicación</button></div>
+        <div class="row" style="gap:8px"><button class="btn sm" id="rutVerRacha" type="button" style="flex:1">🔥 Ver Mi Racha</button><button class="btn sm ghost" id="rutVerIdx" type="button" style="flex:1" hidden>⚡ Índice de Duplicación</button></div>
       </div>
       <div class="card" id="acc3" hidden></div>
       <div class="card" id="accesos" hidden></div>
@@ -9306,7 +9306,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115013322";var busy=false,pend=null;
+(function(){var V="20261115014450";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
