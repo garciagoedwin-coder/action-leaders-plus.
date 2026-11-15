@@ -345,6 +345,7 @@ export function avDestino(modo, m) {
   if (modo === "turnos") return "tur";
   if (modo === "salapend") return "sala";
   if (modo === "recodia") return /Hoy es su día/.test(t) ? "recoyo" : "recodia";
+  if (modo === "msg" && /Presentación virtual/i.test(t)) return "pv";
   if (modo === "msg" && /Networker Pro/i.test(t)) return "np";
   if (modo === "msg" && /Materiales|Guía gratis/i.test(t)) return "mat";
   return "inicio";

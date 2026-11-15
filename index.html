@@ -5880,6 +5880,7 @@ function avIr(k){try{
   if(k==="reco"){setTimeout(async()=>{try{if(!mios||!mios.length)await loadMios()}catch(e){}try{recoLista()}catch(e){}},300);return}
   if(k==="apr"){aprAbrir();return}
   if(k==="aud"){audAbrir();return}
+  if(k==="pv"){go("inicio");setTimeout(()=>{try{salaMenu()}catch(e){}},350);return}
   if(k==="sala"){LS.set("salaOn",1);loadSala(true).then(()=>abrirSala(),()=>abrirSala());return}
   if(k==="tur"){const run=()=>{const P=turMisP();if(P.length)turResponder(P[0].e,P[0].k);else turAbrir()};turCargar(true).then(run,run);return}
   if(k==="rep"){if(isAdmin)repAdmin();return}
@@ -7874,7 +7875,16 @@ const CURSOS=[{k:"presentacion-impresa",t:"Aprende a dar una Presentación Impre
 let cursoOpen={};
 function cursosL(){const X=((T.config||{}).cursos||[]).filter(c=>c&&c.k&&c.yt);return X.concat(CURSOS.filter(c=>!X.some(x=>x.k===c.k)))}
 // ---------- Guía paso a paso dentro de la app ("Descubra su app") ----------
-const TOURS={agenda:{t:"📅 Su Agenda",d:"Llamadas de 3, lanzamientos, juntas y citas",min:1,steps:[
+const TOURS={sala:{t:"✈️ Su presentación virtual",d:"Verla, enviarla y dar el siguiente paso",min:2,nuevo:"2026-11-29",steps:[
+  {go:"inicio",act:()=>{try{renderAcc3()}catch(e){}},sel:'[data-a3="sala"]',si:1,tx:"Su <b>Presentación virtual</b> está en Inicio › <b>Accesos directos</b>. Edwin le presenta el negocio a su prospecto en 20 minutos, con su nombre y su foto."},
+  {act:()=>{try{salaMenu()}catch(e){}},sel:"#smVer",si:1,tx:"Primero toque <b>«Verla yo desde el inicio»</b> y véala completa. Al terminarla <b>se le habilita</b> el envío a sus prospectos."},
+  {sel:"#smEnv",si:1,tx:"Después use <b>«Enviarla a un prospecto»</b>: elige a la persona y le sale por WhatsApp con su nombre."},
+  {go:"crm",act:()=>{try{closeSheet&&closeSheet();crmV="proc";stageF="Todos";const c=(contacts||[]).find(x=>!["Socio","Cliente"].includes(x.stage));openC=c?c.id:null;renderCRM()}catch(e){}},sel:"#contactList .contact.open [data-sala]",si:1,tx:"También desde su <b>CRM</b>: abra un contacto y toque <b>«✈️ Enviarle mi presentación virtual»</b>."},
+  {sel:"#contactList .contact.open .cvTkL",si:1,tx:"Aquí ve su <b>pase de abordar</b>: si ya abordó, si terminó y cuántas preguntas respondió. Si todavía no aborda, toque <b>«↻ Reenviar»</b>."},
+  {sel:"#contactList .contact.open .cvN",si:1,tx:"El <b>«👉 Siguiente paso»</b> le dice qué hacer después: si respondió todo, enviarle su enlace; si no, preguntarle qué fue lo que más le gustó."},
+  {sel:"#bellBtn",si:1,tx:"Cada vez que su prospecto avanza o responde, le llega un <b>aviso al teléfono</b> y queda guardado aquí en la campanita 🔔.",fin:"¡Listo! Véala completa hoy y envíela a su primer prospecto ✈️ #HASTAQUEFUNCIONE"},
+  {go:"equipo",act:()=>{try{eqTab="mios";setSeg("eqSeg","mios");renderEquipo()}catch(e){}},sel:".svR",si:1,tx:"Si usted tiene equipo: en <b>Mi equipo</b> está <b>«✈️ Presentación virtual del equipo»</b>. Ahí ve quién ya la vio y a quién recordarle con 💬.",fin:"¡Listo! Véala completa hoy y envíela a su primer prospecto ✈️ #HASTAQUEFUNCIONE"}]},
+ agenda:{t:"📅 Su Agenda",d:"Llamadas de 3, lanzamientos, juntas y citas",min:1,steps:[
   {go:"agenda",sel:"#agBig",tx:"Aquí nace todo lo que usted agenda. Son 4 botones, uno para cada cosa."},
   {sel:'[data-ab="l3"]',tx:"📞 <b>Llamada de 3</b>: elija a su prospecto del CRM y a un líder de su línea. Al líder le llega a su app para confirmar."},
   {sel:'[data-ab="lz"]',tx:"🚀 <b>Lanzamiento</b>: planee el lanzamiento de su negocio con su líder. La app le crea su flyer para invitar."},
@@ -7920,7 +7930,7 @@ function tourPinta(st,e){let o=$("#tourOv");if(!o){o=document.createElement("div
   $("#tourN").onclick=()=>{if(ult){tourCerrar(true);return}tourSt.i++;tourPaso()}}
 function tourCard(){const D=LS.get("tourOk")||{},K=Object.keys(TOURS).filter(k=>!TOURS[k].ok||TOURS[k].ok()),h=K.filter(k=>D[k]).length;
   return `<div class="card" style="gap:8px;background:linear-gradient(135deg,#0A7DAD,#2AC1F1);color:#fff;border:0"><b style="font-size:17px">🧭 Descubra su app</b><p class="small" style="margin:0;opacity:.92">Guías paso a paso dentro de la app. Toque una y la app le enseña dónde tocar.</p><p class="small" style="margin:0;font-weight:800">${h} de ${K.length} completadas</p></div>`
-   +K.map(k=>{const t=TOURS[k],ok=!!D[k];return `<button type="button" class="card row between" data-tour="${k}" style="gap:10px;text-align:left;cursor:pointer"><span class="grow"><b>${esc(t.t)}</b><small class="muted" style="display:block">${esc(t.d)} · ${t.min} min</small></span><span class="chip ${ok?"c-good":"c-gold"}">${ok?"✓ Visto":"Ver ›"}</span></button>`}).join("")}
+   +K.map(k=>{const t=TOURS[k],ok=!!D[k];return `<button type="button" class="card row between" data-tour="${k}" style="gap:10px;text-align:left;cursor:pointer"><span class="grow"><b>${esc(t.t)}</b>${t.nuevo&&!ok&&new Date().toISOString().slice(0,10)<=t.nuevo?` <span class="chip" style="background:#E8590C;color:#fff;font-size:10px;padding:2px 7px;vertical-align:2px">NUEVO</span>`:""}<small class="muted" style="display:block">${esc(t.d)} · ${t.min} min</small></span><span class="chip ${ok?"c-good":"c-gold"}">${ok?"✓ Visto":"Ver ›"}</span></button>`}).join("")}
 // ---------- Presentación interactiva (31 oct): el socio presenta desde la app ----------
 const PRES={n:21,img:i=>"media/pres/s"+String(i).padStart(2,"0")+".jpg",
   q:{2:{k:"r1",t:"¿Qué tendría más valor para ti en este momento?",o:["✈️ Viajar más","💼 Emprender un negocio","⭐ Ambas cosas"]},
@@ -8219,7 +8229,7 @@ function aca3(b){const hd=$("#v-academia > .row.between");if(hd){const e=hd.quer
       return `<button type="button" class="a3V${ok?" ok":dis?"":" lk"}" data-npv3="${n}"><span class="th" style="${yt(v.yt)}"></span><b>${n} · ${esc(v.t)}</b><small>${ok?"✓ Visto":dis?"Disponible":esc(E.motivo(n)||"Pronto")}</small></button>`}).join("")+`</div>`;
     const I=npIns();h+=`<div class="a3S"><b>🏅 Mis insignias</b><span>${I.filter(x=>x.ok).length} de ${I.length}</span></div><button type="button" class="a3Ins" id="a3Ins">${npInsHTML()}<em>Plan de Inicio Rápido ›</em></button>`}
   if(CL.length)h+=`<div class="a3S"><b>📚 Otros cursos</b><span>${nOk} de ${CL.length}${nOk===CL.length?" ✓":""}</span></div><div class="a3G">`+CL.map(c=>`<button type="button" class="a3C" data-c3="${esc(c.k)}"><span class="th" style="${yt(c.yt)}"></span><b>${esc(c.t)}</b><small class="${cv[c.k]?"ok":""}">${cv[c.k]?"✓ Completado":"Ver curso"+(c.pdf?" · 📄":"")}</small></button>`).join("")+`</div>`;
-  try{const D=LS.get("tourOk")||{},K=Object.keys(TOURS).filter(k=>!TOURS[k].ok||TOURS[k].ok());if(K.length)h+=`<div class="a3S"><b>🧭 Guías de la app</b><span>${K.filter(k=>D[k]).length} de ${K.length}</span></div><div class="a3Gu">`+K.map(k=>`<button type="button" data-tour="${k}"><span class="grow"><b>${esc(TOURS[k].t)}</b><small>${esc(TOURS[k].d)} · ${TOURS[k].min} min</small></span><em class="${D[k]?"ok":""}">${D[k]?"✓ Visto":"Ver ›"}</em></button>`).join("")+`</div>`}catch(e){}
+  try{const D=LS.get("tourOk")||{},K=Object.keys(TOURS).filter(k=>!TOURS[k].ok||TOURS[k].ok());if(K.length)h+=`<div class="a3S"><b>🧭 Guías de la app</b><span>${K.filter(k=>D[k]).length} de ${K.length}</span></div><div class="a3Gu">`+K.map(k=>`<button type="button" data-tour="${k}"><span class="grow"><b>${esc(TOURS[k].t)}</b>${TOURS[k].nuevo&&!D[k]&&new Date().toISOString().slice(0,10)<=TOURS[k].nuevo?` <span style="background:#E8590C;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:99px;vertical-align:2px">NUEVO</span>`:""}<small>${esc(TOURS[k].d)} · ${TOURS[k].min} min</small></span><em class="${D[k]?"ok":""}">${D[k]?"✓ Visto":"Ver ›"}</em></button>`).join("")+`</div>`}catch(e){}
   h+=`<button type="button" class="a3Caja" id="a3Caja"><span>🧰</span><span class="grow"><b>Caja de herramientas</b><small>Materiales, compartir y Prompts IA</small></span><em>›</em></button>`;
   b.innerHTML=h;
   {const nc=b.querySelector("[data-npc]");if(nc)nc.onclick=()=>{const E2=npEstado();if(E2&&E2.fin){npDiploma();return}npCurso()}}
@@ -9336,7 +9346,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115121955";var busy=false,pend=null;
+(function(){var V="20261115123103";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

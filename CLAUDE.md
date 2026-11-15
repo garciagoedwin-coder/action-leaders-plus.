@@ -902,3 +902,8 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - (15 nov, 12:20) Mi equipo: el banner del Índice (mnumSum) quedó solo con el anillo %, «Índice de Duplicación» en grande y «Ver ›».
 - (15 nov, 12:25) Mi equipo: el Índice de Duplicación va arriba de My Dream Team.
 - (15 nov, 12:30) Arreglo: los socios de Mi equipo (mios) usan .uid, no .id → la tarjeta de presentación virtual y el chip salen bien. Índice: anillo 92 px con % en Barlow 27 px; rojo (<40) late y lanza una onda roja; ámbar (<70) borde suave.
+
+## 15 nov — Lanzamiento Presentación virtual
+- Tour Academia `TOURS.sala` (8 pasos, `nuevo:"2026-11-29"` muestra etiqueta NUEVO hasta esa fecha en tourCard y en la lista "Guías de la app").
+- avIr("pv") → Inicio + salaMenu(). enviar.mjs avDestino: msg con "Presentación virtual" → "pv".
+- team.json config.novedad id pv-2026-11-15 (hasta 22 nov). Push msg enviado vía disparo.json.
