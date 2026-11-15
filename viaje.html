@@ -218,7 +218,13 @@ const orLbl=o=>{o=String(o||"").replace(/[^a-z0-9-]/gi,"").toLowerCase().slice(0
 const orig=otroDe?("Se lo compartió "+otroDe).slice(0,60):orLbl(U.get("o")).slice(0,60);
 const verSolo=U.get("ver")==="1"; // el socio revisa su propio link: no registra nada
 const LSg=k=>{try{return JSON.parse(localStorage.getItem("viaje:"+k))}catch(e){return null}},LSs=(k,v)=>{try{localStorage.setItem("viaje:"+k,JSON.stringify(v))}catch(e){}};
-let P=null;try{if(code){const d=await getDoc(doc(db,"perfiles",code));if(d.exists())P=d.data()}}catch(e){}
+// 15 nov: si la lectura falla (señal lenta), reintenta por REST y usa la copia guardada en este teléfono; sin P no sale el socio ni se guarda el avance.
+let P=null;const perfK="perf-"+code;
+const perfRest=async()=>{const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),8000);try{const r=await fetch("https://firestore.googleapis.com/v1/projects/action-leaders-plus-8f1b8/databases/(default)/documents/perfiles/"+encodeURIComponent(code)+"?key=AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM"+["uid","nombre","foto","wa","waS","ref"].map(f=>"&mask.fieldPaths="+f).join(""),{signal:ctl.signal});if(!r.ok)return null;const j=await r.json(),F=j.fields||{},o={};for(const k in F)o[k]=F[k].stringValue!=null?F[k].stringValue:(F[k].integerValue!=null?+F[k].integerValue:"");return o.uid?o:null}catch(e){return null}finally{clearTimeout(tm)}};
+if(code){try{const d=await Promise.race([getDoc(doc(db,"perfiles",code)),new Promise((_,rj)=>setTimeout(()=>rj(new Error("t")),7000))]);if(d.exists())P=d.data()}catch(e){}
+  if(!P||!P.uid)P=await perfRest()||P;
+  if(P&&P.uid){try{localStorage.setItem("viaje:"+perfK,JSON.stringify({uid:P.uid,nombre:P.nombre||"",foto:P.foto||"",wa:P.wa||"",waS:P.waS||"",ref:P.ref||""}))}catch(e){try{localStorage.setItem("viaje:"+perfK,JSON.stringify({uid:P.uid,nombre:P.nombre||"",wa:P.wa||"",waS:P.waS||"",ref:P.ref||""}))}catch(x){}}}
+  else{const c=LSg(perfK);if(c&&c.uid)P=c}}
 const host=P&&P.nombre?String(P.nombre):"",hostF=host.split(/\s+/)[0]||"",hostWa=P?String(P.wa||P.waS||"").replace(/\D/g,""):"";
 const ref=P&&/^https:\/\//.test(String(P.ref||""))?String(P.ref):"";
 const ini=n=>String(n).split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();

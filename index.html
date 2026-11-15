@@ -4121,7 +4121,10 @@ function gestHoja(x,k){const nm=(x.registro||{}).nombre||"Socio",f=nm.split(" ")
 function svDatos(){try{const ok=salaYoOk();let y=LS.get("svYd")||"";if(ok&&!y){const v=salaYo();y=v&&v.t?dkey(new Date(v.t)):TODAY;LS.set("svYd",y)}
   const C=Object.values(salaCache()),E=LS.get("salaEnv")||{},env=Math.max(Object.keys(E).length,C.length),ter=C.filter(v=>(+v.pct||0)>=100||/^\d+$/.test(String(v.pulso||""))).length;
   return{svY:ok?y:"",svE:env,svT:ter}}catch(e){return{}}}
-let svUlt="";function svRevisar(){try{const d=svDatos(),k=JSON.stringify(d);if(k===svUlt)return;const prev=LS.get("svUlt");svUlt=k;if(prev!==k){LS.set("svUlt",k);if(prev!=null||d.svY)pushResumen()}}catch(e){}}
+// 15 nov (Edwin): la landing (destino.html) solo muestra la presentación si el socio ya la vio completa → perfiles/{code}.pv (una escritura por socio).
+function pvPub(){try{if(!store.db||!store.uid||!(regDoc&&regDoc.registro))return;const ok=!!salaYoOk(),k="pvPub:"+store.uid;if(LS.get(k)===(ok?1:0))return;
+  store.db.doc("perfiles/"+miPCode()).set({uid:store.uid,pv:ok},{merge:true}).then(()=>LS.set(k,ok?1:0)).catch(()=>{})}catch(e){}}
+let svUlt="";function svRevisar(){try{pvPub();const d=svDatos(),k=JSON.stringify(d);if(k===svUlt)return;const prev=LS.get("svUlt");svUlt=k;if(prev!==k){LS.set("svUlt",k);if(prev!=null||d.svY)pushResumen()}}catch(e){}}
 function svDe(uid){const x=(constL||[]).find(y=>y.uid===uid);return x?{y:x.svY||"",e:+x.svE||0,t:+x.svT||0,ok:!!x.svY}:null}
 function svChip(x){const v=svDe(x.uid||x.id);if(!v)return"";return v.ok?`✈️ Habilitado${v.e?" · "+v.e+" enviadas":""}${v.t?" · "+v.t+" ✓":""}`:"⏳ Aún no ve su presentación"}
 function svResumen(){try{if(!constL&&(mios||[]).length&&!window._svL){window._svL=1;loadConst().then(()=>{try{if(eqTab==="mios")renderEquipo()}catch(e){}}).catch(()=>{})}if(!constL||!(mios||[]).length)return"";const L=(mios||[]).map(x=>({x,v:svDe(x.uid||x.id)})).filter(o=>o.v);if(!L.length)return"";
@@ -6901,7 +6904,7 @@ async function memCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su 
 function destUrl(nombre,cid){let u="https://actionleadersplus.com/destino.html?de="+miPCode();if(nombre)u+="&p="+encodeURIComponent(String(nombre).trim().slice(0,50));if(cid)u+="&c="+encodeURIComponent(cid);return u}
 function destMsg(nombre,u){const f=String(nombre||"").trim().split(/\s+/)[0]||"",yo=miNombreCorto()||"";
   return `¡Hola${f?", "+f:""}! 😊\n\nTe comparto esta página para que veas cómo *viajar más, gastar menos y emprender desde tu celular* ✈️\n\nAhí puedes ver la presentación de 20 minutos y calcular tu próximo crucero:\n👉 ${u}\n\nCuando la veas, me cuentas qué fue lo que más te gustó. 🙌${yo?"\n\n*"+yo+"*":""}`}
-function destCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}let listo=false;
+function destCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}if(!salaYoOk()&&!window._syAdm){salaYoGate();return}let listo=false;
   openSheet(`<h2>🌐 Mi página</h2><p class="small muted" style="margin:0 0 10px">Su landing completa: la presentación virtual, cómo funciona la membresía, el simulador de cruceros y testimonios. Le avisa cuando alguien la abre.</p>
    <div class="field"><label for="dsN">¿Para quién es? (opcional)</label><input class="inp" id="dsN" placeholder="Nombre de la persona" maxlength="50"></div>
    <div style="display:grid;gap:8px"><button class="btn" id="dsWa" style="background:#25D366;color:#fff" disabled>📲 Enviar por WhatsApp</button><button class="btn ghost" id="dsCp" disabled>🔗 Copiar enlace</button><button class="btn ghost" id="dsVer" disabled>👀 Ver mi página</button></div>
@@ -6971,7 +6974,8 @@ async function salaCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su
   const oriTx=()=>{if(!ori)return "";const k=(SALA_OR.find(x=>x[0]===ori)||[])[2]||"otro",n=salaSlug(($("#scON")||{}).value||"");return k+(n?"-"+n:"")};
   openSheet(`<h2>✈️ Enviar mi presentación</h2><p class="small muted" id="scSub" style="margin:0 0 10px"></p>
    <div class="seg" id="scTabs" role="tablist" style="margin-bottom:12px"><button type="button" data-t="p">👤 Una persona</button><button type="button" data-t="o">📍 Por origen</button></div>
-   <div id="scP"><div class="field"><label for="scN">Nombre de la persona</label><input class="inp" id="scN" placeholder="Nombre y apellido" maxlength="50"></div>
+   <div id="scP"><div class="field"><label for="scQ">🔎 ¿Ya está en su CRM? Búsquela</label><input class="inp" id="scQ" placeholder="Escriba su nombre" autocomplete="off" maxlength="40"><div id="scQL" style="display:grid;gap:6px;margin-top:6px"></div></div>
+    <p class="small muted" style="margin:-4px 0 8px;font-weight:700">o escriba una persona nueva:</p><div class="field"><label for="scN">Nombre de la persona</label><input class="inp" id="scN" placeholder="Nombre y apellido" maxlength="50"></div>
     <div class="field"><label for="scT">WhatsApp <span class="muted">(opcional)</span></label><div class="row" style="gap:6px"><select class="inp" id="scCC" style="max-width:40%">${PAISES.map(([n,c])=>`<option value="${c}" ${c===(LS.get("lastCC")||"504")?"selected":""}>+${c} ${esc(n)}</option>`).join("")}</select><input class="inp grow" id="scT" type="tel" inputmode="tel" placeholder="Número"></div></div>
     <label class="row" style="gap:8px;font-size:14px;font-weight:600;margin:0 0 12px"><input type="checkbox" id="scCrm" checked> ➕ Guardarla también en mi CRM</label></div>
    <div id="scO" hidden><div class="scAv">🔒 <b>Este link se envía en privado, uno por uno.</b> El origen solo sirve para saber de dónde viene cada persona. No lo publique en grupos.</div>
@@ -6983,6 +6987,11 @@ async function salaCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su
    $("#scTabs").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;tab=b.dataset.t;LS.set("scTab",tab);pinta()};
    $("#scOr").onclick=e=>{const b=e.target.closest("[data-o]");if(!b)return;ori=b.dataset.o;$("#scOr").querySelectorAll("[data-o]").forEach(x=>x.classList.toggle("on",x===b));pinta()};
    $("#scON").oninput=pinta;pinta();
+   // 15 nov (Edwin): elegir un prospecto que ya está en el CRM → mismo envío que desde su tarjeta (enviarSala)
+   const nrm=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+   $("#scQ").oninput=()=>{const q=nrm($("#scQ").value.trim());const L=q.length<2?[]:contacts.filter(c=>c.name&&nrm(c.name).includes(q)).slice(0,5);
+     $("#scQL").innerHTML=L.map(c=>`<button type="button" class="btn ghost" data-scc="${esc(c.id)}" style="justify-content:space-between;text-align:left"><span>👤 ${esc(c.name)}</span><small class="muted">${esc(c.stage||"Nuevo")}</small></button>`).join("")+(q.length>=2&&!L.length?'<p class="small muted" style="margin:0">No está en su CRM: escríbala abajo como nueva.</p>':"")};
+   $("#scQL").onclick=e=>{const b=e.target.closest("[data-scc]");if(!b)return;const c=contacts.find(x=>x.id===b.dataset.scc);if(!c)return;closeSheet();setTimeout(()=>enviarSala(c),250)};
    // 13 nov: todo SÍNCRONO al tocar (iPhone bloquea copiar/abrir después de un await). La sala se prepara al abrir la hoja.
    let listo=!!LS.get("salaPerf");const btns=["#scWa","#scCp","#scSl"];if(!listo){btns.forEach(b=>$(b).disabled=true);salaPrep().then(ok=>{listo=ok;btns.forEach(b=>{const x=$(b);if(x)x.disabled=!ok})})}
    const prep=()=>{if(!listo){toast("Un momento, preparando su presentación…");return null}LS.set("salaOn",1);
@@ -9389,7 +9398,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115154221";var busy=false,pend=null;
+(function(){var V="20261115162153";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

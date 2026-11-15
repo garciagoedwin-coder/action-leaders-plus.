@@ -217,7 +217,10 @@ $("sIn").onchange=()=>sim(1);
 // ----- socio que comparte -----
 let P=null,db=null;
 try{const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});try{const _ac=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js");_ac.initializeAppCheck(app,{provider:new _ac.ReCaptchaEnterpriseProvider("6LfesRkuAAAAAJQPpPOr5UFCDPoy2WuclKV0hgdg"),isTokenAutoRefreshEnabled:true})}catch(e){}
- db=getFirestore(app);if(code){const d=await getDoc(doc(db,"perfiles",code));if(d.exists())P=d.data()}}catch(e){}
+ db=getFirestore(app);if(code){const d=await Promise.race([getDoc(doc(db,"perfiles",code)),new Promise((_,rj)=>setTimeout(()=>rj(new Error("t")),7000))]);if(d.exists())P=d.data()}}catch(e){}
+// 15 nov: respaldo por REST y copia en este teléfono si la lectura falla (señal lenta)
+if(code&&!(P&&P.uid)){try{const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),8000);const r=await fetch("https://firestore.googleapis.com/v1/projects/action-leaders-plus-8f1b8/databases/(default)/documents/perfiles/"+encodeURIComponent(code)+"?key=AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM"+["uid","nombre","foto","wa","waS","ref","pv"].map(f=>"&mask.fieldPaths="+f).join(""),{signal:ctl.signal});clearTimeout(tm);if(r.ok){const F=(await r.json()).fields||{},o={};for(const k in F)o[k]=F[k].stringValue!=null?F[k].stringValue:F[k].booleanValue!=null?F[k].booleanValue:F[k].integerValue!=null?+F[k].integerValue:"";if(o.uid)P=o}}catch(e){}}
+if(code){const K="dest:perf-"+code;if(P&&P.uid){try{localStorage.setItem(K,JSON.stringify({uid:P.uid,nombre:P.nombre||"",foto:P.foto||"",wa:P.wa||"",waS:P.waS||"",ref:P.ref||"",pv:!!P.pv}))}catch(e){}}else{try{const c=JSON.parse(localStorage.getItem(K));if(c&&c.uid)P=c}catch(e){}}}
 sim(0);
 const host=P&&P.nombre?String(P.nombre):"",hostF=host.split(/\s+/)[0]||"",hostWa=P?String(P.wa||P.waS||"").replace(/\D/g,""):"";
 const safe=u=>{try{const x=new URL(u);return /^https:$/.test(x.protocol)?x.href:""}catch(e){return ""}},ref=P?safe(P.ref||""):"";
@@ -229,6 +232,10 @@ const vUrl=()=>{let u="viaje.html?de="+encodeURIComponent(code)+"&vl=1";if(pName
  if(V&&(V.max||V.pos||V.fin)){const pc=Math.min(100,Math.round((V.max||V.pos||0)*100/1228));if(V.fin||pc>=97){$("goPres").textContent="✅ Ya la viste · Ver de nuevo";$("prog").hidden=true}else{$("goPres").textContent="✈️ Continuar mi presentación";$("prog").hidden=false;$("prog").textContent="Vas en el "+pc+" % · sigue donde te quedaste"}}})();
 const irPres=e=>{e.preventDefault();save({como:"pres"},true).finally(()=>{location.href=vUrl()})};
 $("goPres").onclick=irPres;$("sPres").onclick=irPres;
+// 15 nov (Edwin): la presentación solo se ve desde la página de un socio que ya la vio completa (perfiles.pv, lo pone la app). Si no: WhatsApp del socio.
+if(P&&P.uid&&P.pv!==true&&!soloVer){const wa=hostWa?"https://wa.me/"+hostWa+"?text="+encodeURIComponent("Hola"+(hostF?" "+hostF:"")+", vi tu página y quiero más información ✈️"):"";
+  for(const id of ["goPres","sPres"]){const b=$(id);if(!b)continue;if(wa){b.textContent=id==="goPres"?"💬 Escríbele a "+(hostF||"quien te invitó")+" por WhatsApp":"💬 Escríbele";b.href=wa;b.target="_blank";b.rel="noopener";b.style.background="#25D366";b.onclick=()=>{save({como:"whatsapp"},true)}}else b.style.display="none"}
+  $("prog").hidden=true}
 // ----- registro de la visita (users/{uid}/sala/m_… como la página de membresía) -----
 const LSg=k=>{try{return JSON.parse(localStorage.getItem("dest:"+k))}catch(e){return null}},LSs=(k,v)=>{try{localStorage.setItem("dest:"+k,JSON.stringify(v))}catch(e){}};
 const vKey="v-"+code+"-"+(cid||pName.toLowerCase()||"anon");let VV=LSg(vKey)||{id:null};const D={},t0=Date.now();let maxP=0,saveT;
