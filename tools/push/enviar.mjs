@@ -659,17 +659,17 @@ async function main() {
     const RC3_TODOS = true, hoy = hoyHN(), mes = hoy.slice(0, 7);
     const S = ((await db.doc("team/constres").get()).data() || {}).m || {};
     const L = Object.entries(S).map(([uid, x]) => ({ uid, ...x })).filter(x => x.nombre && x.mes === mes && +x.mesComp > 0)
-      .sort((a, b) => (+b.mesComp - +a.mesComp) || ((+b.rv || 0) - (+a.rv || 0)) || ((+b.mesPres || 0) - (+a.mesPres || 0)) || ((+b.mesPts || 0) - (+a.mesPts || 0)) || String(a.nombre).localeCompare(String(b.nombre), "es"));
+      .sort((a, b) => ((+b.vr || 0) - (+a.vr || 0)) || ((+b.rv || 0) - (+a.rv || 0)) || ((+b.mesPres || 0) - (+a.mesPres || 0)) || ((+b.mesPts || 0) - (+a.mesPts || 0)) || String(a.nombre).localeCompare(String(b.nombre), "es"));
     L.forEach((x, i) => x.rk = i + 1);
     let aud = null; if (!RC3_TODOS) aud = new Set((await db.collection("users").where("email", "in", ADMINS).get()).docs.map(d => d.id));
     const ok = uid => !aud || aud.has(uid), pushDe = async uid => { const p = await db.doc("push/" + uid).get(), x = p.exists ? p.data() : {}; if (x.tk) hist[uid] = x.h || []; return x.tk && (x.pr || {}).racha !== false ? x.tk : null; };
     const nm2 = n => String(n || "").trim().split(/\s+/).slice(0, 2).join(" ");
     if (modo === "rc3top") {
       if (L.length < 3) { console.log("Menos de 3 en el ranking."); return; }
-      const t3 = L.slice(0, 3).map((x, i) => ["👑", "2.", "3."][i] + " " + primer(x.nombre) + " " + x.mesComp).join(" · ");
+      const t3 = L.slice(0, 3).map((x, i) => ["👑", "2.", "3."][i] + " " + primer(x.nombre) + " " + (+x.vr || 0)).join(" · ");
       const P = (await db.collection("push").get()).docs.filter(d => d.data().tk && (d.data().pr || {}).racha !== false && ok(d.id));
       for (const d of P) { hist[d.id] = d.data().h || []; const me = L.find(x => x.uid === d.id);
-        salida.push([d.id, d.data().tk, { title: "🔥 Así quedó el top 3 de hoy", body: t3 + (me ? (me.rk <= 3 ? ". ¡Usted está en el top 3! Defienda su lugar mañana." : `. Usted va #${me.rk} con ${me.mesComp} ${me.mesComp === 1 ? "día" : "días"}.`) : ". Complete su rutina mañana y entre al ranking.") }]); }
+        salida.push([d.id, d.data().tk, { title: "🔥 Así quedó el top 3 de hoy", body: t3 + (me ? (me.rk <= 3 ? ". ¡Usted está en el top 3! Defienda su lugar mañana." : `. Usted va #${me.rk} con ${+me.vr || 0} ${(+me.vr || 0) === 1 ? "día" : "días"} de racha del mes.`) : ". Complete su rutina mañana y entre al ranking.") }]); }
     } else {
       const ref = db.doc("push_meta/rc3"), M = (await ref.get()).data() || {}, mismo = M.m === mes, pos = mismo ? (M.pos || {}) : {}, pas = mismo ? (M.pas || {}) : {}, vg = mismo ? (M.vg || {}) : {}, vu = mismo ? (M.vu || {}) : {};
       const nPos = {}; L.forEach(x => nPos[x.uid] = x.rk);
