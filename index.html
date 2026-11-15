@@ -1367,6 +1367,10 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .enR{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.enR b{display:block;font-weight:700;font-size:15px}.enR small{display:block;color:var(--muted);font-size:12.5px}.enR.ok b{color:#15803D}
 .enOk{background:#16A34A!important;color:#fff!important;flex:none}
 .enNew{display:flex;flex-direction:column;gap:8px;border:2px solid #EA580C;border-radius:14px;padding:12px;margin:8px 0}
+
+/* Más adelante (14 nov) */
+.maL{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:color-mix(in srgb,#0D9488 9%,var(--surface));border:1px solid color-mix(in srgb,#0D9488 30%,transparent);border-radius:12px;padding:9px 10px;margin:8px 0;font-size:13.5px}.maL .grow{min-width:60%}.maL.toca{border-color:#0D9488;box-shadow:0 0 0 2px color-mix(in srgb,#0D9488 25%,transparent)}
+.stp button.ma.cur{background:#0D9488;color:#fff}#maM .chip[aria-pressed=true],#maC .chip[aria-pressed=true]{background:#0D9488;color:#fff;border-color:#0D9488}.maDot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#0D9488;margin-left:4px;vertical-align:middle}
 </style>
 
 </head>
@@ -2188,13 +2192,39 @@ async function viaResp(r){const el=$("#viaStrip");if(isAdmin){LS.set("viaAdm:"+s
   const z={r,t:Date.now()};regDoc=Object.assign({},regDoc,{viaj:z});if(el)el.hidden=true;
   try{await store.db.doc("users/"+store.uid).set({viaj:z},{merge:true})}catch(e){}toast(r==="si"?"¡Gracias por compartir su viaje! ✈️":"Listo, no le volveremos a preguntar")}
 // 8 nov: "Prospectos olvidados" en Avisos de hoy: los que llevan más de 7 días en Seguimiento
-function olvLista(){const hoy=new Set((day.segL||[]).map(x=>x.cid));return (contacts||[]).filter(c=>c.stage==="Seguimiento"&&stDias(c)>7&&!stAtendido(c)&&!hoy.has(c.id)&&LS.get("olv:"+c.id)!==TODAY).sort((a,b)=>stDias(b)-stDias(a))}
+function olvLista(){const hoy=new Set((day.segL||[]).map(x=>x.cid));return (contacts||[]).filter(c=>((c.stage==="Seguimiento"&&stDias(c)>7&&!stAtendido(c))||(c.stage===MA&&c.next&&c.next<=TODAY))&&!hoy.has(c.id)&&LS.get("olv:"+c.id)!==TODAY).sort((a,b)=>(a.stage===MA?0:1)-(b.stage===MA?0:1)||stDias(b)-stDias(a))}
+
+// ---------- 🌱 Más adelante (14 nov, Edwin) ----------
+// c.stage = "Más adelante", c.ma = {m: motivo, t}, c.next = cuándo volver a escribirle. Sale de "En proceso"; el día que toca aparece en Inicio (olvStrip) y arriba en su pestaña.
+const fmtDate=k=>{const d=parseK(k);return d.getDate()+" "+MONTHS[d.getMonth()].slice(0,3)+(d.getFullYear()!==now.getFullYear()?" "+d.getFullYear():"")};
+const MA_MOT=["No es el momento","Ahorita no tiene el dinero","Lo va a consultar","Otro"];
+function maLinea(c){if(!c||c.stage!==MA)return"";const m=(c.ma||{}).m||"",toca=c.next&&c.next<=TODAY,f=c.next?(c.next===TODAY?"hoy":toca?"desde el "+fmtDate(c.next):"el "+fmtDate(c.next)):"";
+  return `<div class="maL${toca?" toca":""}"><span class="grow">🌱 ${m?esc(m)+" · ":""}${f?(toca?"<b>Le toca escribirle "+f+"</b>":"Escribirle "+f):"Sin fecha"}</span><button type="button" class="btn sm" data-maw="${esc(c.id)}" style="background:#25D366;color:#fff">💬 Escribirle</button><button type="button" class="btn sm ghost" data-mav="${esc(c.id)}">🔥 Volver a En proceso</button></div>`}
+function maSheet(c){let mot=(c.ma||{}).m||"",cu="";const prev=c.stage;
+  const op=[["1 mes",1],["3 meses",3],["6 meses",6]],fm=n=>{const d=parseK(TODAY);d.setMonth(d.getMonth()+n);return dkey(d)};
+  openSheet(`<p class="eyebrow">🌱 MÁS ADELANTE</p><h3 style="margin:4px 0 4px">${esc(c.name)}</h3><p class="small muted" style="margin:0 0 10px">Dijo que ahorita no, pero dejó la puerta abierta. Sale de su lista activa y la app le recuerda escribirle.</p>
+   <b class="small">¿Por qué?</b><div class="row wrap" id="maM" style="gap:6px;margin:6px 0 4px">${MA_MOT.map(x=>`<button type="button" class="chip" data-m="${esc(x)}" aria-pressed="${mot===x}">${esc(x)}</button>`).join("")}</div>
+   <input class="inp" id="maN" placeholder="Nota (opcional)" maxlength="120" style="margin-top:4px">
+   <b class="small" style="display:block;margin-top:12px">¿Cuándo le vuelvo a escribir?</b><div class="row wrap" id="maC" style="gap:6px;margin:6px 0">${op.map(([t,n])=>`<button type="button" class="chip" data-c="${fm(n)}">${t}</button>`).join("")}<input class="inp" type="date" id="maF" min="${addD(TODAY,1)}" style="flex:1;min-width:140px"></div>
+   <button class="btn" id="maOk" style="width:100%;margin-top:12px;background:#0D9488">🌱 Guardar en Más adelante</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cancelar</button>`,()=>{
+   const pm=()=>$("#maM").querySelectorAll("[data-m]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===mot)),pc=()=>$("#maC").querySelectorAll("[data-c]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.c===cu));
+   $("#maM").onclick=e=>{const b=e.target.closest("[data-m]");if(b){mot=b.dataset.m;pm()}};$("#maC").onclick=e=>{const b=e.target.closest("[data-c]");if(b){cu=b.dataset.c;$("#maF").value="";pc()}};$("#maF").onchange=e=>{cu=e.target.value;pc()};
+   $("#maOk").onclick=async()=>{if(!mot){toast("Elija por qué");return}if(!cu){toast("Elija cuándo volver a escribirle");return}const n=$("#maN").value.trim();
+     c.stage=MA;c.stT=Date.now();c.stAuto="";c.next=cu;c.ma={m:mot,t:Date.now()};c.updated=Date.now();c.seg=(c.seg||[]).concat([{t:Date.now(),k:"ma",n:"🌱 Más adelante: "+mot+(n?" · "+n:""),p:cu}]).slice(-30);
+     const id=await store.saveContact(Object.assign({},c));if(!id){c.stage=prev;return}closeSheet();crmV="mas";renderCRM();toast("🌱 "+c.name.split(" ")[0]+": le recordamos escribirle el "+fmtDate(cu))}})}
+function maMsg(c){const n=String(c.name||"").split(" ")[0],tu=c.tu==="tu",V=tu?[
+  `¡Hola, ${n}! 😊 Hace un tiempo platicamos de inCruises y me dijiste que más adelante. ¿Cómo va todo? ¿Te gustaría que te cuente lo nuevo?`,
+  `¡Hola, ${n}! Me acordé de ti 🙌 Hace un tiempo me dijiste que no era el momento. ¿Cómo estás? Si quieres, te cuento cómo va todo por aquí.`]:[
+  `¡Hola, ${n}! 😊 Hace un tiempo platicamos de inCruises y me dijo que más adelante. ¿Cómo va todo? ¿Le gustaría que le cuente lo nuevo?`,
+  `¡Hola, ${n}! Me acordé de usted 🙌 Hace un tiempo me dijo que no era el momento. ¿Cómo está? Si gusta, le cuento cómo va todo por aquí.`];
+  return V[ahF(c.id+TODAY)%V.length]}
+function maEscribir(c){const w=waNum(c.phone,c.cc);if(!w){toast("Agregue su WhatsApp primero");return}LS.set("olv:"+c.id,TODAY);c.ultSeg=TODAY;c.updated=Date.now();store.saveContact(Object.assign({},c));waIr("https://wa.me/"+w+"?text="+encodeURIComponent(maMsg(c)));setTimeout(()=>{try{renderCRM();olvStrip()}catch(e){}},800)}
 function olvStrip(){const el=$("#olvStrip");if(!el)return;const L=fbUser&&store.uid?olvLista():[];if(!L.length){el.hidden=true;return}
-  el.innerHTML=`<div class="lzgI">🔁</div><div class="lzgT"><b>${L.length===1?"1 prospecto espera":L.length+" prospectos esperan"} su seguimiento</b><span>Más de 7 días sin avanzar y sin seguimiento. Escríbales hoy.</span>
-   <div class="olvL">${L.slice(0,3).map(c=>{const w=waLink(c);return `<div class="olvR"><span class="olvN"><b>${esc(c.name)}</b><small>${stDias(c)} días en Seguimiento</small></span>${w?`<a class="olvW" href="${esc(w)}" target="_blank" rel="noopener" data-olv="${esc(c.id)}">💬</a>`:`<button type="button" class="olvW o" data-olvc="${esc(c.id)}">Ver</button>`}</div>`}).join("")}</div>
+  el.innerHTML=`<div class="lzgI">🔁</div><div class="lzgT"><b>${L.length===1?"1 prospecto espera":L.length+" prospectos esperan"} su seguimiento</b><span>${L.some(c=>c.stage===MA)?"Incluye a los que dijeron «más adelante» y hoy les toca. Escríbales hoy.":"Más de 7 días sin avanzar y sin seguimiento. Escríbales hoy."}</span>
+   <div class="olvL">${L.slice(0,3).map(c=>{const w=waLink(c);return `<div class="olvR"><span class="olvN"><b>${esc(c.name)}</b><small>${c.stage===MA?"🌱 Le toca escribirle hoy":stDias(c)+" días en Seguimiento"}</small></span>${c.stage===MA&&w?`<button type="button" class="olvW" data-olvma="${esc(c.id)}">💬</button>`:w?`<a class="olvW" href="${esc(w)}" target="_blank" rel="noopener" data-olv="${esc(c.id)}">💬</a>`:`<button type="button" class="olvW o" data-olvc="${esc(c.id)}">Ver</button>`}</div>`}).join("")}</div>
    ${L.length>3?`<div class="lzgB"><button type="button" class="ok" data-olvt>Ver los ${L.length} en mi CRM</button></div>`:""}</div>`;el.hidden=false;
   el.querySelectorAll("[data-olv]").forEach(a=>a.onclick=()=>{LS.set("olv:"+a.dataset.olv,TODAY);setTimeout(olvStrip,900)});
-  el.querySelectorAll("[data-olvc]").forEach(b=>b.onclick=()=>{openC=b.dataset.olvc;go("crm");try{renderCRM()}catch(e){}});
+  el.querySelectorAll("[data-olvc]").forEach(b=>b.onclick=()=>{openC=b.dataset.olvc;go("crm");try{renderCRM()}catch(e){}});el.querySelectorAll("[data-olvma]").forEach(b=>b.onclick=()=>{const c=contacts.find(y=>y.id===b.dataset.olvma);if(c)maEscribir(c)});
   const t=el.querySelector("[data-olvt]");if(t)t.onclick=()=>{stageF="Seguimiento";go("crm");try{renderCRM()}catch(e){}}}
 // ---------- presentaciones con nombre ----------
 const semIni=()=>{const a=[lunesK(),TODAY.slice(0,7)+"-01",CONST_INI].sort();return a[2]}; // la semana empieza el lunes, pero nunca antes del día 1 del mes (todo lo de la app reinicia el día 1)
@@ -2208,7 +2238,7 @@ function quitarPres(){if(!(day.presentaciones>0))return;const L=day.presL||[];if
   day.presentaciones--;bumpReto("presentaciones",-1);renderTasks();saveDay();renderHoyCitas()}
 function abrirPres(){window._irV=0;let q="";const ya=new Set(presSemana().map(x=>x.cid).filter(Boolean)),hoyC=new Set(citas.filter(x=>x.fecha===TODAY&&x.cid).map(x=>x.cid));
   const pr=c=>hoyC.has(c.id)?0:({"Presentación":1,"Contactado":2,"Seguimiento":3,"Nuevo":4}[c.stage||"Nuevo"]||5);
-  const L=()=>contacts.filter(c=>!ya.has(c.id)&&c.stage!=="Socio"&&c.stage!=="Cliente"&&(!q||nrmN(c.name).includes(nrmN(q)))).sort((a,b)=>pr(a)-pr(b)||(b.updated||0)-(a.updated||0)).slice(0,30);
+  let ord=LS.get("psOrd")||"rec";const L=()=>contacts.filter(c=>!ya.has(c.id)&&c.stage!=="Socio"&&c.stage!=="Cliente"&&(!q||nrmN(c.name).includes(nrmN(q)))).sort((a,b)=>(hoyC.has(a.id)?0:1)-(hoyC.has(b.id)?0:1)||(ord==="az"?String(a.name).localeCompare(b.name,"es"):((b.creado||b.updated||0)-(a.creado||a.updated||0)))).slice(0,q?60:40);
   openSheet(`<div data-nofocus></div><h2>🎯 ¿A quién le presentaste?</h2><p class="small muted" style="margin:0">Cada presentación lleva nombre. La misma persona cuenta una vez por semana.</p>
    <button class="ep-op" id="psNew"><span class="ic">➕</span><span class="grow"><b>Persona nueva</b><small>Se guarda en tu CRM</small></span><span>›</span></button>
    <div id="psNewF" style="display:none;flex-direction:column;gap:10px">
@@ -2217,10 +2247,10 @@ function abrirPres(){window._irV=0;let q="";const ya=new Set(presSemana().map(x=
     <div class="field"><label for="psT">WhatsApp <span class="muted">(opcional)</span></label><input class="inp" id="psT" type="tel" placeholder="Número"></div></div>
     <button class="btn" id="psNewOk" style="width:100%">Guardar y registrar</button></div>
    <div class="ep-sep"><span>o elígela de tu CRM</span></div>
-   <input class="inp" id="psQ" placeholder="🔍 Buscar por nombre" autocomplete="off"><div id="psL" style="display:flex;flex-direction:column"></div>
+   <input class="inp" id="psQ" placeholder="🔍 Buscar por nombre" autocomplete="off"><div class="seg" id="psO" style="margin-top:8px"><button aria-selected="${ord==="rec"}" data-o="rec">🆕 Recientes</button><button aria-selected="${ord==="az"}" data-o="az">🔤 A–Z</button></div><div id="psL" style="display:flex;flex-direction:column"></div>
    <button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
     const draw=()=>{const R=L();$("#psL").innerHTML=R.length?R.map(c=>`<button type="button" class="ep-it" data-ps="${esc(c.id)}">${avHTML(c.name,false,false)}<span class="grow" style="min-width:0;text-align:left"><b style="font-weight:600;display:block">${esc(c.name)}</b><span class="small muted">${hoyC.has(c.id)?"📅 Tiene cita hoy · ":""}${esc(c.stage||"Nuevo")}</span></span><span style="color:var(--brand);font-weight:800">+</span></button>`).join(""):`<p class="small muted" style="margin:8px 0">${q?"No hay contactos con ese nombre.":"No hay contactos disponibles. Agrega una persona nueva."}</p>`};draw();
-    $("#psQ").oninput=()=>{q=$("#psQ").value.trim();draw()};
+    $("#psQ").oninput=()=>{q=$("#psQ").value.trim();draw()};$("#psO").onclick=e=>{const b=e.target.closest("[data-o]");if(!b)return;ord=b.dataset.o;LS.set("psOrd",ord);$("#psO").querySelectorAll("[data-o]").forEach(x=>x.setAttribute("aria-selected",x.dataset.o===ord));draw()};
     $("#psL").onclick=async e=>{const b=e.target.closest("[data-ps]");if(!b)return;if(await sumarPres(contacts.find(c=>c.id===b.dataset.ps))){closeSheet();irVolver()}};
     $("#psNew").onclick=()=>{const f=$("#psNewF"),o=f.style.display==="none";f.style.display=o?"flex":"none";if(o)$("#psN").focus()};
     $("#psNewOk").onclick=async()=>{const nm=$("#psN").value.trim(),cc=$("#psC").value;let t=$("#psT").value.trim();const sp=splitPhone(t);t=sp.cc?sp.num:t.replace(/\D/g,"");if(nm.length<2){toast("Escribe el nombre");return}{const dup=yaEnCRM(nm,t);if(dup){toast("Ya está en su CRM como "+dup.name+": elíjalo de la lista");$("#psQ").value=dup.name.split(" ")[0];q=$("#psQ").value;draw();return}}LS.set("lastCC",cc);
@@ -7106,27 +7136,28 @@ function editEvent(ev){ev=ev||{titulo:"",fecha:selDay||TODAY,hora:"19:00",lugar:
      $("#eDelOk").onclick=async()=>{try{await store.db.collection("team/calendario/items").doc(ev.id).delete();closeSheet();toast("Actividad eliminada")}catch(e){toast("No se pudo eliminar.")}}}})}
 
 // ---------- CRM ----------
-const STAGES=["Nuevo","Contactado","Presentación","Seguimiento","Por cerrar","Socio","Cliente","No interesado"];
+const STAGES=["Nuevo","Contactado","Presentación","Seguimiento","Por cerrar","Socio","Cliente","Más adelante","No interesado"];
+const MA="Más adelante",PAUSA=[MA,"No interesado"]; // 14 nov: «Más adelante» = dijo que ahorita no, pero dejó la puerta abierta
 const FLOW=["Nuevo","Contactado","Presentación","Seguimiento","Por cerrar","Socio"];
 // ---------- Embudo de prospectos (30 oct): % por etapa, avance automático y vista del líder ----------
-const ST_PCT={"Nuevo":10,"Contactado":25,"Presentación":50,"Seguimiento":70,"Por cerrar":90,"Socio":100,"Cliente":100,"No interesado":0};
-const ST_IC={"Nuevo":"🆕","Contactado":"💬","Presentación":"🎤","Seguimiento":"🔁","Por cerrar":"🔥","Socio":"✅","Cliente":"✅","No interesado":"✖"};
+const ST_PCT={"Nuevo":10,"Contactado":25,"Presentación":50,"Seguimiento":70,"Por cerrar":90,"Socio":100,"Cliente":100,"Más adelante":0,"No interesado":0};
+const ST_IC={"Nuevo":"🆕","Contactado":"💬","Presentación":"🎤","Seguimiento":"🔁","Por cerrar":"🔥","Socio":"✅","Cliente":"✅","Más adelante":"🌱","No interesado":"✖"};
 function pipeOk(){return true}
 function stPct(c){return ST_PCT[(c&&c.stage)||"Nuevo"]??10}
 function stDias(c){const t=(c&&(c.stT||c.updated))||0;return t?Math.floor((Date.now()-t)/864e5):0}
 // 8 nov: "atendido" = tiene próximo seguimiento agendado (hoy o después) o le dio seguimiento/nota en los últimos 7 días
 function stAtendido(c){if(!c)return false;if(c.next&&c.next>=TODAY)return true;if(c.ultSeg&&c.ultSeg>=addD(TODAY,-7))return true;const d7=Date.now()-7*864e5;return (c.seg||[]).some(x=>(+x.t||0)>d7)}
 function stFrio(c){return ["Seguimiento","Por cerrar"].includes(c.stage)&&stDias(c)>7&&!stAtendido(c)}
-async function stAvanza(c,s,por){if(!c||!c.id)return false;const cur=c.stage||"Nuevo";if(["Socio","Cliente","No interesado"].includes(cur))return false;
+async function stAvanza(c,s,por){if(!c||!c.id)return false;const cur=c.stage||"Nuevo";if(["Socio","Cliente","No interesado"].includes(cur))return false;if(cur===MA&&FLOW.indexOf(s)<2)return false;
   if(FLOW.indexOf(s)<=FLOW.indexOf(cur))return false;c.stage=s;c.stT=Date.now();c.stAuto=por||"";c.updated=Date.now();
   try{await store.saveContact(Object.assign({},c));renderCRM()}catch(e){}return true}
 function stCorto(n){const w=String(n||"").trim().split(/\s+/);return (w[0]||"")+(w[1]?" "+w[1][0].toUpperCase()+".":"")}
 function stepsHTML(c){const i=FLOW.indexOf(c.stage);
   const b=(s,cls,lbl)=>`<button class="${cls}" data-st="${esc(s)}" data-cid="${esc(c.id)}" aria-pressed="${c.stage===s}">${lbl||s}</button>`;
-  return `<div class="stp">${FLOW.map((s,k)=>b(s,c.stage===s?"cur":(i>k?"done":""),(i>k?"✓ ":"")+s+" "+ST_PCT[s]+"%")).join("")}${b("Cliente",c.stage==="Cliente"?"cur":"","Cliente 100%")}${b("No interesado","no "+(c.stage==="No interesado"?"cur":""),"✕ No 0%")}</div>`}
-const STAGE_C={"Nuevo":"c-brand","Contactado":"c-brand","Presentación":"c-gold","Seguimiento":"c-warn","Por cerrar":"c-hot","Socio":"c-good","Cliente":"c-good","No interesado":"c-bad"};
+  return `<div class="stp">${FLOW.map((s,k)=>b(s,c.stage===s?"cur":(i>k?"done":""),(i>k?"✓ ":"")+s+" "+ST_PCT[s]+"%")).join("")}${b("Cliente",c.stage==="Cliente"?"cur":"","Cliente 100%")}${b(MA,"ma "+(c.stage===MA?"cur":""),"🌱 Más adelante")}${b("No interesado","no "+(c.stage==="No interesado"?"cur":""),"✕ No 0%")}</div>`}
+const STAGE_C={"Nuevo":"c-brand","Contactado":"c-brand","Presentación":"c-gold","Seguimiento":"c-warn","Por cerrar":"c-hot","Socio":"c-good","Cliente":"c-good","Más adelante":"c-brand","No interesado":"c-bad"};
 let contacts=[],stageF="Todos",openC=null,crmOrd=(()=>{try{return LS.get("crmOrd")||"seg"}catch(e){return "seg"}})();
-const STAGE_COL={"Nuevo":"#2AC1F1","Contactado":"#2AC1F1","Presentación":"#d4a017","Seguimiento":"#e8862a","Por cerrar":"#EA580C","Socio":"#22a35a","Cliente":"#22a35a","No interesado":"#d64545"};
+const STAGE_COL={"Nuevo":"#2AC1F1","Contactado":"#2AC1F1","Presentación":"#d4a017","Seguimiento":"#e8862a","Por cerrar":"#EA580C","Socio":"#22a35a","Cliente":"#22a35a","Más adelante":"#0D9488","No interesado":"#d64545"};
 const PAISES=[["Honduras","504"],["Estados Unidos","1"],["España","34"],["Reino Unido","44"],["Guatemala","502"],["El Salvador","503"],["Nicaragua","505"],["Costa Rica","506"],["Panamá","507"],["México","52"],["Colombia","57"],["Venezuela","58"],["Perú","51"],["Ecuador","593"],["Chile","56"],["Argentina","54"],["República Dominicana","1"],["Canadá","1"],["Italia","39"],["Francia","33"],["Alemania","49"]];
 // 10 nov: antes de abrir WhatsApp se revisa el número: si el largo no corresponde a su país (p. ej. +504 con 9 dígitos), no se abre un chat que no existe.
 const TEL_LEN={"504":[8],"502":[8],"503":[8],"505":[8],"506":[8],"507":[7,8],"34":[9],"1":[10],"52":[10],"57":[10],"58":[10],"51":[9],"593":[9],"56":[9],"54":[10,11],"44":[10],"39":[9,10],"33":[9],"49":[10,11],"55":[10,11],"591":[8],"595":[9],"598":[8],"53":[8],"809":[7]};
@@ -7252,18 +7283,18 @@ async function flResp(c,v){c.fl=Object.assign({h:{},r:""},c.fl||{});
   c.fl.r=v;if(v==="nr")c.fl.h=Object.assign({},c.fl.h,{resal:Date.now()});if(v==="pen")c.fl.h=Object.assign({},c.fl.h,{rinv:Date.now()});await flGuardar(c)}
 const CERR=["Socio","Cliente"];let crmV=(()=>{try{return LS.get("crmV")||"proc"}catch(e){return "proc"}})();
 function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e){}pushResumen();try{olvStrip()}catch(e){}const q=$("#crmSearch").value.trim().toLowerCase();
-  if(stageF!=="Todos")crmV=CERR.includes(stageF)?"cer":"proc";
-  const nCer=contacts.filter(c=>CERR.includes(c.stage)).length,nPro=contacts.length-nCer,enV=c=>!!q||(crmV==="cer"?CERR.includes(c.stage):!CERR.includes(c.stage)),VS=STAGES.filter(s=>crmV==="cer"?CERR.includes(s):!CERR.includes(s));
+  if(stageF!=="Todos")crmV=CERR.includes(stageF)?"cer":PAUSA.includes(stageF)?"mas":"proc";
+  const vDe=c=>CERR.includes(c.stage)?"cer":PAUSA.includes(c.stage)?"mas":"proc",nCer=contacts.filter(c=>vDe(c)==="cer").length,nMas=contacts.filter(c=>vDe(c)==="mas").length,nMaH=contacts.filter(c=>c.stage===MA&&c.next&&c.next<=TODAY).length,nPro=contacts.length-nCer-nMas,enV=c=>!!q||vDe(c)===crmV,VS=STAGES.filter(s=>(CERR.includes(s)?"cer":PAUSA.includes(s)?"mas":"proc")===crmV);
   {let t=$("#crmVseg");if(!t){t=document.createElement("div");t.id="crmVseg";t.className="seg";t.setAttribute("role","tablist");$("#crmSearch").before(t);t.onclick=e=>{const b=e.target.closest("button");if(!b)return;crmV=b.dataset.k;stageF="Todos";openC=null;try{LS.set("crmV",crmV)}catch(x){}renderCRM()}}
-   t.hidden=!contacts.length;t.innerHTML=`<button aria-selected="${crmV==="proc"}" data-k="proc">🔥 En proceso <span style="opacity:.7">${nPro}</span></button><button aria-selected="${crmV==="cer"}" data-k="cer">✅ Cerrados <span style="opacity:.7">${nCer}</span></button>`}
+   t.hidden=!contacts.length;t.innerHTML=`<button aria-selected="${crmV==="proc"}" data-k="proc">🔥 En proceso <span style="opacity:.7">${nPro}</span></button><button aria-selected="${crmV==="mas"}" data-k="mas">🌱 Más adelante <span style="opacity:.7">${nMas}</span>${nMaH?'<i class="maDot"></i>':""}</button><button aria-selected="${crmV==="cer"}" data-k="cer">✅ Cerrados <span style="opacity:.7">${nCer}</span></button>`}
   try{cvTop3()}catch(e){}
   const counts={Todos:contacts.filter(enV).length};VS.forEach(s=>counts[s]=contacts.filter(c=>c.stage===s).length);
   $("#stageBar").innerHTML=["Todos"].concat(VS).map(s=>`<button aria-pressed="${s===stageF}" data-s="${s}">${s}<span class="n">${counts[s]}</span></button>`).join("");
-  const list=contacts.filter(c=>enV(c)&&(!crmFrio||stFrio(c))&&(stageF==="Todos"||c.stage===stageF)&&(!q||(c.name+" "+(c.note||"")+" "+(c.seg||[]).map(x=>x.n||"").join(" ")).toLowerCase().includes(q))).sort(crmCmp());
+  const list=contacts.filter(c=>enV(c)&&(!crmFrio||stFrio(c))&&(stageF==="Todos"||c.stage===stageF)&&(!q||(c.name+" "+(c.note||"")+" "+(c.seg||[]).map(x=>x.n||"").join(" ")).toLowerCase().includes(q))).sort(crmV==="mas"&&!q?(a,b)=>(a.stage===MA?0:1)-(b.stage===MA?0:1)||String(a.next||"9").localeCompare(String(b.next||"9")):crmCmp());
   if(!contacts.length){$("#contactList").innerHTML=`<div class="empty"><h3>Tu lista de contactos está vacía</h3>
     <p class="small muted">Agrega a las personas con las que quieres compartir el negocio o el producto. Registra la etapa, una nota y la fecha del próximo seguimiento.</p>
     <button class="btn gold sm" id="addFirst">Agregar mi primer contacto</button></div>`;$("#addFirst").onclick=()=>editContact();return}
-  if(!list.length){$("#contactList").innerHTML=crmV==="cer"&&!q?`<div class="empty"><h3>🏁 Aún no tiene cierres</h3><p class="small muted">Cuando un contacto pase a Cliente o Socio, aparece aquí. ¡Vamos por el primero!</p></div>`:`<p class="muted small">No hay contactos en esta vista.</p>`;return}
+  if(!list.length){$("#contactList").innerHTML=crmV==="mas"&&!q?`<div class="empty"><h3>🌱 Nadie para más adelante</h3><p class="small muted">Cuando alguien le diga «ahorita no, pero más adelante», póngalo en 🌱 Más adelante: la app le recuerda escribirle el día que usted elija.</p></div>`:crmV==="cer"&&!q?`<div class="empty"><h3>🏁 Aún no tiene cierres</h3><p class="small muted">Cuando un contacto pase a Cliente o Socio, aparece aquí. ¡Vamos por el primero!</p></div>`:`<p class="muted small">No hay contactos en esta vista.</p>`;return}
   const nCl=contacts.filter(c=>c.stage==="Cliente").length,nSo=contacts.filter(c=>c.stage==="Socio").length;
   const cerHead=crmV==="cer"&&!q?`<div style="background:linear-gradient(135deg,#065F46,#10B981);color:#fff;border-radius:16px;padding:14px 16px;margin-bottom:8px"><div style="font-size:12px;font-weight:800;letter-spacing:.12em;opacity:.85">MI MARCADOR</div><div style="font-size:22px;font-weight:800;margin-top:2px">✅ ${nCer} ${nCer===1?"cierre":"cierres"}</div><div class="small" style="opacity:.9">${nCl} ${nCl===1?"cliente":"clientes"} · ${nSo} ${nSo===1?"socio":"socios"}. Cuídelos: un cliente feliz le da referidos.</div></div>`:"";
   const pipeSum=crmV==="cer"&&!q?"":pipeOk()?(()=>{const n=s=>contacts.filter(c=>c.stage===s).length,fr=contacts.filter(stFrio).length;return `<div class="stsum"><button type="button" data-sf="Por cerrar" style="background:#FFEDD5;color:#C2410C"><b>${n("Por cerrar")}</b>🔥 Por cerrar</button><button type="button" data-sf="Seguimiento" style="background:#FEF3C7;color:#B45309"><b>${n("Seguimiento")}</b>🔁 Seguimiento</button><button type="button" data-sf="Presentación" style="background:#E0F2FE;color:#0369A1"><b>${n("Presentación")}</b>🎤 Presentados</button></div>${crmFrio?`<button type="button" class="cvFrio" data-frio="0">⚠️ Viendo solo los ${fr} sin avanzar <em>✕ Ver todos</em></button>`:fr?(crmV2On()?`<button type="button" class="cvFrio" data-frio="1">⚠️ ${fr} ${fr===1?"prospecto lleva":"prospectos llevan"} +7 días sin avanzar <em>Ver ›</em></button>`:`<p class="small" style="margin:0 0 6px;color:#B45309;font-weight:700">⚠️ ${fr} ${fr===1?"prospecto lleva":"prospectos llevan"} más de 7 días sin avanzar ni seguimiento</p>`):""}`})():"";
@@ -7293,7 +7324,7 @@ const crmMas=new Set(),crmSt=new Set();let crmFrio=false;
 // 13 nov (Edwin, PRUEBA solo admin): contacto del CRM rediseñado con la presentación virtual de protagonista.
 function crmV2On(){return !!(salaOk()&&irSimple())}
 // 14 nov (Edwin, solo admin): CRM más limpio — herramientas con nombre, etapas en una fila, orden en un botón, pase de abordar en boleto, ⋯ en ventana.
-const CV_STI={"Por cerrar":"🔥 ","Seguimiento":"🔁 ","Presentación":"🎤 ","Contactado":"💬 ","Nuevo":"🆕 ","No interesado":"✖ ","Socio":"🤝 ","Cliente":"🛳️ "};
+const CV_STI={"Por cerrar":"🔥 ","Seguimiento":"🔁 ","Presentación":"🎤 ","Contactado":"💬 ","Nuevo":"🆕 ","No interesado":"✖ ","Más adelante":"🌱 ","Socio":"🤝 ","Cliente":"🛳️ "};
 function cvTop3(){const on=crmV2On();let tb=$("#cvTools");
   if(false&&on&&!tb){tb=document.createElement("div");tb.id="cvTools";tb.innerHTML=`<button type="button" data-tl="salaBtn">✈️ Pres. virtual</button><button type="button" data-tl="presBtn">🎤 Presentar</button><button type="button" data-tl="bienBtn">🎉 Bienvenida</button>`;
     const h=$("#v-crm > .row.between");if(h)h.after(tb);tb.onclick=e=>{const b=e.target.closest("[data-tl]");if(!b)return;const x=$("#"+b.dataset.tl);if(x)x.click()}}
@@ -7377,7 +7408,7 @@ function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fech
   const wl=waLink(c);
   return `<div class="cvTop"><div class="grow" style="min-width:0">${c.phone?`<span class="small muted">${waNum(c.phone,c.cc)?"+"+esc(waNum(c.phone,c.cc)):esc(c.phone)}</span>`:""}
      <button type="button" class="cvSt cvSt3" data-stopen="${esc(c.id)}"><span class="cvPill" style="--pc:${STAGE_COL[c.stage]||"var(--brand)"}">${CV_STI[c.stage]||""}${esc(c.stage||"Nuevo")}</span>${due}<span class="cvCg">Cambiar ›</span></button></div></div>
-   ${crmSt.has(c.id)?stepsHTML(c):""}${chips?`<div class="cvCs">${chips}</div>`:""}${c.note?`<span class="note">${esc(c.note)}</span>`:""}
+   ${crmSt.has(c.id)?stepsHTML(c):""}${chips?`<div class="cvCs">${chips}</div>`:""}${maLinea(c)}${c.note?`<span class="note">${esc(c.note)}</span>`:""}
    ${crmV2Tk(c)}${crmV2Sig(c)}
    <div class="cvAct">${wl?`<a class="cvWaB" href="${esc(wl)}" data-wac="${esc(c.id)}" target="_blank" rel="noopener">💬 Escribirle por WhatsApp</a>`:`<button type="button" class="cvWaB off" data-edit="${esc(c.id)}">➕ Agregar su WhatsApp</button>`}<button type="button" class="cvDots" data-cvmas="${esc(c.id)}" aria-label="Más opciones">⋯</button></div>
    ${(()=>{const L=(c.seg||[]).filter(x=>x&&x.n),x=L[L.length-1];return x?`<div class="cvLast">📝 <span>${esc(x.n)}</span></div>`:""})()}`}
@@ -7399,6 +7430,8 @@ $("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNum
   const tg=e.target.closest("[data-tog]");if(tg){openC=openC===tg.dataset.tog?null:tg.dataset.tog;renderCRM();return}
   const sf=e.target.closest("[data-sf]");const od=e.target.closest("[data-ord]");if(od){crmOrd=od.dataset.ord;try{LS.set("crmOrd",crmOrd)}catch(e){}renderCRM();return}if(sf){stageF=stageF===sf.dataset.sf?"Todos":sf.dataset.sf;renderCRM();return}
   const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c){notaPend(c,"wa");setTimeout(()=>stAvanza(c,"Contactado","le escribió por WhatsApp"),300)}}
+  if(st&&st.dataset.st===MA){const c=contacts.find(x=>x.id===st.dataset.cid);if(c)maSheet(c);return}
+  {const mw=e.target.closest("[data-maw]");if(mw){const c=contacts.find(x=>x.id===mw.dataset.maw);if(c)maEscribir(c);return}const mv=e.target.closest("[data-mav]");if(mv){const c=contacts.find(x=>x.id===mv.dataset.mav);if(c){c.stage="Seguimiento";c.stT=Date.now();c.stAuto="";c.next=TODAY;c.updated=Date.now();await store.saveContact(Object.assign({},c));crmV="proc";openC=c.id;renderCRM();toast("🔥 "+c.name.split(" ")[0]+" regresó a En proceso")}return}}
   if(st){const c=contacts.find(x=>x.id===st.dataset.cid);if(!c||c.stage===st.dataset.st)return;const prev=c.stage;c.stage=st.dataset.st;c.stT=Date.now();c.stAuto="";c.updated=Date.now();renderCRM();
     const id=await store.saveContact(Object.assign({},c));if(!id){c.stage=prev;renderCRM();return}if(c.stage==="Socio"){abrirBienvenida(c);return}toast(c.name.split(" ")[0]+": "+c.stage);return}
   {const cb=e.target.closest("[data-cah],[data-cref],[data-cneg]");if(cb){const c=contacts.find(x=>x.id===(cb.dataset.cah||cb.dataset.cref||cb.dataset.cneg));if(c){if(cb.dataset.cah)crmAhorro(c);else crmWa(c,cb.dataset.cref?"ref":"neg")}return}}
@@ -9166,7 +9199,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261114175333";var busy=false,pend=null;
+(function(){var V="20261114193135";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
