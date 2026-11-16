@@ -1,12 +1,12 @@
-// Diagnóstico temporal: turnos del mes CIFRADOS (el log es público: solo texto cifrado con la llave del equipo)
-import crypto from "node:crypto";
-import { initializeApp, cert } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
-initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) });
-const db = getFirestore();
-const k = ((await db.doc("evento/sps26/priv/llave").get()).data() || {}).k;
-const key = Buffer.from(k.replace(/-/g, "+").replace(/_/g, "/"), "base64");
-const t = (await db.doc("turnos/2026-11").get()).data() || {};
-const iv = crypto.randomBytes(12), c = crypto.createCipheriv("aes-256-gcm", key, iv);
-const enc = Buffer.concat([iv, c.update(JSON.stringify(t), "utf8"), c.final(), c.getAuthTag()]).toString("base64");
-console.log("ENC-INI"); for (let i = 0; i < enc.length; i += 4000) console.log(enc.slice(i, i + 4000)); console.log("ENC-FIN");
+// Diagnóstico temporal: ¿las reglas publicadas en Firestore = respaldo/firestore.rules? (solo conteos)
+import fs from "fs";
+import { cert } from "firebase-admin/app";
+const sa = JSON.parse(process.env.FIREBASE_SA), tk = (await cert(sa).getAccessToken()).access_token, H = { Authorization: "Bearer " + tk };
+const B = "https://firebaserules.googleapis.com/v1/";
+const rel = await (await fetch(B + "projects/" + sa.project_id + "/releases/cloud.firestore", { headers: H })).json();
+const rs = await (await fetch(B + rel.rulesetName, { headers: H })).json();
+const prod = ((rs.source || {}).files || [])[0]?.content || "", resp = fs.readFileSync("../../respaldo/firestore.rules", "utf8");
+const n = t => t.replace(/\s+/g, " ").trim();
+console.log("Publicadas:", rel.updateTime, "· líneas:", prod.split("\n").length);
+console.log("Iguales al respaldo:", n(prod) === n(resp));
+console.log("Tiene lleg:", prod.includes("/lleg/"), "· lectura del invitador:", prod.includes("resource.data.get('de', '') == request.auth.uid"));
