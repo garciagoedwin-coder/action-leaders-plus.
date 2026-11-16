@@ -568,6 +568,32 @@ async function main() {
       const upd = { solR: false }; L.forEach(s => upd["sol." + s.id + ".rt"] = Date.now()); L2.forEach(s => upd["sol." + s.id + ".rat"] = Date.now()); W.push([d.id, upd]);
     }
     if (!DRY) for (const [uid, u] of W) await db.doc("users/" + uid).update(u);
+  } else if (modo === "evaut") {
+    // 15 nov (Edwin): Gran evento / Business Experience necesita autorización de un rango mayor del Sistema de liderazgo.
+    // agendaEv.aut {st p|ok|no, nt (false = falta avisar a quienes autorizan), rt (false = falta avisar al creador), u, n, mot}. autU = quienes autorizan; sin autU → admins.
+    vista = "agenda";
+    const pend = (await db.collection("agendaEv").where("aut.nt", "==", false).get()).docs;
+    const resp = (await db.collection("agendaEv").where("aut.rt", "==", false).get()).docs;
+    if (!pend.length && !resp.length) { console.log("Sin eventos por autorizar."); return; }
+    const TKc = {}, pushDe = async uid => { if (uid in TKc) return TKc[uid]; const d = await db.doc("push/" + uid).get(); const x = d.exists ? d.data() : {}; hist[uid] = x.h || []; return TKc[uid] = x.tk || null; };
+    const adm = (await db.collection("users").where("email", "in", ADMINS).get()).docs.map(d => d.id), W = [];
+    const nom = e => e.bx ? (e.bxT || "Business Experience") : e.tipo === "gran" ? "un Gran evento" : "una Junta";
+    const fe = f => { const [y, m, d] = String(f || "").split("-").map(Number); return d ? d + " de " + ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"][m - 1] : ""; };
+    for (const d of pend) {
+      const e = d.data(); if ((e.aut || {}).st !== "p") { W.push([d.id, { "aut.nt": true }]); continue; }
+      const dest = [...new Set([...(e.autU || []), ...adm])].filter(u => u && u !== e.cre);
+      const m = { title: "📝 Evento por autorizar", body: corto(e.creN || "Un líder") + " creó " + nom(e) + " · " + fe(e.fecha) + (e.ciudad ? " · " + e.ciudad : "") + ". Revíselo en Agenda › Eventos y juntas." };
+      for (const u of dest) { const t = await pushDe(u); if (t) salida.push([u, t, m]); }
+      console.log("Por autorizar:", dest.length, "destinatarios"); W.push([d.id, { "aut.nt": true }]);
+    }
+    for (const d of resp) {
+      const e = d.data(), a = e.aut || {}; if (a.st !== "ok" && a.st !== "no") { W.push([d.id, { "aut.rt": true }]); continue; }
+      const t = await pushDe(e.cre);
+      if (t) salida.push([e.cre, t, a.st === "ok" ? { title: "✅ Su evento fue autorizado", body: corto(a.n || "Su líder") + " autorizó " + nom(e) + " del " + fe(e.fecha) + ". Ya lo ve su equipo: ¡a invitar!" }
+        : { title: "✖ Su evento no fue autorizado", body: corto(a.n || "Su líder") + (a.mot ? ": " + String(a.mot).slice(0, 120) : "") + ". Revíselo en Agenda › Eventos y juntas." }]);
+      W.push([d.id, { "aut.rt": true }]);
+    }
+    if (!DRY) for (const [id, u] of W) await db.doc("agendaEv/" + id).update(u);
   } else if (modo === "turnos") {
     // 13 nov: turnos asignados por el admin → aviso al elegido (le confía…), recordatorio a las 24 h,
     // y al que asignó: aceptó / no puede / aún no confirma (12 h antes). Marcas en el mismo slot (nt, rr, n12, na, nk).

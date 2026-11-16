@@ -95,11 +95,16 @@ function form(){$("#F").innerHTML=`<h3>Confirme su asistencia</h3><p>Solo le tom
 async function enviar(){const n=$("#n").value.trim().replace(/\s+/g," "),cc=$("#cc").value,t=$("#t").value.replace(/\D/g,""),er=$("#er");er.textContent="";
   if(n.length<2){er.textContent="Escriba su nombre.";$("#n").focus();return}if(t.length<7){er.textContent="Escriba su número de WhatsApp.";$("#t").focus();return}
   const b=$("#ok");b.disabled=true;b.textContent="Confirmando…";
-  try{await fb();await fs.addDoc(fs.collection(db,"agendaEv",E.e,"rsvp"),{n:n.slice(0,60),w:t.slice(0,15),cc:cc.slice(0,4),de:String(E.d||"").slice(0,64),dn:dn.slice(0,60),t:Date.now()});
+  try{await fb();const col=fs.collection(db,"agendaEv",E.e,"rsvp"),data={n:n.slice(0,60),w:t.slice(0,15),cc:cc.slice(0,4),de:String(E.d||"").slice(0,64),dn:dn.slice(0,60),t:Date.now()};
+    // 15 nov: cupo (evCupo/{id} {cupo, n}). La confirmación y el contador van juntos; si el cupo se llenó, no se confirma.
+    let ok=false;for(let i=0;i<2&&!ok;i++){const C=await cupoLeer();if(C&&(+C.n||0)>=(+C.cupo||0)){lleno();return}
+      try{if(C){const r=fs.doc(col),b=fs.writeBatch(db);b.set(r,data);b.update(fs.doc(db,"evCupo",E.e),{n:(+C.n||0)+1,r:r.id});await b.commit()}else await fs.addDoc(col,data);ok=true}catch(x){if(!C||i)throw x}}
     try{localStorage.setItem(K,n)}catch(e){}listo(n)}
   catch(e){b.disabled=false;b.textContent="✅ Confirmo mi asistencia";er.textContent="No se pudo confirmar. Revise su conexión e intente de nuevo."}}
+async function cupoLeer(){try{await fb();const c=await fs.getDoc(fs.doc(db,"evCupo",E.e));return c.exists()?c.data():null}catch(e){return null}}
+function lleno(){$("#F").innerHTML=`<h3>Cupo lleno</h3><p>Ya no quedan lugares para este evento.${dn1?" Escríbale a "+esc(dn1)+" por si se abre un espacio.":""}</p>${WA?`<a class="b3" href="https://wa.me/${WA}?text=${encodeURIComponent("¡Hola"+(dn1?" "+dn1:"")+"! Vi que el cupo "+(bx?"del "+tipo:"de la "+tipo.toLowerCase())+" está lleno. ¿Se abre algún espacio? 🙏")}" target="_blank" rel="noopener">💬 Escribirle a ${esc(dn1||"quien me invitó")}</a>`:""}`}
 let ya=null;try{ya=localStorage.getItem(K)}catch(e){}
-if(ya)listo(ya);else form();
+if(ya)listo(ya);else{form();cupoLeer().then(C=>{if(C&&(+C.n||0)>=(+C.cupo||0)&&!ya)lleno()})}
 // Foto y WhatsApp de quien invita (página pública del socio): 1 lectura, opcional
 if(E.p){(async()=>{try{let x=PX;if(!x){await fb();const d=await fs.getDoc(fs.doc(db,"perfiles",E.p));if(!d.exists())return;x=d.data()||{}}
   if(x.foto&&/^(data:image|https:)/.test(x.foto)){const a=$("#dav");if(a){a.style.backgroundImage="url('"+x.foto.replace(/'/g,"")+"')";a.textContent=""}}
