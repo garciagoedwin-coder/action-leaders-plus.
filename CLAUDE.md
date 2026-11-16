@@ -961,3 +961,10 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - 16 nov: Inicio simple: Avisos de hoy (avBox) arriba de Compromiso (compStrip order 5, justo sobre la rutina). Anuncio config.anuncio {id,t,sub,btn,bx:fecha,hasta} = slide #anuStrip (primero en avBox) que abre evaVer del Business Experience de esa fecha; se oculta si el socio no ve el evento o pasa `hasta`.
 
 - 16 nov: CRM grupos: ya no se fuerza un grupo abierto (solo la 1.ª vez, sin LS crmGA); al cerrar un grupo con ficha abierta, openC=null.
+
+## Eventos v3 (16 nov) — Junta y Evento separados
+- Crear actividad: «🤝 Junta de negocios o Home meeting» → abrirCrearEva("junta") y «🎤 Evento» (solo evaPuedeGran = Marketing Director+ y admins) → abrirCrearEva("evento"). evaCrearMenu() elige entre los dos (botón ➕ de Eventos y juntas y agBig "ev").
+- Evento (tipo "gran"): título editable bxT (por defecto EV_T "Gran evento de negocios"), ds = diseño 1 Clásico (evaClasBg: foto c1.jpg + capa media/eventos/c-ov.webp + título dibujado), 2 Business (bxCanvas, bx:1), 3 Gala (galaCanvas, maqueta tools/flyer/especial/p1.html; letras Cormorant ALCC + Lora itálica ALLI a propósito). bxS subtítulo en 2/3. 1–3 invitados especiales solo en Clásico. evaDs(e)=0 → evento viejo (fondo con título fijo).
+- FOTO PROPIA en los 3 diseños y en las juntas (franja x92 y775 908×200): evaFoto (≤1600 px, <650 KB, aviso si ancho <1080) → Firestore evFoto/{id} {f,cre,t}; el evento solo guarda fo:1. evaFotoGet(id) la lee (1 lectura, caché EVF) solo al hacer el flyer/ticket. Eventos viejos con bxF dentro del doc siguen igual (al cambiar foto se borra bxF).
+- Autorización SOLO si el evento es para todos («🌎 Todos los socios»): «👥 Mi línea» se publica sin aut (visP "junta"). evaVisCambiar: abrir un evento privado → aut p + verA ["all"]. Reglas (respaldo/firestore.rules, pegadas por Edwin el 16 nov): enAll/abreOk + match /evFoto.
+- Nombres: evaLarga/evaNom usan bxT para todo gran; evaBx(e) = bx o título propio (mensajes).
