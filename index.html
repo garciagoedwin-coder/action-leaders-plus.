@@ -7752,11 +7752,55 @@ function abrirCita(c,ct){const ed=!!(c&&c.id);c=Object.assign({tipo:"zoom",fecha
       closeSheet();renderHoyCitas();renderMiAgenda();publicarSlots();try{renderCRM()}catch(e){}
       if(tipo!=="lider"&&!ed)citaListo(n);else toast("Cita guardada ✓")};
     const dl=$("#ciDel");if(dl){let arm=0;dl.onclick=async()=>{if(Date.now()-arm>5000){arm=Date.now();dl.textContent="Toca otra vez para eliminar";return}if(await delCita(c.id)){closeSheet();toast("Cita eliminada");publicarSlots();renderHoyCitas();renderMiAgenda();try{renderCRM()}catch(e){}}}}})}
-function citaListo(c){openSheet(`<h2>✅ Cita agendada</h2><p style="margin:0"><b>${esc(c.nombre)}</b><br><span class="muted">${esc(citaCuando(c))} · ${CITA_T[c.tipo][0]} ${CITA_T[c.tipo][1]}</span></p>
-   <p class="small muted" style="margin:0">Envíale la invitación por WhatsApp. Incluye un enlace para que la agregue a su calendario.</p>
-   <button class="btn" id="clWa" style="width:100%;background:#25D366;color:#fff">💬 Enviar invitación por WhatsApp</button>
-   <button class="btn ghost" id="clCal" style="width:100%">➕ Agregar a mi calendario</button>
-   <button class="btn ghost" data-close style="width:100%">Listo</button>`,()=>{$("#clWa").onclick=()=>citaWa(c,false);$("#clCal").onclick=()=>citaIcs(c)})}
+// ---------- 15 nov (Edwin): tarjeta de presentación del socio para la cita (diseño B «Su cita», 1080×1350) ----------
+let citaFont=null;function citaFonts(){if(!citaFont)citaFont=Promise.all([["CTB","media/fonts/BricolageGrotesque-Bold.ttf"],["CTN","media/fonts/BarlowCondensed-Bold.ttf"],["CTF","media/fonts/Figtree-VF.ttf"]].map(([f,u])=>new FontFace(f,"url("+u+")").load().then(x=>{document.fonts.add(x)}).catch(()=>{})));return citaFont}
+function citaTitulo(){let i=-1;try{i=miRangoIdx()}catch(e){}return i>=1&&RANGOS[i]?{t:"★ "+RANGOS[i].n.toUpperCase(),r:1}:{t:"EMPRENDEDOR DIGITAL",r:0}}
+function citaWrap(g,t,w){const W=String(t).split(/\s+/),L=[];let l="";for(const x of W){const k=l?l+" "+x:x;if(g.measureText(k).width>w&&l){L.push(l);l=x}else l=k}if(l)L.push(l);return L}
+async function citaCanvas(c,rec){await citaFonts();const W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
+  const first=String(c.nombre||"").trim().split(/\s+/)[0]||"",d=parseK(c.fecha),yo=nv(miRegistro().nombre||miNombreFull()||miNombreCorto()||""),T0=citaTitulo();
+  g.fillStyle="#f4f1ea";g.fillRect(0,0,W,H);
+  let gr=g.createLinearGradient(0,0,W,520);gr.addColorStop(0,"#062B3A");gr.addColorStop(.7,"#0A4F6E");gr.addColorStop(1,"#0A7DAD");g.fillStyle=gr;g.fillRect(0,0,W,520);
+  g.save();g.beginPath();g.rect(0,0,W,520);g.clip();g.strokeStyle="rgba(255,255,255,.12)";g.lineWidth=2;g.beginPath();g.arc(W+130,130,310,0,Math.PI*2);g.stroke();g.strokeStyle="rgba(255,255,255,.05)";g.lineWidth=70;g.beginPath();g.arc(W+130,130,380,0,Math.PI*2);g.stroke();g.restore();
+  const lg=await imgLoad("media/logo-al.png");if(lg)g.drawImage(lg,80,72,44*lg.width/lg.height,44);
+  const pill=rec==="rep"?"NUEVO HORARIO":"SU CITA";g.font="800 17px CTF, sans-serif";const pw=evaSpW(g,pill,5)+44;g.strokeStyle="rgba(255,255,255,.5)";g.lineWidth=2;evaRR(g,W-80-pw,70,pw,48,24);g.stroke();g.fillStyle="#fff";evaSp(g,pill,W-80-pw/2,101,5,"center");
+  g.fillStyle="#9ee6ff";g.font="800 18px CTF, sans-serif";evaSp(g,("HOLA"+(first?", "+first:"")).toUpperCase(),80,222,5.4,"left");
+  const tl=c.tipo==="whatsapp"?["Le llamo por","WhatsApp"]:c.tipo==="persona"?["Nos vemos","en persona"]:["Nos vemos","en Zoom"];
+  g.fillStyle="#fff";g.font="700 86px CTB, sans-serif";g.fillText(tl[0],80,312);g.fillText(tl[1],80,398);
+  // tarjeta
+  const X=70,Y=432,CW=W-140,ind=String(c.nota||"").split("\n").map(x=>x.trim()).filter(Boolean),notas=(c.tipo==="persona"&&c.lugar?["📍 "+c.lugar]:[]).concat(ind);
+  g.font="500 22px CTF, sans-serif";let NL=[];notas.slice(0,4).forEach((x,i)=>{NL=NL.concat(citaWrap(g,(i===0&&c.tipo==="persona"&&c.lugar?"":"• ")+x,CW-130))});NL=NL.slice(0,6);
+  const CH=330+170+(NL.length?NL.length*34+48:0)+20;
+  g.save();g.shadowColor="rgba(6,43,58,.25)";g.shadowBlur=60;g.shadowOffsetY=26;g.fillStyle="#fff";evaRR(g,X,Y,CW,CH,34);g.fill();g.restore();
+  const cx=X+44+95,cy=Y+44+95;gr=g.createLinearGradient(cx-100,cy-100,cx+100,cy+100);gr.addColorStop(0,"#2AC1F1");gr.addColorStop(.5,"#0A7DAD");gr.addColorStop(1,"#9ee6ff");
+  g.beginPath();g.arc(cx,cy,99,0,Math.PI*2);g.fillStyle=gr;g.fill();g.beginPath();g.arc(cx,cy,92,0,Math.PI*2);g.fillStyle="#fff";g.fill();
+  await evaCirc(g,miFotoUrl(),cx,cy,86,0,"",0,yo);
+  const tx=X+44+190+34;g.fillStyle="#0A7DAD";g.font="800 16px CTF, sans-serif";evaSp(g,"LE ATIENDE",tx,Y+86,4.5,"left");
+  let fz=evaFit(g,yo,"700 {s}px CTB, sans-serif",52,CW-(tx-X)-40);g.font="700 "+fz+"px CTB, sans-serif";g.fillStyle="#062B3A";g.fillText(yo,tx,Y+146);
+  g.font="800 19px CTF, sans-serif";const tw=evaSpW(g,T0.t,2.6)+40;g.fillStyle=T0.r?"#fbf3dc":"#e6f6fd";evaRR(g,tx,Y+168,tw,44,22);g.fill();g.strokeStyle=T0.r?"#e2c26a":"#9ed9f0";g.lineWidth=2;g.stroke();g.fillStyle=T0.r?"#8a6510":"#0A6A93";evaSp(g,T0.t,tx+20,Y+198,2.6,"left");
+  g.fillStyle="#5b6b78";g.font="500 23px CTF, sans-serif";g.fillText("Action Leaders",tx,Y+250);
+  // corte de boleto
+  const yc=Y+310;g.setLineDash([10,9]);g.strokeStyle="#dfe5ea";g.lineWidth=2;g.beginPath();g.moveTo(X+30,yc);g.lineTo(X+CW-30,yc);g.stroke();g.setLineDash([]);
+  g.fillStyle="#f4f1ea";g.beginPath();g.arc(X,yc,22,0,Math.PI*2);g.fill();g.beginPath();g.arc(X+CW,yc,22,0,Math.PI*2);g.fill();
+  const dia=DAYS_L[d.getDay()].toUpperCase()+" "+d.getDate(),du=+c.dur||60,durT=du<60?du+" MIN":du===60?"1 HORA":du===90?"1 H 30":du===120?"2 HORAS":Math.round(du/60)+" HORAS";
+  const COL=[[X+44,"DÍA",dia,"de "+MONTHS[d.getMonth()]],[X+400,"HORA",h12(c.hora).replace(/\s*([ap])\.?\s*m\.?/i,(m,a)=>" "+a.toUpperCase()+"M"),"Honduras"],[X+640,"DURA",durT,c.tipo==="whatsapp"?"por WhatsApp":c.tipo==="persona"?"en persona":"por Zoom"]];
+  COL.forEach(([x,l,v,sub])=>{g.fillStyle="#0A7DAD";g.font="800 15px CTF, sans-serif";evaSp(g,l,x,yc+58,4,"left");g.fillStyle="#062B3A";const f2=evaFit(g,v,"700 {s}px CTN, sans-serif",52,(l==="DÍA"?340:220));g.font="700 "+f2+"px CTN, sans-serif";g.fillText(v,x,yc+112);g.fillStyle="#6b7b88";g.font="500 19px CTF, sans-serif";g.fillText(sub,x,yc+142)});
+  if(NL.length){const ny=yc+176,nh=NL.length*34+30;g.fillStyle="#f1f7fb";evaRR(g,X+44,ny,CW-88,nh,20);g.fill();g.fillStyle="#284456";g.font="500 22px CTF, sans-serif";NL.forEach((l,i)=>g.fillText(l,X+70,ny+42+i*34))}
+  g.fillStyle="#4b5b68";g.font="500 23px CTF, sans-serif";const q="¿Alguna duda? ";g.fillText(q,80,H-72);const qw=g.measureText(q).width;g.fillStyle="#062B3A";g.font="800 23px CTF, sans-serif";g.fillText("Responda este mensaje",80+qw,H-72);
+  g.fillStyle="#0A7DAD";g.font="700 24px CTN, sans-serif";evaSp(g,"ACTION LEADERS",W-80,H-72,4.5,"right");
+  return cv}
+async function citaFile(c,rec){const cv=await citaCanvas(c,rec);const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92));return new File([b],"Su-cita-"+(String(c.nombre||"").split(" ")[0]||"Action-Leaders")+".jpg",{type:"image/jpeg"})}
+// Envío con tarjeta: la imagen se prepara al abrir (iPhone exige compartir dentro del toque)
+function citaEnviar(c,rec,tit){let file=null;const t=citaMsg(c,rec);openSheet(`<h2>${tit||"💬 Enviar invitación"}</h2><p style="margin:0"><b>${esc(c.nombre)}</b><br><span class="muted">${esc(citaCuando(c))} · ${CITA_T[c.tipo][0]} ${CITA_T[c.tipo][1]}</span></p>
+   <div style="aspect-ratio:1080/1350;border-radius:14px;overflow:hidden;background:#f4f1ea;display:grid;place-items:center;max-height:52vh;margin:0 auto"><img id="ctImg" alt="Tarjeta de la cita" style="width:100%;height:100%;object-fit:contain;display:block"><span id="ctW" class="small muted">Creando su tarjeta…</span></div>
+   <button class="btn" id="ctSh" style="width:100%;background:#25D366;color:#fff">💬 Enviar tarjeta e invitación</button>
+   <button class="btn ghost" id="ctTx" style="width:100%">Enviar solo el mensaje</button>${rec?"":`<button class="btn ghost" id="clCal" style="width:100%">➕ Agregar a mi calendario</button>`}
+   <button class="btn ghost" data-close style="width:100%">Listo</button>`,()=>{
+   citaFile(c,rec).then(f=>{file=f;const im=$("#ctImg"),w=$("#ctW");if(im){im.src=URL.createObjectURL(f);if(w)w.remove()}}).catch(()=>{const w=$("#ctW");if(w)w.textContent="No se pudo crear la tarjeta"});
+   $("#ctTx").onclick=()=>citaWa(c,rec);{const k=$("#clCal");if(k)k.onclick=()=>citaIcs(c)}
+   $("#ctSh").onclick=async()=>{if(!file){toast("Un momento, se está creando la tarjeta…");return}
+     if(navigator.canShare&&navigator.canShare({files:[file],text:t})){try{try{await navigator.clipboard.writeText(t)}catch(x){}await navigator.share({files:[file],text:t});return}catch(x){if(x&&x.name==="AbortError")return}}
+     const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click();toast("Tarjeta guardada · adjúntela en el chat");setTimeout(()=>citaWa(c,rec),700)}})}
+function citaListo(c){citaEnviar(c,false,"✅ Cita agendada")}
 function citaCard(c){const t=CITA_T[c.tipo]||CITA_T.zoom,pas=citaIni(c).getTime()+(c.dur||60)*6e4<Date.now(),nm=c.tipo==="lider"?c.titulo:c.nombre,rol=citaRol(c),can=!!c.cancel;
   if(can)return `<div class="cita ev-past"><div class="ch-h"><b>${esc(h12(c.hora))}</b><span class="small muted">${c.dur>=60?(c.dur/60)+" h":c.dur+" min"}</span></div><div class="grow" style="min-width:0"><b style="font-weight:600;text-decoration:line-through">${esc(nm||"Cita")}</b><div class="small" style="margin-top:4px;color:var(--bad)">✖ Cancelada${c.cancel.por&&c.cancel.por!=="yo"?" por "+esc(c.cancel.por):""}${c.cancel.mot?" · "+esc(c.cancel.mot):""}</div><div class="row wrap" style="gap:6px;margin-top:8px"><button class="btn sm ghost" data-cie="${esc(c.id)}">Editar</button></div></div></div>`;
   const ldF=esc(citaLdN(c).split(" ")[0]),prF=esc(((c.cid&&(contacts.find(x=>x.id===c.cid)||{}).name)||((String(c.titulo||"").match(/· ([^(]+)/)||[])[1])||"prospecto").trim().split(/\s+/)[0]);
@@ -7765,7 +7809,7 @@ function citaCard(c){const t=CITA_T[c.tipo]||CITA_T.zoom,pas=citaIni(c).getTime(
    <div class="row wrap" style="gap:6px;margin-top:8px">${pas&&!c.hecha&&!c.res?`<button class="btn sm" data-cok="${esc(c.id)}">✅ Se realizó</button><button class="btn sm ghost" data-cno="${esc(c.id)}" style="color:var(--bad)">✖ No se realizó</button>`:""}${c.hecha?'<span class="chip c-good">🎯 Presentación registrada</span>':c.res==="ok"?'<span class="chip c-good">✅ Se realizó</span>':""}${c.res==="no"?'<span class="chip c-bad">✖ No se realizó</span>':""}${c.lz?`<button class="btn sm ghost" data-cilz="${esc(c.id)}">🚀 Ver flyer</button>`:""}${!pas&&c.lz?`<button class="btn sm" style="background:#25D366;color:#fff" data-cinv="${esc(c.id)}">📣 Invitar</button>${(c.inv||[]).length?`<button class="btn sm ${c.fecha===TODAY?"gold":"ghost"}" data-crec="${esc(c.id)}">⏰ Recordar (${c.inv.length})</button>`:""}`:""}${!pas&&rol==="de"&&!c.lz&&c.l3?`<button class="btn sm ${c.fecha===TODAY?"gold":""}" style="${c.fecha===TODAY?"":"background:#25D366;color:#fff"}" data-crp="${esc(c.id)}">⏰ Recordar a ${prF}</button>`:""}${!pas&&rol==="de"&&(c.l3||c.lzU||c.lzSU)?`<button class="btn sm ghost" data-ciav="${esc(c.id)}">💬 Avisar a ${ldF}</button>`:""}${c.reprog&&!c.hecha?`<span class="chip c-gold">🔁 Reprogramada${c.reprog>1?" ("+c.reprog+")":""}</span>`:""}${!pas&&c.tipo!=="lider"?`<button class="btn sm" style="background:#25D366;color:#fff" data-ciw="${esc(c.id)}">💬 Invitación</button><button class="btn sm ghost" data-cir="${esc(c.id)}">⏰ Recordatorio</button>`:""}${!pas&&c.enlace&&(c.tipo==="zoom"||c.tipo==="lider")?`<a class="btn sm ghost" href="${esc(safeUrl(c.enlace))}" target="_blank" rel="noopener">Entrar al Zoom</a>`:""}${!pas?`<button class="btn sm ghost" data-cic="${esc(c.id)}">➕ Calendario</button>`:""}${!c.hecha?`<button class="btn sm ${pas?"gold":"ghost"}" data-cip="${esc(c.id)}">🔁 Reprogramar</button>`:""}${!pas&&c.l3&&rol?`<button class="btn sm ghost" data-cican="${esc(c.id)}" style="color:var(--bad)">✖ Cancelar</button>`:""}<button class="btn sm ghost" data-cie="${esc(c.id)}">Editar</button></div></div></div>`}
 function bindCitas(root){root.querySelectorAll("[data-cok]").forEach(b=>b.onclick=()=>citaResultado(citas.find(x=>x.id===b.dataset.cok),"ok"));root.querySelectorAll("[data-cno]").forEach(b=>b.onclick=()=>citaResultado(citas.find(x=>x.id===b.dataset.cno),"no"));root.querySelectorAll("[data-cilz]").forEach(b=>b.onclick=()=>{const c=citas.find(x=>x.id===b.dataset.cilz);if(c)lzVer(c)});root.querySelectorAll("[data-ciav]").forEach(b=>b.onclick=()=>citaAvisar(citas.find(x=>x.id===b.dataset.ciav)));root.querySelectorAll("[data-cid2]").forEach(b=>b.onclick=async()=>{const ci=citas.find(x=>x.id===b.dataset.cid2);if(!ci)return;let ct=ci.cid&&contacts.find(x=>x.id===ci.cid);
     if(!ct){ct={name:ci.nombre||"Prospecto",cc:"504",phone:"",stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(ct);if(!id)return;ct.id=id;contacts.push(ct);ci.cid=id}
-    if(!(await sumarPres(ct,ci))){ci.hecha=true;await saveCita(ci);renderHoyCitas();renderMiAgenda()}});root.querySelectorAll("[data-ciw]").forEach(b=>b.onclick=()=>citaWa(citas.find(x=>x.id===b.dataset.ciw),false));root.querySelectorAll("[data-cir]").forEach(b=>b.onclick=()=>citaWa(citas.find(x=>x.id===b.dataset.cir),true));
+    if(!(await sumarPres(ct,ci))){ci.hecha=true;await saveCita(ci);renderHoyCitas();renderMiAgenda()}});root.querySelectorAll("[data-ciw]").forEach(b=>b.onclick=()=>{const x=citas.find(y=>y.id===b.dataset.ciw);if(x){if(x.tipo==="lider")citaWa(x,false);else citaEnviar(x,false)}});root.querySelectorAll("[data-cir]").forEach(b=>b.onclick=()=>citaWa(citas.find(x=>x.id===b.dataset.cir),true));
   root.querySelectorAll("[data-cic]").forEach(b=>b.onclick=()=>citaIcs(citas.find(x=>x.id===b.dataset.cic)));root.querySelectorAll("[data-cie]").forEach(b=>b.onclick=()=>abrirCita(citas.find(x=>x.id===b.dataset.cie)));root.querySelectorAll("[data-cip]").forEach(b=>b.onclick=()=>abrirReprog(citas.find(x=>x.id===b.dataset.cip)));
   const C=k=>citas.find(x=>x.id===k);root.querySelectorAll("[data-cican]").forEach(b=>b.onclick=()=>citaCancelar(C(b.dataset.cican)));root.querySelectorAll("[data-crp]").forEach(b=>b.onclick=()=>{const c=C(b.dataset.crp);if(c)recL3(c)});root.querySelectorAll("[data-cinv]").forEach(b=>b.onclick=()=>{const c=C(b.dataset.cinv);if(c)lzInvitados(c)});root.querySelectorAll("[data-crec]").forEach(b=>b.onclick=()=>{const c=C(b.dataset.crec);if(c)recLista(recLz(c))})}
 function citaResultado(ci,r){if(!ci)return;const nm=ci.tipo==="lider"?ci.titulo:ci.nombre;
@@ -7858,7 +7902,7 @@ function abrirReprog(c){if(!c)return;const pas=citaIni(c).getTime()<Date.now(),n
         try{await l3Col().doc(n.l3).set(b,{merge:true});if(rol==="de"){n.titulo=String(n.titulo).replace(/\s*\([^)]*\)\s*$/,"")+" (⏳ por confirmar)";await saveCita(n);renderHoyCitas();renderMiAgenda()}toast("🔁 Reprogramada. "+(rol==="de"?citaLdN(n).split(" ")[0]+" la verá en su app para confirmarla.":"Le enviamos la nueva hora para que la acepte."))}catch(e){toast("Se cambió en su agenda, pero no se pudo avisar. Revise su conexión.")}}else toast("🔁 Cita reprogramada");return}
       openSheet(`<h2>✅ Cita reprogramada</h2><p style="margin:0"><b>${esc(nm||"Cita")}</b><br><span class="muted">Nuevo horario: ${esc(citaCuando(n))}</span></p><p class="small muted" style="margin:0">Avísele el nuevo horario con un clic:</p>
        <button class="btn" id="rpWa" style="width:100%;background:#25D366;color:#fff">💬 Avisar por WhatsApp</button><button class="btn ghost" id="rpCal" style="width:100%">➕ Actualizar mi calendario</button><button class="btn ghost" data-close style="width:100%">Listo</button>`,()=>{
-        $("#rpWa").onclick=()=>citaWa(n,"rep");$("#rpCal").onclick=()=>citaIcs(n)})}})}
+        $("#rpWa").onclick=()=>{if(n.tipo!=="lider"){closeSheet();setTimeout(()=>citaEnviar(n,"rep","🔁 Avisar el nuevo horario"),250)}else citaWa(n,"rep")};$("#rpCal").onclick=()=>citaIcs(n)})}})}
 function publicarSlots(){} // 8 nov: se quitó "Agenda conmigo" (reservas desde la página)
 function renderMiAgenda(){const el=$("#agMia");if(!el||agVista!=="mia")return;if(!citasOk){el.innerHTML=`<p class="muted small">Cargando tu agenda…</p>`;loadCitas();return}
   const t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()+agWk*7), /* empieza HOY y sigue 7 días; las flechas mueven de 7 en 7 */ds=Array.from({length:7},(_,i)=>new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+i));
@@ -9466,7 +9510,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115195624";var busy=false,pend=null;
+(function(){var V="20261115204024";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
