@@ -1213,7 +1213,7 @@ body.beta #agBig .agMas{display:flex!important;align-items:center;gap:12px;text-
 .cp3D .rg{display:inline-flex;font-size:12.5px;font-weight:700;background:rgba(255,255,255,.12);border-radius:999px;padding:4px 10px;margin:10px 0}.cp3D .g{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px}.cp3D .g div{background:rgba(255,255,255,.08);border-radius:12px;padding:8px 9px}.cp3D small{display:block;font-size:9.5px;letter-spacing:.1em;font-weight:800;color:#7DD3FC}.cp3D b{font-size:15px}
 .cp3D .ft{display:flex;justify-content:space-between;align-items:center;font-size:12px;opacity:.9;margin-top:10px}.cp3D .ft button{border:0;background:none;color:#7DD3FC;font:inherit;font-weight:800;cursor:pointer}
 body.acc3 #rutCard{border-top:0}
-body.acc3 #tasks .task.t3d{display:none}body.acc3 #tasks .task{gap:10px}body.acc3 #tasks .task .grow{font-size:14.5px;line-height:1.3}body.acc3 #tasks .task .grow .small{font-size:12px}body.acc3 #tasks .counter button{width:28px;height:28px}
+body.acc3 #tasks .task.t3d{display:none}.task.t3c{padding-top:6px;padding-bottom:6px}.task.t3c .step-n{width:26px;height:26px}.task.t3c .step-n svg{width:14px;height:14px}.task .t3n{font-style:italic;font-size:12px}.task.t3c .counter{background:color-mix(in srgb,#16A34A 15%,var(--surface));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,#16A34A 45%,transparent);transform:scale(.88);transform-origin:right center}.task.t3c .counter .num{color:#16A34A;font-weight:900}.task.t3c .counter button{color:#16A34A}#rutDoneB .rdS.rdM{color:#16A34A;font-weight:700;margin-top:4px}body.acc3 #tasks .task{gap:10px}body.acc3 #tasks .task .grow{font-size:14.5px;line-height:1.3}body.acc3 #tasks .task .grow .small{font-size:12px}body.acc3 #tasks .counter button{width:28px;height:28px}
 #rutChips{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 2px}#rutChips[hidden]{display:none}#rutChips button{border:0;background:#DCFCE7;color:#15803D;border-radius:999px;padding:6px 11px;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}#rutChips button.on{background:#15803D;color:#fff}
 body.acc3 #rutCard.rc3{position:relative;background:var(--surface)!important;border:0!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--brand) 18%,transparent),0 6px 20px color-mix(in srgb,var(--brand) 14%,transparent)}
 #rutCard.rc3 .rc3B{position:absolute;inset:0;border-radius:inherit;padding:2.5px;pointer-events:none;z-index:0;background:conic-gradient(from 0deg,#F97316 0 var(--rp,0%),color-mix(in srgb,var(--line) 90%,transparent) var(--rp,0%) 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;transition:--rp .8s ease}
@@ -2112,7 +2112,7 @@ function dayScore(d,key){key=key||TODAY;const L=ROUTINE.filter(r=>!r.desde||key>
 const okIcon=CHECK;
 let rutOpen=false,rutJust=false,rutFT;
 function rutFold(ok){const t=$("#tasks"),bar=$("#dayBar")&&$("#dayBar").closest(".row"),tg=$("#rutTg");if(!t)return;
-  const hide=ok&&!rutOpen;clearTimeout(rutFT);
+  const hide=ok&&!rutOpen&&!acc3On();clearTimeout(rutFT);
   const ap=()=>{t.hidden=hide;if(bar)bar.hidden=hide;const g=$("#rutTg");if(g)g.textContent=hide?"▾":"▴";const rc=$("#rutCard");if(rc)rc.classList.toggle("mini",hide)};
   if(hide&&rutJust){rutJust=false;rutFT=setTimeout(ap,1400)}else ap();
   {const db=$("#rutDoneB");if(db)db.onclick=()=>{rutOpen=!rutOpen;rutFold(true)}}}
@@ -2151,13 +2151,13 @@ setInterval(()=>{try{if(!fbUser||TODAY<HFLY_DESDE)return;const k=!!presHoyPend()
 function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histSync())saveDay();
   $("#tasks").innerHTML=ROUTINE.map(r=>{const v=day[r.k]||0,done=v>=1;
     if(r.type==="check")return `<div class="task"><button class="check" aria-pressed="${done}" data-k="${r.k}" aria-label="Marcar ${esc(r.t)}">${done?CHECK:""}</button><span class="grow"><span class="${done?"done-t":""}">${esc(r.k==="historia"&&presHoyL().length?"📸 Publique sus 2 historias del día":r.t)}</span>${r.k==="audio"?npRutHTML():""}${r.k==="historia"?histSubHTML(done):r.sub&&!done?`<br><span class="small muted">${esc(r.sub)}</span>`:r.nota?`<br><span class="small muted">${esc(r.nota)}</span>`:""}${r.link&&!(r.k==="audio"&&npActivo())?`<br><a class="chip c-good" style="display:inline-flex;margin-top:6px;text-decoration:none;font-weight:700" href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.linkT||"Abrir")}</a>`:""}</span></div>`;
-    return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:""}</span><span class="grow ${done?"done-t":""}">${esc(acc3On()&&RT3N[r.k]||r.t)}<br><span class="small muted">${(day[r.lk]||[]).length?r.ic+" "+day[r.lk].map(x=>esc(String(x.n).split(" ")[0])).join(", "):v?"Mínimo 1"+(r.goal>1?" · ideal "+r.goal:""):esc(r.vac||"")}</span></span>
+    return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:""}</span><span class="grow ${done&&!acc3On()?"done-t":""}">${esc(acc3On()&&RT3N[r.k]||r.t)}<br><span class="small muted${(day[r.lk]||[]).length?" t3n":""}">${(day[r.lk]||[]).length?day[r.lk].map(x=>esc(String(x.n).split(" ")[0])).join(", "):v?"Mínimo 1"+(r.goal>1?" · ideal "+r.goal:""):esc(r.vac||"")}</span></span>
       <span class="counter"><button data-dec="${r.k}" aria-label="Restar">−</button><span class="num">${v}</span><button data-inc="${r.k}" aria-label="Sumar">+</button></span></div>`}).join("");
   const p=Math.round(dayScore(day)*100),RL=ROUTINE.filter(r=>!r.desde||TODAY>=r.desde),hechas=RL.filter(r=>(day[r.k]||0)>=1).length;$("#dayPct").textContent=hechas+" de "+RL.length;$("#dayBar").style.width=p+"%";
   const pend=RL.filter(r=>!((day[r.k]||0)>=1)),falta=pend.length,ra=$("#rutAlert");
   const rach=(()=>{let r=0;for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=i===0?dayScore(day):dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)r++;else break}if(acc3On()){try{r=constStats().rv}catch(e){}}return r})();try{rhRevisar(rach,!falta)}catch(e){}try{rc3Vida()}catch(e){}
   if(ra){const st=falta?"pend":"ok",hr=new Date().getHours(),nx=pend[0],key=st+"|"+falta+"|"+(hr>=18)+"|"+rach+"|"+(day.hAtr?1:0);if(ra.dataset.key!==key){
-    let h;if(!falta)h=`<div class="rut-al ok rutDone" id="rutDoneB"><span class="rdChk">✓</span><span class="grow" style="min-width:0"><b>¡Felicidades! Su rutina de hoy está hecha 🎉</b><span class="rdS">🔥 Racha de ${rach} ${rach===1?"día":"días"} · mañana va por ${rach+1}</span></span><button type="button" class="rutTg" id="rutTg">${rutOpen?"▴":"▾"}</button></div>`;
+    let h;if(!falta)h=`<div class="rut-al ok rutDone" id="rutDoneB"><span class="rdChk">✓</span><span class="grow" style="min-width:0"><b>¡Felicidades! Su rutina de hoy está hecha 🎉</b><span class="rdS">🔥 Racha de ${rach} ${rach===1?"día":"días"} · mañana va por ${rach+1}</span>${acc3On()?`<span class="rdS rdM">💪 Ya cumplió lo mínimo. ¡Ahora siga sumando para hacer crecer su negocio!</span>`:""}</span>${acc3On()?"":`<button type="button" class="rutTg" id="rutTg">${rutOpen?"▴":"▾"}</button>`}</div>`;
     else{const tarde=hr>=18&&rach>0,txt=tarde?`⏰ <b>Le ${falta===1?"falta 1 paso":"faltan "+falta+" pasos"} para no perder su racha de ${rach} ${rach===1?"día":"días"}</b>`:hechas===0&&nx.k==="historia"&&!day.hAtr?`👉 <b>Empiece por lo fácil:</b> <span>publique su historia (1 minuto)</span>`:`👉 <b>Siguiente paso:</b> <span>${esc(nx.k==="historia"&&day.hAtr?"publique el flyer de la presentación de hoy":nx.nx||nx.t)}</span>`;
       h=`<div class="rut-al rut-nx${tarde?" tarde":""}"><span class="grow" style="min-width:0">${txt}</span><button type="button" class="btn sm" data-rgo="${nx.k}" style="flex:none">${esc(nx.k==="historia"&&day.hAtr?"📤 Publicar":nx.bt||"Hacerlo")}</button></div>`}
     ra.innerHTML=h;
@@ -2176,7 +2176,7 @@ function rut3(h,n){const rc=$("#rutCard");if(!rc)return;let s=$("#rutSeg");if(!a
   const CH={historia:"Historia del día",audio:"Auto desarrollo",contactos:"Nuevos contactos",presentaciones:"Presentar mi negocio",seguimientos:"Hacer seguimiento"};
   const rows=[...$("#tasks").children],L=[];
   ROUTINE.forEach((r,i)=>{const row=rows[i];if(!row)return;const ok=(day[r.k]||0)>=1,num=row.querySelector(".check,.step-n");if(num)num.dataset.n=i+1;
-    const ver=window._rt3V===r.k;row.classList.toggle("t3d",ok&&!ver);if(ok&&(!r.desde||TODAY>=r.desde))L.push(`<button type="button" class="${ver?"on":""}" data-rt3="${r.k}">✓ ${esc(CH[r.k]||String(r.t||"").replace(/^\S+\s/,""))}</button>`)});
+    const ver=window._rt3V===r.k,cnt=r.type!=="check";row.classList.toggle("t3d",ok&&!ver&&!cnt);row.classList.toggle("t3c",ok&&cnt);if(ok&&!cnt&&(!r.desde||TODAY>=r.desde))L.push(`<button type="button" class="${ver?"on":""}" data-rt3="${r.k}">✓ ${esc(CH[r.k]||String(r.t||"").replace(/^\S+\s/,""))}</button>`)});
   let c=$("#rutChips");if(!c){c=document.createElement("div");c.id="rutChips";s.after(c);c.onclick=e=>{const b=e.target.closest("[data-rt3]");if(!b)return;const k=b.dataset.rt3;if(k==="historia"&&!window._rt3V){abrirHist();return}window._rt3V=window._rt3V===k?"":k;renderTasks()}}
   c.innerHTML=L.join("");c.hidden=!L.length}
 let saveDayT;function saveDay(){clearTimeout(saveDayT);saveDayT=setTimeout(()=>store.set("rutina-"+TODAY,day),600);weekCache[TODAY]=day;renderWeek()}
@@ -9160,7 +9160,8 @@ function lzFichaB(l){const c=calLid(l),R=liderDe(l),rg=RANGOS.find(g=>g.n===l.ra
 function llamLz(){const L=(T.config||{}).llamadaLz;if(!L||!L.zoom)return null;if((L.skip||[]).includes(TODAY))return null;return L} // 15 nov: skip = fechas canceladas (AAAA-MM-DD, hora HN)
 // 15 nov (Edwin): volumen del mes de los miembros que vienen del cierre pasado (sin los que entraron este mes)
 // 15 nov, 22:02 (Edwin): IC en rojo (<40%) → Zoom de liderazgo y grupo con 🔒 (visibles, sin link). Nuevos del mes calendario (auto===mes) nunca: su % en color neutro + 🌱 Nuevo.
-const lzNvM=l=>!!l&&String(l.auto||"")===mesMeta();
+// 15 nov 22:36: «nuevo» = socio activado en este mes calendario (no «entró al sistema este mes»: Karen Lizeth es socia vieja).
+const lzNvM=l=>{if(!l)return false;try{const m=mesMeta(),ns=lzNs(l);return (T.activaciones||[]).some(a=>{if(a.sc||!a.fecha||dkey(new Date(a.fecha)).slice(0,7)!==m)return false;const n=nrmN(a.socio||"");return ns.includes(n)||ns.some(x=>lzMismo(x,a.socio||""))})}catch(e){return false}};
 const lzICc=(l,px)=>px==null?"var(--muted)":lzNvM(l)?"var(--brand)":IDX_C(px);
 function lzRojo(){try{if(isAdmin)return null;const L=lzMiL();if(!L||lzNvM(L))return null;const p=lzPers(L);return p!=null&&p<40?p:null}catch(e){return null}}
 const lzRojoTx=p=>`Su índice de constancia está en ${p}%. Llegue a 40% para habilitarlo.`;
@@ -9599,7 +9600,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115220907";var busy=false,pend=null;
+(function(){var V="20261115224329";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
