@@ -3309,7 +3309,8 @@ const nrmN2=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toL
 function calVer(l){let yo="";try{yo=nrmN2((miRegistro().nombre)||profile.miNombre||"")}catch(e){}return !!(isAdmin||(yo&&(nrmN2(l.nombre)===yo||nrmN2(l.nombreRanking)===yo||nrmN2(l.linea)===yo)))}
 const sisCfg=()=>(T.config||{}).sistemaLiderazgo||null;
 function calLid(l){const C=calCfg(),S=sisCfg(),ah=ahLider(l),rg=posRank(l.rango)<=POS_MD;
-  if(S){const v=Number(l.ptsBase)||0;if(ah)return {k:"pend",ah:true,v,falta:0};if(v>=C.esp)return {k:"esp",v,rg};if(v>=C.lider)return {k:"lid",v,falta:C.esp-v,rg};if(rg)return {k:"rango",v,rg};return {k:"pend",v,falta:C.lider-v}}
+  // 15 nov (Edwin): la insignia = lo más alto entre el cierre del mes pasado (ptsBase) y el volumen de este mes; sube en el momento y no baja durante el mes.
+  if(S){const v=Math.max(Number(l.ptsBase)||0,Number(l.volumen)||0);if(ah)return {k:"pend",ah:true,v,falta:0};if(v>=C.esp)return {k:"esp",v,rg};if(v>=C.lider)return {k:"lid",v,falta:C.esp-v,rg};if(rg)return {k:"rango",v,rg};return {k:"pend",v,falta:C.lider-v}}
   const v=Number(l.volumen)||0;
   if(ah)return {k:"pend",ah:true,v,falta:0};
   if(rg)return {k:"rango",v};
@@ -9402,7 +9403,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115183525";var busy=false,pend=null;
+(function(){var V="20261115184704";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
