@@ -3755,7 +3755,7 @@ function dtRed(){if(!Array.isArray(redL)){redPre();return {c:[],s:[]}}if(SNVD===
   const fuera=(ek,wk)=>(ek&&(ce.has(ek)||de.has(ek)))||(wk&&cw.has(wk));
   const C=[],Sa=[],vis=new Set();
   for(const r of redL){if(!redDir(r)||fuera(r.ek,r.wk))continue;const act=dtActDe(r.ek,r.wk),dec=dtDecDe(act,r.id);vis.add(r.ek||r.wk||r.id);
-    if(redCL(r)||(dec&&dec.s==="c"&&!r.u))C.push({cli:1,red:1,id:r.id,n:r.n,ok:(r.t==="c"||r.t==="s")&&!dtAhPend(r.ek,r.wk),r,act,dec});
+    if(redCL(r)||(dec&&dec.s==="c"&&!r.u))C.push({cli:1,red:1,id:r.id,n:r.n,ok:(r.t==="c"||r.t==="s"||redPago(r))&&!dtAhPend(r.ek,r.wk),r,act,dec});
     else if(redSA(r))Sa.push({red:1,sa:1,id:r.id,n:r.n,ok:false,r,act,dec})}
   // activados después del reporte: patrocinador = yo, últimos 60 días, sin cuenta en la app
   const lim=Date.now()-60*864e5;
@@ -9674,7 +9674,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261116054633";var busy=false,pend=null;
+(function(){var V="20261116062501";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
