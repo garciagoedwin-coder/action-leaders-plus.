@@ -2112,7 +2112,7 @@ function dayScore(d,key){key=key||TODAY;const L=ROUTINE.filter(r=>!r.desde||key>
 const okIcon=CHECK;
 let rutOpen=false,rutJust=false,rutFT;
 function rutFold(ok){const t=$("#tasks"),bar=$("#dayBar")&&$("#dayBar").closest(".row"),tg=$("#rutTg");if(!t)return;
-  const hide=ok&&!rutOpen&&!acc3On();clearTimeout(rutFT);
+  const hide=ok&&!rutOpen;clearTimeout(rutFT);
   const ap=()=>{t.hidden=hide;if(bar)bar.hidden=hide;const g=$("#rutTg");if(g)g.textContent=hide?"▾":"▴";const rc=$("#rutCard");if(rc)rc.classList.toggle("mini",hide)};
   if(hide&&rutJust){rutJust=false;rutFT=setTimeout(ap,1400)}else ap();
   {const db=$("#rutDoneB");if(db)db.onclick=()=>{rutOpen=!rutOpen;rutFold(true)}}}
@@ -2157,7 +2157,7 @@ function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histS
   const pend=RL.filter(r=>!((day[r.k]||0)>=1)),falta=pend.length,ra=$("#rutAlert");
   const rach=(()=>{let r=0;for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=i===0?dayScore(day):dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)r++;else break}if(acc3On()){try{r=constStats().rv}catch(e){}}return r})();try{rhRevisar(rach,!falta)}catch(e){}try{rc3Vida()}catch(e){}
   if(ra){const st=falta?"pend":"ok",hr=new Date().getHours(),nx=pend[0],key=st+"|"+falta+"|"+(hr>=18)+"|"+rach+"|"+(day.hAtr?1:0);if(ra.dataset.key!==key){
-    let h;if(!falta)h=`<div class="rut-al ok rutDone" id="rutDoneB"><span class="rdChk">✓</span><span class="grow" style="min-width:0"><b>¡Felicidades! Su rutina de hoy está hecha 🎉</b><span class="rdS">🔥 Racha de ${rach} ${rach===1?"día":"días"} · mañana va por ${rach+1}</span>${acc3On()?`<span class="rdS rdM">💪 Ya cumplió lo mínimo. ¡Ahora siga sumando para hacer crecer su negocio!</span>`:""}</span>${acc3On()?"":`<button type="button" class="rutTg" id="rutTg">${rutOpen?"▴":"▾"}</button>`}</div>`;
+    let h;if(!falta)h=`<div class="rut-al ok rutDone" id="rutDoneB"><span class="rdChk">✓</span><span class="grow" style="min-width:0"><b>¡Felicidades! Su rutina de hoy está hecha 🎉</b><span class="rdS">🔥 Racha de ${rach} ${rach===1?"día":"días"} · mañana va por ${rach+1}</span>${acc3On()?`<span class="rdS rdM">💪 Ya cumplió lo mínimo. ¡Ahora siga sumando para hacer crecer su negocio!</span>`:""}</span><button type="button" class="rutTg" id="rutTg">${rutOpen?"▴":"▾"}</button></div>`;
     else{const tarde=hr>=18&&rach>0,txt=tarde?`⏰ <b>Le ${falta===1?"falta 1 paso":"faltan "+falta+" pasos"} para no perder su racha de ${rach} ${rach===1?"día":"días"}</b>`:hechas===0&&nx.k==="historia"&&!day.hAtr?`👉 <b>Empiece por lo fácil:</b> <span>publique su historia (1 minuto)</span>`:`👉 <b>Siguiente paso:</b> <span>${esc(nx.k==="historia"&&day.hAtr?"publique el flyer de la presentación de hoy":nx.nx||nx.t)}</span>`;
       h=`<div class="rut-al rut-nx${tarde?" tarde":""}"><span class="grow" style="min-width:0">${txt}</span><button type="button" class="btn sm" data-rgo="${nx.k}" style="flex:none">${esc(nx.k==="historia"&&day.hAtr?"📤 Publicar":nx.bt||"Hacerlo")}</button></div>`}
     ra.innerHTML=h;
@@ -9603,7 +9603,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115225149";var busy=false,pend=null;
+(function(){var V="20261115225629";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
