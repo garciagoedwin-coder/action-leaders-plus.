@@ -4725,7 +4725,10 @@ function renderEquipo0(){const b=$("#eqBody");redProbe();redBtn();
     const vcls=v=>v>=500?"good":v>=200?"warn":"bad";
     if(rankMetric==="nuevos")d.forEach(x=>x.v=x.vol||0);
     const volTot=d.reduce((t,x)=>t+(x.vol||0),0);
-    if(rankMetric==="nuevos"){d.sort((a,b)=>(b.vol||0)-(a.vol||0)||b.A-a.A||b.R-a.R||b.P-a.P||String(a.nombre).localeCompare(b.nombre,"es"));d.forEach((x,i)=>x.rk=i+1)}
+    // 15 nov 22:45 (Edwin): Activaciones = volumen y, si empatan, ⚡ IC del mes (índice de constancia). constL ya se carga en Inicio (caché 10 min).
+    if(rankMetric==="nuevos"){if(!constL&&!window._rkIcLd){window._rkIcLd=1;Promise.resolve(loadConst()).then(()=>{if(eqTab==="ranking"&&rankMetric==="nuevos")renderEquipo()}).catch(()=>{})}
+      const o=idxPer;idxPer="mes";try{d.forEach(x=>{const c=constL&&constL.find(z=>sameN(z.nombre,x.nombre));let v=-1;if(c)try{v=+idxPers(c.uid)||0}catch(e){}x.icM=v})}finally{idxPer=o}}
+    if(rankMetric==="nuevos"){d.sort((a,b)=>(b.vol||0)-(a.vol||0)||(b.icM??-1)-(a.icM??-1)||b.A-a.A||b.R-a.R||b.P-a.P||String(a.nombre).localeCompare(b.nombre,"es"));d.forEach((x,i)=>x.rk=i+1)}
     if(rankMetric!=="nuevos"){d.sort((a,b)=>b.R-a.R||(b.vol||0)-(a.vol||0)||b.A-a.A||b.P-a.P||String(a.nombre).localeCompare(b.nombre,"es"));d.forEach((x,i)=>x.rk=i+1)}
     const tags=p=>{if(sem)return"";const t=[];
       const PD=premDatos();if(rankMetric==="nuevos"){if(p.rk===1)t.push(PD?(p.v>=PD.min?'<span class="chip c-gold">🎟️ Incentivo</span>':''):'<span class="chip c-gold">✈️ Viaje de incentivo</span>');if(p.v>=500)t.push('<span class="chip c-good">Membresía gratuita</span>');else if(p.v>=200)t.push('<span class="chip c-warn">Action Leader</span>')}
@@ -4736,7 +4739,7 @@ function renderEquipo0(){const b=$("#eqBody");redProbe();redBtn();
     const per=T.config&&T.config.rankingSemanaLabel;
     const segs=`<div class="seg" role="tablist" id="rankMetric"><button aria-selected="${rankMetric==="nuevos"}" data-k="nuevos">Activaciones</button><button aria-selected="${rankMetric==="presentaciones"}" data-k="presentaciones">Registros inCruises</button><button aria-selected="false" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button><button aria-selected="false" data-k="liderazgo">⭐ Liderazgo</button></div>
      <div class="seg" role="tablist" id="rankSeg" hidden><button aria-selected="true" data-k="mes">Este mes</button></div>
-     <p class="small muted">${rankMetric==="nuevos"?"Ordenado por volumen (Classic 200 · Premium 500; quien entra solo como socio no suma).":"Solo cuentan los prospectos registrados gratis en inCruises."}</p>`;
+     <p class="small muted">${rankMetric==="nuevos"?"Ordenado por volumen (Classic 200 · Premium 500; quien entra solo como socio no suma) y, si empatan, por ⚡ IC del mes.":"Solo cuentan los prospectos registrados gratis en inCruises."}</p>`;
     if(!d.length){b.innerHTML=segs+(irSimple()&&rankMetric==="nuevos"?actVacio():emptyCard(rankMetric==="nuevos"?"Aún no hay socios nuevos en este periodo":"Aún no hay registros en este periodo","El primero en sumar toma el primer lugar."));bindRank();return}
     const icOk=rankMetric==="nuevos"&&(isAdmin||lzSoyMiembro());if(icOk&&!constL&&!window._rkIcLd){window._rkIcLd=1;Promise.resolve(loadConst()).then(()=>{if(eqTab==="ranking"&&rankMetric==="nuevos")renderEquipo()}).catch(()=>{})}
     const ICh=n=>{if(!icOk||!constL)return"";const c=constL.find(z=>sameN(z.nombre,n));if(!c)return"";const o=idxPer;idxPer="mes";let v;try{v=idxPers(c.uid)}finally{idxPer=o}return `<span class="rkIC" style="color:${IDX_C(v)}">⚡ IC ${v}%</span>`};
@@ -9600,7 +9603,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115224329";var busy=false,pend=null;
+(function(){var V="20261115224642";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
