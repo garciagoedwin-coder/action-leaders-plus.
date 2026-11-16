@@ -950,3 +950,4 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - 15 nov 22:45: Ranking Activaciones = volumen y desempate por ⚡ IC del mes (x.icM con constL, ya cargado en Inicio); los sin IC al final del empate.
 - 15 nov 22:52: rutina completa vuelve a encogerse (solo aviso verde con ▾); al tocarlo se expanden las 3 filas para sumar.
 - 16 nov: Historias de viajeros intercaladas por persona (hgViOrd, reparte por frecuencia) + HG_VO=41 para que el 16 salga Josué Delgado (Lidia había salido 13, 15 y 16).
+- 16 nov: Plan de inicio — admin sin patrocinador en la app (irSinPat) tiene act1/l3/val como hechos.

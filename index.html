@@ -8884,7 +8884,9 @@ function irItems(n){const V2=irV2();
     {k:"soc",g:"El ciclo continúa",t:"Su socio nuevo entra a la app",s:"Compártale su enlace de invitación",a:x=>x.soc,b:["Invitar",()=>irInvitar()]},
     {k:"ayu",g:"El ciclo continúa",t:"Ayudarlo a empezar su Inicio Rápido",s:"Agende su primera actividad con él",a:x=>x.ayu,m:1,b:["Ya lo hice",()=>irMk("ayu")]},
     {k:"r7",g:"El ciclo continúa",t:"Racha de 7 días seguidos",a:x=>x.racha>=7,p:x=>Math.min(x.racha,7)+" de 7"}]};return its[n]}
-function irEstado(){const x=irCtx(),md=(x.st&&x.st.med)||{},W=IR_W.map(w=>{const L=irItems(w.n).map(i=>Object.assign({},i,{ok:!!i.a(x)||!!md[w.n],pt:i.p?i.p(x):""}));return Object.assign({},w,{L,n2:L.filter(i=>i.ok).length})});
+// 16 nov (Edwin): sin patrocinador dentro de la app (cabeza de red) → lo que depende del patrocinador/líder no lo frena.
+const IR_SINPAT=["act1","l3","val"];function irSinPat(){try{const r=miRegistro()||{};return !!isAdmin&&!r.patrocinadorUid}catch(e){return false}}
+function irEstado(){const x=irCtx(),md=(x.st&&x.st.med)||{},sp=irSinPat(),W=IR_W.map(w=>{const L=irItems(w.n).map(i=>Object.assign({},i,{ok:!!i.a(x)||!!md[w.n]||(sp&&IR_SINPAT.includes(i.k)),pt:i.p?i.p(x):""}));return Object.assign({},w,{L,n2:L.filter(i=>i.ok).length})});
   let cur=W.find(w=>w.n2<w.L.length);const grad=!cur;if(!cur)cur=W[3];return {x,W,cur,grad,dia:irDia()}}
 function irAct1(){openSheet(`<h2>📅 Su primera actividad</h2><p class="small muted" style="margin:0">Agéndela con su patrocinador o con un líder de su línea.</p>
    <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px"><button class="btn" id="a1L3">📞 Pedir llamada de 3 a mi líder</button><button class="btn" id="a1Lz" style="background:linear-gradient(135deg,#B07D00,#F5B700);color:#fff">🚀 Planear mi lanzamiento con mi líder</button><button class="btn ghost" id="a1Ok">✅ Ya la agendé por WhatsApp o en persona</button></div>
@@ -9608,7 +9610,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261116041429";var busy=false,pend=null;
+(function(){var V="20261116042251";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
