@@ -7592,7 +7592,8 @@ function crmCuerpo(list,card,q){let n=0;const pk=pipeOk(),act=c=>!CERR.includes(
   if(!crmGrp(q))return cnt+`<div class="cgG">${list.map(row).join("")}</div>`;
   const gk=c=>CERR.includes(c.stage)?"Cerrados":c.stage==="No interesado"?"Descartados":(c.stage||"Nuevo");
   const G={};list.forEach(c=>{const k=gk(c);(G[k]=G[k]||[]).push(c)});const ORD2=CG_ORD.concat([MA,"Cerrados","Descartados"]);const ks=Object.keys(G).sort((a,b)=>((ORD2.indexOf(a)+1)||99)-((ORD2.indexOf(b)+1)||99));
-  const A=crmGAb();if(openC){const oc=list.find(c=>c.id===openC);if(oc)A.add(gk(oc))}if(!ks.some(k=>A.has(k))&&ks[0])A.add(ks[0]);
+  const A=crmGAb();if(openC){const oc=list.find(c=>c.id===openC);if(oc)A.add(gk(oc))}let ga0=null;try{ga0=LS.get("crmGA")}catch(e){}if(!Array.isArray(ga0)&&!ks.some(k=>A.has(k))&&ks[0])A.add(ks[0]); // 16 nov (Edwin): un grupo se puede cerrar aunque queden todos cerrados; solo la 1.ª vez se abre el primero
+  
   let sep=false;
   return cnt+ks.map(k=>{const L=G[k],o=A.has(k),xtra=[MA,"Cerrados","Descartados"].includes(k),col=k==="Cerrados"?"#12805C":k==="Descartados"?"#94A3B8":k===MA?"#65A30D":STAGE_COL[k]||"var(--brand)",fr=xtra?0:L.filter(c=>pipeOk()&&stFrio(c)).length,hoy=k===MA?L.filter(c=>c.next&&c.next<=TODAY).length:0;
     let body="";if(o){if(k==="Cerrados"){const cl=L.filter(c=>c.stage==="Cliente").length,so=L.length-cl;body=`<div class="cgMar">✅ <b>${L.length} ${L.length===1?"cierre":"cierres"}</b> · ${cl} ${cl===1?"cliente":"clientes"} · ${so} ${so===1?"socio":"socios"}. Cuídelos: un cliente feliz le da referidos.</div>`}body+=L.map(row).join("")}else if(!xtra)n+=L.length;
@@ -7723,7 +7724,7 @@ $("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNum
   {const x=e.target.closest("[data-cvnum]");if(x){try{LS.set("cvNumOp",x.dataset.cvnum==="1"?1:0)}catch(y){}renderCRM();return}}
   {const x=e.target.closest("[data-cvtk]");if(x){const c=contacts.find(y=>y.id===x.dataset.cvtk);if(c)cvViaje(c);return}}
   {const x=e.target.closest("[data-cvmas]");if(x){const c=contacts.find(y=>y.id===x.dataset.cvmas);if(c)cvMasSheet(c);return}}{const fz=e.target.closest("[data-frio]");if(fz){crmFrio=fz.dataset.frio==="1";renderCRM();return}}{const mb=e.target.closest("[data-cmas]");if(mb){const k=mb.dataset.cmas;crmMas.has(k)?crmMas.delete(k):crmMas.add(k);renderCRM();return}const so=e.target.closest("[data-stopen]");if(so){crmSt.add(so.dataset.stopen);renderCRM();return}}const st=e.target.closest("[data-st]");
-  {const gg=e.target.closest("[data-cgg]");if(gg){const A=crmGAb(),k=gg.dataset.cgg;A.has(k)?A.delete(k):A.add(k);try{LS.set("crmGA",[...A])}catch(x){}renderCRM();return}}
+  {const gg=e.target.closest("[data-cgg]");if(gg){const A=crmGAb(),k=gg.dataset.cgg;if(A.has(k)){A.delete(k);const G=gg.closest(".cgG");if(G&&G.querySelector(".cgF"))openC=null}else A.add(k);try{LS.set("crmGA",[...A])}catch(x){}renderCRM();return}}
   const tg=e.target.closest("[data-tog]");if(tg){openC=openC===tg.dataset.tog?null:tg.dataset.tog;renderCRM();return}
   const sf=e.target.closest("[data-sf]");const od=e.target.closest("[data-ord]");if(od){crmOrd=od.dataset.ord;try{LS.set("crmOrd",crmOrd)}catch(e){}renderCRM();return}if(sf){stageF=stageF===sf.dataset.sf?"Todos":sf.dataset.sf;renderCRM();return}
   const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c){notaPend(c,"wa");setTimeout(()=>stAvanza(c,"Contactado","le escribió por WhatsApp"),300)}}
@@ -9713,7 +9714,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261116072149";var busy=false,pend=null;
+(function(){var V="20261116073102";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

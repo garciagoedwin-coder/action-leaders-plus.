@@ -959,3 +959,5 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - 16 nov: tarjeta «Respaldo de sus contactos» oculta en CRM; ahora en Perfil › 💾 Respaldo de mis contactos (usa #bkSave/#bkLoad). Guías del CRM y del plan actualizadas. Banner PV del CRM centrado (.list>*:first-child le quitaba padding-top).
 
 - 16 nov: Inicio simple: Avisos de hoy (avBox) arriba de Compromiso (compStrip order 5, justo sobre la rutina). Anuncio config.anuncio {id,t,sub,btn,bx:fecha,hasta} = slide #anuStrip (primero en avBox) que abre evaVer del Business Experience de esa fecha; se oculta si el socio no ve el evento o pasa `hasta`.
+
+- 16 nov: CRM grupos: ya no se fuerza un grupo abierto (solo la 1.ª vez, sin LS crmGA); al cerrar un grupo con ficha abierta, openC=null.
