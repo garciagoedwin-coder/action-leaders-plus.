@@ -2007,7 +2007,7 @@
    "id": "2026-11-15-2000-action-leaders-training"
   },
   {
-   "titulo": "Llamada de Liderazgo",
+   "titulo": "❌ CANCELADA · Llamada de Liderazgo",
    "fecha": "2026-11-15",
    "hora": "21:15",
    "horaFin": "",
@@ -2017,7 +2017,7 @@
    "edifica": "",
    "lugar": "",
    "enlace": "https://us06web.zoom.us/j/82180643365",
-   "notas": "Para el sistema de liderazgo.",
+   "notas": "Se cancela. Nos vemos el domingo 22 de noviembre.", "cancel": true,
    "id": "2026-11-15-2115-llamada-de-liderazgo"
   },
   {
@@ -4521,6 +4521,7 @@
    "dia": 0,
    "hora": "21:15",
    "zoom": "https://us06web.zoom.us/j/82180643365",
+   "skip": ["2026-11-15"],
    "t": "Reunión del sistema de liderazgo"
   },
   "novedad": {

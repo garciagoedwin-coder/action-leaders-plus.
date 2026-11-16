@@ -195,7 +195,7 @@ export function msgLz(c) {
 // Entrenamientos y llamadas: 30 min antes. Presentaciones: 1 h antes (solo la primera del día). Liderazgo: solo miembros del sistema.
 export function agendaPendientes(cal, ms = Date.now()) {
   const hn = new Date(ms - 6 * 3600e3), hoy = hn.toISOString().slice(0, 10), ahora = hn.getUTCHours() * 60 + hn.getUTCMinutes();
-  const H = (cal || []).filter(e => e.fecha === hoy && /^\d\d:\d\d$/.test(e.hora || "")).map(e => ({ ...e, min: +e.hora.slice(0, 2) * 60 + +e.hora.slice(3) }));
+  const H = (cal || []).filter(e => e.fecha === hoy && !e.cancel && /^\d\d:\d\d$/.test(e.hora || "")).map(e => ({ ...e, min: +e.hora.slice(0, 2) * 60 + +e.hora.slice(3) }));
   const tipoDe = e => /liderazgo/i.test(e.titulo || "") || /líderes/i.test(e.tipo || "") ? "lid" : /presentaci/i.test(e.tipo || "") ? "pres" : /capacitaci|llamada/i.test(e.tipo || "") ? "ent" : null;
   const primPres = H.filter(e => tipoDe(e) === "pres").sort((a, b) => a.min - b.min)[0];
   const out = [];

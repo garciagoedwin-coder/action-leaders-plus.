@@ -9031,7 +9031,7 @@ function lzFichaB(l){const c=calLid(l),R=liderDe(l),rg=RANGOS.find(g=>g.n===l.ra
    <div class="lz-t" style="gap:6px">${lzNuevo(l)?`<span class="chip lzNew">✅ Socio nuevo</span>`:""}${ins}${rgC}${lzCompChip(l)}${lzAsisChip(l)}${lzgChip(l)}${ve&&px!=null?`<span class="chip lz-ix" style="color:${IDX_C(px)}">⚡ Índice de Constancia · ${px}%</span>`:""}${mio&&R&&R.idx!=null?`<span class="chip lz-ix" style="color:${IDX_C(R.idx)}">👥 Duplicación ${R.idx}%</span>`:""}</div>${ve&&px!=null?`<p class="small muted" style="margin:0">⚡ IC = su rutina diaria del mes: cuántos días la hizo y qué tan completa.</p>`:""}
    ${ve?`<div><span class="lzBar"><i style="width:${Math.max(v?3:0,w)}%" class="${v>=C.esp?"e":v>=C.lider?"l":""}"></i><em style="left:${C.lider/C.esp*100}%"></em></span><p class="small muted" style="margin:6px 0 0">${fmt(v)} de ${fmt(C.esp)} pts este mes${v>=C.esp?" · ⚔️ ya volvió a calificar":v>=C.lider?" · 🛡️ ya es Líder":""}</p></div>`:`<p class="small muted" style="margin:0">🔒 Los números los ve su línea de arriba.</p>`}
    ${mio?`<button class="btn" id="lzFc" type="button" style="width:100%">📋 Ver ficha completa</button>`:""}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{const b=$("#lzFc");if(b)b.onclick=()=>{closeSheet();setTimeout(()=>leadFicha(l),250)}})}
-function llamLz(){const L=(T.config||{}).llamadaLz;if(!L||!L.zoom)return null;return L}
+function llamLz(){const L=(T.config||{}).llamadaLz;if(!L||!L.zoom)return null;if((L.skip||[]).includes(TODAY))return null;return L} // 15 nov: skip = fechas canceladas (AAAA-MM-DD, hora HN)
 function llamLzCard(){const L=llamLz();if(!L)return"";const hoy=new Date().getDay()===(L.dia||0);
   return `<div class="card lzCall"><div class="k">📞 Reunión del sistema de liderazgo</div><div style="font-weight:800;font-size:16px;margin-top:2px">Todos los domingos · ${esc(h12(L.hora||"21:15"))} (hora de Honduras)</div>${hoy?`<div class="small" style="margin-top:2px;color:#7DD3FC;font-weight:700">¡Hoy es la reunión!</div>`:""}<a class="btn sm" href="${esc(L.zoom)}" target="_blank" rel="noopener" style="margin-top:10px;background:#2AC1F1;color:#06384F;width:100%;justify-content:center">🎥 Entrar al Zoom</a></div>`}
 // 15 nov, 17:55 (Edwin): la llamada de liderazgo se anuncia en el carrusel HOY (primer lugar) los domingos para miembros del sistema y admins.
@@ -9402,7 +9402,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115180428";var busy=false,pend=null;
+(function(){var V="20261115183525";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
