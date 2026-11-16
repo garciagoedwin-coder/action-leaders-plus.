@@ -6,6 +6,8 @@
 // link del grupo del sistema en sisPriv (solo miembros), aprobaciones en aprob/{uid} (patrocinador directo o admin).
 // privAp/grupo: link del grupo del equipo, solo cuentas aprobadas.
 // 13/11/2026: presentación virtual v2 (viaje.html) guarda también w (WhatsApp del prospecto) y o (origen del link).
+// 15/11/2026: AUTORIZACIÓN de eventos (agendaEv.aut: p = por autorizar, ok, no). El creador no puede autorizarse;
+// quien autoriza (autU, miembro del Sistema de liderazgo) solo cambia aut y ver. Cupo público evCupo/{id} ligado a cada confirmación.
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -126,12 +128,43 @@ service cloud.firestore {
     }
     function txtOk(d, k, n) { return !(k in d) || (d[k] is string && d[k].size() <= n); }
     function numOk(d, k) { return !(k in d) || d[k] is number; }
+    // ---- Juntas y eventos (15/11/2026: autorización) ----
+    function autSt(d) { return d.get('aut', {}).get('st', 'x'); }
+    function mismoLugar(a, b) {
+      return a.get('fecha', '') == b.get('fecha', '') && a.get('hora', '') == b.get('hora', '')
+        && a.get('lugar', '') == b.get('lugar', '') && a.get('modo', '') == b.get('modo', '');
+    }
+    // Creador o anfitrión: no puede autorizar. Puede dejarlo igual, mandarlo a "p", y si ya estaba autorizado no puede cambiar fecha/hora/lugar sin volver a "p".
+    function autCreOk(n, o) {
+      return autSt(n) == 'p' || (autSt(n) == autSt(o) && (autSt(o) != 'ok' || mismoLugar(n, o)));
+    }
     match /agendaEv/{id} {
       allow read: if socio();
-      allow create: if socio() && request.resource.data.cre == request.auth.uid;
-      allow update: if request.auth != null && (resource.data.cre == request.auth.uid || request.auth.uid in resource.data.lidU || isAdmin())
-        && request.resource.data.cre == resource.data.cre;
-      allow delete: if request.auth != null && resource.data.cre == request.auth.uid;
+      allow create: if socio() && request.resource.data.cre == request.auth.uid
+        && (isAdmin() || request.resource.data.get('tipo', '') != 'gran' || autSt(request.resource.data) == 'p');
+      allow update: if request.auth != null && request.resource.data.cre == resource.data.cre
+        && (isAdmin() || ((resource.data.cre == request.auth.uid || request.auth.uid in resource.data.get('lidU', []))
+          && autCreOk(request.resource.data, resource.data)));
+      // Quien autoriza: solo aut (con su uid) y, al autorizar, ver = verA
+      allow update: if signedIn() && sis() && autSt(resource.data) == 'p'
+        && request.auth.uid in resource.data.get('autU', []) && request.auth.uid != resource.data.cre
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['aut', 'ver'])
+        && request.resource.data.aut.u == request.auth.uid && request.resource.data.aut.st in ['ok', 'no']
+        && (request.resource.data.aut.st == 'no'
+          ? request.resource.data.ver == resource.data.ver
+          : request.resource.data.ver == resource.data.get('verA', resource.data.ver));
+      allow delete: if request.auth != null && (resource.data.cre == request.auth.uid || isAdmin());
+    }
+    // Cupo público de cada evento: lo crea/cambia el creador; cada confirmación suma 1 en el mismo lote (no pasa del cupo)
+    match /evCupo/{eid} {
+      allow read: if true;
+      allow create, update, delete: if signedIn()
+        && (isAdmin() || get(/databases/$(database)/documents/agendaEv/$(eid)).data.cre == request.auth.uid);
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['n', 'r'])
+        && request.resource.data.n == resource.data.n + 1 && request.resource.data.n <= resource.data.cupo
+        && request.resource.data.r is string
+        && existsAfter(/databases/$(database)/documents/agendaEv/$(eid)/rsvp/$(request.resource.data.r))
+        && !exists(/databases/$(database)/documents/agendaEv/$(eid)/rsvp/$(request.resource.data.r));
     }
     // ---- Confirmación de asistencia (evento.html) ----
     match /agendaEv/{eid}/rsvp/{rid} {
@@ -142,7 +175,9 @@ service cloud.firestore {
         && request.resource.data.de is string && request.resource.data.de.size() <= 64
         && request.resource.data.dn is string && request.resource.data.dn.size() <= 60
         && request.resource.data.t is number
-        && exists(/databases/$(database)/documents/agendaEv/$(eid));
+        && exists(/databases/$(database)/documents/agendaEv/$(eid))
+        && (!exists(/databases/$(database)/documents/evCupo/$(eid))
+          || getAfter(/databases/$(database)/documents/evCupo/$(eid)).data.n == get(/databases/$(database)/documents/evCupo/$(eid)).data.n + 1);
       allow read: if request.auth != null && (
         resource.data.de == request.auth.uid
         || request.auth.uid == get(/databases/$(database)/documents/agendaEv/$(eid)).data.cre
