@@ -906,6 +906,7 @@ body.cv2 .contact .stpct .chip{background:none!important;color:var(--pc)!importa
 .hoyL h3{margin:0 0 6px}.hoyR{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--line,#EDF1F5)}.hoyR.hecho>div:first-child{opacity:.55}.hoyR:first-of-type{border-top:0}
 
 #v-inicio.simple>#lzCallStrip{order:4}#v-inicio.simple>#compStrip{order:5}#v-inicio.simple>#rutCard{order:6}#v-inicio.simple>#irCard{order:7}#v-inicio.simple>#ganCard{order:8}#v-inicio.simple>#actBan{order:9}#v-inicio.simple>#metaEq{order:10}
+.lzHoy{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-left:4px solid #0A7DAD;border-radius:18px;padding:14px}.lzcI{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:color-mix(in srgb,#2AC1F1 16%,var(--surface))}.lzcT{flex:1;min-width:0}.lzcT small{display:block;font-size:11px;font-weight:800;letter-spacing:.08em;color:#1597CC}.lzcT b{display:block;font-size:16px;margin:2px 0}.lzcT span{display:block;font-size:12.5px;color:var(--muted)}.lzcB{flex:none;background:#2AC1F1;color:#06384F;font-weight:800;font-size:14px;border-radius:12px;padding:10px 14px;text-decoration:none}
 .lzStrip{display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(120deg,#0b1020,#0b3b57);color:#fff;border:1px solid #2AC1F1;border-radius:16px;padding:11px 14px;font-size:14px}.lzStrip a{background:#2AC1F1;color:#06384F;font-weight:800;border-radius:10px;padding:7px 12px;text-decoration:none;white-space:nowrap}
 .lzCall{background:linear-gradient(150deg,#0b1020,#0b3b57 70%,#0A7DAD);color:#fff;border:1px solid rgba(42,193,241,.45)}.lzCall .k{font-size:11px;letter-spacing:.12em;font-weight:800;color:#7DD3FC;text-transform:uppercase}
 .lz-invit{margin-top:10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:10px 12px;font-size:13.5px;line-height:1.45}
@@ -3158,7 +3159,7 @@ function renderAcc3(){const c=$("#acc3");if(!c)return;const on=acc3On();document
   c.querySelectorAll("[data-a3]").forEach(b=>b.onclick=()=>{const k=b.dataset.a3;if(k==="sala")salaMenu();else if(k==="hist")abrirHist();else if(k==="pres")presElegir();else if(k==="dl"){const u=irPresUrl();if(!u){toast("La presentación del mes todavía no está cargada");return}const w=window.open(u,"_blank");if(w)w.opener=null}else if(k==="bien")abrirBienvenida();else if(k==="dest")destCompartir()});
   $("#acc3Mas").onclick=()=>cajaAbrir();try{avBox3()}catch(e){}}
 // 14 nov (Edwin, SOLO ADMIN): un solo carrusel «HOY»: declaración (si falta), cierre/incentivo, Inicio Rápido, etc. pasan dentro de #avTrack; avanza solo cada 5 s (no si el aviso actual es urgente o si la persona lo tocó hace poco).
-const AV3=["trHoy","declStrip","cieStrip","cmpStrip","incStrip","irCard","npBan","raStrip","pushStrip"];
+const AV3=["lzCallStrip","trHoy","declStrip","cieStrip","cmpStrip","incStrip","irCard","npBan","raStrip","pushStrip"];
 function avMover(){const tr=$("#avTrack");if(!tr||!tr.dataset.m3)return;let ref=tr.querySelector('.avSl[data-k="urgStrip"]');
   AV3.forEach(id=>{let sl=tr.querySelector('.avSl[data-k="'+id+'"]');if(!sl){sl=document.createElement("div");sl.className="avSl av3";sl.dataset.k=id;sl.hidden=true;if(ref)ref.after(sl);else tr.prepend(sl)}ref=sl;
     const el=document.getElementById(id);if(el&&el.parentNode!==sl){sl.append(el);avBoxQ()}})}
@@ -9033,7 +9034,10 @@ function lzFichaB(l){const c=calLid(l),R=liderDe(l),rg=RANGOS.find(g=>g.n===l.ra
 function llamLz(){const L=(T.config||{}).llamadaLz;if(!L||!L.zoom)return null;return L}
 function llamLzCard(){const L=llamLz();if(!L)return"";const hoy=new Date().getDay()===(L.dia||0);
   return `<div class="card lzCall"><div class="k">📞 Reunión del sistema de liderazgo</div><div style="font-weight:800;font-size:16px;margin-top:2px">Todos los domingos · ${esc(h12(L.hora||"21:15"))} (hora de Honduras)</div>${hoy?`<div class="small" style="margin-top:2px;color:#7DD3FC;font-weight:700">¡Hoy es la reunión!</div>`:""}<a class="btn sm" href="${esc(L.zoom)}" target="_blank" rel="noopener" style="margin-top:10px;background:#2AC1F1;color:#06384F;width:100%;justify-content:center">🎥 Entrar al Zoom</a></div>`}
-function renderLzCall(){const el=$("#lzCallStrip");if(!el)return;if(acc3On()){el.hidden=true;return} // 15 nov (Edwin): la reunión del sistema ya está en la tarjeta del Sistema de liderazgo; no va en Inicio
+// 15 nov, 17:55 (Edwin): la llamada de liderazgo se anuncia en el carrusel HOY (primer lugar) los domingos para miembros del sistema y admins.
+function renderLzCall(){const el=$("#lzCallStrip");if(!el)return;if(acc3On()){try{const L=llamLz(),d=new Date();if(!L||!(isAdmin||lzSoyMiembro())||d.getDay()!==(L.dia||0)){el.hidden=true;return}
+    const [hh,mm]=String(L.hora||"21:15").split(":").map(Number),ini=hh*60+mm,ahora=d.getHours()*60+d.getMinutes();if(ahora>ini+75){el.hidden=true;return}const vivo=ahora>=ini-10;
+    el.className="lzHoy";el.innerHTML=`<div class="lzcI">📞</div><div class="lzcT"><small>${vivo?"🔴 EN VIVO AHORA":"HOY · "+esc(h12(L.hora)).toUpperCase()+" HONDURAS"}</small><b>Llamada de liderazgo</b><span>Sistema de liderazgo · por Zoom. ¡Lo esperamos!</span></div><a class="lzcB" href="${esc(L.zoom)}" target="_blank" rel="noopener">${vivo?"Entrar ahora":"Entrar"}</a>`;el.hidden=false}catch(e){el.hidden=true}return}
   try{const L=llamLz(),d=new Date();if(!L||!irSimple()||!(isAdmin||lzSoyMiembro())||d.getDay()!==(L.dia||0)){el.hidden=true;return}
   const [hh,mm]=String(L.hora||"21:15").split(":").map(Number),fin=hh*60+mm+75,ahora=d.getHours()*60+d.getMinutes();if(ahora>fin){el.hidden=true;return}
   el.hidden=false;el.innerHTML=`<span>📞 <b>Hoy ${esc(h12(L.hora))}</b> · Reunión del sistema de liderazgo</span><a href="${esc(L.zoom)}" target="_blank" rel="noopener">Entrar</a>`;if(!window._lzAv){window._lzAv=1;setTimeout(()=>{try{avisoTop("📞 Hoy "+h12(L.hora)+" · Reunión de liderazgo","Toque aquí para entrar al Zoom",()=>{window.open(L.zoom,"_blank")})}catch(e){}},2500)}}catch(e){el.hidden=true}}
@@ -9398,7 +9402,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115162153";var busy=false,pend=null;
+(function(){var V="20261115180428";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

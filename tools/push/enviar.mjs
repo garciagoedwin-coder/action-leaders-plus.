@@ -345,6 +345,7 @@ export function avDestino(modo, m) {
   if (modo === "turnos") return "tur";
   if (modo === "salapend") return "sala";
   if (modo === "recodia") return /Hoy es su día/.test(t) ? "recoyo" : "recodia";
+  if (modo === "msg" && /Llamada de liderazgo/i.test(t)) return "lz";
   if (modo === "msg" && /Presentación virtual/i.test(t)) return "pv";
   if (modo === "msg" && /Networker Pro/i.test(t)) return "np";
   if (modo === "msg" && /Materiales|Guía gratis/i.test(t)) return "mat";
@@ -382,7 +383,11 @@ async function main() {
     if (!D.title || !D.body) { console.log("Falta título o texto."); return; }
     const P = (await db.collection("push").get()).docs.map(d => ({ uid: d.id, ...d.data() })).filter(p => p.tk);
     P.forEach(p => hist[p.uid] = p.h || []);
-    for (const p of P) salida.push([p.uid, p.tk, { title: D.title, body: D.body }]);
+    // 15 nov: "sis": true → solo miembros del Sistema de liderazgo (push.sis) y los 3 admins
+    const ADMS = D.sis ? new Set((await db.collection("users").where("email", "in", ADMINS).get()).docs.map(d => d.id)) : null;
+    let nS = 0;
+    for (const p of P) { if (ADMS && !p.sis && !ADMS.has(p.uid)) continue; nS++; salida.push([p.uid, p.tk, { title: D.title, body: D.body }]); }
+    if (ADMS) console.log("Solo sistema de liderazgo:", nS);
   } else if (modo === "recodia") {
     // 13 nov (Edwin): DÍA DE RECONOCIMIENTOS, el 1 de cada mes. Quienes llegaron por primera vez a Team Leader o a un rango el mes pasado
     // (team/reco.h[uid][rk] == mes pasado): aviso a cada uno, a su línea de arriba con rango (agrupado) y a los admins; a todos los demás, aviso general.
