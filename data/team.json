@@ -5563,6 +5563,14 @@
    "dur": 45,
    "desde": "2026-11-14T13:56:36Z",
    "hasta": "2026-11-15T06:00:00Z"
+  },
+  "anuncio": {
+   "id": "bx-2026-11-22",
+   "t": "Adquiera su ticket para el Business Experience",
+   "sub": "Este domingo 22 de noviembre",
+   "btn": "Ver",
+   "bx": "2026-11-22",
+   "hasta": "2026-11-23T05:59:00Z"
   }
  },
  "fotos": [

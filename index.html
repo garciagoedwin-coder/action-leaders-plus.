@@ -1277,7 +1277,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .olvW{flex:none;display:grid;place-items:center;min-width:40px;height:36px;border-radius:10px;background:#25D366;color:#fff;text-decoration:none;font-size:17px;border:0;font:inherit;font-weight:700;padding:0 10px}.olvW.o{background:var(--brand);color:var(--bg);font-size:13px}
 .snFr{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.snFr button{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;font-weight:600}.snFr button.on{border-color:var(--brand);color:var(--brand)}
 .avAnt{margin-top:10px}.avAnt summary{font-size:13px;color:var(--brand);font-weight:700;cursor:pointer;padding:8px 0}.avGo{margin-left:auto;color:var(--muted);font-size:20px;padding-left:6px}
-.avBox{display:flex;flex-direction:column;gap:6px}.avBox[hidden],.avSl[hidden]{display:none!important}#v-inicio.simple>#avBox{order:1}#v-inicio.simple>#incStrip{order:2}
+.avBox{display:flex;flex-direction:column;gap:6px}.avBox[hidden],.avSl[hidden]{display:none!important}#v-inicio.simple>#avBox{order:1}#v-inicio.simple>#incStrip{order:2}#v-inicio.simple>#compStrip,body.acc3 #v-inicio.simple>#compStrip{order:5}#anuStrip .evHb{background:#2AC1F1;color:#0B1220}
 .avHd{font:800 10.5px Figtree,sans-serif;letter-spacing:1.6px;color:var(--muted);padding-left:4px}
 .avTrack{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;align-items:flex-start;overscroll-behavior-x:contain}.avTrack::-webkit-scrollbar{display:none}
 .avSl{position:relative;flex:0 0 100%;scroll-snap-align:start;min-width:0}.avSl>div{margin:0!important}
@@ -1792,6 +1792,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
       <div id="pushStrip" hidden></div>
       <div id="declStrip" hidden></div><div id="cmpStrip" hidden></div>
       <div class="avBox" id="avBox" hidden><div class="avHd" id="avBoxN">AVISOS DE HOY</div><div class="avTrack" id="avTrack">
+        <div class="avSl" data-k="anuStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div id="anuStrip" hidden></div></div>
         <div class="avSl" data-k="urgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="urgS" id="urgStrip" hidden></div></div>
         <div class="avSl" data-k="lzgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="lzgS" id="lzgStrip" hidden></div></div>
         <div class="avSl" data-k="rc3Strip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="olvS rc3S" id="rc3Strip" hidden></div></div>
@@ -6535,7 +6536,13 @@ function evxPinta(){const box=$("#evAg");if(!box)return;const X=Object.values(EV
   box.insertAdjacentHTML("beforeend",`<div class="evX"><div class="small muted" style="font-weight:800;margin:10px 0 6px">🚫 Canceladas por un administrador</div>${X.map(e=>`<div class="evXr"><div><b>${esc(evaNom(e))}${e.ciudad?" · "+esc(e.ciudad):""} · ${esc(niceDate(e.fecha))}</b><small>Cancelada por ${esc(String(e._evc.por||"admin").split(" ").slice(0,2).join(" "))} (admin)${e._evc.t?" · "+esc(new Date(e._evc.t).toLocaleString("es",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})):""}${e._evc.mot?" · "+esc(e._evc.mot):""}</small></div>${isAdmin?`<button type="button" class="btn sm ghost" data-evre="${esc(e.id)}">↩️ Activar</button>`:""}</div>`).join("")}</div>`);
   box.querySelectorAll("[data-evre]").forEach(b=>b.onclick=()=>{if(!confirmar2(b))return;evcSet(b.dataset.evre,null).then(ok=>{if(ok)toast("↩️ Volvió a la agenda")})})}
 function renderEvA(){try{eqzPinta()}catch(x){}setTimeout(()=>{try{evaCamRevisar()}catch(x){}},1500);if(EVC===null&&store.db&&store.uid){EVC={};evcCargar(true).then(()=>{evcAplicar();renderEvA0();evxPinta()})}else evcAplicar();renderEvA0();evxPinta()}
-function renderEvA0(){setTimeout(()=>{try{rsvpRevisar()}catch(e){}try{llegRevisar()}catch(e){}},2000);try{evaHoyStrip(EVA)}catch(e){}try{renderRecCard()}catch(e){}const L=(EVA||[]).slice().sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora));
+// 16 nov (Edwin): anuncio en Avisos de hoy (config.anuncio {id,t,sub,btn,hasta,bx:"fecha"}): abre la ficha del Business Experience de esa fecha
+function anuCfg(){const c=(T.config||{}).anuncio;return c&&c.t&&(!c.hasta||Date.now()<Date.parse(c.hasta))&&(!c.desde||Date.now()>=Date.parse(c.desde))?c:null}
+function anuEv(c){return (EVA||[]).find(e=>(c.bx?e.bx&&e.fecha===c.bx:e.id===c.ev)&&!e.cancel)}
+function anuStrip(){const el=$("#anuStrip");if(!el)return;const c=anuCfg(),e=c&&anuEv(c);if(!e){el.hidden=true;return}
+  el.className="evHoy gran";el.innerHTML=`<span style="font-size:28px;line-height:1;flex:none">💼</span><span class="grow" style="min-width:0"><b>${esc(c.t)}</b>${c.sub?`<small>${esc(c.sub)}</small>`:""}</span><span class="evHb">${esc(c.btn||"Ver")} ›</span>`;
+  el.onclick=()=>{const x=anuEv(c);if(x)evaVer(x);else toast("Abriendo el evento…")};el.hidden=false}
+function renderEvA0(){try{anuStrip()}catch(e){}setTimeout(()=>{try{rsvpRevisar()}catch(e){}try{llegRevisar()}catch(e){}},2000);try{evaHoyStrip(EVA)}catch(e){}try{renderRecCard()}catch(e){}const L=(EVA||[]).slice().sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora));
   const box=$("#evAg");if(box){const L2=L.filter(e=>!evaFin(e)).concat(L.filter(e=>evaFin(e))),all=!!LS.get("evaAll"),V=all?L2:L2.slice(0,3),nH=L.filter(e=>e.fecha===TODAY&&!evaFin(e)).length,nG=L.filter(e=>e.tipo==="gran").length,nJ=L.length-nG;
     box.innerHTML=`<div class="row between" style="gap:8px"><div><b style="font-size:17px">🎤 Eventos y juntas</b>${L.length?"":`<div class="small muted">Planee una junta o un evento con su flyer</div>`}</div><button class="btn sm gold" id="evaNew" style="flex:none">➕ Crear</button></div>
      ${L.length?`<div class="evAl">${nH?`<span class="evCh hoy"><i></i>${nH} hoy</span>`:""}${nG?`<span class="evCh g">🎤 ${nG} ${nG===1?"evento":"eventos"}</span>`:""}${nJ?`<span class="evCh j">🤝 ${nJ} ${nJ===1?"junta":"juntas"}</span>`:""}</div>`:""}
@@ -9706,7 +9713,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261116071402";var busy=false,pend=null;
+(function(){var V="20261116072149";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
