@@ -5160,11 +5160,6 @@
      "a": 2
     },
     {
-     "n": "Alejandra Maria Pérez Ponce",
-     "p": 300,
-     "a": 2
-    },
-    {
      "n": "Andrea Rivera",
      "p": 300,
      "a": 3
@@ -5248,6 +5243,11 @@
      "n": "Pamela Rivas",
      "p": 250,
      "a": 3
+    },
+    {
+     "n": "Alejandra Maria Pérez Ponce",
+     "p": 200,
+     "a": 2
     },
     {
      "n": "Angela Suyapa Oyuela Montoya",
@@ -5550,7 +5550,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-16T07:00:54Z"
+   "t": "2026-11-16T18:04:24Z"
   },
   "audioEsp": {
    "id": "santiago-1",
