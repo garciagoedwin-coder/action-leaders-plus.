@@ -3272,8 +3272,9 @@ function rkInicio(){const c=$("#rkCard");if(!c)return;try{
   {const g=$("#rkGan");if(g)g.onclick=()=>{window._ganOpen=1;window._ganConf=1;renderGan();const gc=$("#ganCard");if(gc)gc.scrollIntoView({behavior:"smooth",block:"center"})}}
  }catch(e){c.hidden=true}}
 // 8 nov (Edwin): las pastillas de Inicio muestran ⚡ Productividad personal (rutina de la semana, sin lecturas) y 👥 Índice de duplicación (el último que se calculó en Mi equipo, guardado en el teléfono). La racha y el rango ya salen más abajo.
-function pillIdx(){try{const p=$("#pillP");if(p&&store.uid){const c=constStats(),pos=ROUTINE.length*diasSem(),v=pos>0?Math.min(100,Math.round((+c.semPts||0)*100/pos)):0;p.hidden=false;p.innerHTML=`<i class="dot" style="background:${IDX_C(v)}"></i>IC <b style="color:${IDX_C(v)}">${v}%</b>`;p.onclick=()=>avIr("rach")}
-  const e=$("#pillE"),o=store.uid&&LS.get("idxEqYo:"+store.uid);if(e){e.hidden=!(o&&o.n>0);if(o&&o.n>0){e.innerHTML=`<i class="dot" style="background:${IDX_C(o.v)}"></i>Equipo <b style="color:${IDX_C(o.v)}">${o.v}%</b>`;e.onclick=()=>{eqTab="mios";go("equipo")}}}}catch(x){}}
+function pillIdx(){try{const p=$("#pillP");if(p&&store.uid){const c=constStats();let d=diasMes(),pts=+c.mesPts||0;if(d>1){d-=1;pts=Math.max(0,pts-ptsDia(day,TODAY))}const pos=ROUTINE.length*d,v=pos>0?Math.min(100,Math.round(pts*100/pos)):0;p.hidden=false;p.innerHTML=`<i class="dot" style="background:${IDX_C(v)}"></i>IC <b style="color:${IDX_C(v)}">${v}%</b>`;p.onclick=()=>avIr("rach")}
+  let o=store.uid&&LS.get("idxEqM:"+store.uid);try{if(constL&&!isAdmin&&mios&&mios.length){const P=idxPool(),v=idxEqPer(P,"mes");if(v!=null){o={v,n:P.filter(idxCuenta).length,t:Date.now()};LS.set("idxEqM:"+store.uid,o)}}}catch(x){}
+  const e=$("#pillE");if(e){e.hidden=!(o&&o.n>0);if(o&&o.n>0){e.innerHTML=`<i class="dot" style="background:${IDX_C(o.v)}"></i>Equipo <b style="color:${IDX_C(o.v)}">${o.v}%</b>`;e.onclick=()=>{eqTab="mios";go("equipo")}}}}catch(x){}}
 function pillsPinta(){try{const pr=$("#pillRg");if(pr)pr.hidden=true}catch(e){}pillIdx();
   try{const h=$("#hello"),nm=$("#hiNm");if(h&&nm){const t=(h.textContent||"").replace(/^Hola,?\s*/,"").trim();nm.textContent=t||"líder"}}catch(e){}}
 (function(){try{const mn=$("#main"),hd=document.querySelector("header.top");if(!mn||!hd)return;let y0=0;
@@ -4047,7 +4048,9 @@ const IDX_C=p=>p>=70?"#16A34A":p>=40?"#D97706":"#DC2626";
 let idxPer="sem",idxStk=[];
 function idxPool(){return isAdmin?(socios||[]).filter(x=>x.registro&&x.registro.nombre&&!esSoloAdmin(x)):(mios||[])}
 function idxC(uid){return (constL||[]).find(y=>y.uid===uid)}
-function idxPers(uid){const c=idxC(uid),pts=c?(idxPer==="sem"?c.semPts:c.mesPts):0,pos=ROUTINE.length*(idxPer==="sem"?diasSem():diasMes());return pos>0?Math.min(100,Math.round((+pts||0)*100/pos)):0}
+// 16 nov (Edwin): el IC cuenta hasta AYER (hoy no ha terminado). El primer día del periodo, sin días previos, usa hoy.
+function idxPers(uid){const c=idxC(uid);let pts=c?(idxPer==="sem"?c.semPts:c.mesPts):0,d=idxPer==="sem"?diasSem():diasMes();
+  const hoyP=c&&c.fecha===TODAY?(+c.hoy||0)*ROUTINE.length/100:0;if(d>1){d-=1;pts=Math.max(0,(+pts||0)-hoyP)}const pos=ROUTINE.length*d;return pos>0?Math.min(100,Math.round((+pts||0)*100/pos)):0}
 const diasPrev=()=>{const d=parseK(lunesK());d.setDate(d.getDate()-7);let n=0;for(let i=0;i<7;i++){if(dkey(d)>=CONST_INI)n++;d.setDate(d.getDate()+1)}return n};
 function idxPrev(uid){const c=idxC(uid),pos=ROUTINE.length*diasPrev();if(!c||c.prevPts==null||pos<=0)return null;return Math.min(100,Math.round((+c.prevPts||0)*100/pos))}
 function idxEqPrev(L){L=L.filter(idxCuenta);const v=L.map(x=>idxPrev(x.uid)).filter(p=>p!=null);return v.length&&v.length>=L.length*.6?Math.round(v.reduce((a,b)=>a+b,0)/v.length):null}
@@ -4071,7 +4074,7 @@ function idxPerPer(x,per){const o=idxPer;idxPer=per;try{return idxPersX(x)}final
 function idxEqPer(L,per){const o=idxPer;idxPer=per;try{return idxEq(L)}finally{idxPer=o}}
 function idxCard(){const P=idxPool();if(!P.length)return"";if(!constL){if(!window._ldC){window._ldC=1;loadConst().then(()=>{try{renderEquipo()}catch(e){}})}return`<div class="card"><b>⚡ Índice de Duplicación</b><span class="small muted">Calculando…</span></div>`}
   const v=idxEq(P)||0,act=P.filter(x=>idxHoy(x.uid)).length,me=isAdmin?null:idxPers(store.uid),PA=P.filter(idxCuenta),PI=P.filter(x=>!idxActivo(x));
-  if(idxPer==="sem"){try{LS.set("idxEqYo:"+store.uid,{v,n:PA.length,t:Date.now()});pillIdx()}catch(x){}}
+  try{const vm=idxEqPer(P,"mes");if(vm!=null)LS.set("idxEqM:"+store.uid,{v:vm,n:PA.length,t:Date.now()});pillIdx()}catch(x){}
   return `<div class="card" style="gap:10px"><div class="row between" style="gap:8px;flex-wrap:wrap"><b style="font-size:17px">⚡ Índice de Duplicación</b><div class="seg" style="width:auto;margin:0"><button aria-selected="${idxPer==="sem"}" data-ip="sem">Semana</button><button aria-selected="${idxPer==="mes"}" data-ip="mes">Mes</button></div></div>
    <div class="row" style="gap:14px;align-items:center"><b class="num" style="font-size:54px;line-height:1;color:${IDX_C(v)}">${v}%</b><span class="small muted">Promedio de la rutina de ${isAdmin?"todo el equipo":"su equipo"} activo ${idxPer==="sem"?"esta semana":"este mes"}. Quien tiene ahorro pendiente cuenta siempre.</span></div>
    <div style="height:10px;border-radius:99px;background:var(--line);overflow:hidden"><i style="display:block;height:100%;width:${v}%;background:${IDX_C(v)}"></i></div>
@@ -9674,7 +9677,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261116062501";var busy=false,pend=null;
+(function(){var V="20261116063115";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
