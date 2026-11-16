@@ -5105,11 +5105,16 @@ const HG_DIA=["vi","vi","ev","vi","ev","vi","ev"]; // domingo..sábado
 let HG=null,hgP=null,hgMas=0;
 function hgCargar(){if(!hgP)hgP=fetch("data/hist.json?d="+TODAY,{cache:"no-cache"}).then(r=>r.ok?r.json():null).then(d=>{HG=d||{};return HG}).catch(()=>{hgP=null;HG={};return HG});return hgP}
 function hgHash(s){let h=7;for(const c of String(s||""))h=(h*31+c.charCodeAt(0))>>>0;return h}
+// 16 nov (Edwin): Lidia salió varios días seguidos (sus 3 fotos estaban juntas). Viajeros se intercalan por persona (nadie se repite en días seguidos) y HG_VO corre el inicio para que hoy salga otra persona.
+const HG_VO=41;let hgVO=null,hgVOk="";
+function hgViOrd(){const L=HG.vi||[],k=L.map(f=>f.id).join();if(hgVO&&hgVOk===k)return hgVO;const tx=HG.tx||{},nm=f=>((tx[f.id]||{}).n||f.id),G={},ord=[];
+  L.forEach(f=>{const n=nm(f);if(!G[n]){G[n]=[];ord.push(n)}G[n].push(f)});
+  hgVO=L.slice().sort((a,b)=>{const A=G[nm(a)],B=G[nm(b)],ka=(A.indexOf(a)+.5)/A.length,kb=(B.indexOf(b)+.5)/B.length;return ka-kb||ord.indexOf(nm(a))-ord.indexOf(nm(b))});hgVOk=k;return hgVO}
 function hgDia(k,mas){if(!HG)return null;const n=Math.floor(parseK(k).getTime()/864e5),dw=(n+4)%7,m=mas||0,o0=0,o=o0+m; // 4 nov: la misma historia para todo el equipo (sin desfase por socio)
-  let cp=HG_DIA[dw];if(!(HG[cp]||[]).length)cp=cp==="vi"?"ev":"vi";const L=HG[cp]||[];if(!L.length)return null;
+  let cp=HG_DIA[dw];if(!(HG[cp]||[]).length)cp=cp==="vi"?"ev":"vi";const L=cp==="vi"?hgViOrd():(HG[cp]||[]);if(!L.length)return null;
   // c = cuántos días de esta carpeta van (para no repetir foto ni diseño en días seguidos)
   const pw=HG_DIA.filter(x=>x===cp).length,c=HG_DIA[dw]===cp?Math.floor((n+4)/7)*pw+HG_DIA.slice(0,dw).filter(x=>x===cp).length:n;
-  const f=L[(c+o)%L.length],d=(c+Math.floor(o0/5)+m)%3;
+  const f=L[(c+o+(cp==="vi"?HG_VO:0))%L.length],d=(c+Math.floor(o0/5)+m)%3;
   if(cp==="ev")return{cp,f,d,fr:HG_EV[(c*7+o)%HG_EV.length],cta:HG_EV_CTA[(c+o)%HG_EV_CTA.length]};
   const t=(HG.tx||{})[f.id]||null;return{cp,f,d,t,fr:t?null:HG_VI[(c*3+o)%HG_VI.length],cta:HG_VI_CTA[d]}}
 // foto con ajustes (saturación, brillo, contraste, gris) hechos a mano: igual en todos los teléfonos
@@ -9603,7 +9608,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261115225629";var busy=false,pend=null;
+(function(){var V="20261116041429";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

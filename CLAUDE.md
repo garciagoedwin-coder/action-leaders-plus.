@@ -949,3 +949,4 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - 15 nov 22:40: Rutina (acc3) completa ya no se encoge: contactos/presentaciones/seguimientos quedan como filas compactas en verde (.t3c, sin tachado, nombres en cursiva sin ícono .t3n) con − n +; arriba solo chips de Historia y Auto desarrollo; línea «💪 Ya cumplió lo mínimo…» (.rdM). lzNvM = socio activado en el mes calendario (T.activaciones), no `auto` (auto = entró al sistema este mes; lzVolSis sigue usando auto).
 - 15 nov 22:45: Ranking Activaciones = volumen y desempate por ⚡ IC del mes (x.icM con constL, ya cargado en Inicio); los sin IC al final del empate.
 - 15 nov 22:52: rutina completa vuelve a encogerse (solo aviso verde con ▾); al tocarlo se expanden las 3 filas para sumar.
+- 16 nov: Historias de viajeros intercaladas por persona (hgViOrd, reparte por frecuencia) + HG_VO=41 para que el 16 salga Josué Delgado (Lidia había salido 13, 15 y 16).
