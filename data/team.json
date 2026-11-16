@@ -179,6 +179,18 @@
    "activaciones": 1,
    "volumen": 200,
    "actSemana": 1
+  },
+  {
+   "nombre": "Maynor Larios",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "maynor-larios",
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -440,7 +452,7 @@
    "nuevos": 0,
    "presentaciones": 0,
    "rango": "Team Leader",
-   "volumen": 0,
+   "volumen": 500,
    "volumenDetalle": "",
    "id": "maynor-agustin-larios-lobo",
    "volumenHoja": 0,
@@ -3229,6 +3241,17 @@
    "fuente": "gmail",
    "id": "erika-argentina-duarte",
    "rv": 1
+  },
+  {
+   "socio": "Gissel Ponce",
+   "paquete": "Premium",
+   "patrocinador": "Maynor Larios",
+   "fecha": "2026-11-15T23:55:02Z",
+   "ek": "8bc552",
+   "wk": "df0b0a",
+   "fuente": "gmail",
+   "id": "gissel-ponce",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3262,7 +3285,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-14T16:55:02Z",
+  "activacionesCorte": "2026-11-15T23:55:02Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3271,7 +3294,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-14T11:23:00-06:00",
+  "rankingActualizado": "2026-11-15T18:01:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -5025,6 +5048,11 @@
      "a": 2
     },
     {
+     "n": "Maynor Larios",
+     "p": 500,
+     "a": 1
+    },
+    {
      "n": "Nancy Patricia Diaz Ruiz",
      "p": 500,
      "a": 1
@@ -5520,7 +5548,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-15T23:17:28Z"
+   "t": "2026-11-16T00:01:42Z"
   },
   "audioEsp": {
    "id": "santiago-1",
