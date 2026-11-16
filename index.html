@@ -862,7 +862,7 @@ body.cv2 #cvTools{display:flex;gap:8px;margin:2px 0 10px}body.cv2 #cvTools butto
 .cvFun{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin:10px -2px 10px;padding:2px}.cvFun::-webkit-scrollbar{display:none}
 .cvFun button{flex:none;display:flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}.cvFun button b{color:var(--pc);font-weight:900}
 .cvFun button[aria-pressed="true"]{background:var(--pc);border-color:var(--pc);color:#fff}.cvFun button[aria-pressed="true"] b{color:#fff}.cvFun i{font-style:normal;background:#DC2626;color:#fff;border-radius:999px;font-size:11px;font-weight:800;padding:1px 6px}
-.cvNumMini{display:flex;align-items:center;gap:10px;width:100%;border:0;background:linear-gradient(135deg,#0B1A2B,#0F2F48);color:#fff;border-radius:16px;padding:11px 14px;font:inherit;font-size:13.5px;text-align:left;cursor:pointer;margin-bottom:6px}.cvNumMini span{flex:1;min-width:0;opacity:.9}.cvNumMini b{color:#2AC1F1}.cvNumMini em{font-style:normal;background:#2AC1F1;color:#062B3A;font-weight:800;border-radius:10px;padding:6px 10px;white-space:nowrap}
+.cvNumMini{display:flex;align-items:center;gap:10px;width:100%;border:0;background:linear-gradient(135deg,#0B1A2B,#0F2F48);color:#fff;border-radius:16px;padding:11px 14px;font:inherit;font-size:13.5px;text-align:left;cursor:pointer;margin-bottom:6px}.cvNumMini span{flex:1;min-width:0;opacity:.9}.cvNumMini b{color:#2AC1F1}#contactList>.cvNumMini{padding:11px 12px 11px 14px!important}#contactList>.cvNum{padding:12px!important}#contactList>.cvNumMini em{align-self:center}.cvNumMini em{font-style:normal;background:#2AC1F1;color:#062B3A;font-weight:800;border-radius:10px;padding:6px 10px;white-space:nowrap}
 body.cv2 .contact{padding:9px 12px!important;margin-top:7px!important;border-radius:15px!important;border-left-width:4px!important}
 body.cv2 .contact .ch{gap:10px}body.cv2 .contact .ch .av{width:36px!important;height:36px!important;min-width:36px;font-size:13px!important}
 body.cv2 .contact .ch .mid{flex-direction:row;flex-wrap:wrap;align-items:center;column-gap:6px;row-gap:3px}body.cv2 .contact .ch .nm{font-size:15.5px;flex:0 1 auto;max-width:100%}body.cv2 .contact .ch .mid .cvTag{flex:none;margin:0;font-size:10.5px;padding:1px 7px}
@@ -1863,7 +1863,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
       <div class="catBar" id="catBar" hidden></div><div class="stage-bar" id="stageBar"></div>
       <div class="card"><div class="list" id="contactList"></div></div>
       <p class="small muted" id="crmNote"></p>
-      <div class="card" style="gap:8px"><h3>Respaldo de tus contactos</h3><p class="small muted">Guarda una copia antes de cambiar de teléfono o de navegador, y cárgala en el nuevo.</p>
+      <div class="card" style="gap:8px" hidden><h3>Respaldo de sus contactos</h3><p class="small muted">Guarde una copia en un archivo.</p>
        <div class="row"><button class="btn sm grow" id="bkSave">Respaldar mis contactos</button><button class="btn sm ghost grow" id="bkLoad">Cargar respaldo</button></div></div>
     </section>
 
@@ -8120,19 +8120,17 @@ const TOURS={sala:{t:"✈️ Su presentación virtual",d:"Verla, enviarla y dar 
   {go:"inicio",act:()=>{try{closeSheet();irAbierto=false;irRender()}catch(e){}},sel:"#irCard",tx:"Este es su <b>Plan de Inicio Rápido</b>: 4 semanas para arrancar su negocio acompañado. Siempre lo encuentra aquí, en Inicio."},
   {sel:"#irCard .irS1",tx:"Aquí ve en qué <b>semana</b> va, cuántos pasos lleva y qué le falta. Mientras le falte algo, el cohete lleva un <b>puntito rojo</b>: ¡termínelo!"},
   {sel:"#irCard .irS3",si:1,tx:"👉 Toque <b>Terminar</b> y verá la lista completa de su semana, con un botón para hacer cada paso."},
-  {act:()=>{try{irAbierto=true;irRender()}catch(e){}},sel:"#irCard .irMed",si:1,tx:"Sus 4 <b>insignias</b>: 🚀 Despegue, 🎤 Presentador, 🔁 Cerrador y 🌱 Duplicador. Al terminar cada semana gana una, y al final se gradúa 🎓."},
+  {act:()=>{try{irAbierto=true;irRender()}catch(e){}},sel:"#irCard .irMed",si:1,tx:"Su <b>camino a Espartano</b>: 🚀 Despegue, 🎤 Presentador, ⚔️ Cerrador, 🤝 Duplicador y 🔥 Constancia. Al completarlas gana su <b>sello Espartano</b> 🛡️ y su diploma."},
   {act:()=>{try{irAbierto=false;irRender();irLista()}catch(e){}},sel:"#sheet .irWk",si:1,tx:"Al tocar el banner ve la <b>lista completa</b> de la semana. Arriba puede mirar las 4 semanas."},
   {sel:"#sheet .irG",si:1,tx:"Cada paso tiene su botón. Muchos se marcan <b>solos</b> (contactos, presentaciones, seguimientos) y otros los marca usted, como su meta o sus herramientas."},
-  {act:()=>{try{closeSheet()}catch(e){}},go:"inicio",sel:"#irCard",tx:"Lo importante: <b>un paso cada día</b>, con su patrocinador a la par. Cuando termine, la app le hace su flyer de Graduado para compartir.",fin:"¡Listo! Ya sabe usar su plan 🚀"}]},
+  {act:()=>{try{closeSheet()}catch(e){}},go:"inicio",sel:"#irCard",tx:"Lo importante: <b>un paso cada día</b>, con su patrocinador a la par. Cuando termine, recibe su sello Espartano y descarga su diploma Networker Pro.",fin:"¡Listo! Ya sabe usar su plan 🚀"}]},
  crm:{t:"👥 Su CRM",d:"Cómo agregar y dar seguimiento a sus contactos",min:2,steps:[
   {go:"crm",act:()=>{try{crmV="proc";stageF="Todos";openC=null;renderCRM()}catch(e){}},sel:"#addContact",tx:"Su <b>CRM</b> es su lista de prospectos. Con <b>+ Contacto</b> agrega a cada persona: nombre, WhatsApp y una nota."},
-  {sel:"#crmVseg",si:1,tx:"<b>🔥 En proceso</b> son los que todavía hay que mover. <b>✅ Cerrados</b> son sus clientes y socios, en su propia pestaña."},
-  {sel:"#stageBar",tx:"Las <b>etapas</b>: Nuevo › Contactado › Presentación › Seguimiento › Por cerrar. Toque una para ver solo esos contactos."},
-  {sel:"#contactList .crmord",si:1,tx:"Ordénelos por <b>📅 Seguimiento</b> (los que le toca atender primero), los más recientes o el mayor avance."},
-  {sel:"#contactList .contact",si:1,tx:"Cada contacto muestra su <b>avance en %</b> y su etapa. Un <b>puntito rojo</b> significa que su seguimiento está atrasado."},
-  {act:()=>{try{const c=(contacts||[]).find(x=>!["Socio","Cliente"].includes(x.stage));if(c){openC=c.id;renderCRM()}}catch(e){}},sel:"#contactList .contact.open .cbody",si:1,tx:"Al abrirlo: <b>WhatsApp</b> con un toque, su <b>siguiente paso</b> y en <b>⋯ Más</b> presentar, agendar una cita o pedir una llamada de 3. La etapa avanza sola cuando usted actúa."},
-  {act:()=>{try{if((contacts||[]).some(x=>["Socio","Cliente"].includes(x.stage))){crmV="cer";openC=null;renderCRM()}}catch(e){}},sel:"#contactList .contact",si:1,tx:"En <b>Cerrados</b> está su marcador. Al abrir un cliente puede revisar su <b>ahorro</b>, pedirle <b>referidos</b> o invitarlo al negocio."},
-  {act:()=>{try{crmV="proc";openC=null;renderCRM()}catch(e){}},sel:"#bkSave",tx:"Y aquí <b>respalda sus contactos</b> antes de cambiar de teléfono. ¡Nunca pierde su lista!",fin:"¡Listo! Ya sabe gestionar sus contactos 💪"}]}};
+  {sel:"#contactList .cgG",si:1,tx:"Sus prospectos van <b>numerados y agrupados por etapa</b>: 🔥 Por cerrar, Seguimiento, Presentación, Contactado y Nuevo. Toque una etapa para abrirla o cerrarla."},
+  {sel:"#contactList .cgR",si:1,tx:"Cada renglón: <b>número, nombre y %</b>. ⚠ = su seguimiento está atrasado · 🎬 = le envió su Presentación virtual."},
+  {sel:"#catBar",si:1,tx:"Con el filtro <b>🎬 Presentación virtual</b> ve solo a quienes les envió el video."},
+{act:()=>{try{const c=(contacts||[]).find(x=>!["Socio","Cliente"].includes(x.stage));if(c){openC=c.id;renderCRM()}}catch(e){}},sel:"#contactList .cgF .cbody",si:1,tx:"Al abrirlo: <b>WhatsApp</b> con un toque, su <b>siguiente paso</b> y en <b>⋯ Más</b> presentar, agendar una cita o pedir una llamada de 3. La etapa avanza sola cuando usted actúa."},
+  {act:()=>{try{openC=null;crmGAb().add("Cerrados");renderCRM()}catch(e){}},sel:"#contactList .cgSep",si:1,tx:"Abajo están 🌱 <b>Más adelante</b>, ✅ <b>Cerrados</b> (con su marcador) y ✖ <b>Descartados</b>. Sus contactos se guardan solos en su cuenta.",fin:"¡Listo! Ya sabe gestionar sus contactos 💪"}]}};
 let tourSt=null;
 function tourEl(s){const e=$(s);if(!e)return null;const r=e.getBoundingClientRect();return e.hidden||(!r.width&&!r.height)?null:e}
 function tourCerrar(ok){const o=$("#tourOv");if(o)o.remove();if(ok&&tourSt){const D=LS.get("tourOk")||{};D[tourSt.k]=Date.now();LS.set("tourOk",D);try{renderAca()}catch(e){}}tourSt=null}
@@ -8809,10 +8807,12 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     ${irSimple()?`<div class="pf-h">Ayuda</div>`:""}<button class="pf-it" id="pfWel"><span class="ic">🎬</span>Ver la bienvenida otra vez</button>
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
     <button class="pf-it" id="pfFront"><span class="ic">🏠</span>Ver la portada de la app</button>
+    <button class="pf-it" id="pfBk"><span class="ic">💾</span>Respaldo de mis contactos</button>
     ${isAdmin&&irSimple()?`<div class="pf-h">Admin</div><button class="pf-it" id="pfCie"><span class="ic">💰</span>Cierre de mes</button>`:""}${isAdmin?`<button class="pf-it" id="pfRep"><span class="ic">📤</span>Cargar reportes de inCruises</button>`:""}${isAdmin?`<button class="pf-it" id="pfTz"><span class="ic">🎥</span>Zoom del Action Leaders Training</button>`:""}${isAdmin?`<button class="pf-it" id="pfGrp"><span class="ic">👥</span>Grupo de WhatsApp del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)${irSimM()?` <b style="margin-left:auto;font-size:11px;background:#7C3AED;color:#fff;border-radius:99px;padding:3px 8px">ENCENDIDO</b>`:""}</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfRh"><span class="ic">🔥</span>Ver celebración de racha (admin)</button><button class="pf-it" id="pfRd"><span class="ic">🏅</span>Ver Día de reconocimientos (admin)</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
+    {const bk=$("#pfBk");if(bk)bk.onclick=()=>{closeSheet();setTimeout(()=>openSheet(`<h2 style="margin:0">💾 Respaldo de sus contactos</h2><p class="small muted" style="margin:6px 0 12px">Sus contactos ya se guardan solos en su cuenta. Si quiere, puede guardar además una copia en un archivo.</p><button class="btn" id="pfBkS" style="width:100%">Descargar mi respaldo</button><button class="btn ghost" id="pfBkL" style="width:100%">Cargar un respaldo</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#pfBkS").onclick=()=>{closeSheet();$("#bkSave").click()};$("#pfBkL").onclick=()=>{closeSheet();$("#bkLoad").click()}}),250)}}
     $("#pfNombre").onclick=abrirMisDatos;$("#pfAvisos").onclick=()=>{closeSheet();setTimeout(misAvisos,250)};{const gp=$("#pfGrp");if(gp)gp.onclick=()=>{closeSheet();setTimeout(grpAdmin,250)}}{const rp=$("#pfRep");if(rp)rp.onclick=()=>{closeSheet();setTimeout(repAdmin,250)}}{const tz=$("#pfTz");if(tz)tz.onclick=()=>{closeSheet();setTimeout(trZoomAdmin,250)}}{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const cz=$("#pfCie");if(cz)cz.onclick=()=>{closeSheet();eqTab="cierre";go("equipo");renderEquipo()}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
     $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfVia").onclick=()=>window.open(VIA_FORM,"_blank","noopener");{const b=$("#pfDecl");if(b)b.onclick=()=>{closeSheet();setTimeout(declAbrir,250)}}{const b=$("#pfCert");if(b)b.onclick=()=>{closeSheet();setTimeout(recoLista,250)}}{const b=$("#pfTl");if(b)b.onclick=()=>{closeSheet();setTimeout(()=>{miReco()?recoMio():tlInfo()},250)}}$("#pfMem").onclick=()=>memCompartir();$("#pfLzs").onclick=()=>{closeSheet();setTimeout(abrirLanzSocio,250)};$("#pfMemV").onclick=()=>memVisitas();
     $("#pfInv").onclick=()=>{closeSheet();setTimeout(invPlanHoja,250)};
@@ -9684,7 +9684,7 @@ async function startApp(u){
     db.doc("users/"+u.uid).set({email:u.email||"",ultimoAcceso:window.FB.serverTimestamp()},{merge:true}).catch(()=>{})}
   else{store.db=null;store.uid=null}
   $("#addEvent").hidden=true;
-  $("#crmNote").textContent="Tus contactos se guardan en tu cuenta y solo tú puedes verlos.";
+  $("#crmNote").textContent="Sus contactos se guardan en su cuenta y solo usted puede verlos.";
   subscribeTeam(db);
   const regValido=r=>!!(r&&(r.inv||r.patrocinadorUid||String(r.fecha||"")<"2026-10-19T06:45"));
   if(u&&!isAdmin){const r=regDoc&&regDoc.registro;if(r?!regValido(r)&&!(await invOK()):!(await invOK())){bloquearSinInvitacion();return}}
@@ -9706,7 +9706,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261116071125";var busy=false,pend=null;
+(function(){var V="20261116071402";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
