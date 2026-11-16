@@ -12,5 +12,5 @@ jobs:
         with: { distribution: temurin, java-version: 21 }
       - run: npm install --no-audit --no-fund >/dev/null 2>&1
         working-directory: tools/test/reglas
-      - run: npx firebase emulators:exec --only firestore --project demo-reglas "node test.mjs"
+      - run: cp ../../../respaldo/firestore.rules firestore.rules && npx firebase emulators:exec --only firestore --project demo-reglas "node test.mjs"
         working-directory: tools/test/reglas
