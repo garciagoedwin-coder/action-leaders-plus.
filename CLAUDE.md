@@ -968,3 +968,5 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - FOTO PROPIA en los 3 diseños y en las juntas (franja x92 y775 908×200): evaFoto (≤1600 px, <650 KB, aviso si ancho <1080) → Firestore evFoto/{id} {f,cre,t}; el evento solo guarda fo:1. evaFotoGet(id) la lee (1 lectura, caché EVF) solo al hacer el flyer/ticket. Eventos viejos con bxF dentro del doc siguen igual (al cambiar foto se borra bxF).
 - Autorización SOLO si el evento es para todos («🌎 Todos los socios»): «👥 Mi línea» se publica sin aut (visP "junta"). evaVisCambiar: abrir un evento privado → aut p + verA ["all"]. Reglas (respaldo/firestore.rules, pegadas por Edwin el 16 nov): enAll/abreOk + match /evFoto.
 - Nombres: evaLarga/evaNom usan bxT para todo gran; evaBx(e) = bx o título propio (mensajes).
+
+- 16 nov: JUNTAS con 3 diseños (campo jd; las viejas sin jd siguen con dis y su fondo): 1 Oscuro (de siempre), 2 Claro (jaCanvas, media/eventos/ja.jpg por defecto), 3 Foto completa (jbCanvas, jb.jpg). Todas aceptan foto propia (evFoto). JD_F = fotos por defecto. Maquetas en tools/flyer/junta/ja.html y jb.html.
