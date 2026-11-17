@@ -1739,6 +1739,20 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 </div>
 <div class="l-boot"><img src="media/escudo.png" alt=""></div>
 <script>
+/* 17 nov (Edwin): en iPhone, WhatsApp junta en un solo párrafo el texto que llega pegado a una imagen (pierde los saltos de línea).
+   Solución para TODOS los flyers/tarjetas: en iPhone se comparte solo la imagen, el mensaje se copia y se pide pegarlo en el comentario. */
+(function(){try{const ua=navigator.userAgent||"",ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);
+  if(!ios||!navigator.share)return;const sh=navigator.share.bind(navigator),cs=navigator.canShare?navigator.canShare.bind(navigator):null;
+  const copia=t=>{try{navigator.clipboard.writeText(t).catch(()=>{})}catch(e){}try{const a=document.createElement("textarea");a.value=t;a.setAttribute("readonly","");a.style.cssText="position:fixed;top:-99px;opacity:0";document.body.appendChild(a);a.select();a.setSelectionRange(0,t.length);document.execCommand("copy");a.remove()}catch(e){}};
+  const tip=()=>{let d=document.getElementById("pegTip");if(!d){d=document.createElement("div");d.id="pegTip";document.body.appendChild(d)}
+    d.innerHTML='<b>📋 Su mensaje ya está copiado</b><span>Al elegir el chat, toque «Añadir comentario», mantenga presionado y toque <b>Pegar</b>. Así sale ordenado.</span><button type="button" aria-label="Cerrar">✕</button>';
+    d.style.cssText="position:fixed;left:10px;right:10px;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:2147483000;background:#0B1220;color:#fff;border:1px solid #25D366;border-radius:16px;padding:12px 40px 12px 14px;font:500 14px/1.35 Figtree,system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:3px";
+    const b=d.querySelector("button");b.style.cssText="position:absolute;top:6px;right:8px;background:none;border:0;color:#9fb0c8;font-size:18px;padding:6px";b.onclick=()=>d.remove();
+    clearTimeout(tip._t);tip._t=setTimeout(()=>{try{d.remove()}catch(e){}},25000)};
+  navigator.share=function(o){if(o&&o.files&&o.files.length&&o.text){const t=String(o.text);copia(t);tip();const q=Object.assign({},o);delete q.text;return sh(q)}return sh(o)};
+}catch(e){}})();
+</script>
+<script>
 (function(){
  var L=document.getElementById("land"),W=document.getElementById("lWall");
  var cols=[[0,5,9,13,17,2],[4,1,8,12,16,19,10],[6,3,11,15,18,7,14]],wide={1:1,2:1,3:1};
@@ -9928,7 +9942,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117103430";var busy=false,pend=null;
+(function(){var V="20261117115523";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
