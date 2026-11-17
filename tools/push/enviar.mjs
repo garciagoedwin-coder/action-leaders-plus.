@@ -546,7 +546,8 @@ async function main() {
   } else if (modo === "curso") {
     // 17 nov (Edwin): Networker Pro. Comentario nuevo → admins; like a un comentario → al autor; like al curso → admins.
     vista = "np";
-    const ahora = Date.now(), MR = db.doc("push_meta/curso"), M = (await MR.get()).data() || {}, desde = M.t || ahora - 30 * 60e3;
+    const ahora = Date.now(), MR = db.doc("push_meta/curso"), M = (await MR.get()).data() || {}, desde = M.t || ahora;
+    if (!M.t) { console.log("Primera corrida: solo marca la hora."); if (!DRY) await MR.set({ t: ahora }); return; }
     const Q = (await db.collection("constancia").where("u", ">", desde - 5 * 60e3).get()).docs;
     const adm = (await db.collection("users").where("email", "in", ADMINS).get()).docs.map(d => d.id), TK = {};
     const tkDe = async uid => { if (uid in TK) return TK[uid]; const x = (await db.doc("push/" + uid).get()).data() || {}; hist[uid] = x.h || []; return TK[uid] = x.tk || null; };
