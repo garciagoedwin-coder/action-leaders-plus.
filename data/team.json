@@ -4831,10 +4831,39 @@
     },
     {
      "t": "Liderazgo",
-     "yt": "",
-     "tarea": "Haga o revise su compromiso del mes y comparta su meta con su equipo.",
-     "ir": "comp",
-     "bt": "🎯 Mi compromiso"
+     "yt": "iQ5ZmYXXppg",
+     "tarea": "Su reto: complete su rutina de acción 7 días seguidos y mire crecer su racha. Y conéctese al Action Leaders Training, martes o jueves a las 8:00 p.m. hora de Honduras.",
+     "ir": "rutina",
+     "bt": "🔥 Ir a mi rutina",
+     "q": [
+      {
+       "p": "Según el video, ¿qué hace el equipo?",
+       "ok": "Lo que el líder hace: sigue su ejemplo, no sus palabras",
+       "no": [
+        "Lo que el líder dice en los grupos",
+        "Solo lo que le pide su patrocinador"
+       ],
+       "ex": "«El equipo hace lo que el líder hace… Tu equipo no sigue tus palabras, sigue tu ejemplo»."
+      },
+      {
+       "p": "¿Cuáles son los 4 hábitos de un líder que enseña el video?",
+       "ok": "Formarse cada día, no perderse los eventos, reconocer en público y medir su actividad",
+       "no": [
+        "Publicar muchos estados, vender, cobrar y descansar",
+        "Esperar resultados, criticar, competir y callar"
+       ],
+       "ex": "Fórmate todos los días · conéctate a cada evento · reconoce en público · «lo que se mide mejora»."
+      },
+      {
+       "p": "¿Cuál es el reto que le deja el último video?",
+       "ok": "Completar su rutina 7 días seguidos",
+       "no": [
+        "Ver los 8 videos otra vez",
+        "Invitar a 50 personas en un solo día"
+       ],
+       "ex": "«Te reto a que hagas 7 días de racha… Completa tu rutina de acción 7 días seguidos»."
+      }
+     ]
     }
    ]
   },
