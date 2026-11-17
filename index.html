@@ -1792,6 +1792,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
       <div id="pushStrip" hidden></div>
       <div id="declStrip" hidden></div><div id="cmpStrip" hidden></div>
       <div class="avBox" id="avBox" hidden><div class="avHd" id="avBoxN">AVISOS DE HOY</div><div class="avTrack" id="avTrack">
+        <div class="avSl" data-k="valStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="olvS" id="valStrip" hidden></div></div>
         <div class="avSl" data-k="anuStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div id="anuStrip" hidden></div></div>
         <div class="avSl" data-k="urgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="urgS" id="urgStrip" hidden></div></div>
         <div class="avSl" data-k="lzgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="lzgS" id="lzgStrip" hidden></div></div>
@@ -2276,6 +2277,11 @@ function maMsg(c){const n=String(c.name||"").split(" ")[0],tu=c.tu==="tu",V=tu?[
   `¡Hola, ${n}! Me acordé de usted 🙌 Hace un tiempo me dijo que no era el momento. ¿Cómo está? Si gusta, le cuento cómo va todo por aquí.`];
   return V[ahF(c.id+TODAY)%V.length]}
 function maEscribir(c){const w=waNum(c.phone,c.cc);if(!w){toast("Agregue su WhatsApp primero");return}LS.set("olv:"+c.id,TODAY);c.ultSeg=TODAY;c.updated=Date.now();store.saveContact(Object.assign({},c));waIr("https://wa.me/"+w+"?text="+encodeURIComponent(maMsg(c)));setTimeout(()=>{try{renderCRM();olvStrip()}catch(e){}},800)}
+// 16 nov (Edwin): socios directos que pidieron validar su primera presentación (ir.valP) y aún no se validan (constancia/{yo}.irVal)
+function valLista(){if(!store.uid||!Array.isArray(mios))return[];return mios.filter(x=>(x.registro||{}).patrocinadorUid===store.uid&&(x.ir||{}).valP&&!(irVals||{})[x.uid])}
+function valStrip(){const el=$("#valStrip");if(!el)return;if(store.uid&&Array.isArray(mios)&&irVals===null){irValsCargar().then(()=>{try{valStrip()}catch(e){}});return}const L=valLista();if(!L.length){el.hidden=true;try{bellPinta()}catch(e){}return}
+  el.innerHTML=`<div class="lzgI">✅</div><div class="lzgT"><b>${L.length===1?esc(((L[0].registro||{}).nombre||"Su socio").split(" ")[0])+" pide que valide su presentación":L.length+" socios piden que valide su presentación"}</b><span>Ya dio su primera presentación solo, como parte de su Plan de Inicio Rápido.</span>
+   <div class="olvL">${L.slice(0,3).map(x=>`<div class="olvR"><span class="olvN"><b>${esc(nv((x.registro||{}).nombre||""))}</b><small>Pidió ${esc(redHace((x.ir||{}).valP))}</small></span><button type="button" class="olvW o" data-irv="${esc(x.uid)}">Validar</button></div>`).join("")}</div></div>`;el.hidden=false;try{bellPinta()}catch(e){}}
 function olvStrip(){const el=$("#olvStrip");if(!el)return;const L=fbUser&&store.uid?olvLista():[];if(!L.length){el.hidden=true;return}
   el.innerHTML=`<div class="lzgI">🔁</div><div class="lzgT"><b>${L.length===1?"1 prospecto espera":L.length+" prospectos esperan"} su seguimiento</b><span>${L.some(c=>c.stage===MA)?"Incluye a los que dijeron «más adelante» y hoy les toca. Escríbales hoy.":"Más de 7 días sin avanzar y sin seguimiento. Escríbales hoy."}</span>
    <div class="olvL">${L.slice(0,3).map(c=>{const w=waLink(c);return `<div class="olvR"><span class="olvN"><b>${esc(c.name)}</b><small>${c.stage===MA?"🌱 Le toca escribirle hoy":stDias(c)+" días en Seguimiento"}</small></span>${c.stage===MA&&w?`<button type="button" class="olvW" data-olvma="${esc(c.id)}">💬</button>`:w?`<a class="olvW" href="${esc(w)}" target="_blank" rel="noopener" data-olv="${esc(c.id)}">💬</a>`:`<button type="button" class="olvW o" data-olvc="${esc(c.id)}">Ver</button>`}</div>`}).join("")}</div>
@@ -4047,7 +4053,7 @@ function pedirWaSocio(x,t){const nm=(x.registro||{}).nombre||"este socio";
     $("#wsOk").onclick=async()=>{let v=$("#wsT").value.trim();const sp=splitPhone(v),n=sp.cc?sp.cc+sp.num:waNum(v,$("#wsC").value);if(n.length<8){toast("Escribe el número");return}
       telSoc=Object.assign({},telSoc||{},{[x.uid]:{n,b:String((x.registro||{}).whatsapp||"").replace(/\D/g,"")}});store.set("telsocios",telSoc);LS.set("lastCC",$("#wsC").value);closeSheet();waIr("https://wa.me/"+n+"?text="+encodeURIComponent(t))};
     $("#wsSh").onclick=async()=>{closeSheet();if(navigator.share){try{await navigator.share({text:t});return}catch(e){if(e&&e.name==="AbortError")return}}location.href="https://wa.me/?text="+encodeURIComponent(t)}})}
-async function loadMios(force){try{return await loadMios0(force)}finally{try{raAvisosPat()}catch(e){}}}
+async function loadMios(force){try{return await loadMios0(force)}finally{try{raAvisosPat()}catch(e){}try{valStrip()}catch(e){}}}
 async function loadMios0(force){miosErr=false;const me=store.uid,M={};const cMs=60*60e3;if(telSoc===null){try{telSoc=(await store.get("telsocios"))||{}}catch(e){telSoc={}}}
   try{const W=store.db.collection("users").where("registro.patrocinadorUid",me),q=await rdCache("mios1",cMs,force,()=>W.getCache(),()=>W.get());q.docs.forEach(d=>M[d.id]=Object.assign({uid:d.id},d.data()))}catch(e){miosErr=true}
   try{const W=store.db.collection("users").where("registro.linea",me,"array-contains"),q=await rdCache("mios2",cMs,force,()=>W.getCache(),()=>W.get());q.docs.forEach(d=>{if(!M[d.id])M[d.id]=Object.assign({uid:d.id},d.data())})}catch(e){}
@@ -5922,7 +5928,7 @@ function pendPinta(){try{pushPinta()}catch(e){}const el=$("#pendStrip");if(!el)r
 function avNoLeidos(){try{const v=+LS.get("pushVisto")||0;return ((pushDoc&&pushDoc.h)||[]).filter(x=>(x.t||0)>v).length}catch(e){return 0}}
 // "Nuevo" = rutina de hoy pendiente (1 vez al día) + solicitudes/eventos que no ha visto + avisos sin leer. Al abrir la campanita queda en 0.
 function avIdsPend(){const pe=(typeof EVA!=="undefined"&&EVA||[]).filter(e=>(e.lidU||[]).includes(store.uid)&&!(e.conf||{})[store.uid]&&e.cre!==store.uid);
-  return (l3P||[]).map(x=>"p"+x.id).concat((l3D||[]).map(x=>"d"+x.id+(x.estado||"")),pe.map(e=>"e"+e.id))}
+  let vl=[];try{vl=valLista().map(x=>"v"+x.uid)}catch(e){}return (l3P||[]).map(x=>"p"+x.id).concat((l3D||[]).map(x=>"d"+x.id+(x.estado||"")),pe.map(e=>"e"+e.id),vl)}
 function avNuevos(){try{const vis=LS.get("avVis")||[],rut=dayScore(day)<1&&LS.get("avRutD")!==TODAY?1:0;return rut+avIdsPend().filter(k=>!vis.includes(k)).length+avNoLeidos()}catch(e){return 0}}
 function avMarcar(){try{LS.set("avRutD",TODAY);LS.set("avVis",avIdsPend().slice(-60));LS.set("pushVisto",Date.now())}catch(e){}}
 function bellPinta(){try{pendPinta()}catch(e){}const b=$("#bellBtn");if(!b)return;if(!store.uid){b.hidden=true;return}
@@ -5938,6 +5944,7 @@ function avFila(x,v){return `<button type="button" class="avIt avRow${(x.t||0)>v
 function avScroll(id,n){n=n||0;setTimeout(()=>{const r=$(id);if(r&&!r.hidden){r.scrollIntoView({behavior:"smooth",block:"center"});r.classList.add("avFlash");setTimeout(()=>r.classList.remove("avFlash"),1600)}else if(n<12)avScroll(id,n+1)},350)}
 function avEq(t){eqTab=t;try{setSeg("eqSeg",eqTab)}catch(e){}go("equipo");try{renderEquipo()}catch(e){}}
 function avIr(k){try{
+  if(k==="val"){go("inicio");(async()=>{try{await loadMios(true)}catch(e){}try{await irValsCargar()}catch(e){}valStrip();try{avBoxMostrar("valStrip")}catch(e){}setTimeout(()=>{const e=$("#valStrip");if(e&&!e.hidden){const s=e.closest(".avSl");if(s)s.scrollIntoView({behavior:"smooth",block:"nearest",inline:"start"});const b=$("#avBox");if(b)b.scrollIntoView({behavior:"smooth",block:"start"})}},400)})();return}
   if(k==="mat"){go("academia");setTimeout(()=>{try{acaMateriales()}catch(e){}},300);return}
   if(k==="ir"){go("inicio");setTimeout(()=>{try{irLista()}catch(e){}},400);return}
   if(k==="np"){go("academia");setTimeout(()=>{try{npCurso()}catch(e){}},300);return}
@@ -5976,6 +5983,7 @@ async function avisosCentro(_r){ // 11 nov: abre al instante con lo guardado y s
   (l3P||[]).forEach(x=>P.push(["📞",`${x.lz||x.lzE?"Lanzamiento":"Llamada de 3"} de ${(x.deN||x.n||"un socio").split(" ")[0]} por responder`,"","Responder","ag"]));
   if((l3D||[]).length)P.push(["📬",`${l3D.length===1?"1 respuesta":l3D.length+" respuestas"} a sus solicitudes`,"","Ver","ag"]);
   if(pe.length)P.push(["🎤",`${pe.length===1?"1 invitación":pe.length+" invitaciones"} a evento por confirmar`,"","Ver","ag"]);
+  try{const vl=valLista();if(vl.length)P.push(["✅",vl.length===1?((vl[0].registro||{}).nombre||"Un socio").split(" ")[0]+" pide que valide su presentación":vl.length+" socios piden que valide su presentación","Inicio Rápido · primera presentación solo","Validar","val"])}catch(e){}
   const v=+LS.get("pushVisto")||0,H=((pushDoc&&pushDoc.h)||[]).slice().reverse(),d0=avHoy0(),Hh=H.filter(x=>(x.t||0)>=d0),Ha=H.filter(x=>(x.t||0)<d0);
   const fila=(ic,t,s,bt,k,i)=>`<div class="avIt"><span class="avIc">${ic}</span><div class="grow" style="min-width:0"><b>${esc(t)}</b>${s?`<small>${esc(s)}</small>`:""}</div>${bt?`<button type="button" class="btn pill" data-avk="${k}" style="padding:6px 12px">${esc(bt)}</button>`:""}</div>`;
   openSheet(`<h2 style="margin:0 0 6px">🔔 Avisos</h2>
@@ -9185,6 +9193,7 @@ function irMeta(){const st=irSt(),m=st.meta||{},sue=((regDoc||{}).metas||{}).sue
     $("#sheet").querySelectorAll(".irOp").forEach(g=>g.onclick=e=>{const b=e.target.closest("button");if(!b)return;g.querySelectorAll("button").forEach(z=>z.classList.remove("on"));b.classList.add("on");sel[g.dataset.k]=b.dataset.v});
     $("#irMok").onclick=()=>{if(!sel.tiempo){toast("Elija su tiempo diario");return}const nm=Object.assign(sel,{reemp:$("#irM1").value.replace(/[^\d]/g,""),sueno:$("#irM2").value.replace(/[^\d]/g,""),disp:$("#irM3").value.trim().slice(0,300)});irSave({meta:nm});closeSheet();toast("🎯 Meta guardada");setTimeout(irRender,300)}})}
 async function irPedirVal(){if(irSimM()){openSheet(`<h2>✅ Validación</h2><p>En la app real, su patrocinador recibe esto en <b>Mi equipo</b> y toca <b>“✅ Ya puede presentar”</b>.</p><button class="btn" id="irSV" style="width:100%">🧪 Simular que mi patrocinador validó</button>`,()=>{$("#irSV").onclick=()=>{irSave({val:Date.now()});closeSheet();setTimeout(irRender,300)}});return}
+  try{irSave({valP:Date.now()});store.db.doc("users/"+store.uid).set({valN:true},{merge:true}).catch(()=>{})}catch(e){} // 16 nov: aviso al patrocinador (Inicio + campanita + push de cada hora)
   const r=miRegistro(),sp=(r.invitadoPor||r.patrocinador||"").split(" ")[0];let w="";
   try{if(r.patrocinadorUid){const d=await store.db.doc("users/"+r.patrocinadorUid).get();w=String(((d.data()||{}).registro||{}).whatsapp||"").replace(/\D/g,"")}}catch(e){}
   const t=`Hola${sp?", "+sp:""} 🙌\n\nYa di mi primera presentación yo solo, como parte de mi Plan de Inicio Rápido.\n\n¿Me ayuda a validarla en la app (Mi equipo → ✅ Ya puede presentar)?`;
@@ -9218,7 +9227,7 @@ async function irFlyer(w){try{await flFonts()}catch(e){}const cc=w==="c";if(cc)w
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],g?"graduado-inicio-rapido.jpg":"inicio-rapido-semana-"+w.n+".jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
-let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{eqzStrip()}catch(e){}try{audStrip()}catch(e){}try{turStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
+let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{valStrip()}catch(e){}try{eqzStrip()}catch(e){}try{audStrip()}catch(e){}try{turStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
   const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
   if(m==="actual"&&!st.ini){const no=LS.get("irNo:"+store.uid);if(no&&Date.now()<no){el.hidden=true;return}
     el.hidden=false;el.className="irMini";el.innerHTML=`<span class="ic">🚀</span><span class="tx"><b>Plan de Inicio Rápido</b> · Aprenda a duplicar en 30 días</span><button type="button" class="go" id="irEmp">Empezar ›</button><button type="button" class="x" id="irNo" aria-label="Quitar">✕</button>`;
@@ -9342,7 +9351,7 @@ function irChip0(x){const s=x.ir||{},p=s.p;if(!p)return"";const nm=((x.registro|
 document.addEventListener("click",e=>{const m=e.target.closest("[data-mfall]");if(!m)return;const c=m.closest(".mfc");if(!c)return;c.classList.toggle("all");m.textContent=c.classList.contains("all")?"Ver menos ▴":"Ver todo ▾"});
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-irh],[data-irf],[data-irv]");if(!b)return;const uid=b.dataset.irh||b.dataset.irf||b.dataset.irv,x=(mios||[]).find(y=>y.uid===uid);if(!x)return;
   const nm=((x.registro||{}).nombre||"").split(" ")[0],p=((x.ir||{}).p)||{},w=waSocio(x);
-  if(b.dataset.irv){if(!confirm("¿Confirma que "+nm+" ya puede dar la presentación solo?"))return;try{await store.db.doc("constancia/"+store.uid).set({u:Date.now(),irVal:{[uid]:Date.now()}},{merge:true});irVals=Object.assign({},irVals||{},{[uid]:Date.now()});toast("✅ Validado: "+nm+" ya puede presentar");renderEquipo()}catch(err){toast("No se pudo guardar")}return}
+  if(b.dataset.irv){if(!confirm("¿Confirma que "+nm+" ya puede dar la presentación solo?"))return;try{await store.db.doc("constancia/"+store.uid).set({u:Date.now(),irVal:{[uid]:Date.now()}},{merge:true});irVals=Object.assign({},irVals||{},{[uid]:Date.now()});toast("✅ Validado: "+nm+" ya puede presentar");try{valStrip()}catch(x){}try{renderEquipo()}catch(x){}}catch(err){toast("No se pudo guardar")}return}
   const t=b.dataset.irf?`¡Felicidades, ${nm}! 🏅\n\nYa ganó su insignia de la semana ${Math.max(...(p.med||[1]))} del Plan de Inicio Rápido.\n\nMe llena de orgullo su avance. ¡Vamos por la siguiente! 🚀`:`¡Hola, ${nm}! 🙌\n\nVi que va en la semana ${p.w||1} de su Plan de Inicio Rápido.\n\n¿Qué le está costando? Agendemos 15 minutos y lo hacemos juntos. 💪`;
   waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t))});
 // ---- Interruptor de prueba (solo admin) ----
@@ -9842,7 +9851,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261116204434";var busy=false,pend=null;
+(function(){var V="20261116211421";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

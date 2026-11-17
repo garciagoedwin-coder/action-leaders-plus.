@@ -337,6 +337,7 @@ export function avDestino(modo, m) {
   if (modo === "agenda" || modo === "equipo") return "agenda";
   if (modo === "act") return /Sistema de liderazgo|Felicidades/i.test(t) ? "lz" : "snv";
   if (modo === "sol") return /pide un cambio/i.test(t) ? "sol" : "dt";
+  if (modo === "val") return "val";
   if (/^inact/.test(modo)) return /ahorros? pendientes?/i.test(t) ? "ahp" : "urg";
   if (/^lzg/.test(modo)) return /compromiso/i.test(t) ? "comp" : "lzg";
   if (modo === "viaje") return "via";
@@ -568,6 +569,20 @@ async function main() {
       for (const s of L2) if (tk2) salida.push([d.id, tk2, { title: "💬 Respuesta a su solicitud", body: "Sobre " + corto(s.n) + ": " + s.r }]);
       const upd = { solR: false }; L.forEach(s => upd["sol." + s.id + ".rt"] = Date.now()); L2.forEach(s => upd["sol." + s.id + ".rat"] = Date.now()); W.push([d.id, upd]);
     }
+    if (!DRY) for (const [uid, u] of W) await db.doc("users/" + uid).update(u);
+  } else if (modo === "val") {
+    // 16 nov (Edwin): el socio pide validar su primera presentación (Inicio Rápido) → users.valN; avisar a su patrocinador directo
+    vista = "equipo";
+    const L = (await db.collection("users").where("valN", "==", true).get()).docs;
+    if (!L.length) { console.log("Sin validaciones pedidas."); return; }
+    const W = [], TKc = {}, pushDe = async uid => { if (uid in TKc) return TKc[uid]; const d = await db.doc("push/" + uid).get(); const x = d.exists ? d.data() : {}; hist[uid] = x.h || []; return TKc[uid] = x.tk || null; };
+    for (const d of L) {
+      const x = d.data(), r = x.registro || {}, sp = r.patrocinadorUid, nm = corto(r.nombre || "Un socio");
+      const tk = sp ? await pushDe(sp) : null;
+      if (tk) salida.push([sp, tk, { title: "✅ " + nm + " pide su validación", body: "Ya dio su primera presentación solo. Toque para validarla en su Plan de Inicio Rápido." }]);
+      W.push([d.id, { valN: false, valNt: Date.now() }]);
+    }
+    console.log("Validaciones pedidas:", L.length);
     if (!DRY) for (const [uid, u] of W) await db.doc("users/" + uid).update(u);
   } else if (modo === "evaut") {
     // 15 nov (Edwin): Gran evento / Business Experience necesita autorización de un rango mayor del Sistema de liderazgo.
