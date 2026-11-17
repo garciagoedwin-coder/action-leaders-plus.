@@ -329,6 +329,7 @@ export function msgEqz(e) {
 
 // 6 nov: a dónde lleva cada aviso al tocarlo (campanita y notificación del teléfono)
 export function avDestino(modo, m) {
+  if (m && m.v) return m.v;
   const t = (m && m.title) || "";
   if (/^(racha|racha2|fin|manana)$/.test(modo)) return /compromiso|pts/i.test(t + " " + ((m && m.body) || "")) && modo === "manana" ? "comp" : "rut";
   if (modo === "act" && /compromiso/i.test(t)) return "comp";
@@ -543,6 +544,20 @@ async function main() {
         ? { title: `📵 ${lista} aún no entra a la app`, body: (L.some(a => (DEC[a.id || a.socio] || {}).s === "t") ? "Va a trabajar: mándele hoy su enlace para que arranque su Plan de Inicio Rápido." : "¿Va a trabajar o es cliente? Márquelo en Equipo → Socios nuevos.") }
         : { title: `📵 ${L.length} socios nuevos aún no entran a la app`, body: `${lista}. ¿Van a trabajar o son clientes? Márquelos en Equipo → Socios nuevos.` }]); }
     console.log("activaciones 30 días:", A.length, "· sin app:", Object.values(porSp).reduce((t, L) => t + L.length, 0) + sinSp, "· patrocinadores a avisar:", Object.keys(porSp).length, "· sin patrocinador en la app:", sinSp, "· clientes:", nCli);
+  } else if (modo === "logros") {
+    // 17 nov (Edwin): 🎓 terminó el curso Networker Pro (constancia.np.n >= 8) → admins; 🛡️ se graduó del Plan de Inicio Rápido (users.ir.esp) → su línea de arriba + admins. Botón para felicitar (v fel_np_UID / fel_ir_UID).
+    const ahora = Date.now(), MR = db.doc("push_meta/logros"), M = (await MR.get()).data() || {};
+    if (!M.t) { console.log("Primera corrida: solo marca la hora."); if (!DRY) await MR.set({ t: ahora }); return; }
+    const desde = M.t, adm = (await db.collection("users").where("email", "in", ADMINS).get()).docs.map(d => d.id), TK = {};
+    const tkDe = async uid => { if (uid in TK) return TK[uid]; const x = (await db.doc("push/" + uid).get()).data() || {}; hist[uid] = x.h || []; return TK[uid] = x.tk || null; };
+    const a = async (uids, m) => { for (const u of [...new Set(uids)]) { const tk = await tkDe(u); if (tk) salida.push([u, tk, m]); } };
+    const C = (await db.collection("constancia").where("np.t", ">", desde).get()).docs.filter(d => { const n = d.data().np || {}; return +n.n >= 8 && +n.t <= ahora; });
+    for (const d of C) { const nm = primer(d.data().nombre || "Un socio"); await a(adm.filter(u => u !== d.id), { title: "🎓 " + nm + " terminó el curso Networker Pro", body: "Vio los 8 videos. Toque para felicitarlo 👏", v: "fel_np_" + d.id }); }
+    const G = (await db.collection("users").where("ir.esp", ">", desde).get()).docs.filter(d => +((d.data().ir || {}).esp) <= ahora);
+    for (const d of G) { const r = d.data().registro || {}, nm = primer(r.nombre || "Un socio"), up = [r.patrocinadorUid, ...(Array.isArray(r.linea) ? r.linea : [])].filter(u => u && u !== d.id);
+      await a(up.concat(adm).filter(u => u !== d.id), { title: "🛡️ " + nm + " se graduó del Plan de Inicio Rápido", body: "Ganó todas sus insignias y ya es Espartano ⚔️ Toque para felicitarlo.", v: "fel_ir_" + d.id }); }
+    console.log("Terminaron el curso:", C.length, "· graduados del plan:", G.length);
+    if (!DRY) await MR.set({ t: ahora }, { merge: true });
   } else if (modo === "curso") {
     // 17 nov (Edwin): Networker Pro. Comentario nuevo → admins; like a un comentario → al autor; like al curso → admins.
     vista = "np";

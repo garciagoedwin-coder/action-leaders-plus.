@@ -1,4 +1,4 @@
-name: Avisos del curso Networker Pro (comentarios y likes)
+name: Avisos del curso Networker Pro y graduados (comentarios, likes, logros)
 on:
   schedule:
     - cron: "7,22,37,52 * * * *"   # cada 15 min
@@ -23,4 +23,4 @@ jobs:
         env:
           FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
           DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry == '1' && '1' || '' }}
-        run: node enviar.mjs curso
+        run: node enviar.mjs curso && node enviar.mjs logros

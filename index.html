@@ -5944,6 +5944,7 @@ function avFila(x,v){return `<button type="button" class="avIt avRow${(x.t||0)>v
 function avScroll(id,n){n=n||0;setTimeout(()=>{const r=$(id);if(r&&!r.hidden){r.scrollIntoView({behavior:"smooth",block:"center"});r.classList.add("avFlash");setTimeout(()=>r.classList.remove("avFlash"),1600)}else if(n<12)avScroll(id,n+1)},350)}
 function avEq(t){eqTab=t;try{setSeg("eqSeg",eqTab)}catch(e){}go("equipo");try{renderEquipo()}catch(e){}}
 function avIr(k){try{
+  if(/^fel_(np|ir)_/.test(k)){const[,t,...u]=k.split("_");felAbrir(t,u.join("_"));return}
   if(k==="np"){go("academia");setTimeout(()=>{try{npCurso()}catch(e){}},400);return}
   if(k==="val"){go("inicio");(async()=>{try{await loadMios(true)}catch(e){}try{await irValsCargar()}catch(e){}valStrip();try{avBoxMostrar("valStrip")}catch(e){}setTimeout(()=>{const e=$("#valStrip");if(e&&!e.hidden){const s=e.closest(".avSl");if(s)s.scrollIntoView({behavior:"smooth",block:"nearest",inline:"start"});const b=$("#avBox");if(b)b.scrollIntoView({behavior:"smooth",block:"start"})}},400)})();return}
   if(k==="mat"){go("academia");setTimeout(()=>{try{acaMateriales()}catch(e){}},300);return}
@@ -8456,6 +8457,18 @@ function npSocVer(){const L=npSocL()||[],E=npEstado();if(!E)return;
    <div>${L.map(x=>{const g=x.v>=E.tot,pc=Math.round(x.v*100/E.tot);return `<div class="mqlR${x.me?" me":""}"><span class="mqlA">${avV(x.n,x.uid)}${g?`<i style="background:#16A34A">✓</i>`:""}</span><div class="mqlT"><b>${esc(nv(x.n)||x.n)}${x.me?"<em>USTED</em>":""}</b><div class="mqlB"><u style="width:${Math.max(6,pc)}%;background:${g?"#16A34A":"linear-gradient(90deg,#2AC1F1,#E8B54A)"}"></u></div></div><div class="mqlN">${g?`<b style="font-size:16px">🎓</b><small style="color:#12805C;font-weight:800">Graduado</small>`:`<b>${x.v}</b><small>de ${E.tot} videos</small>`}</div></div>`}).join("")}</div>
    <p class="small muted" style="text-align:center;margin:6px 0 0">Se actualiza cada 15 minutos.</p><button class="btn ghost" data-close style="width:100%">Cerrar</button>`)}
 // 17 nov (Edwin): ❤️ me gusta al curso → constancia/{uid}.npLk = t (null = quitó). Se cuenta desde constL; aviso a los admins (enviar.mjs curso)
+// 17 nov (Edwin): felicitar a quien terminó el curso Networker Pro (np) o se graduó del Plan de Inicio Rápido (ir). Llega por aviso (?av=fel_np_UID / fel_ir_UID).
+const FEL_LG={np:[n=>`¡Felicidades, ${n}! 🎓\n\nTerminó los 8 videos del curso Networker Pro. Eso habla de su compromiso.\n\nDescargue su diploma en Academia y compártalo con el equipo. ¡Vamos por más! 💪\n\n#HASTAQUEFUNCIONE`,n=>`${n}, ¡qué orgullo! 🎓\n\nCompletó el curso Networker Pro. Lo que aprendió ahora hay que ponerlo en acción todos los días.\n\nCuente conmigo. #HASTAQUEFUNCIONE`],
+  ir:[n=>`¡Felicidades, ${n}! 🛡️\n\nSe graduó del Plan de Inicio Rápido con todas sus insignias. Ya es Espartano ⚔️\n\nDescargue su diploma y compártalo con el equipo. Estoy orgulloso de usted. #HASTAQUEFUNCIONE`,n=>`${n}, ¡lo logró! ⚔️\n\nTerminó su Plan de Inicio Rápido: 4 semanas, constancia y todas sus insignias. Eso es ser Espartano.\n\nAhora a duplicarlo en su equipo. #HASTAQUEFUNCIONE`]};
+async function felAbrir(t,uid){if(!uid||!FEL_LG[t])return;let r=null;const m=(mios||[]).find(x=>x.uid===uid)||(typeof socios!=="undefined"&&Array.isArray(socios)?socios.find(x=>x.uid===uid||x.id===uid):null);if(m)r=m.registro||null;
+  if(!r&&store.db)try{const d=await store.db.doc("users/"+uid).get();if(d.exists)r=(d.data()||{}).registro||null}catch(e){}
+  const nm=String((r&&r.nombre)||"").trim(),f=(nv(nm)||nm||"Socio").split(" ")[0],num=String((r&&r.whatsapp)||"").replace(/\D/g,"");let i=0;
+  const pinta=()=>{const tx=FEL_LG[t][i%FEL_LG[t].length](f),wa=num?"https://wa.me/"+num+"?text="+encodeURIComponent(tx):"https://wa.me/?text="+encodeURIComponent(tx);
+    openSheet(`<div style="text-align:center"><div style="font-size:54px;line-height:1">${t==="np"?"🎓":"🛡️"}</div><h2 style="margin:6px 0 4px">${esc(nv(nm)||nm||"Su socio")}</h2><p class="small muted" style="margin:0 0 12px">${t==="np"?"Terminó el curso Networker Pro":"Se graduó del Plan de Inicio Rápido · Espartano ⚔️"}</p></div>
+      <div class="card" style="white-space:pre-wrap;font-size:14.5px;line-height:1.45">${esc(tx)}</div>
+      <a class="btn" id="felWa" href="${esc(wa)}" target="_blank" rel="noopener" style="width:100%;background:#25D366;color:#fff;justify-content:center;margin-top:10px">💬 Felicitar por WhatsApp</a>
+      <button class="btn ghost" id="felOt" style="width:100%">🔄 Otro mensaje</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#felOt").onclick=()=>{i++;pinta()};$("#felWa").addEventListener("click",()=>setTimeout(closeSheet,400))})};
+  pinta();try{confeti($("#sheetPanel"),40)}catch(e){}}
 function npCLEst(){const mi=LS.get("npLk:"+store.uid),S=new Set();(constL||[]).forEach(y=>{if(y.uid!==store.uid&&y.npLk)S.add(y.uid)});const yo=mi!=null?!!mi:!!(((constL||[]).find(y=>y.uid===store.uid)||{}).npLk);return {n:S.size+(yo?1:0),yo}}
 function npCLPinta(){const b=$("#npCL");if(!b)return;const e=npCLEst();b.classList.toggle("on",e.yo);b.innerHTML=(e.yo?"❤️ Me gusta el curso":"🤍 Me gusta el curso")+(e.n?` · <b>${e.n}</b>`:"")}
 async function npCLTog(){const e=npCLEst(),v=e.yo?0:Date.now();LS.set("npLk:"+store.uid,v);npCLPinta();if(v)try{confeti($("#npCL"),18)}catch(x){}
@@ -9861,7 +9874,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117080338";var busy=false,pend=null;
+(function(){var V="20261117080844";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
