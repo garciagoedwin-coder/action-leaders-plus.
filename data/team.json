@@ -4795,10 +4795,39 @@
     },
     {
      "t": "Atracción en redes",
-     "yt": "",
-     "tarea": "Publique hoy su historia del día y su flyer de la presentación.",
+     "yt": "dD-6XV4SQ2k",
+     "tarea": "Ponga una buena foto de perfil (medio cuerpo, con buena luz) y use la misma en todas sus redes. Luego publique una historia de su proceso: su estilo de vida, algo que aprendió o un avance.",
      "ir": "hist",
-     "bt": "📸 Mi historia del día"
+     "bt": "📸 Mi historia del día",
+     "q": [
+      {
+       "p": "Según el video, ¿por qué se une la gente a un negocio?",
+       "ok": "Por las personas: se une a usted, no a la empresa",
+       "no": [
+        "Por los cruceros que usted publica",
+        "Por el nombre de la empresa"
+       ],
+       "ex": "«La gente se une a personas, no a empresas». Se va a unir por usted, no por los viajes que publique."
+      },
+      {
+       "p": "¿Cuáles son los 3 tipos de contenido que recomienda publicar?",
+       "ok": "Estilo de vida, aprendizaje y resultados",
+       "no": [
+        "Precios, promociones y cruceros",
+        "Solo ofertas del negocio todos los días"
+       ],
+       "ex": "«Número uno, estilo de vida… número dos, aprendizaje… y tres, resultados, tus avances»."
+      },
+      {
+       "p": "¿Cuántas historias al día recomienda para no aburrir?",
+       "ok": "Unas 5 a 7 historias",
+       "no": [
+        "15 o más historias",
+        "Una por semana"
+       ],
+       "ex": "«Una persona que tenga cinco, seis, siete historias diarias está bien. Más de ahí creo que aburre»."
+      }
+     ]
     },
     {
      "t": "Liderazgo",
