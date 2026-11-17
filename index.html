@@ -8604,8 +8604,8 @@ async function npDiploma(P){const E=npEstado();if(!E)return;try{await flFonts()}
   g.fillStyle="#E8B54A";g.fillRect(W/2-120,700,240,3);
   T2("por completar el curso Networker Pro de Action Leaders",760,"500 30px ALO,Figtree,sans-serif","rgba(255,255,255,.8)");
   T2("SUS INSIGNIAS",850,"600 24px ALP,Poppins,sans-serif","#2AC1F1","8px");
-  const I=P?P.ins:npIns(),lab={1:"Despegue",2:"Presentador",3:"Cerrador",4:"Duplicador",c:"Constancia",g:"Graduado"},sz=I.length>5?128:150,gap=I.length>5?22:26,x1=(W-(sz*I.length+gap*(I.length-1)))/2;
-  for(let i=0;i<I.length;i++){const im=await ld(insSrc(I[i].n));const x=x1+i*(sz+gap);if(im){g.save();if(!I[i].ok){g.globalAlpha=.28;try{g.filter="grayscale(1)"}catch(e){}}{const r=im.width/im.height,dh=Math.min(sz,sz/r),dw=dh*r;g.drawImage(im,x+(sz-dw)/2,880+sz-dh,dw,dh)}g.restore()}
+  const I=P?P.ins:npIns(),lab={1:"Despegue",2:"Presentador",3:"Cerrador",4:"Duplicador",c:"Constancia",g:"Espartano"},sz=I.length>5?128:150,gap=I.length>5?22:26,x1=(W-(sz*I.length+gap*(I.length-1)))/2;
+  for(let i=0;i<I.length;i++){const im=await ld(I[i].n==="g"?"media/insignias/v3-espartano-e.webp?v=1":insSrc(I[i].n));const x=x1+i*(sz+gap);if(im){g.save();if(!I[i].ok){g.globalAlpha=.28;try{g.filter="grayscale(1)"}catch(e){}}{const r=im.width/im.height,dh=Math.min(sz,sz/r),dw=dh*r;g.drawImage(im,x+(sz-dw)/2,880+sz-dh,dw,dh)}g.restore()}
     g.font="600 22px ALO,Figtree,sans-serif";g.fillStyle=I[i].ok?"#fff":"rgba(255,255,255,.4)";g.textAlign="center";g.fillText(lab[I[i].n],x+sz/2,880+sz+32)}
   const fu=P?(P.fecha||TODAY):Object.values(E.s.d).sort().pop()||TODAY;
   if(P)return c;
@@ -9887,7 +9887,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117082142";var busy=false,pend=null;
+(function(){var V="20261117082403";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
