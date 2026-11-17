@@ -970,3 +970,5 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - Nombres: evaLarga/evaNom usan bxT para todo gran; evaBx(e) = bx o título propio (mensajes).
 
 - 16 nov: JUNTAS con 3 diseños (campo jd; las viejas sin jd siguen con dis y su fondo): 1 Oscuro (de siempre), 2 Claro (jaCanvas, media/eventos/ja.jpg por defecto), 3 Foto completa (jbCanvas, jb.jpg). Todas aceptan foto propia (evFoto). JD_F = fotos por defecto. Maquetas en tools/flyer/junta/ja.html y jb.html.
+
+- 16 nov (noche): botón del patrocinador "✅ ¿Ya puede presentar? Validar" (irChip0) ahora sale desde la Semana 2 (p.w>=2); antes solo en la 3, y en el Plan v3 la validación (val) está en la Semana 2 (caso Mayckol).

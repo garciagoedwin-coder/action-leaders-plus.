@@ -9337,7 +9337,7 @@ function irChip0(x){const s=x.ir||{},p=s.p;if(!p)return"";const nm=((x.registro|
   if(ah&&ah.pend)h+=`<span class="chip c-bad mk">💰 Plan en pausa por ahorro</span>`;
   else if(quieto)h+=`<button type="button" class="chip c-bad mk" style="border:0;font:inherit;cursor:pointer" data-irh="${esc(x.uid)}">⚠️ ${Math.floor((Date.now()-(p.u||0))/864e5)} días sin avanzar · 💬 Ayudarlo</button>`;
   if((p.med||[]).length&&!quieto)h+=`<button type="button" class="chip c-good mk" style="border:0;font:inherit;cursor:pointer" data-irf="${esc(x.uid)}">🏅 ${(p.med||[]).map(n=>IR_W[n-1]?IR_W[n-1].ic:"").join("")} · 👏 Felicitar</button>`;
-  if(p.w===3&&!val)h+=`<button type="button" class="chip mk" style="border:0;font:inherit;cursor:pointer;background:#0A7DAD;color:#fff" data-irv="${esc(x.uid)}">✅ ¿Ya puede presentar? Validar</button>`;
+  if((p.w||1)>=2&&!val)h+=`<button type="button" class="chip mk" style="border:0;font:inherit;cursor:pointer;background:#0A7DAD;color:#fff" data-irv="${esc(x.uid)}">✅ ¿Ya puede presentar? Validar</button>`;
   return h}
 document.addEventListener("click",e=>{const m=e.target.closest("[data-mfall]");if(!m)return;const c=m.closest(".mfc");if(!c)return;c.classList.toggle("all");m.textContent=c.classList.contains("all")?"Ver menos ▴":"Ver todo ▾"});
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-irh],[data-irf],[data-irv]");if(!b)return;const uid=b.dataset.irh||b.dataset.irf||b.dataset.irv,x=(mios||[]).find(y=>y.uid===uid);if(!x)return;
@@ -9842,7 +9842,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261116080537";var busy=false,pend=null;
+(function(){var V="20261116204434";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
