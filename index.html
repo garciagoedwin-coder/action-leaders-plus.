@@ -9207,7 +9207,9 @@ async function irPedirVal(){if(irSimM()){openSheet(`<h2>✅ Validación</h2><p>E
   const t=`Hola${sp?", "+sp:""} 🙌\n\nYa di mi primera presentación yo solo, como parte de mi Plan de Inicio Rápido.\n\n¿Me ayuda a validarla en la app (Mi equipo → ✅ Ya puede presentar)?`;
   waIr("https://wa.me/"+(w.length>=8?w:"")+"?text="+encodeURIComponent(t))}
 function irInvitar(){closeSheet();setTimeout(invPlanHoja,250)}
-async function irValCheck(){try{if(irValOk||irSimM()||Date.now()-irValT<18e5)return;irValT=Date.now();const p=miRegistro().patrocinadorUid;if(!p||!store.db)return;const d=await store.db.doc("constancia/"+p).get();const v=d.exists&&(d.data().irVal||{})[store.uid];if(v){irValOk=v;irSave({val:v});irRender()}}catch(e){}}
+// 17 nov: se revisa desde la Semana 2 (Plan v3) cada 5 min, en el patrocinador y en su línea de arriba (quien haya validado)
+async function irValCheck(){try{if(irValOk||irSimM()||Date.now()-irValT<3e5)return;irValT=Date.now();const r=miRegistro(),U=[...new Set([r.patrocinadorUid,...(Array.isArray(r.linea)?r.linea:[])].filter(Boolean))].slice(0,6);if(!U.length||!store.db)return;
+  const D=await Promise.all(U.map(u=>store.db.doc("constancia/"+u).get().catch(()=>null)));let v=0;D.forEach(d=>{if(!v&&d&&d.exists)v=(d.data().irVal||{})[store.uid]||0});if(v){irValOk=v;irSave({val:v});irRender();try{toast("✅ ¡Su patrocinador validó su presentación!")}catch(e){}}}catch(e){}}
 function irResumen(E){try{if(irSimM())return;const st=irSt();if(!st.ini&&irModo()!=="nuevo")return;const tot=E.W.reduce((s,w)=>s+w.n2,0);const p0=st.p||{};
   const p={w:E.grad?5:E.cur.n,n:E.cur.n2,tot:E.cur.L.length,d:E.dia,g:E.grad?1:0,med:Object.keys(st.med||{}).map(Number),all:tot,u:tot>(p0.all||0)?Date.now():(p0.u||Date.now())};
   const pat={p};if(!st.ini)pat.ini=irIni();if(JSON.stringify(p0)!==JSON.stringify(Object.assign({},p0,p)))irSave(pat)}catch(e){}}
@@ -9241,7 +9243,7 @@ let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()
     el.hidden=false;el.className="irMini";el.innerHTML=`<span class="ic">🚀</span><span class="tx"><b>Plan de Inicio Rápido</b> · Aprenda a duplicar en 30 días</span><button type="button" class="go" id="irEmp">Empezar ›</button><button type="button" class="x" id="irNo" aria-label="Quitar">✕</button>`;
     $("#irEmp").onclick=e=>{e.stopPropagation();irEmpezar()};$("#irNo").onclick=e=>{e.stopPropagation();LS.set("irNo:"+store.uid,Date.now()+30*864e5);irRender()};el.onclick=e=>{if(!e.target.closest("button"))irEmpezar()};return}
   if(m==="nuevo"&&!st.ini)irSave({ini:irIni()});
-  const E=irEstado();irPremiar(E);irResumen(E);if(E.cur.n>=3)irValCheck();if(E.cur.n>=4&&mios===null&&Date.now()-irMiosT>6e5){irMiosT=Date.now();try{loadMios().then(()=>setTimeout(irRender,500))}catch(e){}}
+  const E=irEstado();irPremiar(E);irResumen(E);if(E.cur.n>=2&&!(E.x&&E.x.val))irValCheck();if(E.cur.n>=4&&mios===null&&Date.now()-irMiosT>6e5){irMiosT=Date.now();try{loadMios().then(()=>setTimeout(irRender,500))}catch(e){}}
   const st2=irSt();if(st2.esp&&Date.now()-st2.esp>3*864e5){el.hidden=true;return}
   const w=E.cur,pc=Math.round(w.n2/w.L.length*100),nx=w.L.find(i=>!i.ok),fin=w.fin,d=E.dia,q=Math.max(0,fin-d);
   el.hidden=false;el.className="irCard";
@@ -9859,7 +9861,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117075745";var busy=false,pend=null;
+(function(){var V="20261117080338";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
