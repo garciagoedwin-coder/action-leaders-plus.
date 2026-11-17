@@ -982,3 +982,5 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - 17 nov: CRM ficha: las respuestas de la presentación virtual (cvViaje) vuelven a estar a un toque: fila «✈️ Presentación virtual · terminó · n/10 · Ver respuestas ›» arriba de Actividad (data-cvtk) y el círculo «Presentación virtual» de Su camino (data-reu k=v) abre cvViaje si hay datos.
 
 - 17 nov: Diploma Networker Pro (npDiploma/npIns) muestra 6 insignias: + Constancia (n "c", ok = E.cons o st.cons) antes de Graduado; tamaño 128 px si son 6.
+
+- 17 nov: NETWORKER PRO avisos: .github/workflows/avisos-curso.yml (cada 15 min) → enviar.mjs curso: constancia where u > push_meta/curso.t: comentario nuevo (npc[n].t) → push a los admins con el texto; like a comentario (npl["autor_n"]) → push al autor; like al curso (npLk) → admins. Destino "np" (avIr abre npCurso). App: botón «🤍/❤️ Me gusta el curso · N» (#npCL, npCLTog) en el encabezado del curso, guarda constancia.npLk.

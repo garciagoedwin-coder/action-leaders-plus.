@@ -338,6 +338,7 @@ export function avDestino(modo, m) {
   if (modo === "act") return /Sistema de liderazgo|Felicidades/i.test(t) ? "lz" : "snv";
   if (modo === "sol") return /pide un cambio/i.test(t) ? "sol" : "dt";
   if (modo === "val") return "val";
+  if (modo === "curso") return "np";
   if (/^inact/.test(modo)) return /ahorros? pendientes?/i.test(t) ? "ahp" : "urg";
   if (/^lzg/.test(modo)) return /compromiso/i.test(t) ? "comp" : "lzg";
   if (modo === "viaje") return "via";
@@ -542,6 +543,23 @@ async function main() {
         ? { title: `📵 ${lista} aún no entra a la app`, body: (L.some(a => (DEC[a.id || a.socio] || {}).s === "t") ? "Va a trabajar: mándele hoy su enlace para que arranque su Plan de Inicio Rápido." : "¿Va a trabajar o es cliente? Márquelo en Equipo → Socios nuevos.") }
         : { title: `📵 ${L.length} socios nuevos aún no entran a la app`, body: `${lista}. ¿Van a trabajar o son clientes? Márquelos en Equipo → Socios nuevos.` }]); }
     console.log("activaciones 30 días:", A.length, "· sin app:", Object.values(porSp).reduce((t, L) => t + L.length, 0) + sinSp, "· patrocinadores a avisar:", Object.keys(porSp).length, "· sin patrocinador en la app:", sinSp, "· clientes:", nCli);
+  } else if (modo === "curso") {
+    // 17 nov (Edwin): Networker Pro. Comentario nuevo → admins; like a un comentario → al autor; like al curso → admins.
+    vista = "np";
+    const ahora = Date.now(), MR = db.doc("push_meta/curso"), M = (await MR.get()).data() || {}, desde = M.t || ahora - 30 * 60e3;
+    const Q = (await db.collection("constancia").where("u", ">", desde - 5 * 60e3).get()).docs;
+    const adm = (await db.collection("users").where("email", "in", ADMINS).get()).docs.map(d => d.id), TK = {};
+    const tkDe = async uid => { if (uid in TK) return TK[uid]; const x = (await db.doc("push/" + uid).get()).data() || {}; hist[uid] = x.h || []; return TK[uid] = x.tk || null; };
+    const a = async (uids, m) => { for (const u of uids) { const tk = await tkDe(u); if (tk) salida.push([u, tk, m]); } };
+    const nuevo = t => +t > desde && +t <= ahora;
+    let nc = 0, nl = 0, ncu = 0;
+    for (const d of Q) { const x = d.data(), nm = primer(x.nombre || "Un socio");
+      for (const [n, o] of Object.entries(x.npc || {})) if (o && o.c && !o.x && nuevo(o.t)) { nc++; await a(adm.filter(u => u !== d.id), { title: "💬 " + nm + " comentó el video " + n + " del curso", body: "«" + String(o.c).slice(0, 110) + "»" }); }
+      for (const [k, t] of Object.entries(x.npl || {})) if (t && nuevo(t)) { const [au, n] = k.split("_"); if (!au || au === d.id) continue; nl++; await a([au], { title: "❤️ A " + nm + " le gustó su comentario", body: "En el video " + n + " de Networker Pro. ¡Siga compartiendo lo que aprende!" }); }
+      if (x.npLk && nuevo(x.npLk)) { ncu++; await a(adm.filter(u => u !== d.id), { title: "❤️ A " + nm + " le gusta el curso Networker Pro", body: "Le dio me gusta al curso." }); }
+    }
+    console.log("Comentarios:", nc, "· likes a comentarios:", nl, "· likes al curso:", ncu);
+    if (!DRY) await MR.set({ t: ahora }, { merge: true });
   } else if (modo === "sol") {
     // Solicitudes de cambio del Dream Team: users.solN (nueva, avisar a admins) / users.solR (respondida, avisar al socio)
     vista = "equipo";

@@ -1307,7 +1307,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .npRut b{font-weight:700}
 .npHero{margin:-6px -4px 12px;border-radius:20px;padding:18px;color:#fff;background:radial-gradient(120% 100% at 100% 0%,#13456A 0%,#0B1220 65%)}
 .npHero .npT{font-size:32px}
-.npSt{display:flex;gap:8px;margin-top:12px}.npSt div{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 10px;font-size:11px}
+.npSt{display:flex;gap:8px;margin-top:12px}.npCL{margin-top:12px;display:inline-flex;align-items:center;gap:8px;border:1.5px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:8px 16px;font:700 14px Figtree,sans-serif}.npCL.on{background:#fff;color:#0B1220;border-color:#fff}.npCL b{font-weight:800}.npSt div{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 10px;font-size:11px}
 .npSt b{display:block;font-family:ALBC,'Barlow Condensed',Figtree,sans-serif;font-size:22px;color:#2AC1F1;line-height:1.1}
 .npL{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
 .npI{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 12px;cursor:pointer}
@@ -5944,6 +5944,7 @@ function avFila(x,v){return `<button type="button" class="avIt avRow${(x.t||0)>v
 function avScroll(id,n){n=n||0;setTimeout(()=>{const r=$(id);if(r&&!r.hidden){r.scrollIntoView({behavior:"smooth",block:"center"});r.classList.add("avFlash");setTimeout(()=>r.classList.remove("avFlash"),1600)}else if(n<12)avScroll(id,n+1)},350)}
 function avEq(t){eqTab=t;try{setSeg("eqSeg",eqTab)}catch(e){}go("equipo");try{renderEquipo()}catch(e){}}
 function avIr(k){try{
+  if(k==="np"){go("academia");setTimeout(()=>{try{npCurso()}catch(e){}},400);return}
   if(k==="val"){go("inicio");(async()=>{try{await loadMios(true)}catch(e){}try{await irValsCargar()}catch(e){}valStrip();try{avBoxMostrar("valStrip")}catch(e){}setTimeout(()=>{const e=$("#valStrip");if(e&&!e.hidden){const s=e.closest(".avSl");if(s)s.scrollIntoView({behavior:"smooth",block:"nearest",inline:"start"});const b=$("#avBox");if(b)b.scrollIntoView({behavior:"smooth",block:"start"})}},400)})();return}
   if(k==="mat"){go("academia");setTimeout(()=>{try{acaMateriales()}catch(e){}},300);return}
   if(k==="ir"){go("inicio");setTimeout(()=>{try{irLista()}catch(e){}},400);return}
@@ -8454,15 +8455,21 @@ function npSocVer(){const L=npSocL()||[],E=npEstado();if(!E)return;
   openSheet(`<div data-nofocus></div><h2 style="margin:0">🎓 Networker Pro · el equipo</h2><p class="small muted" style="margin:2px 0 10px">${L.length} ${L.length===1?"socio ya empezó":"socios ya empezaron"} el curso. ¡Vamos juntos!</p>
    <div>${L.map(x=>{const g=x.v>=E.tot,pc=Math.round(x.v*100/E.tot);return `<div class="mqlR${x.me?" me":""}"><span class="mqlA">${avV(x.n,x.uid)}${g?`<i style="background:#16A34A">✓</i>`:""}</span><div class="mqlT"><b>${esc(nv(x.n)||x.n)}${x.me?"<em>USTED</em>":""}</b><div class="mqlB"><u style="width:${Math.max(6,pc)}%;background:${g?"#16A34A":"linear-gradient(90deg,#2AC1F1,#E8B54A)"}"></u></div></div><div class="mqlN">${g?`<b style="font-size:16px">🎓</b><small style="color:#12805C;font-weight:800">Graduado</small>`:`<b>${x.v}</b><small>de ${E.tot} videos</small>`}</div></div>`}).join("")}</div>
    <p class="small muted" style="text-align:center;margin:6px 0 0">Se actualiza cada 15 minutos.</p><button class="btn ghost" data-close style="width:100%">Cerrar</button>`)}
+// 17 nov (Edwin): ❤️ me gusta al curso → constancia/{uid}.npLk = t (null = quitó). Se cuenta desde constL; aviso a los admins (enviar.mjs curso)
+function npCLEst(){const mi=LS.get("npLk:"+store.uid),S=new Set();(constL||[]).forEach(y=>{if(y.uid!==store.uid&&y.npLk)S.add(y.uid)});const yo=mi!=null?!!mi:!!(((constL||[]).find(y=>y.uid===store.uid)||{}).npLk);return {n:S.size+(yo?1:0),yo}}
+function npCLPinta(){const b=$("#npCL");if(!b)return;const e=npCLEst();b.classList.toggle("on",e.yo);b.innerHTML=(e.yo?"❤️ Me gusta el curso":"🤍 Me gusta el curso")+(e.n?` · <b>${e.n}</b>`:"")}
+async function npCLTog(){const e=npCLEst(),v=e.yo?0:Date.now();LS.set("npLk:"+store.uid,v);npCLPinta();if(v)try{confeti($("#npCL"),18)}catch(x){}
+  try{if(store.db&&store.uid&&!esSoloAdminYo())await store.db.collection("constancia").doc(store.uid).set({npLk:v||null,u:Date.now()},{merge:true})}catch(x){toast("No se pudo: "+errCod(x))}}
 function npCurso(){const E=npEstado();if(!E){toast("El curso todavía no está disponible");return}
   openSheet(`<div class="npHero"><p class="npK">CURSO · ${esc(String(E.c.nivel||"").toUpperCase())}</p><div class="npT">NETWORKER <b>PRO</b></div><p class="npS">${esc(E.c.sub||"")}. Cada video: mentalidad, habilidad y una acción con la app.</p>
-     <div class="npSt"><div><b>${E.vistos}/${E.tot}</b>vistos</div><div><b>${E.nDisp}</b>disponibles</div><div><b>1</b>video al día</div></div></div>
+     <div class="npSt"><div><b>${E.vistos}/${E.tot}</b>vistos</div><div><b>${E.nDisp}</b>disponibles</div><div><b>1</b>video al día</div></div><button type="button" class="npCL" id="npCL"></button></div>
     <div class="npL">${E.V.map((v,i)=>{const n=i+1,ok=!!E.s.v[n],d=E.disp(n),cur=!ok&&d&&n===E.sig;
       return ok?`<button type="button" class="npI ok" data-npv="${n}"><i>✓</i><span><b>${esc(v.t)}</b><small>Video ${n} · visto${E.s.d[n]?" el "+npF(E.s.d[n]):""}${Array.isArray(v.q)&&v.q.length?(E.s.q[n]?" · ✅ aprobado":" · 📝 responda las preguntas"):""}</small></span><em class="tok">Visto</em></button>`
         :d?`<button type="button" class="npI${cur?" cur":""}" data-npv="${n}"><i>${n}</i><span><b>${esc(v.t)}</b><small>Video ${n} · ${E.s.w[n]?"📝 falta responder las preguntas":cur?"su video de hoy":"disponible"}</small></span>${cur?`<em class="tnew">NUEVO</em>`:""}</button>`
         :`<div class="npI lk"><i>${n}</i><span><b>${esc(v.t)}</b><small>${esc(E.motivo(n))}</small></span><em class="tlk">🔒</em></div>`}).join("")}
      <button type="button" class="npDip${E.fin?" on":""}" id="npDipB"><span class="npDi">🎓</span><span><b>Diploma Networker Pro</b><small>${E.fin?"¡Lo logró! Toque para descargarlo":"Al ver los 8 videos · con sus insignias"}</small><span class="npIns">${npInsHTML()}</span></span></button></div>
     <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
+    npCLPinta();Promise.resolve(loadConst()).then(npCLPinta).catch(()=>{});{const cl=$("#npCL");if(cl)cl.onclick=npCLTog}
     document.querySelectorAll("#sheetPanel [data-npv]").forEach(b=>b.onclick=()=>npVer(+b.dataset.npv));
     const db=$("#npDipB");if(db)db.onclick=()=>{if(E.fin)npDiploma();else toast("Termine los 8 videos para recibir su diploma 🎓")}})}
 function npIns(){let md={},grad=false,cons=false,W=[];try{const E=irEstado();md=(E.x.st&&E.x.st.med)||{};grad=!!E.grad;cons=!!(E.cons||(E.x.st&&E.x.st.cons));W=E.W}catch(e){}
@@ -9852,7 +9859,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117064936";var busy=false,pend=null;
+(function(){var V="20261117075745";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
