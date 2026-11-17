@@ -1744,12 +1744,18 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 (function(){try{const ua=navigator.userAgent||"",ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);
   if(!ios||!navigator.share)return;const sh=navigator.share.bind(navigator),cs=navigator.canShare?navigator.canShare.bind(navigator):null;
   const copia=t=>{try{navigator.clipboard.writeText(t).catch(()=>{})}catch(e){}try{const a=document.createElement("textarea");a.value=t;a.setAttribute("readonly","");a.style.cssText="position:fixed;top:-99px;opacity:0";document.body.appendChild(a);a.select();a.setSelectionRange(0,t.length);document.execCommand("copy");a.remove()}catch(e){}};
-  const tip=()=>{let d=document.getElementById("pegTip");if(!d){d=document.createElement("div");d.id="pegTip";document.body.appendChild(d)}
-    d.innerHTML='<b>📋 Su mensaje ya está copiado</b><span>Al elegir el chat, toque «Añadir comentario», mantenga presionado y toque <b>Pegar</b>. Así sale ordenado.</span><button type="button" aria-label="Cerrar">✕</button>';
-    d.style.cssText="position:fixed;left:10px;right:10px;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:2147483000;background:#0B1220;color:#fff;border:1px solid #25D366;border-radius:16px;padding:12px 40px 12px 14px;font:500 14px/1.35 Figtree,system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:3px";
-    const b=d.querySelector("button");b.style.cssText="position:absolute;top:6px;right:8px;background:none;border:0;color:#9fb0c8;font-size:18px;padding:6px";b.onclick=()=>d.remove();
-    clearTimeout(tip._t);tip._t=setTimeout(()=>{try{d.remove()}catch(e){}},25000)};
-  navigator.share=function(o){if(o&&o.files&&o.files.length&&o.text){const t=String(o.text);copia(t);tip();const q=Object.assign({},o);delete q.text;return sh(q)}return sh(o)};
+  const quita=()=>{const d=document.getElementById("pegTip");if(d)d.remove()};
+  const paso2=(t,n,f,nm)=>{quita();const d=document.createElement("div");d.id="pegTip";document.body.appendChild(d);
+    d.innerHTML='<div style="font:700 12px Figtree,system-ui;letter-spacing:.08em;color:#25D366">✅ PASO 1 LISTO · FLYER ENVIADO</div><div style="font:700 17px/1.25 Figtree,system-ui">Ahora envíe el mensaje con la invitación</div><button type="button" data-p2 style="margin-top:8px;background:#25D366;color:#06250f;border:0;border-radius:12px;padding:13px 12px;font:800 16px Figtree,system-ui">💬 Paso 2 · Enviar el mensaje'+(nm?' a '+nm:'')+'</button><div style="font:500 12.5px/1.35 Figtree,system-ui;color:#9fb0c8;margin-top:4px">'+(n||f?'Se abre su chat con el mensaje ya escrito y ordenado.':'Elija el mismo chat en WhatsApp: el mensaje ya va escrito y ordenado.')+' También quedó copiado por si prefiere pegarlo.</div><button type="button" data-x aria-label="Cerrar" style="position:absolute;top:6px;right:8px;background:none;border:0;color:#9fb0c8;font-size:18px;padding:6px">✕</button>';
+    d.style.cssText="position:fixed;left:10px;right:10px;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:2147483000;background:#0B1220;color:#fff;border:1.5px solid #25D366;border-radius:18px;padding:14px 14px 12px;box-shadow:0 14px 40px rgba(0,0,0,.45);display:flex;flex-direction:column;gap:3px";
+    d.querySelector("[data-x]").onclick=quita;
+    d.querySelector("[data-p2]").onclick=()=>{quita();if(f){try{f();return}catch(e){}}location.href="https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t)};
+    clearTimeout(paso2._t);paso2._t=setTimeout(quita,60000)};
+  /* Quien llama puede decir a quién va: window.__shWa = número (solo dígitos), window.__shNm = nombre, window.__sh2 = función para el paso 2. */
+  navigator.share=function(o){if(o&&o.files&&o.files.length&&o.text){const t=String(o.text),n=String(window.__shWa||"").replace(/\D/g,""),f=typeof window.__sh2==="function"?window.__sh2:null,nm=window.__shNm||"";
+      window.__shWa=window.__sh2=window.__shNm=null;copia(t);const q=Object.assign({},o);delete q.text;
+      return sh(q).then(r=>{paso2(t,n,f,nm);return r},e=>{quita();throw e})}
+    window.__shWa=window.__sh2=window.__shNm=null;return sh(o)};
 }catch(e){}})();
 </script>
 <script>
@@ -6418,7 +6424,7 @@ async function lzInvitados(ci){const o=lzDatos(ci);let file=null;lzFile(o).then(
    <input class="inp" id="lzQ" type="search" placeholder="🔍 Buscar en mi CRM">
    <div id="lzLst">${lista()}</div><button class="btn ghost" data-close style="width:100%">Listo</button>`,()=>{
     const pinta=()=>{$("#lzLst").innerHTML=lista()};$("#lzQ").oninput=e=>{q=e.target.value;pinta()};
-    const enviar=async c=>{const t=lzMsg(o,String(c.name||"").split(" ")[0]),n=waNum(c.phone,c.cc);
+    const enviar=async c=>{const t=lzMsg(o,String(c.name||"").split(" ")[0]),n=waNum(c.phone,c.cc);window.__shWa=n;window.__shNm=String(c.name||"").split(" ")[0];
       if(!ci.inv.includes(c.id)){ci.inv.push(c.id);saveCita(ci);c.note=(c.note?c.note+" · ":"")+"🚀 Invitado a mi lanzamiento ("+niceDate(ci.fecha)+")";c.next=ci.fecha;c.updated=Date.now();try{await store.saveContact(c)}catch(e){}}
       pinta();
       if(file&&navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(x){if(x&&x.name==="AbortError")return}}
@@ -6933,7 +6939,7 @@ async function evaInvitar(e){const o=evaDatos(e);let file=null;evaFile(o).then(f
    <button class="btn" id="eviGr" style="width:100%">🔗 Compartir en grupos o estados</button>
    <button class="btn ghost" id="eviAdd" style="width:100%">➕ Agregar persona nueva</button><input class="inp" id="eviQ" type="search" placeholder="🔍 Buscar en mi CRM"><div id="eviL">${lista()}</div><button class="btn ghost" data-close style="width:100%">Listo</button>`,()=>{
     const pinta=()=>{$("#eviL").innerHTML=lista()};$("#eviQ").oninput=x=>{q=x.target.value;pinta()};
-    $("#eviL").onclick=async x=>{const b=x.target.closest("[data-evi]");if(!b)return;const c=contacts.find(y=>y.id===b.dataset.evi);if(!c)return;const t=evaScript(e,String(c.name||"").split(" ")[0],lk),n=waNum(c.phone,c.cc);
+    $("#eviL").onclick=async x=>{const b=x.target.closest("[data-evi]");if(!b)return;const c=contacts.find(y=>y.id===b.dataset.evi);if(!c)return;const t=evaScript(e,String(c.name||"").split(" ")[0],lk),n=waNum(c.phone,c.cc);window.__shWa=n;window.__shNm=String(c.name||"").split(" ")[0];
       if(!ya.includes(c.id)){ya.push(c.id);LS.set(k,ya);c.note=(c.note?c.note+" · ":"")+(evaBx(e)?"💼 Invitado a "+evaLarga(e):e.tipo==="gran"?"🎤 Invitado al evento":"🤝 Invitado a la junta")+" ("+niceDate(e.fecha)+")";c.next=e.fecha;c.updated=Date.now();try{await store.saveContact(c)}catch(z){}}pinta();
       if(file&&navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(z){if(z&&z.name==="AbortError")return}}
       waIr("https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t))};
@@ -7050,7 +7056,7 @@ function rsvpTkMsg(e,r){const f=String(r.n||"").split(" ")[0];return [`¡Hola, $
 async function rsvpTicket(e,r,L){toast("Creando su ticket…");let cv;try{cv=await rsvpTkCanvas(e,r,rsvpNum(r,L,e))}catch(x){toast("No se pudo crear el ticket");return}
   const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.92)),file=new File([b],"Ticket-"+String(r.n||"invitado").split(" ")[0]+".jpg",{type:"image/jpeg"}),t=rsvpTkMsg(e,r),u=URL.createObjectURL(b);
   openSheet(`<h2>🎟️ Ticket de ${esc(String(r.n||"").split(" ")[0])}</h2><img src="${u}" alt="Ticket" style="width:100%;border-radius:14px"><button class="btn" id="tkSh" style="width:100%;background:#25D366;color:#fff">📤 Enviar ticket por WhatsApp</button><button class="btn ghost" id="tkWa" style="width:100%">💬 Solo el mensaje a ${esc(String(r.n||"").split(" ")[0])}</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
-    $("#tkSh").onclick=async()=>{try{await navigator.clipboard.writeText(t)}catch(x){}if(navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(x){if(x&&x.name==="AbortError")return}}const a=document.createElement("a");a.href=u;a.download=file.name;a.click();toast("Ticket guardado. Mensaje copiado ✓");setTimeout(()=>{waIr("https://wa.me/"+waNum(r.w,r.cc)+"?text="+encodeURIComponent(t))},900)};
+    $("#tkSh").onclick=async()=>{try{await navigator.clipboard.writeText(t)}catch(x){}window.__shWa=waNum(r.w,r.cc);window.__shNm=String(r.n||"").split(" ")[0];if(navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(x){if(x&&x.name==="AbortError")return}}const a=document.createElement("a");a.href=u;a.download=file.name;a.click();toast("Ticket guardado. Mensaje copiado ✓");setTimeout(()=>{waIr("https://wa.me/"+waNum(r.w,r.cc)+"?text="+encodeURIComponent(t))},900)};
     $("#tkWa").onclick=()=>{waIr("https://wa.me/"+waNum(r.w,r.cc)+"?text="+encodeURIComponent(t))}})}
 // Quien compartió su link: aviso + CRM cuando alguien confirma (1 consulta por junta próxima, máx. cada 5 min)
 let rsvpRevT=0;async function rsvpRevisar(){if(!store.db||!store.uid||!EVA||Date.now()-rsvpRevT<3e5)return;rsvpRevT=Date.now();
@@ -8049,7 +8055,7 @@ function citaEnviar(c,rec,tit){let file=null;const t=citaMsg(c,rec);openSheet(`<
    citaFile(c,rec).then(f=>{file=f;const im=$("#ctImg"),w=$("#ctW");if(im){im.src=URL.createObjectURL(f);if(w)w.remove()}}).catch(()=>{const w=$("#ctW");if(w)w.textContent="No se pudo crear la tarjeta"});
    $("#ctTx").onclick=()=>citaWa(c,rec);{const k=$("#clCal");if(k)k.onclick=()=>citaIcs(c)}
    $("#ctSh").onclick=async()=>{if(!file){toast("Un momento, se está creando la tarjeta…");return}
-     if(navigator.canShare&&navigator.canShare({files:[file],text:t})){try{try{await navigator.clipboard.writeText(t)}catch(x){}await navigator.share({files:[file],text:t});return}catch(x){if(x&&x.name==="AbortError")return}}
+     if(navigator.canShare&&navigator.canShare({files:[file],text:t})){try{try{await navigator.clipboard.writeText(t)}catch(x){}window.__sh2=()=>citaWa(c,rec);window.__shNm=String(c.nombre||c.name||"").split(" ")[0];await navigator.share({files:[file],text:t});return}catch(x){if(x&&x.name==="AbortError")return}}
      const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click();toast("Tarjeta guardada · adjúntela en el chat");setTimeout(()=>citaWa(c,rec),700)}})}
 function citaListo(c){citaEnviar(c,false,"✅ Cita agendada")}
 function citaCard(c){const t=CITA_T[c.tipo]||CITA_T.zoom,pas=citaIni(c).getTime()+(c.dur||60)*6e4<Date.now(),nm=c.tipo==="lider"?c.titulo:c.nombre,rol=citaRol(c),can=!!c.cancel;
@@ -9942,7 +9948,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117115523";var busy=false,pend=null;
+(function(){var V="20261117120605";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
