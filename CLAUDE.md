@@ -976,3 +976,5 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - 16 nov (noche): VALIDAR PRIMERA PRESENTACIÓN: irPedirVal guarda ir.valP + users.valN=true. Patrocinador directo: slide #valStrip en Avisos de hoy (valLista: mios con patrocinadorUid=yo, ir.valP y sin irVal) con botón Validar (data-irv), suma en la campanita (avIdsPend "v"+uid, Pendientes) y destino av=val. Push: enviar.mjs val (en avisos-solicitudes.yml cada hora) → users where valN==true → push al patrocinador, valN=false.
 
 - 16 nov (noche): Mi Racha (rc3Lista): la fila "Usted" usa la racha local (constStats) además de la guardada (max), porque la guardada podía venir de antes de completar el día (Edwin vio 14/16 cuando ya llevaba 15/16).
+
+- 17 nov: chip "✓ Historia del día" de la rutina ya no abre solo la historia de atracción: abre la fila con las 2 historias (🌅 atracción y 🎤 flyer, cada una con «Otra vez»).

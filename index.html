@@ -2191,7 +2191,7 @@ function rut3(h,n){const rc=$("#rutCard");if(!rc)return;let s=$("#rutSeg");if(!a
   const rows=[...$("#tasks").children],L=[];
   ROUTINE.forEach((r,i)=>{const row=rows[i];if(!row)return;const ok=(day[r.k]||0)>=1,num=row.querySelector(".check,.step-n");if(num)num.dataset.n=i+1;
     const ver=window._rt3V===r.k,cnt=r.type!=="check";row.classList.toggle("t3d",ok&&!ver&&!cnt);row.classList.toggle("t3c",ok&&cnt);if(ok&&!cnt&&(!r.desde||TODAY>=r.desde))L.push(`<button type="button" class="${ver?"on":""}" data-rt3="${r.k}">✓ ${esc(CH[r.k]||String(r.t||"").replace(/^\S+\s/,""))}</button>`)});
-  let c=$("#rutChips");if(!c){c=document.createElement("div");c.id="rutChips";s.after(c);c.onclick=e=>{const b=e.target.closest("[data-rt3]");if(!b)return;const k=b.dataset.rt3;if(k==="historia"&&!window._rt3V){abrirHist();return}window._rt3V=window._rt3V===k?"":k;renderTasks()}}
+  let c=$("#rutChips");if(!c){c=document.createElement("div");c.id="rutChips";s.after(c);c.onclick=e=>{const b=e.target.closest("[data-rt3]");if(!b)return;const k=b.dataset.rt3;window._rt3V=window._rt3V===k?"":k;renderTasks()}}
   c.innerHTML=L.join("");c.hidden=!L.length}
 let saveDayT;function saveDay(){clearTimeout(saveDayT);saveDayT=setTimeout(()=>store.set("rutina-"+TODAY,day),600);weekCache[TODAY]=day;renderWeek()}
 $("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(ahGate())return;if(b.dataset.npv){npVer(+b.dataset.npv);return}if(b.dataset.hist){abrirHist();return}if(b.dataset.hfly){abrirFlyHoy();return}
@@ -9851,7 +9851,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261116211813";var busy=false,pend=null;
+(function(){var V="20261117001149";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
