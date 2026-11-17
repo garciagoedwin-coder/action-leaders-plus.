@@ -4925,11 +4925,6 @@
      "a": 4
     },
     {
-     "n": "Carlos Alberto Rubio Valladares",
-     "p": 800,
-     "a": 4
-    },
-    {
      "n": "Marcia Sauceda",
      "p": 800,
      "a": 3
@@ -4988,6 +4983,11 @@
      "n": "Milton Nunez",
      "p": 600,
      "a": 2
+    },
+    {
+     "n": "Carlos Alberto Rubio Valladares",
+     "p": 550,
+     "a": 4
     },
     {
      "n": "Edil Andrade",
@@ -5550,7 +5550,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-16T18:04:24Z"
+   "t": "2026-11-17T01:43:28Z"
   },
   "audioEsp": {
    "id": "santiago-1",
