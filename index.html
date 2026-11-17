@@ -1755,7 +1755,8 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
     d.innerHTML='<div style="font:700 12px Figtree,system-ui;letter-spacing:.08em;color:#25D366">PASO 1 DE 2 · EL FLYER</div><div style="font:600 14.5px/1.35 Figtree,system-ui">Envíe el flyer'+(nm?' a '+nm:'')+'. Al volver a la app le sale el <b>Paso 2</b> para enviar el mensaje ordenado.</div>';
     d.style.cssText="position:fixed;left:10px;right:10px;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:2147483000;background:#0B1220;color:#fff;border:1.5px solid #25D366;border-radius:18px;padding:12px 14px;box-shadow:0 14px 40px rgba(0,0,0,.45);display:flex;flex-direction:column;gap:3px"};
   /* Quien llama puede decir a quién va: window.__shWa = número (solo dígitos), window.__shNm = nombre, window.__sh2 = función para el paso 2. */
-  navigator.share=function(o){if(o&&o.files&&o.files.length&&o.text){const t=String(o.text),n=String(window.__shWa||"").replace(/\D/g,""),f=typeof window.__sh2==="function"?window.__sh2:null,nm=window.__shNm||"";
+  const DOS_PASOS=false; /* 17 nov, Edwin: el script vuelve a salir junto al flyer (como antes). true = 2 pasos. */
+  navigator.share=function(o){if(DOS_PASOS&&o&&o.files&&o.files.length&&o.text){const t=String(o.text),n=String(window.__shWa||"").replace(/\D/g,""),f=typeof window.__sh2==="function"?window.__sh2:null,nm=window.__shNm||"";
       window.__shWa=window.__sh2=window.__shNm=null;copia(t);const q=Object.assign({},o);delete q.text;paso1(nm);
       return sh(q).then(r=>{paso2(t,n,f,nm);return r},e=>{quita();throw e})}
     window.__shWa=window.__sh2=window.__shNm=null;return sh(o)};
@@ -9951,7 +9952,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117122204";var busy=false,pend=null;
+(function(){var V="20261117122621";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
