@@ -7827,13 +7827,14 @@ function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fech
   const A=[];if(ci)A.push(["📅","Cita: "+citaCuando(ci),""]);if(au)A.push(["🤖","Avanzó solo: "+c.stAuto,c.stT?fT(c.stT):""]);if(c.org)A.push([salaOrIc(c.org),"Llegó desde: "+c.org,""]);
   if(c.pres&&c.pres.t)A.push(["🎤","Presentado"+(c.pres.n?" · "+c.pres.n+"/10":""),fT(c.pres.t)]);if(m)A.push(["🛳️","Vio la membresía "+(+m.pct||0)+"%",m.t?fT(m.t):""]);else if(me)A.push(["🛳️","Le envié la membresía · aún no la abre",fT(me)]);
   const S=(c.seg||[]).filter(x=>x&&x.n).slice(-3).reverse();S.forEach(x=>A.push(["📝",x.n,x.t?fT(x.t):""]));if(c.note)A.unshift(["🗒️",c.note,""]);
+  {const v=salaDe(c.id);if(v){const n=+v.pulso||0,fin=(+v.pct||0)>=100||/^\d+$/.test(String(v.pulso||""));A.unshift(["✈️","Presentación virtual · "+(fin?"terminó"+(n?" · "+n+"/10":""):"va en "+Math.min(100,+v.pct||0)+"%"),v.t?fT(v.t):"",c.id])}} // 17 nov (Edwin): sus respuestas, a un toque
   const nS=(c.seg||[]).length,wl=waLink(c);
   return `<div class="cvTop"><div class="grow" style="min-width:0">
      <button type="button" class="cvSt cvSt3" data-stopen="${esc(c.id)}"><span class="cvPill" style="--pc:${STAGE_COL[c.stage]||"var(--brand)"}">${CV_STI[c.stage]||""}${esc(c.stage||"Nuevo")}</span>${due}<span class="cvCg">Cambiar ›</span></button></div></div>
    ${crmSt.has(c.id)?stepsHTML(c):""}${maLinea(c)}
    ${crmV2Sig(c)}
    ${reuCamino(c)}
-   ${A.length?`<div class="cvActv"><div class="k">ACTIVIDAD${nS?`<button type="button" data-sgt="${esc(c.id)}">Ver todo ›</button>`:""}</div>${A.slice(0,3).map(([i,t,f])=>`<div><span>${i}</span><span class="grow">${esc(t)}</span>${f?`<small>${esc(f)}</small>`:""}</div>`).join("")}</div>`:""}
+   ${A.length?`<div class="cvActv"><div class="k">ACTIVIDAD${nS?`<button type="button" data-sgt="${esc(c.id)}">Ver todo ›</button>`:""}</div>${A.slice(0,3).map(([i,t,f,k])=>k?`<div data-cvtk="${esc(k)}" style="cursor:pointer"><span>${i}</span><span class="grow">${esc(t)} <b style="color:var(--brand);font-weight:700;white-space:nowrap">Ver respuestas ›</b></span>${f?`<small>${esc(f)}</small>`:""}</div>`:`<div><span>${i}</span><span class="grow">${esc(t)}</span>${f?`<small>${esc(f)}</small>`:""}</div>`).join("")}</div>`:""}
    <div class="cvFt">${wl?`<a href="${esc(wl)}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" class="w">💬 WhatsApp</a>`:`<button type="button" data-edit="${esc(c.id)}">➕ WhatsApp</button>`}<button type="button" data-cvs="${esc(c.id)}">🔁 Seguimiento</button><button type="button" class="x" data-cvmas="${esc(c.id)}" aria-label="Más opciones">⋯</button></div>`}
 // Presentación virtual en una línea (si no se ha enviado, el botón grande para enviarla)
 function crmV2TkL(c){const v=salaDe(c.id),e=(LS.get("salaEnv")||{})[c.id],id=esc(c.id);
@@ -7856,7 +7857,7 @@ function crmAhorro(c){const a=ahDe([c.email],[c.phone?waNum(c.phone,c.cc):""]),p
    <p style="margin:0">${sin?"Todavía no hay reporte de ahorros cargado.":pend?`<span class="chip c-bad" style="font-weight:700">🔴 Ahorro pendiente</span>`:`<span class="chip c-good" style="font-weight:700">🚢 Ahorro al día</span>`}</p>
    <p class="small muted" style="margin:0">${pend?"Un recordatorio a tiempo ayuda a que no pierda sus beneficios.":"No aparece en el reporte de pendientes de inCruises."}${c.email?"":" Para revisarlo mejor, agregue su correo en el contacto."}</p>
    <button class="btn" id="cahW" style="width:100%;background:#25D366;color:#fff">${pend?"💬 Recordarle su ahorro":"💬 Saludarle"}</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#cahW").onclick=()=>crmWa(c,pend?"ah":"hola")})}
-$("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNumGo")){salaCompartir();return}{const cp=e.target.closest("[data-catp]");if(cp){e.stopPropagation();catPoner(contacts.find(y=>y.id===cp.dataset.catp));return}}{const sg=e.target.closest("[data-sgt]");if(sg){const c=contacts.find(y=>y.id===sg.dataset.sgt);if(c)sgTodas(c);return}const cn=e.target.closest("[data-cvn]");if(cn){const c=contacts.find(y=>y.id===cn.dataset.cvn);if(c)notaAbrir(c,"nota");return}const cs=e.target.closest("[data-cvs]");if(cs){const c=contacts.find(y=>y.id===cs.dataset.cvs);if(c)notaAbrir(c,"seg");return}}{const ru=e.target.closest("[data-reu]");if(ru){e.stopPropagation();const c=contacts.find(y=>y.id===ru.dataset.reu);if(c)reuSheet(c,ru.dataset.k||"u");return}}
+$("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNumGo")){salaCompartir();return}{const cp=e.target.closest("[data-catp]");if(cp){e.stopPropagation();catPoner(contacts.find(y=>y.id===cp.dataset.catp));return}}{const sg=e.target.closest("[data-sgt]");if(sg){const c=contacts.find(y=>y.id===sg.dataset.sgt);if(c)sgTodas(c);return}const cn=e.target.closest("[data-cvn]");if(cn){const c=contacts.find(y=>y.id===cn.dataset.cvn);if(c)notaAbrir(c,"nota");return}const cs=e.target.closest("[data-cvs]");if(cs){const c=contacts.find(y=>y.id===cs.dataset.cvs);if(c)notaAbrir(c,"seg");return}}{const ru=e.target.closest("[data-reu]");if(ru){e.stopPropagation();const c=contacts.find(y=>y.id===ru.dataset.reu);if(c){if(ru.dataset.k==="v"&&salaDe(c.id))cvViaje(c);else reuSheet(c,ru.dataset.k||"u")}return}}
   {const x=e.target.closest("[data-cvnum]");if(x){try{LS.set("cvNumOp",x.dataset.cvnum==="1"?1:0)}catch(y){}renderCRM();return}}
   {const x=e.target.closest("[data-cvtk]");if(x){const c=contacts.find(y=>y.id===x.dataset.cvtk);if(c)cvViaje(c);return}}
   {const x=e.target.closest("[data-cvmas]");if(x){const c=contacts.find(y=>y.id===x.dataset.cvmas);if(c)cvMasSheet(c);return}}{const fz=e.target.closest("[data-frio]");if(fz){crmFrio=fz.dataset.frio==="1";renderCRM();return}}{const mb=e.target.closest("[data-cmas]");if(mb){const k=mb.dataset.cmas;crmMas.has(k)?crmMas.delete(k):crmMas.add(k);renderCRM();return}const so=e.target.closest("[data-stopen]");if(so){crmSt.add(so.dataset.stopen);renderCRM();return}}const st=e.target.closest("[data-st]");
@@ -9851,7 +9852,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117001149";var busy=false,pend=null;
+(function(){var V="20261117064358";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

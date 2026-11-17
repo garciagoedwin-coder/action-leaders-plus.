@@ -978,3 +978,5 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - 16 nov (noche): Mi Racha (rc3Lista): la fila "Usted" usa la racha local (constStats) además de la guardada (max), porque la guardada podía venir de antes de completar el día (Edwin vio 14/16 cuando ya llevaba 15/16).
 
 - 17 nov: chip "✓ Historia del día" de la rutina ya no abre solo la historia de atracción: abre la fila con las 2 historias (🌅 atracción y 🎤 flyer, cada una con «Otra vez»).
+
+- 17 nov: CRM ficha: las respuestas de la presentación virtual (cvViaje) vuelven a estar a un toque: fila «✈️ Presentación virtual · terminó · n/10 · Ver respuestas ›» arriba de Actividad (data-cvtk) y el círculo «Presentación virtual» de Su camino (data-reu k=v) abre cvViaje si hay datos.
