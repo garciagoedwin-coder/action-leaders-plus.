@@ -9336,7 +9336,7 @@ async function dipCanvas(P){await dipFonts();const E=P?null:irEstado(),st=P?(P.i
   F.forEach((f,i)=>{const fx=X+i*320;g.fillStyle="rgba(255,255,255,.3)";g.fillRect(fx,1146,260,1.5);g.fillStyle="#fff";g.font="800 22px CTF";g.fillText(f[0],fx,1180);g.fillStyle="#2AC1F1";g.font="700 13px CTF";sp(f[1],fx,1204,4,"left")});
   g.textAlign="right";g.fillStyle="#2AC1F1";g.font="600 28px DPP";g.fillText("#HASTAQUEFUNCIONE",1540,1176);g.fillStyle="rgba(255,255,255,.55)";g.font="400 15px CTF";g.fillText("Honduras · "+fe.getDate()+" de "+MONTHS[fe.getMonth()]+" de "+fe.getFullYear(),1540,1204);g.textAlign="left";
   return cv}
-async function dipDescargar(){toast("Preparando su diploma…");try{const cv=await dipCanvas();const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.93));const f=new File([b],"Diploma-Networker-Pro.jpg",{type:"image/jpeg"});
+async function dipDescargar(){toast("Preparando su diploma…");try{try{if(mios===null)await loadMios()}catch(e){}const cv=await dipCanvas();const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.93));const f=new File([b],"Diploma-Networker-Pro.jpg",{type:"image/jpeg"});
   if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
   const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);toast("Diploma descargado 🎓")}catch(e){toast("No se pudo crear el diploma")}}
 window.__dipCanvas=()=>dipCanvas();
