@@ -9299,6 +9299,7 @@ let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()
 // ---------- 16 nov (Edwin): diploma Networker Pro (azul de la comunidad) · se descarga al graduarse (sello Espartano) ----------
 let dipFo=null;function dipFonts(){if(!dipFo)dipFo=Promise.all([citaFonts(),new FontFace("DPP","url(media/fonts/Poppins-SemiBold.ttf)",{weight:"600"}).load().then(x=>document.fonts.add(x)).catch(()=>{})]);return dipFo}
 function dipNum(uid){const u=String(uid||store.uid||"x");let h=7;for(const c of u)h=(h*131+c.charCodeAt(0))>>>0;return "AL-NP-"+h.toString(36).toUpperCase().padStart(6,"0").slice(-6)}
+function dipFormador(){try{const L=(typeof mios!=="undefined"&&mios)||[];return L.some(z=>(z.registro||{}).patrocinadorUid===store.uid&&(z.ir||{}).esp)}catch(e){return false}}
 async function dipCanvas(P){await dipFonts();const E=P?null:irEstado(),st=P?(P.ir||{}):irSt(),x=P?{pres:+((P.ir||{}).c||{}).pres||+((P.ir||{}).p||{}).pres||0}:E.x,RG=P?(P.reg||{}):miRegistro(),K=4/3,W=1650,H=1275,cv=document.createElement("canvas");cv.width=W*K;cv.height=H*K;const g=cv.getContext("2d");g.scale(K,K);
   const ld=u=>imgLoad(u).catch(()=>null),sp=(t,X,Y,ls,al)=>evaSp(g,t,X,Y,ls,al);
   g.fillStyle="#0B1220";g.fillRect(0,0,W,H);
@@ -9309,7 +9310,12 @@ async function dipCanvas(P){await dipFonts();const E=P?null:irEstado(),st=P?(P.i
   const lg=await ld("media/cert/logo-blanco.png");if(lg){const lw=330,lh=lw*lg.height/lg.width;g.drawImage(lg,260-lw/2,90,lw,lh)}
   g.textAlign="left";g.fillStyle="#2AC1F1";g.font="800 19px CTF";sp("CERTIFICACIÓN",260,268,8,"center");
   g.textAlign="center";g.fillStyle="#fff";g.font="600 74px DPP";g.fillText("NETWORKER",260,355);g.fillStyle="#2AC1F1";g.fillText("PRO",260,425);
-  const sl=await ld(insSrc("g"));if(sl){const sw=290,sh=sw*sl.height/sl.width;g.drawImage(sl,260-sw/2,470,sw,sh)}
+  // 17 nov (Edwin): FORMADOR ESPARTANO = un socio directo suyo también terminó toda la certificación (ir.esp). Si no, ESPARTANO.
+  const fo=P?!!P.fo:dipFormador();
+  if(!fo){const sl=await ld(insSrc("g"));if(sl){const sw=290,sh=sw*sl.height/sl.width;g.drawImage(sl,260-sw/2,470,sw,sh)}}
+  else{const sl=await ld("media/insignias/v3-espartano-e.webp?v=1");if(sl){const sh=300*1.06,sw=sh*sl.width/sl.height;g.drawImage(sl,260-sw/2,452,sw,sh)}
+    const pw=330,ph=52,py=812,px=260-pw/2,pg=g.createLinearGradient(0,py,0,py+ph);pg.addColorStop(0,"#F6D47A");pg.addColorStop(.55,"#E3B04B");pg.addColorStop(1,"#B9842A");g.fillStyle=pg;evaRR(g,px,py,pw,ph,ph/2);g.fill();
+    g.fillStyle="#3B2A08";g.font="800 17px CTF";g.textBaseline="middle";sp("FORMADOR ESPARTANO",260,py+ph/2+1,4,"center");g.textBaseline="alphabetic"}
   const fe=new Date(st.esp||Date.now());g.fillStyle="#fff";g.font="700 27px CTN";g.fillText("N.º "+dipNum(P&&P.uid),260,1182);g.textAlign="left";g.fillStyle="rgba(255,255,255,.55)";g.font="700 14px CTF";sp("GENERACIÓN "+MONTHS[fe.getMonth()].toUpperCase()+" "+fe.getFullYear(),260,1212,5,"center");
   // derecha
   g.strokeStyle="rgba(42,193,241,.22)";g.lineWidth=1.5;g.beginPath();g.moveTo(520,34);g.lineTo(1588,34);g.arcTo(1616,34,1616,62,28);g.lineTo(1616,1213);g.arcTo(1616,1241,1588,1241,28);g.lineTo(520,1241);g.stroke();
