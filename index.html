@@ -1427,6 +1427,17 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .svR summary{display:flex;align-items:center;gap:12px;cursor:pointer;list-style:none}.svR summary::-webkit-details-marker{display:none}.svR summary b{display:block;font-size:15px}.svR summary small{display:block;color:var(--muted);font-size:12.5px}
 .svBar{width:70px;height:7px;border-radius:9px;background:var(--surface-2);overflow:hidden;flex:none}.svBar i{display:block;height:100%;background:linear-gradient(90deg,#2AC1F1,#0A7DAD)}
 .svF{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.svF b{display:block;font-size:14px}.svF small{display:block;color:var(--muted);font-size:12px}
+.anuPop{text-align:center;margin:-6px -4px 0;padding:16px 14px 6px;border-radius:22px;background:radial-gradient(120% 70% at 50% 0%,rgba(245,197,66,.28),transparent 60%),linear-gradient(180deg,#0B1220,#101a2e);color:#fff;border:1px solid rgba(245,197,66,.45)}
+.anuK{display:inline-block;font:800 11px/1 Figtree,sans-serif;letter-spacing:.14em;color:#0B1220;background:linear-gradient(90deg,#F6D47A,#E3B04B);padding:7px 12px;border-radius:99px}
+.anuPop h3{margin:12px 0 4px;font:800 23px/1.15 Poppins,Figtree,sans-serif;color:#fff}.anuS{color:#F6D47A;font-weight:700;font-size:15px}
+.anuFl{margin:14px auto 12px;max-width:260px;aspect-ratio:1080/1920;border-radius:16px;overflow:hidden;background:#1b2740;display:grid;place-items:center;color:#9fb0c8;font-size:13px;box-shadow:0 12px 30px rgba(0,0,0,.45),0 0 0 1px rgba(245,197,66,.35)}
+.anuFl img{width:100%;height:100%;object-fit:cover;display:block}
+.anuIn{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;font-size:13.5px;color:#cbd5e1;margin-bottom:14px}.anuIn b{color:#fff}
+.anuGo{width:100%;margin-top:8px;background:#25D366!important;color:#fff!important;font-weight:800;font-size:16px;padding:15px 12px;border-radius:14px;animation:anuLat 1.6s ease-in-out 3}
+@keyframes anuLat{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(37,211,102,.5)}50%{transform:scale(1.03);box-shadow:0 0 0 10px rgba(37,211,102,0)}}
+.anuPop .btn.ghost{color:#fff;border-color:rgba(255,255,255,.3);background:transparent}
+.anuNo{background:none;border:0;color:#94a3b8;font-size:14px;padding:12px;width:100%}
+@media (prefers-reduced-motion:reduce){.anuGo{animation:none}}
 </style>
 
 </head>
@@ -6551,7 +6562,25 @@ function anuCfg(){const c=(T.config||{}).anuncio;return c&&c.t&&(!c.hasta||Date.
 function anuEv(c){return (EVA||[]).find(e=>(c.bx?e.bx&&e.fecha===c.bx:e.id===c.ev)&&!e.cancel)}
 function anuStrip(){const el=$("#anuStrip");if(!el)return;const c=anuCfg(),e=c&&anuEv(c);if(!e){el.hidden=true;return}
   el.className="evHoy gran";el.innerHTML=`<span style="font-size:28px;line-height:1;flex:none">💼</span><span class="grow" style="min-width:0"><b>${esc(c.t)}</b>${c.sub?`<small>${esc(c.sub)}</small>`:""}</span><span class="evHb">${esc(c.btn||"Ver")} ›</span>`;
-  el.onclick=()=>{const x=anuEv(c);if(x)evaVer(x);else toast("Abriendo el evento…")};el.hidden=false}
+  el.onclick=()=>{const x=anuEv(c);if(x)evaVer(x);else toast("Abriendo el evento…")};el.hidden=false;
+  {const k=el.querySelector(".evHb"),en=anuEnc(e);if(k&&en){k.textContent="🎟️ Ticket ›";k.onclick=ev=>{ev.stopPropagation();anuTicket(e,en)}}}
+  anuPopProg()}
+// 17 nov (Edwin): el anuncio del evento sale GRANDE cada vez que el socio abre la app, con botón directo al encargado de tickets.
+function anuEnc(e){return ((e&&e.enc)||[]).find(x=>x&&x.w)||null}
+function anuTicket(e,x){waIr("https://wa.me/"+String(x.w).replace(/\D/g,"")+"?text="+encodeURIComponent(evaEncMsg(e,x)))}
+let anuPopT=0;function anuPopProg(){if(window._anuPop||anuPopT)return;anuPopT=setTimeout(anuPopVer,3500)}
+async function anuPopVer(n){anuPopT=0;if(window._anuPop)return;const c=anuCfg(),e=c&&anuEv(c);if(!e)return;const vi=$("#v-inicio");
+  if(!$("#sheet").hidden||(vi&&vi.hidden)||document.hidden){if((n||0)<36)anuPopT=setTimeout(()=>anuPopVer((n||0)+1),5000);return}
+  window._anuPop=1;const dd=parseK(e.fecha),EN=(e.enc||[]).filter(x=>x&&x.w),tk=+e.tk||0;
+  openSheet(`<div class="anuPop"><div class="anuK">🎟️ ${esc(c.k||"EVENTO EXCLUSIVO · CUPO LIMITADO")}</div><h3>${esc(c.t)}</h3>${c.sub?`<div class="anuS">${esc(c.sub)}</div>`:""}
+    <div class="anuFl" id="anuFl"><span>Preparando el flyer…</span></div>
+    <div class="anuIn"><span>📅 <b>${DAYS_L[dd.getDay()].replace(/^./,m=>m.toUpperCase())} ${dd.getDate()} de ${MONTHS[dd.getMonth()].toLowerCase()}</b></span><span>🕗 <b>${esc(h12(e.hora))}</b></span><span>📍 <b>${esc(e.ciudad||"En línea")}</b></span>${tk>0?`<span>🎟️ <b>Lps ${tk.toLocaleString("es")}</b></span>`:""}</div>
+    ${EN.length?EN.map((x,i)=>`<button class="btn anuGo" data-anut="${i}">🎟️ Adquirir mi ticket con ${esc(nv(x.n).split(" ").slice(0,2).join(" "))}</button>`).join(""):`<button class="btn anuGo" id="anuVer2">🎟️ Quiero mi ticket</button>`}
+    <button class="btn ghost" id="anuVer" style="width:100%;margin-top:8px">Ver todos los detalles del evento</button>
+    <button type="button" class="anuNo" id="anuNo">Ahora no</button></div>`,()=>{
+    document.querySelectorAll("[data-anut]").forEach(b=>b.onclick=()=>anuTicket(e,EN[+b.dataset.anut]));
+    const v=()=>{closeSheet();setTimeout(()=>evaVer(e),250)};$("#anuVer").onclick=v;const v2=$("#anuVer2");if(v2)v2.onclick=v;$("#anuNo").onclick=()=>closeSheet()});
+  try{const cv=await evaCanvas(evaDatos(e)),f=$("#anuFl");if(f&&cv)f.innerHTML=`<img alt="Flyer del evento" src="${cv.toDataURL("image/jpeg",.85)}">`}catch(err){const f=$("#anuFl");if(f)f.remove()}}
 function renderEvA0(){try{anuStrip()}catch(e){}setTimeout(()=>{try{rsvpRevisar()}catch(e){}try{llegRevisar()}catch(e){}},2000);try{evaHoyStrip(EVA)}catch(e){}try{renderRecCard()}catch(e){}const L=(EVA||[]).slice().sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora));
   const box=$("#evAg");if(box){const L2=L.filter(e=>!evaFin(e)).concat(L.filter(e=>evaFin(e))),all=!!LS.get("evaAll"),V=all?L2:L2.slice(0,3),nH=L.filter(e=>e.fecha===TODAY&&!evaFin(e)).length,nG=L.filter(e=>e.tipo==="gran").length,nJ=L.length-nG;
     box.innerHTML=`<div class="row between" style="gap:8px"><div><b style="font-size:17px">🎤 Eventos y juntas</b>${L.length?"":`<div class="small muted">Planee una junta o un evento con su flyer</div>`}</div><button class="btn sm gold" id="evaNew" style="flex:none">➕ Crear</button></div>
@@ -9899,7 +9928,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117085944";var busy=false,pend=null;
+(function(){var V="20261117103430";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
