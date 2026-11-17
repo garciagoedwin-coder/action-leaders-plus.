@@ -9076,7 +9076,7 @@ function irItems(n){
   const IL=(n,g,sub)=>({k:"l"+n,g,t:(n===20?n+" contactos en su lista":"Lista de "+n+" contactos"),s:sub,a:x=>x.nC>=n,p:x=>Math.min(x.nC,n)+" de "+n,b:["Agregar",irGoCRM]});
   const IP=(n,g,t)=>({k:"p"+n,g,t,a:x=>x.pres>=n,p:x=>Math.min(x.pres,n)+" de "+n,b:["Presentar",()=>{closeSheet();abrirPres();window._irV=1}]});
   const IS=(n,g,t,sub)=>({k:"s"+n,g,t,s:sub,a:x=>x.seg>=n,p:x=>Math.min(x.seg,n)+" de "+n,b:["Registrar",()=>{closeSheet();abrirSeg();window._irV=1}]});
-  const IV=w=>{const c=(typeof npCfg==="function"&&npCfg())||null;if(!c)return[];return (IR_NPW[w]||[]).filter(i=>c.videos[i-1]&&c.videos[i-1].yt).map(i=>({k:"v"+i,g:"Networker Pro",t:"Video "+i+" · "+c.videos[i-1].t,s:"Se marca solo al terminarlo",a:x=>!!x.vid[i],b:["Ver",()=>{closeSheet();setTimeout(()=>npVer(i),250)}]}))};
+  const IV=w=>{const c=(typeof npCfg==="function"&&npCfg())||null;if(!c)return[];return (IR_NPW[w]||[]).filter(i=>c.videos[i-1]).map(i=>{const v=c.videos[i-1];return v.yt?{k:"v"+i,g:"Networker Pro",t:"Video "+i+" · "+v.t,s:"Se marca solo al terminarlo",a:x=>!!x.vid[i],b:["Ver",()=>{closeSheet();setTimeout(()=>npVer(i),250)}]}:{k:"v"+i,g:"Networker Pro",t:"Video "+i+(v.t?" · "+v.t:""),s:"Se libera pronto · se marca solo al terminarlo",a:x=>!!x.vid[i]}})};
   const its={
  1:[{k:"grp",g:"Conéctese con su equipo",t:"Únase al grupo del equipo",s:"Ahí compartimos los entrenamientos de la semana y los avisos importantes",a:x=>!!x.mk.grp||x.grpYa,b:["Unirme",()=>grpAbrir()]},
     {k:"porque",g:"Defina su meta",t:"Su “por qué”",s:"Lo más importante que quiere lograr con inCruises",a:x=>x.porque,b:["Escribir",()=>{closeSheet();setTimeout(snWhyIr,250)}]},
@@ -9114,7 +9114,7 @@ const IR_OLDW={grp:[1],porque:[1],meta:[1],pago:[1],pat:[1],ref:[1],herr:[1],lzs
 function irOldOk(k,md){return (IR_OLDW[k]||[]).some(w=>md[w]&&md[w]<IR_V3)}
 // 16 nov (Edwin): sin patrocinador dentro de la app (cabeza de red) → lo que depende del patrocinador/líder no lo frena.
 const IR_SINPAT=["act1","l3","val"];function irSinPat(){try{const r=miRegistro()||{};return !!isAdmin&&!r.patrocinadorUid}catch(e){return false}}
-function irEstado(){const x=irCtx(),md=(x.st&&x.st.med)||{},sp=irSinPat(),W=IR_W.map(w=>{const L=irItems(w.n).map(i=>Object.assign({},i,{ok:!!i.a(x)||(md[w.n]>=IR_V3)||irOldOk(i.k,md)||(sp&&IR_SINPAT.includes(i.k)),pt:i.p&&(i.a(x)||!((md[w.n]>=IR_V3)||irOldOk(i.k,md)))?i.p(x):""}));return Object.assign({},w,{L,n2:L.filter(i=>i.ok).length})});
+function irEstado(){const x=irCtx(),md=(x.st&&x.st.med)||{},sp=irSinPat(),W=IR_W.map(w=>{const L=irItems(w.n).map(i=>Object.assign({},i,{ok:/^v\d/.test(i.k)?!!i.a(x):!!i.a(x)||(md[w.n]>=IR_V3)||irOldOk(i.k,md)||(sp&&IR_SINPAT.includes(i.k)),pt:i.p&&(i.a(x)||!((md[w.n]>=IR_V3)||irOldOk(i.k,md)))?i.p(x):""}));return Object.assign({},w,{L,n2:L.filter(i=>i.ok).length})});
   let cur=W.find(w=>w.n2<w.L.length);const sem=!cur;if(!cur)cur=W[3];const cons=!!x.cons;return {x,W,cur,grad:sem&&cons,sem,cons,dia:irDia()}}
 function irAct1(){openSheet(`<h2>📅 Su primera actividad</h2><p class="small muted" style="margin:0">Agéndela con su patrocinador o con un líder de su línea.</p>
    <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px"><button class="btn" id="a1L3">📞 Pedir llamada de 3 a mi líder</button><button class="btn" id="a1Lz" style="background:linear-gradient(135deg,#B07D00,#F5B700);color:#fff">🚀 Planear mi lanzamiento con mi líder</button><button class="btn ghost" id="a1Ok">✅ Ya la agendé por WhatsApp o en persona</button></div>
@@ -9241,7 +9241,9 @@ function irResumen(E){try{if(irSimM())return;const st=irSt();if(!st.ini&&irModo(
   const p={w:E.grad?5:E.cur.n,n:E.cur.n2,tot:E.cur.L.length,d:E.dia,g:E.grad?1:0,med:Object.keys(st.med||{}).map(Number),all:tot,u:tot>(p0.all||0)?Date.now():(p0.u||Date.now())};
   const pat={p};if(!st.ini)pat.ini=irIni();if(JSON.stringify(p0)!==JSON.stringify(Object.assign({},p0,p)))irSave(pat)}catch(e){}}
 function irPremiar(E){const st=irSt(),med=Object.assign({},st.med||{});let nueva=null;E.W.forEach(w=>{if(w.n2>=w.L.length&&!med[w.n]){med[w.n]=Date.now();nueva=nueva||w}});
-  if(E.grad&&!st.esp){irSave({med,esp:Date.now(),grad:st.grad||Date.now()});setTimeout(()=>irCelebrar(null),900);return}
+  // 17 nov (Edwin): nadie se gradúa sin los 8 videos de Networker Pro. Si quedó graduado antes de que salieran los videos 7 y 8, se le quita hasta terminarlos.
+  if(!E.grad&&st.esp&&!irSimM()){irSave({esp:null,grad:null});return}
+  if(E.grad&&!st.esp){irSave({med,esp:Date.now(),grad:Date.now()});setTimeout(()=>irCelebrar(null),900);return}
   if(E.cons&&!st.cons&&!nueva){irSave({cons:Date.now()});setTimeout(()=>irCelebrar("c"),900);return}
   if(nueva){irSave({med});if(nueva.n===1){try{regDoc.ir=Object.assign({},regDoc.ir||{},{med})}catch(e){}}setTimeout(()=>{const E=nueva.n===1&&raYo();if(E&&E.gano)raCelebrar();else irCelebrar(nueva)},900)}}
 function irCelebrar(w){if(!$("#sheet").hidden){setTimeout(()=>irCelebrar(w),4000);return}const g=!w,c=w==="c",nm=(miRegistro().nombre||profile.nombrePila||"").split(" ")[0];
@@ -9888,7 +9890,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117082720";var busy=false,pend=null;
+(function(){var V="20261117083725";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
