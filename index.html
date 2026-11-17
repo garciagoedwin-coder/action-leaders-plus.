@@ -8605,7 +8605,7 @@ async function npDiploma(P){const E=npEstado();if(!E)return;try{await flFonts()}
   T2("por completar el curso Networker Pro de Action Leaders",760,"500 30px ALO,Figtree,sans-serif","rgba(255,255,255,.8)");
   T2("SUS INSIGNIAS",850,"600 24px ALP,Poppins,sans-serif","#2AC1F1","8px");
   const I=P?P.ins:npIns(),lab={1:"Despegue",2:"Presentador",3:"Cerrador",4:"Duplicador",c:"Constancia",g:"Graduado"},sz=I.length>5?128:150,gap=I.length>5?22:26,x1=(W-(sz*I.length+gap*(I.length-1)))/2;
-  for(let i=0;i<I.length;i++){const im=await ld(insSrc(I[i].n));const x=x1+i*(sz+gap);if(im){g.save();if(!I[i].ok){g.globalAlpha=.28;try{g.filter="grayscale(1)"}catch(e){}}g.drawImage(im,x,880,sz,sz*im.height/im.width>sz?sz:sz*im.height/im.width);g.restore()}
+  for(let i=0;i<I.length;i++){const im=await ld(insSrc(I[i].n));const x=x1+i*(sz+gap);if(im){g.save();if(!I[i].ok){g.globalAlpha=.28;try{g.filter="grayscale(1)"}catch(e){}}{const r=im.width/im.height,dh=Math.min(sz,sz/r),dw=dh*r;g.drawImage(im,x+(sz-dw)/2,880+sz-dh,dw,dh)}g.restore()}
     g.font="600 22px ALO,Figtree,sans-serif";g.fillStyle=I[i].ok?"#fff":"rgba(255,255,255,.4)";g.textAlign="center";g.fillText(lab[I[i].n],x+sz/2,880+sz+32)}
   const fu=P?(P.fecha||TODAY):Object.values(E.s.d).sort().pop()||TODAY;
   if(P)return c;
@@ -9024,7 +9024,7 @@ const IR_W=[
 // 10 nov (Edwin): insignias espartanas dibujadas (bronce, plata, oro, celeste, graduado) en media/insignias/*.webp
 // 16 nov (Edwin): escudos v3 (bronce, plata, oro/acero, celeste, fuego) + sello Espartano. Cerrador: Premium = espadas · Classic = escudo (Líder).
 function irPaq(){try{const yo=nrmN(miNombreFull()||miRegistro().nombre||"");if(!yo)return "";const A=(T.activaciones||[]).filter(a=>nrmN(a.patrocinador||"")===yo);return A.some(a=>a.paquete==="Premium")?"Premium":A.length?"Classic":""}catch(e){return ""}}
-const INS_F=["","despegue","presentador","cerrador","duplicador"],insSrc=n=>"media/insignias/v3-"+(n==="g"?"espartano":n==="c"?"constancia":n===3&&irPaq()==="Classic"?"cerrador-l":INS_F[n]||"despegue")+".webp",insImg=(n,c)=>`<img src="${insSrc(n)}" alt="" class="${c||"insI"}" decoding="async">`;
+const INS_F=["","despegue","presentador","cerrador","duplicador"],insSrc=n=>"media/insignias/v3-"+(n==="g"?"espartano":n==="c"?"constancia":n===3&&irPaq()==="Classic"?"cerrador-l":INS_F[n]||"despegue")+".webp"+(n==="g"?"?v=2":""),insImg=(n,c)=>`<img src="${insSrc(n)}" alt="" class="${c||"insI"}" decoding="async">`;
 const IR_HERR_V=["pago","app","arr","work","yess","caja"]; // lista vieja (6): quien la completó se respeta
 const IR_HERR=[["alp","Instalé la app Action Leaders",1],["avisos","Activé mis avisos",1],["yess","Me registré en YessMovement"],["pres","Descargué la presentación"]];
 function irHerrAuto(k){try{if(k==="alp")return pushStandalone();if(k==="avisos")return typeof Notification!=="undefined"&&Notification.permission==="granted"&&!!LS.get("pushTk")}catch(e){}return false}
@@ -9887,7 +9887,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117081223";var busy=false,pend=null;
+(function(){var V="20261117082142";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
