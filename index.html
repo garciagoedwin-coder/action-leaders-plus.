@@ -8592,10 +8592,10 @@ function npBan(){const v=$("#v-inicio");if(!v)return;let d=$("#npBan");const E=n
 async function npDiploma(P){const E=npEstado();if(!E)return;try{await flFonts()}catch(e){}const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const g=c.getContext("2d");
   // 17 nov (Edwin): diploma del CURSO, claro y distinto a la Certificación Networker Pro (oscura). Solo lleva la insignia de curso terminado.
   const ld=src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
-  const MO="#6D28D9",MC="#A78BFA",NV="#0B1220";
-  const bg=g.createLinearGradient(0,0,0,H);bg.addColorStop(0,"#FFFFFF");bg.addColorStop(1,"#F3F0FA");g.fillStyle=bg;g.fillRect(0,0,W,H);
-  const rg=g.createRadialGradient(W/2,1010,20,W/2,1010,520);rg.addColorStop(0,"rgba(167,139,250,.28)");rg.addColorStop(1,"rgba(167,139,250,0)");g.fillStyle=rg;g.fillRect(0,0,W,H);
-  g.strokeStyle=MO;g.lineWidth=3;g.strokeRect(44,44,W-88,H-88);g.strokeStyle="rgba(109,40,217,.25)";g.lineWidth=1.5;g.strokeRect(58,58,W-116,H-116);
+  const MO="#0A7DAD",MC="#2AC1F1",NV="#0B1220";
+  const bg=g.createLinearGradient(0,0,0,H);bg.addColorStop(0,"#FFFFFF");bg.addColorStop(1,"#EAF5FA");g.fillStyle=bg;g.fillRect(0,0,W,H);
+  const rg=g.createRadialGradient(W/2,1010,20,W/2,1010,520);rg.addColorStop(0,"rgba(42,193,241,.22)");rg.addColorStop(1,"rgba(42,193,241,0)");g.fillStyle=rg;g.fillRect(0,0,W,H);
+  g.strokeStyle=MO;g.lineWidth=3;g.strokeRect(44,44,W-88,H-88);g.strokeStyle="rgba(10,125,173,.25)";g.lineWidth=1.5;g.strokeRect(58,58,W-116,H-116);
   [[44,44],[W-44,44],[44,H-44],[W-44,H-44]].forEach(([x,y])=>{g.fillStyle=MO;g.beginPath();g.moveTo(x,y-12);g.lineTo(x+12,y);g.lineTo(x,y+12);g.lineTo(x-12,y);g.closePath();g.fill()});
   const lg=await ld("media/logo-al-osc.png");if(lg){const w=430,h=w*lg.height/lg.width;g.drawImage(lg,(W-w)/2,96,w,h)}
   const T2=(t,y,font,col,ls)=>{g.font=font;g.fillStyle=col;g.textAlign="center";try{g.letterSpacing=ls||"0px"}catch(e){}g.fillText(t,W/2,y);try{g.letterSpacing="0px"}catch(e){}};
@@ -8605,10 +8605,11 @@ async function npDiploma(P){const E=npEstado();if(!E)return;try{await flFonts()}
   T2("Se otorga a",510,"500 28px ALO,Figtree,sans-serif","#7A8290");
   let nm=P?nv(P.nombre||"")||P.nombre||"":(()=>{try{return nv(miRegistro().nombre||miNombreCorto())}catch(e){return miNombreCorto()||""}})(),z=76;g.font="600 "+z+"px ALP,Poppins,sans-serif";while(g.measureText(nm).width>880&&z>40){z-=2;g.font="600 "+z+"px ALP,Poppins,sans-serif"}T2(nm,596,g.font,NV);
   g.fillStyle=MC;g.fillRect(W/2-110,628,220,3);
-  T2("por terminar los "+E.tot+" videos del curso Networker Pro",688,"500 28px ALO,Figtree,sans-serif","#3F4652");
-  T2("y aprobar sus preguntas",728,"500 28px ALO,Figtree,sans-serif","#3F4652");
-  {const im=await ld("media/insignias/v3-curso.webp?v=2");if(im){const ih=300,iw=ih*im.width/im.height;g.drawImage(im,(W-iw)/2,770,iw,ih)}
-   const pw=330,ph=50,py=1078,px=(W-pw)/2,pg=g.createLinearGradient(0,py,0,py+ph);pg.addColorStop(0,"#8B5CF6");pg.addColorStop(1,"#5B21B6");g.fillStyle=pg;g.beginPath();g.roundRect?g.roundRect(px,py,pw,ph,ph/2):g.rect(px,py,pw,ph);g.fill();
+  T2("por terminar los "+E.tot+" videos del curso Networker Pro.",684,"500 28px ALO,Figtree,sans-serif","#3F4652");
+  T2("Ya sabe construir un sistema empresarial de redes",742,"600 29px ALP,Poppins,sans-serif",MO);
+  T2("de personas, con método, constancia y liderazgo.",782,"600 29px ALP,Poppins,sans-serif",MO);
+  {const im=await ld("media/insignias/v3-curso.webp?v=3");if(im){const ih=250,iw=ih*im.width/im.height;g.drawImage(im,(W-iw)/2,816,iw,ih)}
+   const pw=330,ph=50,py=1080,px=(W-pw)/2,pg=g.createLinearGradient(0,py,0,py+ph);pg.addColorStop(0,"#2AC1F1");pg.addColorStop(1,"#0A5A85");g.fillStyle=pg;g.beginPath();g.roundRect?g.roundRect(px,py,pw,ph,ph/2):g.rect(px,py,pw,ph);g.fill();
    g.font="700 21px ALP,Poppins,sans-serif";g.fillStyle="#fff";g.textAlign="center";g.textBaseline="middle";try{g.letterSpacing="4px"}catch(e){}g.fillText("CURSO TERMINADO",W/2+2,py+ph/2+1);try{g.letterSpacing="0px"}catch(e){}g.textBaseline="alphabetic"}
   const fu=P?(P.fecha||TODAY):Object.values(E.s.d).sort().pop()||TODAY;
   if(P)return c;
@@ -9324,7 +9325,7 @@ async function dipCanvas(P){await dipFonts();const E=P?null:irEstado(),st=P?(P.i
   const bw=(MW-48)/4;S.forEach((z,i)=>{const bx=X+i*(bw+16);g.fillStyle="rgba(255,255,255,.05)";evaRR(g,bx,562,bw,102,18);g.fill();g.strokeStyle="rgba(255,255,255,.1)";g.lineWidth=1;g.stroke();g.font="700 50px CTN";g.fillStyle="#fff";g.fillText(z[0],bx+20,616);const w0=g.measureText(z[0]).width;g.fillStyle="#2AC1F1";g.fillText(z[1],bx+20+w0,616);g.fillStyle="rgba(255,255,255,.6)";g.font="700 13px CTF";sp(z[2],bx+20,646,3,"left")});
   g.fillStyle="#2AC1F1";g.font="800 15px CTF";sp("INSIGNIAS",X,722,6,"left");
   const cl=P?/classic/i.test(RG.plan||""):irPaq()==="Classic",I=[[1,"Despegue","Semana 1"],[2,"Presentador","Validado"],[3,"Cerrador",cl?"Firmó un Classic":"Firmó un Premium"],[4,"Duplicador","Su socio arrancó"],["n","Networker Pro","Terminó el curso"],["c","Constancia","Racha de 7+ días"]];const cw=(MW-5*14)/6;
-  for(let i=0;i<I.length;i++){const [k,t,s2]=I[i],bx=X+i*(cw+14);g.fillStyle="rgba(255,255,255,.045)";evaRR(g,bx,740,cw,210,18);g.fill();g.strokeStyle="rgba(255,255,255,.1)";g.stroke();const im=await ld(k==="n"?"media/insignias/v3-curso.webp?v=2":insSrc(k));if(im){const iw=100,ih=iw*im.height/im.width;g.drawImage(im,bx+cw/2-iw/2,756,iw,ih)}g.textAlign="center";g.fillStyle="#fff";g.font="800 18px CTF";g.fillText(t,bx+cw/2,904);g.fillStyle="rgba(255,255,255,.6)";g.font="500 13px CTF";g.fillText(s2,bx+cw/2,926);g.textAlign="left"}
+  for(let i=0;i<I.length;i++){const [k,t,s2]=I[i],bx=X+i*(cw+14);g.fillStyle="rgba(255,255,255,.045)";evaRR(g,bx,740,cw,210,18);g.fill();g.strokeStyle="rgba(255,255,255,.1)";g.stroke();const im=await ld(k==="n"?"media/insignias/v3-curso.webp?v=3":insSrc(k));if(im){const iw=100,ih=iw*im.height/im.width;g.drawImage(im,bx+cw/2-iw/2,756,iw,ih)}g.textAlign="center";g.fillStyle="#fff";g.font="800 18px CTF";g.fillText(t,bx+cw/2,904);g.fillStyle="rgba(255,255,255,.6)";g.font="500 13px CTF";g.fillText(s2,bx+cw/2,926);g.textAlign="left"}
   const pt=String(RG.patrocinador||"").trim(),F=[["Edwin García Go","NATIONAL DIRECTOR"]];if(pt&&!certEsEdwin(pt))F.push([nv(pt),"SU PATROCINADOR"]);
   F.forEach((f,i)=>{const fx=X+i*320;g.fillStyle="rgba(255,255,255,.3)";g.fillRect(fx,1146,260,1.5);g.fillStyle="#fff";g.font="800 22px CTF";g.fillText(f[0],fx,1180);g.fillStyle="#2AC1F1";g.font="700 13px CTF";sp(f[1],fx,1204,4,"left")});
   g.textAlign="right";g.fillStyle="#2AC1F1";g.font="600 28px DPP";g.fillText("#HASTAQUEFUNCIONE",1540,1176);g.fillStyle="rgba(255,255,255,.55)";g.font="400 15px CTF";g.fillText("Honduras · "+fe.getDate()+" de "+MONTHS[fe.getMonth()]+" de "+fe.getFullYear(),1540,1204);g.textAlign="left";
