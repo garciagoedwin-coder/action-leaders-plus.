@@ -980,3 +980,5 @@ Cada vez que se publique una actualización de la app, hacer un flyer 1080×1350
 - 17 nov: chip "✓ Historia del día" de la rutina ya no abre solo la historia de atracción: abre la fila con las 2 historias (🌅 atracción y 🎤 flyer, cada una con «Otra vez»).
 
 - 17 nov: CRM ficha: las respuestas de la presentación virtual (cvViaje) vuelven a estar a un toque: fila «✈️ Presentación virtual · terminó · n/10 · Ver respuestas ›» arriba de Actividad (data-cvtk) y el círculo «Presentación virtual» de Su camino (data-reu k=v) abre cvViaje si hay datos.
+
+- 17 nov: Diploma Networker Pro (npDiploma/npIns) muestra 6 insignias: + Constancia (n "c", ok = E.cons o st.cons) antes de Graduado; tamaño 128 px si son 6.
