@@ -28,3 +28,8 @@ jobs:
         env:
           FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
         run: node enviar.mjs rc3 || true
+      - name: Lluvia de prospectos (respaldo del horario de lluvia.yml)
+        working-directory: tools/push
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+        run: node enviar.mjs lluvia || true

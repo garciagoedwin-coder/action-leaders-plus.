@@ -3,7 +3,7 @@ name: Lluvia de prospectos
 # Los registros son públicos: el script solo imprime conteos.
 on:
   schedule:
-    - cron: "*/5 * * * *"   # cada 5 min (GitHub puede atrasarse unos minutos)
+    - cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * *" # cada 5 min (GitHub atrasa; respaldo en aprobar.yml y constancia-resumen.yml)
   workflow_dispatch:
     inputs:
       dry:

@@ -20,3 +20,6 @@ jobs:
           DRY: "${{ github.event.inputs.dry }}"
           GRAND: "${{ github.event.inputs.grand }}"
           FULL: "${{ github.event.inputs.full }}"
+      - run: cd tools/push && node enviar.mjs lluvia || true # 17 nov: respaldo de lluvia.yml (GitHub atrasa los horarios)
+        env:
+          FIREBASE_SA: "${{ secrets.FIREBASE_SA }}"
