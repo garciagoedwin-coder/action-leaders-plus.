@@ -3,6 +3,19 @@ import fs from "fs";
 import { cert, initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
+import crypto from "crypto";
+// Análisis para el Training: todo sale CIFRADO con la llave pública PK (solo quien tiene la privada lo lee). El log público no muestra datos.
+if (process.env.CODE === "analisis") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
+  const U = (await db.collection("users").get()).docs.map(d => { const x = d.data() || {}, r = x.registro || {}, a = x.actividad || {}, ir = x.ir || {};
+    return { u: d.id, n: r.nombre || "", pl: r.plan || "", f: r.fecha || "", rg: r.rango || "", ap: x.apE || "", a: { hoy: a.hoy, racha: a.racha, dias7: a.dias7, semana: a.semana, t: a.t, emb: a.emb ? a.emb.c : null, crm: a.crm }, ir: ir.p || null, sa: x.soloAdm || 0 } });
+  const cr = ((await db.doc("team/constres").get()).data() || {}).m || {};
+  const tu = (await db.doc("turnos/2026-11").get()).data() || {};
+  const out = JSON.stringify({ U, cr, tu: { s: tu.s || {} }, t: Date.now() });
+  const k = crypto.randomBytes(32), iv = crypto.randomBytes(12), c = crypto.createCipheriv("aes-256-gcm", k, iv), enc = Buffer.concat([c.update(out), c.final()]), tag = c.getAuthTag();
+  const ek = crypto.publicEncrypt({ key: "-----BEGIN PUBLIC KEY-----\n" + process.env.PK + "\n-----END PUBLIC KEY-----", oaepHash: "sha256" }, k);
+  console.log("usuarios", U.length, "constancia", Object.keys(cr).length);
+  console.log("CIFRADO:" + [ek, iv, tag, enc].map(b => b.toString("base64")).join("."));
+  process.exit(0) }
 if (process.env.CODE === "decl") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
   for (const em of ["edwing.go@gmail.com","garciagoedwin@gmail.com"]) { try { const u = await getAuth().getUserByEmail(em); const p = (await db.doc("users/"+u.uid+"/datos/perfil").get()).data() || {};
     console.log(em.slice(0,4), "dec", JSON.stringify(p.dec||null), "decA.d", (p.decA||{}).d||null, "decG", p.decG||null) } catch (e) { console.log(em.slice(0,4), "err", e.code||e.message) } }
