@@ -150,3 +150,56 @@ exports.salaCopiloto = functions.runWith({ memory: "256MB", timeoutSeconds: 30 }
   await push([ctx.params.uid], m[0], m[1], "sala");
   console.log("copiloto", ctx.params.id.slice(0, 4), m[0].slice(0, 2));
 });
+
+// 18 nov (Edwin): LLUVIA DE PROSPECTOS cada 5 minutos en Firebase (GitHub atrasaba su reloj hasta horas).
+// MISMA LÓGICA que tools/push/enviar.mjs modo lluvia (si cambia una, cambiar la otra):
+// hoja «Prospectos Ilimitados» → CRM de edwing.go (📣 Campaña, Nuevo) + aviso; y los que Edwin pasa a un Action Leader (repP) → CRM del líder + aviso.
+// Corre con la cuenta firebase-adminsdk (la hoja está compartida con ella). Logs: solo conteos.
+const LL = require("./lluvia.js");
+const primer = s => String(s || "").trim().split(/\s+/)[0] || "";
+exports.lluviaCada5 = functions.runWith({ memory: "256MB", timeoutSeconds: 120, serviceAccount: "firebase-adminsdk-fbsvc@action-leaders-plus-8f1b8.iam.gserviceaccount.com" })
+  .pubsub.schedule("every 5 minutes").timeZone("America/Tegucigalpa").onRun(async () => {
+  const now = Date.now(), hoy = LL.hoyHN(now);
+  const q = await db.collection("users").where("email", "==", ADM_MAIL[2]).limit(1).get(); const dest = q.empty ? null : q.docs[0].id;
+  if (!dest) { console.log("lluvia: sin cuenta destino"); return; }
+  const meta = db.doc("push_meta/lluvia"), M = (await meta.get()).data() || {}, ids = M.ids || {};
+  let leads = [];
+  try { leads = LL.prospectos(await LL.leerHoja()); } catch (e) { console.log("lluvia: no pude leer la hoja", e.sinPermiso ? "(permiso)" : e.message); await meta.set({ fx: { t: now, err: e.sinPermiso ? "permiso" : "hoja" } }, { merge: true }); return; }
+  const DESDE = Date.parse("2026-11-17T19:25:00-06:00");
+  const nuevos = leads.filter(p => !ids[p.id] && (p.t || now) >= DESDE && !/test/i.test(p.st));
+  const ok = [];
+  if (nuevos.length) {
+    const crm = (await db.collection(`users/${dest}/crm`).get()).docs.map(d => ({ id: d.id, ...d.data() }));
+    for (const p of nuevos) {
+      const c = LL.contactoDe(p, now), id = LL.idDoc(p.id), d8 = LL.dig8(c.phone);
+      const ya = crm.find(x => x.id === id) || (d8.length === 8 && crm.find(x => LL.dig8(x.phone) === d8)) || null;
+      if (!ya) { await db.doc(`users/${dest}/crm/${id}`).set(c); crm.push({ id, ...c }); }
+      else if (ya.id !== id) await db.doc(`users/${dest}/crm/${ya.id}`).set({ note: (ya.note ? ya.note + " · " : "") + c.note, cat: [...new Set([...(Array.isArray(ya.cat) ? ya.cat : []), "camp"])], camp: c.camp, updated: now }, { merge: true });
+      ids[p.id] = now;
+      if (!ya || ya.id !== id) ok.push({ c, ya: !!ya });
+    }
+    const K = Object.entries(ids).sort((a, b) => b[1] - a[1]).slice(0, 3000);
+    await meta.set({ ids: Object.fromEntries(K), t: now }, { merge: true });
+    const P = (await db.doc("push/" + dest).get()).data() || {};
+    if (ok.length && (P.pr || {}).camp !== false) { const n1 = ok[0].c, it = (n1.camp || {}).int;
+      if (ok.length === 1) await push([dest], "📣 Nuevo prospecto de la campaña", primer(n1.name) + (it ? " · le interesa: " + it : "") + ". Escríbale ya: el primer contacto rápido es el que más funciona.", "camp");
+      else await push([dest], `📣 ${ok.length} prospectos nuevos de la campaña`, ok.slice(0, 4).map(x => primer(x.c.name)).join(", ") + (ok.length > 4 ? " y " + (ok.length - 4) + " más" : "") + ". Están en su CRM con la etiqueta 📣 Campaña.", "camp"); }
+  }
+  // Reparto: contactos que Edwin pasó a un Action Leader
+  const R = (await db.collection(`users/${dest}/crm`).where("repP", "==", true).get()).docs; let nR = 0;
+  for (const d of R) {
+    const x = d.data(), r = x.rep || {}; if (!r.u || r.u === dest) continue;
+    const tgt = db.doc(`users/${r.u}/crm/${d.id}`), ex = await tgt.get(), cp = x.camp || {}, de = r.dn || "su líder";
+    if (!ex.exists) {
+      const c = { name: x.name || "Prospecto", phone: x.phone || "", cc: x.cc || "", stage: "Nuevo", stT: now,
+        note: "📣 Campaña · se lo pasó " + de + " el " + LL.fechaHN(now) + (cp.int ? " · Le interesa: " + cp.int : ""),
+        next: hoy, cat: ["camp"], camp: { ...cp, de: dest, dn: de }, creado: now, updated: now };
+      if (x.email) c.email = x.email;
+      await tgt.set(c);
+    }
+    await d.ref.set({ repP: false, rep: { ...r, st: "ok", ok: now } }, { merge: true }); nR++;
+    if (!ex.exists) await push([r.u], "📣 " + primer(de) + " le pasó un prospecto", primer(x.name) + (cp.int ? " · le interesa: " + cp.int : "") + ". Ya está en su CRM con la etiqueta 📣 Campaña. ¡Escríbale hoy!", "camp");
+  }
+  await meta.set({ fx: { t: now, filas: leads.length, nuevos: ok.length, pasados: nR } }, { merge: true });
+  console.log("lluvia: filas", leads.length, "· nuevos", ok.length, "· pasados", nR);
+});
