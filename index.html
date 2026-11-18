@@ -2339,6 +2339,7 @@ function lluStrip(){const el=$("#lluStrip");if(!el)return;if(!(fbUser&&store.uid
   else{const c0=R[0];h=`<div class="lzgI">📣</div><div class="lzgT"><b>${esc(String(nv(c0.camp.dn)).split(" ")[0])} le pasó ${R.length===1?"un prospecto":R.length+" prospectos"} de la campaña</b><span>Escríbale hoy: la persona pidió información y está esperando.</span>
    <div class="olvL">${R.slice(0,3).map(c=>{return fila(c,`<button type="button" class="olvW" data-gcp="${esc(c.id)}" data-llw="${esc(c.id)}">💬</button>`)}).join("")}</div>
    <div class="lzgB"><button type="button" class="ok" data-llt>Ver en mi CRM</button></div></div>`}
+  if(el._h===h&&!el.hidden)return;el._h=h; // no repintar si no cambió: en iPhone el toque se pierde si el botón se reemplaza
   el.innerHTML=h;el.hidden=false;
   el.querySelectorAll("[data-llw]").forEach(a=>a.onclick=()=>{LS.set("llr:"+a.dataset.llw,TODAY);setTimeout(lluStrip,900)});
   el.querySelectorAll("[data-llc]").forEach(b=>b.onclick=()=>{openC=b.dataset.llc;go("crm");try{renderCRM()}catch(e){}});
@@ -8357,18 +8358,18 @@ function lluHTML(c){if(!lluEsCamp(c))return "";const r=c.rep,id=esc(c.id),cp=c.c
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-llp],[data-llx]");if(!b)return;e.preventDefault();e.stopPropagation();
   const id=b.dataset.llp||b.dataset.llx,c=(contacts||[]).find(x=>x.id===id);if(!c)return;if(b.dataset.llp)lluPasar(c);else lluDeshacer(c)},true);
 async function lluPasar(c){const L=await lluCargar(true),P=(L.part||[]).filter(x=>x&&x.u),tope=+L.tope||0,fn=String(c.name||"").split(" ")[0];
-  if(!P.length){openSheet(`<h2>📤 Pasar a un Action Leader</h2><p class="small muted" style="margin:0">Primero elija quiénes participan en la campaña.</p><div class="row" style="margin-top:14px">${isAdmin?`<button class="btn grow" id="llCfg">🌧️ Elegir participantes</button>`:""}<button class="btn ghost" data-close>Cerrar</button></div>`,()=>{const b=$("#llCfg");if(b)b.onclick=()=>{closeSheet();setTimeout(lluPanel,250)}});return}
+  if(!P.length){openSheet(`<h2>📤 Pasar a un Action Leader</h2><p class="small muted" style="margin:0">Primero elija quiénes participan en la campaña.</p><div class="row" style="margin-top:14px">${isAdmin?`<button class="btn grow" id="llCfg">🌧️ Elegir participantes</button>`:""}<button class="btn ghost" data-close>Cerrar</button></div>`,()=>{const b=$("#llCfg");if(b)b.onclick=()=>{closeSheet();setTimeout(()=>lluPanel(c),250)}});return}
   const R=P.map(x=>{const k=lluCuenta(x.u);return {x,k,off:!!(tope&&k.h>=tope)}}).sort((a,b)=>a.off-b.off||a.k.h-b.k.h||a.k.t-b.k.t||String(a.x.n).localeCompare(String(b.x.n)));
   openSheet(`<h2>📤 Pasar a ${esc(fn)}</h2><p class="small muted" style="margin:0 0 8px">Le llega a su CRM con la etiqueta 📣 Campaña y un aviso al teléfono en 5–15 minutos.${tope?` Tope: ${tope} al día por líder.`:""}</p>
     <div class="llL">${R.map(({x,k,off})=>`<button type="button" class="llI${off?" off":""}" data-llu="${esc(x.u)}"${off?" disabled":""}>${avV(x.n,x.u)}<span class="grow">${esc(nv(x.n))}<small>${off?"Tope de hoy completo":`Hoy ${k.h} · Total ${k.t}`}</small></span></button>`).join("")}</div>
     <div class="row" style="margin-top:12px">${isAdmin?`<button class="btn ghost grow" id="llCfg">🌧️ Participantes y tope</button>`:""}<button class="btn ghost" data-close>Cancelar</button></div>`,()=>{
-    const b=$("#llCfg");if(b)b.onclick=()=>{closeSheet();setTimeout(lluPanel,250)};
+    const b=$("#llCfg");if(b)b.onclick=()=>{closeSheet();setTimeout(()=>lluPanel(c),250)};
     document.querySelectorAll("[data-llu]").forEach(x=>x.onclick=async()=>{if(x.disabled)return;const p=P.find(y=>y.u===x.dataset.llu);if(!p)return;x.disabled=true;
       const prev={rep:c.rep,repP:c.repP};c.rep={u:p.u,n:p.n,t:Date.now(),st:"p",dn:esSoloAdminYo()?"Edwin García Go":(miNombreCorto()||"su líder")};c.repP=true;c.updated=Date.now();
       const id=await store.saveContact(Object.assign({},c));if(!id){c.rep=prev.rep;c.repP=prev.repP;x.disabled=false;return}
       closeSheet();try{renderCRM()}catch(e){}toast("📤 Listo: en 5–15 min "+fn+" llega al CRM de "+String(nv(p.n)).split(" ")[0])})})}
 async function lluDeshacer(c){if(!c.rep||c.rep.st==="ok")return;delete c.rep;c.repP=false;c.updated=Date.now();await store.saveContact(Object.assign({},c));try{renderCRM()}catch(e){}toast("Listo, ya no se le pasa")}
-async function lluPanel(){if(!isAdmin)return;const L=await lluCargar(true);if(!socios)try{await loadSocios()}catch(e){}
+async function lluPanel(cTras){if(!isAdmin)return;const L=await lluCargar(true);if(!socios)try{await loadSocios()}catch(e){}
   const sel=new Map((L.part||[]).filter(x=>x&&x.u).map(x=>[x.u,x.n]));
   const camp=(contacts||[]).filter(c=>lluEsCamp(c)&&c.camp&&c.camp.lid),pas=camp.filter(c=>c.rep&&c.rep.u);
   const cand=()=>(socios||[]).filter(x=>x.registro&&x.registro.nombre&&!esSoloAdmin(x)&&!(typeof esPrueba==="function"&&esPrueba(x)));
@@ -8380,20 +8381,23 @@ async function lluPanel(){if(!isAdmin)return;const L=await lluCargar(true);if(!s
     <button class="btn ghost" id="llSis" style="width:100%">➕ Agregar los del Sistema de liderazgo en verde (IC 70 %+)</button>
     <input id="llQ" placeholder="🔎 Buscar un socio para agregar" style="margin-top:8px;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:600 15px Figtree,sans-serif"><div id="llSug" class="llL"></div><div id="llSel" class="llL"></div>
     <div class="llH">Pasados y su etapa</div><div id="llPas" class="llL">${pas.length?`<button class="btn ghost" id="llEt">Ver en qué etapa los tienen</button>`:`<span class="small muted">Todavía no ha pasado ninguno.</span>`}</div>
-    <div class="row" style="margin-top:14px"><button class="btn grow" id="llOk">Guardar</button><button class="btn ghost" data-close>Cerrar</button></div>`,()=>{
+    <div class="row" style="margin-top:14px;position:sticky;bottom:0;background:var(--surface);padding:10px 0 4px"><button class="btn grow" id="llOk">${cTras?"✅ Listo · pasar a "+esc(String(cTras.name||"").split(" ")[0]):"✅ Listo"}</button></div>`,()=>{
+    // 17 nov (Edwin no veía «Guardar» abajo de la lista): se guarda solo en cada cambio.
+    let gT=0;const gd=(ms)=>{clearTimeout(gT);gT=setTimeout(async()=>{const tp=Math.max(0,Math.round(+($("#llTope")||{}).value||0)),part=[...sel].map(([u,n])=>({u,n}));try{await store.db.doc("team/lluvia").set({part,tope:tp,t:Date.now()},{merge:true});LLU=Object.assign(LLU||{},{part,tope:tp});LLUt=Date.now();toast("✅ Guardado · "+part.length+" participantes")}catch(e){toast("No se pudo guardar · "+errCod(e))}},ms==null?500:ms)};
     const pinta=()=>{$("#llN").textContent=sel.size;$("#llSel").innerHTML=[...sel].map(([u,n])=>{const k=lluCuenta(u);return `<div class="llI">${avV(n,u)}<span class="grow">${esc(nv(n))}<small>Hoy ${k.h} · Total ${k.t}</small></span><b class="x" data-llq="${esc(u)}" role="button" aria-label="Quitar">✕</b></div>`}).join("")||`<span class="small muted">Nadie todavía.</span>`;
-      $("#llSel").querySelectorAll("[data-llq]").forEach(b=>b.onclick=()=>{sel.delete(b.dataset.llq);pinta()})};
+      $("#llSel").querySelectorAll("[data-llq]").forEach(b=>b.onclick=()=>{sel.delete(b.dataset.llq);pinta();gd()})};
     const sug=()=>{const q=nrmN2($("#llQ").value||"");if(q.length<2){$("#llSug").innerHTML="";return}
       $("#llSug").innerHTML=cand().filter(x=>!sel.has(x.uid)&&nrmN2(x.registro.nombre).includes(q)).slice(0,6).map(x=>`<button type="button" class="llI" data-lla="${esc(x.uid)}">${avV(x.registro.nombre,x.uid)}<span class="grow">${esc(nv(x.registro.nombre))}</span><b class="pl">＋</b></button>`).join("");
-      $("#llSug").querySelectorAll("[data-lla]").forEach(b=>b.onclick=()=>{const x=cand().find(y=>y.uid===b.dataset.lla);if(x)sel.set(x.uid,x.registro.nombre);$("#llQ").value="";sug();pinta()})};
+      $("#llSug").querySelectorAll("[data-lla]").forEach(b=>b.onclick=()=>{const x=cand().find(y=>y.uid===b.dataset.lla);if(x)sel.set(x.uid,x.registro.nombre);$("#llQ").value="";sug();pinta();gd()})};
+    $("#llTope").oninput=()=>gd(900);
     $("#llQ").oninput=sug;pinta();
     $("#llVer").onclick=()=>{closeSheet();avIr("camp")};
-    $("#llSis").onclick=async()=>{try{await liderResCargar()}catch(e){}let n=0;(T.lideres||[]).forEach(l=>{try{const x=liderMatch(l,cand()),p=lzPers(l);if(x&&p!=null&&p>=70&&!sel.has(x.uid)){sel.set(x.uid,x.registro.nombre);n++}}catch(e){}});pinta();toast(n?"➕ "+n+" agregados":"No encontré nuevos en verde")};
+    $("#llSis").onclick=async()=>{try{await liderResCargar()}catch(e){}let n=0;(T.lideres||[]).forEach(l=>{try{const x=liderMatch(l,cand()),p=lzPers(l);if(x&&p!=null&&p>=70&&!sel.has(x.uid)){sel.set(x.uid,x.registro.nombre);n++}}catch(e){}});pinta();if(n)gd(0);else toast("No encontré nuevos en verde")};
     const et=$("#llEt");if(et)et.onclick=async()=>{$("#llPas").innerHTML=`<span class="small muted">Cargando…</span>`;
       const F=await Promise.all(pas.map(async c=>{let st="—";try{const d=await store.db.doc(`users/${c.rep.u}/crm/${c.id}`).get();st=d.exists?(d.data().stage||"Nuevo"):(c.rep.st==="ok"?"Lo borró":"⏳ En camino")}catch(e){}return {c,st}}));
       $("#llPas").innerHTML=F.map(({c,st})=>`<div class="llI"><span class="grow">${esc(c.name)}<small>→ ${esc(nv(c.rep.n||""))} · ${esc(memHace(c.rep.t))}</small></span><span class="llStg" style="color:${STAGE_COL[st]||"var(--ink)"}">${esc(st)}</span></div>`).join("")};
-    $("#llOk").onclick=async()=>{const tp=Math.max(0,Math.round(+$("#llTope").value||0));
-      try{await store.db.doc("team/lluvia").set({part:[...sel].map(([u,n])=>({u,n})),tope:tp,t:Date.now()},{merge:true});LLU=Object.assign(LLU||{},{part:[...sel].map(([u,n])=>({u,n})),tope:tp});LLUt=Date.now();closeSheet();toast("✅ Guardado")}catch(e){toast("No se pudo guardar · "+errCod(e))}}})}
+    $("#llOk").onclick=async()=>{clearTimeout(gT);const tp=Math.max(0,Math.round(+$("#llTope").value||0)),part=[...sel].map(([u,n])=>({u,n}));
+      try{await store.db.doc("team/lluvia").set({part,tope:tp,t:Date.now()},{merge:true});LLU=Object.assign(LLU||{},{part,tope:tp});LLUt=Date.now();closeSheet();if(cTras&&part.length)setTimeout(()=>lluPasar(cTras),300);else toast("✅ Guardado")}catch(e){toast("No se pudo guardar · "+errCod(e))}}})}
 function catOk(c){if(catF==="pv")return !!crmPv(c);return catF==="*"||(catF==="-"?!(Array.isArray(c.cat)&&c.cat.length):(c.cat||[]).includes(catF))}
 function editContact(c,onNew,opts){opts=opts||{};const esNuevo=!c;if(esNuevo&&ahGate())return;c=c||{name:"",phone:"",stage:"Nuevo",note:"",next:"",cc:LS.get("lastCC")||"504"};const ccSel=c.cc||(c.phone?"504":LS.get("lastCC")||"504");
   openSheet(`<h2>${c.id?"Editar contacto":opts.lista?"📝 Persona nueva a la lista":"Nuevo contacto"}</h2>${opts.lista?`<p class="small muted" style="margin:0">Solo cuentan personas que aún no están en su CRM. Se guarda en su CRM y suma en su rutina.</p>`:""}
@@ -10103,7 +10107,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117212610";var busy=false,pend=null;
+(function(){var V="20261117225635";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
