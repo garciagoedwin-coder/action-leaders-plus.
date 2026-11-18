@@ -1833,6 +1833,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
       <div id="pushStrip" hidden></div>
       <div id="declStrip" hidden></div><div id="cmpStrip" hidden></div>
       <div class="avBox" id="avBox" hidden><div class="avHd" id="avBoxN">AVISOS DE HOY</div><div class="avTrack" id="avTrack">
+        <div class="avSl" data-k="lluStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="olvS" id="lluStrip" hidden></div></div>
         <div class="avSl" data-k="valStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="olvS" id="valStrip" hidden></div></div>
         <div class="avSl" data-k="anuStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div id="anuStrip" hidden></div></div>
         <div class="avSl" data-k="urgStrip" hidden><button type="button" class="avX" aria-label="Ocultar por hoy">✕</button><div class="urgS" id="urgStrip" hidden></div></div>
@@ -2323,6 +2324,24 @@ function valLista(){if(!store.uid||!Array.isArray(mios))return[];return mios.fil
 function valStrip(){const el=$("#valStrip");if(!el)return;if(store.uid&&Array.isArray(mios)&&irVals===null){irValsCargar().then(()=>{try{valStrip()}catch(e){}});return}const L=valLista();if(!L.length){el.hidden=true;try{bellPinta()}catch(e){}return}
   el.innerHTML=`<div class="lzgI">✅</div><div class="lzgT"><b>${L.length===1?esc(((L[0].registro||{}).nombre||"Su socio").split(" ")[0])+" pide que valide su presentación":L.length+" socios piden que valide su presentación"}</b><span>Ya dio su primera presentación solo, como parte de su Plan de Inicio Rápido.</span>
    <div class="olvL">${L.slice(0,3).map(x=>`<div class="olvR"><span class="olvN"><b>${esc(nv((x.registro||{}).nombre||""))}</b><small>Pidió ${esc(redHace((x.ir||{}).valP))}</small></span><button type="button" class="olvW o" data-irv="${esc(x.uid)}">Validar</button></div>`).join("")}</div></div>`;el.hidden=false;try{bellPinta()}catch(e){}}
+// 17 nov (Edwin): Lluvia de prospectos en el carrusel «HOY». Admin: los de la campaña sin pasar (📤 Pasar). Líder: los que le pasaron (3 días, etapa Nuevo) con WhatsApp. 0 lecturas (contacts ya está cargado).
+function lluStrip(){const el=$("#lluStrip");if(!el)return;if(!(fbUser&&store.uid)){el.hidden=true;return}
+  const C=(contacts||[]).filter(lluEsCamp),adm=campOn(),now=Date.now();
+  const P=adm?C.filter(c=>!(c.rep&&c.rep.u)&&!(c.camp||{}).dn&&c.stage==="Nuevo").sort((a,b)=>(b.creado||0)-(a.creado||0)):[];
+  const R=C.filter(c=>(c.camp||{}).dn&&c.stage==="Nuevo"&&now-(c.creado||0)<3*864e5&&LS.get("llr:"+c.id)!==TODAY).sort((a,b)=>(b.creado||0)-(a.creado||0));
+  if(!P.length&&!R.length){el.hidden=true;return}
+  const fila=(c,bt)=>{const cp=c.camp||{};return `<div class="olvR"><span class="olvN"><b>${esc(c.name)}</b><small>${cp.int?"Le interesa: "+esc(cp.int)+" · ":""}${esc(memHace(cp.t||c.creado))}</small></span>${bt}</div>`};
+  let h;
+  if(P.length){h=`<div class="lzgI">🌧️</div><div class="lzgT"><b>${P.length===1?"1 prospecto nuevo":P.length+" prospectos nuevos"} de la campaña</b><span>Páselos a sus Action Leaders para que les escriban hoy.</span>
+   <div class="olvL">${P.slice(0,3).map(c=>fila(c,`<button type="button" class="olvW o" data-llp="${esc(c.id)}">📤 Pasar</button>`)).join("")}</div>
+   <div class="lzgB"><button type="button" class="ok" data-llt>Ver ${P.length>3?"los "+P.length:"todos"} en mi CRM</button></div></div>`}
+  else{const c0=R[0];h=`<div class="lzgI">📣</div><div class="lzgT"><b>${esc(String(nv(c0.camp.dn)).split(" ")[0])} le pasó ${R.length===1?"un prospecto":R.length+" prospectos"} de la campaña</b><span>Escríbale hoy: la persona pidió información y está esperando.</span>
+   <div class="olvL">${R.slice(0,3).map(c=>{const w=waLink(c);return fila(c,w?`<a class="olvW" href="${esc(w)}" target="_blank" rel="noopener" data-llw="${esc(c.id)}">💬</a>`:`<button type="button" class="olvW o" data-llc="${esc(c.id)}">Ver</button>`)}).join("")}</div>
+   <div class="lzgB"><button type="button" class="ok" data-llt>Ver en mi CRM</button></div></div>`}
+  el.innerHTML=h;el.hidden=false;
+  el.querySelectorAll("[data-llw]").forEach(a=>a.onclick=()=>{LS.set("llr:"+a.dataset.llw,TODAY);setTimeout(lluStrip,900)});
+  el.querySelectorAll("[data-llc]").forEach(b=>b.onclick=()=>{openC=b.dataset.llc;go("crm");try{renderCRM()}catch(e){}});
+  const t=el.querySelector("[data-llt]");if(t)t.onclick=()=>{catF="camp";try{LS.set("catF","camp")}catch(e){}go("crm");try{renderCRM()}catch(e){}}}
 function olvStrip(){const el=$("#olvStrip");if(!el)return;const L=fbUser&&store.uid?olvLista():[];if(!L.length){el.hidden=true;return}
   el.innerHTML=`<div class="lzgI">🔁</div><div class="lzgT"><b>${L.length===1?"1 prospecto espera":L.length+" prospectos esperan"} su seguimiento</b><span>${L.some(c=>c.stage===MA)?"Incluye a los que dijeron «más adelante» y hoy les toca. Escríbales hoy.":"Más de 7 días sin avanzar y sin seguimiento. Escríbales hoy."}</span>
    <div class="olvL">${L.slice(0,3).map(c=>{const w=waLink(c);return `<div class="olvR"><span class="olvN"><b>${esc(c.name)}</b><small>${c.stage===MA?"🌱 Le toca escribirle hoy":stDias(c)+" días en Seguimiento"}</small></span>${c.stage===MA&&w?`<button type="button" class="olvW" data-olvma="${esc(c.id)}">💬</button>`:w?`<a class="olvW" href="${esc(w)}" target="_blank" rel="noopener" data-olv="${esc(c.id)}">💬</a>`:`<button type="button" class="olvW o" data-olvc="${esc(c.id)}">Ver</button>`}</div>`}).join("")}</div>
@@ -7737,7 +7756,7 @@ async function flResp(c,v){c.fl=Object.assign({h:{},r:""},c.fl||{});
   if(v==="re2"){flEnviar(c,"re2");return}
   c.fl.r=v;if(v==="nr")c.fl.h=Object.assign({},c.fl.h,{resal:Date.now()});if(v==="pen")c.fl.h=Object.assign({},c.fl.h,{rinv:Date.now()});await flGuardar(c)}
 const CERR=["Socio","Cliente"];let crmV=(()=>{try{return LS.get("crmV")||"proc"}catch(e){return "proc"}})();
-function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e){}pushResumen();try{olvStrip()}catch(e){}const q=$("#crmSearch").value.trim().toLowerCase();
+function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e){}pushResumen();try{lluStrip()}catch(e){}try{olvStrip()}catch(e){}const q=$("#crmSearch").value.trim().toLowerCase();
   if(stageF!=="Todos")crmV=CERR.includes(stageF)?"cer":PAUSA.includes(stageF)?"mas":"proc";
   const vDe=c=>CERR.includes(c.stage)?"cer":PAUSA.includes(c.stage)?"mas":"proc",nCer=contacts.filter(c=>vDe(c)==="cer").length,nMas=contacts.filter(c=>vDe(c)==="mas").length,nMaH=contacts.filter(c=>c.stage===MA&&c.next&&c.next<=TODAY).length,nPro=contacts.length-nCer-nMas,enV=c=>true,VS=STAGES.slice(0); // 16 nov (Edwin): sin pestañas En proceso / Más adelante / Cerrados → todo en una lista agrupada
   {let t=$("#crmVseg");if(!t){t=document.createElement("div");t.id="crmVseg";t.className="seg";t.setAttribute("role","tablist");$("#crmSearch").before(t);t.onclick=e=>{const b=e.target.closest("button");if(!b)return;crmV=b.dataset.k;stageF="Todos";openC=null;try{LS.set("crmV",crmV)}catch(x){}renderCRM()}}
@@ -9383,7 +9402,7 @@ async function irFlyer(w){try{await flFonts()}catch(e){}const cc=w==="c";if(cc)w
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],g?"graduado-inicio-rapido.jpg":"inicio-rapido-semana-"+w.n+".jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
-let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{valStrip()}catch(e){}try{eqzStrip()}catch(e){}try{audStrip()}catch(e){}try{turStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
+let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{lluStrip()}catch(e){}try{valStrip()}catch(e){}try{eqzStrip()}catch(e){}try{audStrip()}catch(e){}try{turStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
   const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
   if(m==="actual"&&!st.ini){const no=LS.get("irNo:"+store.uid);if(no&&Date.now()<no){el.hidden=true;return}
     el.hidden=false;el.className="irMini";el.innerHTML=`<span class="ic">🚀</span><span class="tx"><b>Plan de Inicio Rápido</b> · Aprenda a duplicar en 30 días</span><button type="button" class="go" id="irEmp">Empezar ›</button><button type="button" class="x" id="irNo" aria-label="Quitar">✕</button>`;
@@ -10013,7 +10032,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117195934";var busy=false,pend=null;
+(function(){var V="20261117212008";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
