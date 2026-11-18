@@ -9724,21 +9724,29 @@ function irCelebrar(w){if(!$("#sheet").hidden){setTimeout(()=>irCelebrar(w),4000
   const ic=insImg(g?"g":c?"c":w.n),k=g?"¡SE GRADUÓ! · NETWORKER PRO":c?"¡7 DÍAS SEGUIDOS!":"SEMANA "+w.n+" COMPLETADA",h=g?"¡Ya es Espartano!":c?"¡Ganó Constancia! 🔥":"¡Ya es "+esc(w.k)+"!";
   const tx=g?`¡Felicidades${nm?", "+esc(nm):""}! Completó las 4 semanas, los módulos de Networker Pro, arrancó a su socio y tiene su Constancia.`:c?`Hizo su rutina 7 días seguidos. Ya tiene su insignia de Constancia para su sello Espartano.`:`¡Muy bien${nm?", "+esc(nm):""}! Ganó su insignia ${esc(w.k)}. ${sig[w.n]||""}`;
   openSheet(`<div class="irCel${g?" g":""}" id="irCel"><div class="irCelIc">${ic}</div><div class="k">${k}</div><h2>${h}</h2><p>${tx}</p></div>
-   ${g?`<button class="btn" id="irDip" style="width:100%">🎓 Descargar mi diploma</button>`:""}<button class="btn${g?" ghost":""}" id="irFly" style="width:100%">📣 Compartir mi insignia</button><button class="btn ghost" data-close style="width:100%">Seguir con mi plan</button>`,()=>{confeti($("#irCel"),60);$("#irFly").onclick=()=>irFlyer(w);const d=$("#irDip");if(d)d.onclick=()=>dipDescargar()})}
+   ${g?`<button class="btn" id="irDip" style="width:100%">🎓 Descargar mi diploma</button>`:""}<button class="btn${g?" ghost":""}" id="irFly" style="width:100%">📣 ${g?"Compartir mi graduación":"Compartir mi insignia"}</button><button class="btn ghost" data-close style="width:100%">Seguir con mi plan</button>`,()=>{confeti($("#irCel"),60);$("#irFly").onclick=()=>irFlyer(w);const d=$("#irDip");if(d)d.onclick=()=>dipDescargar()})}
 async function irFlyer(w){try{await flFonts()}catch(e){}const cc=w==="c";if(cc)w={n:"c",k:"Constancia",ic:"🔥"};const g=!w,W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
   const gr=x.createLinearGradient(0,0,W,H);gr.addColorStop(0,"#0b1020");gr.addColorStop(.6,"#0b3b57");gr.addColorStop(1,g?"#8C6A12":"#0A7DAD");x.fillStyle=gr;x.fillRect(0,0,W,H);
   const rg=x.createRadialGradient(W/2,380,40,W/2,380,600);rg.addColorStop(0,g?"rgba(232,199,102,.45)":"rgba(42,193,241,.45)");rg.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=rg;x.fillRect(0,0,W,H);
   x.textAlign="center";x.fillStyle=g?"#E8C766":"#7DD3FC";x.font="700 34px Figtree,system-ui,sans-serif";x.fillText("PLAN DE INICIO RÁPIDO",W/2,140);
-  {const im=await imgLoad(insSrc(g?"g":w.n));if(im&&im.width){const iw=320,ih=iw*im.height/im.width;x.drawImage(im,W/2-iw/2,232,iw,ih)}else{x.font="230px system-ui";x.fillText(g?"🎓":w.ic,W/2,470)}}
-  x.fillStyle="#fff";x.font="800 84px 'Bricolage Grotesque',Figtree,system-ui,sans-serif";x.fillText(g?"¡Espartano!":cc?"¡7 días seguidos!":"¡Semana "+w.n+"!",W/2,640);
-  x.fillStyle=g?"#E8C766":"#7DD3FC";x.font="700 54px Figtree,system-ui,sans-serif";x.fillText(g?"Networker Pro · Graduado":"Insignia "+w.k,W/2,725);
-  const nm=miRegistro().nombre||profile.nombrePila||"";x.fillStyle="#fff";x.font="600 50px Figtree,system-ui,sans-serif";x.fillText(nv(nm).slice(0,32),W/2,860);
-  x.fillStyle="rgba(255,255,255,.75)";x.font="500 36px Figtree,system-ui,sans-serif";x.fillText(g?"Completé mi Plan de Inicio Rápido":cc?"Hice mi rutina 7 días seguidos":"Completé la semana "+w.n+" de mi Inicio Rápido",W/2,930);
+  // 18 nov (Edwin): en el graduado va solo el escudo (v3-espartano-e, sin la píldora que se montaba sobre el título)
+  {const im=await imgLoad(g?"media/insignias/v3-espartano-e.webp?v=3":insSrc(w.n));if(im&&im.width){const iw=300,ih=iw*im.height/im.width;x.drawImage(im,W/2-iw/2,210,iw,ih)}else{x.font="230px system-ui";x.fillText(g?"🎓":w.ic,W/2,470)}}
+  const dy=36;x.fillStyle="#fff";x.font="800 84px 'Bricolage Grotesque',Figtree,system-ui,sans-serif";x.fillText(g?"¡Espartano!":cc?"¡7 días seguidos!":"¡Semana "+w.n+"!",W/2,640+dy);
+  x.fillStyle=g?"#E8C766":"#7DD3FC";x.font="700 54px Figtree,system-ui,sans-serif";x.fillText(g?"Networker Pro · Graduado":"Insignia "+w.k,W/2,725+dy);
+  const nm=miRegistro().nombre||profile.nombrePila||"";x.fillStyle="#fff";x.font="600 50px Figtree,system-ui,sans-serif";x.fillText(nv(nm).slice(0,32),W/2,860+dy);
+  x.fillStyle="rgba(255,255,255,.75)";x.font="500 36px Figtree,system-ui,sans-serif";x.fillText(g?"Completé mi Plan de Inicio Rápido":cc?"Hice mi rutina 7 días seguidos":"Completé la semana "+w.n+" de mi Inicio Rápido",W/2,930+dy);
   x.fillStyle=g?"#E8C766":"#2AC1F1";x.font="800 40px Figtree,system-ui,sans-serif";x.fillText("#HASTAQUEFUNCIONE",W/2,1150);
   x.fillStyle="rgba(255,255,255,.7)";x.font="700 34px Figtree,system-ui,sans-serif";x.fillText("Action Leaders",W/2,H-70);
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],g?"graduado-inicio-rapido.jpg":"inicio-rapido-semana-"+w.n+".jpg",{type:"image/jpeg"});
-    if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
-    const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
+    const tx=irFlyTx(g?null:w);try{navigator.clipboard&&navigator.clipboard.writeText(tx)}catch(e){}
+    if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],text:tx});return}catch(e){if(e&&e.name==="AbortError")return}}
+    const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click();toast("📋 Texto copiado: péguelo junto a su imagen")}catch(e){toast("No se pudo crear la imagen")}}
+// 18 nov (Edwin): texto al compartir la insignia / la graduación (corto, en renglones, con el porqué de cada insignia).
+window.__irFlyer=irFlyer;
+const IR_POR={1:"arranqué mi negocio con mi por qué, mi meta y mis primeras presentaciones",2:"presenté mi negocio a mis primeros prospectos",3:"di seguimiento y cerré mis primeros socios",4:"ayudé a mi primer socio a despegar"};
+function irFlyTx(w){if(!w)return "🛡️ ¡Terminé y me gradué de Networker Pro!\n\nCompleté mi Plan de Inicio Rápido con Action Leaders y gané mis 6 insignias:\n\n🚀 Despegue · arranqué mi negocio\n🎤 Presentador · presenté mi negocio a mis primeros prospectos\n⚔️ Cerrador · cerré mis primeros socios\n🤝 Duplicador · ayudé a mi primer socio a despegar\n🎓 Networker Pro · terminé los 8 videos del curso\n🔥 Constancia · hice mi rutina 7 días seguidos\n\nAhora soy Espartano. ¡Vamos por más! 💪\n\n#HASTAQUEFUNCIONE";
+  if(w.n==="c")return "🔥 ¡7 días seguidos haciendo mi rutina!\n\nGané mi insignia de Constancia en mi Plan de Inicio Rápido con Action Leaders.\n\nPaso a paso, todos los días. 💪\n\n#HASTAQUEFUNCIONE";
+  return "🏅 ¡Gané mi insignia "+w.k+"!\n\nCompleté la semana "+w.n+" de mi Plan de Inicio Rápido con Action Leaders: "+(IR_POR[w.n]||"seguí mi plan")+".\n\n¡Vamos por la siguiente! 💪\n\n#HASTAQUEFUNCIONE"}
 // 18 nov (Edwin): banner FIJO arriba del compromiso (no en el carrusel) con color según cómo va + ventana una vez al día.
 function irColor(E){const w=E.cur,ini=(IR_W[w.n-2]||{fin:0}).fin,len=w.fin-ini,d=E.dia,st=irSt(),u=+((st.p||{}).u)||0,quieto=u&&Date.now()-u>2*864e5;
   if(E.sem&&!E.cons)return {c:"am",t:"¡Ya casi! Le falta su constancia",k:""};
@@ -10392,7 +10400,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261118155516";var busy=false,pend=null;
+(function(){var V="20261118155851";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
