@@ -1,6 +1,8 @@
 // Diagnóstico temporal: ¿las reglas publicadas en Firestore = respaldo/firestore.rules? (solo conteos)
 import fs from "fs";
-import { cert } from "firebase-admin/app";
+import { cert, initializeApp } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
+if (process.env.CODE === "lluvia") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const m = (await getFirestore().doc("push_meta/lluvia").get()).data() || {}; console.log("lluvia fx:", JSON.stringify(m.fx || null), "· hace", m.fx ? Math.round((Date.now() - m.fx.t) / 60000) + " min" : "-"); process.exit(0); }
 const sa = JSON.parse(process.env.FIREBASE_SA), tk = (await cert(sa).getAccessToken()).access_token, H = { Authorization: "Bearer " + tk };
 const B = "https://firebaserules.googleapis.com/v1/";
 const rel = await (await fetch(B + "projects/" + sa.project_id + "/releases/cloud.firestore", { headers: H })).json();
