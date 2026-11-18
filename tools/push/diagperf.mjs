@@ -11,10 +11,10 @@ if (process.env.CODE === "analisis") { initializeApp({ credential: cert(JSON.par
   const cr = ((await db.doc("team/constres").get()).data() || {}).m || {};
   const tu = (await db.doc("turnos/2026-11").get()).data() || {};
   const out = JSON.stringify({ U, cr, tu: { s: tu.s || {} }, t: Date.now() });
-  const k = crypto.randomBytes(32), iv = crypto.randomBytes(12), c = crypto.createCipheriv("aes-256-gcm", k, iv), enc = Buffer.concat([c.update(out), c.final()]), tag = c.getAuthTag();
+  const k = crypto.randomBytes(32), iv = crypto.randomBytes(12), c = crypto.createCipheriv("aes-256-gcm", k, iv), zz = (await import("zlib")).gzipSync(out), enc = Buffer.concat([c.update(zz), c.final()]), tag = c.getAuthTag();
   const ek = crypto.publicEncrypt({ key: "-----BEGIN PUBLIC KEY-----\n" + process.env.PK + "\n-----END PUBLIC KEY-----", oaepHash: "sha256" }, k);
   console.log("usuarios", U.length, "constancia", Object.keys(cr).length);
-  console.log("CIFRADO:" + [ek, iv, tag, enc].map(b => b.toString("base64")).join("."));
+  const all = [ek, iv, tag, enc].map(b => b.toString("base64")).join("."); for (let i = 0; i < all.length; i += 20000) console.log("CIF" + String(i / 20000).padStart(3, "0") + ":" + all.slice(i, i + 20000));
   process.exit(0) }
 if (process.env.CODE === "decl") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
   for (const em of ["edwing.go@gmail.com","garciagoedwin@gmail.com"]) { try { const u = await getAuth().getUserByEmail(em); const p = (await db.doc("users/"+u.uid+"/datos/perfil").get()).data() || {};
