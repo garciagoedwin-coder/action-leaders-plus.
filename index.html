@@ -1444,6 +1444,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .anuPop .btn.ghost{color:#fff;border-color:rgba(255,255,255,.3);background:transparent}
 .anuNo{background:none;border:0;color:#94a3b8;font-size:14px;padding:12px;width:100%}
 @media (prefers-reduced-motion:reduce){.anuGo{animation:none}}
+.gcBox{margin:10px 0;padding:12px;border-radius:16px;background:color-mix(in srgb,var(--brand) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--brand) 22%,transparent);display:flex;flex-direction:column;gap:8px}.gcHd{display:flex;align-items:center;justify-content:space-between;gap:8px}.gcHd b{font-size:14px}.gcD{display:flex;gap:4px}.gcD i{width:14px;height:6px;border-radius:3px;background:var(--line)}.gcD i.ok{background:#16A34A}.gcD i.on{background:var(--brand)}.gcGo{border:0;border-radius:12px;padding:12px;font:700 15px/1.2 inherit;background:#16A34A;color:#fff;text-align:left}.gcSg{border:1px solid #F59E0B;border-radius:12px;padding:10px;font:700 13px/1.2 inherit;background:color-mix(in srgb,#F59E0B 12%,var(--surface));color:var(--ink);text-align:left}.gcAv{font-size:13px;font-weight:700;color:#15803D}.gcAv.o{color:#B45309}.gcMs1{border:1px dashed var(--line);border-radius:10px;padding:8px;background:transparent;color:var(--muted);font:600 13px inherit}.gcFin{font-weight:700;color:#15803D;font-size:14px}.gcMs{display:flex;gap:8px}.gcMs button{flex:1;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--surface);color:var(--ink);font:600 13px inherit}
 </style>
 
 </head>
@@ -2336,7 +2337,7 @@ function lluStrip(){const el=$("#lluStrip");if(!el)return;if(!(fbUser&&store.uid
    <div class="olvL">${P.slice(0,3).map(c=>fila(c,`<button type="button" class="olvW o" data-llp="${esc(c.id)}">📤 Pasar</button>`)).join("")}</div>
    <div class="lzgB"><button type="button" class="ok" data-llt>Ver ${P.length>3?"los "+P.length:"todos"} en mi CRM</button></div></div>`}
   else{const c0=R[0];h=`<div class="lzgI">📣</div><div class="lzgT"><b>${esc(String(nv(c0.camp.dn)).split(" ")[0])} le pasó ${R.length===1?"un prospecto":R.length+" prospectos"} de la campaña</b><span>Escríbale hoy: la persona pidió información y está esperando.</span>
-   <div class="olvL">${R.slice(0,3).map(c=>{const w=waLink(c);return fila(c,w?`<a class="olvW" href="${esc(w)}" target="_blank" rel="noopener" data-llw="${esc(c.id)}">💬</a>`:`<button type="button" class="olvW o" data-llc="${esc(c.id)}">Ver</button>`)}).join("")}</div>
+   <div class="olvL">${R.slice(0,3).map(c=>{return fila(c,`<button type="button" class="olvW" data-gcp="${esc(c.id)}" data-llw="${esc(c.id)}">💬</button>`)}).join("")}</div>
    <div class="lzgB"><button type="button" class="ok" data-llt>Ver en mi CRM</button></div></div>`}
   el.innerHTML=h;el.hidden=false;
   el.querySelectorAll("[data-llw]").forEach(a=>a.onclick=()=>{LS.set("llr:"+a.dataset.llw,TODAY);setTimeout(lluStrip,900)});
@@ -7912,7 +7913,7 @@ function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fech
   const nS=(c.seg||[]).length,wl=waLink(c);
   return `<div class="cvTop"><div class="grow" style="min-width:0">
      <button type="button" class="cvSt cvSt3" data-stopen="${esc(c.id)}"><span class="cvPill" style="--pc:${STAGE_COL[c.stage]||"var(--brand)"}">${CV_STI[c.stage]||""}${esc(c.stage||"Nuevo")}</span>${due}<span class="cvCg">Cambiar ›</span></button></div></div>
-   ${crmSt.has(c.id)?stepsHTML(c):""}${maLinea(c)}${lluHTML(c)}
+   ${crmSt.has(c.id)?stepsHTML(c):""}${maLinea(c)}${lluHTML(c)}${gcHTML(c)}
    ${crmV2Sig(c)}
    ${reuCamino(c)}
    ${A.length?`<div class="cvActv"><div class="k">ACTIVIDAD${nS?`<button type="button" data-sgt="${esc(c.id)}">Ver todo ›</button>`:""}</div>${A.slice(0,3).map(([i,t,f,k])=>k?`<div data-cvtk="${esc(k)}" style="cursor:pointer"><span>${i}</span><span class="grow">${esc(t)} <b style="color:var(--brand);font-weight:700;white-space:nowrap">Ver respuestas ›</b></span>${f?`<small>${esc(f)}</small>`:""}</div>`:`<div><span>${i}</span><span class="grow">${esc(t)}</span>${f?`<small>${esc(f)}</small>`:""}</div>`).join("")}</div>`:""}
@@ -8279,6 +8280,76 @@ async function lluCargar(f){if(!store.db)return LLU||{};if(!f&&LLU&&Date.now()-L
 const lluDia=t=>{try{return new Date(t).toLocaleDateString("en-CA",{timeZone:"America/Tegucigalpa"})}catch(e){return ""}};
 function lluCuenta(u){const h0=lluDia(Date.now());let h=0,t=0;(contacts||[]).forEach(c=>{const r=c.rep;if(r&&r.u===u){t++;if(lluDia(r.t)===h0)h++}});return {h,t}}
 const lluEsCamp=c=>!!c&&Array.isArray(c.cat)&&c.cat.includes("camp");
+
+// 17 nov (Edwin, «HAZLO»): GUION DE LA CAMPAÑA en cada prospecto 📣 Campaña (manual claude/campana-prospectos-ilimitados.md).
+// c.gc = {p: siguiente paso (0..6), t:{k:ms}, d (lo que dijo), w (su trabajo), cu (cuándo verá la presentación)}. Evento = config.anuncio (EVA). 0 lecturas.
+const GC_P=["m1","m2","m3","m4","m5","m6"],GC_N=["Primer mensaje","Conectar y conocerle","El acceso al evento","Enviar la presentación","¡La terminó! · confirmar asistencia","Enviar el ticket y el lugar"];
+function gcEv(){try{const c=anuCfg();return c?anuEv(c):null}catch(e){return null}}
+function gcEvD(){const e=gcEv(),D=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+  if(!e)return {dia:"el domingo",hora:"",lugar:"[lugar]",ciudad:"San Pedro Sula",tk:0,e:null};
+  const d=parseK(e.fecha),hora=(h12(e.hora)||"").replace(" am"," a.m.").replace(" pm"," p.m.");
+  return {dia:"el "+D[d.getDay()]+" "+d.getDate(),hora,lugar:[e.lugar,e.lugarSub].filter(Boolean).join(", ")||"[lugar]",ciudad:e.ciudad||"San Pedro Sula",tk:+e.tk||0,e}}
+function gcSt(c){const g=c.gc||{};let p=+g.p||0;const v=salaDe(c.id),fin=v&&(v.fin||(+v.pct||0)>=90||v.pulso);if(fin&&p>=3&&p<4)p=4;return {g,p,v,fin,mitad:v&&!fin&&(+v.pct||0)>0}}
+function gcYo(){const n=nv(miRegistro().nombre||miNombreCorto()||"").trim().split(/\s+/);return n.slice(0,2).join(" ")}
+function gcMsg(c,k,X){const f=String(c.name||"").trim().split(/\s+/)[0]||"",E=gcEvD(),g=c.gc||{},yo=gcYo(),X2=X||{};
+  const T={
+   m1:`¡Hola, ${f}! 👋 Soy ${yo}, de Action Leaders. Recibí su registro para el evento en ${E.ciudad}. Antes de confirmar lugares, converso un momento con cada persona. ¿Qué fue lo que más le llamó la atención del video?`,
+   m2:`Tiene mucho sentido, ${X2.d||g.d||"[lo que dijo]"} es justo lo que vamos a ver en el evento. ¿A qué se dedica actualmente?`,
+   m3:`Muy bien, ${X2.w||g.w||"[comentario sobre su trabajo]"}. Le cuento cómo funciona: este evento es para personas que de verdad quieren crecer. Por eso, para darle acceso, el paso previo es ver una presentación de 20 minutos. Ahí usted mismo va a determinar si esto es para usted o no, porque buscamos personas listas para empezar, con una mentalidad diferente. Si se la envío ahorita, ¿cuándo la vería?`,
+   m4:`Perfecto, ${f}. Aquí la tiene 👉 ${X2.lk||"[enlace]"}\n\nLe comento que los cupos para el evento se están terminando, así que le aparto el suyo hasta ${X2.cu||g.cu||"[cuándo la verá]"}. ¿Me escribe apenas la termine?`,
+   m5:`¡La terminó, ${f}! 🙌 Ya tiene acceso al evento. Confirme su asistencia aquí 👉 ${X2.lk||"[enlace de confirmación]"}\n\n¿Me avisa cuando lo haga para enviarle su ticket digital?`,
+   m6:`¡Listo, ${f}! Aquí está su ticket 🎟️ Nos vemos ${E.dia}${E.hora?" a las "+E.hora:""} en ${E.lugar}. Preséntelo en la entrada. ¿Va solo o acompañado?`,
+   nv:`${f}, quedamos en que vería la presentación ${g.cu||"hoy"} y su lugar sigue apartado. ¿A qué hora la puede ver hoy?`,
+   mi:`${f}, vi que empezó la presentación. ¡Lo mejor viene en la parte de cómo empezar! Retoma donde quedó. ¿La termina hoy?`,
+   nc:`${f}, le escribo por su registro para el evento ${E.dia.replace(/ \d+$/,"")} en ${E.ciudad}. ¿Sigue interesado en su acceso?`,
+   sa:`¡Mañana nos vemos, ${f}! 📍 ${E.lugar}${E.hora?", "+E.hora:""}. ¿Le guardo su lugar?`,
+   do:`¡Hoy es el día, ${f}! Le espero${E.hora?" a las "+E.hora:""} en ${E.lugar}. ¿Ya va en camino?`,
+   q1:`¡Buena pregunta! Es un club de membresía de viajes: puede ser cliente para viajar más gastando menos, o socio para emprender desde su celular. En la presentación de 20 minutos lo ve claro. ¿Se la envío ahorita?`,
+   q2:E.tk?`La entrada tiene un valor de L${E.tk.toLocaleString("en-US")}, y su lugar se confirma después de ver la presentación. ¿Quiere que se la envíe para que vea si es para usted?`:`La entrada no tiene costo, y su lugar se confirma después de ver la presentación. ¿Quiere que se la envíe para que vea si es para usted?`,
+   q3:`Qué bueno que pregunta. Es un club de membresía de viajes: lo que usted aporta cada mes se convierte en puntos para viajar, y puede ser solo cliente sin invitar a nadie. ¿Le parece si ve la presentación y luego me dice qué piensa?`,
+   q4:`Entendido, ${f}, gracias por avisarme. Le deseo lo mejor 🙌`};
+  return T[k]||""}
+const GC_S={nv:"⏰ No la vio a la hora que dijo",mi:"⏳ La dejó a la mitad",nc:"📵 No contesta el primer mensaje",sa:"📅 Recordatorio: el día antes",do:"📍 Recordatorio: hoy es el día"},
+  GC_Q={q1:"«¿De qué se trata?»",q2:"«¿Cuánto cuesta el evento?»",q3:"«¿Esto es pirámide?»",q4:"«No me interesa» / «No me escriba»"};
+function gcSug(c){const S=gcSt(c),g=S.g,E=gcEvD(),now=Date.now(),t=g.t||{};
+  if(E.e&&E.e.fecha===TODAY&&S.p>=5)return "do";if(E.e&&E.e.fecha===addD(TODAY,1)&&S.p>=5)return "sa";
+  if(S.p===4&&S.mitad)return "mi";if(S.p===4&&!S.v&&t.m4&&now-t.m4>3*36e5)return "nv";
+  if(S.p===1&&t.m1&&now-t.m1>3*36e5)return "nc";return ""}
+function gcHTML(c){if(!lluEsCamp(c)||["Socio","Cliente","No interesado"].includes(c.stage))return "";const S=gcSt(c),id=esc(c.id),sg=gcSug(c);
+  const dots=GC_P.map((k,i)=>`<i class="${i<S.p?"ok":i===S.p?"on":""}"></i>`).join("");
+  const esp=S.p===4&&!S.fin,nx=esp?`<div class="gcAv o">⏳ Esperando que vea la presentación${S.mitad?" · va en "+(+S.v.pct||0)+"%":""}. La app le avisa aquí cuando la termine.</div><button type="button" class="gcMs1" data-gcp="${id}">Ya me dijo que la terminó › Paso 5</button>`:S.p<6?`<button type="button" class="gcGo" data-gcp="${id}">💬 Paso ${S.p+1} · ${esc(GC_N[S.p])}</button>`:`<div class="gcFin">✅ Ticket enviado · nos vemos en el evento</div>`;
+  return `<div class="gcBox"><div class="gcHd"><b>📋 Guion de la campaña</b><span class="gcD">${dots}</span></div>
+   ${S.p===4&&S.fin?`<div class="gcAv">🎉 Terminó la presentación: ya puede darle acceso</div>`:""}
+   ${sg?`<button type="button" class="gcSg" data-gcm="${id}|${sg}">${esc(GC_S[sg])} › mensaje listo</button>`:""}
+   ${nx}<div class="gcMs"><button type="button" data-gcx="${id}">🔁 Seguimiento</button><button type="button" data-gcq="${id}">❓ Me preguntó…</button></div></div>`}
+function gcCopiar(t){try{navigator.clipboard.writeText(t);return}catch(e){}try{const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove()}catch(e){}}
+async function gcGuardar(c,o){c.gc=Object.assign({},c.gc||{},o||{});c.updated=Date.now();try{await store.saveContact(Object.assign({},c))}catch(e){toast("No se pudo guardar ("+errCod(e)+")")}try{renderCRM()}catch(e){}try{lluStrip()}catch(e){}}
+// Hoja del mensaje: campos para lo que falta, texto editable, Enviar por WhatsApp / Copiar.
+async function gcAbrir(c,k){if(!c)return;const S=gcSt(c),step=GC_P.indexOf(k),f=String(c.name||"").split(" ")[0];let lk="";
+  if(k==="m4"){if(!salaYoOk()&&!window._syAdm&&!isAdmin){salaYoGate();return}if(!(await salaPrep()))return;lk=salaUrl(c.name,c.id)}
+  if(k==="m5"){const e=gcEv();if(!e){toast("No encuentro el evento en la app. Ábralo en Agenda › Eventos y juntas.");return}try{await rsvpPrep(e)}catch(x){}lk=rsvpLink(e)}
+  const fl=k==="m2"?["d","¿Qué le respondió? (lo que más le llamó la atención)",S.g.d||""]:k==="m3"?["w","Comentario corto sobre su trabajo (ej.: «qué bonito trabajar en ventas»)",S.g.w||""]:k==="m4"?["cu","¿Cuándo la va a ver? (ej.: «hoy a las 8 p.m.»)",S.g.cu||""]:null;
+  const tit=step>=0?"💬 Paso "+(step+1)+" · "+GC_N[step]:(GC_S[k]||GC_Q[k]||"💬 Mensaje");
+  openSheet(`<h2 style="font-size:18px">${esc(tit)}</h2><p class="small muted" style="margin:0 0 8px">Para ${esc(c.name)} · una sola pregunta por mensaje.</p>
+   ${fl?`<label class="small" style="font-weight:700">${esc(fl[1])}</label><input id="gcF" class="inp" value="${esc(fl[2])}" style="width:100%;margin:4px 0 10px">`:""}
+   <textarea id="gcT" rows="8" style="width:100%;font:inherit;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink)"></textarea>
+   ${k==="m6"?`<p class="small muted" style="margin:6px 0 0">🎟️ El ticket lo genera en Agenda › Eventos y juntas › el evento › 📝 Confirmados › 🎟️ (cuando ya confirmó).</p>`:""}
+   ${k==="q4"?`<p class="small muted" style="margin:6px 0 0">Al enviarlo se pasa a «No interesado». Anótelo y no le vuelva a escribir.</p>`:""}
+   <div style="display:flex;gap:8px;margin-top:12px"><button type="button" class="btn" id="gcW" style="flex:1;background:#16A34A;color:#fff">💬 Enviar por WhatsApp</button><button type="button" class="btn ghost" id="gcC">Copiar</button></div>`,()=>{
+   const T=$("#gcT"),F=$("#gcF"),pinta=()=>{const X={lk};if(F)X[fl[0]]=F.value.trim();T.value=gcMsg(c,k,X)};pinta();if(F)F.oninput=pinta;
+   const listo=async()=>{const o={};if(F&&F.value.trim())o[fl[0]]=F.value.trim();const t=Object.assign({},(c.gc||{}).t||{});t[k]=Date.now();o.t=t;
+     if(step>=0)o.p=Math.max(+(c.gc||{}).p||0,step+1);
+     try{LS.set("llr:"+c.id,TODAY)}catch(x){}if(k==="m4"){try{LS.set("salaOn",1);const E2=LS.get("salaEnv")||{};E2[c.id]=Date.now();LS.set("salaEnv",E2)}catch(x){}}
+     await gcGuardar(c,o);
+     if(k==="m1"||k==="m2"||k==="m3")stAvanza(c,"Contactado","guion de la campaña");if(k==="m4")stAvanza(c,"Contactado","le envió la presentación virtual");if(k==="m5")stAvanza(c,"Presentación","terminó la presentación virtual");
+     if(k==="q4"){c.stage="No interesado";c.stT=Date.now();c.stAuto="";try{await store.saveContact(Object.assign({},c))}catch(x){}try{renderCRM()}catch(x){}setTimeout(()=>{try{notaAbrir(c,"nota")}catch(x){}},700)}};
+   $("#gcW").onclick=async()=>{const t=T.value,n=waNum(c.phone,c.cc);gcCopiar(t);await listo();closeSheet();if(n)waIr("https://wa.me/"+n+"?text="+encodeURIComponent(t));else if(navigator.share){try{await navigator.share({text:t})}catch(x){}}else toast("📋 Mensaje copiado")};
+   $("#gcC").onclick=async()=>{gcCopiar(T.value);toast("📋 Mensaje copiado");await listo()}})}
+function gcLista(c,M,tit){openSheet(`<h2 style="font-size:18px">${tit}</h2><div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">${Object.entries(M).map(([k,t])=>`<button type="button" class="btn ghost" style="text-align:left" data-gck="${k}">${esc(t)}</button>`).join("")}</div>`,()=>{
+  document.querySelectorAll("#sheet [data-gck]").forEach(b=>b.onclick=()=>{closeSheet();setTimeout(()=>gcAbrir(c,b.dataset.gck),250)})})}
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-gcp],[data-gcm],[data-gcx],[data-gcq]");if(!b)return;e.preventDefault();e.stopPropagation();
+  const v=b.dataset.gcp||b.dataset.gcx||b.dataset.gcq||(b.dataset.gcm||"").split("|")[0],c=(contacts||[]).find(x=>x.id===v);if(!c)return;
+  if(b.dataset.gcp){const S=gcSt(c);gcAbrir(c,GC_P[Math.min(5,S.p)])}else if(b.dataset.gcm)gcAbrir(c,b.dataset.gcm.split("|")[1]);else if(b.dataset.gcx)gcLista(c,GC_S,"🔁 Seguimiento");else gcLista(c,GC_Q,"❓ Me preguntó…")},true);
 function lluHTML(c){if(!lluEsCamp(c))return "";const r=c.rep,id=esc(c.id),cp=c.camp||{};
   if(r&&r.u)return `<div class="llR">📤 Pasado a <b>${esc(nv(r.n||"un líder"))}</b> · ${esc(memHace(r.t))} · ${r.st==="ok"?"✅ ya está en su CRM":"⏳ llega a su CRM en 5–15 min"}${campOn()&&r.st!=="ok"?`<button type="button" data-llx="${id}">Deshacer</button>`:""}</div>`;
   if(cp.dn)return `<div class="llR">📣 Prospecto de la campaña · se lo pasó <b>${esc(cp.dn)}</b>${cp.int?" · le interesa: "+esc(cp.int):""}</div>`;
@@ -10032,7 +10103,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117212008";var busy=false,pend=null;
+(function(){var V="20261117212610";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
