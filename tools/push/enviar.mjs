@@ -771,7 +771,7 @@ async function main() {
       if (!DRY) await ref.set({ m: mes, pos: nPos, pas, vg, vu, t: Date.now() });
     }
   } else if (modo === "lluvia") {
-    // 17 nov (Edwin): Lluvia de prospectos v1. Hoja «Prospectos Ilimitados» → CRM de garciagoedwin (📣 Campaña, Nuevo) + aviso;
+    // 17 nov (Edwin): Lluvia de prospectos v1. Hoja «Prospectos Ilimitados» → CRM de edwing.go (📣 Campaña, Nuevo) + aviso;
     // y los que Edwin pasa con «📤 Pasar a un Action Leader» (rep/repP en el contacto) → CRM del líder + aviso.
     // LLUVIA_PRUEBA=1 → destino = cuenta de prueba (config.pruebas) y un prospecto falso; no toca la hoja ni los reales.
     const L = await import("./lluvia.mjs");
@@ -784,8 +784,13 @@ async function main() {
       dest = us ? us.id : null;
       if (!dest) { const { getAuth } = await import("firebase-admin/auth"); let tok;
         do { const r = await getAuth().listUsers(1000, tok); const u = r.users.find(x => pr.includes(ahF("e:" + String(x.email || "").trim().toLowerCase()))); if (u) { dest = u.uid; break; } tok = r.pageToken; } while (tok); }
-    } else { const q = await db.collection("users").where("email", "==", ADMINS[0]).limit(1).get(); dest = q.empty ? null : q.docs[0].id; }
+    } else { const q = await db.collection("users").where("email", "==", ADMINS[2]).limit(1).get(); dest = q.empty ? null : q.docs[0].id; } // 17 nov, 22:13 (Edwin): llegan a edwing.go, su cuenta de trabajo
     if (!dest) { console.log("No encontré la cuenta que recibe los prospectos."); return; }
+    if (!PRUEBA) { // mover los que entraron primero a garciagoedwin (solo-admin) → edwing.go
+      const q0 = await db.collection("users").where("email", "==", ADMINS[0]).limit(1).get(), viejo = q0.empty ? null : q0.docs[0].id;
+      if (viejo && viejo !== dest) { const V = (await db.collection(`users/${viejo}/crm`).where("cat", "array-contains", "camp").get()).docs; let nm = 0;
+        for (const d of V) { const t = db.doc(`users/${dest}/crm/${d.id}`); if (!DRY) { if (!(await t.get()).exists) await t.set(d.data()); await d.ref.delete(); } nm++; }
+        if (nm) console.log("Movidos a la cuenta de trabajo:", nm); } }
     const meta = db.doc("push_meta/lluvia" + (PRUEBA ? "P" : "")), M = (await meta.get()).data() || {}, ids = M.ids || {};
     let leads = [];
     if (PRUEBA) leads = [{ id: "l:9990" + String(now).slice(-8), t: now, int: "las_dos", email: "", n: "prospecto de prueba", tel: "+50400000000", form: "Prueba", org: false, pl: "fb", camp: "Prueba de la app" }];
