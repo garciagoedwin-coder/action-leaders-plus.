@@ -5621,6 +5621,19 @@
    "btn": "Ver",
    "bx": "2026-11-22",
    "hasta": "2026-11-23T05:59:00Z"
+  },
+  "ponencias": {
+   "2026-11-19-2000-action-leaders-training": {
+    "t": "Redes que atraen",
+    "s": "De la historia del día al prospecto en su CRM",
+    "pdf": "media/training/2026-11-19-redes.pdf",
+    "g": "media/training/2026-11-19-guion.pdf",
+    "img": "media/training/2026-11-19-portada.jpg",
+    "roles": {
+     "Mayckol Turcios": "Ponente",
+     "Nancy Diaz": "Anfitriona"
+    }
+   }
   }
  },
  "fotos": [
