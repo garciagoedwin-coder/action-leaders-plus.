@@ -16,7 +16,8 @@ if (process.env.CODE === "analisis") { initializeApp({ credential: cert(JSON.par
   const U = (await db.collection("users").get()).docs.map(d => { const x = d.data() || {}, r = x.registro || {}, a = x.actividad || {}, ir = x.ir || {};
     return { u: d.id, n: r.nombre || "", pl: r.plan || "", f: r.fecha || "", rg: r.rango || "", ap: x.apE || "", a: { hoy: a.hoy, racha: a.racha, dias7: a.dias7, semana: a.semana, t: a.t, emb: a.emb ? a.emb.c : null, crm: a.crm }, ir: ir.p || null, sa: x.soloAdm || 0 } });
   const cr = ((await db.doc("team/constres").get()).data() || {}).m || {};
-  const tu = (await db.doc("turnos/2026-11").get()).data() || {};
+  const mA = new Date(Date.now() - 6 * 36e5).toISOString().slice(0, 7), mB = new Date(Date.now() + 9 * 864e5 - 6 * 36e5).toISOString().slice(0, 7), tu = { s: {} };
+  for (const m of [...new Set([mA, mB])]) Object.assign(tu.s, ((await db.doc("turnos/" + m).get()).data() || {}).s || {});
   const out = JSON.stringify({ U, cr, tu: { s: tu.s || {} }, t: Date.now() });
   const k = crypto.randomBytes(32), iv = crypto.randomBytes(12), c = crypto.createCipheriv("aes-256-gcm", k, iv), zz = (await import("zlib")).gzipSync(out), enc = Buffer.concat([c.update(zz), c.final()]), tag = c.getAuthTag();
   const ek = crypto.publicEncrypt({ key: "-----BEGIN PUBLIC KEY-----\n" + process.env.PK + "\n-----END PUBLIC KEY-----", oaepHash: "sha256" }, k);
