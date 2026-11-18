@@ -2,6 +2,11 @@
 import fs from "fs";
 import { cert, initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
+if (process.env.CODE === "decl") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
+  for (const em of ["edwing.go@gmail.com","garciagoedwin@gmail.com"]) { try { const u = await getAuth().getUserByEmail(em); const p = (await db.doc("users/"+u.uid+"/datos/perfil").get()).data() || {};
+    console.log(em.slice(0,4), "dec", JSON.stringify(p.dec||null), "decA.d", (p.decA||{}).d||null, "decG", p.decG||null) } catch (e) { console.log(em.slice(0,4), "err", e.code||e.message) } }
+  process.exit(0) }
 if (process.env.CODE === "camp") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
   const u = (await db.collection("users").where("email", "==", "edwing.go@gmail.com").limit(1).get()).docs[0];
   const C = (await db.collection(`users/${u.id}/crm`).where("cat", "array-contains", "camp").get()).docs.map(d => d.data()).sort((a, b) => (a.creado || 0) - (b.creado || 0));
