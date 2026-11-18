@@ -835,7 +835,7 @@ async function main() {
           if (x.email) c.email = x.email;
           await tgt.set(c);
         }
-        await d.ref.set({ repP: false, rep: { ...r, st: "ok", ok: now } }, { merge: true });
+        await d.ref.set({ repP: false, rep: { ...r, st: "ok", ok: now, chk: now + 3 * 36e5 } }, { merge: true });
       }
       nR++;
       const P = (await db.doc("push/" + r.u).get()).data() || {};

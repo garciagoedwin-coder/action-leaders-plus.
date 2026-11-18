@@ -459,6 +459,7 @@ h1.motto{overflow:hidden;height:1.3em;line-height:1.3em;margin-top:2px}
 /* crm */
 .stage-bar{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
 .llGo{display:block;width:100%;margin:8px 0;padding:11px;border-radius:12px;border:1.5px solid #1D4ED8;background:color-mix(in srgb,#1D4ED8 8%,var(--surface));color:#1D4ED8;font:800 14px Figtree,sans-serif;cursor:pointer}
+.llR .llE{display:block;margin-top:3px;font-weight:600;color:var(--muted)}.llR.bad{background:color-mix(in srgb,#DC2626 9%,var(--surface));}.llR.bad .llE{color:#DC2626}.llR .llQ{display:block;margin-top:8px;padding:0}.cgP.rp{font-size:12px;font-weight:700;max-width:52%;text-align:right;color:var(--muted)!important}.cgP.rp.ok{color:#16A34A!important}.cgP.rp.bad{color:#DC2626!important}
 .llR{margin:8px 0;padding:9px 11px;border-radius:12px;background:var(--surface-2);font:600 13px/1.35 Figtree,sans-serif;color:var(--ink)}.llR button{border:0;background:none;color:var(--brand);font:800 13px Figtree,sans-serif;padding:0 0 0 4px;cursor:pointer}
 .llL{display:flex;flex-direction:column;gap:6px;margin:6px 0}.llI{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 14px Figtree,sans-serif;cursor:pointer}
 .llI .grow{min-width:0}.llI small{display:block;color:var(--muted);font-weight:600;font-size:12px}.llI.off{opacity:.45;cursor:default}.llI .av,.llI .avatar{flex:none}.llI b.x{color:var(--bad);font-size:18px;padding:0 4px}.llI b.pl{color:var(--brand);font-size:18px;padding:0 4px}
@@ -2218,10 +2219,11 @@ const store={db:null,uid:null,
   async saveContact(c){if(!c.id&&!c.creado)c.creado=Date.now();const{id,...b0}=c;const body=JSON.parse(JSON.stringify(b0));if(this.db){/* 18 nov: con señal débil, set() espera al servidor y el botón parecía no hacer nada. Firestore ya lo guardó en el teléfono y lo sube solo: a los 4 s se da por guardado. */
     const err=e=>{console.error("saveContact",e);toast("No se pudo guardar el contacto ("+errCod(e)+"). Revise su internet e intente de nuevo.")};
     const esp=(pr,v)=>{let tarde=false;pr.catch(e=>{if(tarde)err(e)});return Promise.race([pr,new Promise(r=>setTimeout(()=>{tarde=true;r(v)},4000))])};
-    try{if(id){await esp(this.crm().doc(id).set(body),id);return id}
-      const nid=Array.from(crypto.getRandomValues(new Uint8Array(20)),x=>"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"[x%62]).join("");await esp(this.crm().doc(nid).set(body),nid);return nid}catch(e){err(e);return null}}
+
+    try{if(id){crmJ(id,body);await esp(this.crm().doc(id).set(body),id);return id}
+      const nid=Array.from(crypto.getRandomValues(new Uint8Array(20)),x=>"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"[x%62]).join("");crmJ(nid,body);await esp(this.crm().doc(nid).set(body),nid);return nid}catch(e){err(e);return null}}
     const all=LS.get("crm")||[];if(!id){c.id="c"+Date.now();all.push(c)}else{const i=all.findIndex(x=>x.id===id);all[i]=c}LS.set("crm",all);return c.id},
-  async delContact(id){if(this.db){try{await this.crm().doc(id).delete()}catch(e){toast("No se pudo eliminar.")}return}
+  async delContact(id){try{const J=LS.get("crmJ")||{};delete J[id];LS.set("crmJ",J)}catch(e){}if(this.db){try{await this.crm().doc(id).delete()}catch(e){toast("No se pudo eliminar.")}return}
     LS.set("crm",(LS.get("crm")||[]).filter(x=>x.id!==id))}
 };
 
@@ -7883,20 +7885,32 @@ const crmGrp=q=>!q&&stageF==="Todos";let crmGA=null;
 function crmGAb(){if(!crmGA){let a=null;try{a=LS.get("crmGA")}catch(e){}crmGA=new Set(Array.isArray(a)?a:["Por cerrar"])}return crmGA}
 const CG_ORD=["Por cerrar","Seguimiento","Presentación","Contactado","Nuevo"];
 function crmPv(c){try{const v=salaOk()&&salaDe(c.id),e=(LS.get("salaEnv")||{})[c.id];if(v&&/^\d+$/.test(String(v.pulso||"")))return v.pulso+"/10";if(v&&(+v.pct||0)>0)return "vio "+(+v.pct||0)+"%";if(v||e)return "Enviada"}catch(x){}return ""}
-function crmCuerpo(list,card,q){let n=0;const pk=pipeOk(),act=c=>!CERR.includes(c.stage)&&!PAUSA.includes(c.stage);
-  const row=c=>{const nn=act(c)?++n:"";const op=openC===c.id,col=STAGE_COL[c.stage]||"var(--brand)",cer=CERR.includes(c.stage),pv=crmPv(c),fr=!cer&&pk&&stFrio(c),late=!cer&&c.next&&c.next<TODAY;
-    return `<div class="cgR${op?" op":""}" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}"><span class="cgN">${nn}</span><span class="cgNm">${esc(c.name)}${pv?`<em>🎬 ${esc(pv)}</em>`:""}</span><span class="cgP" style="color:${col}">${cer?esc(c.stage):pk?stPct(c)+"%":esc(c.stage||"Nuevo")}${fr||late?`<i title="Sin seguimiento">⚠</i>`:""}</span></div>${op?`<div class="cgF">${card(c)}</div>`:""}`};
-  const nA=list.filter(act).length,nC=list.filter(c=>CERR.includes(c.stage)).length,cnt=`<p class="cgCnt">${nA} en proceso${nC?` · ${nC} ${nC===1?"cerrado":"cerrados"}`:""}</p>`;
+// 18 nov (Edwin): cambios de contactos que se quedaron solo en el teléfono (señal débil, app cerrada) se perdían.
+// Diario local: cada guardado se anota; al abrir/volver a la app se compara con el servidor y se vuelve a subir lo que no llegó.
+function crmJ(id,b){try{const J=LS.get("crmJ")||{};J[id]={u:+b.updated||Date.now(),t:Date.now(),b};const K=Object.keys(J).sort((x,y)=>J[y].t-J[x].t);K.slice(60).forEach(k=>delete J[k]);LS.set("crmJ",J)}catch(e){}}
+let crmJr=0;async function crmJRevisar(){if(!(store&&store.db&&store.uid)||Date.now()-crmJr<90e3)return;crmJr=Date.now();let J;try{J=LS.get("crmJ")||{}}catch(e){return}
+  const ids=Object.keys(J).filter(k=>Date.now()-J[k].t>20e3);let n=0;
+  for(const id of ids){const e=J[id];if(Date.now()-e.t>7*864e5){delete J[id];continue}
+    try{const d=await store.crm().doc(id).srv();if(!d.exists){delete J[id];continue}const sv=d.data()||{};
+      if((+sv.updated||0)<e.u){await store.crm().doc(id).set(e.b);n++}else delete J[id]}catch(x){}}
+  try{const J2=LS.get("crmJ")||{};Object.keys(J2).forEach(k=>{if(!J[k]&&ids.includes(k))delete J2[k]});LS.set("crmJ",J2)}catch(e){}
+  if(n){try{toast("🔄 Se subieron "+n+" cambios de su CRM que no habían llegado")}catch(e){}}}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(()=>{try{crmJRevisar()}catch(e){}},4000)});
+setTimeout(()=>{try{crmJRevisar()}catch(e){}},15000);
+function crmCuerpo(list,card,q){let n=0;const pk=pipeOk(),act=c=>!CERR.includes(c.stage)&&!PAUSA.includes(c.stage)&&!lluPas(c);
+  const row=c=>{const nn=act(c)?++n:"";const op=openC===c.id,col=STAGE_COL[c.stage]||"var(--brand)",ps=lluPas(c),cer=CERR.includes(c.stage)||ps,pv=crmPv(c),fr=!cer&&pk&&stFrio(c),late=!cer&&c.next&&c.next<TODAY,rx=ps?lluRepTx(c.rep):null;
+    return `<div class="cgR${op?" op":""}" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}"><span class="cgN">${nn}</span><span class="cgNm">${esc(c.name)}${pv?`<em>🎬 ${esc(pv)}</em>`:""}</span><span class="cgP${rx?" rp "+rx.c:""}" style="color:${col}">${rx?esc(rx.t):cer?esc(c.stage):pk?stPct(c)+"%":esc(c.stage||"Nuevo")}${fr||late?`<i title="Sin seguimiento">⚠</i>`:""}</span></div>${op?`<div class="cgF">${card(c)}</div>`:""}`};
+  const nA=list.filter(act).length,nC=list.filter(c=>CERR.includes(c.stage)&&!lluPas(c)).length,cnt=`<p class="cgCnt">${nA} en proceso${nC?` · ${nC} ${nC===1?"cerrado":"cerrados"}`:""}</p>`;
   if(!crmGrp(q))return cnt+`<div class="cgG">${list.map(row).join("")}</div>`;
-  const gk=c=>CERR.includes(c.stage)?"Cerrados":c.stage==="No interesado"?"Descartados":(c.stage||"Nuevo");
-  const G={};list.forEach(c=>{const k=gk(c);(G[k]=G[k]||[]).push(c)});const ORD2=CG_ORD.concat([MA,"Cerrados","Descartados"]);const ks=Object.keys(G).sort((a,b)=>((ORD2.indexOf(a)+1)||99)-((ORD2.indexOf(b)+1)||99));
+  const gk=c=>lluPas(c)?"Pasados":CERR.includes(c.stage)?"Cerrados":c.stage==="No interesado"?"Descartados":(c.stage||"Nuevo");
+  const G={};list.forEach(c=>{const k=gk(c);(G[k]=G[k]||[]).push(c)});const ORD2=CG_ORD.concat(["Pasados",MA,"Cerrados","Descartados"]);const ks=Object.keys(G).sort((a,b)=>((ORD2.indexOf(a)+1)||99)-((ORD2.indexOf(b)+1)||99));
   const A=crmGAb();if(openC){const oc=list.find(c=>c.id===openC);if(oc)A.add(gk(oc))}let ga0=null;try{ga0=LS.get("crmGA")}catch(e){}if(!Array.isArray(ga0)&&!ks.some(k=>A.has(k))&&ks[0])A.add(ks[0]); // 16 nov (Edwin): un grupo se puede cerrar aunque queden todos cerrados; solo la 1.ª vez se abre el primero
   
   let sep=false;
-  return cnt+ks.map(k=>{const L=G[k],o=A.has(k),xtra=[MA,"Cerrados","Descartados"].includes(k),col=k==="Cerrados"?"#12805C":k==="Descartados"?"#94A3B8":k===MA?"#65A30D":STAGE_COL[k]||"var(--brand)",fr=xtra?0:L.filter(c=>pipeOk()&&stFrio(c)).length,hoy=k===MA?L.filter(c=>c.next&&c.next<=TODAY).length:0;
+  return cnt+ks.map(k=>{const L=G[k],o=A.has(k),xtra=["Pasados",MA,"Cerrados","Descartados"].includes(k),col=k==="Pasados"?"#0A7DAD":k==="Cerrados"?"#12805C":k==="Descartados"?"#94A3B8":k===MA?"#65A30D":STAGE_COL[k]||"var(--brand)",fr=xtra?0:L.filter(c=>pipeOk()&&stFrio(c)).length,hoy=k===MA?L.filter(c=>c.next&&c.next<=TODAY).length:0;
     let body="";if(o){if(k==="Cerrados"){const cl=L.filter(c=>c.stage==="Cliente").length,so=L.length-cl;body=`<div class="cgMar">✅ <b>${L.length} ${L.length===1?"cierre":"cierres"}</b> · ${cl} ${cl===1?"cliente":"clientes"} · ${so} ${so===1?"socio":"socios"}. Cuídelos: un cliente feliz le da referidos.</div>`}body+=L.map(row).join("")}else if(!xtra)n+=L.length;
-    const ic=k===MA?"🌱 ":k==="Cerrados"?"✅ ":k==="Descartados"?"✖ ":"";const s1=xtra&&!sep?(sep=true,`<div class="cgSep"></div>`):"";
-    return `${s1}<div class="cgG${xtra?" x":""}"><button type="button" class="cgH" data-cgg="${esc(k)}" aria-expanded="${o}"><i style="background:${col}"></i>${ic}${esc(k.toUpperCase())}${fr?`<small>⚠ ${fr}</small>`:""}${hoy?`<small>⏰ ${hoy===1?"toca hoy":hoy+" tocan hoy"}</small>`:""}<span>${L.length} ${o?"▴":"▾"}</span></button>${body}</div>`}).join("")}
+    const ic=k==="Pasados"?"📤 ":k===MA?"🌱 ":k==="Cerrados"?"✅ ":k==="Descartados"?"✖ ":"";const s1=xtra&&!sep?(sep=true,`<div class="cgSep"></div>`):"";
+    return `${s1}<div class="cgG${xtra?" x":""}"><button type="button" class="cgH" data-cgg="${esc(k)}" aria-expanded="${o}"><i style="background:${col}"></i>${ic}${esc(k==="Pasados"?"PASADOS A MI EQUIPO":k.toUpperCase())}${fr?`<small>⚠ ${fr}</small>`:""}${k==="Pasados"&&L.filter(c=>(lluRepTx(c.rep)||{}).c==="bad").length?`<small>⏰ ${L.filter(c=>(lluRepTx(c.rep)||{}).c==="bad").length} sin atender</small>`:""}${hoy?`<small>⏰ ${hoy===1?"toca hoy":hoy+" tocan hoy"}</small>`:""}<span>${L.length} ${o?"▴":"▾"}</span></button>${body}</div>`}).join("")}
 // 13 nov (Edwin, PRUEBA solo admin): contacto del CRM rediseñado con la presentación virtual de protagonista.
 function crmV2On(){return !!(salaOk()&&irSimple())}
 // 14 nov (Edwin, solo admin): CRM más limpio — herramientas con nombre, etapas en una fila, orden en un botón, pase de abordar en boleto, ⋯ en ventana.
@@ -7984,6 +7998,7 @@ function crmV2Sig(c){let P=flPaso(c);const st=c.stage||"Nuevo",tarde=["Presentac
 function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fecha>=TODAY).sort(citaSort)[0],m=memDe(c.id),me=(LS.get("memEnv")||{})[c.id],au=c.stAuto&&c.stT&&Date.now()-c.stT<14*864e5;
   const fc=f=>{try{return new Date(f+"T12:00:00").toLocaleDateString("es",{day:"numeric",month:"short"}).replace(".","")}catch(x){return f}};
   const fT=t=>{try{return new Date(t).toLocaleDateString("es",{day:"numeric",month:"short"}).replace(".","")}catch(x){return ""}};
+  if(lluPas(c)){late=false;today=false}
   const due=late&&c.next?`<span class="cvDue bad">⏰ Atrasado · ${esc(fc(c.next))}</span>`:today?`<span class="cvDue warn">⏰ Seguimiento hoy</span>`:c.next?`<span class="cvDue">📅 ${esc(fc(c.next))}</span>`:"";
   // 15 nov (Edwin): contacto abierto más limpio → estado · siguiente paso (tarjeta verde) · su camino · presentación virtual en una línea · actividad · accesos rápidos
   const A=[];if(ci)A.push(["📅","Cita: "+citaCuando(ci),""]);if(au)A.push(["🤖","Avanzó solo: "+c.stAuto,c.stT?fT(c.stT):""]);if(c.org)A.push([salaOrIc(c.org),"Llegó desde: "+c.org,""]);
@@ -7994,8 +8009,8 @@ function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fech
   return `<div class="cvTop"><div class="grow" style="min-width:0">
      <button type="button" class="cvSt cvSt3" data-stopen="${esc(c.id)}"><span class="cvPill" style="--pc:${STAGE_COL[c.stage]||"var(--brand)"}">${CV_STI[c.stage]||""}${esc(c.stage||"Nuevo")}</span>${due}<span class="cvCg">Cambiar ›</span></button></div></div>
    ${crmSt.has(c.id)?stepsHTML(c):""}${maLinea(c)}${lluHTML(c)}${gcHTML(c)}
-   ${crmV2Sig(c)}
-   ${reuCamino(c)}
+   ${lluPas(c)?"":crmV2Sig(c)}
+   ${lluPas(c)?"":reuCamino(c)}
    ${A.length?`<div class="cvActv"><div class="k">ACTIVIDAD${nS?`<button type="button" data-sgt="${esc(c.id)}">Ver todo ›</button>`:""}</div>${A.slice(0,3).map(([i,t,f,k])=>k?`<div data-cvtk="${esc(k)}" style="cursor:pointer"><span>${i}</span><span class="grow">${esc(t)} <b style="color:var(--brand);font-weight:700;white-space:nowrap">Ver respuestas ›</b></span>${f?`<small>${esc(f)}</small>`:""}</div>`:`<div><span>${i}</span><span class="grow">${esc(t)}</span>${f?`<small>${esc(f)}</small>`:""}</div>`).join("")}</div>`:""}
    <div class="cvFt">${wl?`<a href="${esc(wl)}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" class="w">💬 WhatsApp</a>`:`<button type="button" data-edit="${esc(c.id)}">➕ WhatsApp</button>`}<button type="button" data-cvs="${esc(c.id)}">🔁 Seguimiento</button><button type="button" class="x" data-cvmas="${esc(c.id)}" aria-label="Más opciones">⋯</button></div>`}
 // Presentación virtual en una línea (si no se ha enviado, el botón grande para enviarla)
@@ -8360,6 +8375,11 @@ async function lluCargar(f){if(!store.db)return LLU||{};if(!f&&LLU&&Date.now()-L
 const lluDia=t=>{try{return new Date(t).toLocaleDateString("en-CA",{timeZone:"America/Tegucigalpa"})}catch(e){return ""}};
 function lluCuenta(u){const h0=lluDia(Date.now());let h=0,t=0;(contacts||[]).forEach(c=>{const r=c.rep;if(r&&r.u===u){t++;if(lluDia(r.t)===h0)h++}});return {h,t}}
 const lluEsCamp=c=>!!c&&Array.isArray(c.cat)&&c.cat.includes("camp");
+// 18 nov (Edwin): prospecto que ya pasé a un socio → grupo aparte, no cuenta en «en proceso» ni sale atrasado
+const lluPas=c=>!!(c&&c.rep&&c.rep.u&&c.rep.st!=="x"&&c.rep.u!==store.uid);
+function lluRepTx(r){if(!r)return "";const nm=String(nv(r.n||"su socio")).split(" ")[0],hp=r.ok||r.t||0,tarde=!r.cx&&r.st==="ok"&&Date.now()-hp>3*36e5;
+  if(r.st!=="ok")return {t:"⏳ llegando a "+nm,c:""};if(!r.cx)return {t:nm+" · aún no le escribe",c:tarde?"bad":""};
+  return {t:nm+" · "+(CV_STI[r.s]||"")+(r.s||"Contactado")+(r.gp?" · paso "+r.gp:""),c:"ok"}}
 
 // 17 nov (Edwin, «HAZLO»): GUION DE LA CAMPAÑA en cada prospecto 📣 Campaña (manual claude/campana-prospectos-ilimitados.md).
 // c.gc = {p: siguiente paso (0..6), t:{k:ms}, d (lo que dijo), w (su trabajo), cu (cuándo verá la presentación)}. Evento = config.anuncio (EVA). 0 lecturas.
@@ -8435,12 +8455,16 @@ document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest
   const v=b.dataset.gcp||b.dataset.gcx||b.dataset.gcq||b.dataset.gcl||(b.dataset.gcm||"").split("|")[0],c=(contacts||[]).find(x=>x.id===v);if(!c)return;
   if(b.dataset.gcp){const S=gcSt(c);gcAbrir(c,GC_P[Math.min(5,S.p)])}else if(b.dataset.gcm)gcAbrir(c,b.dataset.gcm.split("|")[1]);else if(b.dataset.gcl)gcPasos(c);else if(b.dataset.gcx)gcLista(c,GC_S,"🔁 Seguimiento");else gcLista(c,GC_Q,"❓ Me preguntó…")},true);
 function lluHTML(c){if(!lluEsCamp(c))return "";const r=c.rep,id=esc(c.id),cp=c.camp||{};
-  if(r&&r.u)return `<div class="llR">📤 Pasado a <b>${esc(nv(r.n||"un líder"))}</b> · ${esc(memHace(r.t))} · ${r.st==="ok"?"✅ ya está en su CRM":"⏳ llega a su CRM en 5–15 min"}${campOn()&&r.st!=="ok"?`<button type="button" data-llx="${id}">Deshacer</button>`:""}</div>`;
+  if(r&&r.u&&r.st!=="x"){const hp=r.ok||r.t,tarde=r.st==="ok"&&!r.cx&&Date.now()-hp>3*36e5;
+    const est=r.st!=="ok"?"⏳ Llega a su CRM en 5 min":!r.cx?(tarde?"⏰ <b>Aún no le escribe</b> · ":"🕐 Aún no le escribe · ")+"pasado "+esc(memHace(hp)):"✅ "+esc(r.s||"Contactado")+(r.gp?" · paso "+r.gp+" del guion":"")+(r.lu?" · movido "+esc(memHace(r.lu)):"");
+    return `<div class="llR${tarde?" bad":""}">📤 Pasado a <b>${esc(nv(r.n||"un líder"))}</b><span class="llE">${est}</span>${campOn()&&r.st!=="ok"?`<button type="button" data-llx="${id}">Deshacer</button>`:""}${campOn()&&r.st==="ok"?`<button type="button" class="llQ" data-llq2="${id}">🔁 Quitar y pasar a otro</button>`:""}</div>`}
   if(cp.dn)return `<div class="llR">📣 Prospecto de la campaña · se lo pasó <b>${esc(cp.dn)}</b>${cp.int?" · le interesa: "+esc(cp.int):""}</div>`;
   return campOn()?`<button type="button" class="llGo" data-llp="${id}">📤 Pasar a un Action Leader</button>`:""}
-document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-llp],[data-llx]");if(!b)return;e.preventDefault();e.stopPropagation();
-  const id=b.dataset.llp||b.dataset.llx,c=(contacts||[]).find(x=>x.id===id);if(!c)return;if(b.dataset.llp)lluPasar(c);else lluDeshacer(c)},true);
-async function lluPasar(c){const L=await lluCargar(true),P=(L.part||[]).filter(x=>x&&x.u),tope=+L.tope||0,fn=String(c.name||"").split(" ")[0];
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-llp],[data-llx],[data-llq2]");if(!b)return;e.preventDefault();e.stopPropagation();
+  const id=b.dataset.llp||b.dataset.llx||b.dataset.llq2,c=(contacts||[]).find(x=>x.id===id);if(!c)return;
+  if(b.dataset.llq2){if(b.dataset.ok!=="1"){b.dataset.ok="1";b.textContent="Toque otra vez para quitárselo a "+String(nv((c.rep||{}).n||"")).split(" ")[0];return}lluPasar(c,1);return}
+  if(b.dataset.llp)lluPasar(c);else lluDeshacer(c)},true);
+async function lluPasar(c,quitar){const L=await lluCargar(true),viejo=quitar&&c.rep&&c.rep.u?c.rep:null,P=(L.part||[]).filter(x=>x&&x.u&&(!viejo||x.u!==viejo.u)),tope=+L.tope||0,fn=String(c.name||"").split(" ")[0];
   if(!P.length){openSheet(`<h2>📤 Pasar a un Action Leader</h2><p class="small muted" style="margin:0">Primero elija quiénes participan en la campaña.</p><div class="row" style="margin-top:14px">${isAdmin?`<button class="btn grow" id="llCfg">🌧️ Elegir participantes</button>`:""}<button class="btn ghost" data-close>Cerrar</button></div>`,()=>{const b=$("#llCfg");if(b)b.onclick=()=>{closeSheet();setTimeout(()=>lluPanel(c),250)}});return}
   const R=P.map(x=>{const k=lluCuenta(x.u);return {x,k,off:!!(tope&&k.h>=tope)}}).sort((a,b)=>a.off-b.off||a.k.h-b.k.h||a.k.t-b.k.t||String(a.x.n).localeCompare(String(b.x.n)));
   openSheet(`<h2>📤 Pasar a ${esc(fn)}</h2><p class="small muted" style="margin:0 0 8px">Le llega a su CRM con la etiqueta 📣 Campaña y un aviso al teléfono en 5–15 minutos.${tope?` Tope: ${tope} al día por líder.`:""}</p>
@@ -8448,8 +8472,9 @@ async function lluPasar(c){const L=await lluCargar(true),P=(L.part||[]).filter(x
     <div class="row" style="margin-top:12px">${isAdmin?`<button class="btn ghost grow" id="llCfg">🌧️ Participantes y tope</button>`:""}<button class="btn ghost" data-close>Cancelar</button></div>`,()=>{
     const b=$("#llCfg");if(b)b.onclick=()=>{closeSheet();setTimeout(()=>lluPanel(c),250)};
     document.querySelectorAll("[data-llu]").forEach(x=>x.onclick=async()=>{if(x.disabled)return;const p=P.find(y=>y.u===x.dataset.llu);if(!p)return;x.disabled=true;
-      const prev={rep:c.rep,repP:c.repP};c.rep={u:p.u,n:p.n,t:Date.now(),st:"p",dn:esSoloAdminYo()?"Edwin García Go":(miNombreCorto()||"su líder")};c.repP=true;c.updated=Date.now();
-      const id=await store.saveContact(Object.assign({},c));if(!id){c.rep=prev.rep;c.repP=prev.repP;x.disabled=false;return}
+      const prev={rep:c.rep,repP:c.repP,repQ:c.repQ,repH:c.repH};if(viejo){c.repQ={u:viejo.u,n:viejo.n||"",t:Date.now()};c.repH=(c.repH||[]).concat([{u:viejo.u,n:viejo.n||"",t:viejo.t||0,q:Date.now()}]).slice(-5)}
+      c.rep={u:p.u,n:p.n,t:Date.now(),st:"p",dn:esSoloAdminYo()?"Edwin García Go":(miNombreCorto()||"su líder")};c.repP=true;c.updated=Date.now();
+      const id=await store.saveContact(Object.assign({},c));if(!id){Object.assign(c,prev);x.disabled=false;return}
       closeSheet();try{renderCRM()}catch(e){}toast("📤 Listo: en 5–15 min "+fn+" llega al CRM de "+String(nv(p.n)).split(" ")[0])})})}
 async function lluDeshacer(c){if(!c.rep||c.rep.st==="ok")return;delete c.rep;c.repP=false;c.updated=Date.now();await store.saveContact(Object.assign({},c));try{renderCRM()}catch(e){}toast("Listo, ya no se le pasa")}
 async function lluPanel(cTras){if(!isAdmin)return;const L=await lluCargar(true);if(!socios)try{await loadSocios()}catch(e){}
@@ -10265,7 +10290,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261118103100";var busy=false,pend=null;
+(function(){var V="20261118114739";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

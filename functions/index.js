@@ -185,6 +185,25 @@ exports.lluviaCada5 = functions.runWith({ memory: "256MB", timeoutSeconds: 120, 
       if (ok.length === 1) await push([dest], "📣 Nuevo prospecto de la campaña", primer(n1.name) + (it ? " · le interesa: " + it : "") + ". Escríbale ya: el primer contacto rápido es el que más funciona.", "camp");
       else await push([dest], `📣 ${ok.length} prospectos nuevos de la campaña`, ok.slice(0, 4).map(x => primer(x.c.name)).join(", ") + (ok.length > 4 ? " y " + (ok.length - 4) + " más" : "") + ". Están en su CRM con la etiqueta 📣 Campaña.", "camp"); }
   }
+  // 18 nov: «Quitar y pasar a otro» → se borra la copia del socio anterior
+  let nQ = 0;
+  for (const d of (await db.collection(`users/${dest}/crm`).where("repQ.t", ">", 0).get()).docs) {
+    const q = d.data().repQ || {};
+    if (q.u && q.u !== dest) { const t = db.doc(`users/${q.u}/crm/${d.id}`), x = await t.get(); if (x.exists && ((x.data().camp || {}).de === dest)) await t.delete(); }
+    await d.ref.update({ repQ: DEL }); nQ++;
+  }
+  // Una sola vez: resumen de los ya pasados (para que Edwin vea cómo van)
+  const M2 = (await meta.get()).data() || {};
+  if (!M2.bf1) { for (const d of (await db.collection(`users/${dest}/crm`).where("rep.st", "==", "ok").get()).docs) {
+      const r = d.data().rep || {}; if (!r.u) continue; const x = await db.doc(`users/${r.u}/crm/${d.id}`).get(); if (!x.exists) continue;
+      const up = repResumen(x.data(), r); if (!r.cx && !up["rep.cx"]) up["rep.chk"] = now; await d.ref.update(up); }
+    await meta.set({ bf1: now }, { merge: true }); }
+  // Aviso: socio que no ha escrito en 3 horas
+  const tard = [];
+  for (const d of (await db.collection(`users/${dest}/crm`).where("rep.chk", "<=", now).get()).docs) {
+    const x = d.data(), r = x.rep || {}; if (r.st === "ok" && !r.cx && r.u) tard.push({ n: x.name, l: r.n || "" }); await d.ref.update({ "rep.chk": DEL }); }
+  if (tard.length) await push([dest], tard.length === 1 ? `⏰ ${primer(tard[0].l)} aún no contacta a ${primer(tard[0].n)}` : `⏰ ${tard.length} prospectos pasados sin atender`,
+    tard.length === 1 ? "Ya pasaron 3 horas. Escríbale a su socio o quíteselo y páselo a otro." : tard.slice(0, 4).map(x => primer(x.l) + " → " + primer(x.n)).join(" · ") + ". Puede quitárselos y pasarlos a otro.", "camp");
   // Reparto: contactos que Edwin pasó a un Action Leader
   const R = (await db.collection(`users/${dest}/crm`).where("repP", "==", true).get()).docs; let nR = 0;
   for (const d of R) {
@@ -197,9 +216,27 @@ exports.lluviaCada5 = functions.runWith({ memory: "256MB", timeoutSeconds: 120, 
       if (x.email) c.email = x.email;
       await tgt.set(c);
     }
-    await d.ref.set({ repP: false, rep: { ...r, st: "ok", ok: now } }, { merge: true }); nR++;
+    await d.ref.set({ repP: false, rep: { ...r, st: "ok", ok: now, chk: now + 3 * 36e5 } }, { merge: true }); nR++;
     if (!ex.exists) await push([r.u], "📣 " + primer(de) + " le pasó un prospecto", primer(x.name) + (cp.int ? " · le interesa: " + cp.int : "") + ". Ya está en su CRM con la etiqueta 📣 Campaña. ¡Escríbale hoy!", "camp");
   }
-  await meta.set({ fx: { t: now, filas: leads.length, nuevos: ok.length, pasados: nR } }, { merge: true });
-  console.log("lluvia: filas", leads.length, "· nuevos", ok.length, "· pasados", nR);
+  await meta.set({ fx: { t: now, filas: leads.length, nuevos: ok.length, pasados: nR, quitados: nQ, tarde: tard.length } }, { merge: true });
+  console.log("lluvia: filas", leads.length, "· nuevos", ok.length, "· pasados", nR, "· quitados", nQ, "· tarde", tard.length);
+});
+
+// 18 nov (Edwin): el líder mueve un prospecto de la campaña que Edwin le pasó → resumen en la ficha de Edwin (rep.s etapa, gp paso del guion, lu última vez, cx primer contacto).
+function repResumen(a, r) {
+  const gp = +((a.gc || {}).p) || 0, fl = Object.keys(((a.fl || {}).h) || {}).length,
+    hizo = (a.stage && a.stage !== "Nuevo") || gp > 0 || (a.seg || []).length > 0 || fl > 0 || !!a.ultSeg;
+  const up = { "rep.s": a.stage || "Nuevo", "rep.gp": gp, "rep.lu": +a.updated || Date.now() };
+  if (hizo && !(r || {}).cx) { up["rep.cx"] = Date.now(); up["rep.chk"] = DEL; }
+  return up;
+}
+exports.campSync = functions.runWith({ memory: "256MB", timeoutSeconds: 30 }).firestore.document("users/{u}/crm/{id}").onWrite(async (ch, ctx) => {
+  if (!ch.after.exists) return;
+  const a = ch.after.data() || {}, cp = a.camp || {}; if (!cp.de || cp.de === ctx.params.u) return;
+  const ref = db.doc(`users/${cp.de}/crm/${ctx.params.id}`), o = await ref.get(); if (!o.exists) return;
+  const r = (o.data() || {}).rep || {}; if (r.u !== ctx.params.u) return;
+  const up = repResumen(a, r);
+  if (r.s === up["rep.s"] && (+r.gp || 0) === up["rep.gp"] && r.lu === up["rep.lu"] && !up["rep.cx"]) return;
+  await ref.update(up);
 });
