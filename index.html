@@ -2434,19 +2434,24 @@ function valStrip(){const el=$("#valStrip");if(!el)return;if(store.uid&&Array.is
 // La ven SOLO los que aceptaron su lugar en Turnos de ese training (trPon con su uid) y los admins, desde 4 días antes hasta 90 min después de empezar.
 function ponProx(){const P=((T.config||{}).ponencias)||{},now=Date.now();return (T.eventos||[]).filter(e=>P[e.id]&&turMs(e)+90*6e4>now&&turMs(e)-4*864e5<now).sort((a,b)=>turMs(a)-turMs(b)).map(e=>Object.assign({e},P[e.id]))}
 function ponMia(x){try{if(isAdmin)return true;return trPon(x.e).some(p=>p&&p.u&&p.u===store.uid)}catch(e){return false}}
+function ponAct(x){if(!x.act)return"";try{const d=new Date(x.act);return d.toLocaleDateString("es-HN",{timeZone:"America/Tegucigalpa",weekday:"short",day:"numeric",month:"short"})+" · "+d.toLocaleTimeString("es-HN",{timeZone:"America/Tegucigalpa",hour:"numeric",minute:"2-digit"})}catch(e){return""}}
+function ponK(x){return"ponV:"+(store.uid||"")+":"+x.e.id}
+function ponNueva(x){if(!x.act)return false;let v="";try{v=localStorage.getItem(ponK(x))||""}catch(e){}return !!v&&v!==x.act}
+function ponVisto(x){try{if(x.act)localStorage.setItem(ponK(x),x.act)}catch(e){}try{ponStrip()}catch(e){}}
+function ponU(u,x){return u&&x.act?u+(u.includes("?")?"&":"?")+"v="+encodeURIComponent(x.act):u}
 function ponDia(e){const d=parseK(e.fecha);return e.fecha===TODAY?"de hoy":e.fecha===addD(TODAY,1)?"de mañana":"del "+DAYS_L[d.getDay()]}
 function ponStrip(){const el=$("#ponStrip");if(!el)return;if(!(fbUser&&store.uid)){el.hidden=true;return}const L=ponProx();if(!L.length){el.hidden=true;return}
   if(!turD&&!ponStrip._t){ponStrip._t=1;Promise.resolve(turCargar()).catch(()=>{}).then(()=>{try{ponStrip()}catch(e){}})}
   const M=L.filter(ponMia);if(!M.length){el.hidden=true;return}const x=M[0],yo=!isAdmin||trPon(x.e).some(p=>p&&p.u===store.uid),quien=trOrden(trPon(x.e)).map(p=>String(nv(p.n)||p.n).split(" ")[0]).join(" y ");
-  const h=`<div class="lzgI">📥</div><div class="lzgT"><b>${yo?"Su ponencia "+ponDia(x.e)+" está lista":"Ponencia "+ponDia(x.e)+" lista"+(quien?" · "+esc(quien):"")}</b><span>🎓 ${esc(x.t||x.e.titulo)} · ${esc(h12(x.e.hora))}. Presentación y guion para descargar.</span><div class="olvL"><div class="olvR"><span class="olvN"><b>Action Leaders Training</b><small>${esc(niceDate(x.e.fecha))}</small></span><button type="button" class="olvW o" id="ponVer">Ver y descargar</button></div></div></div>`;
+  const h=`<div class="lzgI">📥</div><div class="lzgT"><b>${ponNueva(x)?"🔄 Nueva versión con los números de hoy":yo?"Su ponencia "+ponDia(x.e)+" está lista":"Ponencia "+ponDia(x.e)+" lista"+(quien?" · "+esc(quien):"")}</b><span>${ponNueva(x)?"Descárguela otra vez: trae los datos más recientes del equipo.":`🎓 ${esc(x.t||x.e.titulo)} · ${esc(h12(x.e.hora))}. Presentación y guion para descargar.`}${ponAct(x)?`<br><small>Actualizada: ${esc(ponAct(x))}</small>`:""}</span><div class="olvL"><div class="olvR"><span class="olvN"><b>Action Leaders Training</b><small>${esc(niceDate(x.e.fecha))}</small></span><button type="button" class="olvW o" id="ponVer">${ponNueva(x)?"Descargar otra vez":"Ver y descargar"}</button></div></div></div>`;
   if(el._h!==h){el._h=h;el.innerHTML=h;$("#ponVer").onclick=()=>ponAbrir(x)}el.hidden=false}
-function ponAbrir(x){const pdf=x.pdf,g=x.g,nm=String(x.t||"Training").replace(/[^\wÁÉÍÓÚáéíóúñÑ ]/g,"").trim().replace(/\s+/g,"-");try{if(pdf)pdfFile(pdf,nm+"-presentacion.pdf");if(g)pdfFile(g,nm+"-guion.pdf")}catch(e){}
+function ponAbrir(x){const pdf=ponU(x.pdf,x),g=ponU(x.g,x),nueva=ponNueva(x),nm=String(x.t||"Training").replace(/[^\wÁÉÍÓÚáéíóúñÑ ]/g,"").trim().replace(/\s+/g,"-");try{if(pdf)pdfFile(pdf,nm+"-presentacion.pdf");if(g)pdfFile(g,nm+"-guion.pdf")}catch(e){}
   const R=x.roles||{},rol=Object.entries(R).map(([n,r])=>`<span class="chip" style="font-weight:700">${esc(r)}: ${esc(nv(n)||n)}</span>`).join(" ");
-  openSheet(`<p class="eyebrow">🎓 ACTION LEADERS TRAINING · ${esc(niceDate(x.e.fecha).toUpperCase())} · ${esc(h12(x.e.hora))}</p><h2 style="margin:2px 0 6px">${esc(x.t||x.e.titulo)}</h2>${x.s?`<p class="small muted" style="margin:0 0 10px">${esc(x.s)}</p>`:""}
-   ${x.img?`<img src="${esc(x.img)}" alt="Portada" style="width:100%;border-radius:14px;display:block;margin:0 0 10px">`:""}${rol?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px">${rol}</div>`:""}
+  openSheet(`<p class="eyebrow">🎓 ACTION LEADERS TRAINING · ${esc(niceDate(x.e.fecha).toUpperCase())} · ${esc(h12(x.e.hora))}</p><h2 style="margin:2px 0 6px">${esc(x.t||x.e.titulo)}</h2>${x.s?`<p class="small muted" style="margin:0 0 10px">${esc(x.s)}</p>`:""}${ponAct(x)?`<p class="small" style="margin:0 0 10px;font-weight:700;color:${nueva?"#C2410C":"var(--brand)"}">${nueva?"🔄 Hay una versión nueva con los números de hoy · descárguela otra vez":"🕐 Actualizada: "+esc(ponAct(x))}</p>`:""}
+   ${x.img?`<img src="${esc(ponU(x.img,x))}" alt="Portada" style="width:100%;border-radius:14px;display:block;margin:0 0 10px">`:""}${rol?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px">${rol}</div>`:""}
    <div style="display:flex;flex-direction:column;gap:8px">${pdf?`<button class="btn" id="ponP">📥 Descargar la presentación (PDF)</button>`:""}${g?`<button class="btn ghost" id="ponG">📝 Descargar mi guion (PDF)</button>`:""}${pdf?`<button class="btn ghost sm" id="ponO">👀 Verla aquí</button>`:""}</div>
    <p class="small muted" style="margin:10px 0 0">Comparta pantalla en Zoom con la presentación en pantalla completa. Antes de empezar, confirme los números en Equipo › Ranking: pueden haber cambiado.</p>
-   <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{const a=$("#ponP");if(a)a.onclick=()=>bajarPdf(pdf,nm+"-presentacion.pdf");const b=$("#ponG");if(b)b.onclick=()=>bajarPdf(g,nm+"-guion.pdf");const o=$("#ponO");if(o)o.onclick=()=>{const w=window.open(pdf,"_blank");if(w)w.opener=null;else location.href=pdf}})}
+   <button class="btn ghost" data-close style="width:100%;margin-top:10px">Cerrar</button>`,()=>{const a=$("#ponP");if(a)a.onclick=()=>{ponVisto(x);bajarPdf(pdf,nm+"-presentacion.pdf")};const b=$("#ponG");if(b)b.onclick=()=>{ponVisto(x);bajarPdf(g,nm+"-guion.pdf")};const o=$("#ponO");if(o)o.onclick=()=>{ponVisto(x);const w=window.open(pdf,"_blank");if(w)w.opener=null;else location.href=pdf}})}
 // 17 nov (Edwin): Lluvia de prospectos en el carrusel «HOY». Admin: los de la campaña sin pasar (📤 Pasar). Líder: los que le pasaron (3 días, etapa Nuevo) con WhatsApp. 0 lecturas (contacts ya está cargado).
 function lluStrip(){const el=$("#lluStrip");if(!el)return;if(!(fbUser&&store.uid)){el.hidden=true;return}
   const C=(contacts||[]).filter(lluEsCamp),adm=campOn(),now=Date.now();
@@ -6143,6 +6148,7 @@ function avIr(k){try{
   if(k==="aud"){audAbrir();return}
   if(k==="pv"){go("inicio");setTimeout(()=>{try{salaMenu()}catch(e){}},350);return}
   if(k==="sala"){LS.set("salaOn",1);loadSala(true).then(()=>abrirSala(),()=>abrirSala());return}
+  if(k==="pon"){const run=()=>{const M=ponProx().filter(ponMia);if(M.length)ponAbrir(M[0]);else toast("No hay ponencia próxima")};if(!turD)Promise.resolve(turCargar()).then(run,run);else run();return}
   if(k==="tur"){const run=()=>{const P=turMisP();if(P.length)turResponder(P[0].e,P[0].k);else turAbrir()};turCargar(true).then(run,run);return}
   if(k==="rep"){if(isAdmin)repAdmin();return}
   if(k==="via"){go("inicio");try{avBoxMostrar("viaStrip")}catch(e){}avScroll("#viaStrip");return}
@@ -10375,7 +10381,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261118132700";var busy=false,pend=null;
+(function(){var V="20261118134412";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

@@ -352,6 +352,7 @@ export function avDestino(modo, m) {
   if (modo === "sinapp") return "snv";
   if (modo === "rhito" || /^rc3/.test(modo)) return "rach";
   if (modo === "turnos") return "tur";
+  if (modo === "pon") return "pon";
   if (modo === "salapend") return "sala";
   if (modo === "recodia") return /Hoy es su día/.test(t) ? "recoyo" : "recodia";
   if (modo === "msg" && /Llamada de liderazgo/i.test(t)) return "lz";
@@ -681,6 +682,35 @@ async function main() {
     }
     console.log("Turnos con aviso:", n);
     if (!DRY && Object.keys(W).length) await ref.set({ s: W }, { merge: true });
+  } else if (modo === "pon") {
+    // 18 nov (Edwin): ponencias del Training. Un día antes: «ya está su ponencia, véala»; cuando se regenera (config.ponencias[id].act cambia): «descárguela otra vez, ya tiene los números reales».
+    // Solo a los ponentes que aceptaron su lugar en Turnos. Dedupe en push_meta/pon.s (id:uid:l / id:uid:a:ACT).
+    let J = {}; try { J = JSON.parse(fs.readFileSync(viejoP || "../../data/team.json", "utf8")); } catch {}
+    const PON = (J.config || {}).ponencias || {}, EV = {}; (J.calendario || []).forEach(e => { if (e && e.id) EV[e.id] = e; });
+    const ahora = Date.now(), mref = db.doc("push_meta/pon"), M = (await mref.get()).data() || {}, sent = new Set(M.s || []), add = [];
+    const TK = {}, pushDe = async uid => { if (uid in TK) return TK[uid]; const x = (await db.doc("push/" + uid).get()).data() || {}; hist[uid] = x.h || []; return TK[uid] = x.tk || null; };
+    const TD = {};
+    for (const id in PON) {
+      const e = EV[id], x = PON[id]; if (!e) continue;
+      const ms = Date.parse(e.fecha + "T" + (e.hora || "00:00") + ":00-06:00"); if (ms < ahora || ms - ahora > 30 * 36e5) continue;
+      const mes = e.fecha.slice(0, 7); if (!(mes in TD)) TD[mes] = ((await db.doc("turnos/" + mes).get()).data() || {}).s || {};
+      const S = TD[mes][id] || {}, us = new Set();
+      for (const k of ["p", "e", "p3", "p4"]) { const v = S[k]; if (v && typeof v === "object" && v.u && v.st !== "p" && v.st !== "no") us.add(v.u + "|" + (v.n || "")); }
+      const dia = e.fecha === hoyHN() ? "de hoy" : "de mañana", hr = h12(e.hora || "20:00"), tt = x.t || e.titulo;
+      for (const un of us) {
+        const [uid, nm] = un.split("|"), kl = id + ":" + uid + ":l", ka = id + ":" + uid + ":a:" + (x.act || "");
+        const prev = [...sent].find(z => z.startsWith(kl + ":")) || (sent.has(kl) ? kl : null);
+        if (!prev) {
+          const tk = await pushDe(uid); if (tk) salida.push([uid, tk, { title: "🎓 " + primer(nm) + ", su ponencia " + dia + " está lista", body: "«" + tt + "» · " + hr + ". Ya puede verla y ensayar. Antes del Training le avisamos para que la descargue con los números reales del equipo.", v: "pon" }]);
+          add.push(kl + ":" + (x.act || ""));
+        } else if (x.act && prev !== kl + ":" + x.act && !sent.has(ka)) {
+          const tk = await pushDe(uid); if (tk) salida.push([uid, tk, { title: "🔄 " + primer(nm) + ", descargue su ponencia otra vez", body: "Ya tiene los números reales del equipo para su Training de las " + hr + ". Ábrala en Inicio › Avisos de hoy.", v: "pon" }]);
+          add.push(ka);
+        }
+      }
+    }
+    console.log("Ponencias con aviso:", add.length);
+    if (!DRY && add.length) await mref.set({ s: [...sent, ...add].slice(-300), t: ahora }, { merge: true });
   } else if (modo === "salapend") {
     // Presentación virtual (13 nov): rescate a las 24 h (no terminó) y alerta cuando quedan 3 h del beneficio de 24 h (8–10 sin registrarse).
     vista = "sala";

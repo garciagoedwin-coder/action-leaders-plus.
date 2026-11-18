@@ -23,4 +23,6 @@ jobs:
         env:
           FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
           DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry == '1' && '1' || '' }}
-        run: node enviar.mjs turnos
+        run: |
+          node enviar.mjs turnos
+          node enviar.mjs pon
