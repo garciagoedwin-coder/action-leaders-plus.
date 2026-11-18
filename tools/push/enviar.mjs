@@ -343,6 +343,7 @@ export function avDestino(modo, m) {
   if (/^inact/.test(modo)) return /ahorros? pendientes?/i.test(t) ? "ahp" : "urg";
   if (/^lzg/.test(modo)) return /compromiso/i.test(t) ? "comp" : "lzg";
   if (modo === "viaje") return "via";
+  if (modo === "lluvia") return "camp";
   if (modo === "sinapp") return "snv";
   if (modo === "rhito" || /^rc3/.test(modo)) return "rach";
   if (modo === "turnos") return "tur";
@@ -769,6 +770,71 @@ async function main() {
       }
       if (!DRY) await ref.set({ m: mes, pos: nPos, pas, vg, vu, t: Date.now() });
     }
+  } else if (modo === "lluvia") {
+    // 17 nov (Edwin): Lluvia de prospectos v1. Hoja «Prospectos Ilimitados» → CRM de garciagoedwin (📣 Campaña, Nuevo) + aviso;
+    // y los que Edwin pasa con «📤 Pasar a un Action Leader» (rep/repP en el contacto) → CRM del líder + aviso.
+    // LLUVIA_PRUEBA=1 → destino = cuenta de prueba (config.pruebas) y un prospecto falso; no toca la hoja ni los reales.
+    const L = await import("./lluvia.mjs");
+    const SA = JSON.parse(process.env.FIREBASE_SA), PRUEBA = !!process.env.LLUVIA_PRUEBA, now = Date.now(), hoy = hoyHN();
+    let dest = null;
+    if (PRUEBA) {
+      let pr = []; try { pr = (JSON.parse(fs.readFileSync(new URL("../../data/team.json", import.meta.url))).config || {}).pruebas || []; } catch (e) {}
+      const ahF = x => { let h = 0x811c9dc5; for (const b of new TextEncoder().encode("alp|" + x)) { h = (h ^ b) >>> 0; h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, "0").slice(0, 6); };
+      const us = (await db.collection("users").get()).docs.find(d => pr.includes(ahF("e:" + String(d.data().email || "").trim().toLowerCase())));
+      dest = us ? us.id : null;
+    } else { const q = await db.collection("users").where("email", "==", ADMINS[0]).limit(1).get(); dest = q.empty ? null : q.docs[0].id; }
+    if (!dest) { console.log("No encontré la cuenta que recibe los prospectos."); return; }
+    const meta = db.doc("push_meta/lluvia" + (PRUEBA ? "P" : "")), M = (await meta.get()).data() || {}, ids = M.ids || {};
+    let leads = [];
+    if (PRUEBA) leads = [{ id: "l:9990" + String(now).slice(-8), t: now, int: "las_dos", email: "", n: "prospecto de prueba", tel: "+50400000000", form: "Prueba", org: false, pl: "fb", camp: "Prueba de la app" }];
+    else { try { leads = L.prospectos(await L.leerHoja(SA)); } catch (e) { if (e.sinPermiso) { console.log("SIN PERMISO: comparta la hoja «Prospectos Ilimitados» como Lector con la cuenta de servicio."); return; } throw e; } }
+    const DESDE = Date.parse("2026-11-17T19:25:00-06:00");
+    const nuevos = leads.filter(p => !ids[p.id] && (p.t || now) >= DESDE && !/test/i.test(p.st));
+    console.log("Filas en la hoja:", leads.length, "· nuevas:", nuevos.length);
+    const ok = [];
+    if (nuevos.length) {
+      const crm = (await db.collection(`users/${dest}/crm`).get()).docs.map(d => ({ id: d.id, ...d.data() }));
+      for (const p of nuevos) {
+        const c = L.contactoDe(p, now), id = L.idDoc(p.id), d8 = L.dig8(c.phone);
+        const ya = crm.find(x => x.id === id) || (d8.length === 8 && crm.find(x => L.dig8(x.phone) === d8)) || null;
+        if (!DRY) {
+          if (!ya) { await db.doc(`users/${dest}/crm/${id}`).set(c); crm.push({ id, ...c }); }
+          else if (ya.id !== id) await db.doc(`users/${dest}/crm/${ya.id}`).set({ note: (ya.note ? ya.note + " · " : "") + c.note, cat: [...new Set([...(Array.isArray(ya.cat) ? ya.cat : []), "camp"])], camp: c.camp, updated: now }, { merge: true });
+          ids[p.id] = now;
+        }
+        if (!ya || ya.id !== id) ok.push({ c, ya: !!ya });
+      }
+      console.log("Al CRM:", ok.filter(x => !x.ya).length, "nuevos ·", ok.filter(x => x.ya).length, "ya estaban (se agregó la nota)");
+      const P = (await db.doc("push/" + dest).get()).data() || {};
+      if (ok.length && P.tk && (P.pr || {}).camp !== false) { hist[dest] = P.h || [];
+        const n1 = ok[0].c, it = (n1.camp || {}).int;
+        salida.push([dest, P.tk, ok.length === 1
+          ? { title: "📣 Nuevo prospecto de la campaña", body: primer(n1.name) + (it ? " · le interesa: " + it : "") + ". Escríbale ya: el primer contacto rápido es el que más funciona.", v: "camp" }
+          : { title: `📣 ${ok.length} prospectos nuevos de la campaña`, body: ok.slice(0, 4).map(x => primer(x.c.name)).join(", ") + (ok.length > 4 ? " y " + (ok.length - 4) + " más" : "") + ". Están en su CRM con la etiqueta 📣 Campaña.", v: "camp" }]); }
+      else if (ok.length) console.log("La cuenta que recibe no tiene avisos activados.");
+    }
+    if (!DRY) { const K = Object.entries(ids).sort((a, b) => b[1] - a[1]).slice(0, 3000); await meta.set({ ids: Object.fromEntries(K), t: now }); }
+    // Reparto: contactos que Edwin pasó a un Action Leader
+    const R = (await db.collection(`users/${dest}/crm`).where("repP", "==", true).get()).docs;
+    let nR = 0;
+    for (const d of R) {
+      const x = d.data(), r = x.rep || {}; if (!r.u || r.u === dest) continue;
+      const tgt = db.doc(`users/${r.u}/crm/${d.id}`), ex = await tgt.get(), cp = x.camp || {}, de = r.dn || "su líder";
+      if (!DRY) {
+        if (!ex.exists) {
+          const c = { name: x.name || "Prospecto", phone: x.phone || "", cc: x.cc || "", stage: "Nuevo", stT: now,
+            note: "📣 Campaña · se lo pasó " + de + " el " + new Date(now).toLocaleDateString("es-HN", { day: "numeric", month: "short", timeZone: "America/Tegucigalpa" }) + (cp.int ? " · Le interesa: " + cp.int : ""),
+            next: hoy, cat: ["camp"], camp: { ...cp, de: dest, dn: de }, creado: now, updated: now };
+          if (x.email) c.email = x.email;
+          await tgt.set(c);
+        }
+        await d.ref.set({ repP: false, rep: { ...r, st: "ok", ok: now } }, { merge: true });
+      }
+      nR++;
+      const P = (await db.doc("push/" + r.u).get()).data() || {};
+      if (P.tk && !ex.exists) { hist[r.u] = P.h || []; salida.push([r.u, P.tk, { title: "📣 " + primer(de) + " le pasó un prospecto", body: primer(x.name) + (cp.int ? " · le interesa: " + cp.int : "") + ". Ya está en su CRM con la etiqueta 📣 Campaña. ¡Escríbale hoy!", v: "camp" }]); }
+    }
+    if (nR) console.log("Pasados a Action Leaders:", nR);
   } else if (modo === "viaje") {
     // 8 nov (Edwin): invitar a llenar el formulario de testimonios de viaje (cada semana) a quien NO ha respondido
     // (users.viaj = "Ya lo hice"/"No me interesa") y NO tiene testimonio publicado (data/hist.json tx[].n).

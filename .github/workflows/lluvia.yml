@@ -1,0 +1,30 @@
+name: Lluvia de prospectos
+# 17 nov (Edwin): hoja «Prospectos Ilimitados» → CRM de garciagoedwin (📣 Campaña) + aviso; reparto a Action Leaders.
+# Los registros son públicos: el script solo imprime conteos.
+on:
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: "1 = solo mostrar, no guardar ni enviar"
+        default: "1"
+      prueba:
+        description: "1 = prospecto falso a la cuenta de prueba"
+        default: "0"
+concurrency: lluvia
+jobs:
+  lluvia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci --no-audit --no-fund
+        working-directory: tools/push
+      - name: Lluvia
+        working-directory: tools/push
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+          DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry == '1' && '1' || '' }}
+          LLUVIA_PRUEBA: ${{ github.event_name == 'workflow_dispatch' && inputs.prueba == '1' && '1' || '' }}
+        run: node enviar.mjs lluvia
