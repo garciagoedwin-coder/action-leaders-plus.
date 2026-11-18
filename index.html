@@ -2264,7 +2264,10 @@ const ROUTINE=[
 const ptsDia=(d,key)=>{key=key||TODAY;return ROUTINE.filter(r=>!r.desde||key>=r.desde).reduce((s,r)=>s+Math.min((d&&d[r.k])||0,1),0)};
 const RETO_KEYS=["presentaciones","videos"];
 let day={};
-function dayScore(d,key){key=key||TODAY;const L=ROUTINE.filter(r=>!r.desde||key>=r.desde);let s=0;L.forEach(r=>{s+=Math.min((d&&d[r.k])||0,1)});return s/L.length}
+// 18 nov (Edwin): desde DECL_RUT la declaración de éxito es el 6.º punto de la rutina: NO suma puntos (siguen máx. 5) pero es requisito del día completo.
+// Con 5/5 y sin declaración, dayScore = 0.99 (hoy = 99 → 5 pts, pero ningún «>= 1» lo da por completo). day.decl = 1 al declarar.
+const DECL_RUT="2026-11-23",declRutOn=k=>(k||TODAY)>=DECL_RUT;
+function dayScore(d,key){key=key||TODAY;const L=ROUTINE.filter(r=>!r.desde||key>=r.desde);let s=0;L.forEach(r=>{s+=Math.min((d&&d[r.k])||0,1)});const v=s/L.length;return v>=1&&declRutOn(key)&&!(d&&d.decl)?0.99:v}
 const okIcon=CHECK;
 let rutOpen=false,rutJust=false,rutFT;
 function rutFold(ok){const t=$("#tasks"),bar=$("#dayBar")&&$("#dayBar").closest(".row"),tg=$("#rutTg");if(!t)return;
@@ -2304,12 +2307,13 @@ async function abrirFlyHoy(){const e=presHoyPend()||presHoyL()[0];if(!e){toast("
   if(key!==flyHoyK||!flyHoyF){flyHoyF=null;try{const cv=await presCanvas(e,"h");const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));flyHoyF=new File([b],"Presentacion-"+e.fecha+"-historia.jpg",{type:"image/jpeg"});flyHoyK=key}catch(x){}}
   const box=$("#fhImg");if(box){if(flyHoyF){box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(flyHoyF);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im)}else box.innerHTML='<span class="small" style="color:#fff">No se pudo crear el flyer</span>'}}
 setInterval(()=>{try{if(!fbUser||TODAY<HFLY_DESDE)return;const k=!!presHoyPend();if(k!==window._phk){window._phk=k;renderTasks()}}catch(e){}},120000);
-function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histSync())saveDay();
+function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histSync())saveDay();try{if(declRutOn()&&!day.decl&&declHecha()){day.decl=1;saveDay()}}catch(e){}
   $("#tasks").innerHTML=ROUTINE.map(r=>{const v=day[r.k]||0,done=v>=1;
     if(r.type==="check")return `<div class="task"><button class="check" aria-pressed="${done}" data-k="${r.k}" aria-label="Marcar ${esc(r.t)}">${done?CHECK:""}</button><span class="grow"><span class="${done?"done-t":""}">${esc(r.k==="historia"&&presHoyL().length?"📸 Publique sus 2 historias del día":r.t)}</span>${r.k==="audio"?npRutHTML():""}${r.k==="historia"?histSubHTML(done):r.sub&&!done?`<br><span class="small muted">${esc(r.sub)}</span>`:r.nota?`<br><span class="small muted">${esc(r.nota)}</span>`:""}${r.link&&!(r.k==="audio"&&npActivo())?`<br><a class="chip c-good" style="display:inline-flex;margin-top:6px;text-decoration:none;font-weight:700" href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.linkT||"Abrir")}</a>`:""}</span></div>`;
     return `<div class="task"><span class="step-n ${done?"ok":""}">${done?okIcon:""}</span><span class="grow ${done&&!acc3On()?"done-t":""}">${esc(acc3On()&&RT3N[r.k]||r.t)}<br><span class="small muted${(day[r.lk]||[]).length?" t3n":""}">${(day[r.lk]||[]).length?day[r.lk].map(x=>esc(String(x.n).split(" ")[0])).join(", "):v?"Mínimo 1"+(r.goal>1?" · ideal "+r.goal:""):esc(r.vac||"")}</span></span>
-      <span class="counter"><button data-dec="${r.k}" aria-label="Restar">−</button><span class="num">${v}</span><button data-inc="${r.k}" aria-label="Sumar">+</button></span></div>`}).join("");
-  const p=Math.round(dayScore(day)*100),RL=ROUTINE.filter(r=>!r.desde||TODAY>=r.desde),hechas=RL.filter(r=>(day[r.k]||0)>=1).length;$("#dayPct").textContent=hechas+" de "+RL.length;$("#dayBar").style.width=p+"%";
+      <span class="counter"><button data-dec="${r.k}" aria-label="Restar">−</button><span class="num">${v}</span><button data-inc="${r.k}" aria-label="Sumar">+</button></span></div>`}).join("")+(declRutOn()?(()=>{const dn=!!day.decl;let rc=0;try{rc=declRacha()}catch(e){}
+    return `<div class="task" data-drow="1"><button class="check" aria-pressed="${dn}" data-decl="1" aria-label="Declaración de éxito">${dn?CHECK:""}</button><span class="grow"><span class="${dn?"done-t":""}">🗣️ Haga su declaración de éxito</span><br><span class="small muted">${dn?"Hecha hoy"+(rc>1?" · 🔥 "+rc+" días declarando":""):"Requisito del día completo · no suma puntos · a cualquier hora"}</span>${dn?"":`<br><button type="button" class="chip c-good" data-decl="1" style="border:0;font:inherit;font-weight:700;margin-top:6px;cursor:pointer">🗣️ Declarar</button>`}</span></div>`})():"");
+  const p=Math.round(dayScore(day)*100),RL=ROUTINE.filter(r=>!r.desde||TODAY>=r.desde).concat(declRutOn()?[{k:"decl",t:"🗣️ Declaración de éxito",nx:"haga su declaración de éxito (requisito del día completo)",bt:"🗣️ Declarar"}]:[]),hechas=RL.filter(r=>(day[r.k]||0)>=1).length;$("#dayPct").textContent=hechas+" de "+RL.length;$("#dayBar").style.width=p+"%";
   const pend=RL.filter(r=>!((day[r.k]||0)>=1)),falta=pend.length,ra=$("#rutAlert");
   const rach=(()=>{let r=0;for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=i===0?dayScore(day):dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)r++;else break}if(acc3On()){try{r=constStats().rv}catch(e){}}return r})();try{rhRevisar(rach,!falta)}catch(e){}try{rc3Vida()}catch(e){}
   if(ra){const st=falta?"pend":"ok",hr=new Date().getHours(),nx=pend[0],key=st+"|"+falta+"|"+(hr>=18)+"|"+rach+"|"+(day.hAtr?1:0);if(ra.dataset.key!==key){
@@ -2318,7 +2322,7 @@ function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histS
       h=`<div class="rut-al rut-nx${tarde?" tarde":""}"><span class="grow" style="min-width:0">${txt}</span><button type="button" class="btn sm" data-rgo="${nx.k}" style="flex:none">${esc(nx.k==="historia"&&day.hAtr?"📤 Publicar":nx.bt||"Hacerlo")}</button></div>`}
     ra.innerHTML=h;
     if(ra.dataset.st!==st){ra.firstChild&&ra.firstChild.classList.add("shake");if(st==="ok"&&ra.dataset.st)rutJust=true;if(st==="ok"){try{if(LS.get("rutConf")!==TODAY){LS.set("rutConf",TODAY);setTimeout(()=>confeti($("#rutCard"),46),ra.dataset.st?350:900)}}catch(e){}}}ra.dataset.st=st;ra.dataset.key=key;
-    const g=ra.querySelector("[data-rgo]");if(g)g.onclick=()=>{const k=g.dataset.rgo,t=$("#tasks");const el=k==="historia"?(day.hAtr&&t.querySelector("[data-hfly]"))||t.querySelector("[data-hist]"):t.querySelector(`[data-k="${k}"]`)||t.querySelector(`[data-inc="${k}"]`);if(el)el.click()}}}
+    const g=ra.querySelector("[data-rgo]");if(g)g.onclick=()=>{const k=g.dataset.rgo,t=$("#tasks");const el=k==="historia"?(day.hAtr&&t.querySelector("[data-hfly]"))||t.querySelector("[data-hist]"):k==="decl"?t.querySelector("[data-decl]"):t.querySelector(`[data-k="${k}"]`)||t.querySelector(`[data-inc="${k}"]`);if(el)el.click()}}}
   try{rut3(hechas,RL.length)}catch(e){}declAccMarca();try{declStrip()}catch(e){}rutFold(!falta);const rc=$("#rutCard");if(rc)rc.classList.toggle("done",!falta);clearTimeout(window._rcT);window._rcT=setTimeout(()=>{try{renderComp(true)}catch(e){}},400);
 }
 const RT3N={contactos:"📝 Nuevos contactos",presentaciones:"🎯 Presentar mi negocio",seguimientos:"🔁 Hacer seguimiento"};
@@ -2333,10 +2337,11 @@ function rut3(h,n){const rc=$("#rutCard");if(!rc)return;let s=$("#rutSeg");if(!a
   const rows=[...$("#tasks").children],L=[];
   ROUTINE.forEach((r,i)=>{const row=rows[i];if(!row)return;const ok=(day[r.k]||0)>=1,num=row.querySelector(".check,.step-n");if(num)num.dataset.n=i+1;
     const ver=window._rt3V===r.k,cnt=r.type!=="check";row.classList.toggle("t3d",ok&&!ver&&!cnt);row.classList.toggle("t3c",ok&&cnt);if(ok&&!cnt&&(!r.desde||TODAY>=r.desde))L.push(`<button type="button" class="${ver?"on":""}" data-rt3="${r.k}">✓ ${esc(CH[r.k]||String(r.t||"").replace(/^\S+\s/,""))}</button>`)});
+  {const dr=$("#tasks").querySelector("[data-drow]");if(dr){const num=dr.querySelector(".check");if(num)num.dataset.n=rows.indexOf(dr)+1;const ok=!!day.decl,ver=window._rt3V==="decl";dr.classList.toggle("t3d",ok&&!ver);if(ok)L.push(`<button type="button" class="${ver?"on":""}" data-rt3="decl">✓ Declaración</button>`)}}
   let c=$("#rutChips");if(!c){c=document.createElement("div");c.id="rutChips";s.after(c);c.onclick=e=>{const b=e.target.closest("[data-rt3]");if(!b)return;const k=b.dataset.rt3;window._rt3V=window._rt3V===k?"":k;renderTasks()}}
   c.innerHTML=L.join("");c.hidden=!L.length}
 let saveDayT;function saveDay(){clearTimeout(saveDayT);saveDayT=setTimeout(()=>store.set("rutina-"+TODAY,day),600);weekCache[TODAY]=day;renderWeek()}
-$("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(ahGate())return;if(b.dataset.npv){npVer(+b.dataset.npv);return}if(b.dataset.np9){npSala9();return}if(b.dataset.hist){abrirHist();return}if(b.dataset.hfly){abrirFlyHoy();return}
+$("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(ahGate())return;if(b.dataset.npv){npVer(+b.dataset.npv);return}if(b.dataset.np9){npSala9();return}if(b.dataset.decl){if(day.decl)toast("🗣️ Su declaración de hoy ya está hecha");else declAbrir();return}if(b.dataset.hist){abrirHist();return}if(b.dataset.hfly){abrirFlyHoy();return}
   if(b.dataset.hs){const q=b.dataset.hs==="a"?"hAtr":"hFly";day[q]=day[q]?0:1}
   else if(b.dataset.k==="historia"){day.hAtr=day.hAtr?0:1;if(!day.hAtr)day.historia=0}
   else if(b.dataset.k){if(b.dataset.k==="audio"&&!day.audio){const n=npPend();if(n){toast("🎓 Vea su video de hoy: este punto se marca solo al terminarlo");npVer(n);return}if(npSala9Pend()){toast("✈️ Este punto se marca solo al terminar su presentación virtual");npSala9();return}}day[b.dataset.k]=day[b.dataset.k]?0:1}
@@ -4549,7 +4554,7 @@ async function loadConst(force){if(!store.db)return;if(!force&&constL&&Date.now(
 const diasSem=()=>{const i=semIni();return Math.round((parseK(TODAY)-parseK(i))/864e5)+1};
 const diasMes=()=>{const m=TODAY.slice(0,7)+"-01",i=m<CONST_INI?CONST_INI:m;return Math.round((parseK(TODAY)-parseK(i))/864e5)+1};
 const rachaTxt=(n,mes)=>n?`🔥 ${n} ${n===1?"día":"días"} ${mes?"(mejor racha)":"de racha"}`:"Sin racha";
-const hoyPts=x=>x.fecha===TODAY?Math.round((+x.hoy||0)*ROUTINE.length/100):0;
+const hoyPts=x=>x.fecha===TODAY?Math.round((+x.hoy||0)*ROUTINE.length/100):0,hoyFull=x=>x.fecha===TODAY&&(+x.hoy||0)>=100;
 let constMiosT=0,constSocT=0;
 const constUser=x=>x.uid&&x.uid!==store.uid?((isAdmin?(socios||[]):[]).concat(mios||[])).find(y=>y.uid===x.uid):null;
 // Mensajes de Mi Racha (5 nov, Edwin: más naturales y que no se repitan). Versión = semilla (quién envía + a quién + día); evita repetir la última que este teléfono le mandó a esa persona (LS cmV:uid:cat).
@@ -4580,19 +4585,20 @@ function constMsg(x){const n0=String(x.nombre||"").split(" ")[0],n=n0?n0.charAt(
   let yo="";try{yo=String((miRegistro().nombre||"")||(fbUser&&fbUser.displayName)||"").trim().split(" ")[0]}catch(e){}if(!yo&&isAdmin)yo="Edwin";const firma=yo?`\n\n${yo}`:"";
   // 10 nov (Edwin): si su racha actual es menor que su mejor del mes, se habla de la mejor (no "1 día")
   const mj=+x.mesMejor||0;if(x.rr!=null&&x.mes===TODAY.slice(0,7))r=Math.max(r,+x.rr||0);const baja=x.rr!=null&&mj>r&&mj>1;
+  if(p>=ROUTINE.length&&!hoyFull(x))return `¡Hola, ${n}! 👋\n\nYa tiene sus 5 puntos de hoy 💪 Solo le falta su *declaración de éxito* en la app para cerrar el día completo 🗣️`+firma;
   if(p>=ROUTINE.length)return cmPick(CM_LLENO,x.uid,"l")(n,baja?` y retoma su racha (su mejor este mes: *${mj} días* 🔥, ¡vamos a superarla!)`:r>1?` y ya lleva *${r} días de racha*`:"")+firma;
   if(p>0)return cmPick(CM_MEDIO,x.uid,"m")(n,url,p,f===1?"Solo le falta 1":"Le faltan "+f,baja?` y retoma su racha (su mejor este mes: ${mj} días 🔥)`:r>1?` y mantiene su racha de ${r} días 🔥`:" y empieza su racha 🔥")+firma;
   return cmPick(CM_CERO,x.uid,"c")(n,url)+firma}
 const cwaHoy=()=>{const o=LS.get("cwaEnv")||{};return o.d===TODAY?o:{d:TODAY,u:{}}};
 const cwaMarca=(uid,tipo)=>{const o=cwaHoy();o.u[uid]=tipo;LS.set("cwaEnv",o);if(store.db)store.set("mensajes-"+TODAY,{d:TODAY,u:o.u}).catch(()=>{})};
 let cwaNubeD="";async function cwaNube(){if(!store.db||!store.uid||cwaNubeD===TODAY)return;cwaNubeD=TODAY;try{const v=await store.get("mensajes-"+TODAY);if(v&&v.u){const o=cwaHoy();Object.assign(o.u,v.u);Object.keys(o.u).forEach(k=>{if(v.u[k]==="fel")o.u[k]="fel"});LS.set("cwaEnv",o);if(eqTab==="ranking"&&rankMetric==="rutina")renderEquipo()}}catch(e){}}
-const constBtn=x=>{if(!constUser(x))return"";const ok=hoyPts(x)>=ROUTINE.length,ya=cwaHoy().u[x.uid];
+const constBtn=x=>{if(!constUser(x))return"";const ok=hoyFull(x),ya=cwaHoy().u[x.uid];
   if(ya&&(ya==="fel"||!ok))return `<span class="chip" style="margin-top:6px;display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;background:var(--good-soft);color:var(--good)">✓ ${ya==="fel"?"Felicitado":"Motivado"} hoy</span>`;
   return `<button type="button" class="chip" data-cwa="${esc(x.uid)}" style="border:0;font:inherit;font-size:13px;font-weight:700;margin-top:6px;cursor:pointer;background:#25D366;color:#fff;display:inline-flex;align-items:center;gap:5px">${WA_IC} ${ok?"Felicitar":"Motivar"}</button>`};
-const constIc=x=>{if(!constUser(x))return"";const ok=hoyPts(x)>=ROUTINE.length,ya=cwaHoy().u[x.uid];
+const constIc=x=>{if(!constUser(x))return"";const ok=hoyFull(x),ya=cwaHoy().u[x.uid];
   if(ya&&(ya==="fel"||!ok))return `<span class="rc3Wa ya" title="${ya==="fel"?"Felicitado":"Motivado"} hoy">✓</span>`;
   return `<button type="button" class="rc3Wa" data-cwa="${esc(x.uid)}" aria-label="${ok?"Felicitar":"Motivar"} por WhatsApp">${WA_IC}</button>`};
-const hoyTxt=x=>{const p=hoyPts(x);return `<span style="font-weight:700;color:${p>=ROUTINE.length?"var(--good,#1a8f5a)":p?"var(--ink)":"var(--bad,#c0392b)"}">Hoy ${p} pts</span>`};
+const hoyTxt=x=>{const p=hoyPts(x);return `<span style="font-weight:700;color:${hoyFull(x)?"var(--good,#1a8f5a)":p?"var(--ink)":"var(--bad,#c0392b)"}">Hoy ${p} pts</span>`};
 const constSub=x=>constVista==="sem"?`${rachaTxt(x.racha)} · 🎯 ${x.sinPres?"—":x.semPres} pres.`:`${rachaTxt(x.mesMejor,1)} · 🎯 ${x.sinPres?"—":x.mesPres} pres.`;
 // ---------- Reto del mes (config.premios): Roatán por volumen y libros por registros ----------
 let premConf=0;
@@ -4688,11 +4694,11 @@ function rc3Mio(L,mine){const c=constStats(),op=!!LS.get("rc3Open"),N=rcNivel(c.
   const m0=TODAY.slice(0,7)+"-01",dd=parseK(m0),ult=new Date(dd.getFullYear(),dd.getMonth()+1,0).getDate();let cal="";
   for(let i=1;i<=ult;i++){const k=m0.slice(0,8)+String(i).padStart(2,"0");let cl="";if(k<=TODAY&&k>=CONST_INI){const v=dayScore(k===TODAY?day:weekCache[k],k);cl=v>=1?"f":k===c.vu?"v":k===TODAY?"h":"x"}cal+=`<span class="${cl}">${k===c.vu?"🛡️":i}</span>`}
   return `<div class="rc3W op">${top}<div class="rc3D"><div class="rc3Two"><div><b>${c.rv}</b><small>🔥 Racha · días seguidos<br>no se reinicia el día 1</small></div><div><b class="c">${+c.vr||0}/${dm}</b><small>🏆 Racha del mes<br>si falla vuelve a 0 · cuenta para el premio</small></div></div>
-   <div class="rc3Cal">${cal}</div><p class="rc3H">${vida}${c.vg?"":" · se gana con 7 días seguidos"} · 🛡️ = día salvado (no suma)${fal>0?` · Hoy <b>le ${fal===1?"falta 1 acción":"faltan "+fal+" acciones"}</b>`:" · <b>¡Hoy ya sumó! ✅</b>"}</p>
+   <div class="rc3Cal">${cal}</div><p class="rc3H">${vida}${c.vg?"":" · se gana con 7 días seguidos"} · 🛡️ = día salvado (no suma)${fal>0?` · Hoy <b>le ${fal===1?"falta 1 acción":"faltan "+fal+" acciones"}</b>`:dayScore(day)<1?" · Hoy <b>le falta su declaración</b>":" · <b>¡Hoy ya sumó! ✅</b>"}</p>
    <div class="rc3Lv"><span>🔥 1–6</span><span>🔥🔥 7–13</span><span>💎 14–29</span><span>👑 30+</span></div></div></div>`}
 function rc3Lista(L){if(!L.length)return"";const dm=diasMes();
   // 15 nov (Edwin): fila limpia. Número grande = presentaciones del mes; línea = racha de por vida + días del mes; punto verde = rutina de hoy completa; detalle al tocar.
-  return `<div class="card rc3L">${L.map(x=>{const yo=x.uid===store.uid,cY=yo?(()=>{try{return constStats()}catch(e){return null}})():null,rv=Math.max(cY?+cY.rv||0:0,+x.rv||0),vr=Math.min(diasMes(),Math.max(cY?+cY.vr||0:0,+x.vr||0)),ok=hoyPts(x)>=ROUTINE.length,pr=+x.mesPres||0;return `<div class="rc3Row${yo?" yo":""}${x.rk<=3?" t"+x.rk:""}" data-rc3d="${esc(x.uid)}"><span class="rc3Pos">${x.rk===1?"👑":x.rk}</span><span class="rc3Av">${avHTML(x.nombre,yo,false)}${ok?'<i class="rc3Ok" title="Rutina de hoy completa"></i>':""}</span><span class="grow" style="min-width:0"><b class="nm">${yo?"Usted":esc(nv(x.nombre))}</b><small>${rv?"🔥 "+rv+" "+(rv===1?"día seguido":"días seguidos"):"Sin racha"} · ${vr}/${dm}</small></span>${yo?"":constIc(x)}<span class="rc3N"><b>${pr}</b><small>${pr===1?"presentación":"present."}</small></span></div>`}).join("")}</div>`}
+  return `<div class="card rc3L">${L.map(x=>{const yo=x.uid===store.uid,cY=yo?(()=>{try{return constStats()}catch(e){return null}})():null,rv=Math.max(cY?+cY.rv||0:0,+x.rv||0),vr=Math.min(diasMes(),Math.max(cY?+cY.vr||0:0,+x.vr||0)),ok=hoyFull(x),pr=+x.mesPres||0;return `<div class="rc3Row${yo?" yo":""}${x.rk<=3?" t"+x.rk:""}" data-rc3d="${esc(x.uid)}"><span class="rc3Pos">${x.rk===1?"👑":x.rk}</span><span class="rc3Av">${avHTML(x.nombre,yo,false)}${ok?'<i class="rc3Ok" title="Rutina de hoy completa"></i>':""}</span><span class="grow" style="min-width:0"><b class="nm">${yo?"Usted":esc(nv(x.nombre))}</b><small>${rv?"🔥 "+rv+" "+(rv===1?"día seguido":"días seguidos"):"Sin racha"} · ${vr}/${dm}</small></span>${yo?"":constIc(x)}<span class="rc3N"><b>${pr}</b><small>${pr===1?"presentación":"present."}</small></span></div>`}).join("")}</div>`}
 function rc3Det(uid){const x=(constL||[]).find(y=>y.uid===uid);if(!x)return;const N=rcNivel(+x.rv||0),dm=diasMes(),yo=x.uid===store.uid,rv=+x.rv||0;
   const vida=x.vu?"🛡️ Usó su vida del mes":x.vg?"❤️ Tiene su vida del mes":"Sin vida este mes";
   openSheet(`<div class="row" style="gap:12px;align-items:center"><span class="rc3Av">${avHTML(x.nombre,yo,false)}</span><div class="grow" style="min-width:0"><h2 style="margin:0">${yo?"Usted":esc(nv(x.nombre))}</h2>${premN(x.nombre)}<small class="muted" style="display:block">${N.i?N.i+" "+N.t:"Sin racha"} · ${vida}</small></div></div>
@@ -4737,7 +4743,7 @@ function renderConst(b){if(acc3On()){constVista="mes";if(constL){const me=constL
   b.innerHTML=acc3On()?segs+rc3HTML(L,mine)+zCard:segs+constBanner()+rachaPremio()+(mine?`<div class="card row between"><span>Tu lugar ${constVista==="sem"?"esta semana":"este mes"}</span><b class="num" style="font-size:20px">#${mine.rk}</b></div>`:`<div class="card small">Haga al menos una acción de su rutina para aparecer en este ranking 💪</div>`)+`<div class="card"><div class="podium">${pod(L[1],1)+pod(L[0],0)+pod(L[2],2)}</div></div>
    <div class="card" style="gap:0">${L.slice(3).map(x=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)${x.uid===store.uid?";background:var(--brand-soft,rgba(42,193,241,.08))":""}"><b class="num" style="width:26px;text-align:center">${x.rk}</b>${avHTML(x.nombre,x.uid===store.uid,false)}<div class="grow" style="min-width:0"><b style="font-weight:600">${esc(nv(x.nombre))}</b>${premN(x.nombre)}<div class="small muted">${constSub(x)}</div><div class="small">${hoyTxt(x)}</div>${constBtn(x)}</div><span class="chip ${(constVista==="sem"?x.racha:x.mesMejor)?"c-gold":"c-brand"}" style="flex:none">${(constVista==="sem"?x.semPts:x.mesPts)} pts</span></div>`).join("")||`<p class="small muted" style="padding:8px 0">¡Súmese al ranking haciendo su rutina!</p>`}</div>`+zCard;
   b.querySelectorAll("[data-cv]").forEach(x=>x.onclick=()=>{constVista=x.dataset.cv;constSort(constL);renderEquipo()});
-  b.querySelectorAll("[data-cwa]").forEach(bt=>bt.onclick=()=>{const x=L.concat(Z).find(y=>y.uid===bt.dataset.cwa),u=x&&constUser(x);if(!u)return;const t=constMsg(x),w=waSocio(u);cwaMarca(x.uid,hoyPts(x)>=ROUTINE.length?"fel":"mot");renderEquipo();if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t));return}pedirWaSocio(u,t)});
+  b.querySelectorAll("[data-cwa]").forEach(bt=>bt.onclick=()=>{const x=L.concat(Z).find(y=>y.uid===bt.dataset.cwa),u=x&&constUser(x);if(!u)return;const t=constMsg(x),w=waSocio(u);cwaMarca(x.uid,hoyFull(x)?"fel":"mot");renderEquipo();if(w){waIr("https://wa.me/"+w+"?text="+encodeURIComponent(t));return}pedirWaSocio(u,t)});
   cwaNube();if(mios===null&&store.db&&store.uid&&!constMiosT){constMiosT=1;loadMios().catch(()=>{})}
   if(isAdmin&&socios===null&&store.db&&!constSocT){constSocT=1;Promise.resolve(loadSocios()).catch(()=>{}).finally(()=>{if(eqTab==="ranking"&&rankMetric==="rutina")renderEquipo()})}
   bindRank();loadConst()}
@@ -5561,7 +5567,7 @@ async function declSync(){if(!store.db||!store.uid||declHecha()||Date.now()-decl
     if(r.decA&&r.decA.d===hoy&&!declAcc()){profile.decA=r.decA;ch=true}
     if(ch){const el=$("#declStrip");if(el)el.dataset.k="";declStrip();try{declAccMarca()}catch(e){}}}catch(e){declSyncT=Date.now()-19*60e3;setTimeout(declSync,61e3)}}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(declSync,1500)});
-function declStrip(){const el=$("#declStrip");if(!el)return;if(!store.uid||esSoloAdminYo()){el.hidden=true;return}if(!declHecha())setTimeout(declSync,800);
+function declStrip(){const el=$("#declStrip");if(!el)return;if(!store.uid||esSoloAdminYo()||declRutOn()){el.hidden=true;return} // 18 nov: desde DECL_RUT la declaración vive en la rutinaif(!declHecha())setTimeout(declSync,800);
   const h=declHN().getUTCHours(),acc=declAcc();
   if(h>=12&&!declHecha()){ // 12 nov (Edwin): después del mediodía, franja pequeña para quien aún no declaró (✕ = oculta por hoy)
     let x="";try{x=LS.get("declTX")}catch(e){}if(x===declHoy()){el.hidden=true;return}
@@ -5616,7 +5622,7 @@ function declAbrir(){let ov=$("#declOv");if(ov)ov.remove();ov=document.createEle
     else{ov.innerHTML=`<div class="dwm"></div>${top}${bar}<div class="dc" style="bottom:300px"><div class="dl">¡LO CREO!</div><div class="dl" style="animation-delay:.45s">¡LO DECLARO!</div><div class="dl" style="animation-delay:.9s">¡Y LO HAGO <span class="dy">REALIDAD!</span></div><div class="ds dl" style="animation-delay:1.4s">¡Porque nací para crecer, prosperar y ganar!</div></div>
       <div class="dbot"><button class="dhold" aria-label="Mantener presionado"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46"/></svg><span>🔥<br>¡LO<br>DECLARO!</span></button><div class="dhint">Mantenga presionado 2 segundos</div></div>`;
       const hb=ov.querySelector(".dhold"),cir=hb.querySelector("circle");let t0=0,raf=0;const L=289;cir.style.strokeDasharray=L;cir.style.strokeDashoffset=L;
-      const fin=()=>{cancelAnimationFrame(raf);t0=0;ov.onclick=null;st.dec=true;st.hold=false;if(au){const c=au.currentTime;if(c<DECL_HIT-.6||c>DECL_HIT+1.2)try{au.currentTime=DECL_HIT-.05}catch(x){}if(au.paused)auPlay()}const hoy=declHoy(),r=declRacha();if(!declHecha()){const nr=r+1;profile.dec={d:hoy,r:nr,b:Math.max(nr,+(profile.dec&&profile.dec.b)||0)};store.set("perfil",profile)}
+      const fin=()=>{cancelAnimationFrame(raf);t0=0;ov.onclick=null;st.dec=true;st.hold=false;if(au){const c=au.currentTime;if(c<DECL_HIT-.6||c>DECL_HIT+1.2)try{au.currentTime=DECL_HIT-.05}catch(x){}if(au.paused)auPlay()}const hoy=declHoy(),r=declRacha();if(!declHecha()){const nr=r+1;profile.dec={d:hoy,r:nr,b:Math.max(nr,+(profile.dec&&profile.dec.b)||0)};store.set("perfil",profile)}if(declRutOn()&&!day.decl){day.decl=1;saveDay();try{renderTasks()}catch(x){}}
         const rr=declRacha(),d21=((rr-1)%21)+1;
         ov.innerHTML=`<div class="dwm"></div><div class="dc">${d21===21?`<div class="dk">🏆 RETO DE 21 DÍAS</div><div class="dh">¡LO <span class="dy">LOGRÓ</span>!<br>21 DÍAS<br>DECLARANDO</div><div class="ds">Su mente ya es otra. Mañana empieza un reto nuevo.<br>#HASTAQUEFUNCIONE</div>`:`<div class="dk">✅ DÍA ${d21} DE 21</div><div class="dh">¡HOY ES<br>SU <span class="dy">DÍA</span>!</div><div class="ds">${21-d21===1?"¡Mañana completa su reto de 21 días!":`Faltan ${21-d21} días para completar su reto 🔥`}<br>#HASTAQUEFUNCIONE</div>`}</div><div class="dbot"><button class="dgo">Vamos por el día ›</button></div><div class="dtop"><span></span><span>${muBtn()}</span></div>`;
         try{confeti(ov.querySelector(".dc"),120)}catch(e){}try{navigator.vibrate&&navigator.vibrate([60,40,120])}catch(e){}ov.querySelector(".dgo").onclick=accPinta;muBind()};
@@ -5654,7 +5660,7 @@ function cmpStrip(){const el=$("#cmpStrip");if(!el)return;const t=cmpTurno();if(
     const b=`<div class="cmpC a"><button class="cmpX" aria-label="Cerrar">✕</button><span class="ic">🎟️</span><div class="bd"><div class="k">INCENTIVO DE VIAJE</div><div class="t">${L1?(soy?`<b>Usted</b> va primero con ${(+L1.volumen).toLocaleString("en-US")} pts. Siga construyendo su lugar.`:`<b>${esc(String(fdNom(L1.nombre)).split(" ")[0])}</b> va primero con ${(+L1.volumen).toLocaleString("en-US")} pts. Su lugar también se construye hoy.`):"El 1.º del mes en activaciones se lleva el incentivo. ¿Quién abre el marcador?"}</div><div class="ft"><span class="me">${mv&&!soy?`Usted · <b>${(+mv.volumen).toLocaleString("en-US")} pts</b>`:""}</span><button class="go" data-cg="a">Lo estoy construyendo</button></div></div></div>`;
     html=`<div class="cmpTr">${a}${b}</div><div class="cmpDots"><i class="on"></i><i></i></div>`}
   else{let p=0;try{p=Math.round(dayScore(day,TODAY)*ROUTINE.length)}catch(e){}
-    const tx=p>=ROUTINE.length?`¡Qué buen día${N?", "+esc(N):""}! Completó su rutina <b>5 de 5</b>. Mañana va por más.`:`¿Cómo le fue hoy${N?", "+esc(N):""}? Lleva <b>${p} de 5</b> en su rutina. Cada paso cuenta.`;
+    const tx=p>=ROUTINE.length&&dayScore(day,TODAY)<1?`Ya tiene sus 5 puntos${N?", "+esc(N):""}. Solo le falta su <b>declaración de éxito</b> para cerrar el día.`:p>=ROUTINE.length?`¡Qué buen día${N?", "+esc(N):""}! Completó su rutina <b>5 de 5</b>. Mañana va por más.`:`¿Cómo le fue hoy${N?", "+esc(N):""}? Lleva <b>${p} de 5</b> en su rutina. Cada paso cuenta.`;
     html=`<div class="cmpC n"><button class="cmpX" aria-label="Cerrar">✕</button><span class="ic">🌙</span><div class="bd"><div class="k">CIERRE DEL DÍA</div><div class="t">${tx}</div><div class="ft"><button class="gh" data-cg="m">Mañana sigo</button><button class="go" data-cg="n">Hoy avancé</button></div></div></div>`}
   const k=t+"|"+html.length;if(el.dataset.k===k&&!el.hidden)return;el.dataset.k=k;el.innerHTML=html;el.hidden=false;
   const off=()=>{LS.set(kk,1);el.hidden=true};
@@ -10351,7 +10357,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261118124331";var busy=false,pend=null;
+(function(){var V="20261118130022";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

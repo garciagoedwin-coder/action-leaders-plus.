@@ -79,11 +79,16 @@ export function msgCompOk(c, propio) {
 // "fin": unos minutos antes de medianoche, a todos los que tienen avisos de racha.
 export function msgFin(uid, c, hoy, ayer, ms = Date.now()) {
   const { pts, racha } = estadoRutina(c, hoy, ayer), n = primer(c && c.nombre);
+  if (sinDecl(c, hoy)) return { title: `🗣️ ${n ? n + ", s" : "S"}olo le falta su declaración`, body: `Ya tiene sus 5 puntos. Haga su declaración de éxito antes de medianoche para cerrar el día${racha >= 1 ? " y mantener su racha" : ""} 🔥` };
   const d = new Date(ms - 6 * 3600e3), min = Math.max(1, 60 * 24 - (d.getUTCHours() * 60 + d.getUTCMinutes()));
   if (pts >= 5) return { title: `🎉 ¡Día completo${n ? ", " + n : ""}!`, body: `Su rutina de hoy quedó hecha. Mañana va por ${racha + 1} ${racha + 1 === 1 ? "día" : "días"} seguidos 🔥` };
   return { title: `⏰ Quedan ${min} minutos del día`, body: `${n ? n + ", l" : "L"}${pts ? `e ${5 - pts === 1 ? "falta 1 punto" : `faltan ${5 - pts} puntos`}` : "a rutina de hoy todavía está a tiempo"}${racha >= 1 ? ` para mantener su racha de ${racha} ${racha === 1 ? "día" : "días"}` : ""}. ¡Todavía alcanza! 🔥` };
 }
-export function msgRacha(...a) { const m = msgRacha0(...a); if (m) { m.title = m.title[0].toUpperCase() + m.title.slice(1); m.body = m.body[0].toUpperCase() + m.body.slice(1); } return m; }
+// 18 nov: desde el 23 nov la declaración de éxito es requisito del día completo (no suma puntos). hoy = 99 → 5 pts sin declaración.
+const sinDecl = (c, hoy) => !!c && c.fecha === hoy && +c.hoy === 99;
+export function msgRacha(...a) { if (sinDecl(a[2], a[3])) { const n = primer(a[2].nombre); if (a[0] === "rc3top") return msgRacha0(...a);
+    return { title: `🗣️ ${n ? n + ", s" : "S"}olo le falta su declaración`, body: "Ya tiene sus 5 puntos de hoy 💪 Haga su declaración de éxito en la app para cerrar el día completo y cuidar su racha 🔥" }; }
+  const m = msgRacha0(...a); if (m) { m.title = m.title[0].toUpperCase() + m.title.slice(1); m.body = m.body[0].toUpperCase() + m.body.slice(1); } return m; }
 function msgRacha0(modo, uid, c, hoy, ayer) {
   const { pts, racha } = estadoRutina(c, hoy, ayer);
   const n = primer(c && c.nombre), hola = n ? n + ", " : "", falta = 5 - pts, seed = uid + hoy + modo;
