@@ -458,8 +458,14 @@ h1.motto{overflow:hidden;height:1.3em;line-height:1.3em;margin-top:2px}
 .stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-size:12px}
 /* crm */
 .stage-bar{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.llGo{display:block;width:100%;margin:8px 0;padding:11px;border-radius:12px;border:1.5px solid #1D4ED8;background:color-mix(in srgb,#1D4ED8 8%,var(--surface));color:#1D4ED8;font:800 14px Figtree,sans-serif;cursor:pointer}
+.llR{margin:8px 0;padding:9px 11px;border-radius:12px;background:var(--surface-2);font:600 13px/1.35 Figtree,sans-serif;color:var(--ink)}.llR button{border:0;background:none;color:var(--brand);font:800 13px Figtree,sans-serif;padding:0 0 0 4px;cursor:pointer}
+.llL{display:flex;flex-direction:column;gap:6px;margin:6px 0}.llI{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:8px 10px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 14px Figtree,sans-serif;cursor:pointer}
+.llI .grow{min-width:0}.llI small{display:block;color:var(--muted);font-weight:600;font-size:12px}.llI.off{opacity:.45;cursor:default}.llI .av,.llI .avatar{flex:none}.llI b.x{color:var(--bad);font-size:18px;padding:0 4px}.llI b.pl{color:var(--brand);font-size:18px;padding:0 4px}
+.llSt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 10px}.llSt div{background:var(--surface-2);border-radius:12px;padding:10px;text-align:center}.llSt b{display:block;font:700 26px "Barlow Condensed",sans-serif;color:var(--ink)}.llSt span{font:700 11px Figtree,sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.llH{font:800 13px Figtree,sans-serif;margin:14px 0 4px;color:var(--ink)}.llStg{flex:none;font:800 11px Figtree,sans-serif;padding:3px 8px;border-radius:99px;background:var(--surface-2);color:var(--ink)}
 .catBar{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:8px;scrollbar-width:none}.catBar::-webkit-scrollbar{display:none}.catBar button{flex:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:6px 11px;font:700 13px Figtree,sans-serif;white-space:nowrap;cursor:pointer}.catBar button[aria-pressed=true]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 12%,var(--surface));color:var(--brand)}.catBar .n{opacity:.65;margin-left:4px}
-.catT{display:flex;flex-wrap:wrap;gap:4px;margin:3px 0 2px}.catT span,.catT button{font:800 11px Figtree,sans-serif;padding:2px 8px;border-radius:99px;line-height:1.5}.catT .k1{background:#FFEDD5;color:#C2410C}.catT .k2{background:#EDE9FE;color:#6D28D9}.catT .k3{background:#E0F2FE;color:#0369A1}.catT .k4{background:var(--surface-2);color:var(--muted)}.catT button{border:1px dashed var(--line);background:none;color:var(--muted);cursor:pointer}
+.catT{display:flex;flex-wrap:wrap;gap:4px;margin:3px 0 2px}.catT span,.catT button{font:800 11px Figtree,sans-serif;padding:2px 8px;border-radius:99px;line-height:1.5}.catT .k1{background:#FFEDD5;color:#C2410C}.catT .k2{background:#EDE9FE;color:#6D28D9}.catT .k3{background:#E0F2FE;color:#0369A1}.catT .k4{background:var(--surface-2);color:var(--muted)}.catT .k5{background:#DBEAFE;color:#1D4ED8}.catT button{border:1px dashed var(--line);background:none;color:var(--muted);cursor:pointer}
 :root[data-theme=dark] .catT .k1,.dark .catT .k1{background:#43210f;color:#FDBA74}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .catT .k1{background:#43210f;color:#FDBA74}:root:not([data-theme=light]) .catT .k2{background:#2e2350;color:#C4B5FD}:root:not([data-theme=light]) .catT .k3{background:#0c3247;color:#7DD3FC}}:root[data-theme=dark] .catT .k2{background:#2e2350;color:#C4B5FD}:root[data-theme=dark] .catT .k3{background:#0c3247;color:#7DD3FC}
 .catCh{display:flex;flex-wrap:wrap;gap:7px}.catCh button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:8px 12px;font:700 14px Figtree,sans-serif;cursor:pointer}.catCh button[aria-pressed=true]{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 12%,var(--surface));color:var(--brand)}.catCh .add{border-style:dashed;color:var(--muted)}
 .stage-bar button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--muted)}
@@ -5979,6 +5985,7 @@ function avFila(x,v){return `<button type="button" class="avIt avRow${(x.t||0)>v
 function avScroll(id,n){n=n||0;setTimeout(()=>{const r=$(id);if(r&&!r.hidden){r.scrollIntoView({behavior:"smooth",block:"center"});r.classList.add("avFlash");setTimeout(()=>r.classList.remove("avFlash"),1600)}else if(n<12)avScroll(id,n+1)},350)}
 function avEq(t){eqTab=t;try{setSeg("eqSeg",eqTab)}catch(e){}go("equipo");try{renderEquipo()}catch(e){}}
 function avIr(k){try{
+  if(k==="camp"){catF="camp";try{LS.set("catF","camp")}catch(e){}go("crm");setTimeout(()=>{try{renderCRM()}catch(e){}},300);return}
   if(/^fel_(np|ir)_/.test(k)){const[,t,...u]=k.split("_");felAbrir(t,u.join("_"));return}
   if(k==="np"){go("academia");setTimeout(()=>{try{npCurso()}catch(e){}},400);return}
   if(k==="val"){go("inicio");(async()=>{try{await loadMios(true)}catch(e){}try{await irValsCargar()}catch(e){}valStrip();try{avBoxMostrar("valStrip")}catch(e){}setTimeout(()=>{const e=$("#valStrip");if(e&&!e.hidden){const s=e.closest(".avSl");if(s)s.scrollIntoView({behavior:"smooth",block:"nearest",inline:"start"});const b=$("#avBox");if(b)b.scrollIntoView({behavior:"smooth",block:"start"})}},400)})();return}
@@ -7886,7 +7893,7 @@ function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fech
   const nS=(c.seg||[]).length,wl=waLink(c);
   return `<div class="cvTop"><div class="grow" style="min-width:0">
      <button type="button" class="cvSt cvSt3" data-stopen="${esc(c.id)}"><span class="cvPill" style="--pc:${STAGE_COL[c.stage]||"var(--brand)"}">${CV_STI[c.stage]||""}${esc(c.stage||"Nuevo")}</span>${due}<span class="cvCg">Cambiar ›</span></button></div></div>
-   ${crmSt.has(c.id)?stepsHTML(c):""}${maLinea(c)}
+   ${crmSt.has(c.id)?stepsHTML(c):""}${maLinea(c)}${lluHTML(c)}
    ${crmV2Sig(c)}
    ${reuCamino(c)}
    ${A.length?`<div class="cvActv"><div class="k">ACTIVIDAD${nS?`<button type="button" data-sgt="${esc(c.id)}">Ver todo ›</button>`:""}</div>${A.slice(0,3).map(([i,t,f,k])=>k?`<div data-cvtk="${esc(k)}" style="cursor:pointer"><span>${i}</span><span class="grow">${esc(t)} <b style="color:var(--brand);font-weight:700;white-space:nowrap">Ver respuestas ›</b></span>${f?`<small>${esc(f)}</small>`:""}</div>`:`<div><span>${i}</span><span class="grow">${esc(t)}</span>${f?`<small>${esc(f)}</small>`:""}</div>`).join("")}</div>`:""}
@@ -8221,7 +8228,7 @@ function bindQuickFill(){const msg=$("#qfMsg"),err=t=>{msg.hidden=false;msg.styl
       const id=await store.saveContact(nc);if(id){nc.id=id;contacts.push(nc);n++}}
       renderCRM();closeSheet();toast(n+" contactos agregados")}}}
 // ---------- Categorías de contacto (15 nov): de dónde viene cada persona ----------
-const CAT_FIJ=[["cal","🔥","Lista caliente","k1"],["red","📱","Redes sociales","k2"],["fri","🧊","Contacto frío","k3"],["otro","✏️","Otro","k4"]];
+const CAT_FIJ=[["camp","📣","Campaña","k5"],["cal","🔥","Lista caliente","k1"],["red","📱","Redes sociales","k2"],["fri","🧊","Contacto frío","k3"],["otro","✏️","Otro","k4"]];
 let catF=(()=>{try{return LS.get("catF")||"*"}catch(e){return "*"}})();
 function catMias(){return (profile&&Array.isArray(profile.catsP)?profile.catsP:[]).filter(x=>typeof x==="string"&&x.trim()).slice(0,20)}
 function catInfo(k){const f=CAT_FIJ.find(x=>x[0]===k);if(f)return {k,ic:f[1],t:f[2],cl:f[3]};if(String(k).startsWith("u:"))return {k,ic:"🏷️",t:String(k).slice(2),cl:"k4"};return null}
@@ -8229,7 +8236,7 @@ function catLista(){return CAT_FIJ.map(x=>x[0]).concat(catMias().map(n=>"u:"+n))
 function catTag(c,cer){const L=(Array.isArray(c.cat)?c.cat:[]).map(catInfo).filter(Boolean);
   if(L.length)return `<div class="catT">${L.map(x=>`<span class="${x.cl}">${x.ic} ${esc(x.t)}</span>`).join("")}</div>`;
   return cer?"":`<div class="catT"><button type="button" data-catp="${esc(c.id)}">＋ Categoría</button></div>`}
-function catChips(sel){const S=new Set(sel||[]);return catLista().map(k=>{const x=catInfo(k);return `<button type="button" data-ck="${esc(k)}" aria-pressed="${S.has(k)}">${x.ic} ${esc(x.t)}</button>`}).join("")+`<button type="button" class="add" data-cknew>＋ Crear categoría</button>`}
+function catChips(sel){const S=new Set(sel||[]);return catLista().filter(k=>k!=="camp"||S.has(k)).map(k=>{const x=catInfo(k);return `<button type="button" data-ck="${esc(k)}" aria-pressed="${S.has(k)}">${x.ic} ${esc(x.t)}</button>`}).join("")+`<button type="button" class="add" data-cknew>＋ Crear categoría</button>`}
 function catBind(box,onCh){box.onclick=e=>{const b=e.target.closest("button");if(!b)return;
   if(b.hasAttribute("data-cknew")){const nm=(prompt("Nombre de la categoría (ej.: Iglesia, Trabajo, Gimnasio)")||"").trim().replace(/\s+/g," ").slice(0,24);if(!nm)return;
     const L=catMias();if(!L.some(x=>x.toLowerCase()===nm.toLowerCase())){profile.catsP=L.concat([nm]);try{store.set("perfil",profile)}catch(x){}}
@@ -8243,6 +8250,60 @@ function catBar(base){const el=$("#catBar");if(!el)return;const usa=base.some(c=
   const n=k=>base.filter(c=>k==="-"?!(Array.isArray(c.cat)&&c.cat.length):(c.cat||[]).includes(k)).length,K=catLista().filter(k=>n(k)||k===catF);
   if(catF!=="*"&&catF!=="-"&&!K.includes(catF))K.push(catF);
   el.innerHTML=`<button type="button" data-cf="*" aria-pressed="${catF==="*"}">Todas<span class="n">${base.length}</span></button>`+(nPv||catF==="pv"?`<button type="button" data-cf="pv" aria-pressed="${catF==="pv"}">🎬 Presentación virtual<span class="n">${nPv}</span></button>`:"")+K.map(k=>{const x=catInfo(k)||{ic:"🏷️",t:k};return `<button type="button" data-cf="${esc(k)}" aria-pressed="${catF===k}">${x.ic} ${esc(x.t)}<span class="n">${n(k)}</span></button>`}).join("")+(n("-")?`<button type="button" data-cf="-" aria-pressed="${catF==="-"}">Sin categoría<span class="n">${n("-")}</span></button>`:"")}
+
+// 17 nov (Edwin): LLUVIA DE PROSPECTOS v1. Los prospectos de la campaña de Meta entran solos al CRM de garciagoedwin (servidor: enviar.mjs lluvia)
+// con la etiqueta 📣 Campaña. «📤 Pasar a un Action Leader» guarda c.rep {u,n,t,st,dn} + repP; el servidor lo copia al CRM del líder y le avisa.
+// team/lluvia {part:[{u,n}], tope} lo configura el admin en Perfil › «🌧️ Lluvia de prospectos». Botón solo admin + cuenta de prueba (campOn).
+const campOn=()=>!!isAdmin||yoPrueba();
+let LLU=null,LLUt=0;
+async function lluCargar(f){if(!store.db)return LLU||{};if(!f&&LLU&&Date.now()-LLUt<5*60e3)return LLU;try{const d=await store.db.doc("team/lluvia").get();LLU=(d.exists&&d.data())||{};LLUt=Date.now()}catch(e){LLU=LLU||{}}return LLU}
+const lluDia=t=>{try{return new Date(t).toLocaleDateString("en-CA",{timeZone:"America/Tegucigalpa"})}catch(e){return ""}};
+function lluCuenta(u){const h0=lluDia(Date.now());let h=0,t=0;(contacts||[]).forEach(c=>{const r=c.rep;if(r&&r.u===u){t++;if(lluDia(r.t)===h0)h++}});return {h,t}}
+const lluEsCamp=c=>!!c&&Array.isArray(c.cat)&&c.cat.includes("camp");
+function lluHTML(c){if(!lluEsCamp(c))return "";const r=c.rep,id=esc(c.id),cp=c.camp||{};
+  if(r&&r.u)return `<div class="llR">📤 Pasado a <b>${esc(nv(r.n||"un líder"))}</b> · ${esc(memHace(r.t))} · ${r.st==="ok"?"✅ ya está en su CRM":"⏳ llega a su CRM en 5–15 min"}${campOn()&&r.st!=="ok"?`<button type="button" data-llx="${id}">Deshacer</button>`:""}</div>`;
+  if(cp.dn)return `<div class="llR">📣 Prospecto de la campaña · se lo pasó <b>${esc(cp.dn)}</b>${cp.int?" · le interesa: "+esc(cp.int):""}</div>`;
+  return campOn()?`<button type="button" class="llGo" data-llp="${id}">📤 Pasar a un Action Leader</button>`:""}
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-llp],[data-llx]");if(!b)return;e.preventDefault();e.stopPropagation();
+  const id=b.dataset.llp||b.dataset.llx,c=(contacts||[]).find(x=>x.id===id);if(!c)return;if(b.dataset.llp)lluPasar(c);else lluDeshacer(c)},true);
+async function lluPasar(c){const L=await lluCargar(true),P=(L.part||[]).filter(x=>x&&x.u),tope=+L.tope||0,fn=String(c.name||"").split(" ")[0];
+  if(!P.length){openSheet(`<h2>📤 Pasar a un Action Leader</h2><p class="small muted" style="margin:0">Primero elija quiénes participan en la campaña.</p><div class="row" style="margin-top:14px">${isAdmin?`<button class="btn grow" id="llCfg">🌧️ Elegir participantes</button>`:""}<button class="btn ghost" data-close>Cerrar</button></div>`,()=>{const b=$("#llCfg");if(b)b.onclick=()=>{closeSheet();setTimeout(lluPanel,250)}});return}
+  const R=P.map(x=>{const k=lluCuenta(x.u);return {x,k,off:!!(tope&&k.h>=tope)}}).sort((a,b)=>a.off-b.off||a.k.h-b.k.h||a.k.t-b.k.t||String(a.x.n).localeCompare(String(b.x.n)));
+  openSheet(`<h2>📤 Pasar a ${esc(fn)}</h2><p class="small muted" style="margin:0 0 8px">Le llega a su CRM con la etiqueta 📣 Campaña y un aviso al teléfono en 5–15 minutos.${tope?` Tope: ${tope} al día por líder.`:""}</p>
+    <div class="llL">${R.map(({x,k,off})=>`<button type="button" class="llI${off?" off":""}" data-llu="${esc(x.u)}"${off?" disabled":""}>${avV(x.n,x.u)}<span class="grow">${esc(nv(x.n))}<small>${off?"Tope de hoy completo":`Hoy ${k.h} · Total ${k.t}`}</small></span></button>`).join("")}</div>
+    <div class="row" style="margin-top:12px">${isAdmin?`<button class="btn ghost grow" id="llCfg">🌧️ Participantes y tope</button>`:""}<button class="btn ghost" data-close>Cancelar</button></div>`,()=>{
+    const b=$("#llCfg");if(b)b.onclick=()=>{closeSheet();setTimeout(lluPanel,250)};
+    document.querySelectorAll("[data-llu]").forEach(x=>x.onclick=async()=>{if(x.disabled)return;const p=P.find(y=>y.u===x.dataset.llu);if(!p)return;x.disabled=true;
+      const prev={rep:c.rep,repP:c.repP};c.rep={u:p.u,n:p.n,t:Date.now(),st:"p",dn:esSoloAdminYo()?"Edwin García Go":(miNombreCorto()||"su líder")};c.repP=true;c.updated=Date.now();
+      const id=await store.saveContact(Object.assign({},c));if(!id){c.rep=prev.rep;c.repP=prev.repP;x.disabled=false;return}
+      closeSheet();try{renderCRM()}catch(e){}toast("📤 Listo: en 5–15 min "+fn+" llega al CRM de "+String(nv(p.n)).split(" ")[0])})})}
+async function lluDeshacer(c){if(!c.rep||c.rep.st==="ok")return;delete c.rep;c.repP=false;c.updated=Date.now();await store.saveContact(Object.assign({},c));try{renderCRM()}catch(e){}toast("Listo, ya no se le pasa")}
+async function lluPanel(){if(!isAdmin)return;const L=await lluCargar(true);if(!socios)try{await loadSocios()}catch(e){}
+  const sel=new Map((L.part||[]).filter(x=>x&&x.u).map(x=>[x.u,x.n]));
+  const camp=(contacts||[]).filter(c=>lluEsCamp(c)&&c.camp&&c.camp.lid),pas=camp.filter(c=>c.rep&&c.rep.u);
+  const cand=()=>(socios||[]).filter(x=>x.registro&&x.registro.nombre&&!esSoloAdmin(x)&&!(typeof esPrueba==="function"&&esPrueba(x)));
+  openSheet(`<h2>🌧️ Lluvia de prospectos</h2>
+    <div class="llSt"><div><b>${camp.length}</b><span>Recibidos</span></div><div><b>${camp.length-pas.length}</b><span>Sin pasar</span></div><div><b>${pas.length}</b><span>Pasados</span></div></div>
+    <button class="btn ghost" id="llVer" style="width:100%">📣 Ver los prospectos en mi CRM</button>
+    <div class="llH">Tope por líder al día</div><div class="row" style="align-items:center;gap:10px"><input id="llTope" type="number" min="0" inputmode="numeric" value="${+L.tope||""}" placeholder="Sin tope" style="width:110px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:600 15px Figtree,sans-serif"><span class="small muted">Vacío = sin tope</span></div>
+    <div class="llH">Participantes · <span id="llN">${sel.size}</span></div>
+    <button class="btn ghost" id="llSis" style="width:100%">➕ Agregar los del Sistema de liderazgo en verde (IC 70 %+)</button>
+    <input id="llQ" placeholder="🔎 Buscar un socio para agregar" style="margin-top:8px;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:600 15px Figtree,sans-serif"><div id="llSug" class="llL"></div><div id="llSel" class="llL"></div>
+    <div class="llH">Pasados y su etapa</div><div id="llPas" class="llL">${pas.length?`<button class="btn ghost" id="llEt">Ver en qué etapa los tienen</button>`:`<span class="small muted">Todavía no ha pasado ninguno.</span>`}</div>
+    <div class="row" style="margin-top:14px"><button class="btn grow" id="llOk">Guardar</button><button class="btn ghost" data-close>Cerrar</button></div>`,()=>{
+    const pinta=()=>{$("#llN").textContent=sel.size;$("#llSel").innerHTML=[...sel].map(([u,n])=>{const k=lluCuenta(u);return `<div class="llI">${avV(n,u)}<span class="grow">${esc(nv(n))}<small>Hoy ${k.h} · Total ${k.t}</small></span><b class="x" data-llq="${esc(u)}" role="button" aria-label="Quitar">✕</b></div>`}).join("")||`<span class="small muted">Nadie todavía.</span>`;
+      $("#llSel").querySelectorAll("[data-llq]").forEach(b=>b.onclick=()=>{sel.delete(b.dataset.llq);pinta()})};
+    const sug=()=>{const q=nrmN2($("#llQ").value||"");if(q.length<2){$("#llSug").innerHTML="";return}
+      $("#llSug").innerHTML=cand().filter(x=>!sel.has(x.uid)&&nrmN2(x.registro.nombre).includes(q)).slice(0,6).map(x=>`<button type="button" class="llI" data-lla="${esc(x.uid)}">${avV(x.registro.nombre,x.uid)}<span class="grow">${esc(nv(x.registro.nombre))}</span><b class="pl">＋</b></button>`).join("");
+      $("#llSug").querySelectorAll("[data-lla]").forEach(b=>b.onclick=()=>{const x=cand().find(y=>y.uid===b.dataset.lla);if(x)sel.set(x.uid,x.registro.nombre);$("#llQ").value="";sug();pinta()})};
+    $("#llQ").oninput=sug;pinta();
+    $("#llVer").onclick=()=>{closeSheet();avIr("camp")};
+    $("#llSis").onclick=async()=>{try{await liderResCargar()}catch(e){}let n=0;(T.lideres||[]).forEach(l=>{try{const x=liderMatch(l,cand()),p=lzPers(l);if(x&&p!=null&&p>=70&&!sel.has(x.uid)){sel.set(x.uid,x.registro.nombre);n++}}catch(e){}});pinta();toast(n?"➕ "+n+" agregados":"No encontré nuevos en verde")};
+    const et=$("#llEt");if(et)et.onclick=async()=>{$("#llPas").innerHTML=`<span class="small muted">Cargando…</span>`;
+      const F=await Promise.all(pas.map(async c=>{let st="—";try{const d=await store.db.doc(`users/${c.rep.u}/crm/${c.id}`).get();st=d.exists?(d.data().stage||"Nuevo"):(c.rep.st==="ok"?"Lo borró":"⏳ En camino")}catch(e){}return {c,st}}));
+      $("#llPas").innerHTML=F.map(({c,st})=>`<div class="llI"><span class="grow">${esc(c.name)}<small>→ ${esc(nv(c.rep.n||""))} · ${esc(memHace(c.rep.t))}</small></span><span class="llStg" style="color:${STAGE_COL[st]||"var(--ink)"}">${esc(st)}</span></div>`).join("")};
+    $("#llOk").onclick=async()=>{const tp=Math.max(0,Math.round(+$("#llTope").value||0));
+      try{await store.db.doc("team/lluvia").set({part:[...sel].map(([u,n])=>({u,n})),tope:tp,t:Date.now()},{merge:true});LLU=Object.assign(LLU||{},{part:[...sel].map(([u,n])=>({u,n})),tope:tp});LLUt=Date.now();closeSheet();toast("✅ Guardado")}catch(e){toast("No se pudo guardar · "+errCod(e))}}})}
 function catOk(c){if(catF==="pv")return !!crmPv(c);return catF==="*"||(catF==="-"?!(Array.isArray(c.cat)&&c.cat.length):(c.cat||[]).includes(catF))}
 function editContact(c,onNew,opts){opts=opts||{};const esNuevo=!c;if(esNuevo&&ahGate())return;c=c||{name:"",phone:"",stage:"Nuevo",note:"",next:"",cc:LS.get("lastCC")||"504"};const ccSel=c.cc||(c.phone?"504":LS.get("lastCC")||"504");
   openSheet(`<h2>${c.id?"Editar contacto":opts.lista?"📝 Persona nueva a la lista":"Nuevo contacto"}</h2>${opts.lista?`<p class="small muted" style="margin:0">Solo cuentan personas que aún no están en su CRM. Se guarda en su CRM y suma en su rutina.</p>`:""}
@@ -9043,12 +9104,12 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     <button class="pf-it" id="pfInst"><span class="ic">📲</span>Instalar la app en mi celular</button>
     <button class="pf-it" id="pfFront"><span class="ic">🏠</span>Ver la portada de la app</button>
     <button class="pf-it" id="pfBk"><span class="ic">💾</span>Respaldo de mis contactos</button>
-    ${isAdmin&&irSimple()?`<div class="pf-h">Admin</div><button class="pf-it" id="pfCie"><span class="ic">💰</span>Cierre de mes</button>`:""}${isAdmin?`<button class="pf-it" id="pfRep"><span class="ic">📤</span>Cargar reportes de inCruises</button>`:""}${isAdmin?`<button class="pf-it" id="pfTz"><span class="ic">🎥</span>Zoom del Action Leaders Training</button>`:""}${isAdmin?`<button class="pf-it" id="pfGrp"><span class="ic">👥</span>Grupo de WhatsApp del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)${irSimM()?` <b style="margin-left:auto;font-size:11px;background:#7C3AED;color:#fff;border-radius:99px;padding:3px 8px">ENCENDIDO</b>`:""}</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfRh"><span class="ic">🔥</span>Ver celebración de racha (admin)</button><button class="pf-it" id="pfRd"><span class="ic">🏅</span>Ver Día de reconocimientos (admin)</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
+    ${isAdmin&&irSimple()?`<div class="pf-h">Admin</div><button class="pf-it" id="pfCie"><span class="ic">💰</span>Cierre de mes</button>`:""}${isAdmin?`<button class="pf-it" id="pfRep"><span class="ic">📤</span>Cargar reportes de inCruises</button>`:""}${isAdmin?`<button class="pf-it" id="pfLlu"><span class="ic">🌧️</span>Lluvia de prospectos (campaña)</button>`:""}${isAdmin?`<button class="pf-it" id="pfTz"><span class="ic">🎥</span>Zoom del Action Leaders Training</button>`:""}${isAdmin?`<button class="pf-it" id="pfGrp"><span class="ic">👥</span>Grupo de WhatsApp del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfSim"><span class="ic">🧪</span>Ver como socio nuevo (prueba)${irSimM()?` <b style="margin-left:auto;font-size:11px;background:#7C3AED;color:#fff;border-radius:99px;padding:3px 8px">ENCENDIDO</b>`:""}</button>`:""}${isAdmin?`<button class="pf-it" id="pfAdm"><span class="ic">🛠️</span>Admin del equipo</button>`:""}${isAdmin?`<button class="pf-it" id="pfRh"><span class="ic">🔥</span>Ver celebración de racha (admin)</button><button class="pf-it" id="pfRd"><span class="ic">🏅</span>Ver Día de reconocimientos (admin)</button>`:""}${isAdmin?`<button class="pf-it" id="pfPrev"><span class="ic">👁️</span>Vista previa sin cuenta</button>`:""}
     <button class="pf-it out" id="pfOut"><span class="ic">🚪</span>Cerrar sesión</button>
    </div><button class="btn ghost" data-close style="margin-top:12px;width:100%">Cerrar</button>`,()=>{
     $("#pfFoto").onclick=()=>{const n=miNombreFull();if(!n){toast("Primero completa tu registro");return}if(!profile.miNombre){profile.miNombre=n;store.set("perfil",profile)}closeSheet();pedirFoto(profile.miNombre)};
     {const bk=$("#pfBk");if(bk)bk.onclick=()=>{closeSheet();setTimeout(()=>openSheet(`<h2 style="margin:0">💾 Respaldo de sus contactos</h2><p class="small muted" style="margin:6px 0 12px">Sus contactos ya se guardan solos en su cuenta. Si quiere, puede guardar además una copia en un archivo.</p><button class="btn" id="pfBkS" style="width:100%">Descargar mi respaldo</button><button class="btn ghost" id="pfBkL" style="width:100%">Cargar un respaldo</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{$("#pfBkS").onclick=()=>{closeSheet();$("#bkSave").click()};$("#pfBkL").onclick=()=>{closeSheet();$("#bkLoad").click()}}),250)}}
-    $("#pfNombre").onclick=abrirMisDatos;$("#pfAvisos").onclick=()=>{closeSheet();setTimeout(misAvisos,250)};{const gp=$("#pfGrp");if(gp)gp.onclick=()=>{closeSheet();setTimeout(grpAdmin,250)}}{const rp=$("#pfRep");if(rp)rp.onclick=()=>{closeSheet();setTimeout(repAdmin,250)}}{const tz=$("#pfTz");if(tz)tz.onclick=()=>{closeSheet();setTimeout(trZoomAdmin,250)}}{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const cz=$("#pfCie");if(cz)cz.onclick=()=>{closeSheet();eqTab="cierre";go("equipo");renderEquipo()}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
+    $("#pfNombre").onclick=abrirMisDatos;$("#pfAvisos").onclick=()=>{closeSheet();setTimeout(misAvisos,250)};{const gp=$("#pfGrp");if(gp)gp.onclick=()=>{closeSheet();setTimeout(grpAdmin,250)}}{const rp=$("#pfRep");if(rp)rp.onclick=()=>{closeSheet();setTimeout(repAdmin,250)}}{const ll=$("#pfLlu");if(ll)ll.onclick=()=>{closeSheet();setTimeout(lluPanel,250)}}{const tz=$("#pfTz");if(tz)tz.onclick=()=>{closeSheet();setTimeout(trZoomAdmin,250)}}{const sm=$("#pfSim");if(sm)sm.onclick=()=>{closeSheet();setTimeout(simAbrir,250)}}{const cz=$("#pfCie");if(cz)cz.onclick=()=>{closeSheet();eqTab="cierre";go("equipo");renderEquipo()}}{const ps=$("#pfSala");if(ps)ps.onclick=()=>{closeSheet();abrirSala()}}
     $("#pfWel").onclick=verBienvenidaOtraVez;$("#pfPag").onclick=abrirMiPagina;$("#pfVia").onclick=()=>window.open(VIA_FORM,"_blank","noopener");{const b=$("#pfDecl");if(b)b.onclick=()=>{closeSheet();setTimeout(declAbrir,250)}}{const b=$("#pfCert");if(b)b.onclick=()=>{closeSheet();setTimeout(recoLista,250)}}{const b=$("#pfTl");if(b)b.onclick=()=>{closeSheet();setTimeout(()=>{miReco()?recoMio():tlInfo()},250)}}$("#pfMem").onclick=()=>memCompartir();$("#pfLzs").onclick=()=>{closeSheet();setTimeout(abrirLanzSocio,250)};$("#pfMemV").onclick=()=>memVisitas();
     $("#pfInv").onclick=()=>{closeSheet();setTimeout(invPlanHoja,250)};
     $("#pfInst").onclick=()=>openSheet(`<h2>Instala la app</h2>
@@ -9952,7 +10013,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261117122621";var busy=false,pend=null;
+(function(){var V="20261117195934";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

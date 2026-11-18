@@ -2,6 +2,8 @@ name: Lluvia de prospectos
 # 17 nov (Edwin): hoja «Prospectos Ilimitados» → CRM de garciagoedwin (📣 Campaña) + aviso; reparto a Action Leaders.
 # Los registros son públicos: el script solo imprime conteos.
 on:
+  schedule:
+    - cron: "*/5 * * * *"   # cada 5 min (GitHub puede atrasarse unos minutos)
   workflow_dispatch:
     inputs:
       dry:
