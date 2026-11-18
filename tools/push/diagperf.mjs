@@ -5,6 +5,13 @@ import { getFirestore } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
 import crypto from "crypto";
 // Análisis para el Training: todo sale CIFRADO con la llave pública PK (solo quien tiene la privada lo lee). El log público no muestra datos.
+if (process.env.CODE === "fotos") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
+  const Q = (process.env.Q || "mayckol,nancy").split(","), o = {};
+  for (const d of (await db.collection("fotos").get()).docs) { const x = d.data() || {}, n = String(x.invNombre || x.nombre || x.rk || "").toLowerCase(); if (Q.some(q => n.includes(q)) && x.img) o[n] = x.img; }
+  const out = JSON.stringify(o), k = crypto.randomBytes(32), iv = crypto.randomBytes(12), c = crypto.createCipheriv("aes-256-gcm", k, iv), zz = (await import("zlib")).gzipSync(out), enc = Buffer.concat([c.update(zz), c.final()]), tag = c.getAuthTag();
+  const ek = crypto.publicEncrypt({ key: "-----BEGIN PUBLIC KEY-----\n" + process.env.PK + "\n-----END PUBLIC KEY-----", oaepHash: "sha256" }, k);
+  console.log("fotos", Object.keys(o).length); const all = [ek, iv, tag, enc].map(b => b.toString("base64")).join("."); for (let i = 0; i < all.length; i += 20000) console.log("CIF" + String(i / 20000).padStart(3, "0") + ":" + all.slice(i, i + 20000));
+  process.exit(0) }
 if (process.env.CODE === "analisis") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
   const U = (await db.collection("users").get()).docs.map(d => { const x = d.data() || {}, r = x.registro || {}, a = x.actividad || {}, ir = x.ir || {};
     return { u: d.id, n: r.nombre || "", pl: r.plan || "", f: r.fecha || "", rg: r.rango || "", ap: x.apE || "", a: { hoy: a.hoy, racha: a.racha, dias7: a.dias7, semana: a.semana, t: a.t, emb: a.emb ? a.emb.c : null, crm: a.crm }, ir: ir.p || null, sa: x.soloAdm || 0 } });
