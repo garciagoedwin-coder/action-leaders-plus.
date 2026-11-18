@@ -1521,6 +1521,24 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .anuNo{background:none;border:0;color:#94a3b8;font-size:14px;padding:12px;width:100%}
 @media (prefers-reduced-motion:reduce){.anuGo{animation:none}}
 .gcBox{align-self:stretch;margin:10px 0;padding:12px;border-radius:16px;background:color-mix(in srgb,var(--brand) 7%,var(--surface));border:1px solid color-mix(in srgb,var(--brand) 22%,transparent);display:flex;flex-direction:column;gap:8px}.gcHd{display:flex;align-items:center;justify-content:space-between;gap:8px}.gcHd b{font-size:14px}.gcD{display:flex;gap:4px}.gcD i{width:14px;height:6px;border-radius:3px;background:var(--line)}.gcD i.ok{background:#16A34A}.gcD i.on{background:var(--brand)}.gcGo{border:0;border-radius:12px;padding:12px;font:700 15px/1.2 inherit;background:#16A34A;color:#fff;text-align:left}.gcSg{border:1px solid #F59E0B;border-radius:12px;padding:10px;font:700 13px/1.2 inherit;background:color-mix(in srgb,#F59E0B 12%,var(--surface));color:var(--ink);text-align:left}.gcAv{font-size:13px;font-weight:700;color:#15803D}.gcAv.o{color:#B45309}.gcMs1{border:1px dashed var(--line);border-radius:10px;padding:8px;background:transparent;color:var(--muted);font:600 13px inherit}.gcFin{font-weight:700;color:#15803D;font-size:14px}.gcMs{display:flex;gap:8px}.gcMs button{flex:1;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--surface);color:var(--ink);font:600 13px inherit}
+
+/* 18 nov: Plan de Arranque fijo */
+body #v-inicio.simple>#irCard.irF,#v-inicio>#irCard.irF{order:4!important}
+#irCard.irF{display:block;position:relative;border-radius:18px;padding:12px 14px 12px;cursor:pointer;background:color-mix(in srgb,var(--ac) 10%,var(--surface));border:1.5px solid color-mix(in srgb,var(--ac) 55%,transparent);box-shadow:0 8px 22px -14px var(--ac);color:var(--ink)}
+.irF.rj{--ac:#DC2626}.irF.am{--ac:#F59E0B}.irF.vd{--ac:#16A34A}
+.irF.rj{animation:irFl 2.4s ease-in-out 3}@keyframes irFl{50%{box-shadow:0 0 0 4px color-mix(in srgb,#DC2626 25%,transparent),0 8px 22px -14px #DC2626}}
+.irF1{display:flex;gap:10px;align-items:center}.irFi{width:46px;height:auto;flex:none;filter:drop-shadow(0 3px 6px rgba(0,0,0,.2))}
+.irFk{display:block;font-size:10.5px;font-weight:800;letter-spacing:.08em;color:color-mix(in srgb,var(--ac) 80%,var(--ink))}
+.irFt{display:block;font-size:15.5px;line-height:1.2;margin:1px 0 2px}.irFs{display:block;font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.irFbar{display:block;height:7px;border-radius:9px;background:color-mix(in srgb,var(--ac) 18%,var(--surface-2));overflow:hidden;margin:9px 0 6px}.irFbar i{display:block;height:100%;border-radius:9px;background:var(--ac)}
+.irFg{font-size:12px;color:var(--muted);margin:0 0 8px}.irFg b{color:var(--ink)}
+.irFb{width:100%;border:0;border-radius:12px;padding:10px;font:inherit;font-weight:800;font-size:14.5px;color:#fff;background:var(--ac);cursor:pointer}.irF.am .irFb{color:#3b2a00}
+@media (prefers-reduced-motion:reduce){.irF.rj{animation:none}}
+.irPop{text-align:center}.irPop.rj{--ac:#DC2626}.irPop.am{--ac:#F59E0B}.irPop.vd{--ac:#16A34A}.irPi{width:110px;height:auto;margin:2px auto 4px;display:block;filter:drop-shadow(0 6px 12px rgba(0,0,0,.25))}
+.irPk{font-size:11px;font-weight:800;letter-spacing:.1em;color:color-mix(in srgb,var(--ac) 80%,var(--ink));margin:0}.irPop h2{margin:2px 0 6px;font-size:20px}
+.irPl{display:flex;flex-direction:column;gap:5px;text-align:left;background:var(--surface-2);border-radius:12px;padding:10px 12px;font-size:13.5px;margin-bottom:10px}
+.irPins{display:flex;justify-content:center;gap:4px;margin:4px 0 12px}.irPins img{width:40px;height:auto}.irPins img.g{filter:grayscale(1);opacity:.35}
+.irPgo{width:100%;background:var(--ac)!important;color:#fff!important;font-weight:800}.irPop.am .irPgo{color:#3b2a00!important}
 </style>
 
 </head>
@@ -2318,10 +2336,10 @@ function rut3(h,n){const rc=$("#rutCard");if(!rc)return;let s=$("#rutSeg");if(!a
   let c=$("#rutChips");if(!c){c=document.createElement("div");c.id="rutChips";s.after(c);c.onclick=e=>{const b=e.target.closest("[data-rt3]");if(!b)return;const k=b.dataset.rt3;window._rt3V=window._rt3V===k?"":k;renderTasks()}}
   c.innerHTML=L.join("");c.hidden=!L.length}
 let saveDayT;function saveDay(){clearTimeout(saveDayT);saveDayT=setTimeout(()=>store.set("rutina-"+TODAY,day),600);weekCache[TODAY]=day;renderWeek()}
-$("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(ahGate())return;if(b.dataset.npv){npVer(+b.dataset.npv);return}if(b.dataset.hist){abrirHist();return}if(b.dataset.hfly){abrirFlyHoy();return}
+$("#tasks").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(ahGate())return;if(b.dataset.npv){npVer(+b.dataset.npv);return}if(b.dataset.np9){npSala9();return}if(b.dataset.hist){abrirHist();return}if(b.dataset.hfly){abrirFlyHoy();return}
   if(b.dataset.hs){const q=b.dataset.hs==="a"?"hAtr":"hFly";day[q]=day[q]?0:1}
   else if(b.dataset.k==="historia"){day.hAtr=day.hAtr?0:1;if(!day.hAtr)day.historia=0}
-  else if(b.dataset.k){if(b.dataset.k==="audio"&&!day.audio){const n=npPend();if(n){toast("🎓 Vea su video de hoy: este punto se marca solo al terminarlo");npVer(n);return}}day[b.dataset.k]=day[b.dataset.k]?0:1}
+  else if(b.dataset.k){if(b.dataset.k==="audio"&&!day.audio){const n=npPend();if(n){toast("🎓 Vea su video de hoy: este punto se marca solo al terminarlo");npVer(n);return}if(npSala9Pend()){toast("✈️ Este punto se marca solo al terminar su presentación virtual");npSala9();return}}day[b.dataset.k]=day[b.dataset.k]?0:1}
   else if(b.dataset.inc==="presentaciones"){abrirPres();return}
   else if(b.dataset.dec==="presentaciones"){quitarPres();return}
   else if(b.dataset.inc==="contactos"){editContact(null,null,{lista:1});return}
@@ -3340,7 +3358,7 @@ function renderAcc3(){const c=$("#acc3");if(!c)return;const on=acc3On();document
   c.querySelectorAll("[data-a3]").forEach(b=>b.onclick=()=>{const k=b.dataset.a3;if(k==="sala")salaMenu();else if(k==="hist")abrirHist();else if(k==="pres")presElegir();else if(k==="dl"){const u=irPresUrl();if(!u){toast("La presentación del mes todavía no está cargada");return}const w=window.open(u,"_blank");if(w)w.opener=null}else if(k==="bien")abrirBienvenida();else if(k==="dest")destCompartir()});
   $("#acc3Mas").onclick=()=>cajaAbrir();try{avBox3()}catch(e){}}
 // 14 nov (Edwin, SOLO ADMIN): un solo carrusel «HOY»: declaración (si falta), cierre/incentivo, Inicio Rápido, etc. pasan dentro de #avTrack; avanza solo cada 5 s (no si el aviso actual es urgente o si la persona lo tocó hace poco).
-const AV3=["lzCallStrip","trHoy","declStrip","cieStrip","cmpStrip","incStrip","irCard","npBan","raStrip","pushStrip"];
+const AV3=["lzCallStrip","trHoy","declStrip","cieStrip","cmpStrip","incStrip","npBan","raStrip","pushStrip"]; // 18 nov: #irCard fijo arriba del compromiso
 function avMover(){const tr=$("#avTrack");if(!tr||!tr.dataset.m3)return;let ref=tr.querySelector('.avSl[data-k="urgStrip"]');
   AV3.forEach(id=>{let sl=tr.querySelector('.avSl[data-k="'+id+'"]');if(!sl){sl=document.createElement("div");sl.className="avSl av3";sl.dataset.k=id;sl.hidden=true;if(ref)ref.after(sl);else tr.prepend(sl)}ref=sl;
     const el=document.getElementById(id);if(el&&el.parentNode!==sl){sl.append(el);avBoxQ()}})}
@@ -6698,13 +6716,14 @@ function anuStrip(){const el=$("#anuStrip");if(!el)return;const c=anuCfg(),e=c&&
   el.onclick=()=>{const x=anuEv(c);if(x)evaVer(x);else toast("Abriendo el evento…")};el.hidden=false;
   {const k=el.querySelector(".evHb"),en=anuEnc(e);if(k&&en){k.textContent="🎟️ Ticket ›";k.onclick=ev=>{ev.stopPropagation();anuTicket(e,en)}}}
   anuPopProg()}
-// 17 nov (Edwin): el anuncio del evento sale GRANDE cada vez que el socio abre la app, con botón directo al encargado de tickets.
+// 17 nov (Edwin): el anuncio del evento sale GRANDE al abrir la app (18 nov: solo 1 vez al día; el resto queda en el carrusel), con botón directo al encargado de tickets.
 function anuEnc(e){return ((e&&e.enc)||[]).find(x=>x&&x.w)||null}
 function anuTicket(e,x){waIr("https://wa.me/"+String(x.w).replace(/\D/g,"")+"?text="+encodeURIComponent(evaEncMsg(e,x)))}
 let anuPopT=0;function anuPopProg(){if(window._anuPop||anuPopT)return;anuPopT=setTimeout(anuPopVer,3500)}
-async function anuPopVer(n){anuPopT=0;if(window._anuPop)return;const c=anuCfg(),e=c&&anuEv(c);if(!e)return;const vi=$("#v-inicio");
+async function anuPopVer(n){anuPopT=0;if(window._anuPop)return;const c=anuCfg(),e=c&&anuEv(c);if(!e)return;const KD="anuPopD:"+(c.id||"")+":"+(store.uid||"");if(LS.get(KD)===TODAY)return; // 18 nov (Edwin): una vez al día
+const vi=$("#v-inicio");
   if(!$("#sheet").hidden||(vi&&vi.hidden)||document.hidden){if((n||0)<36)anuPopT=setTimeout(()=>anuPopVer((n||0)+1),5000);return}
-  window._anuPop=1;const dd=parseK(e.fecha),EN=(e.enc||[]).filter(x=>x&&x.w),tk=+e.tk||0;
+  window._anuPop=1;try{LS.set(KD,TODAY)}catch(x){}const dd=parseK(e.fecha),EN=(e.enc||[]).filter(x=>x&&x.w),tk=+e.tk||0;
   openSheet(`<div class="anuPop"><div class="anuK">🎟️ ${esc(c.k||"EVENTO EXCLUSIVO · CUPO LIMITADO")}</div><h3>${esc(c.t)}</h3>${c.sub?`<div class="anuS">${esc(c.sub)}</div>`:""}
     <div class="anuFl" id="anuFl"><span>Preparando el flyer…</span></div>
     <div class="anuIn"><span>📅 <b>${DAYS_L[dd.getDay()].replace(/^./,m=>m.toUpperCase())} ${dd.getDate()} de ${MONTHS[dd.getMonth()].toLowerCase()}</b></span><span>🕗 <b>${esc(h12(e.hora))}</b></span><span>📍 <b>${esc(e.ciudad||"En línea")}</b></span>${tk>0?`<span>🎟️ <b>Lps ${tk.toLocaleString("es")}</b></span>`:""}</div>
@@ -7288,7 +7307,7 @@ function salaYoGate(){const v=salaYo();salaYoPrep();
 setTimeout(()=>{try{svRevisar()}catch(e){}},9000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(()=>{try{svRevisar()}catch(e){}},4000)});
 function salaYoVolvio(){const p=+LS.get("salaYoP")||0;if(!p||Date.now()-p>6*36e5)return;
   setTimeout(async()=>{const antes=salaYoOk();try{await loadSala(true)}catch(e){}const a=$("#npSala");if(a)salaYoCard(a);const g=$("#syG");if(g)salaYoCard(g);
-    if(!antes&&salaYoOk()){try{LS.set("salaYoOk:"+(store.uid||""),1)}catch(e){}try{avisoTop("🔓 ¡Ya puede enviar su presentación virtual!","Ahora sabe exactamente lo que verán sus prospectos",()=>salaCompartir())}catch(e){}}},1200)}
+    if(!antes&&salaYoOk()){try{LS.set("salaYoOk:"+(store.uid||""),1)}catch(e){}try{const E9=npEstado();if(E9&&E9.fin&&!((day.audio||0)>=1)){day.audio=1;saveDay();renderTasks();toast("✅ Paso 9 completo · su punto «Auto desarrollo personal» de hoy quedó marcado")}}catch(e){}try{avisoTop("🔓 ¡Ya puede enviar su presentación virtual!","Ahora sabe exactamente lo que verán sus prospectos",()=>salaCompartir())}catch(e){}}},1200)}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")salaYoVolvio()});setTimeout(()=>{try{if(store.uid)salaYoVolvio()}catch(e){}},6000);
 function memDe(cid){if(!cid)return null;const V=LS.get("salaV")||{};let b=null;for(const k in V){const v=V[k];if(k.startsWith("m_")&&v.c===cid&&(!b||(v.t||0)>(b.t||0)))b=v}return b}
 function memHace(t){const m=Math.round((Date.now()-t)/6e4);return m<2?"ahora":m<60?"hace "+m+" min":m<1440?"hace "+Math.round(m/60)+" h":"hace "+Math.round(m/1440)+" d"}
@@ -8751,20 +8770,28 @@ function acaLogos(){const F={};
       const a=document.createElement("a");a.href=file?URL.createObjectURL(file):"media/logos/"+f;a.download="Action-Leaders-"+f;document.body.appendChild(a);a.click();setTimeout(()=>{a.remove()},3000);toast("Descargando el logo…")})})}
 // ===== NETWORKER PRO (12 nov, Edwin): curso de 8 videos en Academia + rutina (punto «Aliméntese») + banner + diploma =====
 // config.np en team.json {id,t,sub,nivel,desde,videos:[{t,yt,tarea,ir,bt,f?}]}. Avance en profile.np {v:{n:t}, d:{n:"AAAA-MM-DD"}}.
-// Uno por día: el video n se abre el día DESPUÉS de terminar el n-1. Se marca solo al ver el 90 % sin adelantar.
+// 18 nov (Edwin): los 8 videos abiertos para todos (antes uno por día). Se marca solo al ver el 90 % sin adelantar.
 const npCfg=()=>{const c=(T.config||{}).np;return c&&Array.isArray(c.videos)&&c.videos.length&&(!c.desde||Date.now()>=Date.parse(c.desde)||isAdmin)?c:null};
 const npSt=()=>{const s=profile.np||(profile.np={});s.v=s.v||{};s.d=s.d||{};s.w=s.w||{};s.q=s.q||{};return s};
 const npF=f=>{try{return new Date(f+"T12:00:00").toLocaleDateString("es-HN",{weekday:"long",day:"numeric",month:"short"})}catch(e){return f}};
 function npEstado(){const c=npCfg();if(!c)return null;const s=npSt(),V=c.videos,tot=V.length;let vistos=0;V.forEach((v,i)=>{if(s.v[i+1])vistos++});
   const hoyN=+(Object.keys(s.d).find(n=>s.d[n]===TODAY)||0);
   let sig=V.findIndex((v,i)=>!s.v[i+1])+1;
-  const disp=n=>{const v=V[n-1];if(!v||!v.yt)return false;if(s.v[n]||isAdmin||n===1)return true;return !!s.v[n-1]&&String(s.d[n-1]||"")<TODAY};
-  const motivo=n=>{const v=V[n-1];if(!v)return "";if(!v.yt)return v.f?"Se libera el "+npF(v.f):"Próximamente";if(n>1&&!s.v[n-1])return "Al terminar el video "+(n-1);if(n>1&&String(s.d[n-1]||"")>=TODAY)return "Se abre mañana";return ""};
+  const disp=n=>{const v=V[n-1];return !!(v&&v.yt)}; // 18 nov (Edwin): los 8 abiertos para todos; la rutina sugiere el siguiente que falta
+  const motivo=n=>{const v=V[n-1];if(!v)return "";if(!v.yt)return v.f?"Se libera el "+npF(v.f):"Próximamente";return ""};
   return {c,s,V,tot,vistos,hoyN,sig,disp,motivo,nDisp:V.filter((v,i)=>disp(i+1)).length,fin:vistos>=tot}}
 // 12 nov (Edwin): mientras haya un video de Networker Pro pendiente HOY, el punto no se marca con clic (abre el video) y no sale Spotify.
 const npPend=()=>{const E=npEstado();return E&&!E.hoyN&&E.sig&&E.disp(E.sig)?E.sig:0};
 const npActivo=()=>{const E=npEstado();return !!(E&&!E.fin)};
+// 18 nov (Edwin): paso 9 de Auto desarrollo = vivir su presentación virtual (después de los 8 videos). Cuenta el punto del día al terminarla.
+function npSalaOk(){try{return !salaOk()||salaYoOk()}catch(e){return true}}
+function npSala9(){toast("✈️ Abriendo su presentación virtual…");salaYoPrep().then(ok=>{if(ok)salaYoIr(false)})}
+function npSala9HTML(E){if(!salaOk())return "";const ok=salaYoOk();return ok?`<div class="npI ok"><i>✓</i><span><b>Su presentación virtual</b><small>Paso 9 · la vivió como su prospecto</small></span><em class="tok">Vista</em></div>`
+  :E.fin?`<button type="button" class="npI cur" id="np9"><i>9</i><span><b>✈️ Viva su presentación virtual</b><small>Paso 9 · véala como la verán sus prospectos</small></span><em class="tnew">NUEVO</em></button>`
+  :`<div class="npI lk"><i>9</i><span><b>✈️ Viva su presentación virtual</b><small>Al terminar los 8 videos</small></span><em class="tlk">🔒</em></div>`}
+const npSala9Pend=()=>{const E=npEstado();return !!(E&&E.fin&&!npSalaOk())};
 function npRutHTML(){const E=npEstado();if(!E)return "";
+  if(E.fin&&!npSalaOk()&&!day.audio)return `<br><button type="button" class="npRut" data-np9="1">✈️ Paso 9 · <b>Viva su presentación virtual</b> (como su prospecto) ▶</button>`;
   if(E.hoyN)return `<br><span class="chip c-good" style="display:inline-flex;margin-top:6px">🎓 Video ${E.hoyN} de Networker Pro visto ✓</span>`;
   if(E.sig&&E.disp(E.sig))return `<br><button type="button" class="npRut" data-npv="${E.sig}">${E.s.w[E.sig]?"📝 Responda las 3 preguntas del video":"🎓 Vea su video de hoy"} · <b>${E.sig} · ${esc(E.V[E.sig-1].t)}</b> ▶</button>`;return ""}
 function npCardHTML(){const E=npEstado();if(!E)return "";const p=Math.round(E.vistos*100/E.tot),nx=E.sig&&E.disp(E.sig)?E.sig:0,nuevo=nx&&!E.hoyN;
@@ -8814,15 +8841,15 @@ async function npCLTog(){const e=npCLEst(),v=e.yo?0:Date.now();LS.set("npLk:"+st
   try{if(store.db&&store.uid&&!esSoloAdminYo())await store.db.collection("constancia").doc(store.uid).set({npLk:v||null,u:Date.now()},{merge:true})}catch(x){toast("No se pudo: "+errCod(x))}}
 function npCurso(){const E=npEstado();if(!E){toast("El curso todavía no está disponible");return}
   openSheet(`<div class="npHero"><p class="npK">CURSO · ${esc(String(E.c.nivel||"").toUpperCase())}</p><div class="npT">NETWORKER <b>PRO</b></div><p class="npS">${esc(E.c.sub||"")}. Cada video: mentalidad, habilidad y una acción con la app.</p>
-     <div class="npSt"><div><b>${E.vistos}/${E.tot}</b>vistos</div><div><b>${E.nDisp}</b>disponibles</div><div><b>1</b>video al día</div></div><button type="button" class="npCL" id="npCL"></button></div>
+     <div class="npSt"><div><b>${E.vistos}/${E.tot}</b>vistos</div><div><b>${E.nDisp}</b>disponibles</div><div><b>9</b>${E.fin&&npSalaOk()?"✓ completo":"pasos"}</div></div><button type="button" class="npCL" id="npCL"></button></div>
     <button type="button" class="npSoc" id="npSoc" hidden style="margin:10px 0 0"></button><div class="npL">${E.V.map((v,i)=>{const n=i+1,ok=!!E.s.v[n],d=E.disp(n),cur=!ok&&d&&n===E.sig;
       return ok?`<button type="button" class="npI ok" data-npv="${n}"><i>✓</i><span><b>${esc(v.t)}</b><small>Video ${n} · visto${E.s.d[n]?" el "+npF(E.s.d[n]):""}${Array.isArray(v.q)&&v.q.length?(E.s.q[n]?" · ✅ aprobado":" · 📝 responda las preguntas"):""}</small></span><em class="tok">Visto</em></button>`
-        :d?`<button type="button" class="npI${cur?" cur":""}" data-npv="${n}"><i>${n}</i><span><b>${esc(v.t)}</b><small>Video ${n} · ${E.s.w[n]?"📝 falta responder las preguntas":cur?"su video de hoy":"disponible"}</small></span>${cur?`<em class="tnew">NUEVO</em>`:""}</button>`
+        :d?`<button type="button" class="npI${cur?" cur":""}" data-npv="${n}"><i>${n}</i><span><b>${esc(v.t)}</b><small>Video ${n} · ${E.s.w[n]?"📝 falta responder las preguntas":cur?"siga aquí":"disponible"}</small></span>${cur?`<em class="tnew">NUEVO</em>`:""}</button>`
         :`<div class="npI lk"><i>${n}</i><span><b>${esc(v.t)}</b><small>${esc(E.motivo(n))}</small></span><em class="tlk">🔒</em></div>`}).join("")}
-     <button type="button" class="npDip${E.fin?" on":""}" id="npDipB"><span class="npDi">🎓</span><span><b>Diploma Networker Pro</b><small>${E.fin?"¡Lo logró! Toque para descargarlo":"Al ver los 8 videos · con sus insignias"}</small><span class="npIns">${npInsHTML()}</span></span></button></div>
+     ${npSala9HTML(E)}<button type="button" class="npDip${E.fin?" on":""}" id="npDipB"><span class="npDi">🎓</span><span><b>Diploma Networker Pro</b><small>${E.fin?"¡Lo logró! Toque para descargarlo":"Al ver los 8 videos · con sus insignias"}</small><span class="npIns">${npInsHTML()}</span></span></button></div>
     ${ac4Sig()}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{try{npSocPinta()}catch(e){}{const nx=$("#ac4Nx");if(nx)nx.onclick=()=>{closeSheet();const S=acadEstado(),i=S.C.findIndex(c=>c.k==="np"),n=S.C[i+1];if(n)setTimeout(()=>ac4Abrir(n.k),250)}}
     npCLPinta();Promise.resolve(loadConst()).then(npCLPinta).catch(()=>{});{const cl=$("#npCL");if(cl)cl.onclick=npCLTog}
-    document.querySelectorAll("#sheetPanel [data-npv]").forEach(b=>b.onclick=()=>npVer(+b.dataset.npv));
+    document.querySelectorAll("#sheetPanel [data-npv]").forEach(b=>b.onclick=()=>npVer(+b.dataset.npv));{const b9=$("#np9");if(b9)b9.onclick=()=>{closeSheet();npSala9()}}
     const db=$("#npDipB");if(db)db.onclick=()=>{if(E.fin)npDiploma();else toast("Termine los 8 videos para recibir su diploma 🎓")}})}
 function npIns(){let md={},grad=false,cons=false,W=[];try{const E=irEstado();md=(E.x.st&&E.x.st.med)||{};grad=!!E.grad;cons=!!(E.cons||(E.x.st&&E.x.st.cons));W=E.W}catch(e){}
   return [1,2,3,4].map(n=>({n,ok:!!md[n]||!!(W[n-1]&&W[n-1].n2>=W[n-1].L.length)})).concat([{n:"c",ok:cons||grad},{n:"g",ok:grad}])} // 17 nov: + Constancia
@@ -8903,7 +8930,7 @@ function npMarcar(n){const E0=npEstado();if(!E0)return;const s=npSt();if(s.v[n])
   const E=npEstado(),es=$("#npEst");if(es)es.textContent="✓ ¡Completado! Su punto «Auto desarrollo personal» de hoy quedó marcado.";
   try{confeti($("#sheetPanel"),40)}catch(e){}try{npComPinta(n,1)}catch(e){}
   if(E&&E.fin){toast("🎓 ¡Terminó Networker Pro! Su diploma está listo");setTimeout(()=>{closeSheet();setTimeout(npDiploma,300)},2200)}
-  else toast("🎓 ¡Video "+n+" completado!"+(E&&E.V[n]?" Mañana se abre el video "+(n+1):""))}
+  else toast("🎓 ¡Video "+n+" completado!"+(E&&E.V[n]?" Ya puede ver el video "+(n+1):""))}
 function npBan(){const v=$("#v-inicio");if(!v)return;let d=$("#npBan");const E=npEstado(),k="npBanX:"+(store.uid||"");
   if(!E||E.fin||LS.get(k)){if(d)d.remove();return}
   const nx=E.sig&&E.disp(E.sig)?E.sig:0;
@@ -8911,7 +8938,7 @@ function npBan(){const v=$("#v-inicio");if(!v)return;let d=$("#npBan");const E=n
   d.innerHTML=`<button type="button" class="npX" aria-label="Cerrar">✕</button><span class="npTag"><i></i>NUEVO · ACADEMIA</span><div class="npT">NETWORKER <b>PRO</b></div>
     <p class="npS">El curso para convertirse en un networker profesional. ${E.tot} videos, ${E.tot} habilidades.</p>
     <div class="npCh"><span>🧠 Mentalidad</span><span>📇 Lista</span><span>💬 Invitación</span><span>🎤 Presentación</span><span>🤝 Cierre</span><span>⭐ Liderazgo</span></div>
-    <div class="npRw"><div><b>📅 1 video al día</b>Ya es parte de su rutina en «Auto desarrollo personal»</div><div class="au"><b>🎓 Su diploma</b>Al terminar los ${E.tot}, con sus insignias</div></div>
+    <div class="npRw"><div><b>▶ Los ${E.tot} videos abiertos</b>Véalos en orden: cada uno cuenta en «Auto desarrollo personal»</div><div class="au"><b>🎓 Su diploma</b>Al terminar los ${E.tot}, con sus insignias</div></div>
     <button type="button" class="npBtn">${nx?"▶ Ver el video "+nx:"📚 Ver el curso"}</button><p class="npFt">${E.vistos?"Va "+E.vistos+" de "+E.tot+" · ":""}Hoy sigue su camino de networker pro · #HASTAQUEFUNCIONE</p>`;
   d.querySelector(".npX").onclick=e=>{e.stopPropagation();LS.set(k,1);d.remove();toast("El curso sigue en Academia y en su rutina")};
   d.querySelector(".npBtn").onclick=()=>{if(nx)npVer(nx);else npCurso()};
@@ -9671,20 +9698,43 @@ async function irFlyer(w){try{await flFonts()}catch(e){}const cc=w==="c";if(cc)w
   try{const bl=await new Promise(ok=>c.toBlob(ok,"image/jpeg",.9)),f=new File([bl],g?"graduado-inicio-rapido.jpg":"inicio-rapido-semana-"+w.n+".jpg",{type:"image/jpeg"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==="AbortError")return}}
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
+// 18 nov (Edwin): banner FIJO arriba del compromiso (no en el carrusel) con color según cómo va + ventana una vez al día.
+function irColor(E){const w=E.cur,ini=(IR_W[w.n-2]||{fin:0}).fin,len=w.fin-ini,d=E.dia,st=irSt(),u=+((st.p||{}).u)||0,quieto=u&&Date.now()-u>2*864e5;
+  if(E.sem&&!E.cons)return {c:"am",t:"¡Ya casi! Le falta su constancia",k:""};
+  if(d>w.fin)return {c:"rj",t:"¡Va atrasado! Termine su Plan de Arranque",k:"ATRASADO"};
+  if(quieto)return {c:"rj",t:"Lleva "+Math.floor((Date.now()-u)/864e5)+" días sin avanzar · termine su plan",k:""};
+  const q=Math.max(0,w.fin-d),esp=Math.min(1,Math.max(0,d-ini)/Math.max(1,len)),va=w.n2/Math.max(1,w.L.length);
+  if(va+0.001<esp)return {c:"am",t:"Termine su Plan de Arranque"+(q?" · quedan "+q+(q===1?" día":" días"):" · ¡hoy es el último día!"),k:""};
+  return {c:"vd",t:"¡Va al día! Siga con su Plan de Arranque",k:""}}
+let irPopT=0;function irPopProg(E){if(irPopT||irSimM())return;const K="irPop:"+(store.uid||"");if(LS.get(K)===TODAY)return;irPopT=setTimeout(()=>irPopVer(0),2500)}
+function irPopVer(n){irPopT=0;const K="irPop:"+(store.uid||"");if(LS.get(K)===TODAY)return;const vi=$("#v-inicio"),el=$("#irCard");if(!el||el.hidden)return;
+  if(!$("#sheet").hidden||(vi&&vi.hidden)||document.hidden){if(n<36)irPopT=setTimeout(()=>irPopVer(n+1),5000);return}
+  LS.set(K,TODAY);const m=irModo(),st=irSt();
+  if(m==="actual"&&!st.ini){openSheet(`<div class="irPop am">${insImg(1,"irPi")}<p class="irPk">PLAN DE ARRANQUE</p><h2>Empiece su Plan de Arranque</h2><p class="small muted" style="margin:0 0 10px">4 semanas para aprender a duplicar: gánese sus 4 insignias y gradúese como <b>Espartano</b> 🛡️.</p><div class="irPins">${[1,2,3,4,"c","g"].map(x=>`<img src="${insSrc(x)}" alt="" decoding="async">`).join("")}</div><button class="btn irPgo" id="irPg">🚀 Empezar mi plan</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Más tarde</button></div>`,()=>{$("#irPg").onclick=()=>{closeSheet();setTimeout(irEmpezar,250)}});return}
+  let E;try{E=irEstado()}catch(e){return}if(E.grad)return;const w=E.cur,C=irColor(E),F=w.L.filter(i=>!i.ok),sinCons=E.sem&&!E.cons,pc=Math.round(w.n2/w.L.length*100);
+  openSheet(`<div class="irPop ${C.c}">${insImg(sinCons?"c":w.n,"irPi")}<p class="irPk">PLAN DE ARRANQUE · SEMANA ${w.n} DE 4</p><h2>${esc(C.t)}</h2>
+    <p class="small muted" style="margin:0 0 8px">Gánese su insignia <b>${esc(sinCons?"Constancia":w.k)}</b> y siga hasta graduarse como <b>Espartano</b> 🛡️.</p>
+    <span class="irFbar"><i style="width:${Math.max(4,sinCons?90:pc)}%"></i></span><p class="small" style="margin:4px 0 8px;font-weight:700">${sinCons?"Semanas listas · falta la constancia":w.n2+" de "+w.L.length+" pasos de esta semana"}</p>
+    ${sinCons?`<div class="irPl"><span>○ 7 días seguidos con la rutina completa</span></div>`:F.length?`<div class="irPl">${F.slice(0,5).map(i=>`<span>○ ${esc(i.t)}</span>`).join("")}${F.length>5?`<span class="muted">y ${F.length-5} más…</span>`:""}</div>`:""}
+    <div class="irPins">${[1,2,3,4,"c","g"].map(x=>{const ok=x==="g"?E.grad:x==="c"?E.cons:!!(E.W[x-1]&&E.W[x-1].n2>=E.W[x-1].L.length);return `<img src="${insSrc(x)}" alt="" class="${ok?"":"g"}" decoding="async">`}).join("")}</div>
+    <button class="btn irPgo" id="irPg">🚀 Terminar mi plan</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Más tarde</button></div>`,()=>{$("#irPg").onclick=()=>{closeSheet();setTimeout(()=>irLista(),250)}})}
 let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{lluStrip()}catch(e){}try{valStrip()}catch(e){}try{eqzStrip()}catch(e){}try{audStrip()}catch(e){}try{turStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
   const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
-  if(m==="actual"&&!st.ini){const no=LS.get("irNo:"+store.uid);if(no&&Date.now()<no){el.hidden=true;return}
-    el.hidden=false;el.className="irMini";el.innerHTML=`<span class="ic">🚀</span><span class="tx"><b>Plan de Inicio Rápido</b> · Aprenda a duplicar en 30 días</span><button type="button" class="go" id="irEmp">Empezar ›</button><button type="button" class="x" id="irNo" aria-label="Quitar">✕</button>`;
-    $("#irEmp").onclick=e=>{e.stopPropagation();irEmpezar()};$("#irNo").onclick=e=>{e.stopPropagation();LS.set("irNo:"+store.uid,Date.now()+30*864e5);irRender()};el.onclick=e=>{if(!e.target.closest("button"))irEmpezar()};return}
+  if(m==="actual"&&!st.ini){el.hidden=false;el.className="irF am";
+    el.innerHTML=`<div class="irF1">${insImg(1,"irFi")}<div class="grow" style="min-width:0"><span class="irFk">PLAN DE ARRANQUE · 4 SEMANAS</span><b class="irFt">Empiece su Plan de Arranque</b><small class="irFs">4 insignias · al final se gradúa como Espartano 🛡️</small></div></div><button type="button" class="irFb" id="irEmp">🚀 Empezar mi plan ›</button>`;
+    $("#irEmp").onclick=e=>{e.stopPropagation();irEmpezar()};el.onclick=e=>{if(!e.target.closest("button"))irEmpezar()};irPopProg(null);return}
   if(m==="nuevo"&&!st.ini)irSave({ini:irIni()});
   const E=irEstado();irPremiar(E);irResumen(E);if(E.cur.n>=2&&!(E.x&&E.x.val))irValCheck();if(E.cur.n>=4&&mios===null&&Date.now()-irMiosT>6e5){irMiosT=Date.now();try{loadMios().then(()=>setTimeout(irRender,500))}catch(e){}}
   const st2=irSt();if(st2.esp&&Date.now()-st2.esp>3*864e5){el.hidden=true;return}
   const w=E.cur,pc=Math.round(w.n2/w.L.length*100),nx=w.L.find(i=>!i.ok),fin=w.fin,d=E.dia,q=Math.max(0,fin-d);
   el.hidden=false;el.className="irCard";
   {const vi=$("#v-inicio");if(vi)vi.classList.remove("irProta")}
-  if(!E.grad&&!irAbierto){const falta=w.L.length-w.n2;el.className="irB"+(nx?" pend":"");
-    const sub=nx?`${w.n2} de ${w.L.length} · le falta: ${esc(nx.t)}`:`✅ ¡Semana ${w.n} lista!`;
-    el.innerHTML=`<div class="irS1"><span class="ic">🚀${nx?`<i class="dot"></i>`:""}</span><span class="grow" style="min-width:0"><b>Inicio Rápido · Semana ${w.n}</b><small>${sub}</small><span class="irBb"><i style="width:${Math.max(4,pc)}%"></i></span></span><span class="irS3"><button type="button" class="go" id="irNxB">${nx?"Terminar ›":"Ver ›"}</button></span></div>`;
+  if(!E.grad&&!irAbierto){const C=irColor(E),sinCons=E.sem&&!E.cons;el.className="irF "+C.c;
+    const sub=sinCons?"Le falta: 7 días seguidos con la rutina completa":nx?`${w.n2} de ${w.L.length} pasos · le falta: ${esc(nx.t)}`:`✅ ¡Semana ${w.n} lista!`;
+    el.innerHTML=`<div class="irF1">${insImg(sinCons?"c":w.n,"irFi")}<div class="grow" style="min-width:0"><span class="irFk">PLAN DE ARRANQUE · SEMANA ${w.n} DE 4${C.k?" · "+C.k:""}</span><b class="irFt">${C.t}</b><small class="irFs">${sub}</small></div></div>
+      <span class="irFbar"><i style="width:${Math.max(4,sinCons?90:pc)}%"></i></span>
+      <div class="irFg">🏅 Gánese su insignia <b>${esc(sinCons?"Constancia":w.k)}</b> · 🛡️ Gradúese como <b>Espartano</b></div>
+      <button type="button" class="irFb" id="irNxB">🚀 Terminar mi plan ›</button>`;irPopProg(E);
     try{const D=LS.get("tourOk")||{};if(!D.ir&&!LS.get("tourAskIr")&&!tourSt){LS.set("tourAskIr",1);setTimeout(()=>{if(!document.querySelector(".avisoTop.on")&&$("#irCard")&&!$("#irCard").hidden&&!$("#v-inicio").hidden)avisoTop("🧭 ¿Le enseño cómo funciona su plan?","Guía de 2 minutos · toque Ver",()=>tourIr("ir"));else LS.set("tourAskIr","")},6000)}}catch(e){}
     $("#irNxB").onclick=e=>{e.stopPropagation();irLista()};
     el.onclick=e=>{if(e.target.closest("button"))return;irLista()};return}
@@ -10301,7 +10351,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261118122657";var busy=false,pend=null;
+(function(){var V="20261118124331";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
