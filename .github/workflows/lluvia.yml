@@ -1,9 +1,7 @@
 name: Lluvia de prospectos
 # 17 nov (Edwin): hoja «Prospectos Ilimitados» → CRM de garciagoedwin (📣 Campaña) + aviso; reparto a Action Leaders.
 # Los registros son públicos: el script solo imprime conteos.
-on:
-  schedule:
-    - cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * *" # cada 5 min (GitHub atrasa; respaldo en aprobar.yml y constancia-resumen.yml)
+on: # 18 nov: el reloj ahora es la función de Firebase lluviaCada5 (cada 5 min). Esto queda solo para correrlo a mano.
   workflow_dispatch:
     inputs:
       dry:
