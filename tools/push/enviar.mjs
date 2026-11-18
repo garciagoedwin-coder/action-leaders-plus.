@@ -782,6 +782,8 @@ async function main() {
       const ahF = x => { let h = 0x811c9dc5; for (const b of new TextEncoder().encode("alp|" + x)) { h = (h ^ b) >>> 0; h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, "0").slice(0, 6); };
       const us = (await db.collection("users").get()).docs.find(d => pr.includes(ahF("e:" + String(d.data().email || "").trim().toLowerCase())));
       dest = us ? us.id : null;
+      if (!dest) { const { getAuth } = await import("firebase-admin/auth"); let tok;
+        do { const r = await getAuth().listUsers(1000, tok); const u = r.users.find(x => pr.includes(ahF("e:" + String(x.email || "").trim().toLowerCase()))); if (u) { dest = u.uid; break; } tok = r.pageToken; } while (tok); }
     } else { const q = await db.collection("users").where("email", "==", ADMINS[0]).limit(1).get(); dest = q.empty ? null : q.docs[0].id; }
     if (!dest) { console.log("No encontré la cuenta que recibe los prospectos."); return; }
     const meta = db.doc("push_meta/lluvia" + (PRUEBA ? "P" : "")), M = (await meta.get()).data() || {}, ids = M.ids || {};
