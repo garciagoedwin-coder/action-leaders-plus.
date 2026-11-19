@@ -1670,17 +1670,11 @@ body.acc3 #tasks .counter .num{font-family:'Barlow Condensed',sans-serif;font-si
 
 /* 19 nov · Inicio con tarjetas plegadas (body.f20): solo el título; al tocar se abren. data-f20o en body = abiertas */
 body.f20 #v-inicio .f20k{cursor:pointer}
-body.f20 #rkCard:not(.f20o)>:not(:first-child),
 body.f20 #nextEvents:not(.f20o)>:not(:first-child),
 body.f20 #hoyCitas:not(.f20o)>:not(:first-child),
-body.f20 #acc3:not(.f20o)>:not(.acc3H),
-body.f20 #rutCard:not(.f20o)>:not(.rh6):not(.rc3B),
-body.f20 #avBox:not(.f20o)>:not(.avHd),
-body.f20 #npBan:not(.f20o)>:not(.npT):not(.npX){display:none!important}
-body.f20 #rkCard:not(.f20o)>:first-child,body.f20 #nextEvents:not(.f20o)>:first-child,body.f20 #hoyCitas:not(.f20o)>:first-child,body.f20 #acc3:not(.f20o)>.acc3H,body.f20 #rutCard:not(.f20o)>.rh6,body.f20 #npBan:not(.f20o)>.npT{margin-bottom:0}
+body.f20 #rutCard:not(.f20o)>:not(.rh6):not(.rc3B){display:none!important}
+body.f20 #nextEvents:not(.f20o)>:first-child,body.f20 #hoyCitas:not(.f20o)>:first-child,body.f20 #rutCard:not(.f20o)>.rh6{margin-bottom:0}
 body.f20 #nextEvents:not(.f20o)>:first-child p{display:none}
-body.f20 #avBox:not(.f20o),body.f20 #acc3:not(.f20o){background:var(--surface)!important;border-radius:20px!important;box-shadow:0 0 0 1px var(--line)!important;padding:16px 18px!important}
-body.f20 #avBox:not(.f20o)>.avHd,body.f20 #acc3:not(.f20o)>.acc3H{margin:0!important}
 body.f20 #v-inicio #rutCard.mini{padding:16px!important;border:1px solid color-mix(in srgb,var(--line) 70%,transparent)!important}
 body.f20 #v-inicio #rutCard.mini:not(.f20o)>.rh6{display:flex!important}
 body.f20 #v-inicio #rutCard.done #rutAlert{display:none!important}
@@ -2491,7 +2485,8 @@ function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histS
 // ---------- ✨ Mis hábitos (18 nov, Edwin): privados, no suman puntos ni racha; profile.hab {l:[{id,t}], d:{AAAA-MM-DD:[ids]}} ----------
 // 19 nov (Edwin): en Inicio todas las tarjetas se ven cerradas (solo el título) y se abren al tocarlas. PRIMERO solo admin + cuenta de prueba: para todos F20_TODOS=true y publicar.
 const F20_TODOS=false,f20On=()=>{try{return F20_TODOS||isAdmin||yoPrueba()}catch(e){return false}};
-const F20_ID=["npBan","avBox","rkCard","rutCard","acc3","hoyCitas","nextEvents"];
+// 19 nov (Edwin): accesos directos, ranking y el carrusel de arriba NO se pliegan.
+const F20_ID=["rutCard","hoyCitas","nextEvents"];
 const F20_HD={acc3:".acc3H",rutCard:".rh6",avBox:".avHd",npBan:".npT"};
 function f20Ab(){try{return JSON.parse(LS.get("f20:"+(store.uid||""))||"{}")}catch(e){return {}}}
 function f20Rut(c){try{const g=c.querySelector(".rh6 .grow");if(!g)return;let el=g.querySelector(".f20p");if(!el){el=document.createElement("span");el.className="f20p";g.appendChild(el)}const L=ROUTINE.filter(r=>!r.desde||TODAY>=r.desde);let tot=L.length,n=L.filter(r=>((day&&day[r.k])||0)>=1).length;try{if(typeof declRutOn==="function"&&declRutOn()){tot++;if(day&&day.decl)n++}}catch(e){}const f=Math.max(0,tot-n),h=`<i>${L.map((r,i)=>`<u class="${i<n?"on":""}"></u>`).join("")}${tot>L.length?`<u class="${n>L.length?"on":""}"></u>`:""}</i><em>${n} de ${tot} · ${f===1?"<b>le falta 1</b>":`<b>le faltan ${f}</b>`}</em>`;if(el._h!==h){el._h=h;el.innerHTML=h}}catch(e){}}
@@ -10674,7 +10669,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119054857";var busy=false,pend=null;
+(function(){var V="20261119060100";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
