@@ -5,6 +5,13 @@ import { getFirestore } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
 import crypto from "crypto";
 // Análisis para el Training: todo sale CIFRADO con la llave pública PK (solo quien tiene la privada lo lee). El log público no muestra datos.
+if (process.env.CODE === "salayo") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore(); const q = (process.env.Q||"").toLowerCase();
+  const us = await db.collection("users").get(); let i = 0;
+  for (const u of us.docs) { const n = ((u.data().registro||{}).nombre||"").toLowerCase(); if (!q || !n.includes(q)) continue; i++;
+    const sd = await db.collection("users/"+u.id+"/sala").get(); const all = sd.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.t||0)-(a.t||0));
+    const yo = all.map((x,k)=>({k,x})).filter(o=>o.x.c==="yo"); const c = (await db.doc("constancia/"+u.id).get()).data()||{};
+    console.log("persona", i, "docs sala", all.length, "yo", yo.length, yo.map(o=>"[pos "+o.k+" pct "+(o.x.pct||0)+" fin "+(o.x.motivo==="fin"?1:0)+" pulso "+(o.x.pulso?1:0)+"]").join(" "), "svY", c.svY||null); }
+  process.exit(0); }
 if (process.env.CODE === "fotos") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
   const Q = (process.env.Q || "mayckol,nancy").split(","), o = {};
   for (const d of (await db.collection("fotos").get()).docs) { const x = d.data() || {}, n = String(x.invNombre || x.nombre || x.rk || "").toLowerCase(); if (Q.some(q => n.includes(q)) && x.img) o[n] = x.img; }
