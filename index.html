@@ -1828,6 +1828,9 @@ body.rk6on #rankMetric button{flex:none!important;background:none!important;box-
 body.rk6on #rankMetric button[aria-selected="true"]{color:var(--ink)}
 body.rk6on #rankMetric button[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;border-radius:2px;background:var(--brand)}
 body.rk6on #rankMetric .fuego{display:none}
+body.rk6on #rankMetric{display:flex!important;justify-content:center!important;gap:0!important}
+body.rk6on #rankMetric button{flex:1 1 auto!important;text-align:center!important;padding:4px 6px 10px!important;font-size:13.5px}
+body.rk6on #rankMetric button[aria-selected="true"]::after{left:12%;right:12%}
 @keyframes rk6up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 body.rk6on #metaEqR,body.rk6on #pbVol,body.rk6on .rk6Pod,body.rk6on .rk6R{animation:rk6up .55s cubic-bezier(.2,.8,.2,1) both}
 body.rk6on #pbVol{animation-delay:.12s}body.rk6on .rk6Pod{animation-delay:.22s}
@@ -11166,7 +11169,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119065906";var busy=false,pend=null;
+(function(){var V="20261119104350";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
