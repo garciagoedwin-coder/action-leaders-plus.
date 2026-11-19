@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maqueta Agenda v6</title>
+<style>
+@font-face{font-family:Figtree;src:url(../../media/fonts/Figtree-VF.ttf);font-weight:100 900}
+@font-face{font-family:Barlow;src:url(../../media/fonts/BarlowCondensed-Bold.ttf);font-weight:700}
+:root{--bg:#F3F6F9;--surface:#fff;--surface-2:#E8EFF4;--ink:#2B2A2D;--muted:#5D6470;--line:#DAE1E8;--brand:#0A7DAD;--red:#DC2626}
+*{box-sizing:border-box;margin:0}
+body{background:rgba(20,30,40,.5);font-family:Figtree,sans-serif;width:430px;color:var(--ink)}
+.sh{background:var(--surface);border-radius:26px 26px 0 0;margin-top:40px;padding:10px 16px 30px}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 12px}
+.fly{height:210px;border-radius:18px;background:linear-gradient(180deg,#0b1424 0,#143b5c 55%,#0b1424);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;color:#fff}
+.fly small{font-size:10px;letter-spacing:2px;color:#8fd8f2;font-weight:800}.fly b{font-family:Barlow;font-size:34px;line-height:1;margin-top:4px}
+.fly em{position:absolute;right:12px;top:12px;font-style:normal;font-size:12px;font-weight:800;background:rgba(255,255,255,.14);padding:6px 10px;border-radius:99px}
+.k{font-size:10.5px;font-weight:800;letter-spacing:1.4px;color:var(--muted);margin:16px 2px 8px}
+.inf{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.inf div{background:var(--surface-2);border-radius:14px;padding:10px 12px}.inf small{display:block;font-size:10px;font-weight:800;letter-spacing:1.2px;color:var(--muted)}.inf b{font-size:14.5px;display:block;margin-top:2px}
+.inf .w{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center}.inf .w a{color:var(--brand);font-weight:800;font-size:13px}
+.ppl{display:flex;align-items:center;gap:10px;padding:12px;border-radius:16px;box-shadow:0 0 0 1px var(--line);margin-top:8px}
+.st{display:flex}.st i{width:34px;height:34px;border-radius:50%;border:2px solid #fff;margin-left:-9px;background:#cfe7f3 center/cover;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:800;color:#0A7DAD}.st i:first-child{margin-left:0;width:40px;height:40px;box-shadow:0 0 0 2px #2AC1F1}
+.ppl .tx{flex:1;font-size:13px;color:var(--muted)}.ppl .tx b{display:block;color:var(--ink);font-size:14px}.ppl em{font-style:normal;color:var(--brand);font-weight:800;font-size:13px}
+.main{display:block;width:100%;border:0;font:inherit;font-weight:800;font-size:16px;padding:15px;border-radius:16px;background:#25D366;color:#fff;margin-top:14px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.two button{border:0;font:inherit;font-weight:800;font-size:14px;padding:13px 8px;border-radius:14px;background:var(--surface);box-shadow:0 0 0 1px var(--line);color:var(--ink)}
+.two button span{display:block;font-size:11.5px;font-weight:600;color:var(--muted);margin-top:2px}
+.ent{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding:12px 14px;border-radius:14px;background:radial-gradient(120% 90% at 100% 0%,#143b5c 0,#0b1424 60%);color:#fff;font-weight:800;font-size:14px}
+.ent span{font-size:11.5px;font-weight:600;color:#b9c6d6;display:block}
+.mas{margin-top:14px;border-radius:16px;box-shadow:0 0 0 1px var(--line);overflow:hidden}
+.mas .hd{display:flex;justify-content:space-between;padding:13px 14px;font-weight:800;font-size:14px}.mas .hd em{font-style:normal;color:var(--muted)}
+.mas .r{display:flex;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--line);font-size:14px;font-weight:600}
+.mas .r i{font-style:normal;width:22px;text-align:center}.mas .r em{margin-left:auto;font-style:normal;color:var(--muted)}
+.mas .r.red{color:var(--red)}.mas .g{font-size:10.5px;font-weight:800;letter-spacing:1.3px;color:var(--muted);padding:12px 14px 0;border-top:1px solid var(--line)}
+.lb{font-size:11px;font-weight:800;color:var(--muted);text-align:center;margin:18px 0 6px;letter-spacing:1px}
+.cl{display:block;width:100%;border:0;font:inherit;font-weight:700;padding:13px;border-radius:14px;background:var(--surface-2);margin-top:14px}
+</style></head><body><div class="sh"><div class="grab"></div>
+<div class="fly"><em>⤢ Ver flyer</em><small>💼 EVENTO · AUTORIZADO</small><b>BUSINESS EXPERIENCE</b><span style="font-size:13px;color:#b9c6d6">Taller exclusivo de liderazgo</span></div>
+<div class="inf"><div><small>FECHA</small><b>Dom 22 nov</b></div><div><small>HORA</small><b>3:45 p.m.</b></div>
+<div class="w"><span><small>LUGAR</small><b>Nuevos Horizontes · SPS</b></span><a>Mapa ›</a></div>
+<div><small>TICKET</small><b>L 300</b></div><div><small>SOCIOS</small><b>2:45 p.m.</b></div></div>
+<div class="ppl"><div class="st"><i>EG</i><i>MT</i><i>FR</i><i>ZF</i><i>JG</i></div><div class="tx"><b>Edwin García Go</b>+ 4 ponentes · ✅ todos confirmaron</div><em>Ver ›</em></div>
+<button class="main">📣 Invitar a mis prospectos</button>
+<div class="two"><button>📝 Confirmados · 5<span>Ver lista y tickets</span></button><button>⏰ Recordar<span>A mis 4 invitados</span></button></div>
+<div class="ent"><div>🚪 Modo entrada<span>Sale el día del evento</span></div>›</div>
+<div class="mas"><div class="hd">⋯ Más opciones<em>▾ abierto en la maqueta</em></div>
+<div class="g">COMPARTIR</div>
+<div class="r"><i>⬇️</i>Guardar flyer</div><div class="r"><i>📋</i>Copiar script</div><div class="r"><i>💬</i>Escribir al encargado de tickets<em>Flor</em></div>
+<div class="g">ORGANIZAR</div>
+<div class="r"><i>✏️</i>Editar fecha, hora, lugar o ponentes</div><div class="r"><i>👤</i>Encargados de la entrada</div><div class="r"><i>🔒</i>Volver a solo mi línea</div><div class="r"><i>⭐</i>Destacar en la Agenda (admin)</div>
+<div class="r red"><i>🗑️</i>Cancelar este evento</div><div class="r red"><i>⛔</i>Eliminar definitivamente (admin)</div></div>
+<button class="cl">Cerrar</button>
+</div></body></html>
