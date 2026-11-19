@@ -1731,6 +1731,12 @@ body.acc3 #tasks .counter .num{font-family:'Barlow Condensed',sans-serif;font-si
 .a6day .cita{padding:11px 0 0;margin-top:10px}.a6day .cita .ch-h b{font-size:17px}
 #v-agenda.ag6 #eqzCard p.small.muted{display:none}
 
+
+.a6dest{display:flex;gap:12px;align-items:center;padding:12px;background:var(--surface);border-radius:18px;box-shadow:0 0 0 1px var(--line);cursor:pointer}
+.a6dest .im{width:58px;height:70px;border-radius:12px;flex:none;background:radial-gradient(120% 90% at 100% 0%,#143b5c 0,#0b1424 60%);display:grid;place-content:center;text-align:center;color:#8fd8f2;font-family:var(--f-num);font-size:12px;line-height:1.05;letter-spacing:1px}
+.a6dest .im b{display:block;font-size:26px;color:#fff;letter-spacing:0}
+.a6dest .tx{flex:1;min-width:0}.a6dest small{font-size:10.5px;font-weight:800;letter-spacing:1.3px;color:var(--brand)}
+.a6dest .tx b{display:block;font-size:15.5px;margin-top:2px;line-height:1.2}.a6dest .tx span{font-size:12px;color:var(--muted)}
 /* Agenda v6 · tarjetas internas (19 nov) */
 #v-agenda.ag6 #evAg,#v-agenda.ag6 #eqzCard,#v-agenda.ag6 #l3Card,#v-agenda.ag6 #recCard{background:var(--surface)!important;border:0!important;box-shadow:0 0 0 1px var(--line)!important;border-radius:18px}
 #v-agenda.ag6 #evaInv{border:0!important;box-shadow:0 0 0 1px var(--line)!important;border-radius:18px}
@@ -7022,8 +7028,8 @@ function evaHoyStrip(L){let c=$("#evHoy");const v=$("#v-inicio");if(!v)return;if
   const H=(L||[]).filter(e=>e.fecha===TODAY&&!e.cancel&&!evaFin(e)&&!evaPend(e)).sort((a,b)=>evaIni(a)-evaIni(b));if(!H.length){c.hidden=true;return}const e=H[0],ya=Date.now()>=evaIni(e);c.hidden=false;c.className="evHoy "+(e.tipo==="gran"?"gran":"junta");
   c.innerHTML=`<span class="dot"></span><span class="grow" style="min-width:0"><b>${ya?"En curso ahora":"Hoy"}: ${esc(evaNom(e,0))} en ${esc(e.ciudad||"línea")}, ${esc(h12(e.hora))}</b>${evaCam(e)?`<small>${esc(evaCam(e))}</small>`:""}${H.length>1?`<small>y ${H.length-1} más hoy</small>`:""}</span><span class="evHb">Ver ›</span>`;c.onclick=()=>evaVer(e)}
 // Cancelación por admin SIN reglas nuevas (8 nov): team/evCancel {c:{idEvento:{mot,por,u,t} | {off:1}}} (team/* lo escribe el admin). Los socios ya no la ven; creador, anfitriones y admins la ven en gris.
-let EVC=null,EVCt=0;const EVXm={};
-async function evcCargar(f){if(!store.db)return;if(!f&&EVC&&Date.now()-EVCt<6e5)return;EVCt=Date.now();try{const d=await store.db.doc("team/evCancel").get();EVC=(d.exists&&(d.data()||{}).c)||{}}catch(e){EVC=EVC||{}}}
+let EVC=null,EVCt=0,EVD=null;const EVXm={};
+async function evcCargar(f){if(!store.db)return;if(!f&&EVC&&Date.now()-EVCt<6e5)return;EVCt=Date.now();try{const d=await store.db.doc("team/evCancel").get();EVC=(d.exists&&(d.data()||{}).c)||{};EVD=(d.exists&&(d.data()||{}).d)||null}catch(e){EVC=EVC||{}}}
 function evcAplicar(){if(!EVA||!EVC)return;EVA=EVA.filter(e=>{const c=EVC[e.id];if(!c||c.off)return true;if(isAdmin||e.cre===store.uid||(e.lidU||[]).includes(store.uid))EVXm[e.id]=Object.assign({},e,{_evc:c});return false});for(const k in EVXm)if(!EVC[k]||EVC[k].off)delete EVXm[k]}
 async function evcSet(id,v){try{await store.db.doc("team/evCancel").set({c:{[id]:v||{off:1,u:store.uid,t:Date.now()}}},{merge:true});EVC=EVC||{};EVC[id]=v||{off:1};if(!v){delete EVXm[id];loadEvA(true)}else evcAplicar();renderEvA();try{renderRecCard()}catch(x){}return true}catch(x){toast("No se pudo guardar. Revise su conexión.");return false}}
 function evxPinta(){const box=$("#evAg");if(!box)return;const X=Object.values(EVXm).filter(e=>e.fecha>=addD(TODAY,-1));if(!X.length)return;
@@ -7371,7 +7377,7 @@ async function evaVer(e){let file=null;const o=evaDatos(e),mio=e.cre===store.uid
    ${pend?"":`<button class="btn" id="evaInvB" style="width:100%;background:#25D366;color:#fff">📣 Invitar a mis prospectos${(LS.get("evInv:"+e.id)||[]).length?" ("+(LS.get("evInv:"+e.id)||[]).length+" invitados)":""}</button>`}${!pend&&(LS.get("evInv:"+e.id)||[]).length?`<button class="btn ${e.fecha===TODAY?"gold":"ghost"}" id="evaRec" style="width:100%">⏰ Recordar a mis invitados</button>`:""}
    ${pend?"":`<div class="row" style="gap:8px"><button class="btn ghost grow" id="evaDl">⬇️ Guardar flyer</button><button class="btn ghost grow" id="evaTx">📋 Copiar script</button></div>`}
    ${!pend&&(mio||(e.lidU||[]).includes(store.uid))?`<button class="btn ghost" id="evaVis" style="width:100%">${evaAbierta(e)?"🔒 Volver a solo mi línea":"🌎 Abrir para todos los socios"}</button>`:""}
-${mio||(e.lidU||[]).includes(store.uid)||isAdmin?`<button class="btn ghost" id="evaEd" style="width:100%">✏️ Editar fecha, hora, lugar o ponentes</button>`:""}${mio||(e.lidU||[]).includes(store.uid)||isAdmin?`<button class="btn ghost" id="evaDel" style="width:100%;color:var(--bad)">🗑️ Cancelar ${e.tipo==="gran"?"este evento":"esta junta"}${mio||(e.lidU||[]).includes(store.uid)?"":" (admin)"}</button>`:""}${isAdmin?`<button class="btn ghost" id="evaBor" style="width:100%;color:var(--bad);font-size:13px">⛔ Eliminar definitivamente (admin)</button>`:""}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
+${mio||(e.lidU||[]).includes(store.uid)||isAdmin?`<button class="btn ghost" id="evaEd" style="width:100%">✏️ Editar fecha, hora, lugar o ponentes</button>`:""}${mio||(e.lidU||[]).includes(store.uid)||isAdmin?`<button class="btn ghost" id="evaDel" style="width:100%;color:var(--bad)">🗑️ Cancelar ${e.tipo==="gran"?"este evento":"esta junta"}${mio||(e.lidU||[]).includes(store.uid)?"":" (admin)"}</button>`:""}${isAdmin&&!evaFin(e)&&!evaPend(e)?`<button class="btn ghost" id="evaDest" style="width:100%">${EVD&&EVD.id===e.id?"✖ Quitar de evento destacado":"⭐ Destacar en la Agenda del equipo"}</button>`:""}${isAdmin?`<button class="btn ghost" id="evaBor" style="width:100%;color:var(--bad);font-size:13px">⛔ Eliminar definitivamente (admin)</button>`:""}<button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     evaFile(o).then(f=>{file=f;const im=$("#evaImg"),w=$("#evaW");if(im){im.src=URL.createObjectURL(f);if(w)w.remove()}}).catch(()=>toast("No se pudo crear el flyer"));
     {const x=$("#evaInvB");if(x)x.onclick=()=>{closeSheet();setTimeout(()=>evaInvitar(e),250)}}
     {const a1=$("#evaAOk");if(a1)a1.onclick=async()=>{if(!confirmar2(a1))return;a1.disabled=true;if(await evaAutorizar(e,true)){closeSheet();setTimeout(()=>evaVer(e),300)}else a1.disabled=false};
@@ -7383,6 +7389,7 @@ ${mio||(e.lidU||[]).includes(store.uid)||isAdmin?`<button class="btn ghost" id="
     if($("#evaDl"))$("#evaDl").onclick=async()=>{if(!file){toast("El flyer aún se está creando");return}if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file]});return}catch(x){if(x&&x.name==="AbortError")return}}const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click()};
     const da=$("#evaDelA");if(da)da.onclick=()=>{closeSheet();setTimeout(()=>cancelarSheet(e.tipo==="gran"?"Cancelar evento (admin)":"Cancelar junta (admin)","Deja de salir en la agenda de los socios. El creador y los anfitriones la verán como cancelada por usted. Escriba el motivo:",["Datos incorrectos","Duplicada","No autorizada","Ya pasó"],async m=>{const ok=await evcSet(e.id,{mot:m,por:(miRegistro().nombre||miNombreCorto()||"Admin"),u:store.uid,t:Date.now()});if(ok)toast("🚫 Cancelada. Ya no sale en la agenda de los socios.");return ok}),250)};
     // 12 nov (Edwin): el admin borra la junta/evento de otro socio (regla agendaEv delete || isAdmin()).
+    {const ds=$("#evaDest");if(ds)ds.onclick=async()=>{const q=EVD&&EVD.id===e.id;ds.disabled=true;if(await evdSet(q?null:e))toast(q?"Ya no está destacado":"⭐ Destacado en la Agenda del equipo");closeSheet()}}
     const bo=$("#evaBor");if(bo)bo.onclick=async()=>{if(!confirmar2(bo))return;bo.disabled=true;try{await evCol().doc(e.id).delete();EVA=(EVA||[]).filter(x=>x.id!==e.id);closeSheet();renderEvA();toast("⛔ Eliminado definitivamente")}catch(x){bo.disabled=false;toast(errCod(x)==="permission-denied"?"Falta pegar la regla nueva de juntas en Firebase":"No se pudo eliminar ("+errCod(x)+")")}};
     const dl=$("#evaDel");if(dl)dl.onclick=()=>{closeSheet();setTimeout(()=>cancelarSheet(e.tipo==="gran"?"Cancelar evento":"Cancelar junta",((e.lid||[]).length>1?"Les avisamos a los líderes involucrados en su app. ":"")+"Escriba el motivo:",["Tuve un imprevisto","Cambio de fecha","No se consiguió el lugar","Pocos confirmados"],async m=>{const c={mot:m,por:(miRegistro().nombre||miNombreCorto()||""),t:Date.now()};try{await evCol().doc(e.id).set({cancel:c},{merge:true})}catch(x){toast("No se pudo cancelar. Revise su conexión.");return false}e.cancel=c;EVA=(EVA||[]).filter(x=>x.id!==e.id);renderEvA();try{renderRecCard()}catch(x){}toast("Cancelado. Ya les avisamos.");return true}),250)}})}
 function confirmar2(b){if(b.dataset.ok)return true;b.dataset.ok=1;b.textContent="Toque otra vez para confirmar";setTimeout(()=>{delete b.dataset.ok},4000);return false}
@@ -8742,7 +8749,7 @@ function a6RowJ(e){const[hh,ap]=a6H(e.hora),n=Object.keys(e.rsvpN||{}).length;
   return `<div class="a6r" data-a6j="${esc(e.id)}"><div class="h">${esc(hh)}<span>${esc(ap)}</span></div><div class="tx"><b>${esc(evaNom(e,0))}</b><div class="a6w"><span class="a6tag${e.tipo==="gran"?" gd":""}">${e.tipo==="gran"?"Evento":"Junta"}</span><span>${esc(e.modo==="virtual"?"Virtual":e.ciudad||e.lugar||"Presencial")}${e.creN?" · "+esc(nv(e.creN)):""}</span></div></div><button type="button" class="a6b g">Ver</button></div>`}
 function a6DiaEq(k){const E=ag6F==="jun"?[]:evOf(k).filter(e=>ag6F==="todo"||a6Cat(e)===ag6F),J=(ag6F==="todo"||ag6F==="jun")?(EVA||[]).filter(e=>e.fecha===k&&!e.cancel):[];
   const R=E.map(e=>({h:e.hora||"",x:a6Row(e)})).concat(J.map(e=>({h:e.hora||"",x:a6RowJ(e)}))).sort((a,b)=>a.h.localeCompare(b.h));return R}
-function ag6EvList(){const el=$("#evList");if(!el)return;
+function ag6EvList(){const el=$("#evList");if(!el)return;try{ag6DestPinta()}catch(x){}
   let keys;if(ag6Mes){const n=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();keys=[];for(let i=now.getDate();i<=n;i++)keys.push(dkey(new Date(now.getFullYear(),now.getMonth(),i)))}else keys=weekKeys(ag6Off);
   const ch=[["todo","Todo"],["pres","Presentaciones"],["tr","Training"],["jun","Juntas y eventos"]];
   let h=`<p class="a6k"><span>${ag6Mes?"Todo el mes":ag6Off===0?"Esta semana":ag6Off>0?"Siguientes 7 días":"Días anteriores"}</span><button type="button" data-a6mes>${ag6Mes?"‹ Volver a la semana":"Todo el mes ›"}</button></p>`;
@@ -8777,6 +8784,19 @@ function ag6MiAgenda(){const el=$("#agMia");if(!el)return;
   el.innerHTML=h;a6Bind(el);
   el.querySelectorAll("[data-a6o]").forEach(b=>b.onclick=()=>{const o=Number(b.dataset.a6o);agWk=o===0?0:agWk+o;renderMiAgenda();const t=$("#agView");if(t)t.scrollIntoView({behavior:"smooth",block:"start"})});
   el.querySelectorAll("[data-cinew]").forEach(b=>b.onclick=()=>abrirCita({fecha:b.dataset.cinew}));bindCitas(el)}
+
+// 19 nov · EVENTO DESTACADO en Agenda › Del equipo: lo elige un admin (evaVer › «⭐ Destacar»), se guarda en team/evCancel.d (mismo doc, 0 lecturas extra). Si no hay, usa config.anuncio.
+async function evdSet(e){try{const v=e?{id:e.id,u:store.uid,n:(miRegistro().nombre||miNombreCorto()||"Admin"),t:Date.now()}:null;await store.db.doc("team/evCancel").set({d:v},{merge:true});EVD=v;ag6DestPinta();return true}catch(x){toast("No se pudo guardar ("+errCod(x)+")");return false}}
+function ag6DestEv(){const L=(EVA||[]).filter(e=>!e.cancel&&!evaFin(e)&&!evaPend(e));let e=EVD&&EVD.id?L.find(x=>x.id===EVD.id):null;
+  if(!e){try{const c=(T.config||{}).anuncio;if(c&&(!c.hasta||Date.parse(c.hasta)>Date.now())){const a=anuEv(c);if(a&&L.includes(a))e=a}}catch(x){}}return e||null}
+function ag6DestPinta(){let el=$("#ag6Dest");const box=$("#agEquipo");if(!box)return;if(!ag6On()){if(el)el.hidden=true;return}
+  if(!el){el=document.createElement("div");el.id="ag6Dest";box.prepend(el)}
+  const e=ag6DestEv();if(!e){el.hidden=true;return}const d=parseK(e.fecha),dl=DAYS_L[d.getDay()];
+  const lug=e.modo==="virtual"?"Por Zoom":(e.ciudad||e.lugar||"Presencial");
+  el.className="a6dest";el.hidden=false;
+  el.innerHTML=`<div class="im"><b>${d.getDate()}</b>${MONTHS[d.getMonth()].slice(0,3).toUpperCase()}</div><div class="tx"><small>⭐ EVENTO DESTACADO</small><b>${esc(evaNom(e,0))}</b><span>${esc(dl[0].toUpperCase()+dl.slice(1))} ${d.getDate()} · ${esc(h12(e.hora))} · ${esc(lug)}${e.tk?" · 🎟️ Ticket":""}</span></div><button type="button" class="a6b">Ver</button>`;
+  el.onclick=()=>evaVer(e)}
+{const _rea=renderEvA;renderEvA=function(){const r=_rea.apply(this,arguments);try{ag6DestPinta()}catch(x){}return r}}
 {const _rel=renderEvList;renderEvList=function(){if(ag6Init())return ag6EvList();return _rel.apply(this,arguments)};
  const _rma=renderMiAgenda;renderMiAgenda=function(){const el=$("#agMia");if(ag6Init()&&el&&agVista==="mia"&&citasOk)return ag6MiAgenda();return _rma.apply(this,arguments)};
  const _sav=setAgVista;setAgVista=function(v){_sav.apply(this,arguments);try{ag6Init()}catch(e){}}}
@@ -10845,7 +10865,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119061455";var busy=false,pend=null;
+(function(){var V="20261119062105";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
