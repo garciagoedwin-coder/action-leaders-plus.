@@ -2823,6 +2823,28 @@ const weekCache={};
 // ---------- lista (personas nuevas) y seguimientos con nombre ----------
 function conNuevo(c){if(!c)return;day.conL=(day.conL||[]).concat([{cid:c.id||"",n:String(c.name||"").slice(0,60)}]);day.contactos=Math.max((day.contactos||0)+1,day.conL.length);renderTasks();saveDay()}
 const yaEnCRM=(name,phone,id)=>{const k=nrmN(name),ph=String(phone||"").replace(/\D/g,"");return contacts.find(x=>x.id!==id&&((k&&nrmN(x.name)===k)||(ph.length>=7&&String(x.phone||"").replace(/\D/g,"").slice(-8)===ph.slice(-8))))};
+// 19 nov (Edwin): un mensaje por WhatsApp a alguien que ya estaba en proceso cuenta solo como «Hacer seguimiento» en la rutina (1 por persona al día, sin cambiar la etapa)
+const SEG_AUTO_NO=["Nuevo","Socio","Cliente","No interesado"];
+function segAuto(c){try{if(!c||!c.id||SEG_AUTO_NO.includes(c.stage||"Nuevo"))return false;if((day.segL||[]).some(x=>x.cid===c.id))return false;
+  day.segL=(day.segL||[]).concat([{cid:c.id,n:String(c.name||"").slice(0,60)}]);day.seguimientos=Math.max((day.seguimientos||0)+1,day.segL.length);c.ultSeg=TODAY;
+  try{renderTasks()}catch(e){}try{saveDay()}catch(e){}try{irBump("seg")}catch(e){}setTimeout(()=>toast("🔁 Cuenta como seguimiento de hoy en su rutina"),900);return true}catch(e){return false}}
+function waTap(c,e){if(e.__wa)return;e.__wa=1;
+  if(c.stage==="Por cerrar"&&waNum(c.phone,c.cc)){e.preventDefault();pcMsgs(c);return}
+  notaPend(c,"wa",1);segAuto(c);c.updated=Date.now();try{store.saveContact(Object.assign({},c))}catch(x){}
+  setTimeout(()=>{stAvanza(c,"Contactado","le escribió por WhatsApp");try{renderCRM()}catch(x){}},300)}
+// 19 nov (Edwin): «Por cerrar» ya no dice «crear su cuenta» de entrada: 4 mensajes a elegir
+const PC_MSG=[["ret","💬 Retomar",["Hola {n}, ¿cómo ha estado? 😊\n\nQuería retomar lo que platicamos del proyecto. ¿Cómo lo ve hasta ahora?","Hola {n}, ¿cómo has estado? 😊\n\nQuería retomar lo que platicamos del proyecto. ¿Cómo lo ves hasta ahora?"]],
+ ["dud","❓ Resolver dudas",["Hola {n} 😊\n\nMe quedé pensando en nuestra conversación. ¿Le quedó alguna duda que le pueda resolver? Con gusto se la aclaro.","Hola {n} 😊\n\nMe quedé pensando en nuestra conversación. ¿Te quedó alguna duda que te pueda resolver? Con gusto te la aclaro."]],
+ ["pla","💻 Mostrar la plataforma",["Hola {n}, ¿cómo está? 😊\n\n¿Le parece si agendamos unos 15 minutos para mostrarle la plataforma por dentro y cómo funciona?\n\n¿Qué día le queda mejor?","Hola {n}, ¿cómo estás? 😊\n\n¿Te parece si agendamos unos 15 minutos para mostrarte la plataforma por dentro y cómo funciona?\n\n¿Qué día te queda mejor?"]],
+ ["acc","🎯 Plan de acción",["Hola {n} 😊\n\nMe gustaría mostrarle nuestro plan de acción: cómo trabajamos en el equipo y los pasos que seguiríamos juntos para lograr sus metas.\n\n¿Le parece si lo vemos esta semana?","Hola {n} 😊\n\nMe gustaría mostrarte nuestro plan de acción: cómo trabajamos en el equipo y los pasos que seguiríamos juntos para lograr tus metas.\n\n¿Te parece si lo vemos esta semana?"]]];
+function pcMsgs(c){let k="ret";const n=String(c.name||"").trim().split(/\s+/)[0]||"";const pinta=()=>{const m=PC_MSG.find(x=>x[0]===k);$("#pcT").value=m[2][c.tu?1:0].replace("{n}",n);$("#pcK").querySelectorAll("[data-k]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===k))};
+  openSheet(`<h2>🔥 ${esc(c.name)} · Por cerrar</h2><div class="flTuR"><span>Le hablo de:</span><div class="flTuS" id="pcTu"><button type="button" data-tu="0" aria-pressed="${!c.tu}">Usted</button><button type="button" data-tu="1" aria-pressed="${!!c.tu}">Tú</button></div></div>
+   <p class="small muted" style="margin:0 0 6px">¿Qué le quiere decir?</p><div class="ntc" id="pcK">${PC_MSG.map(([v,t])=>`<button type="button" data-k="${v}" aria-pressed="false">${t}</button>`).join("")}</div>
+   <textarea class="inp" id="pcT" rows="7" style="width:100%;font-size:15px;line-height:1.45;margin-top:8px"></textarea>
+   <button class="btn" id="pcW" style="width:100%;margin-top:8px;background:#25D366;color:#fff">📲 Enviar por WhatsApp</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{pinta();
+   $("#pcK").onclick=e=>{const b=e.target.closest("[data-k]");if(!b)return;k=b.dataset.k;pinta()};
+   $("#pcTu").onclick=e=>{const b=e.target.closest("[data-tu]");if(!b)return;const t=b.dataset.tu==="1";if(!!c.tu===t)return;if(t)c.tu=true;else delete c.tu;$("#pcTu").querySelectorAll("[data-tu]").forEach(x=>x.setAttribute("aria-pressed",x===b));pinta();c.updated=Date.now();try{store.saveContact(Object.assign({},c))}catch(x){}};
+   $("#pcW").onclick=()=>{const t=$("#pcT").value.trim();if(!t)return;notaPend(c,"wa",1);segAuto(c);c.updated=Date.now();try{store.saveContact(Object.assign({},c))}catch(x){}closeSheet();setTimeout(()=>{try{renderCRM()}catch(x){}},300);waIr("https://wa.me/"+waNum(c.phone,c.cc)+"?text="+encodeURIComponent(t))}})}
 async function sumarSeg(c){if(!c)return false;if((day.segL||[]).some(x=>x.cid===c.id)){toast(c.name.split(" ")[0]+" ya cuenta como seguimiento hoy");return false}
   day.segL=(day.segL||[]).concat([{cid:c.id,n:String(c.name||"").slice(0,60)}]);day.seguimientos=Math.max((day.seguimientos||0)+1,day.segL.length);renderTasks();saveDay();
   c.ultSeg=TODAY;c.updated=Date.now();if(FLOW.indexOf(c.stage||"Nuevo")>=0&&FLOW.indexOf(c.stage||"Nuevo")<FLOW.indexOf("Seguimiento")){c.stage="Seguimiento";c.stT=Date.now();c.stAuto="le dio seguimiento en la rutina"}
@@ -8378,7 +8400,7 @@ function notaAbrir(c,k,lg){if(!c)return;let r="",p=c.next&&c.next>=TODAY?c.next:
    $("#ntR").onclick=e=>{const b=e.target.closest("button");if(!b)return;r=r===b.dataset.v?"":b.dataset.v;document.querySelectorAll("#ntR button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.v===r));ndP()};
    $("#ntND").onclick=e=>{const b=e.target.closest("[data-nd]");if(!b)return;nd=b.dataset.nd;ndP()};
    $("#ntMaC").onclick=e=>{const b=e.target.closest("[data-d]");if(!b)return;maF=b.dataset.d;$("#ntMaF").value="";ndP()};$("#ntMaF").oninput=e=>{maF=e.target.value;ndP()};
-   {const a=$("#ntAun");if(a)a.onclick=()=>{closeSheet();toast("⏳ Listo · cuando le conteste, márquelo en el contacto")}}
+   {const a=$("#ntAun");if(a)a.onclick=()=>{const d2=addD(TODAY,2);if(!c.next||c.next<d2){c.next=d2;c.updated=Date.now();try{store.saveContact(Object.assign({},c))}catch(x){}try{renderCRM()}catch(x){}}closeSheet();toast("⏳ Listo · si no contesta, vuelve a salir el "+niceDate(d2))}}
    const marcaP=()=>document.querySelectorAll("#ntP button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.d===$("#ntF").value));
    $("#ntP").onclick=e=>{const b=e.target.closest("button");if(!b)return;$("#ntF").value=b.dataset.d;marcaP()};$("#ntF").oninput=marcaP;
    $("#ntOk").onclick=async()=>{const bt=$("#ntOk");if(bt.disabled)return;
@@ -8422,6 +8444,7 @@ function flEnviar(c,k){if(k==="pres"){presAbrir(c);return}if(k==="bien"){flMarca
    $("#flW").onclick=()=>{const t=$("#flT").value.trim();if(!t)return;const kk=k==="re2"?"seg":k;flMarca(c,kk,["sal","resal","inv","rinv","re"].includes(k)?(k==="resal"?"nr":k==="rinv"?"pen":""):undefined);
      if(k==="resal")c.fl.h.sal=c.fl.h.sal||Date.now();if(k==="re"){c.stage="Contactado";c.stT=Date.now();c.fl.h={re:Date.now(),sal:Date.now()};c.fl.r=""}
      if(k==="sal"||k==="resal")stAvanza(c,"Contactado","le escribió el saludo");if(k==="seg")stAvanza(c,"Seguimiento","le dio seguimiento");
+     if(["resal","rinv","seg","re2","re"].includes(k))segAuto(c);
      if(["sal","resal","inv","rinv","re"].includes(k))c.seg=(c.seg||[]).concat([{t:Date.now(),k}]).slice(-30);else notaPend(c,k,1);flGuardar(c);const n=waNum(c.phone,c.cc);closeSheet();waIr("https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t))};
    document.querySelectorAll("#sheetPanel [data-fla]").forEach(b=>b.onclick=()=>{const a=b.dataset.fla;if(k==="agd"){flMarca(c,"agd");flGuardar(c)}closeSheet();
      if(a==="cita")abrirCita(null,c);else if(a==="pres")presAbrir(c);else if(a==="l3")pedirL3(c);else if(a==="sala")enviarSala(c)})})}
@@ -8517,7 +8540,7 @@ function crmTopPinta(q){const el=$("#crmTop");if(!el)return;if(q||!contacts.leng
 document.addEventListener("click",e=>{const el=$("#crmTop");if(!el||!el.contains(e.target))return;
   if(e.target.closest("#cvNumGo")){salaCompartir();return}
   {const x=e.target.closest("[data-cvnum]");if(x){try{LS.set("cvNumOp",x.dataset.cvnum==="1"?1:0)}catch(y){}renderCRM();return}}
-  const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c){notaPend(c,"wa");setTimeout(()=>stAvanza(c,"Contactado","le escribió por WhatsApp"),300)}return}
+  const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c)waTap(c,e);return}
   const sf=e.target.closest("[data-sf6]");if(sf){stageF=stageF===sf.dataset.sf6?"Todos":sf.dataset.sf6;renderCRM();return}
   if(e.target.closest("[data-ch6m]")){stageF="Todos";const s=$("#crmSearch");if(s)s.scrollIntoView({behavior:"smooth",block:"start"});return}
   const tg=e.target.closest("[data-tog6]");if(tg){openC=tg.dataset.tog6;renderCRM();setTimeout(()=>{const r=document.querySelector('#contactList [data-tog="'+CSS.escape(openC)+'"]');if(r)r.scrollIntoView({behavior:"smooth",block:"start"})},80)}});
@@ -8669,7 +8692,7 @@ $("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNum
   {const gg=e.target.closest("[data-cgg]");if(gg){const A=crmGAb(),k=gg.dataset.cgg;if(A.has(k)){A.delete(k);const G=gg.closest(".cgG");if(G&&G.querySelector(".cgF"))openC=null}else A.add(k);try{LS.set("crmGA",[...A])}catch(x){}renderCRM();return}}
   const tg=e.target.closest("[data-tog]");if(tg){openC=openC===tg.dataset.tog?null:tg.dataset.tog;renderCRM();return}
   const sf=e.target.closest("[data-sf]");const od=e.target.closest("[data-ord]");if(od){crmOrd=od.dataset.ord;try{LS.set("crmOrd",crmOrd)}catch(e){}renderCRM();return}if(sf){stageF=stageF===sf.dataset.sf?"Todos":sf.dataset.sf;renderCRM();return}
-  const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c){notaPend(c,"wa");setTimeout(()=>stAvanza(c,"Contactado","le escribió por WhatsApp"),300)}}
+  const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c)waTap(c,e)}
   if(st&&st.dataset.st===MA){const c=contacts.find(x=>x.id===st.dataset.cid);if(c)maSheet(c);return}
   {const mw=e.target.closest("[data-maw]");if(mw){const c=contacts.find(x=>x.id===mw.dataset.maw);if(c)maEscribir(c);return}const mv=e.target.closest("[data-mav]");if(mv){const c=contacts.find(x=>x.id===mv.dataset.mav);if(c){c.stage="Seguimiento";c.stT=Date.now();c.stAuto="";c.next=TODAY;c.updated=Date.now();await store.saveContact(Object.assign({},c));crmV="proc";openC=c.id;renderCRM();toast("🔥 "+c.name.split(" ")[0]+" regresó a En proceso")}return}}
   if(st){const c=contacts.find(x=>x.id===st.dataset.cid);if(!c||c.stage===st.dataset.st)return;const prev=c.stage;c.stage=st.dataset.st;c.stT=Date.now();c.stAuto="";c.updated=Date.now();renderCRM();
@@ -11201,7 +11224,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119112312";var busy=false,pend=null;
+(function(){var V="20261119112939";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
