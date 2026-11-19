@@ -1955,6 +1955,7 @@ body.rk6on #snvCard [data-snd]{background:var(--surface)!important;color:var(--i
 body.rk6on #snvCard [data-snd][data-sv="t"]{color:#B45309!important}
 body.rk6on #snvCard .prem{font-size:0!important;background:none!important;box-shadow:none!important;border:0!important;padding:0!important}
 body.rk6on #snvCard .prem::before{content:"★ Premium";font-size:12px;color:#B7860B;font-weight:700}
+.flBk{display:block;margin:10px auto 0;background:none;border:0;padding:4px 8px;font:600 12.5px Figtree,sans-serif;color:inherit;opacity:.7;text-decoration:underline;text-underline-offset:3px}
 </style>
 
 </head>
@@ -8381,7 +8382,16 @@ function notaPend(c,k,log){const t=Date.now();if(log){c.seg=(c.seg||[]).concat([
 document.addEventListener("visibilitychange",()=>{if(document.hidden)return;let q=null;try{q=LS.get("notaPend")}catch(e){}if(!q)return;try{LS.set("notaPend",null)}catch(e){}
   if(Date.now()-q.t>3*36e5||Date.now()-q.t<2500)return;const c=(contacts||[]).find(x=>x.id===q.id);if(c&&$("#sheet").hidden)setTimeout(()=>notaAbrir(c,q.k,q.log),400)});
 async function flGuardar(c){c.updated=Date.now();try{await store.saveContact(Object.assign({},c))}catch(e){}renderCRM()}
-function flMarca(c,k,r){c.fl=Object.assign({h:{},r:""},c.fl||{});c.fl.h=Object.assign({},c.fl.h||{});c.fl.h[k]=Date.now();if(r!==undefined)c.fl.r=r}
+// 19 nov (Edwin): poder regresar un paso si se abrió WhatsApp por error → c.fl.u = fotos del camino antes de cada cambio (máx. 10)
+function flSnap(c){c.fl=Object.assign({h:{},r:""},c.fl||{});const u=Array.isArray(c.fl.u)?c.fl.u.slice(-9):[];u.push({h:Object.assign({},c.fl.h||{}),r:c.fl.r||""});c.fl.u=u}
+const FL_ATR=["agd","rinv","inv","resal","sal"],FL_ATR_R={agd:"si",rinv:"pen",inv:"si",resal:"nr",sal:""};
+function flPuedeAtras(c){const f=c.fl||{};if(c.stage==="Socio"||c.stage==="Cliente"||c.stage==="No interesado")return false;if(c.pres&&c.pres.t)return false;return !!((f.u&&f.u.length)||f.r||FL_ATR.some(k=>(f.h||{})[k]))}
+async function flAtras(c){const f=c.fl=Object.assign({h:{},r:""},c.fl||{});
+  if(Array.isArray(f.u)&&f.u.length){const s=f.u.pop();f.h=s.h||{};f.r=s.r||""}
+  else if(f.r==="si"||f.r==="nr"||f.r==="pen")f.r="";
+  else{const k=FL_ATR.filter(x=>f.h[x]).sort((a,b)=>f.h[b]-f.h[a])[0];if(!k)return;const h=Object.assign({},f.h);delete h[k];f.h=h;f.r=FL_ATR_R[k]}
+  await flGuardar(c);toast("↩ Regresó un paso")}
+function flMarca(c,k,r){c.fl=Object.assign({h:{},r:""},c.fl||{});flSnap(c);c.fl.h=Object.assign({},c.fl.h||{});c.fl.h[k]=Date.now();if(r!==undefined)c.fl.r=r}
 function flEnviar(c,k){if(k==="pres"){presAbrir(c);return}if(k==="bien"){flMarca(c,"bien");flGuardar(c);abrirBienvenida(c);return}
   let v=0;const pinta=()=>{$("#flT").value=flMsg(c,k==="re2"?"seg":k,v)};
   const extra=k==="agd"?`<p class="small muted" style="margin:10px 0 6px">Cuando le diga el día, póngalo aquí:</p><div style="display:grid;gap:8px"><button class="btn ghost" data-fla="cita">📅 Poner la cita</button>${presOk()?`<button class="btn ghost" data-fla="pres">🎤 Presentarle ahora mismo</button>`:""}<button class="btn ghost" data-fla="l3">📞 Llamada de 3 con mi líder</button>${salaOk()?`<button class="btn ghost" data-fla="sala">🎬 Enviarle la presentación virtual</button>`:""}</div>`
@@ -8397,7 +8407,7 @@ function flEnviar(c,k){if(k==="pres"){presAbrir(c);return}if(k==="bien"){flMarca
      notaPend(c,k,1);flGuardar(c);const n=waNum(c.phone,c.cc);closeSheet();waIr("https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t))};
    document.querySelectorAll("#sheetPanel [data-fla]").forEach(b=>b.onclick=()=>{const a=b.dataset.fla;if(k==="agd"){flMarca(c,"agd");flGuardar(c)}closeSheet();
      if(a==="cita")abrirCita(null,c);else if(a==="pres")presAbrir(c);else if(a==="l3")pedirL3(c);else if(a==="sala")enviarSala(c)})})}
-async function flResp(c,v){c.fl=Object.assign({h:{},r:""},c.fl||{});
+async function flResp(c,v){c.fl=Object.assign({h:{},r:""},c.fl||{});if(["si","nr","pen"].includes(v))flSnap(c);
   if(v==="no"){c.stage="No interesado";c.stT=Date.now();c.stAuto="";c.fl.h=Object.assign({},c.fl.h,{no:Date.now()});c.fl.r="no";await flGuardar(c);flEnviar(c,"no");return}
   if(v==="socio"){c.stage="Socio";c.stT=Date.now();await flGuardar(c);toast("¡Felicidades! 🎉");return}
   if(v==="re2"){flEnviar(c,"re2");return}
@@ -8576,7 +8586,8 @@ function crmV2Hero(c){const v=salaDe(c.id),e=(LS.get("salaEnv")||{})[c.id],f=Str
     <div class="cvL">${box("LE ATRAE",CV_VAL[v.r1]||"")}${box("SUEÑA CON",v.pais?"🗺️ "+v.pais:"")}${box("LE CONECTÓ",CV_VAL[v.resp]||"")}${box("LISTO",n?(n>=8?"🔥 ":n>=6?"🟠 ":"💭 ")+n+" / 10":"",n>=8)}</div>
     <a class="cvGo w" href="${esc(wa(salaSeg(v)))}" data-wac="${esc(c.id)}" target="_blank" rel="noopener">💬 Escribirle ahora · mensaje listo</a>
     ${v.como?`<div class="cvS">${v.como==="registro"?"🛳️ Tocó «Crear mi cuenta»":v.como==="lider"?"📞 Pidió hablar con un líder":"💬 Tocó «Escribirle»"}</div>`:`<div class="cvS"><button type="button" class="cvRe" data-sala="${esc(c.id)}">↻ Reenviar el link</button></div>`}</div>`}
-function crmV2Sig(c){let P=flPaso(c);const st=c.stage||"Nuevo",tarde=["Presentación","Seguimiento","Por cerrar"].includes(st);
+function crmV2Sig(c){const H=crmV2Sig0(c);if(!flPuedeAtras(c))return H;const i=H.lastIndexOf("</div>");return i<0?H:H.slice(0,i)+`<button type="button" class="flBk" data-flb="${esc(c.id)}">↩ Volver al paso anterior</button>`+H.slice(i)}
+function crmV2Sig0(c){let P=flPaso(c);const st=c.stage||"Nuevo",tarde=["Presentación","Seguimiento","Por cerrar"].includes(st);
   if(tarde&&P&&["sal","resal","inv","rinv","agd","espera"].includes(P.k)||tarde&&P&&P.k==="preg"&&P.q!=="seg")P={k:"seg"};
   // 15 nov (Edwin): si ya se le presentó (etapa Presentación o más, o ya tiene alguna reunión en su camino), el siguiente paso no puede ser «Presentar»
   if(P&&P.k==="pres"&&(tarde||yaPresentado(c)||REU.some(([k])=>(reuDe(c)[k]||[]).length)))P={k:"seg"};
@@ -8653,7 +8664,7 @@ $("#contactList").addEventListener("click",async e=>{if(e.target.closest("#cvNum
   const sl=e.target.closest("[data-sala]");if(sl){enviarSala(contacts.find(c=>c.id===sl.dataset.sala));return}
   const mb=e.target.closest("[data-mem]");if(mb){enviarMem(contacts.find(c=>c.id===mb.dataset.mem));return}
   const fg=e.target.closest("[data-flgo]");if(fg){const [id,k]=fg.dataset.flgo.split("|");const c=contacts.find(x=>x.id===id);if(c)flEnviar(c,k);return}
-  const fr=e.target.closest("[data-flr]");if(fr){const [id,v]=fr.dataset.flr.split("|");const c=contacts.find(x=>x.id===id);if(c)flResp(c,v);return}
+  const fb=e.target.closest("[data-flb]");if(fb){const c=contacts.find(x=>x.id===fb.dataset.flb);if(c)flAtras(c);return}const fr=e.target.closest("[data-flr]");if(fr){const [id,v]=fr.dataset.flr.split("|");const c=contacts.find(x=>x.id===id);if(c)flResp(c,v);return}
   const nb=e.target.closest("[data-nota]");if(nb){notaAbrir(contacts.find(x=>x.id===nb.dataset.nota),"nota");return}
   const sa=e.target.closest("[data-sgall]");if(sa){sgTodas(contacts.find(x=>x.id===sa.dataset.sgall));return}
   const ft=e.target.closest("[data-fltu]");if(ft){const c=contacts.find(x=>x.id===ft.dataset.fltu);if(c){c.tu=!c.tu;flGuardar(c)}return}
@@ -11172,7 +11183,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119110550";var busy=false,pend=null;
+(function(){var V="20261119111131";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
