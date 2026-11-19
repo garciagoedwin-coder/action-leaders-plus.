@@ -1544,6 +1544,128 @@ body #v-inicio.simple>#irCard.irF,#v-inicio>#irCard.irF{order:4!important}
 .hbE{font-size:13px;color:var(--muted);margin:0 0 10px;line-height:1.35}.hbSug{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.hbSug button{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:999px;padding:6px 10px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}.hbSug button[disabled]{opacity:.4}
 .hbL{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)}.hbL span{flex:1;font-weight:600}.hbL button{border:0;background:var(--surface-2);color:var(--muted);border-radius:999px;width:30px;height:30px;font-size:15px;cursor:pointer}
 .hbM{margin:10px 0 4px}.hbM b{display:block;font-size:13.5px;margin-bottom:6px}.hbM .g{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;max-width:252px}.hbM .g i{aspect-ratio:1;border-radius:5px;background:var(--surface-2);font-style:normal;font-size:10px;display:grid;place-items:center;color:var(--muted);font-weight:700}.hbM .g i.ok{background:#7C3AED;color:#fff}.hbM .g i.hoy{outline:2px solid #7C3AED;outline-offset:-2px}.hbM .g i.fu{opacity:.35}.hbM .g i.wd{background:none;aspect-ratio:auto;font-size:10px}
+
+/* ===== Diseño v6 de Inicio (19 nov, estilo Academia) ===== */
+.lb6{font-size:11px;font-weight:800;letter-spacing:1.6px;color:var(--muted);margin:6px 4px -6px}
+#v-inicio.simple>#lb6M{order:5}#v-inicio.simple>#lb6R{order:6}
+#v-inicio:has(>#compStrip[hidden]) #lb6M,#v-inicio:has(>#rutCard[hidden]) #lb6R{display:none}
+.avHd{font:800 11px Figtree,sans-serif;letter-spacing:1.6px;color:var(--muted)}
+.h6{margin:0!important;font-size:11px!important;font-weight:800!important;letter-spacing:1.6px;color:var(--muted)!important;font-family:Figtree,sans-serif!important}
+/* compromiso delgado */
+.cp6{background:radial-gradient(120% 140% at 100% 0%,#1a4a70 0,#0b1424 62%)!important;border-radius:18px!important;padding:12px 14px!important;box-shadow:0 12px 24px -16px rgba(10,30,60,.6);position:relative;overflow:hidden}
+.cp6:after{content:"";position:absolute;right:-50px;top:-70px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(42,193,241,.22),transparent 70%);pointer-events:none}
+.cp6T{display:flex;align-items:center;gap:8px;position:relative}
+.cp6T .k{font-size:10.5px;font-weight:800;letter-spacing:1.6px;color:#8fd8f2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.cp6T .v{margin-left:auto;white-space:nowrap;font-size:12.5px;color:#b9c6d6;font-weight:700}
+.cp6T .v b{font-family:'Barlow Condensed',sans-serif;font-size:22px;color:#fff;letter-spacing:.2px}
+.cp6T .v i{font-style:normal;margin-left:7px;color:#8fd8f2}
+.cp6B{height:5px;border-radius:9px;background:rgba(255,255,255,.14);overflow:hidden;margin-top:8px;position:relative}
+.cp6B s{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#2AC1F1,#7FE0FF)}
+.cp6D{position:relative}
+.cp6D .g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.cp6D .g div{background:rgba(255,255,255,.07);border-radius:12px;padding:8px 10px}
+.cp6D small{display:block;font-size:9px;font-weight:800;letter-spacing:.9px;color:#8fa3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cp6D b{font-family:'Barlow Condensed',sans-serif;font-size:21px;color:#fff}.cp6D b span{font-size:13px;color:#8fa3b8}
+.cp6D .ft{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:#b9c6d6}
+.cp6D .ft button{border:0;background:rgba(255,255,255,.12);color:#fff;font:inherit;font-weight:800;font-size:12.5px;border-radius:99px;padding:6px 12px;cursor:pointer}
+/* plan de arranque delgado */
+#irCard.irF{background:var(--surface)!important;border:0!important;box-shadow:0 0 0 1px var(--line)!important;padding:10px 12px!important}
+.irF .irF1{align-items:center}
+.irF .irFi{width:38px}
+.irF .irFk{font-size:10px;letter-spacing:1.3px;color:color-mix(in srgb,var(--ac) 85%,var(--ink))}
+.irF .irFt{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:1px 0 0}
+.irF .irFbar{height:5px;margin:6px 0 4px;background:var(--line)}
+.irF .irFs{font-size:11.5px}
+.irF .irFb{width:auto;flex:none;padding:8px 13px;font-size:13px;border-radius:99px;background:var(--brand)!important;color:#fff!important;align-self:center}
+.irF.rj{animation:none}
+.irF.rj{box-shadow:0 0 0 1px color-mix(in srgb,#DC2626 45%,var(--line))!important}
+/* rutina */
+.rh6{display:flex;align-items:center;gap:10px}
+.fl6{width:32px;height:32px;border-radius:10px;background:linear-gradient(160deg,#FDBA74,#F97316);display:grid;place-items:center;font-size:16px;flex:none;box-shadow:0 6px 14px -6px #F97316}
+.rh6 b{display:block;font-size:16px}
+.rh6 small{display:block;font-size:12px;color:var(--muted);font-weight:600}
+.lk6{border:0;background:none;color:var(--brand);font:inherit;font-weight:800;font-size:13px;padding:4px 0;cursor:pointer;white-space:nowrap}
+body.acc3 #rutCard.rc3{box-shadow:0 0 0 1px var(--line)!important}
+body.acc3 #rutCard.rc3 .rc3B{display:none}
+body.acc3 #rutCard.rc3.rc3ok{box-shadow:0 0 0 1px color-mix(in srgb,#16A34A 45%,var(--line))!important}
+body.acc3 #rutAlert .rut-nx{background:color-mix(in srgb,var(--brand) 8%,var(--surface))!important;border:0!important;border-radius:14px}
+body.acc3 #rutAlert .rut-nx b{color:var(--brand)!important}
+body.acc3 #rutAlert .rut-nx .btn{background:var(--brand)!important;border-radius:99px}
+body.acc3 #rutAlert .rut-nx.tarde{background:color-mix(in srgb,#F97316 10%,var(--surface))!important}
+body.acc3 #rutAlert .rut-nx.tarde b{color:#C2410C!important}body.acc3 #rutAlert .rut-nx.tarde .btn{background:#EA580C!important}
+body.acc3 #tasks .check,body.acc3 #tasks .step-n{font-family:'Barlow Condensed',sans-serif;font-size:15px;border-width:1.5px}
+body.acc3 #tasks .counter{background:transparent;box-shadow:0 0 0 1px var(--line);border-radius:99px}
+body.acc3 #tasks .counter .num{font-family:'Barlow Condensed',sans-serif;font-size:17px}
+/* hábitos plegados */
+#habCard.hbMini{padding:12px 14px}
+.hbS6{display:flex;align-items:center;gap:10px;cursor:pointer}
+.hbS6 b{display:block;font-size:14.5px}.hbS6 small{display:block;font-size:12px;color:var(--muted)}
+.hbDt{display:flex;gap:4px}.hbDt i{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--line)}.hbDt i.on{background:#7C3AED;box-shadow:none}
+.hbGo{font-size:20px;color:var(--muted);margin-left:2px}
+#hbCl{color:var(--muted)!important}
+/* accesos: íconos de línea en cuadro blanco */
+#acc3.card{background:transparent!important;box-shadow:none!important;border:0!important;padding:4px 0 0!important}
+.acc3G button>span{background:var(--surface)!important;color:var(--brand)!important;box-shadow:0 0 0 1px var(--line)!important;border-radius:16px!important;width:50px!important;height:50px!important}
+.acc3G svg{width:23px;height:23px;stroke-width:1.8}
+/* ranking */
+#rkCard .rkRow{gap:11px;padding:9px 0}
+.rkRow .md6{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;width:14px;color:var(--muted);text-align:center;flex:none}
+.rkRow:first-of-type .md6{color:#C9971C}
+.rkRow .av{width:34px!important;height:34px!important;flex:none;font-size:12px}
+.rkRow .v{color:var(--ink)!important;font-size:19px!important}
+.crown6{font-size:10.5px;font-weight:800;color:#9A6B00;background:#FBF1D2;padding:2px 7px;border-radius:99px;margin-left:6px;vertical-align:2px}
+.rkPie{background:transparent!important;border-top:1px solid var(--line);border-radius:0!important;padding:9px 0 0!important;font-size:12.5px;color:var(--muted)}
+.rkTabs button{border-radius:99px!important}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .crown6{background:#3a3220;color:#F2C94C}}
+:root[data-theme="dark"] .crown6{background:#3a3220;color:#F2C94C}
+.nextCard{border-top:0!important;box-shadow:0 0 0 1px var(--line)!important}
+
+/* ===== CRM v6 (19 nov) ===== */
+#crmTop{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.ch6{border-radius:22px;background:radial-gradient(120% 90% at 100% 0%,#143b5c 0,#0b1424 60%);color:#fff;padding:16px;box-shadow:0 14px 28px -16px rgba(10,30,60,.55)}
+.ch6 .k{display:block;font-size:10.5px;font-weight:800;letter-spacing:1.8px;color:#8fd8f2}
+.ch6 .t{display:block;font-size:19px;font-weight:900;line-height:1.15;margin-top:6px}
+.ch6 .s{display:block;font-size:12.5px;color:#b9c6d6;margin-top:3px}
+.ch6R{display:flex;align-items:center;gap:10px;margin-top:9px;padding:9px 10px;border-radius:14px;background:rgba(255,255,255,.07);cursor:pointer}
+.ch6R .tx{flex:1;min-width:0}.ch6R b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ch6R small{display:block;font-size:11.5px;color:#b9c6d6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av6,.cgAv{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:12.5px;flex:none;background:color-mix(in srgb,var(--c) 30%,#fff);color:#062B3A}
+.wa6{width:36px;height:36px;border-radius:50%;background:#25D366;display:grid;place-items:center;flex:none}.wa6 svg{width:19px;fill:#fff}
+.ch6M{display:block;width:100%;margin-top:9px;border:0;background:none;color:#8fd8f2;font:inherit;font-weight:800;font-size:12.5px;cursor:pointer;text-align:left;padding:2px}
+.lb6c{display:flex;justify-content:space-between;font-size:11px;font-weight:800;letter-spacing:1.6px;color:var(--muted);margin:6px 4px -2px}.lb6c em{font-style:normal;letter-spacing:.2px;color:var(--brand)}
+.fn6{background:var(--surface);border-radius:18px;box-shadow:0 0 0 1px var(--line);padding:12px 12px 8px}
+.fn6 .bar{display:flex;height:8px;border-radius:9px;overflow:hidden;gap:2px}.fn6 .bar i{display:block}
+.fn6 .lg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:6px}
+.fn6 .lg button{border:0;background:none;font:inherit;font-size:10.5px;font-weight:700;color:var(--muted);padding:4px 0;border-radius:10px;cursor:pointer}
+.fn6 .lg button b{display:block;font-family:'Barlow Condensed',sans-serif;font-size:19px;color:var(--ink)}
+.fn6 .lg button[aria-pressed="true"]{background:color-mix(in srgb,var(--brand) 10%,transparent);color:var(--brand)}
+#crmTop .cvNumMini{background:var(--surface)!important;color:var(--ink)!important;box-shadow:0 0 0 1px var(--line);margin:0!important}
+#crmTop .cvNumMini b{color:var(--ink)!important}#crmTop .cvNumMini span{opacity:1;color:var(--muted)}
+#crmTop .cvNumMini em{background:color-mix(in srgb,var(--brand) 12%,transparent)!important;color:var(--brand)!important}
+#v-crm>.card:has(#contactList){background:transparent!important;box-shadow:none!important;border:0!important;padding:0!important}
+.cgG{border:0!important;box-shadow:0 0 0 1px var(--line);border-radius:18px!important;margin-bottom:10px!important}
+.cgH{font-size:11px!important;letter-spacing:1.5px!important;color:var(--muted)!important;padding:12px 14px!important}
+.cgH span{font-family:'Barlow Condensed',sans-serif;font-size:16px!important}
+.cgR{gap:10px!important;padding:10px 14px!important}
+.cgN{width:14px!important;font-family:'Barlow Condensed',sans-serif;font-size:14px!important}
+.cgNm{display:flex;flex-direction:column;font-size:15px!important}
+.cgT{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+.cgM{font-size:12px;color:var(--muted);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cgM:empty{display:none}
+.cgLate{color:#DC2626;font-weight:700}
+.cgP{font-family:'Barlow Condensed',sans-serif;font-size:18px!important;font-weight:700!important}
+.cgP.rp{font-family:Figtree,sans-serif}
+.cgR.op{background:color-mix(in srgb,var(--brand) 6%,transparent)!important}
+/* ficha: siguiente paso como protagonista oscuro */
+.cvNx{background:radial-gradient(120% 90% at 100% 0%,#143b5c 0,#0b1424 60%)!important;border:0!important;color:#fff!important;border-radius:18px!important;box-shadow:0 12px 24px -16px rgba(10,30,60,.55)}
+.cvNx .kx{color:#8fd8f2!important;letter-spacing:1.6px}
+.cvNx b{color:#fff!important}.cvNx small{color:#b9c6d6!important}
+.cvNx a,.cvNx button{color:inherit}
+#v-crm:has(#crmTop .fn6) .cgCnt{display:none}
+/* Academia: las 6 insignias ya no empujan el ancho de la pantalla (iPhone) */
+.ac4I{min-width:0;max-width:100%;overflow:hidden}
+.ac4Ig{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+.ac4Ig span{min-width:0;font-size:9px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.ac4Ig img{max-width:100%}
+#v-academia{overflow-x:hidden}
 </style>
 
 </head>
@@ -1928,6 +2050,7 @@ body #v-inicio.simple>#irCard.irF,#v-inicio>#irCard.irF{order:4!important}
       <div class="ganCard" id="ganCard" hidden></div>
       <div class="mqCard" id="metaEq" hidden></div>
       
+      <div class="lb6" id="lb6M">② CÓMO VOY CON MI META</div>
       <div id="compStrip" hidden></div><div id="cieStrip" hidden></div>
       <div class="pendStrip" id="pendStrip" hidden></div>
       <div id="pushStrip" hidden></div>
@@ -1959,12 +2082,13 @@ body #v-inicio.simple>#irCard.irF,#v-inicio>#irCard.irF{order:4!important}
       
       <div class="card" id="whoCard" hidden></div>
       <div class="card rkCard" id="rkCard" hidden></div>
+      <div class="lb6" id="lb6R">③ QUÉ ME FALTA HACER</div>
       <div class="card rutCard" id="rutCard">
-        <div class="row between" style="align-items:center"><h3 style="margin:0">🔥 Su rutina de hoy</h3><span class="chip c-gold" id="rutRacha" style="font-weight:800" hidden></span></div>
+        <div class="rh6"><span class="fl6">🔥</span><span class="grow" style="min-width:0"><b>Su rutina de hoy</b><small id="rutRacha" hidden></small></span><button class="lk6" id="rutVerRacha" type="button">Mi Racha ›</button></div>
         <div class="row" style="gap:10px;align-items:center"><div class="bar grow" style="margin:0"><i id="dayBar" style="width:0%"></i></div><span class="small" style="font-weight:800;white-space:nowrap" id="dayPct">0 de 5</span></div>
         <div id="rutAlert"></div>
         <div class="list" id="tasks"></div>
-        <div class="row" style="gap:8px"><button class="btn sm" id="rutVerRacha" type="button" style="flex:1">🔥 Ver Mi Racha</button><button class="btn sm ghost" id="rutVerIdx" type="button" style="flex:1" hidden>⚡ Índice de Duplicación</button></div>
+        <div class="row" style="gap:8px" hidden><button class="btn sm ghost" id="rutVerIdx" type="button" style="flex:1" hidden>⚡ Índice de Duplicación</button></div>
       </div>
       <div class="card habCard" id="habCard" hidden></div>
       <div class="card" id="acc3" hidden></div>
@@ -2005,6 +2129,7 @@ body #v-inicio.simple>#irCard.irF,#v-inicio>#irCard.irF{order:4!important}
     <!-- CRM -->
     <section class="view" id="v-crm" hidden>
       <div class="row between"><div><p class="eyebrow">Tus contactos</p><h1>Mi CRM</h1></div><div class="row" style="gap:8px"><button class="btn ghost" id="salaBtn" title="Enviar mi presentación virtual" hidden>✈️</button><button class="btn ghost" id="presBtn" title="Dar presentación">🎤</button><button class="btn ghost" id="bienBtn" title="Bienvenida a socio nuevo">🎉</button><button class="btn gold" id="addContact">+ Contacto</button></div></div>
+      <div id="crmTop"></div>
       <input class="inp" id="crmSearch" type="search" placeholder="Buscar por nombre o nota">
       <div class="catBar" id="catBar" hidden></div><div class="stage-bar" id="stageBar"></div>
       <div class="card"><div class="list" id="contactList"></div></div>
@@ -2343,8 +2468,11 @@ function renderHab(){const el=$("#habCard");if(!el)return;if(!window._habP){el.h
   if(!h.l.length){if(LS.get("habNo:"+(store.uid||""))>Date.now()){el.hidden=true;return}el.hidden=false;el.innerHTML=`<div class="hbH"><h3>✨ Mis hábitos</h3><button type="button" id="hbNo">Ahora no</button></div><p class="hbE">Cree sus propios hábitos para su vida: agua, ejercicio, lectura… 🔒 Solo usted los ve.</p><button class="btn sm" type="button" id="hbNew" style="width:100%">➕ Crear mis hábitos</button>`;
     $("#hbNew").onclick=habEditar;$("#hbNo").onclick=()=>{LS.set("habNo:"+(store.uid||""),Date.now()+14*864e5);el.hidden=true};return}
   const n=h.l.filter(x=>habHecho(x.id,TODAY)).length;el.hidden=false;
-  el.innerHTML=`<div class="hbH"><h3>✨ Mis hábitos</h3><span class="hbN">${n} de ${h.l.length}${n===h.l.length?" 🎉":""}</span><button type="button" id="hbMes">Mi mes</button><button type="button" id="hbEd">Editar</button></div>`+h.l.map(x=>{const ok=habHecho(x.id,TODAY),r=habRacha(x.id);return `<div class="hbR${ok?" ok":""}" data-hb="${esc(x.id)}" role="button" aria-pressed="${ok}"><span class="hbC">${ok?CHECK:""}</span><span class="hbT">${esc(x.t)}</span><span class="hbS${r?" on":""}">${r?"🔥 "+r+(r===1?" día":" días"):"Empiece hoy"}</span></div>`}).join("");
-  el.querySelectorAll("[data-hb]").forEach(r=>r.onclick=()=>habToggle(r.dataset.hb));$("#hbEd").onclick=habEditar;$("#hbMes").onclick=habMes}
+  // 19 nov: plegada en una línea (puntitos); al tocar se abre (LS habOpen)
+  const HO="habOpen:"+(store.uid||"");if(LS.get(HO)!=="1"){el.classList.add("hbMini");el.innerHTML=`<div class="hbS6" role="button"><span class="grow" style="min-width:0"><b>✨ Mis hábitos</b><small>${n} de ${h.l.length} hoy${n===h.l.length?" 🎉":""} · solo usted los ve</small></span><span class="hbDt">${h.l.map(x=>`<i class="${habHecho(x.id,TODAY)?"on":""}"></i>`).join("")}</span><span class="hbGo">›</span></div>`;el.querySelector(".hbS6").onclick=()=>{LS.set(HO,"1");renderHab()};return}
+  el.classList.remove("hbMini");
+  el.innerHTML=`<div class="hbH"><h3>✨ Mis hábitos</h3><span class="hbN">${n} de ${h.l.length}${n===h.l.length?" 🎉":""}</span><button type="button" id="hbMes">Mi mes</button><button type="button" id="hbEd">Editar</button><button type="button" id="hbCl" aria-label="Cerrar">▴</button></div>`+h.l.map(x=>{const ok=habHecho(x.id,TODAY),r=habRacha(x.id);return `<div class="hbR${ok?" ok":""}" data-hb="${esc(x.id)}" role="button" aria-pressed="${ok}"><span class="hbC">${ok?CHECK:""}</span><span class="hbT">${esc(x.t)}</span><span class="hbS${r?" on":""}">${r?"🔥 "+r+(r===1?" día":" días"):"Empiece hoy"}</span></div>`}).join("");
+  el.querySelectorAll("[data-hb]").forEach(r=>r.onclick=()=>habToggle(r.dataset.hb));$("#hbEd").onclick=habEditar;$("#hbMes").onclick=habMes;$("#hbCl").onclick=()=>{LS.set("habOpen:"+(store.uid||""),"");renderHab()}}
 function habToggle(id){const h=habSt(),a=h.d[TODAY]=Array.isArray(h.d[TODAY])?h.d[TODAY]:[];const i=a.indexOf(id);if(i>=0)a.splice(i,1);else{a.push(id);try{navigator.vibrate&&navigator.vibrate(15)}catch(e){}}
   habGuardar();renderHab();const all=h.l.every(x=>habHecho(x.id,TODAY));if(i<0&&all){const k="habConf:"+(store.uid||"");if(LS.get(k)!==TODAY){LS.set(k,TODAY);try{confeti($("#habCard"),34)}catch(e){}toast("✨ ¡Cumplió todos sus hábitos de hoy!")}}}
 function habEditar(){const h=habSt();const pinta=()=>{const L=h.l;
@@ -2352,7 +2480,7 @@ function habEditar(){const h=habSt();const pinta=()=>{const L=h.l;
   <div>${L.map(x=>`<div class="hbL"><span>${esc(x.t)}</span><button type="button" data-hbx="${esc(x.id)}" aria-label="Quitar">✕</button></div>`).join("")||'<p class="small muted">Todavía no tiene hábitos.</p>'}</div>
   ${L.length<HAB_MAX?`<div class="row" style="gap:8px;margin-top:12px"><input id="hbIn" maxlength="40" placeholder="Escriba su hábito" style="flex:1"><button class="btn sm" type="button" id="hbAdd">Agregar</button></div><p class="small muted" style="margin:10px 0 0">O toque una idea:</p><div class="hbSug">${HAB_SUG.map(t=>`<button type="button" data-hbs="${esc(t)}"${L.some(x=>x.t===t)?" disabled":""}>${esc(t)}</button>`).join("")}</div>`:'<p class="small muted" style="margin-top:10px">Ya tiene 5 hábitos. Quite uno para agregar otro.</p>'}
   <button class="btn" type="button" id="hbOk" style="width:100%;margin-top:12px">Listo</button>`,()=>{
-    const add=t=>{t=String(t||"").trim().slice(0,40);if(!t)return;if(h.l.length>=HAB_MAX){toast("Máximo "+HAB_MAX+" hábitos");return}if(h.l.some(x=>x.t.toLowerCase()===t.toLowerCase())){toast("Ese hábito ya está");return}h.l.push({id:"h"+Date.now().toString(36),t});habGuardar();renderHab();pinta()};
+    const add=t=>{t=String(t||"").trim().slice(0,40);if(!t)return;if(h.l.length>=HAB_MAX){toast("Máximo "+HAB_MAX+" hábitos");return}if(h.l.some(x=>x.t.toLowerCase()===t.toLowerCase())){toast("Ese hábito ya está");return}h.l.push({id:"h"+Date.now().toString(36),t});LS.set("habOpen:"+(store.uid||""),"1");habGuardar();renderHab();pinta()};
     const b=$("#hbAdd");if(b)b.onclick=()=>add($("#hbIn").value);const inp=$("#hbIn");if(inp)inp.onkeydown=e=>{if(e.key==="Enter")add(inp.value)};
     document.querySelectorAll("#sheetPanel [data-hbs]").forEach(x=>x.onclick=()=>add(x.dataset.hbs));
     document.querySelectorAll("#sheetPanel [data-hbx]").forEach(x=>x.onclick=()=>{if(x.dataset.c!=="1"){x.dataset.c="1";x.textContent="¿?";x.style.background="#FEE2E2";x.style.color="#B42335";setTimeout(()=>{if(x.isConnected){x.dataset.c="";x.textContent="✕";x.style.background="";x.style.color=""}},2500);return}h.l=h.l.filter(y=>y.id!==x.dataset.hbx);habGuardar();renderHab();pinta()});
@@ -2655,7 +2783,7 @@ function renderWeek(){const out=[];let streak=0;
   for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));
     out.push(`<div><i class="${s>=1?"full":s>0?"part":""} ${i===0?"today":""}">${d.getDate()}</i>${DAYS[d.getDay()]}</div>`)}
   for(let i=0;i<7;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)streak++;else break}
-  {let r=0;for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)r++;else break}const rr=$("#rutRacha");if(rr){rr.hidden=!r;rr.textContent="🔥 "+r+(r===1?" día":" días")}}
+  {let r=0;for(let i=0;i<60;i++){const d=new Date(now);d.setDate(d.getDate()-i);const s=dayScore(weekCache[dkey(d)],dkey(d));if(i===0&&s<1)continue;if(s>=1)r++;else break}const rr=$("#rutRacha");if(rr){rr.hidden=!r;rr.textContent="Racha de "+r+(r===1?" día":" días")+" · mañana va por "+(r+1)}}
   pushResumen();$("#week").innerHTML=out.join("");$("#streak").textContent="Racha "+streak+(streak===1?" día":" días");pillIdx()}
 
 
@@ -2960,10 +3088,12 @@ function compStripHTML(mini){const C=miComp(),mn=mesNom();
   const bar=(a,b)=>`<div class="mtBar"><i style="width:${b?Math.min(100,Math.round(a*100/b)):0}%"></i></div>`;
   const pc=(a,b)=>b?Math.min(100,Math.round(a*100/b)):0,tot=Math.round(((C.vol?pc(V,C.vol):pc(A,C.act))+pc(p,C.pres))/2);
   let open=false;try{open=LS.get("cpOpen")==="1"}catch(e){}
-  if(mini&&acc3On()){const vm=+C.vol||0,val=vm?V:A,goal=vm||+C.act||1,pv=Math.min(100,Math.round(val*100/goal)),bx=(k,v)=>`<div><small>${k}</small><b>${v}</b></div>`;
-    const top=`<div class="cp3T"><span class="k">🎯 MI COMPROMISO DEL MES</span><span class="v">${fmt(val)} <small>/ ${fmt(goal)} ${vm?"pts":(goal===1?"activación":"activaciones")}</small><i>${open?"▾":"›"}</i></span></div><div class="cp3B"><s style="width:${Math.max(val?3:0,pv)}%"></s></div>`;
-    if(!open)return `<div class="cp3" data-cpt>${top}</div>`;
-    return `<div class="cp3 op" data-cpt>${top}<div class="cp3D"><span class="rg">${r.ic} ${esc(r.t)} · quedan ${d} ${d===1?"día":"días"}</span><div class="g">${vm?bx("VOLUMEN","⚡ "+fmt(V)+"/"+fmt(C.vol)):""}${bx("ACTIVACIONES","🚀 "+A+"/"+C.act)}${bx("PRESENT. SEMANA","🎤 "+p+"/"+C.pres)}</div><div class="ft"><span>${vm?(V<C.vol?"Le faltan "+fmt(C.vol-V)+" pts":"¡Meta de volumen lograda! 🎉"):""}</span><button type="button" data-comp>Editar ›</button></div></div></div>`}
+  if(mini&&acc3On()){const vm=+C.vol||0,val=vm?V:A,goal=vm||+C.act||1,pv=Math.min(100,Math.round(val*100/goal)),rgS=String(r.t||"").replace(/^Espartano · /,"").toUpperCase(),falta=vm?Math.max(0,vm-V):Math.max(0,(+C.act||0)-A);
+    // 19 nov (Edwin): compromiso delgado con el diseño nuevo; al tocarlo se expande
+    const top=`<div class="cp6T"><span class="k">MI COMPROMISO${rgS?" · "+esc(rgS):""}</span><span class="v"><b>${fmt(val)}</b> / ${fmt(goal)} ${vm?"pts":(goal===1?"activación":"act.")}<i>${open?"▴":"▾"}</i></span></div><div class="cp6B"><s style="width:${Math.max(val?3:0,pv)}%"></s></div>`;
+    if(!open)return `<div class="cp3 cp6" data-cpt>${top}</div>`;
+    return `<div class="cp3 cp6 op" data-cpt>${top}<div class="cp6D"><div class="g"><div><small>ACTIVACIONES</small><b>${A}<span> / ${C.act}</span></b></div><div><small>PRESENT. SEMANA</small><b>${p}<span> / ${C.pres}</span></b></div><div><small>${falta?"LE FALTAN":"META"}</small><b>${falta?fmt(falta):"✓"}${falta&&!vm?"<span> act.</span>":""}</b></div></div><div class="ft"><span>⏳ Quedan ${d} ${d===1?"día":"días"}</span><button type="button" data-comp>Editar ›</button></div></div></div>`}
+
   if(mini&&!open)return `<div class="compStrip cpMini cpHero cpC" data-cpt><div class="cpRow">${homeRing(tot,"#2AC1F1",tot+"%")}<div class="grow" style="min-width:0"><div class="ht">${r.ic} ${esc(r.t)}</div><div class="hs">Mi compromiso · quedan ${d} ${d===1?"día":"días"}</div>
    <div class="cpP">${C.vol?`<span class="${V>=C.vol?"ok":""}">⚡ ${fmt(V)}/${fmt(C.vol)}</span>`:""}<span class="${A>=C.act&&C.act?"ok":""}">🚀 ${A}/${C.act}</span><span class="${p>=C.pres?"ok":""}">🎤 ${p}/${C.pres}</span></div></div><span class="cp-chev">›</span></div></div>`;
   return `<div class="compStrip"${mini?" data-cpt":" data-comp"}><div class="row between"><small class="gn-e" style="color:inherit">🤝 Mi compromiso de ${esc(mn)}</small><small>⏳ ${d} ${d===1?"día":"días"}${mini?" ▴":""}</small></div>
@@ -3426,7 +3556,7 @@ const ACC3_SVG={plane:'<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-
 const acc3Ic=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ACC3_SVG[k]||""}</svg>`;
 function renderAcc3(){const c=$("#acc3");if(!c)return;const on=acc3On();document.body.classList.toggle("acc3",on);c.hidden=!on;if(!on)return;
   const sv=salaOk(),A=[sv?["sala","plane","Presentación virtual","a1"]:["hist","story","Historia del día","a5"],["pres","mic","Dar presentación","a3"],["dl","dl","Descargar presentación","a2"],["bien","party","Bienvenida socio nuevo","a6"],["dest","globe","Mi página","a7"]];
-  c.innerHTML=`<div class="acc3H"><h3>⚡ Accesos directos</h3><button type="button" id="acc3Mas">Más ›</button></div><div class="acc3G">${A.map(([k,i,t,cl])=>`<button type="button" data-a3="${k}"><span class="${cl}">${acc3Ic(i)}</span>${t}</button>`).join("")}</div>`;
+  c.innerHTML=`<div class="acc3H"><h3 class="h6">ACCESOS DIRECTOS</h3><button type="button" id="acc3Mas">Más ›</button></div><div class="acc3G">${A.map(([k,i,t,cl])=>`<button type="button" data-a3="${k}"><span class="${cl}">${acc3Ic(i)}</span>${t}</button>`).join("")}</div>`;
   c.querySelectorAll("[data-a3]").forEach(b=>b.onclick=()=>{const k=b.dataset.a3;if(k==="sala")salaMenu();else if(k==="hist")abrirHist();else if(k==="pres")presElegir();else if(k==="dl"){const u=irPresUrl();if(!u){toast("La presentación del mes todavía no está cargada");return}const w=window.open(u,"_blank");if(w)w.opener=null}else if(k==="bien")abrirBienvenida();else if(k==="dest")destCompartir()});
   $("#acc3Mas").onclick=()=>cajaAbrir();try{avBox3()}catch(e){}}
 // 14 nov (Edwin, SOLO ADMIN): un solo carrusel «HOY»: declaración (si falta), cierre/incentivo, Inicio Rápido, etc. pasan dentro de #avTrack; avanza solo cada 5 s (no si el aviso actual es urgente o si la persona lo tocó hace poco).
@@ -3513,9 +3643,9 @@ function rkInicio(){const c=$("#rkCard");if(!c)return;try{
     else if(mi>=3){if(L[mi].v>=T3[2].v)pie=`Usted va <b>#${mi+1}</b> · empatado con el top 3: ${rkTab==="rac"?"sume presentaciones y puntos":"sume más volumen"} para subir 💪`;else{const f=T3[2].v-L[mi].v+1;pie=`Usted va <b>#${mi+1}</b> · le ${f===1?"falta":"faltan"} <b>${VOL?fmt(f):f}</b> ${f===1?w[0]:w[1]} para el top 3 💪`}}
     else pie=L.length<3?(rkTab==="rac"?"Haga su rutina hoy y entre al top 3 💪":"¡Una activación y entra al top 3! 💪"):(rkTab==="rac"?"Haga su rutina hoy y empiece su racha 🔥":"Su primera activación le pone en el ranking 💪")}
   const G=(T.config||{}).ganadores,gan=G&&G.hasta&&Date.now()<=Date.parse(G.hasta);
-  c.hidden=false;c.innerHTML=`<div class="row between" style="align-items:center"><h3 style="margin:0;font-size:16px;min-width:0">🏆 Así va el ranking <span class="muted" style="font-weight:600;font-size:13px">· ${esc(mes)}</span></h3><button type="button" class="rkVer" id="rkVer">Ver todo ›</button></div>
+  c.hidden=false;c.innerHTML=`<div class="row between" style="align-items:center"><h3 class="h6">ASÍ VA EL RANKING · ${esc(mes.toUpperCase())}</h3><button type="button" class="rkVer" id="rkVer">Ver todo ›</button></div>
    <div class="rkTabs"><button type="button" data-rk="act" aria-pressed="${rkTab==="act"}">🚀 Activaciones</button><button type="button" data-rk="rac" aria-pressed="${rkTab==="rac"}">🔥 Rachas</button></div>
-   ${cargando?`<p class="small muted" style="margin:6px 0">Cargando rachas…</p>`:T3.length?T3.map((x,i)=>`<div class="rkRow${i===mi?" yo":""}"><span class="md">${md[i]}</span><b class="grow">${esc(fdNom(x.n))}${i===mi?" · usted":""}</b><span class="v">${VOL?fmt(x.v)+'<small style="font-size:.5em;margin-left:3px">pts</small>':x.v}${rkTab==="rac"?"d":""}</span></div>`).join(""):`<p class="small muted" style="margin:6px 0">¿Quién abre el marcador este mes? 🚀</p>`}
+   ${cargando?`<p class="small muted" style="margin:6px 0">Cargando rachas…</p>`:T3.length?T3.map((x,i)=>`<div class="rkRow${i===mi?" yo":""}"><span class="md6">${i+1}</span>${(()=>{try{return avV(x.n,x.u)}catch(e){return""}})()}<b class="grow">${esc(fdNom(x.n))}${i===mi?" · usted":""}${i===0?'<span class="crown6">👑 1.º</span>':""}</b><span class="v">${VOL?fmt(x.v)+'<small style="font-size:.5em;margin-left:3px">pts</small>':x.v}${rkTab==="rac"?"d":""}</span></div>`).join(""):`<p class="small muted" style="margin:6px 0">¿Quién abre el marcador este mes? 🚀</p>`}
    ${pie?`<div class="rkPie">${pie}</div>`:""}${gan?`<button type="button" class="rkGan" id="rkGan">🏆 Ver ganadores de ${esc(G.mesN||mesNom(G.mes))} ›</button>`:""}`;
   c.querySelectorAll("[data-rk]").forEach(b=>b.onclick=()=>{rkTab=b.dataset.rk;try{LS.set("rkTab",rkTab)}catch(e){}rkInicio()});
   $("#rkVer").onclick=()=>{eqTab="ranking";rankMetric=rkTab==="rac"?"rutina":"nuevos";setSeg("eqSeg",eqTab);go("equipo");renderEquipo()};
@@ -5591,7 +5721,7 @@ let avBoxR=0;function avBoxPinta(){const box=$("#avBox"),tr=$("#avTrack");if(!bo
   box.querySelectorAll(".avSl").forEach(sl=>{const c=document.getElementById(sl.dataset.k),off=LS.get("avX:"+sl.dataset.k)===TODAY||(sl.dataset.k==="declStrip"&&(()=>{try{return declHecha()}catch(e){return false}})()),h=!c||c.hidden||off;if(sl.hidden!==h)sl.hidden=h;if(!h)vis.push(sl)});
   box.hidden=!vis.length;if(!vis.length)return;const ks=vis.map(x=>x.dataset.k).join();if(ks!==box.dataset.ks){box.dataset.ks=ks;tr.scrollLeft=0}const cur=Math.max(0,Math.min(vis.length-1,Math.round(tr.scrollLeft/Math.max(1,tr.clientWidth+10))));
   if(tr.dataset.m3){const hh=vis[cur].offsetHeight;if(hh)tr.style.height=hh+"px"}
-  $("#avBoxN").textContent=(tr.dataset.m3?"HOY":"AVISOS DE HOY")+(vis.length>1?" · "+(cur+1)+" DE "+vis.length:"");$("#avDots").innerHTML=vis.length>1?vis.map((_,j)=>`<i class="${j===cur?"on":""}"></i>`).join(""):""}
+  $("#avBoxN").textContent=(tr.dataset.m3?"① QUÉ TENGO HOY":"AVISOS DE HOY")+(vis.length>1?" · "+(cur+1)+" DE "+vis.length:"");$("#avDots").innerHTML=vis.length>1?vis.map((_,j)=>`<i class="${j===cur?"on":""}"></i>`).join(""):""}
 function avBoxQ(){if(avBoxR)return;avBoxR=requestAnimationFrame(()=>{avBoxR=0;try{avBoxPinta()}catch(e){}})}
 function avBoxMostrar(k){LS.set("avX:"+k,"");avBoxPinta();const sl=document.querySelector('#avBox .avSl[data-k="'+k+'"]'),tr=$("#avTrack");if(sl&&tr&&!sl.hidden)tr.scrollTo({left:sl.offsetLeft-tr.offsetLeft,behavior:"smooth"})}
 (function(){const tr=document.getElementById("avTrack");if(!tr)return;try{new MutationObserver(avBoxQ).observe(tr,{subtree:true,attributes:true,attributeFilter:["hidden"]})}catch(e){}
@@ -7950,7 +8080,8 @@ function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e
   const pipeSum=crmV==="cer"&&!q?"":pipeOk()?(()=>{const n=s=>contacts.filter(c=>c.stage===s).length,fr=contacts.filter(stFrio).length;return `<div class="stsum"><button type="button" data-sf="Por cerrar" style="background:#FFEDD5;color:#C2410C"><b>${n("Por cerrar")}</b>🔥 Por cerrar</button><button type="button" data-sf="Seguimiento" style="background:#FEF3C7;color:#B45309"><b>${n("Seguimiento")}</b>🔁 Seguimiento</button><button type="button" data-sf="Presentación" style="background:#E0F2FE;color:#0369A1"><b>${n("Presentación")}</b>🎤 Presentados</button></div>${crmFrio?`<button type="button" class="cvFrio" data-frio="0">⚠️ Viendo solo los ${fr} sin avanzar <em>✕ Ver todos</em></button>`:fr?(crmV2On()?`<button type="button" class="cvFrio" data-frio="1">⚠️ ${fr} ${fr===1?"prospecto lleva":"prospectos llevan"} +7 días sin avanzar <em>Ver ›</em></button>`:`<p class="small" style="margin:0 0 6px;color:#B45309;font-weight:700">⚠️ ${fr} ${fr===1?"prospecto lleva":"prospectos llevan"} más de 7 días sin avanzar ni seguimiento</p>`):""}`})():"";
   const CV3=crmV2On(),funUI=CV3&&contacts.length?cvFun(VS,counts):"";
   const ordUI=CV3?"":pipeOk()?`<div class="crmord" role="group" aria-label="Ordenar contactos">${[["seg","📅 Seguimiento"],["rec","🆕 Recientes"],["pct","📈 Mayor %"]].map(([k,t])=>`<button type="button" data-ord="${k}" aria-pressed="${crmOrd===k}">${t}</button>`).join("")}</div>`:"";
-  $("#contactList").innerHTML=cerHead+(CV3&&!crmGrp(q)?funUI:"")+(crmV==="cer"||q?"":salaNums())+(crmV==="cer"&&!q?"":ordUI)+(CV3||crmGrp(q)?"":pipeSum)+crmCuerpo(list,c=>{const cer=CERR.includes(c.stage),late=!cer&&c.next&&c.next<TODAY,today=!cer&&c.next===TODAY,op=openC===c.id;
+  try{crmTopPinta(q)}catch(e){}
+  $("#contactList").innerHTML=cerHead+(CV3&&!crmGrp(q)?funUI:"")+(crmV==="cer"&&!q?"":ordUI)+(CV3||crmGrp(q)?"":pipeSum)+crmCuerpo(list,c=>{const cer=CERR.includes(c.stage),late=!cer&&c.next&&c.next<TODAY,today=!cer&&c.next===TODAY,op=openC===c.id;
     const k=c.stage==="Cliente"?FLOW.length:c.stage==="No interesado"?0:FLOW.indexOf(c.stage)+1,pc=STAGE_COL[c.stage]||"var(--brand)";
     return `<div class="contact ${op?"open":""}" style="--pc:${pc}"><div class="ch" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}">
     <div class="av" style="box-shadow:0 0 0 2px ${pc}">${c.stage==="Socio"||c.stage==="Cliente"?"✓":esc(initials(c.name))}</div>
@@ -7990,9 +8121,40 @@ let crmJr=0;async function crmJRevisar(){if(!(store&&store.db&&store.uid)||Date.
   if(n){try{toast("🔄 Se subieron "+n+" cambios de su CRM que no habían llegado")}catch(e){}}}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(()=>{try{crmJRevisar()}catch(e){}},4000)});
 setTimeout(()=>{try{crmJRevisar()}catch(e){}},15000);
+// ---------- 19 nov (Edwin): CRM v6 — «Hoy le toca» (protagonista oscuro), embudo en una barra y presentación virtual en una línea. 0 lecturas (contactos en memoria). ----------
+function crmIni(n){return String(n||"").trim().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"·"}
+function crmFec(f){try{return new Date(f+"T12:00:00").toLocaleDateString("es-HN",{weekday:"short",day:"numeric",month:"short"})}catch(e){return f}}
+function crmMeta(c){try{const cer=CERR.includes(c.stage)||PAUSA.includes(c.stage),pv=crmPv(c),pvT=pv?" · 🎬 "+esc(pv):"";
+  if(!cer&&c.next&&c.next<TODAY){const d=Math.max(1,Math.round((Date.parse(TODAY)-Date.parse(c.next))/864e5));return `<b class="cgLate">Atrasado ${d} ${d===1?"día":"días"}</b>${pvT}`}
+  if(!cer&&c.next===TODAY)return "⏰ Le toca hoy"+pvT;
+  if(c.stage===MA&&c.next)return "🌱 Escribirle el "+esc(crmFec(c.next));
+  if(pv)return "🎬 Presentación virtual · "+esc(pv);
+  if(c.pres&&c.pres.n)return "🎤 Presentado · "+c.pres.n+"/10";
+  if(!cer&&c.next)return "Próximo: "+esc(crmFec(c.next));
+  const d=stDias(c);return esc(c.stage||"Nuevo")+(d>0?" · hace "+d+(d===1?" día":" días"):" · hoy")}catch(e){return ""}}
+function crmAtHoy(c){try{if(c.ultSeg===TODAY)return true;if((day.segL||[]).some(x=>x.cid===c.id))return true;return (c.seg||[]).some(x=>x&&x.t&&dkey(new Date(x.t))===TODAY)}catch(e){return false}}
+function crmHoyL(){const A=contacts.filter(c=>!CERR.includes(c.stage)&&c.stage!=="No interesado"&&!lluPas(c)&&!crmAtHoy(c)&&((c.next&&c.next<=TODAY)||(c.stage==="Por cerrar"&&!PAUSA.includes(c.stage))));
+  return A.sort((a,b)=>(b.stage==="Por cerrar")-(a.stage==="Por cerrar")||String(a.next||"9").localeCompare(String(b.next||"9")))}
+function crmTopPinta(q){const el=$("#crmTop");if(!el)return;if(q||!contacts.length){el.hidden=true;el.innerHTML="";return}el.hidden=false;
+  const L=crmHoyL(),N=L.length,WA='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-3.3-.8-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2.1 1-2.3c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.5.3.1.2.1.8-.1 1.4z"/></svg>';
+  const sub=c=>{const v=crmMeta(c).replace(/<[^>]+>/g,"");return (c.stage==="Por cerrar"?"🔥 Por cerrar · ":"")+v};
+  let h=`<div class="ch6"><span class="k">HOY LE TOCA${N?` · ${N} ${N===1?"PERSONA":"PERSONAS"}`:""}</span><b class="t">${N?(N===1?"1 persona espera su mensaje":N+" personas esperan su mensaje"):"✅ Está al día con sus seguimientos"}</b><small class="s">${N?"Empiece por quien está más cerca de cerrar":"Agregue personas nuevas a su lista o invite a alguien a su presentación"}</small>`+
+    L.slice(0,3).map(c=>{const w=waLink(c);return `<div class="ch6R" data-tog6="${esc(c.id)}" role="button" tabindex="0"><span class="av6" style="--c:${STAGE_COL[c.stage]||"var(--brand)"}">${esc(crmIni(c.name))}</span><span class="tx"><b>${esc(c.name)}</b><small>${esc(sub(c))}</small></span>${w?`<a class="wa6" href="${esc(w)}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" aria-label="WhatsApp a ${esc(c.name)}">${WA}</a>`:""}</div>`}).join("")+
+    (N>3?`<button type="button" class="ch6M" data-ch6m="1">+ ${N-3} más · ver en mi lista ›</button>`:"")+`</div>`;
+  const F=["Nuevo","Contactado","Presentación","Seguimiento","Por cerrar"],cn=F.map(s=>contacts.filter(c=>c.stage===s&&!lluPas(c)).length),tot=cn.reduce((a,b)=>a+b,0),nC=contacts.filter(c=>CERR.includes(c.stage)).length;
+  if(tot)h+=`<div class="lb6c">MI EMBUDO <em>${tot} en proceso${nC?` · ${nC} ${nC===1?"cerrado":"cerrados"}`:""}</em></div><div class="fn6"><div class="bar">${F.map((s,i)=>cn[i]?`<i style="flex:${cn[i]};background:${STAGE_COL[s]||"var(--brand)"}"></i>`:"").join("")}</div><div class="lg">${F.map((s,i)=>`<button type="button" data-sf6="${esc(s)}" aria-pressed="${stageF===s}"><b>${cn[i]}</b>${s==="Seguimiento"?"Seguim.":s==="Presentación"?"Present.":esc(s)}</button>`).join("")}</div></div>`;
+  try{h+=salaNums()}catch(e){}
+  el.innerHTML=h}
+document.addEventListener("click",e=>{const el=$("#crmTop");if(!el||!el.contains(e.target))return;
+  if(e.target.closest("#cvNumGo")){salaCompartir();return}
+  {const x=e.target.closest("[data-cvnum]");if(x){try{LS.set("cvNumOp",x.dataset.cvnum==="1"?1:0)}catch(y){}renderCRM();return}}
+  const wac=e.target.closest("[data-wac]");if(wac){const c=contacts.find(x=>x.id===wac.dataset.wac);if(c){notaPend(c,"wa");setTimeout(()=>stAvanza(c,"Contactado","le escribió por WhatsApp"),300)}return}
+  const sf=e.target.closest("[data-sf6]");if(sf){stageF=stageF===sf.dataset.sf6?"Todos":sf.dataset.sf6;renderCRM();return}
+  if(e.target.closest("[data-ch6m]")){stageF="Todos";const s=$("#crmSearch");if(s)s.scrollIntoView({behavior:"smooth",block:"start"});return}
+  const tg=e.target.closest("[data-tog6]");if(tg){openC=tg.dataset.tog6;renderCRM();setTimeout(()=>{const r=document.querySelector('#contactList [data-tog="'+CSS.escape(openC)+'"]');if(r)r.scrollIntoView({behavior:"smooth",block:"start"})},80)}});
 function crmCuerpo(list,card,q){let n=0;const pk=pipeOk(),act=c=>!CERR.includes(c.stage)&&!PAUSA.includes(c.stage)&&!lluPas(c);
   const row=c=>{const nn=act(c)?++n:"";const op=openC===c.id,col=STAGE_COL[c.stage]||"var(--brand)",ps=lluPas(c),cer=CERR.includes(c.stage)||ps,pv=crmPv(c),fr=!cer&&pk&&stFrio(c),late=!cer&&c.next&&c.next<TODAY,rx=ps?lluRepTx(c.rep):null;
-    return `<div class="cgR${op?" op":""}" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}"><span class="cgN">${nn}</span><span class="cgNm">${esc(c.name)}${pv?`<em>🎬 ${esc(pv)}</em>`:""}</span><span class="cgP${rx?" rp "+rx.c:""}" style="color:${col}">${rx?esc(rx.t):cer?esc(c.stage):pk?stPct(c)+"%":esc(c.stage||"Nuevo")}${fr||late?`<i title="Sin seguimiento">⚠</i>`:""}</span></div>${op?`<div class="cgF">${card(c)}</div>`:""}`};
+    return `<div class="cgR${op?" op":""}" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}"><span class="cgN">${nn}</span><span class="cgAv" style="--c:${col}">${esc(crmIni(c.name))}</span><span class="cgNm"><span class="cgT">${esc(c.name)}</span><small class="cgM">${rx?"":crmMeta(c)}</small></span><span class="cgP${rx?" rp "+rx.c:""}" style="color:${col}">${rx?esc(rx.t):cer?esc(c.stage):pk?stPct(c)+"%":esc(c.stage||"Nuevo")}${fr||late?`<i title="Sin seguimiento">⚠</i>`:""}</span></div>${op?`<div class="cgF">${card(c)}</div>`:""}`};
   const nA=list.filter(act).length,nC=list.filter(c=>CERR.includes(c.stage)&&!lluPas(c)).length,cnt=`<p class="cgCnt">${nA} en proceso${nC?` · ${nC} ${nC===1?"cerrado":"cerrados"}`:""}</p>`;
   if(!crmGrp(q))return cnt+`<div class="cgG">${list.map(row).join("")}</div>`;
   const gk=c=>lluPas(c)?"Pasados":CERR.includes(c.stage)?"Cerrados":c.stage==="No interesado"?"Descartados":(c.stage||"Nuevo");
@@ -9841,7 +10003,7 @@ function irPopVer(n){irPopT=0;const K="irPop:"+(store.uid||"");if(LS.get(K)===TO
 let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{ponStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{lluStrip()}catch(e){}try{valStrip()}catch(e){}try{eqzStrip()}catch(e){}try{audStrip()}catch(e){}try{turStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
   const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
   if(m==="actual"&&!st.ini){el.hidden=false;el.className="irF am";
-    el.innerHTML=`<div class="irF1">${insImg(1,"irFi")}<div class="grow" style="min-width:0"><span class="irFk">PLAN DE ARRANQUE · 4 SEMANAS</span><b class="irFt">Empiece su Plan de Arranque</b><small class="irFs">4 insignias · al final se gradúa como Espartano 🛡️</small></div></div><button type="button" class="irFb" id="irEmp">🚀 Empezar mi plan ›</button>`;
+    el.innerHTML=`<div class="irF1">${insImg(1,"irFi")}<div class="grow" style="min-width:0"><span class="irFk">PLAN DE ARRANQUE · 4 SEMANAS</span><b class="irFt">Empiece su Plan de Arranque</b><small class="irFs">4 insignias · gradúese como Espartano</small></div><button type="button" class="irFb" id="irEmp">Empezar ›</button></div>`;
     $("#irEmp").onclick=e=>{e.stopPropagation();irEmpezar()};el.onclick=e=>{if(!e.target.closest("button"))irEmpezar()};irPopProg(null);return}
   if(m==="nuevo"&&!st.ini)irSave({ini:irIni()});
   const E=irEstado();irPremiar(E);irResumen(E);if(E.cur.n>=2&&!(E.x&&E.x.val))irValCheck();if(E.cur.n>=4&&mios===null&&Date.now()-irMiosT>6e5){irMiosT=Date.now();try{loadMios().then(()=>setTimeout(irRender,500))}catch(e){}}
@@ -9851,10 +10013,7 @@ let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{ponStrip()}c
   {const vi=$("#v-inicio");if(vi)vi.classList.remove("irProta")}
   if(!E.grad&&!irAbierto){const C=irColor(E),sinCons=E.sem&&!E.cons;el.className="irF "+C.c;
     const sub=sinCons?"Le falta: 7 días seguidos con la rutina completa":nx?`${w.n2} de ${w.L.length} pasos · le falta: ${esc(nx.t)}`:`✅ ¡Semana ${w.n} lista!`;
-    el.innerHTML=`<div class="irF1">${insImg(sinCons?"c":w.n,"irFi")}<div class="grow" style="min-width:0"><span class="irFk">PLAN DE ARRANQUE · SEMANA ${w.n} DE 4${C.k?" · "+C.k:""}</span><b class="irFt">${C.t}</b><small class="irFs">${sub}</small></div></div>
-      <span class="irFbar"><i style="width:${Math.max(4,sinCons?90:pc)}%"></i></span>
-      <div class="irFg">🏅 Gánese su insignia <b>${esc(sinCons?"Constancia":w.k)}</b> · 🛡️ Gradúese como <b>Espartano</b></div>
-      <button type="button" class="irFb" id="irNxB">🚀 Terminar mi plan ›</button>`;irPopProg(E);
+    el.innerHTML=`<div class="irF1">${insImg(sinCons?"c":w.n,"irFi")}<div class="grow" style="min-width:0"><span class="irFk">PLAN DE ARRANQUE · SEMANA ${w.n} DE 4${C.k?" · "+C.k:""}</span><b class="irFt">${C.t}</b><span class="irFbar"><i style="width:${Math.max(4,sinCons?90:pc)}%"></i></span><small class="irFs">${sub}</small></div><button type="button" class="irFb" id="irNxB">Terminar ›</button></div>`;irPopProg(E);
     try{const D=LS.get("tourOk")||{};if(!D.ir&&!LS.get("tourAskIr")&&!tourSt){LS.set("tourAskIr",1);setTimeout(()=>{if(!document.querySelector(".avisoTop.on")&&$("#irCard")&&!$("#irCard").hidden&&!$("#v-inicio").hidden)avisoTop("🧭 ¿Le enseño cómo funciona su plan?","Guía de 2 minutos · toque Ver",()=>tourIr("ir"));else LS.set("tourAskIr","")},6000)}}catch(e){}
     $("#irNxB").onclick=e=>{e.stopPropagation();irLista()};
     el.onclick=e=>{if(e.target.closest("button"))return;irLista()};return}
@@ -10473,7 +10632,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261118231723";var busy=false,pend=null;
+(function(){var V="20261119000811";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
