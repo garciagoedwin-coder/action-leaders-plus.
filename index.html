@@ -8360,10 +8360,11 @@ function flMsg(c,k,v){const n=String(c.name||"").trim().split(/\s+/)[0]||"",U=!c
         x(`¡Hola ${n}! 👋 Me acordé de usted.\n\n¿Qué es lo que más le llamó la atención de la información?\n\nQuedo pendiente para ayudarle. 🙌`,`¡Hola ${n}! 👋 Me acordé de ti.\n\n¿Qué es lo que más te llamó la atención de la información?\n\nQuedo pendiente para ayudarte. 🙌`)]
       :pr>=8?[x(`¡Qué emoción, ${n}! 🎉\n\n${ref?`Aquí está su enlace para registrarse:\n${ref}\n\n`:""}Si quiere, lo hacemos juntos ahora mismo. 🙌`,`¡Qué emoción, ${n}! 🎉\n\n${ref?`Aquí está tu enlace para registrarte:\n${ref}\n\n`:""}Si quieres, lo hacemos juntos ahora mismo. 🙌`)]
       :pr>=6?[x(`Hola ${n} 😊 ¿Qué le pareció la información?\n\n¿Qué le falta para llegar a un 10?\n\nLe dejo esta página con un simulador para que vea cómo funciona la membresía:\n${memUrl(c.name,c.id)}`,`Hola ${n} 😊 ¿Qué te pareció la información?\n\n¿Qué te falta para llegar a un 10?\n\nTe dejo esta página con un simulador para que veas cómo funciona la membresía:\n${memUrl(c.name,c.id)}`)]
-      :[x(`Hola ${n}, ¿qué le pareció la información? 😊\n\nSi le quedó alguna duda, me gustaría que hablemos unos 10 minutos con un líder de mi equipo. ¿Le parece?`,`Hola ${n}, ¿qué te pareció la información? 😊\n\nSi te quedó alguna duda, me gustaría que hablemos unos 10 minutos con un líder de mi equipo. ¿Te parece?`)],
+      :[x(`Hola ${n}, ¿qué le pareció la información? 😊\n\nSi le quedó alguna duda, me gustaría que hablemos unos 10 minutos. ¿Le parece?`,`Hola ${n}, ¿qué te pareció la información? 😊\n\nSi te quedó alguna duda, me gustaría que hablemos unos 10 minutos. ¿Te parece?`),
+        x(`Hola ${n}, ¿qué le pareció la información? 😊\n\nSi le quedó alguna duda, me gustaría que hablemos unos 10 minutos con un líder de mi equipo. ¿Le parece?`,`Hola ${n}, ¿qué te pareció la información? 😊\n\nSi te quedó alguna duda, me gustaría que hablemos unos 10 minutos con un líder de mi equipo. ¿Te parece?`)],
    no:[x(`Le entiendo perfectamente, ${n}, gracias por su sinceridad. 🙏\n\nSi más adelante cambia de opinión, aquí estoy.`,`Te entiendo perfectamente, ${n}, gracias por tu sinceridad. 🙏\n\nSi más adelante cambias de opinión, aquí estoy.`)],
    re:[x(`Hola ${n}, ¿cómo ha estado? 😊 Hace tiempo no hablábamos. ¿Cómo va todo por allá?`,`Hola ${n}, ¿cómo has estado? 😊 Hace tiempo no hablábamos. ¿Cómo va todo por allá?`)]};
-  const L=M[k]||[""];let hh=0;for(const ch of String(c.id||""))hh=(hh*31+ch.charCodeAt(0))>>>0;let rr=L[(hh+(v||0))%L.length];if(k==="seg"&&crmV2On())rr=flGusto(rr);return rr}
+  const L=M[k]||[""];let hh=0;for(const ch of String(c.id||""))hh=(hh*31+ch.charCodeAt(0))>>>0;let rr=L[((k==="seg"?0:hh)+(v||0))%L.length]; /* 19 nov (Edwin): en seguimiento sale primero la versión «conmigo»; «🔄 Otra» da la del líder */if(k==="seg"&&crmV2On())rr=flGusto(rr);return rr}
 function flGusto(t){return String(t||"").replace(/¿Qué le pareció la información\?\n\n¿Qué le falta/,"¿Qué fue lo que más le gustó de la información?\n\nY cuénteme, ¿qué le falta").replace(/¿Qué te pareció la información\?\n\n¿Qué te falta/,"¿Qué fue lo que más te gustó de la información?\n\nY cuéntame, ¿qué te falta")
   .replace(/, ¿qué le pareció la información\? 😊\n\nSi le quedó alguna duda, me gustaría que hablemos unos 10 minutos/," 😊 ¿Qué fue lo que más le gustó de la información?\n\nMe encantaría saberlo. Y si le quedó alguna duda, la resolvemos en 10 minutitos").replace(/, ¿qué te pareció la información\? 😊\n\nSi te quedó alguna duda, me gustaría que hablemos unos 10 minutos/," 😊 ¿Qué fue lo que más te gustó de la información?\n\nMe encantaría saberlo. Y si te quedó alguna duda, la resolvemos en 10 minutitos")}
 function flHTML(c){const P=flPaso(c),h=flH(c);
@@ -11225,7 +11226,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119121312";var busy=false,pend=null;
+(function(){var V="20261119123415";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
