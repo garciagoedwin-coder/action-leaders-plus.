@@ -1957,6 +1957,7 @@ body.rk6on #snvCard .prem{font-size:0!important;background:none!important;box-sh
 body.rk6on #snvCard .prem::before{content:"★ Premium";font-size:12px;color:#B7860B;font-weight:700}
 .flBk{display:block;margin:10px auto 0;background:none;border:0;padding:4px 8px;font:600 12.5px Figtree,sans-serif;color:inherit;opacity:.7;text-decoration:underline;text-underline-offset:3px}
 .flTuR{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 8px;font:600 13px Figtree,sans-serif;color:var(--muted)}.flTuS{display:flex;background:var(--surface-2);border-radius:999px;padding:3px;gap:2px}.flTuS button{border:0;background:none;border-radius:999px;padding:6px 14px;font:700 13px Figtree,sans-serif;color:var(--muted)}.flTuS button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.cgM .rpM{font-weight:700;color:var(--muted)}.cgM .rpM.ok{color:#16A34A}.cgM .rpM.bad{color:#DC2626}.cgM b{font-weight:700}
 </style>
 
 </head>
@@ -8497,7 +8498,7 @@ $("#contactList").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" 
 const crmMas=new Set(),crmSt=new Set();let crmFrio=false;
 // 16 nov (Edwin, «Hazlo»): CRM minimalista. Lista numerada agrupada por etapa (se abren/cierran); renglón = n.º · nombre · % (⚠ si va frío).
 // Al tocar el nombre se despliega su ficha debajo (la misma de siempre, más sencilla).
-const crmGrp=q=>!q&&stageF==="Todos";let crmGA=null;
+const crmGrp=q=>!q&&stageF==="Todos"&&catF!=="pv";let crmGA=null;
 function crmGAb(){if(!crmGA){let a=null;try{a=LS.get("crmGA")}catch(e){}crmGA=new Set(Array.isArray(a)?a:["Por cerrar"])}return crmGA}
 const CG_ORD=["Por cerrar","Seguimiento","Presentación","Contactado","Nuevo"];
 function crmPv(c){try{const v=salaOk()&&salaDe(c.id),e=(LS.get("salaEnv")||{})[c.id];if(v&&/^\d+$/.test(String(v.pulso||"")))return v.pulso+"/10";if(v&&(+v.pct||0)>0)return "vio "+(+v.pct||0)+"%";if(v||e)return "Enviada"}catch(x){}return ""}
@@ -8544,9 +8545,9 @@ document.addEventListener("click",e=>{const el=$("#crmTop");if(!el||!el.contains
   const sf=e.target.closest("[data-sf6]");if(sf){stageF=stageF===sf.dataset.sf6?"Todos":sf.dataset.sf6;renderCRM();return}
   if(e.target.closest("[data-ch6m]")){stageF="Todos";const s=$("#crmSearch");if(s)s.scrollIntoView({behavior:"smooth",block:"start"});return}
   const tg=e.target.closest("[data-tog6]");if(tg){openC=tg.dataset.tog6;renderCRM();setTimeout(()=>{const r=document.querySelector('#contactList [data-tog="'+CSS.escape(openC)+'"]');if(r)r.scrollIntoView({behavior:"smooth",block:"start"})},80)}});
-function crmCuerpo(list,card,q){let n=0;const pk=pipeOk(),act=c=>!CERR.includes(c.stage)&&!PAUSA.includes(c.stage)&&!lluPas(c);
+function crmCuerpo(list,card,q){let n=0;const pvF=catF==="pv";if(pvF)list=list.slice().sort((a,b)=>(stPct(b)||0)-(stPct(a)||0)); /* 19 nov (Edwin): filtro Presentación virtual = lista plana con su etapa y % */const pk=pipeOk(),act=c=>!CERR.includes(c.stage)&&!PAUSA.includes(c.stage)&&!lluPas(c);
   const row=c=>{const nn=act(c)?++n:"";const op=openC===c.id,col=STAGE_COL[c.stage]||"var(--brand)",ps=lluPas(c),cer=CERR.includes(c.stage)||ps,pv=crmPv(c),fr=!cer&&pk&&stFrio(c),late=!cer&&c.next&&c.next<TODAY,rx=ps?lluRepTx(c.rep):null;
-    return `<div class="cgR${op?" op":""}" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}"><span class="cgN">${nn}</span><span class="cgAv" style="--c:${col}">${esc(crmIni(c.name))}</span><span class="cgNm"><span class="cgT">${esc(c.name)}</span><small class="cgM">${rx?"":crmMeta(c)}</small></span><span class="cgP${rx?" rp "+rx.c:""}" style="color:${col}">${rx?esc(rx.t):cer?esc(c.stage):pk?stPct(c)+"%":esc(c.stage||"Nuevo")}${fr||late?`<i title="Sin seguimiento">⚠</i>`:""}</span></div>${op?`<div class="cgF">${card(c)}</div>`:""}`};
+    return `<div class="cgR${op?" op":""}" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}"><span class="cgN">${nn}</span><span class="cgAv" style="--c:${col}">${esc(crmIni(c.name))}</span><span class="cgNm"><span class="cgT">${esc(c.name)}</span><small class="cgM">${rx?`<span class="rpM ${rx.c}">${esc(rx.t)}</span>`:pvF?`<b style="color:${col}">${esc(ps?"Pasado a su equipo":c.stage||"Nuevo")}</b> · 🎬 ${esc(pv||"Enviada")}`:crmMeta(c)}</small></span><span class="cgP" style="color:${col}">${rx?"":cer?esc(c.stage):pk?stPct(c)+"%":esc(c.stage||"Nuevo")}${fr||late?`<i title="Sin seguimiento">⚠</i>`:""}</span></div>${op?`<div class="cgF">${card(c)}</div>`:""}`};
   const nA=list.filter(act).length,nC=list.filter(c=>CERR.includes(c.stage)&&!lluPas(c)).length,cnt=`<p class="cgCnt">${nA} en proceso${nC?` · ${nC} ${nC===1?"cerrado":"cerrados"}`:""}</p>`;
   if(!crmGrp(q))return cnt+`<div class="cgG">${list.map(row).join("")}</div>`;
   const gk=c=>lluPas(c)?"Pasados":CERR.includes(c.stage)?"Cerrados":c.stage==="No interesado"?"Descartados":(c.stage||"Nuevo");
@@ -11224,7 +11225,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119112939";var busy=false,pend=null;
+(function(){var V="20261119121312";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
