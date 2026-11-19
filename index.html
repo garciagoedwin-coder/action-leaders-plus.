@@ -1819,6 +1819,67 @@ body.f20 #rutCard:not(.done):not(.f20o) .f20p{display:flex;align-items:center;ga
 .f20p i u.on{background:#F97316}.f20p em{font-style:normal;white-space:nowrap}.f20p em b{color:#DC2626;font-size:inherit;font-weight:800;display:inline}
 body.f20 .f20k .f20v{display:inline-block;margin-left:6px;color:var(--muted);font-size:12px;transition:transform .2s}
 body.f20 .f20k .f20v{font-size:0!important}body.f20 .f20k .f20v::after{content:"▾";font-size:12px;color:var(--muted)}body.f20 .f20o .f20v::after{content:"▴"}
+
+/* 19 nov · Ranking v6 con vida (body.rk6on: admin + prueba) */
+body.rk6on [data-refresh="eq"]{font-size:0!important;width:40px;height:40px;padding:0!important;border-radius:12px;background:var(--surface)!important;box-shadow:0 0 0 1px var(--line)}
+body.rk6on [data-refresh="eq"]::before{content:"↻";font-size:20px;color:var(--brand);font-weight:700}
+body.rk6on #rankMetric{background:none!important;padding:0!important;border-radius:0;gap:20px;border-bottom:1px solid var(--line);justify-content:flex-start}
+body.rk6on #rankMetric button{flex:none!important;background:none!important;box-shadow:none!important;border-radius:0!important;padding:4px 0 10px!important;font-weight:700;font-size:14px;color:var(--muted);position:relative;white-space:nowrap}
+body.rk6on #rankMetric button[aria-selected="true"]{color:var(--ink)}
+body.rk6on #rankMetric button[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;border-radius:2px;background:var(--brand)}
+body.rk6on #rankMetric .fuego{display:none}
+@keyframes rk6up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+body.rk6on #metaEqR,body.rk6on #pbVol,body.rk6on .rk6Pod,body.rk6on .rk6R{animation:rk6up .55s cubic-bezier(.2,.8,.2,1) both}
+body.rk6on #pbVol{animation-delay:.12s}body.rk6on .rk6Pod{animation-delay:.22s}
+body.rk6on #metaEqR{position:relative;overflow:hidden}
+body.rk6on #metaEqR::before{content:"";position:absolute;width:220px;height:220px;right:-70px;top:-90px;border-radius:50%;background:radial-gradient(circle,rgba(42,193,241,.28),transparent 70%);animation:rk6gl 4s ease-in-out infinite;pointer-events:none}
+@keyframes rk6gl{50%{transform:scale(1.15);opacity:.7}}
+body.rk6on #pbVol.cl{background:var(--surface)!important;box-shadow:0 0 0 1px var(--line)!important;color:var(--ink)!important;border-radius:18px;overflow:hidden}
+body.rk6on #pbVol.cl::before,body.rk6on #pbVol.cl::after{display:none!important}
+body.rk6on #pbVol.cl .pb-mini{color:var(--ink)}
+body.rk6on #pbVol.cl .pb-mini .i{width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,#D9A21B 15%,var(--surface));display:grid;place-items:center;font-size:20px;flex:none;animation:rk6wg 2.6s 1s ease-in-out 3}
+@keyframes rk6wg{0%,80%,100%{transform:none}85%{transform:rotate(-12deg)}90%{transform:rotate(10deg)}95%{transform:rotate(-6deg)}}
+body.rk6on #pbVol.cl .pb-mini small{color:var(--muted)!important}
+body.rk6on #pbVol.cl .pb-mini b{color:var(--ink)!important}
+body.rk6on #pbVol.cl .pb-mini .t>span{color:var(--muted)!important}
+body.rk6on #pbVol.cl .pb-mini .v{background:none!important;color:var(--brand)!important;box-shadow:none!important;padding:0!important}
+.rk6H{display:flex;justify-content:space-between;align-items:center;margin:4px 4px -6px;font-size:11px;font-weight:800;letter-spacing:1.6px;color:var(--muted)}
+.rk6H button{background:none;border:0;color:var(--brand);font-weight:700;font-size:12px;letter-spacing:0;padding:4px 0;font-family:inherit}
+.rk6Pod{position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:8px;background:var(--surface);border-radius:20px;box-shadow:0 0 0 1px var(--line);padding:22px 10px 0}
+.rk6Pod::before{content:"";position:absolute;left:50%;top:-40px;width:260px;height:260px;margin-left:-130px;border-radius:50%;background:radial-gradient(circle,rgba(217,162,27,.2),transparent 65%);pointer-events:none}
+.rk6Pd .av,.rk6R .av{border-radius:50%!important;background-size:cover}.rk6Pd .av.badge,.rk6R .av.badge{background-color:#0b1424;background-size:78%;background-repeat:no-repeat;background-position:center}
+.rk6Sp{position:absolute;width:6px;height:6px;border-radius:2px;opacity:.8}
+.rk6Pd{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0}
+.rk6Av{position:relative}
+.rk6Pd .av{width:58px!important;height:58px!important;font-size:18px;box-shadow:0 0 0 2.5px var(--surface),0 0 0 4px var(--line)}
+.rk6Pd.one .av{width:76px!important;height:76px!important;font-size:22px;box-shadow:0 0 0 3px var(--surface),0 0 0 5.5px #D9A21B;animation:rk6pop .6s .8s cubic-bezier(.3,1.6,.5,1) both}
+.rk6Pd.one .rk6Av::before{content:"";position:absolute;inset:-9px;border-radius:50%;border:2px solid #D9A21B;opacity:0;animation:rk6rg 1.8s 1.4s ease-out 3;pointer-events:none}
+@keyframes rk6pop{from{transform:scale(.6);opacity:0}}
+@keyframes rk6rg{0%{opacity:.8;transform:scale(.9)}100%{opacity:0;transform:scale(1.35)}}
+.rk6Cr{position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-size:18px;z-index:2;animation:rk6bob 2s 1.4s ease-in-out 3}
+@keyframes rk6bob{50%{transform:translate(-50%,-4px) rotate(-6deg)}}
+.rk6Ps{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);background:#94A3B8;color:#fff;font-size:10.5px;font-weight:800;border-radius:99px;padding:1px 7px;box-shadow:0 0 0 2px var(--surface);z-index:2}
+.rk6Pd.one .rk6Ps{background:#D9A21B}.rk6Pd.thr .rk6Ps{background:#B7834E}
+.rk6Nm{font-size:13px;font-weight:700;margin-top:12px;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.rk6Pt{font-family:var(--f-num);font-weight:700;font-size:22px;margin-top:2px}.rk6Pt small{font-family:inherit;font-size:11px;color:var(--muted);font-weight:600}
+.rk6Pd.one .rk6Pt{font-size:28px}
+.rk6Tg{display:inline-block;font-size:10.5px;font-weight:700;color:#8a6510;background:color-mix(in srgb,#D9A21B 16%,var(--surface));border-radius:99px;padding:2px 8px;margin-top:4px}
+.rk6St{display:block;width:100%;margin-top:10px;border-radius:12px 12px 0 0;transform-origin:bottom;animation:rk6ri .7s cubic-bezier(.2,.8,.2,1) both}
+.rk6Pd.one .rk6St{height:58px;background:linear-gradient(180deg,color-mix(in srgb,#D9A21B 30%,var(--surface)),color-mix(in srgb,#D9A21B 6%,var(--surface)));animation-delay:.55s}
+.rk6Pd.two .rk6St{height:38px;background:linear-gradient(180deg,color-mix(in srgb,#94A3B8 25%,var(--surface)),color-mix(in srgb,#94A3B8 6%,var(--surface)));animation-delay:.45s}
+.rk6Pd.thr .rk6St{height:26px;background:linear-gradient(180deg,color-mix(in srgb,#B7834E 25%,var(--surface)),color-mix(in srgb,#B7834E 6%,var(--surface)));animation-delay:.35s}
+@keyframes rk6ri{from{transform:scaleY(0)}}
+.rk6L{background:var(--surface);border-radius:18px;box-shadow:0 0 0 1px var(--line);overflow:hidden}
+.rk6R{display:flex;align-items:center;gap:11px;padding:11px 14px;border-top:1px solid var(--line);position:relative}
+.rk6R:first-child{border-top:0}
+.rk6R .av{width:38px!important;height:38px!important;font-size:13px;flex:none}
+.rk6K{width:20px;font-family:var(--f-num);font-weight:700;font-size:17px;color:var(--muted);text-align:center;flex:none}
+.rk6Tx{flex:1;min-width:0}.rk6Tx b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rk6Tx>span{display:block;font-size:12px;color:var(--muted)}
+.rk6V{font-family:var(--f-num);font-weight:700;font-size:20px;text-align:right;flex:none}.rk6V small{display:block;font-family:inherit;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:-2px}
+.rk6R.yo{background:color-mix(in srgb,var(--brand) 8%,var(--surface))}.rk6R.yo::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--brand)}.rk6R.yo .rk6K{color:var(--brand)}
+.rk6Yo{font-size:10px;font-weight:800;color:var(--brand);background:color-mix(in srgb,var(--brand) 12%,var(--surface));border-radius:99px;padding:1px 6px;margin-left:5px;vertical-align:2px}
+.rk6Up{font-size:10.5px;font-weight:800;color:#16A34A;margin-left:5px}
+@media (prefers-reduced-motion:reduce){body.rk6on #eqBody *,body.rk6on #eqBody *::before{animation:none!important}}
 </style>
 
 </head>
@@ -5253,7 +5314,7 @@ async function redSubir(btn){if(!isAdmin)return;const m=$("#rdUpMsg"),say=t=>{if
     redL=null;redHay=true;redBtn();setTimeout(()=>{if(eqTab==="cierre")renderEquipo()},2500)}
   catch(e){console.error("redSubir",e);say("❌ No se pudo: "+((e&&e.code)==="permission-denied"?"faltan las reglas de la red en Firebase.":((e&&(e.code||e.message))||"error")))}
   btn.disabled=false}
-function renderEquipo(){try{if(irSimple()&&rankMetric==="presentaciones")rankMetric="nuevos"}catch(e){}renderEquipo0();try{rankBeta()}catch(e){}}
+function renderEquipo(){try{document.body.classList.toggle("rk6on",rk6On())}catch(e){}try{if(irSimple()&&rankMetric==="presentaciones")rankMetric="nuevos"}catch(e){}renderEquipo0();try{rankBeta()}catch(e){}}
 function renderEquipo0(){const b=$("#eqBody");redProbe();redBtn();
   if(eqTab==="cierre"){renderCierre(b);return}
   if(eqTab==="socios"){renderSocios(b);return}
@@ -5299,6 +5360,7 @@ function renderEquipo0(){const b=$("#eqBody");redProbe();redBtn();
     const max=Math.max(...d.map(x=>x.v),1);
     const pb=sem?"":premBanner(rankMetric==="nuevos"?"vol":"reg");
     const premios=sem?"":pb?pb:((T.config||{}).premios&&(T.config.premios.mes||"")>="2026-11")?"":(rankMetric==="nuevos"?`<div class="card small"><b>Premios del mes</b><div class="row wrap" style="gap:6px;margin-top:6px"><span class="chip c-gold">✈️ 1.er lugar: Viaje de incentivo</span><span class="chip c-good">500+: Membresía gratuita</span><span class="chip c-warn">200+: Sistema de Líderes</span></div></div>`:`<div class="card small"><b>Premio del mes</b><div class="row wrap" style="gap:6px;margin-top:6px"><span class="chip c-gold">📚 1.er lugar al cierre del mes: Pack de 3 libros</span></div></div>`);
+    if(rk6On()&&rankMetric==="nuevos"&&!sem){b.innerHTML=segs.replace(/<p class="small muted">[\s\S]*?<\/p>/,"")+premios+rk6HTML(d)+`<p class="updated">${updatedTxt(T.config&&T.config.rankingActualizado)}</p>`;bindRank();rk6Bind(b);if(pb)premConfeti("vol");return}
     b.innerHTML=segs+premios+(rankMetric==="nuevos"?`<div class="card row between"><span>Volumen del equipo ${sem?"esta semana":"este mes"}</span><b class="num" style="font-size:20px">${fmt(volTot)}</b></div>`:"")+`<div class="card"><div class="podium">${pod(d[1],1)+pod(d[0],0)+pod(d[2],2)}</div></div>
      ${d.length>3?`<div class="card"><div class="list">${d.slice(3).map(p=>`<div class="row ${p.me?"rank-me":""}"><span class="rank-n">${p.rk}</span>${avHTML(p.nombre,p.me,true)}
       <div class="grow"><div class="row between"><b style="font-weight:600">${esc(nv(p.nombre))}</b>${premN(p.nombre)}<span class="num ${rankMetric==="nuevos"?"c-"+vcls(p.v)+" chip":""}" style="font-size:${rankMetric==="nuevos"?"15px":"18px"}">${rankMetric==="nuevos"?"Vol. ":""}${fmt(p.v)}</span></div>
@@ -5306,6 +5368,20 @@ function renderEquipo0(){const b=$("#eqBody");redProbe();redBtn();
      <p class="updated">${updatedTxt(T.config&&T.config.rankingActualizado)}</p>`;
     bindRank();if(pb)premConfeti(rankMetric==="nuevos"?"vol":"reg");return}
   }
+// 19 nov (Edwin): Ranking › Activaciones v6 con vida (solo admin + prueba; para todos RK6_TODOS=true)
+const RK6_TODOS=false,rk6On=()=>{try{return RK6_TODOS||isAdmin||yoPrueba()}catch(e){return false}};
+function rk6Mov(d){let S={};try{S=LS.get("rk6P")||{}}catch(e){}if(S.d!==TODAY){S={d:TODAY,prev:S.cur||{},cur:{}}}d.forEach(x=>S.cur[x.nombre]=x.rk);try{LS.set("rk6P",S)}catch(e){}const P=S.prev||{};return n=>{const o=P[n],x=S.cur[n];return o&&x&&o>x?o-x:0}}
+function rk6HTML(d){const mv=rk6Mov(d),PD=(()=>{try{return premDatos()}catch(e){return null}})();
+  const ic=n=>{try{if(!(isAdmin||lzSoyMiembro())||!constL)return"";const c=constL.find(z=>sameN(z.nombre,n));if(!c)return"";const o=idxPer;idxPer="mes";let v;try{v=idxPers(c.uid)}finally{idxPer=o}return ` · <span style="color:${IDX_C(v)}">⚡ IC ${v}%</span>`}catch(e){return""}};
+  const pd=(p,k)=>p?`<div class="rk6Pd ${k}"><div class="rk6Av">${k==="one"?'<span class="rk6Cr">👑</span>':""}${avHTML(p.nombre,p.me,true)}<span class="rk6Ps">${p.rk}</span></div><div class="rk6Nm">${esc(nv(p.nombre))}${premN(p.nombre)}</div><div class="rk6Pt">${fmt(p.v)} <small>pts</small></div>${k==="one"&&PD&&p.v>=PD.min?'<span class="rk6Tg">🎟️ Incentivo</span>':""}<i class="rk6St"></i></div>`:"<div></div>";
+  const sp=[[30,26,"#2AC1F1",20],[68,18,"#D9A21B",45],[38,58,"#D9A21B",10],[62,64,"#2AC1F1",60],[26,86,"#F9A8D4",30],[74,90,"#86EFAC",15]].map(([x,y,c,r])=>`<i class="rk6Sp" style="left:${x}%;top:${y}px;background:${c};transform:rotate(${r}deg)"></i>`).join("");
+  const me=d.find(x=>x.me);const falta=x=>{const a=d[x.rk-2];return a?`Le faltan ${fmt(Math.max(1,(a.v||0)-(x.v||0)))} pts para el #${a.rk}`:"¡Va en primer lugar! 🔥"};
+  const row=(p,i)=>{const m=mv(p.nombre);return `<div class="rk6R${p.me?" yo":""}" style="animation-delay:${.4+Math.min(i,8)*.07}s"><span class="rk6K">${p.rk}</span>${avHTML(p.nombre,p.me,true)}<div class="rk6Tx"><b>${esc(nv(p.nombre))}${premN(p.nombre)}${p.me?'<span class="rk6Yo">USTED</span>':""}${m?`<span class="rk6Up">▲ ${m}</span>`:""}</b><span>${p.me?falta(p):`${p.A} ${p.A===1?"activación":"activaciones"}${ic(p.nombre)}`}</span></div><div class="rk6V">${fmt(p.v)}<small>pts</small></div></div>`};
+  return `<div class="rk6H"><span>TOP DEL MES · POR VOLUMEN</span><button type="button" id="rk6Inf">ⓘ Cómo se ordena</button></div>
+   <div class="rk6Pod">${sp}${pd(d[1],"two")}${pd(d[0],"one")}${pd(d[2],"thr")}</div>
+   ${d.length>3?`<div class="rk6L">${d.slice(3).map(row).join("")}</div>`:""}
+   ${me&&me.rk>3&&d.length>12?"":""}`}
+function rk6Bind(b){const i=b.querySelector("#rk6Inf");if(i)i.onclick=()=>openSheet(`<h3 style="margin:0 0 8px">ⓘ Cómo se ordena</h3><p class="small" style="line-height:1.5">El ranking se ordena por <b>volumen del mes</b>: Classic 200 pts · Premium 500 pts. Quien entra solo como socio no suma.</p><p class="small" style="line-height:1.5">Si dos personas empatan, va primero quien tiene mejor <b>⚡ IC del mes</b> (Índice de Constancia).</p><button class="btn block" data-close type="button">Entendido</button>`)}
 function rankSegsL(){return `<div class="seg" role="tablist" id="rankMetric"><button aria-selected="false" data-k="nuevos">Activaciones</button><button aria-selected="false" data-k="presentaciones">Registros inCruises</button><button aria-selected="false" data-k="rutina"><span class="fuego">🔥</span> Mi Racha</button><button aria-selected="true" data-k="liderazgo">⭐ Liderazgo</button></div><div class="seg" id="rankSeg" hidden></div>`}
 function caminoHTML(L,C,S){const num=v=>Number(v)||0,px=String(S.prox||"el próximo mes"),A=L.slice().sort((a,b)=>num(b.volumen)-num(a.volumen)||num(b.ptsBase)-num(a.ptsBase)||String(a.nombre).localeCompare(b.nombre,"es"));
   const nE=A.filter(l=>num(l.volumen)>=C.esp).length,nL=A.filter(l=>num(l.volumen)>=C.lider&&num(l.volumen)<C.esp).length;
@@ -11008,7 +11084,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119063808";var busy=false,pend=null;
+(function(){var V="20261119064558";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
