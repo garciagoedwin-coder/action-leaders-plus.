@@ -1667,6 +1667,36 @@ body.acc3 #tasks .counter .num{font-family:'Barlow Condensed',sans-serif;font-si
 .ac4Ig span{min-width:0;font-size:9px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
 .ac4Ig img{max-width:100%}
 #v-academia{overflow-x:hidden}
+
+/* 19 nov · Inicio con tarjetas plegadas (body.f20): solo el título; al tocar se abren. data-f20o en body = abiertas */
+body.f20 #v-inicio .f20k{cursor:pointer}
+body.f20 #rkCard:not(.f20o)>:not(:first-child),
+body.f20 #nextEvents:not(.f20o)>:not(:first-child),
+body.f20 #hoyCitas:not(.f20o)>:not(:first-child),
+body.f20 #acc3:not(.f20o)>:not(.acc3H),
+body.f20 #rutCard:not(.f20o)>:not(.rh6):not(.rc3B),
+body.f20 #avBox:not(.f20o)>:not(.avHd),
+body.f20 #npBan:not(.f20o)>:not(.npT):not(.npX){display:none!important}
+body.f20 #rkCard:not(.f20o)>:first-child,body.f20 #nextEvents:not(.f20o)>:first-child,body.f20 #hoyCitas:not(.f20o)>:first-child,body.f20 #acc3:not(.f20o)>.acc3H,body.f20 #rutCard:not(.f20o)>.rh6,body.f20 #npBan:not(.f20o)>.npT{margin-bottom:0}
+body.f20 #nextEvents:not(.f20o)>:first-child p{display:none}
+body.f20 #avBox:not(.f20o),body.f20 #acc3:not(.f20o){background:var(--surface)!important;border-radius:20px!important;box-shadow:0 0 0 1px var(--line)!important;padding:16px 18px!important}
+body.f20 #avBox:not(.f20o)>.avHd,body.f20 #acc3:not(.f20o)>.acc3H{margin:0!important}
+body.f20 #v-inicio #rutCard.mini{padding:16px!important;border:1px solid color-mix(in srgb,var(--line) 70%,transparent)!important}
+body.f20 #v-inicio #rutCard.mini:not(.f20o)>.rh6{display:flex!important}
+body.f20 #v-inicio #rutCard.done #rutAlert{display:none!important}
+body.f20 #rutCard.done .fl6{background:#16A34A;box-shadow:0 6px 14px -6px #16A34A;font-size:0}
+body.f20 #rutCard.done .fl6::after{content:"✓";font-size:17px;font-weight:800;color:#fff}
+body.f20 #rutCard.done .rh6 b .f20v::before{content:"· completada ";color:#16A34A;font-size:1.34em;font-weight:800;display:inline-block;margin-right:6px}
+body.f20 #rutCard.done .rh6 b .f20v{margin-left:4px}
+body.f20 #rutCard.done #rutRacha{display:block!important}
+body.f20 #rutCard:not(.done) .rh6 b .f20v::before{content:"· pendiente ";color:#DC2626;font-size:1.34em;font-weight:800;display:inline-block;margin-right:6px}
+body.f20 #rutCard:not(.done) .rh6 b .f20v{margin-left:4px}
+.f20p{display:none}
+body.f20 #rutCard:not(.done):not(.f20o) .f20p{display:flex;align-items:center;gap:8px;margin-top:4px;font-size:12.5px;color:var(--muted);font-weight:600}
+.f20p i{display:flex;gap:3px}.f20p i u{width:12px;height:5px;border-radius:3px;background:color-mix(in srgb,var(--line) 85%,transparent);text-decoration:none}
+.f20p i u.on{background:#F97316}.f20p em{font-style:normal;white-space:nowrap}.f20p em b{color:#DC2626;font-size:inherit;font-weight:800;display:inline}
+body.f20 .f20k .f20v{display:inline-block;margin-left:6px;color:var(--muted);font-size:12px;transition:transform .2s}
+body.f20 .f20o .f20v{transform:rotate(180deg)}
 </style>
 
 </head>
@@ -2459,6 +2489,15 @@ function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histS
   try{rut3(hechas,RL.length)}catch(e){}declAccMarca();try{declStrip()}catch(e){}rutFold(!falta);const rc=$("#rutCard");if(rc)rc.classList.toggle("done",!falta);clearTimeout(window._rcT);window._rcT=setTimeout(()=>{try{renderComp(true)}catch(e){}},400);try{renderHab()}catch(e){}
 }
 // ---------- ✨ Mis hábitos (18 nov, Edwin): privados, no suman puntos ni racha; profile.hab {l:[{id,t}], d:{AAAA-MM-DD:[ids]}} ----------
+// 19 nov (Edwin): en Inicio todas las tarjetas se ven cerradas (solo el título) y se abren al tocarlas. PRIMERO solo admin + cuenta de prueba: para todos F20_TODOS=true y publicar.
+const F20_TODOS=false,f20On=()=>{try{return F20_TODOS||isAdmin||yoPrueba()}catch(e){return false}};
+const F20_ID=["npBan","avBox","rkCard","rutCard","acc3","hoyCitas","nextEvents"];
+const F20_HD={acc3:".acc3H",rutCard:".rh6",avBox:".avHd",npBan:".npT"};
+function f20Ab(){try{return JSON.parse(LS.get("f20:"+(store.uid||""))||"{}")}catch(e){return {}}}
+function f20Rut(c){try{const g=c.querySelector(".rh6 .grow");if(!g)return;let el=g.querySelector(".f20p");if(!el){el=document.createElement("span");el.className="f20p";g.appendChild(el)}const L=ROUTINE.filter(r=>!r.desde||TODAY>=r.desde);let tot=L.length,n=L.filter(r=>((day&&day[r.k])||0)>=1).length;try{if(typeof declRutOn==="function"&&declRutOn()){tot++;if(day&&day.decl)n++}}catch(e){}const f=Math.max(0,tot-n),h=`<i>${L.map((r,i)=>`<u class="${i<n?"on":""}"></u>`).join("")}${tot>L.length?`<u class="${n>L.length?"on":""}"></u>`:""}</i><em>${n} de ${tot} · ${f===1?"<b>le falta 1</b>":`<b>le faltan ${f}</b>`}</em>`;if(el._h!==h){el._h=h;el.innerHTML=h}}catch(e){}}
+function f20Pinta(){const on=f20On();document.body.classList.toggle("f20",on);if(!on)return;const A=f20Ab();F20_ID.forEach(id=>{const c=document.getElementById(id);if(!c)return;c.classList.toggle("f20o",!!A[id]);if(id==="rutCard"&&!c.classList.contains("done"))f20Rut(c);if(id==="rutCard"&&c.classList.contains("done")){const w=!!A[id];if(rutOpen!==w){rutOpen=w;try{renderTasks()}catch(e){}}}const h=F20_HD[id]?c.querySelector(":scope>"+F20_HD[id]):c.firstElementChild;if(!h)return;h.classList.add("f20k");if(!h.querySelector(".f20v")){const t=h.querySelector("h3,b,h2,.npT,.lb6")||h;const v=document.createElement("span");v.className="f20v";v.textContent="▾";t.appendChild(v)}})}
+document.addEventListener("click",e=>{if(!document.body.classList.contains("f20"))return;const c=e.target.closest(F20_ID.map(x=>"#"+x).join(","));if(!c||!c.closest("#v-inicio"))return;const ab=c.classList.contains("f20o"),h=e.target.closest(".f20k");if(ab&&!h)return;if(e.target.closest("a,button,input,select,textarea,[data-k]")&&!e.target.closest(".f20v")&&(ab||h))return;e.preventDefault();e.stopPropagation();const A=f20Ab();if(ab)delete A[c.id];else A[c.id]=1;LS.set("f20:"+(store.uid||""),JSON.stringify(A));f20Pinta()},true);
+setInterval(()=>{try{if(document.visibilityState==="visible")f20Pinta()}catch(e){}},800);
 // 19 nov (Edwin): arreglos de hábitos, Spotify y graduación. PRIMERO solo admin + cuenta de prueba; para todos: FX19_TODOS=true y publicar.
 const FX19_TODOS=false,fx19=()=>{try{return FX19_TODOS||isAdmin||yoPrueba()}catch(e){return false}};
 const HAB_MAX=5,HAB_SUG=["💧 Tomar 8 vasos de agua","🏃 Hacer ejercicio 30 minutos","🥗 Comer saludable","📖 Leer 10 páginas","🙏 Orar o meditar","😴 Dormir antes de las 11","📵 Sin redes la primera hora","🧘 Estirarme 10 minutos","🚶 Caminar 20 minutos","📝 Escribir 3 cosas por las que agradezco"];
@@ -10635,7 +10674,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119002302";var busy=false,pend=null;
+(function(){var V="20261119054857";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
