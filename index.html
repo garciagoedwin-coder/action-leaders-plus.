@@ -7848,7 +7848,10 @@ function salaCache(){const V=LS.get("salaV")||{},o={};for(const k in V)if(!k.sta
 // 14 nov (Edwin): el socio VIVE su presentación virtual antes de enviarla (c "yo" en viaje.html?yo=1). Hasta verla (90 % o terminarla) no puede enviarla.
 function salaYo(){const V=LS.get("salaV")||{};let b=null;for(const k in V){const v=V[k];if(v.c==="yo"&&(!b||(v.t||0)>(b.t||0)))b=v}return b}
 const salaYoFin=v=>!!v&&((+v.pct||0)>=90||v.motivo==="fin"||/^\d+$/.test(String(v.pulso||"")));
-function salaYoOk(){return salaYoFin(salaYo())||!!LS.get("salaYoOk:"+(store.uid||""))}
+function salaYoOk(){return salaYoFin(salaYo())||!!LS.get("salaYoOk:"+(store.uid||""))||!!LS.get("svYd")}
+/* 19 nov (caso Lizeth): si este teléfono no tiene guardada su presentación vista (otro teléfono, datos borrados), la busca en el servidor antes de bloquear */
+async function salaYoServ(){try{if(!store.db||!store.uid)return false;const q=await store.db.collection("users/"+store.uid+"/sala").where("c","yo","==").get();const V=LS.get("salaV")||{};q.docs.forEach(d=>{V[d.id]=Object.assign({id:d.id},d.data())});LS.set("salaV",V);if(salaYoOk()){LS.set("salaYoOk:"+store.uid,1);return true}
+  const c=await store.db.collection("constancia").doc(store.uid).get();const x=c&&c.exists&&c.data?c.data():null;if(x&&x.svY){LS.set("svYd",x.svY);LS.set("salaYoOk:"+store.uid,1);return true}}catch(e){}return false}
 function salaYoUrl(){return salaUrl(miNombreCorto()||miRegistro().nombre||"Socio","yo")+"&yo=1&v="+Date.now().toString(36)}
 let salaYoListo=false;function salaYoPrep(){if(salaYoListo)return Promise.resolve(true);return salaPrep().then(ok=>{salaYoListo=!!ok;return ok})}
 function salaYoIr(nueva){try{LS.set("salaYoP",Date.now());LS.set("salaOn",1);if(nueva&&salaYoOk())LS.set("salaYoOk:"+(store.uid||""),1)}catch(e){}const u=salaYoUrl()+(nueva?"&n=1":"");const w=window.open(u,"_blank");if(w)w.opener=null;else location.href=u}
@@ -7871,7 +7874,7 @@ function salaYoCard(el){if(!el)return;const v=salaYo(),fin=salaYoFin(v);salaYoPr
     <div style="display:flex;gap:8px;margin-top:4px">${fin?`<button class="btn" id="syEnv" style="flex:1">✈️ Enviarla a un prospecto</button><button class="btn ghost" id="syVer" data-n="1">▶ Ver desde el inicio</button>`:`<button class="btn" id="syVer" style="flex:1">▶ ${v?"Continuar mi presentación":"Ver mi presentación virtual · 20 min"}</button>`}</div></div>`;
   const b=el.querySelector("#syVer");if(b)b.onclick=()=>{if(!salaYoListo){toast("Un momento, preparando su presentación…");salaYoPrep().then(ok=>{if(ok)toast("Listo, tóquelo de nuevo")});return}salaYoIr(b.dataset.n==="1")};
   const e=el.querySelector("#syEnv");if(e)e.onclick=()=>{closeSheet();setTimeout(salaCompartir,250)}}
-function salaYoGate(){const v=salaYo();salaYoPrep();
+function salaYoGate(){if(!window._syChk){window._syChk=1;toast("Revisando su presentación…");salaYoServ().then(ok=>{if(ok){toast("✅ Ya la había visto · puede enviarla");setTimeout(salaCompartir,300)}else salaYoGate()});return}window._syChk=0;const v=salaYo();salaYoPrep();
   openSheet(`<h2 style="margin:0 0 4px">🔒 Primero véala usted</h2><p class="small muted" style="margin:0 0 10px">No tiene sentido enviar algo que usted no ha visto. Vívala como su prospecto (20 min): al terminarla se desbloquea para enviarla.</p><div id="syG"></div>
     ${isAdmin?`<button class="btn ghost" id="syAdm" style="width:100%;margin-top:8px">Enviar de todos modos (admin)</button>`:""}<button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{salaYoCard($("#syG"));const a=$("#syAdm");if(a)a.onclick=()=>{window._syAdm=1;closeSheet();setTimeout(salaCompartir,250)}})}
 setTimeout(()=>{try{svRevisar()}catch(e){}},9000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(()=>{try{svRevisar()}catch(e){}},4000)});
@@ -7927,7 +7930,7 @@ function salaNivel(v){if(v.resp==="ambas")return["🔥 Caliente","c-bad","#C2410
 async function loadSala(force){if(!store.db||!store.uid||!(salaOk()||LS.get("memOn")||LS.get("salaYoP")))return;if(!force&&!LS.get("salaOn")&&!LS.get("memOn"))return;const since=+LS.get("salaSync")||0;
   try{const q=since?await store.db.collection("users/"+store.uid+"/sala").where("t",since,">").get():await store.db.collection("users/"+store.uid+"/sala").get();
     const V=LS.get("salaV")||{};let mx=since;q.docs.forEach(d=>{const x=d.data(),nv=!V[d.id];V[d.id]=Object.assign({id:d.id},x);mx=Math.max(mx,+x.t||0);if(since&&nv&&d.id.startsWith("m_"))memAviso(x)});
-    const ks=Object.keys(V).sort((a,b)=>(V[b].t||0)-(V[a].t||0)).slice(0,80),N={};ks.forEach(k=>N[k]=V[k]);LS.set("salaV",N);LS.set("salaSync",mx);
+    const ks=Object.keys(V).sort((a,b)=>(V[b].t||0)-(V[a].t||0)).slice(0,80),N={};ks.forEach(k=>N[k]=V[k]);for(const k in V)if(V[k].c==="yo")N[k]=V[k];LS.set("salaV",N);LS.set("salaSync",mx);
     renderSalaCard();try{renderCRM()}catch(e){}try{salaAuto()}catch(e){}}catch(e){}}
 // 14 nov: MENSAJE DE AUDIO de un líder (config.audioEsp {id,n,rg,t,sub,src,foto,dur,desde,hasta,adm}). adm:1 = solo admins (prueba).
 // Una ventana grande una vez (LS aud:id) + slide en Avisos de hoy (#audStrip) mientras esté vigente. Cambiar el audio = team.json, sin publicar.
@@ -11226,7 +11229,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119123415";var busy=false,pend=null;
+(function(){var V="20261119124059";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
