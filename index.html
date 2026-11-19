@@ -1668,6 +1668,68 @@ body.acc3 #tasks .counter .num{font-family:'Barlow Condensed',sans-serif;font-si
 .ac4Ig img{max-width:100%}
 #v-academia{overflow-x:hidden}
 
+
+/* 19 nov · Agenda v6 (solo admin + prueba: ag6On) */
+#v-agenda.ag6{gap:12px}
+#v-agenda.ag6 #agEquipo>.row.between,#v-agenda.ag6 #agEquipo>.card:has(#cal),#v-agenda.ag6 #agSeg{display:none!important}
+#v-agenda.ag6 #evList{background:none!important;box-shadow:none!important;border:0!important;padding:0!important;gap:10px}
+#ag6Hero{border-radius:22px;background:radial-gradient(120% 90% at 100% 0%,#143b5c 0,#0b1424 60%);color:#fff;padding:16px;box-shadow:0 14px 28px -16px rgba(10,30,60,.55)}
+#ag6Hero .hk{display:flex;justify-content:space-between;align-items:center;font-size:10.5px;font-weight:800;letter-spacing:1.6px;color:#8fd8f2}
+#ag6Hero .hk i{font-style:normal;background:rgba(255,255,255,.12);color:#fff;letter-spacing:.3px;padding:3px 9px;border-radius:99px}
+#ag6Hero .hk i.vv{background:#DC2626}
+#ag6Hero .hr6{display:flex;gap:14px;align-items:center;margin-top:12px}
+#ag6Hero .hh{text-align:center;flex:none;min-width:64px;padding:8px 6px;border-radius:14px;background:rgba(255,255,255,.08)}
+#ag6Hero .hh b{display:block;font-family:var(--f-num);font-size:28px;line-height:1}
+#ag6Hero .hh span{font-size:11px;font-weight:800;color:#8fa3b8;letter-spacing:1px;text-transform:uppercase}
+#ag6Hero .tx{flex:1;min-width:0}#ag6Hero .tx b{display:block;font-size:17px;line-height:1.2}#ag6Hero .tx span{font-size:13px;color:#b9c6d6}
+#ag6Hero .hbt{display:flex;gap:8px;margin-top:14px}
+#ag6Hero .hbt button,#ag6Hero .hbt a{flex:1;border:0;font:inherit;font-weight:800;font-size:13.5px;padding:11px 10px;border-radius:12px;background:#2AC1F1;color:#062B3A;text-align:center;text-decoration:none;cursor:pointer}
+#ag6Hero .hbt .g{background:rgba(255,255,255,.1);color:#fff}
+#ag6Hero .nxt{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);font-size:12.5px;color:#b9c6d6}#ag6Hero .nxt b{color:#fff}
+.a6k{font-size:11px;font-weight:800;letter-spacing:1.6px;color:var(--muted);margin:8px 4px 0;display:flex;justify-content:space-between;align-items:center;text-transform:uppercase}
+.a6k button{all:unset;cursor:pointer;letter-spacing:.2px;color:var(--brand);text-transform:none;font-size:12px}
+#v-agenda.ag6 #agBig{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#v-agenda.ag6 #agBig .a6act{display:flex!important;flex-direction:column;align-items:flex-start;gap:10px;position:relative;background:var(--surface)!important;color:var(--ink)!important;border:0;border-radius:18px;box-shadow:0 0 0 1px var(--line)!important;padding:14px;min-height:0;text-align:left;font:inherit;cursor:pointer}
+#v-agenda.ag6 .a6act .ic{width:42px;height:42px;border-radius:13px;background:color-mix(in srgb,var(--brand) 11%,transparent);display:grid;place-items:center}
+#v-agenda.ag6 .a6act svg{width:22px;height:22px;stroke:var(--brand);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#v-agenda.ag6 .a6act b{font-size:15px;display:block;font-weight:800}#v-agenda.ag6 .a6act small{font-size:12px;color:var(--muted);display:block;margin-top:1px;font-weight:500;opacity:1}
+#v-agenda.ag6 .a6act .go{position:absolute;right:12px;top:14px;width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:17px;font-weight:700;line-height:1;font-style:normal}
+#v-agenda.ag6 #agBig .a6mas{grid-column:1/-1;display:flex!important;align-items:center;justify-content:space-between;gap:8px;background:var(--surface)!important;color:var(--muted)!important;border:0!important;border-radius:16px;box-shadow:0 0 0 1px var(--line)!important;padding:12px 14px;min-height:0;font:inherit;font-size:13px;font-weight:500;text-align:left;cursor:pointer}
+#v-agenda.ag6 .a6mas b{color:var(--brand);font-size:13.5px;white-space:nowrap;font-weight:800}
+#v-agenda.ag6 #agView{border-radius:99px;padding:4px;margin-top:6px}
+#v-agenda.ag6 #agView button{flex:1;border-radius:99px;font-weight:800;font-size:13.5px;padding:9px 0}
+.a6wk{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;padding:12px 8px!important;background:var(--surface);border-radius:18px;box-shadow:0 0 0 1px var(--line)}
+.a6wk button{all:unset;cursor:pointer;padding:6px 0;border-radius:12px;display:block}
+.a6wk small{display:block;font-size:10px;font-weight:800;letter-spacing:1px;color:var(--muted)}
+.a6wk b{display:block;font-family:var(--f-num);font-size:20px;margin-top:2px}
+.a6wk i{display:block;width:5px;height:5px;border-radius:50%;margin:4px auto 0}.a6wk i.on{background:var(--brand)}
+.a6wk .hoy{background:var(--ink);color:var(--surface)}.a6wk .hoy small{color:color-mix(in srgb,var(--surface) 75%,transparent)}.a6wk .hoy i.on{background:#2AC1F1}
+.a6ch{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}.a6ch::-webkit-scrollbar{display:none}
+.a6ch button{all:unset;cursor:pointer;font-size:12.5px;font-weight:800;padding:7px 12px;border-radius:99px;background:var(--surface);box-shadow:0 0 0 1px var(--line);color:var(--muted);white-space:nowrap}
+.a6ch button.on{background:var(--ink);color:var(--surface);box-shadow:none}
+.a6day{background:var(--surface);border-radius:18px;box-shadow:0 0 0 1px var(--line);padding:14px;scroll-margin-top:80px}
+.a6dh{display:flex;justify-content:space-between;align-items:center;gap:8px}.a6dh b{font-size:15px}.a6dh b span{color:var(--muted);font-weight:600}
+.a6add{all:unset;cursor:pointer;width:30px;height:30px;border-radius:50%;box-shadow:0 0 0 1px var(--line);display:grid;place-items:center;color:var(--brand);font-size:18px;font-weight:700;flex:none}
+.a6r{display:flex;gap:12px;align-items:center;padding:11px 0 0;margin-top:10px;border-top:1px solid var(--line);cursor:pointer}
+.a6r.fin{opacity:.5}
+.a6r .h{font-family:var(--f-num);font-size:17px;width:56px;flex:none;line-height:1.05}.a6r .h span{display:block;font-family:var(--f-body);font-size:11px;color:var(--muted);font-weight:600}
+.a6r .tx{flex:1;min-width:0}.a6r .tx b{display:block;font-size:14px;line-height:1.25}
+.a6w{display:flex;align-items:center;gap:6px;margin-top:3px;font-size:12px;color:var(--muted);min-width:0}.a6w>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.a6w .av{width:18px;height:18px;border-radius:50%;background:#cfe7f3 center/cover;flex:none;display:inline-grid;place-items:center;font-size:8.5px;font-weight:800;color:#0A7DAD}
+.a6w em{font-style:normal;color:var(--bad,#DC2626);font-weight:700}
+.a6tag{font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--brand) 11%,transparent);color:var(--brand);white-space:nowrap}
+.a6tag.gd{background:color-mix(in srgb,#B07D00 14%,transparent);color:#9A6B00}
+.a6b{all:unset;cursor:pointer;font-weight:800;font-size:12.5px;padding:7px 12px;border-radius:99px;background:var(--brand);color:#fff;white-space:nowrap;flex:none}
+.a6b.g{background:var(--surface-2);color:var(--ink)}
+.a6lib{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface);border-radius:16px;box-shadow:0 0 0 1px var(--line)}
+.a6lib span{flex:1;font-size:13px;color:var(--muted)}.a6lib span b{color:var(--ink)}
+.a6ln{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:13px 14px;background:var(--surface);border-radius:16px;box-shadow:0 0 0 1px var(--line)}
+.a6ln span{font-size:13.5px;font-weight:700}.a6ln span small{display:block;font-weight:500;font-size:12px;color:var(--muted)}.a6ln b{color:var(--brand);font-size:13.5px;white-space:nowrap}
+.a6pas{background:var(--surface);border-radius:16px;box-shadow:0 0 0 1px var(--line);padding:13px 14px}
+.a6pas summary{cursor:pointer;font-size:13.5px;font-weight:700;list-style:none;display:flex;justify-content:space-between}.a6pas summary::-webkit-details-marker{display:none}
+.a6pas summary b{color:var(--brand)}.a6pas[open] summary b{transform:rotate(90deg)}
+.a6day .cita{padding:11px 0 0;margin-top:10px}.a6day .cita .ch-h b{font-size:17px}
+#v-agenda.ag6 #eqzCard p.small.muted{display:none}
 /* 19 nov · Inicio con tarjetas plegadas (body.f20): solo el título; al tocar se abren. data-f20o en body = abiertas */
 body.f20 #v-inicio .f20k{cursor:pointer}
 body.f20 #nextEvents:not(.f20o)>:not(:first-child),
@@ -2166,6 +2228,7 @@ body.f20 .f20o .f20v{transform:rotate(180deg)}
     <!-- AGENDA -->
     <section class="view" id="v-agenda" hidden>
       <div><p class="eyebrow">Planee y dé seguimiento</p><h1>Agenda</h1></div>
+      <div id="ag6Hero" hidden></div>
       <div class="ag-big" id="agBig"><button type="button" data-ab="l3" style="background:linear-gradient(135deg,#0A7DAD,#2AC1F1)">📞 Llamada de 3<small>Pídala a un líder</small></button><button type="button" data-ab="lz" style="background:linear-gradient(135deg,#B07D00,#F5B700)">🚀 Lanzamiento<small>Planee con su líder</small></button><button type="button" data-ab="ev" style="background:linear-gradient(135deg,#6D28D9,#A855F7)">🤝 Junta / Evento<small>Con flyer y script</small></button><button type="button" data-ab="ci" style="background:linear-gradient(135deg,#15803D,#22C55E)">➕ Cita<small>Con un prospecto</small></button><button type="button" data-ab="mas" class="agMas"><span class="agMi">🚀🎤🤝</span><span class="agMt"><b>Crear actividad</b><small>Lanzamiento, presentación, junta o evento</small></span><em>›</em></button></div>
       <div class="presIni" id="presIni" hidden><span class="pmic">🎤</span><b>Dar presentación</b><p>Paso a paso, con la presentación del equipo</p><div class="pbs"><button type="button" id="piPro">👤 A un prospecto</button><button type="button" id="piGen">👥 General</button><button type="button" id="piVir" hidden>✈️ Virtual</button></div></div>
       <div class="card" id="l3Card" hidden></div>
@@ -8604,6 +8667,101 @@ function renderHoyCitas(){try{renderRecCard()}catch(e){}const c=$("#hoyCitas");i
 function setAgVista(v){agVista=v;setSeg("agView",v);$("#agMia").hidden=v!=="mia";$("#agEquipo").hidden=v==="mia";if(v==="mia")renderMiAgenda()}
 $("#agView").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setAgVista(b.dataset.k)});
 $("#agBig").addEventListener("click",e=>{const b=e.target.closest("[data-ab]");if(!b)return;const k=b.dataset.ab;if(k==="mas"){openSheet(`<p class="eyebrow">AGENDA</p><h2 style="margin:2px 0 12px">Crear actividad</h2><div class="amL"><button type="button" id="amLz"><i>🚀</i><span><b>Lanzamiento</b><small>Planee con su líder el arranque de un socio</small></span><em>›</em></button><button type="button" id="amPr"><i>🎤</i><span><b>Presentación de negocios</b><small>Su presentación personal, con flyer y horarios</small></span><em>›</em></button><button type="button" id="amEv"><i>🤝</i><span><b>Junta de negocios o Home meeting</b><small>Con flyer, confirmación y recordatorios</small></span><em>›</em></button>${evaPuedeGran()?`<button type="button" id="amEg"><i>🎤</i><span><b>Evento</b><small>Gran evento con su foto, ticket y confirmaciones</small></span><em>›</em></button>`:""}${turPuede()?`<button type="button" id="amTu"><i>📅</i><span><b>Turnos del sistema de liderazgo</b><small>Apúntese como ponente o a presentar</small></span><em>›</em></button>`:""}</div><button class="btn ghost" data-close style="width:100%;margin-top:12px">Cerrar</button>`,()=>{$("#amLz").onclick=()=>{closeSheet();setTimeout(abrirLanz,250)};$("#amPr").onclick=()=>{closeSheet();setTimeout(()=>abrirLanz("pres"),250)};$("#amEv").onclick=()=>{closeSheet();setTimeout(()=>abrirCrearEva("junta"),250)};{const g=$("#amEg");if(g)g.onclick=()=>{closeSheet();setTimeout(()=>abrirCrearEva("evento"),250)}}{const t=$("#amTu");if(t)t.onclick=()=>turAbrir()}});return}if(k==="l3")pedirL3(null);else if(k==="lz")abrirLanz();else if(k==="ev")evaCrearMenu();else abrirCita()});
+// ---------- 19 nov · Agenda v6 (Edwin aprobó maquetas agenda-v6 y agenda-equipo-v6). PRIMERO solo admin + cuenta de prueba ----------
+const AG6_TODOS=false,ag6On=()=>{try{return AG6_TODOS||isAdmin||yoPrueba()}catch(e){return false}};
+let ag6F="todo",ag6Off=0,ag6Mes=0;
+const A6_SVG={ci:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/>',l3:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',lz:'<path d="M14 4c3 0 6 3 6 6l-6 6-4-4 6-6M10 12l-4 1-2 3 4 1M12 14l-1 4-3 2-1-4M15 9h.01"/>',ev:'<circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 20a6 6 0 0 1 12 0M10 20a6 6 0 0 1 12 0"/>'};
+function a6Act(k,t,s){return `<button type="button" class="a6act" data-ab="${k}"><i class="go">+</i><span class="ic"><svg viewBox="0 0 24 24">${A6_SVG[k]}</svg></span><span><b>${t}</b><small>${s}</small></span></button>`}
+function ag6Init(){const v=$("#v-agenda");if(!v)return false;const on=ag6On();v.classList.toggle("ag6",on);if(!on){const h=$("#ag6Hero");if(h)h.hidden=true;return false}
+  if(!ag6Init._d){ag6Init._d=1;
+    $("#agBig").innerHTML=a6Act("ci","Cita","Con un prospecto")+a6Act("l3","Llamada de 3","Pídala a un líder")+a6Act("lz","Lanzamiento","De su negocio")+a6Act("ev","Junta","O home meeting")+`<button type="button" class="a6mas" data-ab="mas"><span>Presentación de negocios · Evento · Reunión de equipo</span><b>Más ›</b></button>`;
+    $("#agBig").insertAdjacentHTML("beforebegin",`<p class="a6k" id="a6K1"><span>¿Qué quiere agendar?</span></p>`);
+    const sg=$("#agView"),m=sg.querySelector('[data-k="mia"]'),q=sg.querySelector('[data-k="equipo"]');if(m){sg.prepend(m);m.textContent="Mi agenda"}if(q)q.textContent="Del equipo";
+    setInterval(()=>{try{const vv=$("#v-agenda");if(vv&&!vv.hidden&&!document.hidden)ag6Hero()}catch(e){}},60000);
+    if(agVista!=="mia"&&!window._agMia){window._agMia=1;try{setAgVista("mia")}catch(e){}}}
+  try{ag6Hero()}catch(e){console.log("ag6Hero",e&&e.message)}return true}
+function a6H(h){const t=h12(h||"");const i=t.lastIndexOf(" ");return i>0?[t.slice(0,i),t.slice(i+1).replace("am","a.m.").replace("pm","p.m.")]:[t||"—",""]}
+function a6DiaN(k){const man=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1)),d=parseK(k),dl=DAYS_L[d.getDay()];
+  return k===TODAY?`Hoy <span>· ${dl} ${d.getDate()}</span>`:k===man?`Mañana <span>· ${dl} ${d.getDate()}</span>`:dl[0].toUpperCase()+dl.slice(1)+" "+d.getDate()}
+function a6DiaC(k){const man=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1)),d=parseK(k);return k===TODAY?"hoy":k===man?"mañana":DAYS_L[d.getDay()]+" "+d.getDate()}
+function a6Av(n){let f="";try{f=fotoDe(n)||""}catch(e){}const ini=String(n||"").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+  return `<i class="av" style="${f?`background-image:url('${esc(f)}')`:""}">${f?"":esc(ini)}</i>`}
+function a6Pon(e){const L=e._tr&&e._tr.length?e._tr.map(x=>nv(x)):e.responsable?[nv(e.responsable)]:[],t=String(e.titulo||"").toLowerCase();return L.filter(n=>n&&!t.includes(String(n).toLowerCase()))}
+// ---- Protagonista: lo próximo (sus citas + actividades del equipo de hoy y mañana)
+function ag6Prox(){const ahora=Date.now(),L=[];
+  (typeof citas!=="undefined"?citas:[]).forEach(c=>{if(c.cancel)return;const t=citaIni(c).getTime();if(t+(c.dur||60)*6e4>ahora&&t<ahora+7*864e5)L.push({t,c})});
+  (T.eventos||[]).forEach(e=>{if(!e.fecha||finalizada(e))return;const t=turMs(e);if(t+60*6e4>ahora&&t<ahora+36*36e5)L.push({t,e})});
+  (EVA||[]).forEach(e=>{if(!e.fecha||e.cancel)return;const t=turMs(e);if(t+120*6e4>ahora&&t<ahora+7*864e5)L.push({t,j:e})});
+  return L.sort((a,b)=>a.t-b.t)}
+function a6Nom(x){return x.c?(x.c.tipo==="lider"?x.c.titulo:"Cita con "+(x.c.nombre||"un prospecto")):x.j?evaNom(x.j,0)+(x.j.ciudad?" · "+x.j.ciudad:""):x.e.titulo}
+function ag6Hero(){const el=$("#ag6Hero");if(!el)return;if(!ag6On()){el.hidden=true;return}const L=ag6Prox(),x=L[0];if(!x){el.hidden=true;return}
+  const ahora=Date.now(),fk=x.c?x.c.fecha:x.j?x.j.fecha:x.e.fecha,hr=x.c?x.c.hora:x.j?x.j.hora:x.e.hora,[hh,ap]=a6H(hr),dm=Math.round((x.t-ahora)/6e4);
+  const pill=dm<=0?`<i class="vv">🔴 En vivo</i>`:dm<60?`<i>en ${dm} min</i>`:dm<24*60?`<i>en ${Math.floor(dm/60)} h ${dm%60} min</i>`:"";
+  let sub="",bt="";
+  if(x.c){const t=CITA_T[x.c.tipo]||CITA_T.zoom;sub=t[1]+" · "+(x.c.dur>=60?(x.c.dur/60)+" h":(x.c.dur||60)+" min");
+    bt=`${x.c.enlace&&safeUrl(x.c.enlace)?`<a href="${esc(safeUrl(x.c.enlace))}" target="_blank" rel="noopener">🎥 Entrar</a>`:""}<button type="button" class="g" data-a6mia>Ver en mi agenda</button>`}
+  else if(x.j){sub=(x.j.modo==="virtual"?"Virtual":x.j.lugar||x.j.ciudad||"Presencial");bt=`<button type="button" data-a6eva="${esc(x.j.id)}">Ver detalles</button>`}
+  else{const e=x.e,P=a6Pon(e);sub=[esTr(e)&&e.tema?e.tema:"",P.length?"con "+P.join(" y "):""].filter(Boolean).join(" · ")||"Actividad del equipo";
+    bt=(esTr(e)?`<button type="button" data-a6z="${dm<=10?1:""}">🎥 Entrar al Zoom</button>`:evLink(e)?`<a href="${esc(evLink(e))}" target="_blank" rel="noopener">🎥 Entrar al Zoom</a>`:"")+(e.id?`<button type="button" class="g" data-share="${esc(e.id)}">${esYess(e)?"¿Cómo entrar?":"Compartir flyer"}</button>`:"")}
+  const y=L[1];
+  el.innerHTML=`<div class="hk">${x.c?"SU PRÓXIMA CITA":"LO PRÓXIMO DEL EQUIPO"} · ${esc(a6DiaC(fk).toUpperCase())}${pill}</div>
+   <div class="hr6"><div class="hh"><b>${esc(hh)}</b><span>${esc(ap)}</span></div><div class="tx"><b>${esc(a6Nom(x))}</b><span>${esc(sub)}</span></div></div>
+   ${bt?`<div class="hbt">${bt}</div>`:""}${y?`<div class="nxt">Después: <b>${esc(a6DiaC(y.c?y.c.fecha:y.j?y.j.fecha:y.e.fecha))} ${esc(h12(y.c?y.c.hora:y.j?y.j.hora:y.e.hora))}</b> · ${esc(a6Nom(y))}</div>`:""}`;
+  el.hidden=false;
+  el.querySelectorAll("[data-a6mia]").forEach(b=>b.onclick=()=>{setAgVista("mia");setTimeout(()=>{const d=$("#a6d-"+fk);if(d)d.scrollIntoView({behavior:"smooth",block:"start"})},80)});
+  el.querySelectorAll("[data-a6z]").forEach(b=>b.onclick=()=>trZoomIr(!!b.dataset.a6z));
+  el.querySelectorAll("[data-a6eva]").forEach(b=>b.onclick=()=>{const j=(EVA||[]).find(z=>z.id===b.dataset.a6eva);if(j)evaVer(j)})}
+// ---- Semana (tira de 7 días)
+function a6Wk(keys,n){return `<div class="a6wk">${keys.map(k=>{const d=parseK(k);return `<button type="button" data-a6g="${k}" class="${k===TODAY?"hoy":""}"><small>${DAYS[d.getDay()].toUpperCase()}</small><b>${d.getDate()}</b><i class="${n(k)?"on":""}"></i></button>`}).join("")}</div>`}
+function a6Bind(el){el.querySelectorAll("[data-a6g]").forEach(b=>b.onclick=()=>{const d=$("#a6d-"+b.dataset.a6g);if(d)d.scrollIntoView({behavior:"smooth",block:"start"});else toast("Libre ese día")})}
+// ---- Del equipo
+function a6Cat(e){return esTr(e)?"tr":/presentaci/i.test(e.titulo||"")?"pres":"otro"}
+function a6Row(e){const fin=finalizada(e),[hh,ap]=a6H(e.hora),P=a6Pon(e);
+  const w=P.length?`${a6Av(P[0])}<span>${esc(P.join(", "))}${esTr(e)&&e.tema?" · "+esc(e.tema):""}</span>`:pendiente(e)&&!fin?`<i class="av">?</i><em>${esTr(e)?"Ponentes":"Presentador"} por asignar</em>`:esTr(e)&&e.tema?`<span>${esc(e.tema)}</span>`:"";
+  const b=fin?`<span class="a6tag" style="background:var(--surface-2);color:var(--muted)">Finalizada</span>`:esTr(e)?`<button type="button" class="a6b" data-a6z="${turMs(e)-Date.now()<=6e5?1:""}">Zoom</button>`:e.id?`<button type="button" class="a6b g" data-share="${esc(e.id)}">${esYess(e)?"Ver":"Flyer"}</button>`:"";
+  return `<div class="a6r${fin?" fin":""}" data-a6e="${esc(e.id||"")}"><div class="h">${esc(hh)}<span>${esc(ap)}</span></div><div class="tx"><b>${esc(e.titulo)}</b>${w?`<div class="a6w">${w}</div>`:""}</div>${b}</div>`}
+function a6RowJ(e){const[hh,ap]=a6H(e.hora),n=Object.keys(e.rsvpN||{}).length;
+  return `<div class="a6r" data-a6j="${esc(e.id)}"><div class="h">${esc(hh)}<span>${esc(ap)}</span></div><div class="tx"><b>${esc(evaNom(e,0))}</b><div class="a6w"><span class="a6tag${e.tipo==="gran"?" gd":""}">${e.tipo==="gran"?"Evento":"Junta"}</span><span>${esc(e.modo==="virtual"?"Virtual":e.ciudad||e.lugar||"Presencial")}${e.creN?" · "+esc(nv(e.creN)):""}</span></div></div><button type="button" class="a6b g">Ver</button></div>`}
+function a6DiaEq(k){const E=ag6F==="jun"?[]:evOf(k).filter(e=>ag6F==="todo"||a6Cat(e)===ag6F),J=(ag6F==="todo"||ag6F==="jun")?(EVA||[]).filter(e=>e.fecha===k&&!e.cancel):[];
+  const R=E.map(e=>({h:e.hora||"",x:a6Row(e)})).concat(J.map(e=>({h:e.hora||"",x:a6RowJ(e)}))).sort((a,b)=>a.h.localeCompare(b.h));return R}
+function ag6EvList(){const el=$("#evList");if(!el)return;
+  let keys;if(ag6Mes){const n=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();keys=[];for(let i=now.getDate();i<=n;i++)keys.push(dkey(new Date(now.getFullYear(),now.getMonth(),i)))}else keys=weekKeys(ag6Off);
+  const ch=[["todo","Todo"],["pres","Presentaciones"],["tr","Training"],["jun","Juntas y eventos"]];
+  let h=`<p class="a6k"><span>${ag6Mes?"Todo el mes":ag6Off===0?"Esta semana":ag6Off>0?"Siguientes 7 días":"Días anteriores"}</span><button type="button" data-a6mes>${ag6Mes?"‹ Volver a la semana":"Todo el mes ›"}</button></p>`;
+  if(!ag6Mes)h+=a6Wk(keys,k=>evOf(k).length||(EVA||[]).some(e=>e.fecha===k&&!e.cancel));
+  h+=`<div class="a6ch">${ch.map(([k,t])=>`<button type="button" data-a6f="${k}" class="${ag6F===k?"on":""}">${t}</button>`).join("")}</div>`;
+  let any=0;keys.forEach(k=>{const R=a6DiaEq(k);if(!R.length){if(!ag6Mes&&ag6F==="todo")h+=`<div class="a6lib" id="a6d-${k}"><span>Libre: <b>${esc(a6DiaC(k))}</b></span></div>`;return}any=1;
+    h+=`<div class="a6day" id="a6d-${k}"><div class="a6dh"><b>${a6DiaN(k)}</b></div>${R.map(r=>r.x).join("")}</div>`});
+  if(!any)h+=`<div class="a6lib"><span>${ag6F==="todo"?"No hay actividades del equipo en estos días.":"No hay actividades de este tipo en estos días."}</span></div>`;
+  if(!ag6Mes)h+=`<div class="agNav3"><button type="button" data-a6o="-1">‹ ${ag6Off===0?"Días anteriores":"Anteriores"}</button>${ag6Off!==0?`<button type="button" data-a6o="0">Hoy</button>`:""}<button type="button" data-a6o="1">Siguientes 7 días ›</button></div>`;
+  let np=0;try{np=T.eventos.filter(e=>e.fecha>=TODAY&&pendiente(e)&&!finalizada(e)).length}catch(e){}
+  if(np&&(isAdmin||turPuede()))h+=`<button type="button" class="a6ln" data-a6tu><span>📋 ${np} ${np===1?"turno por asignar":"turnos por asignar"}<small>Solo Sistema de liderazgo</small></span><b>Turnos ›</b></button>`;
+  el.innerHTML=h;a6Bind(el);
+  el.querySelector("[data-a6mes]").onclick=()=>{ag6Mes=ag6Mes?0:1;ag6Off=0;ag6EvList()};
+  el.querySelectorAll("[data-a6f]").forEach(b=>b.onclick=()=>{ag6F=b.dataset.a6f;ag6EvList()});
+  el.querySelectorAll("[data-a6o]").forEach(b=>b.onclick=()=>{const o=Number(b.dataset.a6o);ag6Off=o===0?0:ag6Off+o;ag6EvList();const t=$("#agView");if(t)t.scrollIntoView({behavior:"smooth",block:"start"})});
+  {const t=el.querySelector("[data-a6tu]");if(t)t.onclick=()=>{try{turAbrir()}catch(e){}}}
+  el.querySelectorAll("[data-a6z]").forEach(b=>b.onclick=ev=>{ev.stopPropagation();trZoomIr(!!b.dataset.a6z)});
+  el.querySelectorAll("[data-a6j]").forEach(r=>r.onclick=()=>{const j=(EVA||[]).find(z=>z.id===r.dataset.a6j);if(j)evaVer(j)});
+  el.querySelectorAll("[data-a6e]").forEach(r=>r.onclick=ev=>{if(ev.target.closest("button,a"))return;const e=T.eventos.find(z=>z.id===r.dataset.a6e);if(e)a6Det(e)})}
+function a6Det(e){openSheet(`<p class="eyebrow">ACTIVIDAD DEL EQUIPO</p><div class="list" style="margin-top:6px">${evHTML(e)}</div><button class="btn ghost" data-close style="width:100%;margin-top:12px">Cerrar</button>`)}
+// ---- Mi agenda
+function ag6MiAgenda(){const el=$("#agMia");if(!el)return;
+  const t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()+agWk*7),keys=Array.from({length:7},(_,i)=>dkey(new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+i)));
+  const C=k=>citas.filter(c=>c.fecha===k).sort(citaSort);
+  let h=`<p class="a6k"><span>${agWk===0?"Esta semana":agWk>0?"Siguientes 7 días":"Días anteriores"}</span><button type="button" data-a6o="1">Siguientes 7 ›</button></p>`+a6Wk(keys,k=>C(k).length);
+  keys.forEach(k=>{const L=C(k),pas=k<TODAY;
+    if(!L.length){h+=`<div class="a6lib" id="a6d-${k}"${pas?' style="opacity:.55"':""}><span>Libre: <b>${esc(a6DiaC(k))}</b></span>${pas?"":`<button type="button" class="a6add" data-cinew="${k}" aria-label="Agendar">+</button>`}</div>`;return}
+    h+=`<div class="a6day" id="a6d-${k}"${pas?' style="opacity:.6"':""}><div class="a6dh"><b>${a6DiaN(k)}</b>${pas?"":`<button type="button" class="a6add" data-cinew="${k}" aria-label="Agendar">+</button>`}</div>${L.map(citaCard).join("")}</div>`});
+  h+=`<div class="agNav3"><button type="button" data-a6o="-1">‹ Anteriores</button>${agWk!==0?`<button type="button" data-a6o="0">Hoy</button>`:""}<button type="button" data-a6o="1">Siguientes 7 días ›</button></div>`;
+  if(agWk===0){const P=citas.filter(c=>c.fecha<TODAY&&c.fecha>=dkey(new Date(now.getFullYear(),now.getMonth(),now.getDate()-7))).sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:citaSort(a,b));
+    if(P.length)h+=`<details class="a6pas"><summary><span>🕘 Días anteriores <span class="small muted" style="font-weight:500">· ${P.length} ${P.length===1?"cita":"citas"} por marcar</span></span><b>›</b></summary>${P.map(c=>`<div class="small muted" style="margin-top:10px;font-weight:700">${(d=>DAYS_L[d.getDay()][0].toUpperCase()+DAYS_L[d.getDay()].slice(1)+" "+d.getDate())(parseK(c.fecha))}</div>${citaCard(c)}`).join("")}</details>`}
+  el.innerHTML=h;a6Bind(el);
+  el.querySelectorAll("[data-a6o]").forEach(b=>b.onclick=()=>{const o=Number(b.dataset.a6o);agWk=o===0?0:agWk+o;renderMiAgenda();const t=$("#agView");if(t)t.scrollIntoView({behavior:"smooth",block:"start"})});
+  el.querySelectorAll("[data-cinew]").forEach(b=>b.onclick=()=>abrirCita({fecha:b.dataset.cinew}));bindCitas(el)}
+{const _rel=renderEvList;renderEvList=function(){if(ag6Init())return ag6EvList();return _rel.apply(this,arguments)};
+ const _rma=renderMiAgenda;renderMiAgenda=function(){const el=$("#agMia");if(ag6Init()&&el&&agVista==="mia"&&citasOk)return ag6MiAgenda();return _rma.apply(this,arguments)};
+ const _sav=setAgVista;setAgVista=function(v){_sav.apply(this,arguments);try{ag6Init()}catch(e){}}}
 
 // ---------- llenado rápido de contactos ----------
 function splitPhone(raw){let t=String(raw||"").trim();const intl=/^\s*(\+|00)/.test(t);let d=t.replace(/\D/g,"");if(/^00/.test(t))d=d.replace(/^00/,"");
@@ -10669,7 +10827,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119060100";var busy=false,pend=null;
+(function(){var V="20261119060721";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
