@@ -8334,11 +8334,13 @@ function flPaso(c){const h=flH(c),r=(c.fl&&c.fl.r)||"",D=864e5,ya=t=>Date.now()-
   if(c.stage==="Socio"||c.stage==="Cliente")return h.bien?null:{k:"bien"};
   if(c.stage==="No interesado")return h.no&&ya(h.no)>60*D&&!h.re?{k:"re"}:{k:"nada",txt:"🔕 No le interesa por ahora"+(h.no?` · le recordamos escribirle en ${Math.max(1,Math.ceil((60*D-ya(h.no))/D))} días`:"")};
   if(c.pres&&c.pres.t){if(!h.seg)return{k:"seg"};return{k:"preg",q:"seg"}}
+  if(h.pvs){const sv=salaDe(c.id);if(sv&&((+sv.pct||0)>=90||sv.motivo==="fin"||sv.pulso))return{k:"seg"};return{k:"nada",txt:sv?"✈️ Está viendo su presentación · va en "+Math.min(100,+sv.pct||0)+" %":"✈️ Presentación enviada · le avisamos cuando la abra"}}
+  if(h.pva)return{k:"preg",q:"pva"};
   if(h.agd||flCita(c))return{k:"pres"};
   if(h.inv){if(r==="si")return{k:"agd"};if(r==="pen")return ya(h.rinv||h.inv)>2*D?{k:"rinv"}:{k:"espera",txt:"🤔 Lo va a pensar · escribirle de nuevo "+(ya(h.rinv||h.inv)>D?"mañana":"en 2 días")};return{k:"preg",q:"inv"}}
   if(h.sal){if(r==="si")return{k:"inv"};if(r==="nr")return ya(h.resal||h.sal)>2*D?{k:"resal"}:{k:"espera",txt:"⏳ Esperando respuesta · volver a saludar en "+(ya(h.resal||h.sal)>D?"1 día":"2 días")};return{k:"preg",q:"sal"}}
   return{k:"sal"}}
-const FL_TIT={sal:"👋 Saludar",resal:"👋 Volver a saludar",inv:"💬 Invitar",rinv:"💬 Retomar la invitación",agd:"📅 Agendar",pres:"🎤 Presentar",seg:"🔁 Seguimiento",bien:"🎉 Darle la bienvenida",re:"👋 Volver a contactar",no:"🙏 Cerrar con amabilidad"};
+const FL_TIT={pva:"✈️ Presentación virtual",pvl:"✈️ Enviarle la presentación",pvt:"✈️ Enviarle la presentación",sal:"👋 Saludar",resal:"👋 Volver a saludar",inv:"💬 Invitar",rinv:"💬 Retomar la invitación",agd:"📅 Agendar",pres:"🎤 Presentar",seg:"🔁 Seguimiento",bien:"🎉 Darle la bienvenida",re:"👋 Volver a contactar",no:"🙏 Cerrar con amabilidad"};
 function flMsg(c,k,v){const n=String(c.name||"").trim().split(/\s+/)[0]||"",U=!c.tu,x=(u,t)=>U?u:t,pr=(c.pres&&c.pres.n)||0,ref=safeUrl(profile.ref||"");
   const M={
    sal:[x(`Hola ${n}, ¿cómo está? 😊 ¿Tiene un minutito?`,`Hola ${n}, ¿cómo estás? 😊 ¿Tienes un minutito?`),
@@ -8365,6 +8367,12 @@ function flMsg(c,k,v){const n=String(c.name||"").trim().split(/\s+/)[0]||"",U=!c
       :pr>=6?[x(`Hola ${n} 😊 ¿Qué le pareció la información?\n\n¿Qué le falta para llegar a un 10?\n\nLe dejo esta página con un simulador para que vea cómo funciona la membresía:\n${memUrl(c.name,c.id)}`,`Hola ${n} 😊 ¿Qué te pareció la información?\n\n¿Qué te falta para llegar a un 10?\n\nTe dejo esta página con un simulador para que veas cómo funciona la membresía:\n${memUrl(c.name,c.id)}`)]
       :[x(`Hola ${n}, ¿qué le pareció la información? 😊\n\nSi le quedó alguna duda, me gustaría que hablemos unos 10 minutos. ¿Le parece?`,`Hola ${n}, ¿qué te pareció la información? 😊\n\nSi te quedó alguna duda, me gustaría que hablemos unos 10 minutos. ¿Te parece?`),
         x(`Hola ${n}, ¿qué le pareció la información? 😊\n\nSi le quedó alguna duda, me gustaría que hablemos unos 10 minutos con un líder de mi equipo. ¿Le parece?`,`Hola ${n}, ¿qué te pareció la información? 😊\n\nSi te quedó alguna duda, me gustaría que hablemos unos 10 minutos con un líder de mi equipo. ¿Te parece?`)],
+   /* 19 nov (Edwin): presentación virtual con compromiso: primero se pregunta cuándo la vería (una sola pregunta, con postura) y luego va el link */
+   pva:[x(`¡Excelente! 🙌 Tengo una presentación de 20 minutos que le explica todo, para verla con calma y con sonido.\n\nSi se la envío ahorita, ¿cuándo la vería?`,`¡Excelente! 🙌 Tengo una presentación de 20 minutos que te explica todo, para verla con calma y con sonido.\n\nSi te la envío ahorita, ¿cuándo la verías?`),
+        x(`¡Perfecto! 😊 Tengo una presentación de 20 minutos donde le explico todo, para que la vea tranquilo y con sonido.\n\nSi se la mando ahorita, ¿cuándo la podría ver?`,`¡Perfecto! 😊 Tengo una presentación de 20 minutos donde te explico todo, para que la veas tranquilo y con sonido.\n\nSi te la mando ahorita, ¿cuándo la podrías ver?`),
+        x(`¡Qué bueno! 🙌 Le tengo una presentación de 20 minutitos que le muestra todo, ideal para verla con calma y con sonido.\n\nSi se la comparto ahorita, ¿cuándo la vería?`,`¡Qué bueno! 🙌 Te tengo una presentación de 20 minutitos que te muestra todo, ideal para verla con calma y con sonido.\n\nSi te la comparto ahorita, ¿cuándo la verías?`)],
+   pvl:[x(`¡Perfecto! Aquí se la dejo 👇 Véala con sonido:\n\n👉 ${salaUrl(c.name,c.id)}`,`¡Perfecto! Aquí te la dejo 👇 Mírala con sonido:\n\n👉 ${salaUrl(c.name,c.id)}`)],
+   pvt:[x(`¡Listo! 😊 Aquí se la dejo para que la vea con calma:\n\n👉 ${salaUrl(c.name,c.id)}\n\nCuando la termine, me cuenta qué fue lo que más le gustó.`,`¡Listo! 😊 Aquí te la dejo para que la veas con calma:\n\n👉 ${salaUrl(c.name,c.id)}\n\nCuando la termines, me cuentas qué fue lo que más te gustó.`)],
    no:[x(`Le entiendo perfectamente, ${n}, gracias por su sinceridad. 🙏\n\nSi más adelante cambia de opinión, aquí estoy.`,`Te entiendo perfectamente, ${n}, gracias por tu sinceridad. 🙏\n\nSi más adelante cambias de opinión, aquí estoy.`)],
    re:[x(`Hola ${n}, ¿cómo ha estado? 😊 Hace tiempo no hablábamos. ¿Cómo va todo por allá?`,`Hola ${n}, ¿cómo has estado? 😊 Hace tiempo no hablábamos. ¿Cómo va todo por allá?`)]};
   const L=M[k]||[""];let hh=0;for(const ch of String(c.id||""))hh=(hh*31+ch.charCodeAt(0))>>>0;let rr=L[((k==="seg"?0:hh)+(v||0))%L.length]; /* 19 nov (Edwin): en seguimiento sale primero la versión «conmigo»; «🔄 Otra» da la del líder */if(k==="seg"&&crmV2On())rr=flGusto(rr);return rr}
@@ -8375,7 +8383,7 @@ function flHTML(c){const P=flPaso(c),h=flH(c);
   let body="";
   if(!P)body=`<div class="fl-txt">🎉 Camino completo</div>`;
   else if(P.k==="nada"||P.k==="espera")body=`<div class="fl-txt">${esc(P.txt)}</div>${P.k==="espera"?`<button class="fl-mini" data-flr="${esc(c.id)}|si">${h.inv?"✅ Ya me dijo que sí":"✅ Ya me contestó"}</button> <button class="fl-mini" data-flgo="${esc(c.id)}|${h.inv?"rinv":"resal"}">Escribirle ya</button>`:""}`;
-  else if(P.k==="preg"){const Q=P.q==="sal"?["¿Le contestó?",[["si","✅ Sí"],["nr","⏳ Todavía no"],["no","✖ No le interesa"]]]:P.q==="inv"?["¿Qué respondió?",[["si","✅ Sí, quiere escuchar"],["pen","🤔 Lo va a pensar"],["no","✖ No"]]]:["¿Cómo va?",[["socio","🎉 Ya se registró"],["re2","🔁 Volver a escribirle"],["no","✖ No por ahora"]]];
+  else if(P.k==="preg"){const Q=P.q==="pva"?["¿Cuándo la va a ver?",[["pvl","⚡ Ahorita"],["pvt","🌙 Más tarde / mañana"],["no","✖ No le interesa"]]]:P.q==="sal"?["¿Le contestó?",[["si","✅ Sí"],["nr","⏳ Todavía no"],["no","✖ No le interesa"]]]:P.q==="inv"?["¿Qué respondió?",[["si","✅ Sí, quiere escuchar"],["pen","🤔 Lo va a pensar"],["no","✖ No"]]]:["¿Cómo va?",[["socio","🎉 Ya se registró"],["re2","🔁 Volver a escribirle"],["no","✖ No por ahora"]]];
     body=`<div class="fl-q"><b>${Q[0]}</b><div>${Q[1].map(([v,t])=>`<button data-flr="${esc(c.id)}|${v}">${t}</button>`).join("")}</div></div>`}
   else body=`<button class="fl-go" data-flgo="${esc(c.id)}|${P.k}">👉 Siguiente paso: ${FL_TIT[P.k]||P.k}</button>`;
   return `<div class="fl"><div class="fl-hd"><span>🧭 Camino de ${esc(String(c.name||"").split(" ")[0])}</span><button class="fl-tu" data-fltu="${esc(c.id)}">Le hablo de: <b>${c.tu?"Tú":"Usted"}</b> ⇄</button></div>${linea}${body}</div>`}
@@ -8428,7 +8436,7 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden)return;let 
 async function flGuardar(c){c.updated=Date.now();try{await store.saveContact(Object.assign({},c))}catch(e){}renderCRM()}
 // 19 nov (Edwin): poder regresar un paso si se abrió WhatsApp por error → c.fl.u = fotos del camino antes de cada cambio (máx. 10)
 function flSnap(c){c.fl=Object.assign({h:{},r:""},c.fl||{});const u=Array.isArray(c.fl.u)?c.fl.u.slice(-9):[];u.push({h:Object.assign({},c.fl.h||{}),r:c.fl.r||""});c.fl.u=u}
-const FL_ATR=["agd","rinv","inv","resal","sal"],FL_ATR_R={agd:"si",rinv:"pen",inv:"si",resal:"nr",sal:""};
+const FL_ATR=["pvs","pva","agd","rinv","inv","resal","sal"],FL_ATR_R={pvs:"si",pva:"si",agd:"si",rinv:"pen",inv:"si",resal:"nr",sal:""};
 function flPuedeAtras(c){const f=c.fl||{};if(c.stage==="Socio"||c.stage==="Cliente"||c.stage==="No interesado")return false;if(c.pres&&c.pres.t)return false;return !!((f.u&&f.u.length)||f.r||FL_ATR.some(k=>(f.h||{})[k]))}
 async function flAtras(c){const f=c.fl=Object.assign({h:{},r:""},c.fl||{});
   if(Array.isArray(f.u)&&f.u.length){const s=f.u.pop();f.h=s.h||{};f.r=s.r||""}
@@ -8436,9 +8444,10 @@ async function flAtras(c){const f=c.fl=Object.assign({h:{},r:""},c.fl||{});
   else{const k=FL_ATR.filter(x=>f.h[x]).sort((a,b)=>f.h[b]-f.h[a])[0];if(!k)return;const h=Object.assign({},f.h);delete h[k];f.h=h;f.r=FL_ATR_R[k]}
   await flGuardar(c);toast("↩ Regresó un paso")}
 function flMarca(c,k,r){c.fl=Object.assign({h:{},r:""},c.fl||{});flSnap(c);c.fl.h=Object.assign({},c.fl.h||{});c.fl.h[k]=Date.now();if(r!==undefined)c.fl.r=r}
-function flEnviar(c,k){if(k==="pres"){presAbrir(c);return}if(k==="bien"){flMarca(c,"bien");flGuardar(c);abrirBienvenida(c);return}
+function flEnviar(c,k){if(k==="pres"){presAbrir(c);return}
+  if(k==="pva"||k==="pvl"||k==="pvt"){if(ahGate())return;if(!salaYoOk()&&!window._syAdm){salaYoGate();return}if(!window._pvRdy){toast("Un momento, preparando su presentación…");salaPrep().then(ok=>{if(ok){window._pvRdy=1;flEnviar(c,k)}});return}}if(k==="bien"){flMarca(c,"bien");flGuardar(c);abrirBienvenida(c);return}
   let v=0;const pinta=()=>{$("#flT").value=flMsg(c,k==="re2"?"seg":k,v)};
-  const extra=k==="agd"?`<p class="small muted" style="margin:10px 0 6px">Cuando le diga el día, póngalo aquí:</p><div style="display:grid;gap:8px"><button class="btn ghost" data-fla="cita">📅 Poner la cita</button>${presOk()?`<button class="btn ghost" data-fla="pres">🎤 Presentarle ahora mismo</button>`:""}<button class="btn ghost" data-fla="l3">📞 Llamada de 3 con mi líder</button>${salaOk()?`<button class="btn ghost" data-fla="sala">🎬 Enviarle la presentación virtual</button>`:""}</div>`
+  const extra=k==="agd"?`<p class="small muted" style="margin:10px 0 6px">Cuando le diga el día, póngalo aquí:</p><div style="display:grid;gap:8px"><button class="btn ghost" data-fla="cita">📅 Poner la cita</button>${presOk()?`<button class="btn ghost" data-fla="pres">🎤 Presentarle ahora mismo</button>`:""}<button class="btn ghost" data-fla="l3">📞 Llamada de 3 con mi líder</button>${salaOk()?`<button class="btn ghost" data-fla="pva">✈️ Mejor la presentación virtual</button>`:""}</div>`
     :k==="seg"&&((c.pres&&c.pres.n)||0)<6?`<button class="btn ghost" data-fla="l3" style="width:100%;margin-top:10px">📞 Pedir llamada de 3 con mi líder</button>`:"";
   openSheet(`<h2>${FL_TIT[k==="re2"?"seg":k]||"Mensaje"} · ${esc(c.name)}</h2><div class="flTuR"><span>Le hablo de:</span><div class="flTuS" id="flTu"><button type="button" data-tu="0" aria-pressed="${!c.tu}">Usted</button><button type="button" data-tu="1" aria-pressed="${!!c.tu}">Tú</button></div></div><p class="small muted" style="margin:0 0 8px">Puede cambiar el mensaje antes de enviarlo.</p>
    <textarea class="inp" id="flT" rows="8" style="width:100%;font-size:15px;line-height:1.45"></textarea>
@@ -8450,13 +8459,15 @@ function flEnviar(c,k){if(k==="pres"){presAbrir(c);return}if(k==="bien"){flMarca
      if(k==="resal")c.fl.h.sal=c.fl.h.sal||Date.now();if(k==="re"){c.stage="Contactado";c.stT=Date.now();c.fl.h={re:Date.now(),sal:Date.now()};c.fl.r=""}
      if(k==="sal"||k==="resal")stAvanza(c,"Contactado","le escribió el saludo");if(k==="seg")stAvanza(c,"Seguimiento","le dio seguimiento");
      if(["resal","rinv","seg","re2","re"].includes(k))segAuto(c);
-     if(["sal","resal","inv","rinv","re"].includes(k))c.seg=(c.seg||[]).concat([{t:Date.now(),k}]).slice(-30);else notaPend(c,k,1);flGuardar(c);const n=waNum(c.phone,c.cc);closeSheet();waIr("https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t))};
+     if(k==="pvl"||k==="pvt"){c.fl.h.pvs=Date.now();c.fl.r=k;stAvanza(c,"Contactado","le envió la presentación virtual");try{LS.set("salaOn",1);const E=LS.get("salaEnv")||{};E[c.id]=Date.now();LS.set("salaEnv",E)}catch(x){}}
+     if(["sal","resal","inv","rinv","re","pva","pvl","pvt"].includes(k))c.seg=(c.seg||[]).concat([{t:Date.now(),k}]).slice(-30);else notaPend(c,k,1);flGuardar(c);const n=waNum(c.phone,c.cc);closeSheet();waIr("https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t))};
    document.querySelectorAll("#sheetPanel [data-fla]").forEach(b=>b.onclick=()=>{const a=b.dataset.fla;if(k==="agd"){flMarca(c,"agd");flGuardar(c)}closeSheet();
-     if(a==="cita")abrirCita(null,c);else if(a==="pres")presAbrir(c);else if(a==="l3")pedirL3(c);else if(a==="sala")enviarSala(c)})})}
+     if(a==="cita")abrirCita(null,c);else if(a==="pres")presAbrir(c);else if(a==="l3")pedirL3(c);else if(a==="sala")enviarSala(c);else if(a==="pva")setTimeout(()=>flEnviar(c,"pva"),250)})})}
 async function flResp(c,v){c.fl=Object.assign({h:{},r:""},c.fl||{});if(["si","nr","pen"].includes(v))flSnap(c);
   if(v==="no"){c.stage="No interesado";c.stT=Date.now();c.stAuto="";c.fl.h=Object.assign({},c.fl.h,{no:Date.now()});c.fl.r="no";await flGuardar(c);flEnviar(c,"no");return}
   if(v==="socio"){c.stage="Socio";c.stT=Date.now();await flGuardar(c);toast("¡Felicidades! 🎉");return}
   if(v==="re2"){flEnviar(c,"re2");return}
+  if(v==="pvl"||v==="pvt"){flEnviar(c,v);return}
   c.fl.r=v;if(v==="nr")c.fl.h=Object.assign({},c.fl.h,{resal:Date.now()});if(v==="pen")c.fl.h=Object.assign({},c.fl.h,{rinv:Date.now()});await flGuardar(c)}
 const CERR=["Socio","Cliente"];let crmV=(()=>{try{return LS.get("crmV")||"proc"}catch(e){return "proc"}})();
 function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e){}pushResumen();try{lluStrip()}catch(e){}try{olvStrip()}catch(e){}const q=$("#crmSearch").value.trim().toLowerCase();
@@ -8643,12 +8654,13 @@ function crmV2Sig0(c){let P=flPaso(c);const st=c.stage||"Nuevo",tarde=["Presenta
   if(P.k==="nada")return `<div class="cvN"><div><b>${esc(P.txt)}</b></div></div>`;
   // 19 nov (Edwin): en espera también se puede marcar que YA contestó, para que siga el siguiente mensaje
   if(P.k==="espera"){const inv=!!flH(c).inv;return `<div class="cvN q"><b>${esc(P.txt)}</b><div class="fl-q"><div><button data-flr="${esc(c.id)}|si">${inv?"✅ Ya me dijo que sí":"✅ Ya me contestó"}</button><button data-flgo="${esc(c.id)}|${inv?"rinv":"resal"}">💬 Escribirle ya</button><button data-flr="${esc(c.id)}|no">✖ No le interesa</button></div></div></div>`}
-  if(P.k==="preg"){const Q=P.q==="sal"?["¿Le contestó?",[["si","✅ Sí"],["nr","⏳ Todavía no"],["no","✖ No"]]]:P.q==="inv"?["¿Qué respondió?",[["si","✅ Sí"],["pen","🤔 Lo pensará"],["no","✖ No"]]]:["¿Cómo va?",[["socio","🎉 Se registró"],["re2","🔁 Escribirle"],["no","✖ No por ahora"]]];
+  if(P.k==="preg"){const Q=P.q==="pva"?["¿Cuándo la va a ver?",[["pvl","⚡ Ahorita"],["pvt","🌙 Más tarde"],["no","✖ No"]]]:P.q==="sal"?["¿Le contestó?",[["si","✅ Sí"],["nr","⏳ Todavía no"],["no","✖ No"]]]:P.q==="inv"?["¿Qué respondió?",[["si","✅ Sí"],["pen","🤔 Lo pensará"],["no","✖ No"]]]:["¿Cómo va?",[["socio","🎉 Se registró"],["re2","🔁 Escribirle"],["no","✖ No por ahora"]]];
     return `<div class="cvN q"><b>👉 ${Q[0]}</b><div class="fl-q"><div>${Q[1].map(([v,t])=>`<button data-flr="${esc(c.id)}|${v}">${t}</button>`).join("")}</div></div></div>`}
   const sv=salaDe(c.id),cerrar=P.k==="seg"&&(st==="Por cerrar"||(sv&&+sv.pulso>=8));
   const tit=cerrar?"🎉 Cerrar":FL_TIT[P.k]||P.k,sub=cerrar?(sv&&+sv.pulso>=8?"Está "+sv.pulso+"/10: mándele su link de registro":"Mándele su link de registro"):P.k==="seg"?"Pregúntele qué fue lo que más le gustó":P.k==="pres"?"Ya tiene cita: preséntele":P.k==="agd"?"Ya quiere escuchar: agende la cita o envíele su presentación virtual":"Mensaje listo para enviar";
   // 19 nov (Edwin): orden natural → primero el mensaje de invitación («¿Estaría abierto a escuchar…?»); la presentación virtual va en Agendar, después de que diga que sí
   if(P.k==="inv"&&!salaDe(c.id)&&!(LS.get("salaEnv")||{})[c.id])return `<div class="cvN cvNx"><span class="kx">👉 SIGUIENTE PASO</span><b>💬 Invitarlo</b><small>Pregúntele si está abierto a escuchar la información</small><em data-flgo="${esc(c.id)}|inv">💬 Invitarlo · mensaje listo</em><button type="button" class="cvNalt" data-sala="${esc(c.id)}">o enviarle directo mi presentación virtual ›</button></div>`;
+  if(P.k==="agd"&&salaOk())return `<div class="cvN cvNx"><span class="kx">👉 SIGUIENTE PASO</span><b>📅 Agendar</b><small>Ya quiere escuchar: elija cómo le presenta</small><em data-flgo="${esc(c.id)}|agd">📅 Cita en vivo · mensaje listo</em><em data-flgo="${esc(c.id)}|pva" style="margin-top:8px">✈️ Presentación virtual · mensaje listo</em></div>`;
   const btn=cerrar?"💬 Mandarle el link por WhatsApp":P.k==="seg"?"💬 Escribirle · mensaje listo":P.k==="inv"||P.k==="rinv"?"💬 Invitarlo · mensaje listo":P.k==="sal"||P.k==="resal"?"👋 Saludarlo · mensaje listo":P.k==="pres"?"🎤 Presentarle ahora":P.k==="agd"?"📅 Agendar · cita o presentación virtual":"👉 Hacerlo";
   return `<div class="cvN cvNx"><span class="kx">👉 SIGUIENTE PASO</span><b>${esc(tit)}</b><small>${esc(sub)}</small><em data-flgo="${esc(c.id)}|${P.k}">${btn}</em></div>`}
 function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fecha>=TODAY).sort(citaSort)[0],m=memDe(c.id),me=(LS.get("memEnv")||{})[c.id],au=c.stAuto&&c.stT&&Date.now()-c.stT<14*864e5;
@@ -11229,7 +11241,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119124059";var busy=false,pend=null;
+(function(){var V="20261119125940";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
