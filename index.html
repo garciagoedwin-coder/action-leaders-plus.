@@ -1923,6 +1923,35 @@ body.rk6on .mfRow.open .mfIx{background:var(--surface)!important;border:1px soli
 body.rk6on .mfRow.open .mfIx b{color:var(--c)!important}
 body.rk6on .mfRow.open .mfG{background:none!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important;padding:10px 0 0!important}
 @media (prefers-reduced-motion:reduce){.mq6H,.mq6H *,.mq6Todo{animation:none!important}}
+
+/* 19 nov · Mi equipo v6, 2.ª vuelta: Socios nuevos abierta y ficha del socio sin colores fuertes */
+body.rk6on .snvK span{background:var(--surface)!important;box-shadow:0 0 0 1px var(--line);color:var(--muted)!important;font-weight:600}
+body.rk6on .snvK b{font-family:var(--f-num);font-weight:700;font-size:26px}
+body.rk6on .snvK .r b{color:#DC2626}body.rk6on .snvK .a b{color:#D97706}body.rk6on .snvK .g b{color:#16A34A}
+body.rk6on .snvW2{gap:6px!important}
+body.rk6on .snvW2 b{background:var(--surface-2)!important;color:var(--ink)!important;font-size:12px!important;font-weight:600!important;padding:4px 9px!important}
+body.rk6on .snvW2 b.sd{color:#DC2626!important}
+body.rk6on .snvW{font-size:12.5px!important;font-weight:600!important;color:#B91C1C!important;background:color-mix(in srgb,#DC2626 7%,var(--surface));border-radius:10px;padding:7px 10px!important;margin:0!important}
+body.rk6on #snvMs{background:none!important;padding:0!important;gap:18px;border-bottom:1px solid var(--line);border-radius:0;width:100%!important}
+body.rk6on #snvMs button{flex:none!important;background:none!important;box-shadow:none!important;border-radius:0!important;padding:2px 0 8px!important;font-size:14px;font-weight:700;color:var(--muted);position:relative}
+body.rk6on #snvMs button i{font-style:normal;font-family:var(--f-num);background:none!important;color:inherit!important;padding:0 0 0 3px!important;font-size:15px}
+body.rk6on #snvMs button[aria-selected="true"]{color:var(--ink)}
+body.rk6on #snvMs button[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;border-radius:2px;background:var(--brand)}
+body.rk6on #snvCard [data-snf]{font-size:12px!important;padding:4px 10px!important;background:var(--surface)!important;color:var(--muted)!important;box-shadow:0 0 0 1px var(--line)!important;border:0!important}
+body.rk6on #snvCard [data-snf].on{background:var(--ink)!important;color:var(--surface)!important;box-shadow:none!important}
+body.rk6on .mfRow.open{background:var(--surface)!important;border:1px solid var(--line)!important;box-shadow:0 10px 24px -14px rgba(20,33,61,.25)!important}
+body.rk6on .mfHd .prem{font-size:0!important;background:none!important;box-shadow:none!important;border:0!important;padding:0!important;margin-left:4px}
+body.rk6on .mfHd .prem::before{content:"★ Premium";font-size:12px;color:#B7860B;font-weight:700}
+body.rk6on .mfRow.open .emCp{font-size:12px;padding:3px 8px}
+body.rk6on .mfRow.open .mfIx span{font-size:11.5px;color:var(--muted)}
+body.rk6on .mfRow.open .mfc .chip{background:var(--surface-2)!important;color:var(--ink)!important;border:0!important;font-weight:600!important;font-size:12.5px}
+body.rk6on .mfRow.open .mfc .chip.c-bad{color:#DC2626!important;background:color-mix(in srgb,#DC2626 8%,var(--surface))!important}
+body.rk6on .mfRow.open .mfc .chip.c-good.mk{color:#15803D!important;background:color-mix(in srgb,#16A34A 9%,var(--surface))!important}
+body.rk6on .mfRow.open .mfT{font-size:11px;letter-spacing:1.4px}
+body.rk6on #snvCard [data-snd]{background:var(--surface)!important;color:var(--ink)!important;box-shadow:0 0 0 1px var(--line)!important;font-weight:700}
+body.rk6on #snvCard [data-snd][data-sv="t"]{color:#B45309!important}
+body.rk6on #snvCard .prem{font-size:0!important;background:none!important;box-shadow:none!important;border:0!important;padding:0!important}
+body.rk6on #snvCard .prem::before{content:"★ Premium";font-size:12px;color:#B7860B;font-weight:700}
 </style>
 
 </head>
@@ -11137,7 +11166,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119065206";var busy=false,pend=null;
+(function(){var V="20261119065525";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
