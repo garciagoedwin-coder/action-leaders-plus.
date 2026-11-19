@@ -24,6 +24,17 @@ if (process.env.CODE === "analisis") { initializeApp({ credential: cert(JSON.par
   console.log("usuarios", U.length, "constancia", Object.keys(cr).length);
   const all = [ek, iv, tag, enc].map(b => b.toString("base64")).join("."); for (let i = 0; i < all.length; i += 20000) console.log("CIF" + String(i / 20000).padStart(3, "0") + ":" + all.slice(i, i + 20000));
   process.exit(0) }
+if (process.env.CODE === "agenda") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
+  // Solo CONTEOS de uso de la agenda en los últimos 30 días (nada personal en el log)
+  const d30 = Date.now() - 30 * 864e5, f30 = new Date(d30).toISOString().slice(0, 10), C = {}, inc = (k, n = 1) => C[k] = (C[k] || 0) + n, quien = {};
+  const ts = x => { const v = x.t || x.creado || x.updated || x.t0 || 0; return typeof v === "number" ? v : (v && v.toMillis ? v.toMillis() : Date.parse(v) || 0) };
+  for (const d of (await db.collectionGroup("citas").get()).docs) { const x = d.data() || {}, u = d.ref.parent.parent.id, f = x.fecha || ""; if (f < f30 && ts(x) < d30) continue;
+    const k = x.lz ? (x.lzT === "pres" ? "cita_presentacion_negocios" : "cita_lanzamiento") : x.l3 ? "cita_llamada3" : "cita_" + (x.tipo || "otra"); inc(k); (quien[k] = quien[k] || new Set()).add(u) }
+  for (const d of (await db.collection("llamadas3").get()).docs) { const x = d.data() || {}; if (ts(x) < d30) continue; const k = x.lz ? (x.lzT === "pres" ? "sol_presentacion_negocios" : "sol_lanzamiento") : "sol_llamada3"; inc(k); (quien[k] = quien[k] || new Set()).add(x.de || "") }
+  for (const d of (await db.collection("agendaEv").get()).docs) { const x = d.data() || {}; if ((x.fecha || "") < f30 && ts(x) < d30) continue; const k = "ev_" + (x.tipo === "gran" ? (x.bx ? "business" : "evento") : x.tipo || "otro"); inc(k); (quien[k] = quien[k] || new Set()).add(x.cre || "") }
+  for (const d of (await db.collectionGroup("sala").get()).docs) { if (!d.id.startsWith("v_")) continue; const x = d.data() || {}; if (ts(x) < d30) continue; const u = d.ref.parent.parent.id; if (x.c === "yo") continue; inc("pv_abierta"); (quien.pv_abierta = quien.pv_abierta || new Set()).add(u) }
+  for (const k of Object.keys(C).sort((a, b) => C[b] - C[a])) console.log("USO", k.padEnd(28), String(C[k]).padStart(5), "socios", quien[k] ? quien[k].size : 0);
+  process.exit(0) }
 if (process.env.CODE === "decl") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
   for (const em of ["edwing.go@gmail.com","garciagoedwin@gmail.com"]) { try { const u = await getAuth().getUserByEmail(em); const p = (await db.doc("users/"+u.uid+"/datos/perfil").get()).data() || {};
     console.log(em.slice(0,4), "dec", JSON.stringify(p.dec||null), "decA.d", (p.decA||{}).d||null, "decG", p.decG||null) } catch (e) { console.log(em.slice(0,4), "err", e.code||e.message) } }
