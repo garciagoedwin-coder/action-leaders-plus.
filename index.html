@@ -1764,6 +1764,21 @@ body.acc3 #tasks .counter .num{font-family:'Barlow Condensed',sans-serif;font-si
 .ev6G{font-size:10.5px;font-weight:800;letter-spacing:1.3px;color:var(--muted);padding:12px 14px 4px;border-top:1px solid var(--line);margin:0}
 .ev6R{display:flex!important;align-items:center;width:100%;border:0!important;border-top:1px solid var(--line)!important;background:none!important;box-shadow:none!important;border-radius:0!important;font:inherit;font-size:14px;font-weight:600;padding:12px 14px!important;color:var(--ink)!important;text-align:left;text-decoration:none;cursor:pointer;min-height:0}
 .ev6R.red{color:var(--bad,#DC2626)!important}
+
+.cv6 h2{margin:0}.cv6Sub{font-size:13px;color:var(--muted);margin:2px 0 4px}
+.cv6Pre{display:flex;gap:12px;align-items:center;width:100%;border:0;padding:12px;border-radius:16px;background:radial-gradient(120% 90% at 100% 0%,#143b5c 0,#0b1424 60%);color:#fff;font:inherit;text-align:left;cursor:pointer}
+.cv6Pre .ic{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.12);display:grid;place-items:center;font-size:19px;flex:none}.cv6Pre .tx{flex:1;min-width:0}.cv6Pre b{display:block;font-size:14.5px}.cv6Pre small{font-size:12px;color:#b9c6d6}.cv6Pre em{font-style:normal;background:#2AC1F1;color:#062B3A;font-weight:800;font-size:13px;padding:8px 12px;border-radius:99px}
+.cv6Ok{font-size:13px;font-weight:700;color:#16A34A;margin:0}
+.cv6St{display:flex;gap:8px;align-items:center;margin:12px 2px 0;font-size:11px;font-weight:800;letter-spacing:1.4px;color:var(--muted)}.cv6St i{font-style:normal;width:20px;height:20px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:11px;letter-spacing:0}
+.cv6Ch{display:flex;gap:6px;flex-wrap:wrap}.cv6Ch button{border:0;font:inherit;font-size:13.5px;font-weight:700;padding:9px 12px;border-radius:12px;background:var(--surface);box-shadow:0 0 0 1px var(--line);color:var(--ink);cursor:pointer}
+.cv6Ch button.on{background:var(--ink);color:var(--surface);box-shadow:none}.cv6Ch button.o:not(.on){color:var(--brand)}
+.cv6Lb{font-size:12px;font-weight:700;color:var(--muted);margin:2px 2px -2px}
+.cv6Op{border-radius:16px;box-shadow:0 0 0 1px var(--line);margin-top:6px}.cv6Op summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:13px 14px;cursor:pointer}.cv6Op summary::-webkit-details-marker{display:none}
+.cv6Op summary b{font-size:14px}.cv6Op summary small{display:block;font-size:12px;color:var(--muted)}.cv6Op summary em{font-style:normal;color:var(--muted)}.cv6Op[open] summary em{transform:rotate(180deg)}
+.cv6Ow{display:flex;flex-direction:column;gap:10px;padding:0 14px 14px}
+.cv6Fl{display:flex;gap:12px;align-items:center;margin-top:6px}.cv6Fl .m{width:60px;height:76px;border-radius:12px;background:radial-gradient(120% 90% at 100% 0%,#143b5c 0,#0b1424 60%);flex:none;display:grid;place-items:center;color:#8fd8f2;font-family:var(--f-num);font-size:13px}
+.cv6Fl b{display:block;font-size:14px}.cv6Fl small{display:block;font-size:12.5px;color:var(--muted)}.cv6Pv{all:unset;cursor:pointer;color:var(--brand);font-weight:800;font-size:13.5px;margin-top:4px;display:inline-block}
+.cv6 #evOk{font-size:16px;padding:15px;border-radius:16px}
 /* Agenda v6 · tarjetas internas (19 nov) */
 #v-agenda.ag6 #evAg,#v-agenda.ag6 #eqzCard,#v-agenda.ag6 #l3Card,#v-agenda.ag6 #recCard{background:var(--surface)!important;border:0!important;box-shadow:0 0 0 1px var(--line)!important;border-radius:18px}
 #v-agenda.ag6 #evaInv{border:0!important;box-shadow:0 0 0 1px var(--line)!important;border-radius:18px}
@@ -7561,7 +7576,7 @@ document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout
 // 16 nov (Edwin): «Junta de negocios o Home meeting» y «Evento» por separado. Evento: solo Marketing Director+ y admins, título editable, 3 diseños con foto propia;
 // pide autorización SOLO si es para todos los socios («Mi línea» se publica de una vez).
 function evaCrearMenu(){if(!evaPuedeGran()){abrirCrearEva("junta");return}openSheet(`<p class="eyebrow">AGENDA</p><h2 style="margin:2px 0 12px">¿Qué quiere crear?</h2><div class="amL"><button type="button" id="ecJ"><i>🤝</i><span><b>Junta de negocios o Home meeting</b><small>Con flyer, confirmación y recordatorios</small></span><em>›</em></button><button type="button" id="ecE"><i>🎤</i><span><b>Evento</b><small>Gran evento con su foto, ticket y confirmaciones</small></span><em>›</em></button></div><button class="btn ghost" data-close style="width:100%;margin-top:12px">Cerrar</button>`,()=>{$("#ecJ").onclick=()=>{closeSheet();setTimeout(()=>abrirCrearEva("junta"),250)};$("#ecE").onclick=()=>{closeSheet();setTimeout(()=>abrirCrearEva("evento"),250)}})}
-async function abrirCrearEva(kind){if(!store.db||!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}
+async function abrirCrearEva(kind,pre){if(!store.db||!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}
   const EVT=kind==="evento",ah=ahYo();if(ah&&ah.pend){openSheet(`<h2>🔒 Aún no puede crear juntas</h2><p>Para crear juntas y eventos necesita tener su ahorro al día.</p><button class="btn" style="width:100%;background:#25D366;color:#fff" onclick="ahHablarSp()">💬 Hablar con mi patrocinador</button><button class="btn ghost" data-close style="width:100%">Cerrar</button>`);return}
   const G=evaPuedeGran();if(EVT&&!G){toast("Los eventos los crean los rangos: Marketing Director en adelante");return}
   if(!(fotosFs||[]).length)try{await cargarFotos()}catch(e){}
@@ -7578,7 +7593,7 @@ async function abrirCrearEva(kind){if(!store.db||!(regDoc&&regDoc.registro)){toa
     <div class="field" id="evBsW" hidden><label for="evBs">Subtítulo</label><input class="inp" id="evBs" maxlength="40" value="${esc(BX_S)}"></div>
     <div class="field"><label>Foto del flyer</label><div class="row" style="gap:10px;align-items:center"><img id="evBfI" src="${EV_DS[1].f}" alt="" style="width:110px;height:74px;object-fit:cover;border-radius:10px;border:1px solid var(--line);flex:none"><div class="grow" style="display:flex;flex-direction:column;gap:6px;min-width:0"><button type="button" class="btn sm" id="evBfB">📷 Subir foto del salón o la ciudad</button><input type="file" id="evBf" accept="image/*" hidden><button type="button" class="btn sm ghost" id="evBf0" hidden>Usar la foto de ejemplo</button></div></div><p class="small muted" id="evBfTx" style="margin:6px 0 0">${FTX}</p></div>`
     :`<p class="small muted" style="margin:0">Una reunión de negocios en un salón, un café o en casa (Home meeting). El flyer dice «Junta de negocios».</p>`}
-   <div class="seg" id="evM"><button type="button" aria-selected="true" data-v="presencial">📍 Presencial</button><button type="button" aria-selected="false" data-v="virtual">💻 Virtual</button></div>
+   <div class="seg" id="evM" ${EVT?"":"hidden"}><button type="button" aria-selected="true" data-v="presencial">📍 Presencial</button><button type="button" aria-selected="false" data-v="virtual">💻 Virtual</button></div>
    <div class="field"><label for="evC">Ciudad</label><input class="inp" id="evC" maxlength="30" placeholder="Ej.: San Pedro Sula"></div>
    <div id="evPres"><div class="grid2"><div class="field"><label for="evL">Lugar</label><input class="inp" id="evL" maxlength="40" placeholder="Ej.: Hotel Copantl"></div><div class="field"><label for="evLs">Detalle</label><input class="inp" id="evLs" maxlength="30" placeholder="Ej.: Salón Ejecutivo"></div></div>
     <div class="field"><label for="evMap">Link de Google Maps <span class="muted">(opcional)</span></label><input class="inp" id="evMap" placeholder="https://maps.app.goo.gl/..."></div></div>
@@ -7588,7 +7603,7 @@ async function abrirCrearEva(kind){if(!store.db||!(regDoc&&regDoc.registro)){toa
    <div class="field"><label for="evFo">Link del formulario de Google <span class="muted">(opcional)</span></label><input class="inp" id="evFo" placeholder="https://forms.gle/..."></div>
    <div id="evJv"><label class="small" style="font-weight:700">${EVT?"¿Quién lo ve?":"¿Quién la ve?"}</label><div class="seg" id="evJV"><button type="button" aria-selected="true" data-v="junta">👥 Mi línea</button><button type="button" aria-selected="false" data-v="abierto">🌎 Todos los socios</button></div><p class="small muted" id="evJVt" style="margin:4px 0 0"></p></div>
    ${EVT?"":`<div class="field" id="evDw"><label>Diseño del flyer</label><div class="seg" id="evD"><button type="button" aria-selected="true" data-v="1">Oscuro</button><button type="button" aria-selected="false" data-v="2">Claro</button><button type="button" aria-selected="false" data-v="3">Foto completa</button></div><label style="margin-top:10px;display:block">Foto del flyer <span class="muted">(opcional)</span></label><div class="row" style="gap:10px;align-items:center"><img id="evBfI" src="media/eventos/f-j1.jpg?v=3" alt="" style="width:110px;height:74px;object-fit:cover;border-radius:10px;border:1px solid var(--line);flex:none"><div class="grow" style="display:flex;flex-direction:column;gap:6px;min-width:0"><button type="button" class="btn sm" id="evBfB">📷 Subir foto del lugar de la junta</button><input type="file" id="evBf" accept="image/*" hidden><button type="button" class="btn sm ghost" id="evBf0" hidden>Usar la foto de ejemplo</button></div></div><p class="small muted" id="evBfTx" style="margin:6px 0 0">${FTXJ}</p></div>`}
-   ${evaExHTML({},false)}
+   ${evaExHTML(pre||{},false)}
    <button class="btn ghost" id="evPrev" style="width:100%">👁️ Ver el flyer</button>
    <button class="btn" id="evOk" style="width:100%">Publicar y avisar a los líderes</button><button class="btn ghost" data-close style="width:100%">Cancelar</button>`,()=>{
     const segOn=(id,fn)=>{const el=$("#"+id);if(!el)return;el.onclick=x=>{const b=x.target.closest("[data-v]");if(!b||b.disabled)return;el.querySelectorAll("button").forEach(y=>y.setAttribute("aria-selected",y===b));fn(b.dataset.v)}};
@@ -7610,7 +7625,18 @@ async function abrirCrearEva(kind){if(!store.db||!(regDoc&&regDoc.registro)){toa
     $("#evQ").oninput=x=>{q=x.target.value;sug()};
     $("#evSug").onclick=x=>{const b=x.target.closest("[data-evp]");if(!b)return;const p=P.find(y=>y.uid===b.dataset.evp);if(p&&sel.length<max()){sel.push(p);q="";$("#evQ").value="";sug();pintaSel()}};
     $("#evSel").onclick=x=>{const b=x.target.closest("[data-evx]"),u=x.target.closest("[data-evup]");if(b){sel.splice(+b.dataset.evx,1);pintaSel()}if(u){const i=+u.dataset.evup,[p]=sel.splice(i,1);sel.unshift(p);pintaSel()}};
-    pintaSel();pinta();const enc=[{u:store.uid,n:yo,w:evaWaN((miRegistro()||{}).whatsapp)}];evaExBind(enc,P);
+    // 19 nov · crear v6: copiar datos de una junta/evento anterior (pre) y formulario en 3 pasos
+    if(pre){modo=pre.modo==="virtual"&&EVT?"virtual":"presencial";jvis=pre.vis==="abierto"?"abierto":"junta";if(tipo==="gran"){ds=+pre.ds||1;nE=Math.max(1,(pre.lid||[]).filter(x=>x.rol==="esp").length||1)}else jd=+pre.jd||1;
+      const L0=(pre.lid||[]).map(x=>({uid:x.uid,n:x.n,r:x.r||lzRango(x.n)})).filter(x=>x.uid);if(L0.length){if(!L0.some(x=>x.uid===store.uid)&&tipo!=="gran")L0.unshift({uid:store.uid,n:yo,r:lzRango(yo)});sel=L0.slice(0,max())}
+      const sv=(id,v)=>{const el=$("#"+id);if(el&&v!=null)el.value=v};sv("evC",pre.ciudad);sv("evL",pre.lugar);sv("evLs",pre.lugarSub);sv("evMap",pre.maps);sv("evZ",pre.zoom||profile.zoom||"");sv("evH",pre.hora);sv("evFo",pre.form);
+      if(EVT){sv("evBt",pre.bxT||EV_T);if(pre.bxS){sv("evBs",pre.bxS);bsT=true}}
+      const setSeg=(id,v)=>{const el=$("#"+id);if(el)el.querySelectorAll("button").forEach(y=>y.setAttribute("aria-selected",y.dataset.v===String(v)))};
+      setSeg("evM",modo);$("#evPres").hidden=modo==="virtual";$("#evVir").hidden=modo!=="virtual";setSeg("evJV",jvis);
+      if(EVT){setSeg("evDs",ds);$("#evBsW").hidden=ds===1;$("#evNEw").hidden=ds!==1;setSeg("evNE",nE)}else setSeg("evD",jd);
+      if($("#evBfI"))$("#evBfI").src=defF();
+      (async()=>{try{const f=pre.bxF||(pre.fo&&pre.id?await evaFotoGet(pre.id):"");if(f&&!foto){foto=f;$("#evBfI").src=f;$("#evBf0").hidden=false;$("#evBfB").textContent="📷 Cambiar la foto"}}catch(x){}})()}
+    pintaSel();pinta();const enc=pre&&(pre.enc||[]).length?pre.enc.map(x=>Object.assign({},x)):[{u:store.uid,n:yo,w:evaWaN((miRegistro()||{}).whatsapp)}];evaExBind(enc,P);
+    try{if(ag6On())cv6Arreglar(EVT,tipo,pre,man)}catch(x){console.log("cv6",x&&x.message)}
     const datos=()=>{const f=$("#evF").value,h=$("#evH").value,o={tipo,modo,dis,vis:jvis,ciudad:$("#evC").value.trim().slice(0,30),lugar:$("#evL").value.trim().slice(0,40),lugarSub:$("#evLs").value.trim().slice(0,30),maps:safeUrl($("#evMap").value.trim())||"",zoom:safeUrl($("#evZ").value.trim())||"",fecha:f,hora:h,form:safeUrl($("#evFo").value.trim())||"",lid:sel.map((x,i)=>({uid:x.uid,n:x.n,r:x.r,rol:tipo==="gran"?(i<nEf()?"esp":"acomp"):"anf"}))};
       if(tipo==="gran"){o.ds=ds;o.bx=ds===2?1:0;o.bxT=($("#evBt").value.trim()||EV_T).slice(0,40);o.bxS=ds===1?"":$("#evBs").value.trim().slice(0,40)}else o.jd=jd;o.fo=foto?1:0;return o};
     const valida=d=>{if(!d.fecha||!d.hora||citaIni({fecha:d.fecha,hora:d.hora}).getTime()<Date.now()){toast("Elija una fecha y hora futuras");return false}if(d.modo==="presencial"&&(!d.ciudad||!d.lugar)){toast("Ponga la ciudad y el lugar");return false}if(!d.lid.length){toast("Agregue al menos un líder");return false}if(d.tipo==="gran"&&!G){toast("Los eventos los crean los rangos (Marketing Director en adelante)");return false}return true};
@@ -7624,6 +7650,7 @@ async function abrirCrearEva(kind){if(!store.db||!(regDoc&&regDoc.registro)){toa
       const b=$("#evOk");b.disabled=true;try{const ref=await evCol().add(doc);doc.id=ref.id}catch(x){b.disabled=false;toast(errCod(x)==="permission-denied"?"No se pudo publicar: falta pegar las reglas nuevas en Firebase.":"No se pudo publicar ("+errCod(x)+")");return}
       if(foto){try{await store.db.doc("evFoto/"+doc.id).set({f:foto,cre:store.uid,t:Date.now()});EVF[doc.id]=foto}catch(x){toast("El evento quedó publicado, pero la foto no se pudo guardar ("+errCod(x)+")")}}
       if(doc.cupo)evCupoSet(doc,doc.cupo);
+      try{cv6Guardar(doc,foto)}catch(x){}
       EVA=(EVA||[]).concat([doc]);renderEvA();closeSheet();toast(evaPend(doc)?"⏳ Enviado a autorizar. Le avisamos cuando lo autoricen.":"✅ Publicado");setTimeout(()=>evaVer(doc),300);
       if(profile.zoom!==d.zoom&&d.zoom&&!profile.zoom){profile.zoom=d.zoom;store.set("perfil",profile)}}})}
 // ---------- presentación virtual (sala.html) ----------
@@ -8861,9 +8888,58 @@ function ev6Arreglar(e){const sh=$("#evaImg");if(!sh)return;const C=$("#sheetPan
   const encL=fe&&org?[...fe.querySelectorAll("a")]:[];encL.forEach(a=>a.textContent=a.textContent.replace("💬 ",""));
   g("COMPARTIR",["evaDl","evaTx",form].concat(encL.map(a=>{a.textContent="💬 "+a.textContent;return a})));
   if(fe&&org)fe.remove();
-  g("ORGANIZAR",[ent&&!hoy?ent:null,"evaEntA","evaEd","evaVis","evaDest","evaDel","evaBor"]);
+  let rp=null;if(e.cre===store.uid||isAdmin){rp=document.createElement("button");rp.type="button";rp.textContent=e.tipo==="gran"?"🔁 Repetir este evento en otra fecha":"🔁 Repetir esta junta en otra fecha";rp.onclick=()=>{closeSheet();setTimeout(()=>abrirCrearEva(e.tipo==="gran"?"evento":"junta",e),250)}}
+  g("ORGANIZAR",[rp,ent&&!hoy?ent:null,"evaEntA","evaEd","evaVis","evaDest","evaDel","evaBor"]);
   if(M.querySelector(".ev6R")){const cl=C.querySelector("[data-close]");(cl||C.lastChild).before(M)}
   const rl=$("#evaRsL");if(rl)rl.hidden=true}
+
+// 19 nov · Crear junta/evento v6 (Edwin «Hazlo»): «Usar mi última junta», fechas/horas en botones, «Mis lugares», 3 pasos y lo opcional plegado. 0 lecturas nuevas (LS + EVA).
+function cv6Ult(tipo){let u=null;try{u=LS.get("evUlt:"+store.uid+":"+tipo)}catch(x){}const M=(EVA||[]).concat(Object.values(EVXm||{})).filter(e=>e.cre===store.uid&&e.tipo===tipo).sort((a,b)=>(b.t||0)-(a.t||0));
+  if(M[0]&&(!u||(M[0].t||0)>(u.t||0)))u=M[0];return u}
+function cv6Lugares(){let L=[];try{L=LS.get("evLug:"+store.uid)||[]}catch(x){}(EVA||[]).filter(e=>e.cre===store.uid&&e.modo!=="virtual"&&e.lugar).forEach(e=>L.push({c:e.ciudad||"",l:e.lugar,ls:e.lugarSub||"",m:e.maps||""}));
+  const V={},R=[];L.forEach(x=>{const k=nrmN(x.l+"|"+x.c);if(!x.l||V[k])return;V[k]=1;R.push(x)});return R.slice(0,4)}
+function cv6Guardar(doc,foto){const k={modo:doc.modo,vis:doc.vis,ciudad:doc.ciudad,lugar:doc.lugar,lugarSub:doc.lugarSub,maps:doc.maps,zoom:doc.zoom,hora:doc.hora,form:doc.form,lid:doc.lid,ds:doc.ds,jd:doc.jd,bxT:doc.bxT,bxS:doc.bxS,tk:doc.tk,cupo:doc.cupo,entS:doc.entS,enc:doc.enc,fo:doc.fo,id:doc.id,t:Date.now()};
+  try{LS.set("evUlt:"+store.uid+":"+doc.tipo,k)}catch(x){}
+  if(doc.modo!=="virtual"&&doc.lugar){let L=[];try{L=LS.get("evLug:"+store.uid)||[]}catch(x){}L=[{c:doc.ciudad,l:doc.lugar,ls:doc.lugarSub,m:doc.maps}].concat(L.filter(x=>nrmN(x.l+"|"+x.c)!==nrmN(doc.lugar+"|"+doc.ciudad))).slice(0,6);try{LS.set("evLug:"+store.uid,L)}catch(x){}}}
+function cv6Arreglar(EVT,tipo,pre,man){const C=$("#sheetPanel");if(!C)return;C.classList.add("cv6");
+  const fld=id=>{const e=$("#"+id);return e?(e.closest(".field")||e):null},grid=id=>{const e=$("#"+id);return e?e.closest(".grid2"):null};
+  const h2=C.querySelector("h2"),intro=C.querySelector("h2 ~ p.small");if(h2){h2.textContent=EVT?"🎤 Crear evento":"🤝 Crear junta de negocios";h2.insertAdjacentHTML("afterend",`<p class="cv6Sub">3 pasos · menos de 1 minuto</p>`)}if(intro)intro.remove();
+  const nodes=[];const add=x=>{if(x)nodes.push(x)};
+  // banner «Usar mi última»
+  const u=!pre&&cv6Ult(tipo);if(u){const b=document.createElement("button");b.type="button";b.className="cv6Pre";const lg=u.modo==="virtual"?"Por Zoom":[u.lugar,u.ciudad].filter(Boolean).join(" · ");
+    b.innerHTML=`<span class="ic">📋</span><span class="tx"><b>Usar ${EVT?"mi último evento":"mi última junta"}</b><small>${esc(lg)}${u.hora?" · "+esc(h12(u.hora)):""}</small></span><em>Usar</em>`;b.onclick=()=>{closeSheet();setTimeout(()=>abrirCrearEva(EVT?"evento":"junta",u),200)};add(b)}
+  if(pre){const t=document.createElement("p");t.className="cv6Ok";t.textContent="📋 Datos copiados. Solo elija la fecha y revise.";add(t)}
+  const hd=(n,t)=>{const h=document.createElement("p");h.className="cv6St";h.innerHTML=`<i>${n}</i>${t}`;return h};
+  if(EVT)add(fld("evBt"));
+  // 1 · ¿Cuándo?
+  add(hd(1,"¿CUÁNDO?"));const F=$("#evF"),H=$("#evH"),dg=grid("evF");
+  const dch=document.createElement("div");dch.className="cv6Ch";const dias=[];for(let i=0;i<7;i++){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i);dias.push({k:dkey(d),t:i===0?"Hoy":i===1?"Mañana":DAYS[d.getDay()]+" "+d.getDate()})}
+  const hch=document.createElement("div");hch.className="cv6Ch";const hs=[...new Set([pre&&pre.hora,"10:00","15:00","16:00","19:00"].filter(Boolean))].slice(0,4);
+  const pintaCh=()=>{dch.innerHTML=dias.map(x=>`<button type="button" data-cd="${x.k}" class="${F.value===x.k?"on":""}">${x.t}</button>`).join("")+(()=>{const fu=!!F.value&&!dias.some(x=>x.k===F.value);return `<button type="button" data-cd="o" class="o${fu?" on":""}">📅 ${fu?esc(niceDate(F.value)):"Otra"}</button>`})();
+    hch.innerHTML=hs.map(h=>`<button type="button" data-ch="${h}" class="${H.value===h?"on":""}">${esc(h12(h))}</button>`).join("")+(()=>{const hu=!!H.value&&!hs.includes(H.value);return `<button type="button" data-ch="o" class="o${hu?" on":""}">🕐 ${hu?esc(h12(H.value)):"Otra"}</button>`})()};
+  if(pre)F.value="";pintaCh();if(dg)dg.hidden=true;
+  dch.onclick=x=>{const b=x.target.closest("[data-cd]");if(!b)return;if(b.dataset.cd==="o"){if(dg)dg.hidden=false;try{F.showPicker&&F.showPicker()}catch(y){}F.focus();return}F.value=b.dataset.cd;pintaCh()};
+  hch.onclick=x=>{const b=x.target.closest("[data-ch]");if(!b)return;if(b.dataset.ch==="o"){if(dg)dg.hidden=false;try{H.showPicker&&H.showPicker()}catch(y){}H.focus();return}H.value=b.dataset.ch;pintaCh()};
+  F.addEventListener("change",pintaCh);H.addEventListener("change",pintaCh);add(dch);add(hch);add(dg);
+  // 2 · ¿Dónde?
+  add(hd(2,"¿DÓNDE?"));add($("#evM"));const LG=cv6Lugares(),cF=fld("evC"),pres=$("#evPres");
+  const lw=document.createElement("div");if(LG.length){lw.innerHTML=`<p class="cv6Lb">Mis lugares</p><div class="cv6Ch">${LG.map((x,i)=>`<button type="button" data-lg="${i}">${esc(x.l)}${x.c?" · "+esc(x.c):""}</button>`).join("")}<button type="button" data-lg="o" class="o">➕ Otro lugar</button></div>`}
+  const mostrar=v=>{if(cF)cF.hidden=!v;[...(pres?pres.children:[])].forEach(c=>c.hidden=!v)};
+  const marca=()=>{const k=nrmN(($("#evL").value||"")+"|"+($("#evC").value||""));let hit=false;lw.querySelectorAll("[data-lg]").forEach(b=>{const x=LG[+b.dataset.lg];const on=!!x&&nrmN(x.l+"|"+x.c)===k;b.classList.toggle("on",on);if(on)hit=true});return hit};
+  lw.onclick=x=>{const b=x.target.closest("[data-lg]");if(!b)return;if(b.dataset.lg==="o"){["evC","evL","evLs","evMap"].forEach(i=>$("#"+i).value="");marca();mostrar(true);b.classList.add("on");$("#evL").focus();return}const g=LG[+b.dataset.lg];$("#evC").value=g.c||"";$("#evL").value=g.l||"";$("#evLs").value=g.ls||"";$("#evMap").value=g.m||"";marca();mostrar(false)};
+  add(lw);add(cF);add(pres);add($("#evVir"));if(LG.length)mostrar(!marca()&&!!($("#evL").value));
+  // 3 · ¿Con quién?
+  add(hd(3,"¿CON QUIÉN?"));add($("#evNEw"));add(fld("evSel"));add($("#evJv"));
+  // Opcional
+  const O=document.createElement("details");O.className="cv6Op";O.innerHTML=`<summary><span><b>⚙️ Opcional</b><small>Ticket · cupo · encargados · formulario · diseño y foto</small></span><em>▾</em></summary>`;
+  const ow=document.createElement("div");ow.className="cv6Ow";O.appendChild(ow);
+  [EVT?fld("evDs"):null,EVT?$("#evBsW"):null,EVT?($("#evBfI")||{}).closest&&$("#evBfI").closest(".field"):null,$("#evDw"),grid("exTk"),$("#exTk")&&$("#exTk").closest(".grid2")&&$("#exTk").closest(".grid2").nextElementSibling,$("#exEnW"),fld("enQ"),fld("evFo")].forEach(x=>{if(x)ow.appendChild(x)});
+  add(O);
+  const fl=document.createElement("div");fl.className="cv6Fl";fl.innerHTML=`<span class="m">FLYER</span><span><b>Su flyer se arma solo</b><small>Con ${EVT?"su foto":"la foto de su lugar"} y sus ${EVT?"invitados":"anfitriones"}.</small></span>`;const pv=$("#evPrev");if(pv){pv.className="cv6Pv";pv.textContent="👁️ Ver el flyer";fl.querySelector("span:last-child").appendChild(pv)}add(fl);
+  add($("#evOk"));add(C.querySelector("[data-close]"));
+  nodes.forEach(n=>C.appendChild(n));
+  // lo que quedó fuera (vacío) se oculta
+  [...C.children].forEach(c=>{if(!nodes.includes(c)&&c!==h2&&!c.classList.contains("cv6Sub")&&!(c.hasAttribute&&c.hasAttribute("data-nofocus")))c.hidden=true})}
 {const _rel=renderEvList;renderEvList=function(){if(ag6Init())return ag6EvList();return _rel.apply(this,arguments)};
  const _rma=renderMiAgenda;renderMiAgenda=function(){const el=$("#agMia");if(ag6Init()&&el&&agVista==="mia"&&citasOk)return ag6MiAgenda();return _rma.apply(this,arguments)};
  const _sav=setAgVista;setAgVista=function(v){_sav.apply(this,arguments);try{ag6Init()}catch(e){}}}
@@ -10012,7 +10088,7 @@ function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
   })}
 $("#meBtn").onclick=abrirPerfil;
 setInterval(renderMeBtn,3000);
-function openSheet(html,bind){$("#sheetPanel").innerHTML=html;$("#sheetPanel").classList.remove("ev6");$("#sheet").hidden=false;bind&&bind();if($("#sheetPanel [data-nofocus]"))return;const f=$("#sheetPanel input");f&&f.focus()}
+function openSheet(html,bind){$("#sheetPanel").innerHTML=html;$("#sheetPanel").classList.remove("ev6","cv6");$("#sheet").hidden=false;bind&&bind();if($("#sheetPanel [data-nofocus]"))return;const f=$("#sheetPanel input");f&&f.focus()}
 function closeSheet(){$("#sheet").hidden=true}
 $("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet"||e.target.closest("[data-close]"))closeSheet()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#sheet").hidden)closeSheet()});
@@ -10932,7 +11008,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119062508";var busy=false,pend=null;
+(function(){var V="20261119063033";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
