@@ -104,9 +104,9 @@
    "registros": 0,
    "regSemana": 0,
    "id": "josue-antony-navarro-rubio",
-   "activaciones": 3,
-   "volumen": 1500,
-   "actSemana": 0
+   "activaciones": 4,
+   "volumen": 1700,
+   "actSemana": 1
   },
   {
    "nombre": "Erick Rolando Miranda Dominguez",
@@ -130,7 +130,7 @@
    "id": "juan-carlos-granados-claros",
    "activaciones": 2,
    "volumen": 700,
-   "actSemana": 2
+   "actSemana": 0
   },
   {
    "nombre": "Karla patricia Calderon fajardo",
@@ -142,7 +142,7 @@
    "id": "karla-patricia-calderon-fajardo",
    "activaciones": 1,
    "volumen": 500,
-   "actSemana": 1
+   "actSemana": 0
   },
   {
    "nombre": "Adela izamara Zelaya",
@@ -154,7 +154,7 @@
    "id": "adela-izamara-zelaya",
    "activaciones": 1,
    "volumen": 500,
-   "actSemana": 1
+   "actSemana": 0
   },
   {
    "nombre": "Sergio mauricio Garcia lopez",
@@ -166,7 +166,7 @@
    "id": "sergio-mauricio-garcia-lopez",
    "activaciones": 1,
    "volumen": 500,
-   "actSemana": 1
+   "actSemana": 0
   },
   {
    "nombre": "Denis josue Reyes",
@@ -178,7 +178,7 @@
    "id": "denis-josue-reyes",
    "activaciones": 1,
    "volumen": 200,
-   "actSemana": 1
+   "actSemana": 0
   },
   {
    "nombre": "Maynor Larios",
@@ -190,6 +190,18 @@
    "id": "maynor-larios",
    "activaciones": 1,
    "volumen": 500,
+   "actSemana": 0
+  },
+  {
+   "nombre": "Joany isabel Perla gamez",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "joany-isabel-perla-gamez",
+   "activaciones": 1,
+   "volumen": 200,
    "actSemana": 1
   }
  ],
@@ -410,7 +422,7 @@
    "nuevos": 0,
    "presentaciones": 0,
    "rango": "Team Leader",
-   "volumen": 0,
+   "volumen": 200,
    "volumenDetalle": "",
    "id": "joany-isabel-perla-gamez",
    "volumenHoja": 0,
@@ -523,7 +535,7 @@
    "nuevos": 0,
    "presentaciones": 0,
    "rango": "",
-   "volumen": 1500,
+   "volumen": 1700,
    "volumenDetalle": "",
    "id": "josue-antony-navarro-rubio",
    "volumenHoja": 0,
@@ -3253,6 +3265,28 @@
    "fuente": "gmail",
    "id": "gissel-ponce",
    "rv": 1
+  },
+  {
+   "socio": "Suyapa Avilez",
+   "paquete": "Classic",
+   "patrocinador": "Joany isabel Perla gamez",
+   "fecha": "2026-11-18T21:55:02Z",
+   "ek": "187d10",
+   "wk": "f9fd55",
+   "fuente": "gmail",
+   "id": "suyapa-avilez",
+   "rv": 1
+  },
+  {
+   "socio": "Maria celina Castillo almendarez",
+   "paquete": "Classic",
+   "patrocinador": "Josue antony Navarro rubio",
+   "fecha": "2026-11-18T21:55:07Z",
+   "ek": "998960",
+   "wk": "836bce",
+   "fuente": "gmail",
+   "id": "maria-celina-castillo-almendarez",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3286,7 +3320,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-15T23:55:02Z",
+  "activacionesCorte": "2026-11-18T21:55:07Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3295,7 +3329,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-15T18:01:00-06:00",
+  "rankingActualizado": "2026-11-18T18:48:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -4175,7 +4209,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-11-18T18:48:53Z",
+   "v": "2026-11-19T00:48:29Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "0225a9": "2026-10-27T10:09:44Z",
@@ -4231,6 +4265,7 @@
     "7e7226": "2026-11-22T11:11:20Z",
     "7e760f": "2026-10-24T23:08:55Z",
     "7e7c5c": "2026-11-07T05:30:40Z",
+    "8037b7": "2026-11-23T21:08:32Z",
     "8495fe": "2026-10-30T06:38:51Z",
     "866efb": "2026-10-26T21:08:59Z",
     "86b433": "2026-11-08T00:54:56Z",
@@ -4890,6 +4925,11 @@
      "a": 17
     },
     {
+     "n": "Josue Antony Navarro Rubio",
+     "p": 1700,
+     "a": 4
+    },
+    {
      "n": "Mayckol Turcios",
      "p": 1700,
      "a": 14
@@ -4903,11 +4943,6 @@
      "n": "Zamir Ely Fuentes Trochez",
      "p": 1650,
      "a": 10
-    },
-    {
-     "n": "Josue Antony Navarro Rubio",
-     "p": 1500,
-     "a": 3
     },
     {
      "n": "Juan Carlos Granados Claros",
@@ -5000,6 +5035,11 @@
      "a": 6
     },
     {
+     "n": "Joany Isabel Perla Gamez",
+     "p": 750,
+     "a": 6
+    },
+    {
      "n": "Denia Rocha",
      "p": 700,
      "a": 6
@@ -5053,11 +5093,6 @@
      "n": "Guillermo Fuentes",
      "p": 550,
      "a": 4
-    },
-    {
-     "n": "Joany Isabel Perla Gamez",
-     "p": 550,
-     "a": 5
     },
     {
      "n": "Saby Isaguirre",
@@ -5281,11 +5316,6 @@
     },
     {
      "n": "Edvin Yasmin Solis Funez",
-     "p": 250,
-     "a": 1
-    },
-    {
-     "n": "Glenda Elizabeth Lopez Flores",
      "p": 250,
      "a": 1
     },
@@ -5600,7 +5630,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-18T18:48:53Z"
+   "t": "2026-11-19T00:48:29Z"
   },
   "audioEsp": {
    "id": "santiago-1",
