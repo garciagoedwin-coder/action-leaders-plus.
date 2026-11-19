@@ -1730,6 +1730,24 @@ body.acc3 #tasks .counter .num{font-family:'Barlow Condensed',sans-serif;font-si
 .a6pas summary b{color:var(--brand)}.a6pas[open] summary b{transform:rotate(90deg)}
 .a6day .cita{padding:11px 0 0;margin-top:10px}.a6day .cita .ch-h b{font-size:17px}
 #v-agenda.ag6 #eqzCard p.small.muted{display:none}
+
+/* Agenda v6 · tarjetas internas (19 nov) */
+#v-agenda.ag6 #evAg,#v-agenda.ag6 #eqzCard,#v-agenda.ag6 #l3Card,#v-agenda.ag6 #recCard{background:var(--surface)!important;border:0!important;box-shadow:0 0 0 1px var(--line)!important;border-radius:18px}
+#v-agenda.ag6 #evaInv{border:0!important;box-shadow:0 0 0 1px var(--line)!important;border-radius:18px}
+#v-agenda.ag6 #evAg #evaNew{background:transparent!important;color:var(--brand)!important;box-shadow:0 0 0 1.5px var(--brand)!important;border:0!important}
+#v-agenda.ag6 #eqzCard [data-eqze]{background:transparent!important;color:var(--brand)!important;box-shadow:0 0 0 1.5px var(--brand)!important;border:0!important}
+#v-agenda.ag6 .evCh,#v-agenda.ag6 .evCh.g,#v-agenda.ag6 .evCh.j{background:var(--surface-2);color:var(--muted)}
+#v-agenda.ag6 .evCh.hoy{background:color-mix(in srgb,#DC2626 10%,transparent);color:#DC2626}
+#v-agenda.ag6 .evR{border:0!important;border-top:1px solid var(--line)!important;border-radius:0;background:none!important;padding:12px 0 2px;margin-top:10px}
+#v-agenda.ag6 .evR::before{display:none}
+#v-agenda.ag6 .evR .evD{background:var(--surface-2)!important;color:var(--ink)!important;width:50px;border-radius:12px}
+#v-agenda.ag6 .evR.gran .evD{background:radial-gradient(120% 90% at 100% 0%,#143b5c 0,#0b1424 60%)!important;color:#fff!important}
+#v-agenda.ag6 .evR .evD b{font-family:var(--f-num);font-size:22px}
+#v-agenda.ag6 .evR b{font-size:14.5px}
+#v-agenda.ag6 .evTg em,#v-agenda.ag6 .evTg em.y{background:var(--surface-2);color:var(--muted)}
+#v-agenda.ag6 .evTg em.r{background:color-mix(in srgb,#DC2626 10%,transparent);color:#DC2626}
+#v-agenda.ag6 .evMas{border:0;box-shadow:0 0 0 1px var(--line);background:var(--surface-2)}
+#v-agenda.ag6~*.card.perf,#v-agenda.ag6 .card.perf{display:none!important}
 /* 19 nov · Inicio con tarjetas plegadas (body.f20): solo el título; al tocar se abren. data-f20o en body = abiertas */
 body.f20 #v-inicio .f20k{cursor:pointer}
 body.f20 #nextEvents:not(.f20o)>:not(:first-child),
@@ -1742,17 +1760,17 @@ body.f20 #v-inicio #rutCard.mini:not(.f20o)>.rh6{display:flex!important}
 body.f20 #v-inicio #rutCard.done #rutAlert{display:none!important}
 body.f20 #rutCard.done .fl6{background:#16A34A;box-shadow:0 6px 14px -6px #16A34A;font-size:0}
 body.f20 #rutCard.done .fl6::after{content:"✓";font-size:17px;font-weight:800;color:#fff}
-body.f20 #rutCard.done .rh6 b .f20v::before{content:"· completada ";color:#16A34A;font-size:1.34em;font-weight:800;display:inline-block;margin-right:6px}
+body.f20 #rutCard.done .rh6 b .f20v::before{content:"· completada ";color:#16A34A;font-size:16px;font-weight:800;display:inline-block;margin-right:6px}
 body.f20 #rutCard.done .rh6 b .f20v{margin-left:4px}
 body.f20 #rutCard.done #rutRacha{display:block!important}
-body.f20 #rutCard:not(.done) .rh6 b .f20v::before{content:"· pendiente ";color:#DC2626;font-size:1.34em;font-weight:800;display:inline-block;margin-right:6px}
+body.f20 #rutCard:not(.done) .rh6 b .f20v::before{content:"· pendiente ";color:#DC2626;font-size:16px;font-weight:800;display:inline-block;margin-right:6px}
 body.f20 #rutCard:not(.done) .rh6 b .f20v{margin-left:4px}
 .f20p{display:none}
 body.f20 #rutCard:not(.done):not(.f20o) .f20p{display:flex;align-items:center;gap:8px;margin-top:4px;font-size:12.5px;color:var(--muted);font-weight:600}
 .f20p i{display:flex;gap:3px}.f20p i u{width:12px;height:5px;border-radius:3px;background:color-mix(in srgb,var(--line) 85%,transparent);text-decoration:none}
 .f20p i u.on{background:#F97316}.f20p em{font-style:normal;white-space:nowrap}.f20p em b{color:#DC2626;font-size:inherit;font-weight:800;display:inline}
 body.f20 .f20k .f20v{display:inline-block;margin-left:6px;color:var(--muted);font-size:12px;transition:transform .2s}
-body.f20 .f20o .f20v{transform:rotate(180deg)}
+body.f20 .f20k .f20v{font-size:0!important}body.f20 .f20k .f20v::after{content:"▾";font-size:12px;color:var(--muted)}body.f20 .f20o .f20v::after{content:"▴"}
 </style>
 
 </head>
@@ -10827,7 +10845,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119060721";var busy=false,pend=null;
+(function(){var V="20261119061455";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
