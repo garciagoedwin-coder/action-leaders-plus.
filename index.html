@@ -8677,7 +8677,7 @@ function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fech
   return `<div class="cvTop"><div class="grow" style="min-width:0">
      <button type="button" class="cvSt cvSt3" data-stopen="${esc(c.id)}"><span class="cvPill" style="--pc:${STAGE_COL[c.stage]||"var(--brand)"}">${CV_STI[c.stage]||""}${esc(c.stage||"Nuevo")}</span>${due}<span class="cvCg">Cambiar ›</span></button></div></div>
    ${crmSt.has(c.id)?stepsHTML(c):""}${maLinea(c)}${lluHTML(c)}${gcHTML(c)}
-   ${lluPas(c)?"":crmV2Sig(c)}
+   ${lluPas(c)||gcHTML(c)?"":crmV2Sig(c)}
    ${lluPas(c)?"":reuCamino(c)}
    ${A.length?`<div class="cvActv"><div class="k">ACTIVIDAD${nS?`<button type="button" data-sgt="${esc(c.id)}">Ver todo ›</button>`:""}</div>${A.slice(0,3).map(([i,t,f,k])=>k?`<div data-cvtk="${esc(k)}" style="cursor:pointer"><span>${i}</span><span class="grow">${esc(t)} <b style="color:var(--brand);font-weight:700;white-space:nowrap">Ver respuestas ›</b></span>${f?`<small>${esc(f)}</small>`:""}</div>`:`<div><span>${i}</span><span class="grow">${esc(t)}</span>${f?`<small>${esc(f)}</small>`:""}</div>`).join("")}</div>`:""}
    <div class="cvFt">${wl?`<a href="${esc(wl)}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" class="w">💬 WhatsApp</a>`:`<button type="button" data-edit="${esc(c.id)}">➕ WhatsApp</button>`}<button type="button" data-cvs="${esc(c.id)}">🔁 Seguimiento</button><button type="button" class="x" data-cvmas="${esc(c.id)}" aria-label="Más opciones">⋯</button></div>`}
@@ -9257,6 +9257,12 @@ const GC_R1={m1:"sal",m2:"con1",m3:"acc",m4:"pres",m5:"conf",m6:"tk"},GC_R2={m1:
 const gcRol=k=>(gcV2()?GC_R2:GC_R1)[k]||k,gcPresI=()=>gcV2()?2:3;
 function gcPv(c){const g=c.gc||{},p=+g.p||0;return gcV2()&&!g.v&&p>0?GC_MAP12[Math.min(6,p)]:p}
 function gcEv(){try{const c=anuCfg();return c?anuEv(c):null}catch(e){return null}}
+function gcEvNom(){try{const e=gcEv();if(e){const n=evaNom(e);if(n)return String(n).replace(/^[^\p{L}]+/u,"")}}catch(x){}return "Business Experience"}
+/* 19 nov (Edwin): versión ESCRITA de los pasos de audio (mismo proceso, para cuando no se puede grabar) */
+function gcTxt(c,k){const f=String(c.name||"").trim().split(/\s+/)[0]||"",E=gcEvD(),yo=gcYo(),dS=E.dia.replace(/ \d+$/,"").replace(/^el /,"");
+  return k==="m1"?`¡Hola, ${f}! 👋 ¿Cómo está?\n\nLe escribe ${yo}, del equipo de Edwin García.\n\nVi que se registró en el video del evento de este ${dS} aquí en ${E.ciudad}. ¡Qué bueno que le interesó! 🙌\n\nLe escribo para darle su acceso. ¿Está disponible para que le envíe los detalles?`
+   :k==="nc"?`¡Hola, ${f}! 👋\n\nLe escribe ${yo}, del equipo de Edwin García. Le escribo de nuevo porque quiero asegurarme de que reciba su acceso al evento del ${dS} en ${E.ciudad}, el del video donde se registró.\n\n¿Está disponible para que le envíe los detalles?`
+   :k==="mi"?`${f}, vi que empezó la presentación. ¡Qué bueno! 🙌\n\nLo mejor viene en la parte de cómo empezar, y la retoma donde quedó.\n\n¿La termina hoy?`:gcMsg(c,k,{})}
 function gcEvD(){const e=gcEv(),D=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
   if(!e)return {dia:"el domingo",hora:"",lugar:"[lugar]",ciudad:"San Pedro Sula",tk:0,e:null};
   const d=parseK(e.fecha),hora=(h12(e.hora)||"").replace(" am"," a.m.").replace(" pm"," p.m.");
@@ -9268,9 +9274,9 @@ function gcTrab(w){w=String(w||"").trim().replace(/[.!]+$/,"");if(!w)return "";c
   for(const [re,t] of m)if(re.test(w))return t+w.replace(re,"");return w.charAt(0).toLowerCase()+w.slice(1)}
 function gcMsg(c,k,X){const f=String(c.name||"").trim().split(/\s+/)[0]||"",E=gcEvD(),g=c.gc||{},yo=gcYo(),X2=X||{};
   if(gcV2()){const dS=E.dia.replace(/ \d+$/,""),T2={
-   m1:`¡Hola, ${f}! ¿Cómo está? Le habla ${yo}, del equipo de Edwin García. Vi que se registró en el video del evento de este ${dS.replace(/^el /,"")} aquí en ${E.ciudad}. ¡Qué bueno que le interesó! Le escribo para darle su acceso. Ahorita le mando los detalles por aquí.`,
-   m2:`Le comparto los detalles, ${f} 🙌\n\nPara darle acceso al evento, el paso previo es ver una presentación de 20 minutos. Ahí usted mismo va a ver si esto es para usted.\n\nSi se la envío ahorita, ¿cuándo la vería?`,
-   m3:`Perfecto, ${f}. Aquí la tiene 👉\n${X2.lk||"[enlace]"}\n\nLe comento que los cupos se están terminando, así que le aparto su lugar hasta ${X2.cu||g.cu||"[cuándo la verá]"}.\n\n¿Me escribe apenas la termine?`,
+   m1:`¡Hola, ${f}! ¿Cómo está? Le habla ${yo}, del equipo de Edwin García. Vi que se registró en el video del evento de este ${dS.replace(/^el /,"")} aquí en ${E.ciudad}. ¡Qué bueno que le interesó! Le escribo para darle su acceso. ¿Está disponible para que le envíe los detalles?`,
+   m2:`¡Excelente, ${f}! 🙌\n\nEste ${dS.replace(/^el /,"")} es el *${gcEvNom()}* en ${E.ciudad}: una tarde de negocios, viajes y liderazgo.\n\nAntes le comparto un video de 20 minutos para que vea si esto conecta con usted. En el evento daremos el plan de acción para expandirnos en la ciudad con personas que buscan lo mismo.\n\nSi se lo envío ahorita, ¿cuándo lo vería?`,
+   m3:`Perfecto, ${f}. Aquí lo tiene 👉\n${X2.lk||"[enlace]"}\n\nLe comento que los cupos se están terminando, así que le aparto su lugar hasta ${X2.cu||g.cu||"[cuándo lo verá]"}.\n\n¿Me escribe apenas lo termine?`,
    m4:`¡La terminó, ${f}! 🙌 Ya tiene acceso al evento.\n\nConfirme su asistencia aquí 👉\n${X2.lk||"[enlace de confirmación]"}\n\n¿Me avisa cuando lo haga para enviarle su ticket digital?`,
    m5:`¡Listo, ${f}! Aquí está su ticket 🎟️\n\nNos vemos ${E.dia}${E.hora?" a las "+E.hora:""} en ${E.lugar}. Preséntelo en la entrada.\n\n¿Qué fue lo que más le gustó de la presentación?`,
    m6:`¡Qué bueno, ${X2.d||g.d||"[lo que le gustó]"}! Eso lo vamos a ver a fondo ${dS}.\n\n¿Va solo o acompañado?`,
@@ -9305,29 +9311,41 @@ function gcSug(c){gcS();const S=gcSt(c),g=S.g,E=gcEvD(),now=Date.now(),t=g.t||{}
   if(gcV2()?(S.p===2&&g.v&&t.m2&&now-t.m2>3*36e5):(S.p===1&&t.m1&&now-t.m1>3*36e5))return "nc";return ""}
 function gcHTML(c){if(!lluEsCamp(c)||["Socio","Cliente","No interesado"].includes(c.stage))return "";if(c.rep&&c.rep.u&&c.rep.st!=="x"&&campOn())return "";const S=gcSt(c),id=esc(c.id),sg=gcSug(c);
   const dots=GC_P.map((k,i)=>`<i class="${i<S.p?"ok":i===S.p?"on":""}"></i>`).join("");
-  const PI=gcPresI(),esp=S.p===PI+1&&!S.fin,nx=esp?`<div class="gcAv o">⏳ Esperando que vea la presentación${S.mitad?" · va en "+(+S.v.pct||0)+"%":""}. La app le avisa aquí cuando la termine.</div><button type="button" class="gcMs1" data-gcp="${id}">Ya me dijo que la terminó › Paso ${PI+2}</button>`:S.p<6?`<button type="button" class="gcGo" data-gcp="${id}">💬 Paso ${S.p+1} · ${esc(GC_N[S.p])}</button>`:`<div class="gcFin">✅ Ticket enviado · nos vemos en el evento</div>`;
+  const PI=gcPresI(),esp=S.p===PI+1&&!S.fin,nx=esp?`<div class="gcAv o">⏳ Esperando que vea la presentación${S.mitad?" · va en "+(+S.v.pct||0)+"%":""}. La app le avisa aquí cuando la termine.</div><button type="button" class="gcMs1" data-gcp="${id}">Ya me dijo que la terminó › Paso ${PI+2}</button>`:S.p<6?`${gcV2()&&S.p===1&&!(S.g.t||{}).m2?(S.g.an?`<div class="gcAv o">⏳ Le dijo que ahorita no podía (${esc(memHace(S.g.an))}) · escríbale más tarde</div>`:`<button type="button" class="gcMs1" data-gcan="${id}">⏳ Ahorita no puede · le escribo más tarde</button>`):""}<button type="button" class="gcGo" data-gcp="${id}">💬 Paso ${S.p+1} · ${esc(GC_N[S.p])}</button>`:`<div class="gcFin">✅ Ticket enviado · nos vemos en el evento</div>`;
   return `<div class="gcBox"><div class="gcHd"><b>📋 Guion de la campaña</b><span class="gcD">${dots}</span></div>
    ${S.p===PI+1&&S.fin?`<div class="gcAv">🎉 Terminó la presentación: ya puede darle acceso</div>`:""}
    ${sg?`<button type="button" class="gcSg" data-gcm="${id}|${sg}">${esc(GC_S[sg])} › mensaje listo</button>`:""}
    ${nx}<div class="gcMs"><button type="button" data-gcl="${id}">📋 Pasos</button><button type="button" data-gcx="${id}">🔁 Seguimiento</button><button type="button" data-gcq="${id}">❓ Me preguntó…</button></div></div>`}
 // v2: pasos de AUDIO (m1 bienvenida, nc reactivación, mi a la mitad): guion para leer en voz alta + abrir el chat sin texto + «Ya le mandé el audio».
-function gcAudio(c,k){const step=GC_P.indexOf(k),n=waNum(c.phone,c.cc),f=String(c.name||"").split(" ")[0],tx=gcMsg(c,k,{}),
-  tit=step>=0?"🎙️ Paso "+(step+1)+" · Audio de bienvenida":(GC_S[k]||"🎙️ Audio");
-  openSheet(`<h2 style="font-size:18px">${esc(tit)}</h2><p class="small muted" style="margin:0 0 8px">Para ${esc(c.name)} · léalo en voz alta y mándelo como <b>audio</b> (20 segundos, tranquilo y con energía).</p>
+function gcAudio(c,k,modo){const step=GC_P.indexOf(k),n=waNum(c.phone,c.cc),f=String(c.name||"").split(" ")[0],tx=gcMsg(c,k,{}),txt=modo==="t",
+  tit=step>=0?(txt?"💬":"🎙️")+" Paso "+(step+1)+" · "+(txt?"Mensaje de bienvenida":"Audio de bienvenida"):(GC_S[k]||"🎙️ Audio");
+  openSheet(`<h2 style="font-size:18px">${esc(tit)}</h2>
+   <div class="flTuR" style="margin:0 0 10px"><span>¿Cómo se lo manda?</span><div class="flTuS" id="gaM"><button type="button" data-m="a" aria-pressed="${!txt}">🎙️ Audio</button><button type="button" data-m="t" aria-pressed="${txt}">💬 Texto</button></div></div>
+   ${txt?`<p class="small muted" style="margin:0 0 8px">Para ${esc(c.name)} · puede cambiar el mensaje antes de enviarlo.</p>
+   <textarea id="gaT" rows="11" style="width:100%;font:inherit;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink)"></textarea>
+   ${k==="nc"?`<a class="btn ghost" href="tel:${esc(n)}" style="display:block;text-align:center;margin-top:10px;text-decoration:none">📞 Primero llámele 1 minuto</a>`:""}
+   <div style="display:flex;gap:8px;margin-top:12px"><button type="button" class="btn" id="gaE" style="flex:1;background:#16A34A;color:#fff">💬 Enviar por WhatsApp</button><button type="button" class="btn ghost" id="gaCp">Copiar</button></div>`
+   :`<p class="small muted" style="margin:0 0 8px">Para ${esc(c.name)} · léalo en voz alta y mándelo como <b>audio</b> (20 segundos, tranquilo y con energía).</p>
    <div style="padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);line-height:1.5">🎙️ «${esc(tx)}»</div>
    <p class="small muted" style="margin:8px 0 0">Diga siempre su nombre, <b>«del equipo de Edwin García»</b> y <b>el video del evento</b>. No hable del negocio ni de ingresos.</p>
    ${k==="nc"?`<a class="btn ghost" href="tel:${esc(n)}" style="display:block;text-align:center;margin-top:12px;text-decoration:none">📞 Primero llámele 1 minuto</a>`:""}
    <div style="display:flex;gap:8px;margin-top:12px"><button type="button" class="btn" id="gaW" style="flex:1;background:#16A34A;color:#fff">💬 Abrir el chat de ${esc(f||"la persona")}</button></div>
-   <button type="button" class="btn ghost" id="gaOk" style="width:100%;margin-top:8px">✅ Ya le mandé el audio</button>`,()=>{
+   <button type="button" class="btn ghost" id="gaOk" style="width:100%;margin-top:8px">✅ Ya le mandé el audio</button>`}`,()=>{
+   const hecho=async(w)=>{const t=Object.assign({},(c.gc||{}).t||{});t[k]=Date.now();const o={t,v:2};if(step>=0)o.p=Math.max(gcPv(c),step+1);
+     try{LS.set("llr:"+c.id,TODAY)}catch(x){}closeSheet();await gcGuardar(c,o);if(step>=0)stAvanza(c,"Contactado",txt?"mensaje de bienvenida":"audio de bienvenida");
+     if(w){waIr(w);return}toast("✅ Listo. Cuando le conteste, mándele el paso 2");
+     if(step===0)setTimeout(()=>{try{gcAbrir(c,"m2")}catch(x){}},600)};
+   $("#gaM").onclick=e=>{const b=e.target.closest("[data-m]");if(!b||(b.dataset.m==="t")===txt)return;try{LS.set("gaModo",b.dataset.m)}catch(x){}gcAudio(c,k,b.dataset.m)};
+   if(txt){const T=$("#gaT");T.value=gcTxt(c,k);
+     $("#gaE").onclick=()=>{const v=T.value.trim();if(!v)return;hecho("https://wa.me/"+(n||"")+"?text="+encodeURIComponent(v))};
+     $("#gaCp").onclick=()=>{gcCopiar(T.value);toast("📋 Copiado")};return}
    $("#gaW").onclick=()=>{if(n)waIr("https://wa.me/"+n);else toast("Este contacto no tiene WhatsApp guardado")};
-   $("#gaOk").onclick=async()=>{const t=Object.assign({},(c.gc||{}).t||{});t[k]=Date.now();const o={t,v:2};if(step>=0)o.p=Math.max(gcPv(c),step+1);
-     try{LS.set("llr:"+c.id,TODAY)}catch(x){}closeSheet();await gcGuardar(c,o);if(step>=0)stAvanza(c,"Contactado","audio de bienvenida");toast("✅ Listo. Ahora mándele el paso 2 por escrito");
-     if(step===0)setTimeout(()=>{try{gcAbrir(c,"m2")}catch(x){}},600)}})}
+   $("#gaOk").onclick=()=>hecho()})}
 function gcCopiar(t){try{navigator.clipboard.writeText(t);return}catch(e){}try{const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove()}catch(e){}}
 async function gcGuardar(c,o){c.gc=Object.assign({},c.gc||{},o||{});c.updated=Date.now();try{await store.saveContact(Object.assign({},c))}catch(e){toast("No se pudo guardar ("+errCod(e)+")")}try{renderCRM()}catch(e){}try{lluStrip()}catch(e){}}
 // Hoja del mensaje: campos para lo que falta, texto editable, Enviar por WhatsApp / Copiar.
 async function gcAbrir(c,k){if(!c)return;gcS();const S=gcSt(c),step=GC_P.indexOf(k),f=String(c.name||"").split(" ")[0],R=gcRol(k);let lk="";
-  if(GC_AUD(k))return gcAudio(c,k);
+  if(GC_AUD(k))return gcAudio(c,k,(()=>{try{return LS.get("gaModo")||"a"}catch(x){return "a"}})());
   if(R==="pres"){if(!salaYoOk()&&!window._syAdm&&!isAdmin){salaYoGate();return}if(!(await salaPrep()))return;lk=salaUrl(c.name,c.id)}
   if(R==="conf"){const e=gcEv();if(!e){toast("No encuentro el evento en la app. Ábralo en Agenda › Eventos y juntas.");return}try{await rsvpPrep(e)}catch(x){}lk=rsvpLink(e)}
   const fl=R==="con"?["d","¿Qué le respondió? (lo que más le gustó de la presentación)",S.g.d||""]:R==="con1"?["d","¿Qué le respondió? (lo que más le llamó la atención)",S.g.d||""]:R==="acc"&&!gcV2()?["w","¿A qué se dedica? Pegue lo que le respondió (ej.: «Soy administradora de una empresa»)",S.g.w||""]:R==="pres"?["cu","¿Cuándo la va a ver? (ej.: «hoy a las 8 p.m.»)",S.g.cu||""]:null;
@@ -9355,6 +9373,8 @@ function gcPasos(c){const S=gcSt(c),t=(c.gc||{}).t||{};
   document.querySelectorAll("#sheet [data-gck]").forEach(b=>b.onclick=()=>{closeSheet();setTimeout(()=>gcAbrir(c,b.dataset.gck),250)})})}
 function gcLista(c,M,tit){openSheet(`<h2 style="font-size:18px">${tit}</h2><div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">${Object.entries(M).map(([k,t])=>`<button type="button" class="btn ghost" style="text-align:left" data-gck="${k}">${esc(t)}</button>`).join("")}</div>`,()=>{
   document.querySelectorAll("#sheet [data-gck]").forEach(b=>b.onclick=()=>{closeSheet();setTimeout(()=>gcAbrir(c,b.dataset.gck),250)})})}
+document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("[data-gcan]");if(a){e.preventDefault();e.stopPropagation();const c=(contacts||[]).find(x=>x.id===a.dataset.gcan);if(!c)return;
+  const nx=addD(TODAY,0);if(!c.next||c.next>nx)c.next=nx;c.seg=(c.seg||[]).concat([{t:Date.now(),k:"gc",r:"tiem",n:"Ahorita no podía · escribirle más tarde"}]).slice(-30);gcGuardar(c,{an:Date.now()});toast("⏳ Listo. Le queda en «Hoy le toca» para escribirle más tarde");return}},true);
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-gcp],[data-gcm],[data-gcx],[data-gcq],[data-gcl]");if(!b)return;e.preventDefault();e.stopPropagation();
   const v=b.dataset.gcp||b.dataset.gcx||b.dataset.gcq||b.dataset.gcl||(b.dataset.gcm||"").split("|")[0],c=(contacts||[]).find(x=>x.id===v);if(!c)return;
   if(b.dataset.gcp){const S=gcSt(c);gcAbrir(c,GC_P[Math.min(5,S.p)])}else if(b.dataset.gcm)gcAbrir(c,b.dataset.gcm.split("|")[1]);else if(b.dataset.gcl)gcPasos(c);else if(b.dataset.gcx)gcLista(c,gcS(),"🔁 Seguimiento");else gcLista(c,GC_Q,"❓ Me preguntó…")},true);
@@ -11241,7 +11261,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119125940";var busy=false,pend=null;
+(function(){var V="20261119132832";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
