@@ -9115,6 +9115,7 @@ function aca4(b){const hd=$("#v-academia > .row.between");if(hd){const e=hd.quer
   let h="";
   {const I=npIns(),NM={1:"Despegue",2:"Presentador",3:"Cerrador",4:"Duplicador",c:"Constancia",g:"Espartano"};
    h+=`<button type="button" class="ac5C ac4I" id="ac4I"><span class="ac4Ih"><b>Mis insignias</b><em>${I.filter(x=>x.ok).length} de ${I.length} ›</em></span><span class="ac4Ig">${I.map(x=>`<span class="${x.ok?"":"g"}"><img src="${insSrc(x.n)}" alt="" decoding="async">${NM[x.n]||""}</span>`).join("")}</span></button>`}
+  try{if(irModo()&&irEstado().grad)h+=`<div class="ac5C" id="ac4Grad" style="display:flex;gap:12px;align-items:center;padding:12px 14px"><img src="media/insignias/v3-espartano-e.webp?v=3" alt="" style="width:46px;height:auto;flex:none"><span style="flex:1;min-width:0"><small class="muted" style="font-weight:800;letter-spacing:.08em;font-size:11px">MI GRADUACIÓN</small><b style="display:block">🛡️ Espartano · Networker Pro</b><span style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button type="button" class="btn sm" id="ac4GD" style="background:#E8C766;color:#3b2a00">🎓 Mi diploma</button><button type="button" class="btn sm ghost" id="ac4GF">📣 Compartir mi logro</button></span></span></div>`}catch(e){}
   h+=ac5Hero(S);
   h+=`<div class="ac5C ac5J"><span class="ac5Jh"><span><small>SU CAMINO DE FORMACIÓN</small><b>${S.done} de ${tot} cursos</b></span><em>${Math.round(S.done*100/tot)} %</em></span><span class="ac5Js">${S.C.map(c=>`<i class="${c.st==="dn"?"on":c.st==="go"||c.st==="pr"?"nx":""}"></i>`).join("")}</span></div>`;
   S.A.cats.forEach(k=>{const isT=k.k==="tut",L=isT?[]:S.C.filter(c=>c.cat===k.k);if(!isT&&!L.length)return;
@@ -9130,6 +9131,7 @@ function aca4(b){const hd=$("#v-academia > .row.between");if(hd){const e=hd.quer
    <button type="button" class="ac5R" id="ac4Caja"><span class="ac5I">🧰</span><span class="ac5G"><b>Caja de herramientas</b><small>Historia, bienvenida, membresía…</small></span><em class="lk">›</em></button></div>`;
   b.innerHTML=h;
   {const i=$("#ac4I");if(i)i.onclick=()=>{const g=$("#goIR");if(g)g.click()}}
+  {const d=$("#ac4GD");if(d)d.onclick=()=>dipDescargar();const f=$("#ac4GF");if(f)f.onclick=()=>irFlyer(null)}
   {const a=$("#ac5Av");if(a)a.onclick=()=>{const O=LS.get("acaAvisar")||{};O[a.dataset.k]=Date.now();try{LS.set("acaAvisar",O)}catch(e){}a.textContent="✓ Le avisaremos";a.classList.add("on");toast("🔔 Listo, le avisaremos cuando abra el curso")}}
   b.querySelectorAll("[data-ac4h]").forEach(x=>x.onclick=()=>{const k=x.dataset.ac4h,O=LS.get("acaCat")||{},cur=O[k]!=null?!!O[k]:(k==="np"||k==="lid");O[k]=cur?0:1;try{LS.set("acaCat",O)}catch(e){}aca4(b)});
   b.querySelectorAll("[data-ac4]").forEach(x=>x.onclick=()=>ac4Abrir(x.dataset.ac4));
@@ -9822,14 +9824,16 @@ let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{ponStrip()}c
     try{const D=LS.get("tourOk")||{};if(!D.ir&&!LS.get("tourAskIr")&&!tourSt){LS.set("tourAskIr",1);setTimeout(()=>{if(!document.querySelector(".avisoTop.on")&&$("#irCard")&&!$("#irCard").hidden&&!$("#v-inicio").hidden)avisoTop("🧭 ¿Le enseño cómo funciona su plan?","Guía de 2 minutos · toque Ver",()=>tourIr("ir"));else LS.set("tourAskIr","")},6000)}}catch(e){}
     $("#irNxB").onclick=e=>{e.stopPropagation();irLista()};
     el.onclick=e=>{if(e.target.closest("button"))return;irLista()};return}
-  el.innerHTML=E.grad?`<div class="k">🛡️ Networker Pro · Graduado</div><div class="t">¡Ya es <em>Espartano</em>!</div><p class="small" style="margin:4px 0 0;opacity:.85">Ahora ayude a su equipo a hacer el suyo.</p><div class="row" style="gap:8px;margin-top:10px"><button class="btn sm" id="irDipG" style="background:#E8C766;color:#3b2a00">🎓 Mi diploma</button><button class="btn sm ghost" id="irFlyG">📣 Compartir</button></div>`:
+  // 18 nov (Edwin): la tarjeta del graduado sale en Inicio UNA sola vez (la primera apertura); después vive en Academia («Mi graduación»).
+  if(E.grad){const GK="irGradV:"+(store.uid||"");if(LS.get(GK)&&!window._irGradS){el.hidden=true;return}if(!LS.get(GK)){LS.set(GK,Date.now());window._irGradS=1}}
+  el.innerHTML=E.grad?`<button type="button" class="irGX" id="irGX" aria-label="Cerrar" style="position:absolute;top:10px;right:12px;background:rgba(255,255,255,.14);color:#fff;border:0;border-radius:99px;width:30px;height:30px;font-size:15px;cursor:pointer">✕</button><div class="k">🛡️ Networker Pro · Graduado</div><div class="t">¡Ya es <em>Espartano</em>!</div><p class="small" style="margin:4px 0 0;opacity:.85">Ahora ayude a su equipo a hacer el suyo. Su diploma queda en Academia › «Mi graduación».</p><div class="row" style="gap:8px;margin-top:10px"><button class="btn sm" id="irDipG" style="background:#E8C766;color:#3b2a00">🎓 Mi diploma</button><button class="btn sm ghost" id="irFlyG">📣 Compartir</button></div>`:
    `<div class="k">🚀 Plan de Inicio Rápido</div><div class="t">Semana ${w.n} · <em>${esc(w.k)}</em></div>
     <div class="irBar"><i style="width:${Math.max(4,pc)}%"></i></div>
     <div class="irMeta"><span><b>${w.n2} de ${w.L.length}</b> ✅</span><span>Día ${d} de ${fin}${d>fin?" · ¡a terminarla!":q>0?" · quedan "+q+(q===1?" día":" días"):" · ¡último día!"}</span></div>
     ${nx?`<div class="irNx">👉 <b>${esc(nx.t)}</b>${nx.b?`<button class="btn sm" id="irNxB" type="button">${esc(nx.b[0])}</button>`:""}</div>`:""}
     <div class="irMed">${irCamino(E,w.n)}</div>${E.grad?"":`<button type="button" class="irSx up" id="irSx" aria-label="Ver menos">▴ Ver menos</button>`}`;
   {const x=$("#irSx");if(x)x.onclick=e=>{e.stopPropagation();irAbierto=false;irRender()}}
-  if(E.grad){$("#irFlyG").onclick=e=>{e.stopPropagation();irFlyer(null)};$("#irDipG").onclick=e=>{e.stopPropagation();dipDescargar()}}
+  if(E.grad){el.style.position="relative";const fu=()=>{window._irGradS=0;el.hidden=true};$("#irFlyG").onclick=e=>{e.stopPropagation();fu();irFlyer(null)};$("#irDipG").onclick=e=>{e.stopPropagation();fu();dipDescargar()};$("#irGX").onclick=e=>{e.stopPropagation();fu()}}
   {const b=$("#irNxB");if(b&&nx)b.onclick=e=>{e.stopPropagation();nx.b[1]()}}
   el.onclick=e=>{if(e.target.closest("button"))return;irLista()}}catch(e){el.hidden=true;try{console.warn("irRender",e)}catch(x){}}}
 // ---------- 16 nov (Edwin): diploma Networker Pro (azul de la comunidad) · se descarga al graduarse (sello Espartano) ----------
@@ -10435,7 +10439,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261118211153";var busy=false,pend=null;
+(function(){var V="20261118230812";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
