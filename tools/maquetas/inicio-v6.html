@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maqueta Inicio v6</title>
+<style>
+@font-face{font-family:Figtree;src:url(../../media/fonts/Figtree-VF.ttf);font-weight:100 900}
+@font-face{font-family:Bricolage;src:url(../../media/fonts/BricolageGrotesque-Bold.ttf);font-weight:700}
+@font-face{font-family:Barlow;src:url(../../media/fonts/BarlowCondensed-Bold.ttf);font-weight:700}
+:root{--bg:#F3F6F9;--surface:#fff;--surface-2:#E8EFF4;--ink:#2B2A2D;--muted:#5D6470;--line:#DAE1E8;--brand:#0A7DAD;--cel:#2AC1F1;--ok:#16A34A;--amb:#D97706}
+body.dark{--bg:#17181B;--surface:#222327;--surface-2:#2D2F34;--ink:#EEF1F4;--muted:#A3A9B3;--line:#383B41;--brand:#2AC1F1}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Figtree,sans-serif;width:430px;padding:0 16px 110px;position:relative}
+.top{display:flex;align-items:center;justify-content:space-between;height:62px}
+.top img{height:26px}
+.top .r{display:flex;gap:14px;align-items:center}
+.bell{width:24px;height:24px;stroke:var(--ink);fill:none;stroke-width:1.8}
+.me{width:38px;height:38px;border-radius:50%;background:#2AC1F1;display:grid;place-items:center;color:#062B3A;font-weight:800;font-size:14px;box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px var(--cel)}
+.k{font-size:11px;font-weight:800;letter-spacing:1.6px;color:var(--muted);margin:18px 4px 8px;display:flex;justify-content:space-between}
+.k em{font-style:normal;letter-spacing:.2px;color:var(--brand)}
+h1{font-family:Bricolage;font-size:32px;line-height:1.05;letter-spacing:-.5px;margin-top:2px}
+h1 span{color:var(--brand)}
+.pills{display:flex;gap:6px;margin-top:10px}
+.pill{font-size:12px;font-weight:700;padding:5px 10px;border-radius:99px;box-shadow:0 0 0 1px var(--line);background:var(--surface);display:flex;gap:6px;align-items:center}
+.pill i{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.pill b{font-family:Barlow;font-size:14px}
+.card{background:var(--surface);border-radius:18px;box-shadow:0 0 0 1px var(--line);padding:14px}
+/* HOY */
+.hoy{display:flex;gap:12px;align-items:center;padding:12px 14px}
+.hoy .ic{width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--brand) 12%,transparent);display:grid;place-items:center;flex:none}
+.hoy .ic svg{width:21px;height:21px;stroke:var(--brand);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hoy .tx{flex:1;min-width:0}
+.hoy small{display:block;font-size:10.5px;font-weight:800;letter-spacing:1.3px;color:var(--brand)}
+.hoy b{display:block;font-size:14.5px;margin-top:2px}
+.hoy span{font-size:12.5px;color:var(--muted)}
+.bt{border:0;font:inherit;font-weight:800;font-size:13px;padding:8px 14px;border-radius:99px;background:var(--brand);color:#fff;white-space:nowrap}
+.bt.g{background:var(--surface-2);color:var(--ink)}
+.dots{display:flex;gap:5px;justify-content:center;margin-top:8px}
+.dots i{width:6px;height:6px;border-radius:9px;background:var(--line)}.dots i.on{width:16px;background:var(--brand)}
+/* Plan */
+.plan{display:flex;gap:12px;align-items:center}
+.plan img{width:46px;flex:none}
+.plan .tx{flex:1;min-width:0}
+.plan small{font-size:10.5px;font-weight:800;letter-spacing:1.3px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.chip{font-size:10.5px;letter-spacing:.2px;font-weight:800;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--amb) 14%,transparent);color:var(--amb)}
+.plan b{display:block;font-size:15px;margin-top:3px}
+.seg{display:flex;gap:4px;margin-top:8px}.seg i{flex:1;height:5px;border-radius:9px;background:var(--line)}.seg i.on{background:var(--brand)}
+.plan p{font-size:12.5px;color:var(--muted);margin-top:6px}
+.go{font-size:22px;color:var(--muted)}
+/* Compromiso (protagonista) */
+.hero{border-radius:22px;background:radial-gradient(120% 90% at 100% 0%,#143b5c 0,#0b1424 60%);color:#fff;padding:16px;box-shadow:0 14px 28px -16px rgba(10,30,60,.55)}
+.hk{display:flex;justify-content:space-between;font-size:10.5px;font-weight:800;letter-spacing:1.8px;color:#8fd8f2}
+.hk i{font-style:normal;background:rgba(255,255,255,.12);color:#fff;letter-spacing:.3px;padding:3px 9px;border-radius:99px}
+.hero .big{display:flex;align-items:baseline;gap:8px;margin-top:8px}
+.hero .big b{font-family:Barlow;font-size:44px;line-height:1}
+.hero .big span{color:#b9c6d6;font-size:14px}
+.hero .rg{font-size:13px;color:#b9c6d6;margin-top:2px}
+.hero .rg b{color:#fff}
+.hb{height:6px;border-radius:9px;background:rgba(255,255,255,.15);margin-top:12px;overflow:hidden}.hb i{display:block;height:100%;width:62%;background:linear-gradient(90deg,#2AC1F1,#7FE0FF)}
+.st{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.st div{background:rgba(255,255,255,.07);border-radius:12px;padding:9px 10px}
+.st small{display:block;font-size:10px;font-weight:800;letter-spacing:1.2px;color:#8fa3b8}
+.st b{font-family:Barlow;font-size:22px}.st b span{font-size:14px;color:#8fa3b8}
+/* Rutina */
+.rh{display:flex;justify-content:space-between;align-items:center}
+.rh b{font-size:16px}
+.rh em{font-style:normal;font-family:Barlow;font-size:20px;color:var(--brand)}
+.rh em span{font-size:14px;color:var(--muted)}
+.rut .seg{margin:10px 0 4px}
+.nx{display:flex;gap:10px;align-items:center;margin:10px 0 2px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--brand) 8%,transparent)}
+.nx span{flex:1;font-size:13px}.nx span b{display:block;font-size:10.5px;letter-spacing:1.3px;color:var(--brand)}
+.row{display:flex;align-items:center;gap:12px;padding:11px 2px;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.row .n{font-family:Barlow;font-size:15px;color:var(--muted);width:22px}
+.row .t{flex:1;min-width:0}
+.row .t b{display:block;font-size:14.5px;font-weight:700}
+.row .t span{font-size:12px;color:var(--muted)}
+.ok{font-size:12px;font-weight:800;color:var(--ok);display:flex;gap:4px;align-items:center}
+.ok svg{width:16px;height:16px;stroke:var(--ok);fill:none;stroke-width:2.6}
+.cnt{display:flex;align-items:center;border-radius:99px;box-shadow:0 0 0 1px var(--line)}
+.cnt button{border:0;background:none;font:inherit;font-weight:700;font-size:17px;width:32px;height:30px;color:var(--brand)}
+.cnt b{font-family:Barlow;font-size:17px;min-width:14px;text-align:center}
+.row.done .n{color:var(--ok)}
+/* Hábitos */
+.hab .row .ck{width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--line);flex:none;display:grid;place-items:center}
+.hab .row .ck.on{background:var(--brand);box-shadow:none}
+.hab .row .ck svg{width:14px;stroke:#fff;fill:none;stroke-width:3}
+.fire{font-size:12px;font-weight:800;color:var(--muted)}
+/* Accesos */
+.acc{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;text-align:center}
+.acc div{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;font-weight:700;line-height:1.15}
+.acc i{width:48px;height:48px;border-radius:15px;background:var(--surface);box-shadow:0 0 0 1px var(--line);display:grid;place-items:center}
+.acc svg{width:22px;height:22px;stroke:var(--brand);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* Ranking */
+.rk .r{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--line)}
+.rk .r:first-of-type{border-top:0}
+.rk .p{font-family:Barlow;font-size:18px;width:20px;color:var(--muted)}
+.rk .r:first-of-type .p{color:var(--brand)}
+.av{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:none;background:var(--surface-2)}
+.rk .nm{flex:1;font-weight:700;font-size:14px}
+.rk .v{font-family:Barlow;font-size:18px}.rk .v span{font-size:12px;color:var(--muted);font-family:Figtree;font-weight:700}
+.you{margin-top:8px;font-size:12.5px;color:var(--muted);padding-top:9px;border-top:1px solid var(--line)}
+.you b{color:var(--ink)}
+.tabs{display:flex;gap:6px;margin-bottom:6px}
+.tabs span{font-size:12px;font-weight:800;padding:5px 11px;border-radius:99px;background:var(--surface-2);color:var(--muted)}
+.tabs span.on{background:var(--ink);color:var(--surface)}
+.nav{position:absolute;left:16px;right:16px;bottom:16px;width:398px;height:66px;background:var(--surface);border-radius:22px;box-shadow:0 0 0 1px var(--line),0 10px 30px -12px rgba(0,0,0,.25);display:grid;grid-template-columns:repeat(6,1fr);align-items:center;text-align:center;font-size:11px;font-weight:700;color:var(--muted)}
+.nav div{display:flex;flex-direction:column;align-items:center;gap:3px}
+.nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav .on{color:var(--brand)}
+</style></head>
+<body>
+<div class="top"><img id="lg" src="../../media/logo-al-osc.png" alt=""><div class="r"><svg class="bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg><div class="me">DM</div></div></div>
+
+<div class="k" style="margin-top:6px">MIÉRCOLES 18 DE NOVIEMBRE</div>
+<h1>Hola, <span>Daniel</span> 👋</h1>
+<div class="pills"><span class="pill"><i></i>Ahorro al día</span><span class="pill">⚡ IC <b>62%</b></span><span class="pill">👥 Equipo <b>48%</b></span></div>
+
+<div class="k">HOY <em>1 de 4</em></div>
+<div class="card hoy"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg></span><span class="tx"><small>ACTION LEADERS TRAINING · 8:00 P.M.</small><b>Redes que atraen</b><span>Con Mayckol Turcios</span></span><button class="bt">Ver</button></div>
+<div class="dots"><i class="on"></i><i></i><i></i><i></i></div>
+
+<div class="k">MI PLAN DE ARRANQUE</div>
+<div class="card plan"><img src="../../media/insignias/v3-presentador.webp" alt=""><span class="tx"><small>SEMANA 2 DE 4 <span class="chip">Va a medio ritmo</span></small><b>Insignia Presentador</b><div class="seg"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div><p>Le faltan 2 pasos · quedan 3 días</p></span><span class="go">›</span></div>
+
+<div class="k">MI COMPROMISO DEL MES</div>
+<div class="hero"><div class="hk">META · TEAM LEADER <i>Quedan 12 días</i></div>
+<div class="big"><b>2,500</b><span>de 4,000 pts</span></div>
+<div class="hb"><i></i></div>
+<div class="st"><div><small>ACTIVACIONES</small><b>4 <span>/ 6</span></b></div><div><small>PRESENTACIONES</small><b>3 <span>/ 5</span></b></div><div><small>LE FALTAN</small><b>1,500</b></div></div></div>
+
+<div class="k">SU RUTINA DE HOY</div>
+<div class="card rut">
+<div class="rh"><b>🔥 Racha de 13 días</b><em>3 <span>de 6</span></em></div>
+<div class="seg"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+<div class="nx"><span><b>SIGUIENTE PASO</b>Presente su negocio a una persona nueva</span><button class="bt">Hacerlo</button></div>
+<div class="row done"><span class="n">01</span><span class="t"><b>Historia del día</b><span>2 de 2 publicadas</span></span><span class="ok"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Hecho</span></div>
+<div class="row done"><span class="n">02</span><span class="t"><b>Auto desarrollo personal</b><span>Video 6 de Networker Pro</span></span><span class="ok"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Hecho</span></div>
+<div class="row done"><span class="n">03</span><span class="t"><b>Nuevos contactos</b><span>Ana, Luis, Carla</span></span><span class="cnt"><button>−</button><b>3</b><button>+</button></span></div>
+<div class="row"><span class="n">04</span><span class="t"><b>Presentar mi negocio</b><span>Toque + y elija a quién</span></span><span class="cnt"><button>−</button><b>0</b><button>+</button></span></div>
+<div class="row"><span class="n">05</span><span class="t"><b>Hacer seguimiento</b><span>Lo ideal son 3</span></span><span class="cnt"><button>−</button><b>0</b><button>+</button></span></div>
+<div class="row"><span class="n">06</span><span class="t"><b>Declaración de éxito</b><span>Requisito del día completo</span></span><button class="bt g">Declarar</button></div>
+</div>
+
+<div class="k">MIS HÁBITOS <em>2 de 3</em></div>
+<div class="card hab">
+<div class="row"><span class="ck on"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span><span class="t"><b>Tomar 8 vasos de agua</b></span><span class="fire">🔥 9 días</span></div>
+<div class="row"><span class="ck on"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span><span class="t"><b>Caminar 20 minutos</b></span><span class="fire">🔥 4 días</span></div>
+<div class="row"><span class="ck"></span><span class="t"><b>Leer 10 páginas</b></span><span class="fire">Empiece hoy</span></div>
+</div>
+
+<div class="k">ACCESOS DIRECTOS <em>Más ›</em></div>
+<div class="acc">
+<div><i><svg viewBox="0 0 24 24"><path d="M2 16l20-8-20-8 4 8-4 8z" transform="translate(0 4) scale(1 .8)"/></svg></i>Presentación virtual</div>
+<div><i><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></i>Dar presentación</div>
+<div><i><svg viewBox="0 0 24 24"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg></i>Descargar presentación</div>
+<div><i><svg viewBox="0 0 24 24"><path d="M4 20l5-13 8 8-13 5zM14 4l1 2M19 9l2-1M17 3l-1 3 3-1"/></svg></i>Bienvenida socio nuevo</div>
+<div><i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></i>Mi página</div>
+</div>
+
+<div class="k">ASÍ VA EL RANKING <em>Ver todo ›</em></div>
+<div class="card rk">
+<div class="tabs"><span class="on">Activaciones</span><span>Rachas</span></div>
+<div class="r"><span class="p">1</span><img class="av" src="../../media/fotos/n-flor-reyes.jpg"><span class="nm">Flor Reyes</span><span class="v">1,500 <span>pts</span></span></div>
+<div class="r"><span class="p">2</span><img class="av" src="../../media/fotos/n-cecilia-hernandez.jpg"><span class="nm">Cecilia Hernández</span><span class="v">1,000 <span>pts</span></span></div>
+<div class="r"><span class="p">3</span><img class="av" src="../../media/fotos/n-glenda-xiomara-alvarez-ramirez.jpg"><span class="nm">Glenda Álvarez</span><span class="v">700 <span>pts</span></span></div>
+<div class="you">Usted va <b>#7</b> · le faltan <b>200 pts</b> para el top 3</div>
+</div>
+
+<div class="nav">
+<div class="on"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg>Inicio</div>
+<div><svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8"/></svg>Equipo</div>
+<div><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20a6 6 0 0 1 12 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3 6"/></svg>CRM</div>
+<div><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</div>
+<div><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5zM6 11v5c3 2 9 2 12 0v-5"/></svg>Academia</div>
+<div><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>Sueños</div>
+</div>
+<script>if(location.hash==="#dark"){document.body.classList.add("dark");document.getElementById("lg").src="../../media/logo-al.png"}</script>
+</body></html>
