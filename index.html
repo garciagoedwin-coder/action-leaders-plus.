@@ -2746,7 +2746,7 @@ function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);if(histS
 }
 // ---------- ✨ Mis hábitos (18 nov, Edwin): privados, no suman puntos ni racha; profile.hab {l:[{id,t}], d:{AAAA-MM-DD:[ids]}} ----------
 // 19 nov (Edwin): en Inicio todas las tarjetas se ven cerradas (solo el título) y se abren al tocarlas. PRIMERO solo admin + cuenta de prueba: para todos F20_TODOS=true y publicar.
-const F20_TODOS=false,f20On=()=>{try{return F20_TODOS||isAdmin||yoPrueba()}catch(e){return false}};
+const F20_TODOS=true,f20On=()=>{try{return F20_TODOS||isAdmin||yoPrueba()}catch(e){return false}};
 // 19 nov (Edwin): accesos directos, ranking y el carrusel de arriba NO se pliegan.
 const F20_ID=["rutCard","hoyCitas","nextEvents"];
 const F20_HD={acc3:".acc3H",rutCard:".rh6",avBox:".avHd",npBan:".npT"};
@@ -2756,7 +2756,7 @@ function f20Pinta(){const on=f20On();document.body.classList.toggle("f20",on);if
 document.addEventListener("click",e=>{if(!document.body.classList.contains("f20"))return;const c=e.target.closest(F20_ID.map(x=>"#"+x).join(","));if(!c||!c.closest("#v-inicio"))return;const ab=c.classList.contains("f20o"),h=e.target.closest(".f20k");if(ab&&!h)return;if(e.target.closest("a,button,input,select,textarea,[data-k]")&&!e.target.closest(".f20v")&&(ab||h))return;e.preventDefault();e.stopPropagation();const A=f20Ab();if(ab)delete A[c.id];else A[c.id]=1;LS.set("f20:"+(store.uid||""),JSON.stringify(A));f20Pinta()},true);
 setInterval(()=>{try{if(document.visibilityState==="visible")f20Pinta()}catch(e){}},800);
 // 19 nov (Edwin): arreglos de hábitos, Spotify y graduación. PRIMERO solo admin + cuenta de prueba; para todos: FX19_TODOS=true y publicar.
-const FX19_TODOS=false,fx19=()=>{try{return FX19_TODOS||isAdmin||yoPrueba()}catch(e){return false}};
+const FX19_TODOS=true,fx19=()=>{try{return FX19_TODOS||isAdmin||yoPrueba()}catch(e){return false}};
 const HAB_MAX=5,HAB_SUG=["💧 Tomar 8 vasos de agua","🏃 Hacer ejercicio 30 minutos","🥗 Comer saludable","📖 Leer 10 páginas","🙏 Orar o meditar","😴 Dormir antes de las 11","📵 Sin redes la primera hora","🧘 Estirarme 10 minutos","🚶 Caminar 20 minutos","📝 Escribir 3 cosas por las que agradezco"];
 function habSt(){const h=profile.hab=profile.hab&&typeof profile.hab==="object"?profile.hab:{};h.l=Array.isArray(h.l)?h.l:[];h.d=h.d&&typeof h.d==="object"?h.d:{};return h}
 function habDk(d){return dkey(d)}
@@ -5451,7 +5451,7 @@ function renderEquipo0(){const b=$("#eqBody");redProbe();redBtn();
     bindRank();if(pb)premConfeti(rankMetric==="nuevos"?"vol":"reg");return}
   }
 // 19 nov (Edwin): Ranking › Activaciones v6 con vida (solo admin + prueba; para todos RK6_TODOS=true)
-const RK6_TODOS=false,rk6On=()=>{try{return RK6_TODOS||isAdmin||yoPrueba()}catch(e){return false}};
+const RK6_TODOS=true,rk6On=()=>{try{return RK6_TODOS||isAdmin||yoPrueba()}catch(e){return false}};
 function rk6Mov(d){let S={};try{S=LS.get("rk6P")||{}}catch(e){}if(S.d!==TODAY){S={d:TODAY,prev:S.cur||{},cur:{}}}d.forEach(x=>S.cur[x.nombre]=x.rk);try{LS.set("rk6P",S)}catch(e){}const P=S.prev||{};return n=>{const o=P[n],x=S.cur[n];return o&&x&&o>x?o-x:0}}
 function rk6HTML(d){const mv=rk6Mov(d),PD=(()=>{try{return premDatos()}catch(e){return null}})();
   const ic=n=>{try{if(!(isAdmin||lzSoyMiembro())||!constL)return"";const c=constL.find(z=>sameN(z.nombre,n));if(!c)return"";const o=idxPer;idxPer="mes";let v;try{v=idxPers(c.uid)}finally{idxPer=o}return ` · <span style="color:${IDX_C(v)}">⚡ IC ${v}%</span>`}catch(e){return""}};
@@ -8906,7 +8906,7 @@ function setAgVista(v){agVista=v;setSeg("agView",v);$("#agMia").hidden=v!=="mia"
 $("#agView").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setAgVista(b.dataset.k)});
 $("#agBig").addEventListener("click",e=>{const b=e.target.closest("[data-ab]");if(!b)return;const k=b.dataset.ab;if(k==="mas"){openSheet(`<p class="eyebrow">AGENDA</p><h2 style="margin:2px 0 12px">Crear actividad</h2><div class="amL"><button type="button" id="amLz"><i>🚀</i><span><b>Lanzamiento</b><small>Planee con su líder el arranque de un socio</small></span><em>›</em></button><button type="button" id="amPr"><i>🎤</i><span><b>Presentación de negocios</b><small>Su presentación personal, con flyer y horarios</small></span><em>›</em></button><button type="button" id="amEv"><i>🤝</i><span><b>Junta de negocios o Home meeting</b><small>Con flyer, confirmación y recordatorios</small></span><em>›</em></button>${evaPuedeGran()?`<button type="button" id="amEg"><i>🎤</i><span><b>Evento</b><small>Gran evento con su foto, ticket y confirmaciones</small></span><em>›</em></button>`:""}${turPuede()?`<button type="button" id="amTu"><i>📅</i><span><b>Turnos del sistema de liderazgo</b><small>Apúntese como ponente o a presentar</small></span><em>›</em></button>`:""}</div><button class="btn ghost" data-close style="width:100%;margin-top:12px">Cerrar</button>`,()=>{$("#amLz").onclick=()=>{closeSheet();setTimeout(abrirLanz,250)};$("#amPr").onclick=()=>{closeSheet();setTimeout(()=>abrirLanz("pres"),250)};$("#amEv").onclick=()=>{closeSheet();setTimeout(()=>abrirCrearEva("junta"),250)};{const g=$("#amEg");if(g)g.onclick=()=>{closeSheet();setTimeout(()=>abrirCrearEva("evento"),250)}}{const t=$("#amTu");if(t)t.onclick=()=>turAbrir()}});return}if(k==="l3")pedirL3(null);else if(k==="lz")abrirLanz();else if(k==="ev")evaCrearMenu();else abrirCita()});
 // ---------- 19 nov · Agenda v6 (Edwin aprobó maquetas agenda-v6 y agenda-equipo-v6). PRIMERO solo admin + cuenta de prueba ----------
-const AG6_TODOS=false,ag6On=()=>{try{return AG6_TODOS||isAdmin||yoPrueba()}catch(e){return false}};
+const AG6_TODOS=true,ag6On=()=>{try{return AG6_TODOS||isAdmin||yoPrueba()}catch(e){return false}};
 let ag6F="todo",ag6Off=0,ag6Mes=0;
 const A6_SVG={ci:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/>',l3:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',lz:'<path d="M14 4c3 0 6 3 6 6l-6 6-4-4 6-6M10 12l-4 1-2 3 4 1M12 14l-1 4-3 2-1-4M15 9h.01"/>',ev:'<circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 20a6 6 0 0 1 12 0M10 20a6 6 0 0 1 12 0"/>'};
 function a6Act(k,t,s){return `<button type="button" class="a6act" data-ab="${k}"><i class="go">+</i><span class="ic"><svg viewBox="0 0 24 24">${A6_SVG[k]}</svg></span><span><b>${t}</b><small>${s}</small></span></button>`}
@@ -11166,7 +11166,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119065525";var busy=false,pend=null;
+(function(){var V="20261119065906";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
