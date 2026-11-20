@@ -15,6 +15,15 @@ if (process.env.CODE === "persona") { initializeApp({ credential: cert(JSON.pars
       "diasSinApp",a.t?Math.round((Date.now()-a.t)/864e5):"-","fotosOculto",!!((await db.collection("fotos").doc(d.id).get()).data()||{}).oculto);}
   const rd=await db.collection("red").get(); let j=0; rd.docs.forEach(x=>{const v=x.data(); if(nz(v.n).includes(q)){j++;console.log("red",j,"tipo",v.t,"plan",v.pl||"-","enApp",!!v.u)}});
   console.log("cuentas",i,"red",j); process.exit(0)}
+if (process.env.CODE === "sis") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
+  const nz=x=>String(x||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); const q=nz(process.env.Q); const mes=new Date(Date.now()).toISOString().slice(0,7);
+  const g=(await db.doc("sisPriv/grupo").get()).data()||{}, gl=((await db.doc("team/liderazgo").get()).data()||{}).grupo||{};
+  console.log("mesUTC",mes,"sisPriv.grupo m",g.m||"-","link",!!g.link,"team.liderazgo.grupo m",gl.m||"-");
+  for(const d of (await db.collection("users").get()).docs){const x=d.data()||{},r=x.registro||{}; if(!nz(r.nombre).includes(q))continue;
+    let cl={}; try{cl=(await getAuth().getUser(d.id)).customClaims||{}}catch(e){cl={err:e.code}}
+    const c=(await db.doc("constancia/"+d.id).get()).data()||{};
+    console.log("cuenta","apE",x.apE||"-","claims",JSON.stringify({ap:cl.ap,sis:cl.sis,pv:!!cl.pv,rv:!!cl.rv}),"comp",JSON.stringify({mes:(x.comp||{}).mes,no:(x.comp||{}).no,vol:(x.comp||{}).vol}),"constComp",JSON.stringify({mes:(c.comp||{}).mes,no:(c.comp||{}).no}),"lzG",JSON.stringify(x.lzG||null),"mesPts",c.mesPts??"-","mesComp",c.mesComp??"-","diasMes",new Date().getUTCDate());}
+  process.exit(0)}
 if (process.env.CODE === "salayo") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore(); const q = (process.env.Q||"").toLowerCase();
   const us = await db.collection("users").get(); let i = 0;
   for (const u of us.docs) { const n = ((u.data().registro||{}).nombre||"").toLowerCase(); if (!q || !n.includes(q)) continue; i++;
