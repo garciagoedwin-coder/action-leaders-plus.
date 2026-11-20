@@ -22,7 +22,8 @@ if (process.env.CODE === "sis") { initializeApp({ credential: cert(JSON.parse(pr
   for(const d of (await db.collection("users").get()).docs){const x=d.data()||{},r=x.registro||{}; if(!nz(r.nombre).includes(q))continue;
     let cl={}; try{cl=(await getAuth().getUser(d.id)).customClaims||{}}catch(e){cl={err:e.code}}
     const c=(await db.doc("constancia/"+d.id).get()).data()||{};
-    console.log("cuenta","apE",x.apE||"-","claims",JSON.stringify({ap:cl.ap,sis:cl.sis,pv:!!cl.pv,rv:!!cl.rv}),"comp",JSON.stringify({mes:(x.comp||{}).mes,no:(x.comp||{}).no,vol:(x.comp||{}).vol}),"constComp",JSON.stringify({mes:(c.comp||{}).mes,no:(c.comp||{}).no}),"lzG",JSON.stringify(x.lzG||null),"mesPts",c.mesPts??"-","mesComp",c.mesComp??"-","diasMes",new Date().getUTCDate());}
+    console.log("cuenta","apE",x.apE||"-","claims",JSON.stringify({ap:cl.ap,sis:cl.sis,pv:!!cl.pv,rv:!!cl.rv}),"comp",JSON.stringify({mes:(x.comp||{}).mes,no:(x.comp||{}).no,vol:(x.comp||{}).vol}),"constComp",JSON.stringify({mes:(c.comp||{}).mes,no:(c.comp||{}).no}),"lzG",JSON.stringify(x.lzG||null),"mesPts",c.mesPts??"-","mesComp",c.mesComp??"-","diasMes",new Date().getUTCDate()); const nn=nz(r.nombre); console.log("palabras",nn.split(/\s+/).length,"tiene:",["odett","isaguirre","aguirre","aguilar"].map(w=>w+"="+nn.includes(w)).join(" "),"fecha",r.fecha||"-");}
+  { const su=(await db.doc("team/sisU").get()).data()||{}; console.log("sisU.n",su.n,"sin",(su.sin||[]).length,"ellaEnSin",(su.sin||[]).some(n=>nz(n).includes(q)||nz(n).includes("isaguirre")),"sisU.t",su.t?new Date(su.t).toISOString():"-"); }
   process.exit(0)}
 if (process.env.CODE === "salayo") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore(); const q = (process.env.Q||"").toLowerCase();
   const us = await db.collection("users").get(); let i = 0;
