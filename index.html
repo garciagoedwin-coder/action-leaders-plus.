@@ -2527,23 +2527,25 @@ body.rk6on #snvCard .prem::before{content:"★ Premium";font-size:12px;color:#B7
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,onAuthStateChanged,signOut,setPersistence,browserLocalPersistence,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendEmailVerification,sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,collection,getDoc,getDocFromServer,setDoc,getDocs,getDocsFromCache,addDoc,deleteDoc,onSnapshot,serverTimestamp,query,where,limit,writeBatch,updateDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});try{const _ac=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js");_ac.initializeAppCheck(app,{provider:new _ac.ReCaptchaEnterpriseProvider("6LfesRkuAAAAAJQPpPOr5UFCDPoy2WuclKV0hgdg"),isTokenAutoRefreshEnabled:true})}catch(e){} /* App Check (10 nov 2026): solo la app oficial habla con Firebase */
+import {initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,collection,getDoc,getDocFromServer,setDoc,getDocs,getDocsFromCache,addDoc,deleteDoc,onSnapshot,serverTimestamp,query,where,limit,writeBatch,updateDoc,terminate} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});let acI=null,acTok=null;try{const _ac=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js");acTok=_ac.getToken;acI=_ac.initializeAppCheck(app,{provider:new _ac.ReCaptchaEnterpriseProvider("6LfesRkuAAAAAJQPpPOr5UFCDPoy2WuclKV0hgdg"),isTokenAutoRefreshEnabled:true})}catch(e){} /* App Check (10 nov 2026): solo la app oficial habla con Firebase */
 const auth=getAuth(app);
 let fdb;try{fdb=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()}),ignoreUndefinedProperties:true})}catch(e){try{fdb=initializeFirestore(app,{localCache:persistentLocalCache(),ignoreUndefinedProperties:true})}catch(e2){fdb=initializeFirestore(app,{ignoreUndefinedProperties:true})}}
 /* 20 nov: guardado DIRECTO al servidor (REST) cuando la memoria del teléfono (IndexedDB) se traba en iPhone (failed-precondition). Escribe igual que set(); merge = solo las claves de arriba. */
 const restV=v=>v===null||v===undefined?{nullValue:null}:typeof v==="boolean"?{booleanValue:v}:typeof v==="number"?(Number.isInteger(v)&&Math.abs(v)<9e15?{integerValue:String(v)}:{doubleValue:v}):typeof v==="string"?{stringValue:v}:Array.isArray(v)?{arrayValue:{values:v.filter(x=>x!==undefined).map(restV)}}:{mapValue:{fields:restF(v)}};
 const restF=o=>{const f={};for(const k in o){if(o[k]!==undefined)f[k]=restV(o[k])}return f};
-async function restSet(p,b,merge){const u=auth.currentUser;if(!u)throw new Error("sin sesión");const tk=await u.getIdToken();
+/* 20 nov (2): si la memoria del teléfono se traba, se cambia Firestore a memoria (sin IndexedDB) sin reiniciar la app. */
+let fsMem=false;async function fsReset(){if(fsMem)return true;fsMem=true;try{await Promise.race([terminate(fdb),new Promise(r=>setTimeout(r,2500))])}catch(e){}try{fdb=initializeFirestore(app,{ignoreUndefinedProperties:true});return true}catch(e){console.error("fsReset",e);return false}}
+async function restSet(p,b,merge){const u=auth.currentUser;if(!u)throw new Error("sin sesión");const tk=await u.getIdToken();let ac="";try{if(acI&&acTok)ac=(await Promise.race([acTok(acI,false),new Promise(r=>setTimeout(()=>r(null),3000))])||{}).token||""}catch(e){}
   const q=merge?Object.keys(b).map(k=>"updateMask.fieldPaths="+encodeURIComponent(/^[A-Za-z_][A-Za-z_0-9]*$/.test(k)?k:"`"+k.replace(/`/g,"\\`")+"`")).join("&"):"";
-  const r=await fetch("https://firestore.googleapis.com/v1/projects/action-leaders-plus-8f1b8/databases/(default)/documents/"+p.split("/").map(encodeURIComponent).join("/")+(q?"?"+q:""),{method:"PATCH",headers:{"Content-Type":"application/json",Authorization:"Bearer "+tk},body:JSON.stringify({fields:restF(b)})});
+  const r=await fetch("https://firestore.googleapis.com/v1/projects/action-leaders-plus-8f1b8/databases/(default)/documents/"+p.split("/").map(encodeURIComponent).join("/")+(q?"?"+q:""),{method:"PATCH",headers:Object.assign({"Content-Type":"application/json",Authorization:"Bearer "+tk},ac?{"X-Firebase-AppCheck":ac}:{}),body:JSON.stringify({fields:restF(b)})});
   if(!r.ok)throw Object.assign(new Error("rest "+r.status),{code:r.status===403?"permission-denied":"rest-"+r.status});return true}
 const wrapS=q=>({docs:q.docs.map(d=>({id:d.id,data:()=>d.data()}))});
 const D=p=>({_p:p,update:b=>updateDoc(doc(fdb,p),b),srv:async()=>{const x=await getDocFromServer(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>setDoc(doc(fdb,p),b,o||{}),delete:()=>deleteDoc(doc(fdb,p)),
   onSnapshot:(cb,er)=>onSnapshot(doc(fdb,p),x=>cb({exists:x.exists(),data:()=>x.data()}),er||(()=>{}))});
 const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),getCache:async()=>wrapS(await getDocsFromCache(collection(fdb,p))),where:(f,v,op)=>({limit:n=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v),limit(n))))}),get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v)))),getCache:async()=>wrapS(await getDocsFromCache(query(collection(fdb,p),where(f,op||"==",v)))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),where(f,op||"==",v)),q=>cb(wrapS(q)),er||(()=>{}))}),whereAll:L=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))),q=>cb(wrapS(q)),er||(()=>{}))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
   onSnapshot:(cb,er)=>onSnapshot(collection(fdb,p),q=>cb(wrapS(q)),er||(()=>{}))});
-const db={rest:restSet,collection:C,doc:D,batch:()=>{const b=writeBatch(fdb);return{set:(r,o)=>b.set(doc(fdb,r._p),o),delete:r=>b.delete(doc(fdb,r._p)),commit:()=>b.commit()}}};
+const db={rest:restSet,reset:fsReset,collection:C,doc:D,batch:()=>{const b=writeBatch(fdb);return{set:(r,o)=>b.set(doc(fdb,r._p),o),delete:r=>b.delete(doc(fdb,r._p)),commit:()=>b.commit()}}};
 setPersistence(auth,browserLocalPersistence).catch(()=>{});try{auth.languageCode="es"}catch(e){}
 getRedirectResult(auth).catch(()=>{});
 window.FB={auth,db,serverTimestamp,
@@ -2681,7 +2683,7 @@ async function rdCache(k,ms,force,fc,fn){const key="alp:rdT:"+k+":"+(store.uid||
 const LS={get(k){try{const v=localStorage.getItem("alp:"+k);return v?JSON.parse(v):null}catch(e){return null}},
           set(k,v){try{localStorage.setItem("alp:"+k,JSON.stringify(v))}catch(e){}}};
 const fsTraba=e=>!!e&&(e.code==="failed-precondition"||e.code==="internal"||/IndexedDB|primary lease|persistence|exclusive access/i.test(String(e.message||"")));
-let fsAvT=0;function fsTrabaAviso(){if(Date.now()-fsAvT<60e3)return;fsAvT=Date.now();try{openSheet(`<h2>⚠️ Su app necesita reiniciarse</h2><p class="small muted" style="margin:0">La memoria de su teléfono se trabó y este cambio no se pudo guardar.</p><p class="small" style="margin:10px 0 0"><b>Cierre la app por completo</b> (deslícela hacia arriba) y vuelva a abrirla. Si tiene la app abierta también en Safari o Chrome, cierre esa pestaña.</p><div class="row" style="margin-top:14px"><button class="btn grow" data-close>Entendido</button></div>`)}catch(x){toast("Cierre la app por completo y vuelva a abrirla")}}
+let fsAvT=0,fsErrUlt="";function fsTrabaAviso(){if(Date.now()-fsAvT<60e3)return;fsAvT=Date.now();try{openSheet(`<h2>⚠️ Su app necesita reiniciarse</h2><p class="small muted" style="margin:0">La memoria de su teléfono se trabó y este cambio no se pudo guardar.</p><p class="small" style="margin:10px 0 0"><b>Cierre la app por completo</b> (deslícela hacia arriba) y vuelva a abrirla. Si tiene la app abierta también en Safari o Chrome, cierre esa pestaña.</p><div class="row" style="margin-top:14px"><button class="btn grow" data-close>Entendido</button></div>${fsErrUlt?`<p class="small muted" style="margin:8px 0 0;text-align:center;font-size:11px">Código: ${esc(fsErrUlt)}</p>`:""}`)}catch(x){toast("Cierre la app por completo y vuelva a abrirla")}}
 window.__saveC=c=>store.saveContact(c);
 const store={db:null,uid:null,
   mine(){return this.db.collection("users/"+this.uid+"/datos")},
@@ -2692,7 +2694,7 @@ const store={db:null,uid:null,
   async saveContact(c){if(!c.id&&!c.creado)c.creado=Date.now();const{id,...b0}=c;const body=JSON.parse(JSON.stringify(b0));if(this.db){/* 18 nov: con señal débil, set() espera al servidor y el botón parecía no hacer nada. Firestore ya lo guardó en el teléfono y lo sube solo: a los 4 s se da por guardado. */
     const err=e=>{console.error("saveContact",e);if(fsTraba(e)){fsTrabaAviso();return}toast("No se pudo guardar el contacto ("+errCod(e)+"). Revise su internet e intente de nuevo.")};
     /* 20 nov: si la memoria del teléfono se traba (failed-precondition), se guarda directo en el servidor (REST). */
-    const ruta=id=>"users/"+this.uid+"/crm/"+id,resc=async(id,e)=>{if(fsTraba(e)&&this.db.rest){try{await this.db.rest(ruta(id),body);return true}catch(x){console.error("saveContact rest",x)}}err(e);return false};
+    const ruta=id=>"users/"+this.uid+"/crm/"+id,resc=async(id,e)=>{if(fsTraba(e)){if(this.db.reset&&await this.db.reset()){try{const pr=this.crm().doc(id).set(body);await Promise.race([pr,new Promise(r=>setTimeout(r,6000))]);return true}catch(x){console.error("saveContact mem",x);fsErrUlt=errCod(x)}}if(this.db.rest){try{await this.db.rest(ruta(id),body);return true}catch(x){console.error("saveContact rest",x);fsErrUlt=String(x&&x.code||x&&x.message||x)}}}err(e);return false};
     const esp=(pr,v)=>{let tarde=false;const r=Promise.race([pr.then(()=>v),new Promise(r=>setTimeout(()=>{tarde=true;r(v)},4000))]);pr.catch(e=>{if(tarde)resc(v,e)});return r.catch(async e=>{if(await resc(v,e))return v;throw {_ya:1}})};
 
     try{if(id){crmJ(id,body);await esp(this.crm().doc(id).set(body),id);return id}
@@ -8468,7 +8470,7 @@ function notaAbrir(c,k,lg){if(!c)return;let r="",p=c.next&&c.next>=TODAY?c.next:
      const L=(c.seg||[]).slice(),j=lg?L.findIndex(x=>x.t===lg):-1,it=j>=0?Object.assign({},L[j]):{t:Date.now(),k:k||"nota"};if(r)it.r=r;if(n)it.n=n;if(f)it.p=f;if(j>=0)L[j]=it;else L.push(it);c.seg=L.slice(-30);if(f)c.next=f;c.updated=Date.now();
      bt.disabled=true;bt.textContent="Guardando…";const id=await store.saveContact(Object.assign({},c));if(!id){bt.disabled=false;bt.textContent="Guardar";toast("No se pudo guardar la nota.");return}renderCRM();
      if(cal&&f)sgCal(c,f,h,n);else{closeSheet();toast("📝 Nota guardada"+(f?" · próximo: "+niceDate(f):""))}}})}
-function nextBump(c){try{if(!c||CERR.includes(c.stage)||c.stage==="No interesado")return;const d=addD(TODAY,2);if(!c.next||c.next<d)c.next=d}catch(e){}}
+function nextBump(c){try{if(c)c.ult=Date.now();if(!c||CERR.includes(c.stage)||c.stage==="No interesado")return;const d=addD(TODAY,2);if(!c.next||c.next<d)c.next=d}catch(e){}}
 function notaPend(c,k,log){const t=Date.now();if(log){c.seg=(c.seg||[]).concat([{t,k}]).slice(-30);nextBump(c)}try{LS.set("notaPend",{id:c.id,k,t,log:log?t:0})}catch(e){}}
 document.addEventListener("visibilitychange",()=>{if(document.hidden)return;let q=null;try{q=LS.get("notaPend")}catch(e){}if(!q)return;try{LS.set("notaPend",null)}catch(e){}
   if(Date.now()-q.t>3*36e5||Date.now()-q.t<2500)return;const c=(contacts||[]).find(x=>x.id===q.id);if(c&&$("#sheet").hidden)setTimeout(()=>notaAbrir(c,q.k,q.log),400)});
@@ -8579,7 +8581,7 @@ function crmMeta(c){try{const cer=CERR.includes(c.stage)||PAUSA.includes(c.stage
   if(c.pres&&c.pres.n)return "🎤 Presentado · "+c.pres.n+"/10";
   if(!cer&&c.next)return "Próximo: "+esc(crmFec(c.next));
   const d=stDias(c);return esc(c.stage||"Nuevo")+(d>0?" · hace "+d+(d===1?" día":" días"):" · hoy")}catch(e){return ""}}
-function crmAtHoy(c){try{if(c.ultSeg===TODAY)return true;if((day.segL||[]).some(x=>x.cid===c.id))return true;return (c.seg||[]).some(x=>x&&x.t&&dkey(new Date(x.t))===TODAY)}catch(e){return false}}
+function crmAtHoy(c){try{if(c.ultSeg===TODAY)return true;if(c.ult&&dkey(new Date(c.ult))===TODAY)return true;if(c.hola&&dkey(new Date(c.hola))===TODAY)return true;if((day.segL||[]).some(x=>x.cid===c.id))return true;return (c.seg||[]).some(x=>x&&x.t&&dkey(new Date(x.t))===TODAY)}catch(e){return false}}
 function crmHoyL(){const A=contacts.filter(c=>!CERR.includes(c.stage)&&c.stage!=="No interesado"&&!lluPas(c)&&!crmAtHoy(c)&&((c.next&&c.next<=TODAY)||(c.stage==="Por cerrar"&&!PAUSA.includes(c.stage))));
   return A.sort((a,b)=>(b.stage==="Por cerrar")-(a.stage==="Por cerrar")||String(a.next||"9").localeCompare(String(b.next||"9")))}
 function crmTopPinta(q){const el=$("#crmTop");if(!el)return;if(q||!contacts.length){el.hidden=true;el.innerHTML="";return}el.hidden=false;
@@ -11474,7 +11476,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261120145937";var busy=false,pend=null;
+(function(){var V="20261120150747";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
