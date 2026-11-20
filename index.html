@@ -239,6 +239,12 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 #presOv .pv-note{font-style:italic;font-size:14px;color:#F6DDB3}
 #presOv .pv-qb,#presOv .pv-bn{display:none}
 body.pvOn .avisoTop{display:none!important}
+#presOv.sh .pv-top .pv-x,#presOv.sh .pv-top>span:last-child{opacity:.3}#presOv.sh .pv-prog{opacity:.5}
+#presOv.sh .pv-nav button{background:transparent!important;color:rgba(255,255,255,.4)!important;border:1px solid rgba(255,255,255,.12);padding:8px;font-size:12.5px}#presOv.sh .pv-nav .go{color:rgba(236,169,72,.6)!important;border-color:rgba(236,169,72,.25)}
+#presOv.sh .pv-tl:not(.min)>button:not(.on):not(.ok){opacity:.75}#presOv .pv-tl.min{justify-content:flex-start}
+#presOv .pv-tl .mini{height:30px;padding:0 10px;background:rgba(0,0,0,.35)!important;border-color:rgba(255,255,255,.15)!important;opacity:.6;font-size:13px}#presOv .pv-tl .mini span{font-size:10px;opacity:.8}#presOv .pv-tl .pcd{display:inline-block;width:10px;height:10px;border-radius:50%}
+@media (orientation:landscape) and (max-height:560px){#presOv .pv-tl.min{left:12px;transform:none;background:none;padding:0}}
+
 #presOv .pv-cv{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}#presOv.tool .pv-cv{pointer-events:auto;touch-action:none;cursor:crosshair}#presOv.tool .pv-big{display:none}#presOv.big .pv-cv,#presOv.big .pv-tl{display:none}
 #presOv .pv-tl{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;padding:9px 10px 0;flex:none}
 #presOv .pv-tl button{white-space:nowrap;height:34px;min-width:34px;border-radius:99px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);color:#fff;font:inherit;font-size:12.5px;font-weight:700;padding:0 11px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px}
@@ -9751,7 +9757,7 @@ function ptInit(){const o=$("#presOv"),cv=o&&o.querySelector(".pv-cv");if(!cv)re
   const im=o.querySelector(".pv-sl img");if(im&&!im.complete)im.addEventListener("load",ptSize,{once:true});ptSize();
   if(!window._ptRz){window._ptRz=1;window.addEventListener("resize",()=>{if(PS&&!$("#presOv").hidden)setTimeout(ptSize,60)})}
   let act=false;
-  cv.addEventListener("pointerdown",e=>{if(!PS||!PS.tool||!e.isPrimary)return;e.preventDefault();try{cv.setPointerCapture(e.pointerId)}catch(x){}const p=ptPos(e);act=true;
+  cv.addEventListener("pointerdown",e=>{if(!PS||!PS.tool||!e.isPrimary)return;e.preventDefault();try{cv.setPointerCapture(e.pointerId)}catch(x){}const p=ptPos(e);act=true;if(LS.get("presSh")==="1"&&!PS.tlMin&&!PS.place&&!PS.numA){PS.tlMin=1;clearTimeout(PS._tlT);ptBar()}
     if(PS.place){const fs=.07,g=cv.getContext("2d");g.font=`700 ${fs}px "Barlow Condensed"`;const wd=g.measureText(PS.place).width;ptItems().push({t:"txt",s:PS.place,x:p[0]-wd/2,y:p[1]+fs*.35,fs,c:PEN_C[PS.col],w:PEN_W[PS.pw],pop:Date.now()});PS.place=null;act=false;ptBar();ptDraw();return}
     if(PS.tool==="erase"){ptBorrar(p);return}
     if(PS.tool==="laser"){PS._lzOn=1;PS._lzS=(PS._lzS||0)+1;PS.lz.push({x:p[0],y:p[1],t:Date.now(),s:PS._lzS});ptDraw();return}
@@ -9761,6 +9767,8 @@ function ptInit(){const o=$("#presOv"),cv=o&&o.querySelector(".pv-cv");if(!cv)re
   const fin=()=>{if(!act||!PS)return;act=false;PS._lzOn=0;if(PS._cur){const it=PS._cur;PS._cur=null;const t0=it.t0;delete it.t0;it.t0=t0;ptItems().push(it);ptDraw();ptGrupo(it)}else ptDraw()};
   cv.addEventListener("pointerup",fin);cv.addEventListener("pointercancel",fin)}
 function ptBar(){const b=$("#presOv .pv-tl");if(!b||!PS)return;const sh=LS.get("presSh")==="1",T=PS.tool;
+  b.classList.toggle("min",!!(sh&&T&&PS.tlMin&&!PS.numA&&!PS.place));
+  if(sh&&T&&PS.tlMin&&!PS.numA&&!PS.place){b.innerHTML=`<button type="button" data-pt="exp" class="mini" aria-label="Mostrar herramientas">${T==="laser"?"🔴":T==="erase"?"🧽":`<i class="pcd" style="background:${PEN_C[PS.col]}"></i>✏️`}<span>▾</span></button>`;return}
   if(!T)b.innerHTML=`<button type="button" data-pt="pen">✏️ Lápiz</button><button type="button" data-pt="laser">🔴 Láser</button><button type="button" data-pt="sh" class="${sh?"on":""}">${sh?"✓ Compartiendo":"🖥️ Estoy compartiendo"}</button>`;
   else if(T==="laser")b.innerHTML=`<button type="button" data-pt="off" class="ok">✓ Listo</button><span class="pv-th">🔴 Deslice el dedo para señalar</span>`;
   else b.innerHTML=`<button type="button" data-pt="off" class="ok">✓ Listo</button>${PEN_C.map((c,i)=>`<button type="button" class="pc${i===PS.col&&T==="pen"?" on":""}" data-pc="${i}" style="background:${c}" aria-label="Color"></button>`).join("")}
@@ -9771,7 +9779,8 @@ function ptBar(){const b=$("#presOv .pv-tl");if(!b||!PS)return;const sh=LS.get("
 window.__pt={abrir:()=>presAbrir({general:1,name:""}),ir:d=>presIr(d),items:()=>ptItems(),rec:S=>INK.rec(S),box:ptBox,on:()=>{PS.auto=false}};
 function ptClick(e){const b=e.target.closest("[data-pt],[data-pc]");if(!b||!PS)return;e.stopPropagation();const o=$("#presOv");ptSt();
   if(b.dataset.pc!=null){PS.col=+b.dataset.pc;LS.set("presCol",String(PS.col));PS.tool="pen";ptBar();return}
-  const k=b.dataset.pt;
+  const k=b.dataset.pt;clearTimeout(PS._tlT);
+  if(k==="exp"){PS.tlMin=0;ptBar();ptTlAuto();return}
   if(k==="pen"||k==="laser"){PS.tool=k;o.classList.add("tool");o.classList.remove("big");if(k==="pen"&&!LS.get("presPenTip")){LS.set("presPenTip","1");toast("✨ Escriba un número y suelte: la app lo deja bonito. ↩ lo regresa.")}}
   else if(k==="off"){PS.tool=null;PS.place=null;PS.numA=0;o.classList.remove("tool")}
   else if(k==="sh"){const v=LS.get("presSh")==="1"?"0":"1";LS.set("presSh",v);o.classList.toggle("sh",v==="1");toast(v==="1"?"🖥️ Modo compartir: el guion y los botones quedan ocultos":"Modo compartir apagado");setTimeout(ptSize,80)}
@@ -9782,7 +9791,8 @@ function ptClick(e){const b=e.target.closest("[data-pt],[data-pc]");if(!b||!PS)r
   else if(k==="clr"){const A=ptItems();if(!A.length)return;if(Date.now()-(PS._clrA||0)>3000){PS._clrA=Date.now();toast("Toque 🗑 otra vez para borrar todo en esta diapositiva");return}A.length=0;PS._clrA=0;ptDraw()}
   else if(k==="num"){PS.numA=!PS.numA;PS.place=null;PS.tool="pen"}
   else if(k==="numok"){const v=String(($("#ptN")||{}).value||"").trim().slice(0,12);if(!v){toast("Escriba el número");return}PS.numA=0;PS.place=v}
-  ptBar()}
+  if(k==="off"||k==="sh")PS.tlMin=0;ptBar();ptTlAuto()}
+function ptTlAuto(){clearTimeout(PS&&PS._tlT);if(!PS||LS.get("presSh")!=="1"||!PS.tool)return;PS._tlT=setTimeout(()=>{if(PS&&PS.tool&&LS.get("presSh")==="1"&&!PS.numA&&!PS.place){PS.tlMin=1;ptBar()}},5000)}
 function acaHero(){const r=$("#acaRing"),t=$("#acaHT"),s=$("#acaHS");if(!r)return;let m=null;try{m=irModo()}catch(e){}
   if(!m){r.style.setProperty("--p",0);r.innerHTML="<b>🚀</b>";t.textContent="30 días · 4 insignias";s.textContent="Aprenda a duplicar paso a paso";return}
   const E=irEstado(),tot=E.W.reduce((a,w)=>a+w.L.length,0),hc=E.W.reduce((a,w)=>a+w.n2,0),p=tot?Math.round(hc*100/tot):0;
@@ -11394,7 +11404,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119181144";var busy=false,pend=null;
+(function(){var V="20261119181856";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
