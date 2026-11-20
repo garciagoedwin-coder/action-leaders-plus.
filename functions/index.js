@@ -185,6 +185,17 @@ exports.lluviaCada5 = functions.runWith({ memory: "256MB", timeoutSeconds: 120, 
       if (ok.length === 1) await push([dest], "📣 Nuevo prospecto de la campaña", primer(n1.name) + (it ? " · le interesa: " + it : "") + ". Escríbale ya: el primer contacto rápido es el que más funciona.", "camp");
       else await push([dest], `📣 ${ok.length} prospectos nuevos de la campaña`, ok.slice(0, 4).map(x => primer(x.c.name)).join(", ") + (ok.length > 4 ? " y " + (ok.length - 4) + " más" : "") + ". Están en su CRM con la etiqueta 📣 Campaña.", "camp"); }
   }
+  // 20 nov: respaldo del reparto. La app escribe además users/{dest}/llPase/{id}; si el cambio del contacto no llegó
+  // (o lo pisó una copia vieja del teléfono), aquí se vuelve a poner rep/repP antes del reparto.
+  let nPs = 0;
+  for (const d of (await db.collection(`users/${dest}/llPase`).get()).docs) {
+    const p = d.data() || {}, cr = db.doc(`users/${dest}/crm/${d.id}`), cx = await cr.get();
+    if (cx.exists && p.u && p.u !== dest) { const r = cx.data().rep || {};
+      if (!(r.u === p.u && (r.t || 0) >= (p.t || 0))) { const up = { rep: { u: p.u, n: p.n || "", t: p.t || now, st: "p", dn: p.dn || "" }, repP: true };
+        if (p.q && p.q.u && p.q.u !== p.u) up.repQ = { u: p.q.u, n: p.q.n || "", t: now };
+        await cr.set(up, { merge: true }); nPs++; } }
+    await d.ref.delete();
+  }
   // 18 nov: «Quitar y pasar a otro» → se borra la copia del socio anterior
   let nQ = 0;
   for (const d of (await db.collection(`users/${dest}/crm`).where("repQ.t", ">", 0).get()).docs) {
@@ -219,7 +230,7 @@ exports.lluviaCada5 = functions.runWith({ memory: "256MB", timeoutSeconds: 120, 
     await d.ref.set({ repP: false, rep: { ...r, st: "ok", ok: now, chk: now + 3 * 36e5 } }, { merge: true }); nR++;
     if (!ex.exists) await push([r.u], "📣 " + primer(de) + " le pasó un prospecto", primer(x.name) + (cp.int ? " · le interesa: " + cp.int : "") + ". Ya está en su CRM con la etiqueta 📣 Campaña. ¡Escríbale hoy!", "camp");
   }
-  await meta.set({ fx: { t: now, filas: leads.length, nuevos: ok.length, pasados: nR, quitados: nQ, tarde: tard.length } }, { merge: true });
+  await meta.set({ fx: { t: now, filas: leads.length, nuevos: ok.length, pasados: nR, quitados: nQ, tarde: tard.length, rescate: nPs } }, { merge: true });
   console.log("lluvia: filas", leads.length, "· nuevos", ok.length, "· pasados", nR, "· quitados", nQ, "· tarde", tard.length);
 });
 

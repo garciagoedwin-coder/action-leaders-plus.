@@ -9426,9 +9426,18 @@ async function lluPasar(c,quitar){const L=await lluCargar(true),viejo=quitar&&c.
     document.querySelectorAll("[data-llu]").forEach(x=>x.onclick=async()=>{if(x.disabled)return;const p=P.find(y=>y.u===x.dataset.llu);if(!p)return;x.disabled=true;
       const prev={rep:c.rep,repP:c.repP,repQ:c.repQ,repH:c.repH};if(viejo){c.repQ={u:viejo.u,n:viejo.n||"",t:Date.now()};c.repH=(c.repH||[]).concat([{u:viejo.u,n:viejo.n||"",t:viejo.t||0,q:Date.now()}]).slice(-5)}
       c.rep={u:p.u,n:p.n,t:Date.now(),st:"p",dn:esSoloAdminYo()?"Edwin García Go":(miNombreCorto()||"su líder")};c.repP=true;c.updated=Date.now();
-      const id=await store.saveContact(Object.assign({},c));if(!id){Object.assign(c,prev);x.disabled=false;return}
-      closeSheet();try{renderCRM()}catch(e){}toast("📤 Listo: en 5–15 min "+fn+" llega al CRM de "+String(nv(p.n)).split(" ")[0])})})}
-async function lluDeshacer(c){if(!c.rep||c.rep.st==="ok")return;delete c.rep;c.repP=false;c.updated=Date.now();await store.saveContact(Object.assign({},c));try{renderCRM()}catch(e){}toast("Listo, ya no se le pasa")}
+      const pd=store.db.doc("users/"+store.uid+"/llPase/"+c.id),pb={u:p.u,n:p.n||"",dn:c.rep.dn,t:c.rep.t,q:viejo?{u:viejo.u,n:viejo.n||""}:null};
+      try{pd.set(pb).catch(e=>console.error("llPase",e))}catch(e){}
+      const id=await store.saveContact(Object.assign({},c));if(!id){Object.assign(c,prev);x.disabled=false;try{pd.delete()}catch(e){}return}
+      closeSheet();try{renderCRM()}catch(e){}toast("⏳ Pasando a "+String(nv(p.n)).split(" ")[0]+"… le confirmo en unos segundos");lluVerif(c.id,c.rep.t,fn,p.n,pd,pb,0)})})}
+/* 20 nov: confirmar con el servidor que el pase llegó (antes solo se guardaba en el teléfono y a veces nunca subía). */
+async function lluVerif(id,t,fn,ln,pd,pb,k){await new Promise(r=>setTimeout(r,k?15e3:6e3));const lid=String(nv(ln)).split(" ")[0];
+  let okC=false,okP=false;try{const d=await store.crm().doc(id).srv();const r=d.exists&&(d.data()||{}).rep;okC=!!(r&&r.t>=t)}catch(e){}
+  if(!okC)try{const d=await pd.srv();okP=d.exists}catch(e){}
+  if(okC||okP){toast("✅ "+fn+" ya va en camino al CRM de "+lid+" (llega en 5–15 min)");return}
+  if(k<3){try{pd.set(pb).catch(()=>{});const c=(contacts||[]).find(x=>x.id===id);if(c&&c.rep&&c.rep.t===t)store.crm().doc(id).set({rep:c.rep,repP:true,updated:Date.now()},{merge:true}).catch(()=>{})}catch(e){}return lluVerif(id,t,fn,ln,pd,pb,k+1)}
+  openSheet(`<h2>⚠️ Todavía no se pasó</h2><p class="small muted" style="margin:0">Su teléfono no ha podido enviar el pase de <b>${esc(fn)}</b> a ${esc(lid)}. Suele ser la señal.</p><p class="small" style="margin:10px 0 0">Cierre la app por completo, vuelva a abrirla con buena señal o wifi y se envía solo. Si no, páselo otra vez.</p><div class="row" style="margin-top:14px"><button class="btn grow" data-close>Entendido</button></div>`)}
+async function lluDeshacer(c){if(!c.rep||c.rep.st==="ok")return;try{store.db.doc("users/"+store.uid+"/llPase/"+c.id).delete().catch(()=>{})}catch(e){}delete c.rep;c.repP=false;c.updated=Date.now();await store.saveContact(Object.assign({},c));try{renderCRM()}catch(e){}toast("Listo, ya no se le pasa")}
 async function lluPanel(cTras){if(!isAdmin)return;const L=await lluCargar(true);if(!socios)try{await loadSocios()}catch(e){}
   const sel=new Map((L.part||[]).filter(x=>x&&x.u).map(x=>[x.u,x.n]));
   const camp=(contacts||[]).filter(c=>lluEsCamp(c)&&c.camp&&c.camp.lid),pas=camp.filter(c=>c.rep&&c.rep.u);
@@ -11407,7 +11416,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261120092952";var busy=false,pend=null;
+(function(){var V="20261120094715";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
