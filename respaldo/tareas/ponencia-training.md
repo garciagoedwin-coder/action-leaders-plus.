@@ -13,7 +13,7 @@ Instrucciones para las tareas programadas «Ponencia del Training». Todo en esp
    `gh api -X POST repos/garciagoedwin-coder/action-leaders-plus./actions/workflows/diagperf.yml/dispatches -f ref=main -f 'inputs[code]=analisis' -f "inputs[pk]=$(cat /tmp/pon-k/pk.txt)"`
    Busca el run nuevo filtrando `created_at >= hora de disparo` (no tomes «el último» a ciegas). Espera con un bucle until (no sleeps sueltos encadenados). Descarga el log (`gh api repos/…/actions/runs/ID/logs > l.zip; unzip -p l.zip '*'`) y descifra: `python3 tools/training/descifrar.py LOG.txt /tmp/pon-k/priv.pem /tmp/pon-k/a.json`. Si sale «***», repite el run. BORRA el run al terminar (`gh api -X DELETE repos/…/actions/runs/ID`).
 3. a.json trae: `U` (socios: nombre, plan, rango, actividad con emb = conteo del CRM por etapa, ir = Plan de Inicio Rápido), `cr` (constancia de cada uid: racha, vr, rv, mesComp, mesPres, semPts, svY/svE/svT de la presentación virtual, comp…) y `tu.s` (Turnos del mes actual y el siguiente).
-4. Ponentes = `tu.s[idEvento]` lugares `p`, `e`, `p3`, `p4` con `n` y SIN `st` o con `st` "ok" (aceptados). Orden: rango más alto primero (Board > … > National > Regional > SM > Marketing Director). Tema elegido por los admins = `tu.s[idEvento].tema` (si existe, manda).
+4. Ponentes = `tu.s[idEvento]` lugares `p`, `e`, `p3`, `p4` con `n` y SIN `st` o con `st` "ok" (aceptados). Orden de presentación (Edwin, 20 nov): de rango MÁS BAJO a MÁS ALTO; el rango más alto va de ÚLTIMO y CIERRA (Marketing Director < SM < Regional < National < … < Board). Empate: quien se apuntó antes abre. Tema elegido por los admins = `tu.s[idEvento].tema` (si existe, manda).
 5. Fotos de los ponentes y anfitrión: dispara diagperf con `inputs[code]=fotos` e `inputs[q]=primernombre1,primernombre2` (minúsculas, sin acentos), descifra igual → JSON {nombre: dataURL}. Guárdalas como `tools/training/AAAA-MM-DD/f-<nombre>.jpg` (≈640 px; están en .gitignore, NO se suben). Sin foto → iniciales.
 6. Números públicos: `data/team.json` → ranking (volumen = activaciones del mes), activaciones, config.metaEquipo, calendario de la semana, config.anuncio (próximo evento).
 Si no se puede disparar el diagnóstico (sin permiso de API), sigue solo con team.json y dilo en el aviso a Edwin.
@@ -22,7 +22,7 @@ Si no se puede disparar el diagnóstico (sin permiso de API), sigue solo con tea
 Tema según el día:
 - MARTES = una HABILIDAD que el análisis muestre débil (ej.: muchos en «Nuevo» sin contactar → primer contacto; muchos en Seguimiento → cierre; presentaciones bajas → invitar; IC bajo → constancia/rutina). 1 ponente.
 - JUEVES = REDES SOCIALES y marca personal (historias, perfil, Mi página, presentación virtual). 1 ponente.
-- DOMINGO = MENTALIDAD, CREENCIAS y LIDERAZGO. Con 2–3 ponentes se divide: 1 = tema completo; 2 = Mentalidad + Habilidad; 3 = Creencia + Habilidad + Liderazgo. El de rango más alto abre.
+- DOMINGO = MENTALIDAD, CREENCIAS y LIDERAZGO. Con 2–3 ponentes se divide: 1 = tema completo; 2 = Mentalidad + Habilidad; 3 = Creencia + Habilidad + Liderazgo. Abre el de rango más bajo y CIERRA el de rango más alto (el cierre, la tarea de 48 horas y el «Escriba en el chat» son suyos).
 No repitas el tema de las últimas 2 semanas (mira las carpetas de tools/training/). Siempre usa datos reales del análisis.
 
 Pasos:
