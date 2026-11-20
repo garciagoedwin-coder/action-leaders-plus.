@@ -4706,7 +4706,7 @@ function dtFicha(x){const img=dtFoto(x.u,x.n),f=dtFirst(x.n),mes=x.f?MONTHS[new 
 // 10 nov (Edwin): el patrocinador elige el paquete ANTES de mandar el enlace → invitaciones/{id} {by, plan, gen} y el enlace lleva &b=id.
 // El socio se registra sin elegir plan. Si alguien usa un enlace viejo, queda "por confirmar" y lo corrige el correo de inCruises (aprobar.mjs).
 function invPlan(cb){openSheet(`<p class="eyebrow">INVITAR</p><h2 style="margin:2px 0 6px">¿Con qué paquete entró?</h2><p class="small muted" style="margin:0 0 12px">Se crea un enlace solo para esa persona, con su paquete ya puesto. Al registrarse no tiene que elegir nada.</p>
-  <div class="ipL"><button type="button" data-ip="Starter"><b>Starter</b><small>solo socio · sin volumen</small></button><button type="button" data-ip="Classic"><b>Classic</b><small>200 pts</small></button><button type="button" data-ip="Premium" class="pr"><b>★ Premium</b><small>500 pts</small></button></div>
+  <div class="ipL"><button type="button" data-ip="Starter"><b>Starter</b><small>50 pts</small></button><button type="button" data-ip="Classic"><b>Classic</b><small>200 pts</small></button><button type="button" data-ip="Premium" class="pr"><b>★ Premium</b><small>500 pts</small></button></div>
   <button class="btn ghost" data-close style="width:100%;margin-top:12px">Cancelar</button>`,()=>{document.querySelectorAll("[data-ip]").forEach(b=>b.onclick=async()=>{const plan=b.dataset.ip;b.disabled=true;
     const id=Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4);
     try{await store.db.doc("invitaciones/"+id).set({by:store.uid,byNombre:miRegistro().nombre||"",plan,gen:1,t:Date.now()})}catch(e){b.disabled=false;toast("No se pudo crear el enlace ("+errCod(e)+")");return}
@@ -5229,8 +5229,8 @@ var RETO_STRIP_OFF=true; // franja del reto del mes (Roatán) quitada de Inicio 
 
 
 
-// 11 nov (Edwin): quien entra solo como socio (Starter) o ya era miembro (ps) o solo código (sc) NO suma volumen ni activación.
-const actSinVol=a=>!!(a&&(a.ps||a.sc||/starter/i.test(a.paquete||"")));
+// 20 nov (Edwin): Starter SÍ suma 50. No suman: ya era miembro (ps) o solo código de socio (sc), en cualquier paquete.
+const actSinVol=a=>!!(a&&(a.ps||a.sc));
 
 
 
@@ -11500,7 +11500,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261120155750";var busy=false,pend=null;
+(function(){var V="20261120164132";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
