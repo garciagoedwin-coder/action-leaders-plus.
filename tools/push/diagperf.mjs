@@ -67,7 +67,7 @@ if (process.env.CODE === "rep") { initializeApp({ credential: cert(JSON.parse(pr
     const uid = q.docs[0].id, C = (await db.collection(`users/${uid}/crm`).where("cat", "array-contains", "camp").get()).docs;
     const cnt = {}; let rp = 0; for (const d of C) { const r = d.data().rep; cnt[r ? (r.st || "?") : "sin"] = (cnt[r ? (r.st || "?") : "sin"] || 0) + 1; if (d.data().repP === true) rp++; }
     console.log("cuenta", mail[0], "camp", C.length, "repP", rp, JSON.stringify(cnt));
-    const A = (await db.collection(`users/${uid}/crm`).orderBy("updated", "desc").limit(3).get()).docs.map(d => Math.round((now - (d.data().updated || 0)) / 60000));
+    const A = (await db.collection(`users/${uid}/crm`).orderBy("updated", "desc").limit(4).get()).docs.map(d => { const x = d.data(); return Math.round((now - (x.updated || 0)) / 60000) + "m/" + (x.stage || "") + "/camp:" + (Array.isArray(x.cat) && x.cat.includes("camp") ? 1 : 0) + "/rep:" + (x.rep ? x.rep.st : "-") + "/id:" + d.id.slice(0, 2); });
     const U = (await db.doc(`users/${uid}`).get()).data() || {}, at = (U.actividad || {}).t, cs = ((await db.doc(`constancia/${uid}`).get()).data() || {}).u;
     console.log(" crm ultimos cambios hace (min)", A.join(","), "· actividad hace", at ? Math.round((now - at) / 60000) : "-", "· constancia hace", cs ? Math.round((now - cs) / 60000) : "-");
     const rec = C.map(d => ({ id: d.id, ...d.data() })).filter(x => x.rep && now - (x.rep.t || 0) < 864e5).sort((a, b) => b.rep.t - a.rep.t);
