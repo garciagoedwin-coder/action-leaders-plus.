@@ -8461,7 +8461,8 @@ function notaAbrir(c,k,lg){if(!c)return;let r="",p=c.next&&c.next>=TODAY?c.next:
      const L=(c.seg||[]).slice(),j=lg?L.findIndex(x=>x.t===lg):-1,it=j>=0?Object.assign({},L[j]):{t:Date.now(),k:k||"nota"};if(r)it.r=r;if(n)it.n=n;if(f)it.p=f;if(j>=0)L[j]=it;else L.push(it);c.seg=L.slice(-30);if(f)c.next=f;c.updated=Date.now();
      bt.disabled=true;bt.textContent="Guardando…";const id=await store.saveContact(Object.assign({},c));if(!id){bt.disabled=false;bt.textContent="Guardar";toast("No se pudo guardar la nota.");return}renderCRM();
      if(cal&&f)sgCal(c,f,h,n);else{closeSheet();toast("📝 Nota guardada"+(f?" · próximo: "+niceDate(f):""))}}})}
-function notaPend(c,k,log){const t=Date.now();if(log){c.seg=(c.seg||[]).concat([{t,k}]).slice(-30)}try{LS.set("notaPend",{id:c.id,k,t,log:log?t:0})}catch(e){}}
+function nextBump(c){try{if(!c||CERR.includes(c.stage)||c.stage==="No interesado")return;const d=addD(TODAY,2);if(!c.next||c.next<d)c.next=d}catch(e){}}
+function notaPend(c,k,log){const t=Date.now();if(log){c.seg=(c.seg||[]).concat([{t,k}]).slice(-30);nextBump(c)}try{LS.set("notaPend",{id:c.id,k,t,log:log?t:0})}catch(e){}}
 document.addEventListener("visibilitychange",()=>{if(document.hidden)return;let q=null;try{q=LS.get("notaPend")}catch(e){}if(!q)return;try{LS.set("notaPend",null)}catch(e){}
   if(Date.now()-q.t>3*36e5||Date.now()-q.t<2500)return;const c=(contacts||[]).find(x=>x.id===q.id);if(c&&$("#sheet").hidden)setTimeout(()=>notaAbrir(c,q.k,q.log),400)});
 async function flGuardar(c){c.updated=Date.now();try{await store.saveContact(Object.assign({},c))}catch(e){}renderCRM()}
@@ -8491,7 +8492,7 @@ function flEnviar(c,k){if(k==="pres"){presAbrir(c);return}
      if(k==="sal"||k==="resal")stAvanza(c,"Contactado","le escribió el saludo");if(k==="seg")stAvanza(c,"Seguimiento","le dio seguimiento");
      if(["resal","rinv","seg","re2","re"].includes(k))segAuto(c);
      if(k==="pvl"||k==="pvt"){c.fl.h.pvs=Date.now();c.fl.r=k;stAvanza(c,"Contactado","le envió la presentación virtual");try{LS.set("salaOn",1);const E=LS.get("salaEnv")||{};E[c.id]=Date.now();LS.set("salaEnv",E)}catch(x){}}
-     if(["sal","resal","inv","rinv","re","pva","pvl","pvt"].includes(k))c.seg=(c.seg||[]).concat([{t:Date.now(),k}]).slice(-30);else notaPend(c,k,1);flGuardar(c);const n=waNum(c.phone,c.cc);closeSheet();waIr("https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t))};
+     if(["sal","resal","inv","rinv","re","pva","pvl","pvt"].includes(k))c.seg=(c.seg||[]).concat([{t:Date.now(),k}]).slice(-30);else notaPend(c,k,1);nextBump(c);flGuardar(c);const n=waNum(c.phone,c.cc);closeSheet();waIr("https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t))};
    document.querySelectorAll("#sheetPanel [data-fla]").forEach(b=>b.onclick=()=>{const a=b.dataset.fla;if(k==="agd"){flMarca(c,"agd");flGuardar(c)}closeSheet();
      if(a==="cita")abrirCita(null,c);else if(a==="pres")presAbrir(c);else if(a==="l3")pedirL3(c);else if(a==="sala")enviarSala(c);else if(a==="pva")setTimeout(()=>flEnviar(c,"pva"),250)})})}
 async function flResp(c,v){c.fl=Object.assign({h:{},r:""},c.fl||{});if(["si","nr","pen"].includes(v))flSnap(c);
@@ -9376,7 +9377,7 @@ function gcAudio(c,k,modo){const step=GC_P.indexOf(k),n=waNum(c.phone,c.cc),f=St
    $("#gaW").onclick=()=>{if(n)waIr("https://wa.me/"+n);else toast("Este contacto no tiene WhatsApp guardado")};
    $("#gaOk").onclick=()=>hecho()})}
 function gcCopiar(t){try{navigator.clipboard.writeText(t);return}catch(e){}try{const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove()}catch(e){}}
-async function gcGuardar(c,o){c.gc=Object.assign({},c.gc||{},o||{});c.updated=Date.now();try{await store.saveContact(Object.assign({},c))}catch(e){toast("No se pudo guardar ("+errCod(e)+")")}try{renderCRM()}catch(e){}try{lluStrip()}catch(e){}}
+async function gcGuardar(c,o){c.gc=Object.assign({},c.gc||{},o||{});if(o&&o.t)nextBump(c);c.updated=Date.now();try{await store.saveContact(Object.assign({},c))}catch(e){toast("No se pudo guardar ("+errCod(e)+")")}try{renderCRM()}catch(e){}try{lluStrip()}catch(e){}}
 // Hoja del mensaje: campos para lo que falta, texto editable, Enviar por WhatsApp / Copiar.
 async function gcAbrir(c,k){if(!c)return;gcS();const S=gcSt(c),step=GC_P.indexOf(k),f=String(c.name||"").split(" ")[0],R=gcRol(k);let lk="";
   if(GC_AUD(k))return gcAudio(c,k,(()=>{try{return LS.get("gaModo")||"a"}catch(x){return "a"}})());
@@ -11430,7 +11431,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261120104717";var busy=false,pend=null;
+(function(){var V="20261120110107";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
