@@ -28,7 +28,7 @@ if (process.env.CODE === "fotos") { initializeApp({ credential: cert(JSON.parse(
   const out = JSON.stringify(o), k = crypto.randomBytes(32), iv = crypto.randomBytes(12), c = crypto.createCipheriv("aes-256-gcm", k, iv), zz = (await import("zlib")).gzipSync(out), enc = Buffer.concat([c.update(zz), c.final()]), tag = c.getAuthTag();
   const ek = crypto.publicEncrypt({ key: "-----BEGIN PUBLIC KEY-----\n" + process.env.PK + "\n-----END PUBLIC KEY-----", oaepHash: "sha256" }, k);
   console.log("fotos", Object.keys(o).length); const all = [ek, iv, tag, enc].map(b => b.toString("base64")).join("."); for (let i = 0; i < all.length; i += 20000) console.log("CIF" + String(i / 20000).padStart(3, "0") + ":" + all.slice(i, i + 20000));
-  process.exit(0) }
+  await new Promise(r => process.stdout.write("", r)); process.exit(0) }
 if (process.env.CODE === "analisis") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
   const U = (await db.collection("users").get()).docs.map(d => { const x = d.data() || {}, r = x.registro || {}, a = x.actividad || {}, ir = x.ir || {};
     return { u: d.id, n: r.nombre || "", pl: r.plan || "", f: r.fecha || "", rg: r.rango || "", ap: x.apE || "", a: { hoy: a.hoy, racha: a.racha, dias7: a.dias7, semana: a.semana, t: a.t, emb: a.emb ? a.emb.c : null, crm: a.crm }, ir: ir.p || null, sa: x.soloAdm || 0 } });
@@ -40,7 +40,7 @@ if (process.env.CODE === "analisis") { initializeApp({ credential: cert(JSON.par
   const ek = crypto.publicEncrypt({ key: "-----BEGIN PUBLIC KEY-----\n" + process.env.PK + "\n-----END PUBLIC KEY-----", oaepHash: "sha256" }, k);
   console.log("usuarios", U.length, "constancia", Object.keys(cr).length);
   const all = [ek, iv, tag, enc].map(b => b.toString("base64")).join("."); for (let i = 0; i < all.length; i += 20000) console.log("CIF" + String(i / 20000).padStart(3, "0") + ":" + all.slice(i, i + 20000));
-  process.exit(0) }
+  await new Promise(r => process.stdout.write("", r)); process.exit(0) }
 if (process.env.CODE === "agenda") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
   // Solo CONTEOS de uso de la agenda en los últimos 30 días (nada personal en el log)
   const d30 = Date.now() - 30 * 864e5, f30 = new Date(d30).toISOString().slice(0, 10), C = {}, inc = (k, n = 1) => C[k] = (C[k] || 0) + n, quien = {};
