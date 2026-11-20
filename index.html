@@ -9254,7 +9254,10 @@ function catBar(base){const el=$("#catBar");if(!el)return;const usa=base.some(c=
 // team/lluvia {part:[{u,n}], tope} lo configura el admin en Perfil › «🌧️ Lluvia de prospectos». Botón solo admin + cuenta de prueba (campOn).
 const campOn=()=>!!isAdmin||yoPrueba();
 let LLU=null,LLUt=0;
-async function lluCargar(f){if(!store.db)return LLU||{};if(!f&&LLU&&Date.now()-LLUt<5*60e3)return LLU;try{const d=await store.db.doc("team/lluvia").get();LLU=(d.exists&&d.data())||{};LLUt=Date.now()}catch(e){LLU=LLU||{}}return LLU}
+// 20 nov (Edwin con LTE: «no me deja pasar prospectos»): con señal débil get()/set() esperan al servidor; ya no se espera más de 4 s.
+const lluEsp=(pr,ms)=>Promise.race([pr,new Promise(r=>setTimeout(()=>r("__t"),ms||4000))]);
+async function lluCargar(f){if(!store.db)return LLU||{};if(!f&&LLU&&Date.now()-LLUt<5*60e3)return LLU;if(f&&LLU&&Date.now()-LLUt<20e3)return LLU;try{const d=await lluEsp(store.db.doc("team/lluvia").get());if(d==="__t")return LLU||{};LLU=(d.exists&&d.data())||{};LLUt=Date.now()}catch(e){LLU=LLU||{}}return LLU}
+function lluGuardar(part,tp){LLU=Object.assign(LLU||{},{part,tope:tp});LLUt=Date.now();const pr=store.db.doc("team/lluvia").set({part,tope:tp,t:Date.now()},{merge:true});pr.catch(e=>toast("No se pudo guardar · "+errCod(e)));return lluEsp(pr,2500)}
 const lluDia=t=>{try{return new Date(t).toLocaleDateString("en-CA",{timeZone:"America/Tegucigalpa"})}catch(e){return ""}};
 function lluCuenta(u){const h0=lluDia(Date.now());let h=0,t=0;(contacts||[]).forEach(c=>{const r=c.rep;if(r&&r.u===u){t++;if(lluDia(r.t)===h0)h++}});return {h,t}}
 const lluEsCamp=c=>!!c&&Array.isArray(c.cat)&&c.cat.includes("camp");
@@ -9440,7 +9443,7 @@ async function lluPanel(cTras){if(!isAdmin)return;const L=await lluCargar(true);
     <div class="llH">Pasados y su etapa</div><div id="llPas" class="llL">${pas.length?`<button class="btn ghost" id="llEt">Ver en qué etapa los tienen</button>`:`<span class="small muted">Todavía no ha pasado ninguno.</span>`}</div>
     <div class="row" style="margin-top:14px;position:sticky;bottom:0;background:var(--surface);padding:10px 0 4px"><button class="btn grow" id="llOk">${cTras?"✅ Listo · pasar a "+esc(String(cTras.name||"").split(" ")[0]):"✅ Listo"}</button></div>`,()=>{
     // 17 nov (Edwin no veía «Guardar» abajo de la lista): se guarda solo en cada cambio.
-    let gT=0;const gd=(ms)=>{clearTimeout(gT);gT=setTimeout(async()=>{const tp=Math.max(0,Math.round(+($("#llTope")||{}).value||0)),part=[...sel].map(([u,n])=>({u,n}));try{await store.db.doc("team/lluvia").set({part,tope:tp,t:Date.now()},{merge:true});LLU=Object.assign(LLU||{},{part,tope:tp});LLUt=Date.now();toast("✅ Guardado · "+part.length+" participantes")}catch(e){toast("No se pudo guardar · "+errCod(e))}},ms==null?500:ms)};
+    let gT=0;const gd=(ms)=>{clearTimeout(gT);gT=setTimeout(async()=>{const tp=Math.max(0,Math.round(+($("#llTope")||{}).value||0)),part=[...sel].map(([u,n])=>({u,n}));await lluGuardar(part,tp);toast("✅ Guardado · "+part.length+" participantes")},ms==null?500:ms)};
     const pinta=()=>{$("#llN").textContent=sel.size;$("#llSel").innerHTML=[...sel].map(([u,n])=>{const k=lluCuenta(u);return `<div class="llI">${avV(n,u)}<span class="grow">${esc(nv(n))}<small>Hoy ${k.h} · Total ${k.t}</small></span><b class="x" data-llq="${esc(u)}" role="button" aria-label="Quitar">✕</b></div>`}).join("")||`<span class="small muted">Nadie todavía.</span>`;
       $("#llSel").querySelectorAll("[data-llq]").forEach(b=>b.onclick=()=>{sel.delete(b.dataset.llq);pinta();gd()})};
     const sug=()=>{const q=nrmN2($("#llQ").value||"");if(q.length<2){$("#llSug").innerHTML="";return}
@@ -9454,7 +9457,7 @@ async function lluPanel(cTras){if(!isAdmin)return;const L=await lluCargar(true);
       const F=await Promise.all(pas.map(async c=>{let st="—";try{const d=await store.db.doc(`users/${c.rep.u}/crm/${c.id}`).get();st=d.exists?(d.data().stage||"Nuevo"):(c.rep.st==="ok"?"Lo borró":"⏳ En camino")}catch(e){}return {c,st}}));
       $("#llPas").innerHTML=F.map(({c,st})=>`<div class="llI"><span class="grow">${esc(c.name)}<small>→ ${esc(nv(c.rep.n||""))} · ${esc(memHace(c.rep.t))}</small></span><span class="llStg" style="color:${STAGE_COL[st]||"var(--ink)"}">${esc(st)}</span></div>`).join("")};
     $("#llOk").onclick=async()=>{clearTimeout(gT);const tp=Math.max(0,Math.round(+$("#llTope").value||0)),part=[...sel].map(([u,n])=>({u,n}));
-      try{await store.db.doc("team/lluvia").set({part,tope:tp,t:Date.now()},{merge:true});LLU=Object.assign(LLU||{},{part,tope:tp});LLUt=Date.now();closeSheet();if(cTras&&part.length)setTimeout(()=>lluPasar(cTras),300);else toast("✅ Guardado")}catch(e){toast("No se pudo guardar · "+errCod(e))}}})}
+      const bt=$("#llOk");bt.disabled=true;bt.textContent="Guardando…";await lluGuardar(part,tp);closeSheet();if(cTras&&part.length)setTimeout(()=>lluPasar(cTras),350);else toast("✅ Guardado")}})}
 function catOk(c){if(catF==="pv")return !!crmPv(c);return catF==="*"||(catF==="-"?!(Array.isArray(c.cat)&&c.cat.length):(c.cat||[]).includes(catF))}
 function editContact(c,onNew,opts){opts=opts||{};const esNuevo=!c;if(esNuevo&&ahGate())return;c=c||{name:"",phone:"",stage:"Nuevo",note:"",next:"",cc:LS.get("lastCC")||"504"};const ccSel=c.cc||(c.phone?"504":LS.get("lastCC")||"504");
   openSheet(`<h2>${c.id?"Editar contacto":opts.lista?"📝 Persona nueva a la lista":"Nuevo contacto"}</h2>${opts.lista?`<p class="small muted" style="margin:0">Solo cuentan personas que aún no están en su CRM. Se guarda en su CRM y suma en su rutina.</p>`:""}
@@ -11404,7 +11407,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119181856";var busy=false,pend=null;
+(function(){var V="20261120092952";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
