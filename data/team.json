@@ -203,6 +203,18 @@
    "activaciones": 1,
    "volumen": 200,
    "actSemana": 1
+  },
+  {
+   "nombre": "Saby odett Isaguirre aguilar",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "saby-odett-isaguirre-aguilar",
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -782,6 +794,21 @@
    "id": "denis-josue-reyes",
    "volumenHoja": 0,
    "ptsBase": 200,
+   "auto": "2026-11"
+  },
+  {
+   "nombre": "Saby Odett Isaguirre Aguilar",
+   "nombreRanking": "Saby odett Isaguirre aguilar",
+   "rango": "",
+   "linea": "",
+   "meta": 500,
+   "nuevos": 0,
+   "presentaciones": 0,
+   "volumen": 500,
+   "volumenDetalle": "",
+   "id": "saby-odett-isaguirre-aguilar",
+   "volumenHoja": 0,
+   "ptsBase": 500,
    "auto": "2026-11"
   }
  ],
@@ -3287,6 +3314,17 @@
    "fuente": "gmail",
    "id": "maria-celina-castillo-almendarez",
    "rv": 1
+  },
+  {
+   "socio": "Jorge edgardo Trejo padilla",
+   "paquete": "Premium",
+   "patrocinador": "Saby odett Isaguirre aguilar",
+   "fecha": "2026-11-20T02:55:02Z",
+   "ek": "476528",
+   "wk": "9e5f0c",
+   "fuente": "gmail",
+   "id": "jorge-edgardo-trejo-padilla",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3320,7 +3358,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-18T21:55:07Z",
+  "activacionesCorte": "2026-11-20T02:55:02Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3329,7 +3367,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-18T18:48:00-06:00",
+  "rankingActualizado": "2026-11-19T22:25:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -4209,7 +4247,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-11-19T23:39:52Z",
+   "v": "2026-11-20T04:25:12Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "0225a9": "2026-10-27T10:09:44Z",
@@ -4228,7 +4266,6 @@
     "22983b": "2026-10-30T19:40:38Z",
     "23ab00": "2026-10-31T23:15:42Z",
     "23ead8": "2026-11-20T18:10:12Z",
-    "2542b2": "2026-10-28T06:08:56Z",
     "2bcc4f": "2026-10-30T03:05:26Z",
     "2feb18": "2026-11-24T14:11:27Z",
     "32de67": "2026-11-14T23:08:33Z",
@@ -4244,7 +4281,6 @@
     "5fc7fb": "2026-10-31T23:58:44Z",
     "6168c1": "2026-10-30T03:05:26Z",
     "6296a5": "2026-10-24T04:09:05Z",
-    "629ebc": "2026-10-28T06:08:56Z",
     "648bac": "2026-10-18T05:10:30Z",
     "66814f": "2026-10-31T23:58:44Z",
     "680411": "2026-11-01T02:08:16Z",
@@ -4973,17 +5009,17 @@
      "a": 3
     },
     {
+     "n": "Yeny Mildred Castellanos Castellanos",
+     "p": 1200,
+     "a": 8
+    },
+    {
      "n": "Lorena Velasquez",
      "p": 1150,
      "a": 10
     },
     {
      "n": "Karen Lizeth Paz Escober",
-     "p": 1100,
-     "a": 7
-    },
-    {
-     "n": "Yeny Mildred Castellanos Castellanos",
      "p": 1100,
      "a": 7
     },
@@ -5096,6 +5132,11 @@
      "n": "Saby Isaguirre",
      "p": 550,
      "a": 4
+    },
+    {
+     "n": "Saby Odett Isaguirre Aguilar",
+     "p": 550,
+     "a": 2
     },
     {
      "n": "Adela Izamara Zelaya",
@@ -5621,14 +5662,9 @@
      "n": "Osman Eli Vallejo Martinez",
      "p": 50,
      "a": 1
-    },
-    {
-     "n": "Saby Odett Isaguirre Aguilar",
-     "p": 50,
-     "a": 1
     }
    ],
-   "t": "2026-11-19T23:39:52Z"
+   "t": "2026-11-20T04:25:13Z"
   },
   "audioEsp": {
    "id": "santiago-1",
