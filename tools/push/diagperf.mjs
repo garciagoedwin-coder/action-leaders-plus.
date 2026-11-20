@@ -5,6 +5,16 @@ import { getFirestore } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
 import crypto from "crypto";
 // Análisis para el Training: todo sale CIFRADO con la llave pública PK (solo quien tiene la privada lo lee). El log público no muestra datos.
+if (process.env.CODE === "persona") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
+  const nz=x=>String(x||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); const q=nz(process.env.Q);
+  const us=await db.collection("users").get(); let i=0;
+  for(const d of us.docs){const r=d.data().registro||{}; if(!nz(r.nombre).includes(q)&&!nz(d.data().email).includes(q))continue; i++;
+    const c=(await db.collection("constancia").doc(d.id).get()).data()||{}; const a=d.data().actividad||{};
+    console.log("cuenta",i,"apE",d.data().apE||"-","registrado",!!r.nombre,"patrocinadorUid",!!r.patrocinadorUid,"linea",(r.linea||[]).length,"plan",r.plan||"-",
+      "constancia",!!Object.keys(c).length,"mes",c.mes||"-","mesPts",c.mesPts??"-","mesComp",c.mesComp??"-","vr",c.vr??"-","hoy",c.hoy??"-",
+      "diasSinApp",a.t?Math.round((Date.now()-a.t)/864e5):"-","fotosOculto",!!((await db.collection("fotos").doc(d.id).get()).data()||{}).oculto);}
+  const rd=await db.collection("red").get(); let j=0; rd.docs.forEach(x=>{const v=x.data(); if(nz(v.n).includes(q)){j++;console.log("red",j,"tipo",v.t,"plan",v.pl||"-","enApp",!!v.u)}});
+  console.log("cuentas",i,"red",j); process.exit(0)}
 if (process.env.CODE === "salayo") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore(); const q = (process.env.Q||"").toLowerCase();
   const us = await db.collection("users").get(); let i = 0;
   for (const u of us.docs) { const n = ((u.data().registro||{}).nombre||"").toLowerCase(); if (!q || !n.includes(q)) continue; i++;
