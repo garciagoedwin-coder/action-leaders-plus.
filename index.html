@@ -1669,7 +1669,7 @@ body.acc3 #tasks .counter .num{font-family:'Barlow Condensed',sans-serif;font-si
 .cgR{gap:10px!important;padding:10px 14px!important}
 .cgN{width:14px!important;font-family:'Barlow Condensed',sans-serif;font-size:14px!important}
 .cgNm{display:flex;flex-direction:column;font-size:15px!important}
-.cgT{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+.cgT{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.cgTL{display:flex;align-items:center;gap:5px;min-width:0}.cgTL .cgT{min-width:0;flex:0 1 auto}.cgK{flex:none;font:800 10.5px Figtree,sans-serif;padding:1px 7px;border-radius:99px;line-height:1.55;white-space:nowrap;border:0}.cgK.k1{background:#FFEDD5;color:#C2410C}.cgK.k2{background:#EDE9FE;color:#6D28D9}.cgK.k3{background:#E0F2FE;color:#0369A1}.cgK.k4{background:var(--surface-2);color:var(--muted)}.cgK.k5{background:#DBEAFE;color:#1D4ED8}.cgKa{background:none;border:1px dashed var(--line);color:var(--muted);cursor:pointer;padding:0 7px;font-size:12px}
 .cgM{font-size:12px;color:var(--muted);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cgM:empty{display:none}
 .cgLate{color:#DC2626;font-weight:700}
 .cgP{font-family:'Barlow Condensed',sans-serif;font-size:18px!important;font-weight:700!important}
@@ -2536,12 +2536,20 @@ const restV=v=>v===null||v===undefined?{nullValue:null}:typeof v==="boolean"?{bo
 const restF=o=>{const f={};for(const k in o){if(o[k]!==undefined)f[k]=restV(o[k])}return f};
 /* 20 nov (2): si la memoria del teléfono se traba, se cambia Firestore a memoria (sin IndexedDB) sin reiniciar la app. */
 let fsMem=false;async function fsReset(){if(fsMem)return true;fsMem=true;try{await Promise.race([terminate(fdb),new Promise(r=>setTimeout(r,2500))])}catch(e){}try{fdb=initializeFirestore(app,{ignoreUndefinedProperties:true});return true}catch(e){console.error("fsReset",e);return false}}
-async function restSet(p,b,merge){const u=auth.currentUser;if(!u)throw new Error("sin sesión");const tk=await u.getIdToken();let ac="";try{if(acI&&acTok)ac=(await Promise.race([acTok(acI,false),new Promise(r=>setTimeout(()=>r(null),3000))])||{}).token||""}catch(e){}
-  const q=merge?Object.keys(b).map(k=>"updateMask.fieldPaths="+encodeURIComponent(/^[A-Za-z_][A-Za-z_0-9]*$/.test(k)?k:"`"+k.replace(/`/g,"\\`")+"`")).join("&"):"";
+const restPlano=o=>o===null||typeof o!=="object"||(Array.isArray(o)?o.every(restPlano):(Object.getPrototypeOf(o)===Object.prototype&&Object.values(o).every(restPlano)));
+async function restSet(p,b,merge){if(!restPlano(b))throw Object.assign(new Error("rest-valor"),{code:"rest-valor"});const u=auth.currentUser;if(!u)throw new Error("sin sesión");const tk=await u.getIdToken();let ac="";try{if(acI&&acTok)ac=(await Promise.race([acTok(acI,false),new Promise(r=>setTimeout(()=>r(null),3000))])||{}).token||""}catch(e){}
+  const seg=k=>/^[A-Za-z_][A-Za-z_0-9]*$/.test(k)?k:"`"+String(k).replace(/\\/g,"\\\\").replace(/`/g,"\\`")+"`",hoj=(o,pre,A)=>{for(const k in o){const v=o[k];if(v===undefined)continue;const pt=pre.concat(seg(k));if(v&&typeof v==="object"&&!Array.isArray(v)&&Object.keys(v).length)hoj(v,pt,A);else A.push(pt.join("."))}return A};
+  const q=merge?(merge==="deep"?hoj(b,[],[]):Object.keys(b).map(seg)).map(k=>"updateMask.fieldPaths="+encodeURIComponent(k)).join("&"):"";
   const r=await fetch("https://firestore.googleapis.com/v1/projects/action-leaders-plus-8f1b8/databases/(default)/documents/"+p.split("/").map(encodeURIComponent).join("/")+(q?"?"+q:""),{method:"PATCH",headers:Object.assign({"Content-Type":"application/json",Authorization:"Bearer "+tk},ac?{"X-Firebase-AppCheck":ac}:{}),body:JSON.stringify({fields:restF(b)})});
   if(!r.ok)throw Object.assign(new Error("rest "+r.status),{code:r.status===403?"permission-denied":"rest-"+r.status});return true}
 const wrapS=q=>({docs:q.docs.map(d=>({id:d.id,data:()=>d.data()}))});
-const D=p=>({_p:p,update:b=>updateDoc(doc(fdb,p),b),srv:async()=>{const x=await getDocFromServer(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>setDoc(doc(fdb,p),b,o||{}),delete:()=>deleteDoc(doc(fdb,p)),
+/* 20 nov (2): TODA escritura (set/update) se recupera sola si la memoria del teléfono se traba: reinicia Firestore en memoria y reintenta; set cae a REST. */
+const fsTrabaM=e=>!!e&&(e.code==="failed-precondition"||e.code==="internal"||/IndexedDB|primary lease|persistence|exclusive access/i.test(String(e.message||"")));
+const fsMarca=e=>{try{window._fsE={c:String(e&&e.code||e&&e.message||e).slice(0,40),t:Date.now()}}catch(x){}};
+async function fsW(fn,rest){try{return await fn()}catch(e){fsMarca(e);if(!fsTrabaM(e))throw e;
+  if(await fsReset()){try{const r=await Promise.race([fn().then(v=>({v})),new Promise(rs=>setTimeout(()=>rs({v:undefined}),6000))]);return r.v}catch(x){fsMarca(x)}}
+  if(rest){try{await rest();return}catch(x){fsMarca(x)}}throw e}}
+const D=p=>({_p:p,update:b=>fsW(()=>updateDoc(doc(fdb,p),b)),srv:async()=>{const x=await getDocFromServer(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>fsW(()=>setDoc(doc(fdb,p),b,o||{}),()=>restSet(p,b,o&&o.merge?"deep":false)),delete:()=>deleteDoc(doc(fdb,p)),
   onSnapshot:(cb,er)=>onSnapshot(doc(fdb,p),x=>cb({exists:x.exists(),data:()=>x.data()}),er||(()=>{}))});
 const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),getCache:async()=>wrapS(await getDocsFromCache(collection(fdb,p))),where:(f,v,op)=>({limit:n=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v),limit(n))))}),get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v)))),getCache:async()=>wrapS(await getDocsFromCache(query(collection(fdb,p),where(f,op||"==",v)))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),where(f,op||"==",v)),q=>cb(wrapS(q)),er||(()=>{}))}),whereAll:L=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))),q=>cb(wrapS(q)),er||(()=>{}))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
   onSnapshot:(cb,er)=>onSnapshot(collection(fdb,p),q=>cb(wrapS(q)),er||(()=>{}))});
@@ -2671,7 +2679,7 @@ const niceDate=k=>{const d=parseK(k);return d.getDate()+" de "+MONTHS[d.getMonth
 const updatedTxt=t=>{if(!t)return"";const d=new Date(t);if(isNaN(d))return"";return "Actualizado el "+d.getDate()+" de "+MONTHS[d.getMonth()]+" a las "+pad(d.getHours())+":"+pad(d.getMinutes())};
 const h12=t=>{if(!t)return"";const[h,m]=t.split(":").map(Number);if(isNaN(h))return t;return ((h%12)||12)+":"+pad(m||0)+(h<12?" am":" pm")};
 let toastT;function errCod(e){const c=String((e&&e.code)||"").replace(/^(firestore|auth|storage)\//,"").replace(/[^a-z0-9-]/gi,"").slice(0,30);return c||"error"}
-function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2200)}
+function toast(t){try{const E=window._fsE;if(E&&Date.now()-E.t<15000&&/^No se pudo/.test(t)&&!/\(/.test(t))t=t.replace(/\.?$/," ("+E.c+")")}catch(x){}const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,2200)}
 async function copy(text){try{await navigator.clipboard.writeText(text);toast("Copiado")}catch(e){toast("Mantén presionado el texto para copiarlo")}}
 const safeUrl=u=>/^https?:\/\//i.test(String(u||""))?u:"";
 
@@ -8570,6 +8578,17 @@ let crmJr=0;async function crmJRevisar(){if(!(store&&store.db&&store.uid)||Date.
   if(n){try{toast("🔄 Se subieron "+n+" cambios de su CRM que no habían llegado")}catch(e){}}}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(()=>{try{crmJRevisar()}catch(e){}},4000)});
 setTimeout(()=>{try{crmJRevisar()}catch(e){}},15000);
+/* 20 nov (Edwin): «Pasados a mi equipo» se actualiza solo. El servidor (campSync) escribe rep.lu en el contacto cuando el líder avanza;
+   cada 2 min con la app visible (y al volver a ella) se piden SOLO los contactos con rep.lu más nuevo que el último visto. */
+let repLu=0,repT=0;async function repRevisar(f){try{if(!(store&&store.db&&store.uid)||document.hidden)return;if(!f&&Date.now()-repT<110e3)return;
+  const P=(contacts||[]).filter(c=>c&&c.rep&&c.rep.u&&c.rep.u!==store.uid);if(!P.length)return;repT=Date.now();
+  if(!repLu)repLu=Math.max(0,...P.map(c=>+(c.rep.lu||0)));
+  const q=await store.crm().where("rep.lu",repLu,">").get();let n=0;
+  q.docs.forEach(d=>{const x=d.data()||{},c=(contacts||[]).find(y=>y.id===d.id);if(!c||!x.rep)return;const lu=+(x.rep.lu||0);if(lu>repLu)repLu=lu;
+    if(JSON.stringify(c.rep)!==JSON.stringify(x.rep)){c.rep=x.rep;n++}});
+  if(n){const v=$("#v-crm");if(v&&!v.hidden){try{renderCRM()}catch(e){}}try{lluStrip()}catch(e){}}}catch(e){console.error("repRevisar",e)}}
+setInterval(()=>{repRevisar()},120e3);setTimeout(()=>{repRevisar(1)},20000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(()=>{repRevisar()},5000)});
 // ---------- 19 nov (Edwin): CRM v6 — «Hoy le toca» (protagonista oscuro), embudo en una barra y presentación virtual en una línea. 0 lecturas (contactos en memoria). ----------
 function crmIni(n){return String(n||"").trim().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"·"}
 function crmFec(f){try{return new Date(f+"T12:00:00").toLocaleDateString("es-HN",{weekday:"short",day:"numeric",month:"short"})}catch(e){return f}}
@@ -8603,7 +8622,7 @@ document.addEventListener("click",e=>{const el=$("#crmTop");if(!el||!el.contains
   const tg=e.target.closest("[data-tog6]");if(tg){openC=tg.dataset.tog6;renderCRM();setTimeout(()=>{const r=document.querySelector('#contactList [data-tog="'+CSS.escape(openC)+'"]');if(r)r.scrollIntoView({behavior:"smooth",block:"start"})},80)}});
 function crmCuerpo(list,card,q){let n=0;const pvF=catF==="pv";if(pvF)list=list.slice().sort((a,b)=>(stPct(b)||0)-(stPct(a)||0)); /* 19 nov (Edwin): filtro Presentación virtual = lista plana con su etapa y % */const pk=pipeOk(),act=c=>!CERR.includes(c.stage)&&!PAUSA.includes(c.stage)&&!lluPas(c);
   const row=c=>{const nn=act(c)?++n:"";const op=openC===c.id,col=STAGE_COL[c.stage]||"var(--brand)",ps=lluPas(c),cer=CERR.includes(c.stage)||ps,pv=crmPv(c),fr=!cer&&pk&&stFrio(c),late=!cer&&c.next&&c.next<TODAY,rx=ps?lluRepTx(c.rep):null;
-    return `<div class="cgR${op?" op":""}" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}"><span class="cgN">${nn}</span><span class="cgAv" style="--c:${col}">${esc(crmIni(c.name))}</span><span class="cgNm"><span class="cgT">${esc(c.name)}</span><small class="cgM">${rx?`<span class="rpM ${rx.c}">${esc(rx.t)}</span>`:pvF?`<b style="color:${col}">${esc(ps?"Pasado a su equipo":c.stage||"Nuevo")}</b> · 🎬 ${esc(pv||"Enviada")}`:crmMeta(c)}</small></span><span class="cgP" style="color:${col}">${rx?"":cer?esc(c.stage):pk?stPct(c)+"%":esc(c.stage||"Nuevo")}${fr||late?`<i title="Sin seguimiento">⚠</i>`:""}</span></div>${op?`<div class="cgF">${card(c)}</div>`:""}`};
+    return `<div class="cgR${op?" op":""}" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}"><span class="cgN">${nn}</span><span class="cgAv" style="--c:${col}">${esc(crmIni(c.name))}</span><span class="cgNm"><span class="cgTL"><span class="cgT">${esc(c.name)}</span>${cgCat(c,cer)}</span><small class="cgM">${rx?`<span class="rpM ${rx.c}">${esc(rx.t)}</span>`:pvF?`<b style="color:${col}">${esc(ps?"Pasado a su equipo":c.stage||"Nuevo")}</b> · 🎬 ${esc(pv||"Enviada")}`:crmMeta(c)}</small></span><span class="cgP" style="color:${col}">${rx?"":cer?esc(c.stage):pk?stPct(c)+"%":esc(c.stage||"Nuevo")}${fr||late?`<i title="Sin seguimiento">⚠</i>`:""}</span></div>${op?`<div class="cgF">${card(c)}</div>`:""}`};
   const nA=list.filter(act).length,nC=list.filter(c=>CERR.includes(c.stage)&&!lluPas(c)).length,cnt=`<p class="cgCnt">${nA} en proceso${nC?` · ${nC} ${nC===1?"cerrado":"cerrados"}`:""}</p>`;
   if(!crmGrp(q))return cnt+`<div class="cgG">${list.map(row).join("")}</div>`;
   const gk=c=>lluPas(c)?"Pasados":CERR.includes(c.stage)?"Cerrados":c.stage==="No interesado"?"Descartados":(c.stage||"Nuevo");
@@ -9292,6 +9311,11 @@ function catLista(){return CAT_FIJ.map(x=>x[0]).concat(catMias().map(n=>"u:"+n))
 function catTag(c,cer){const L=(Array.isArray(c.cat)?c.cat:[]).map(catInfo).filter(Boolean);
   if(L.length){const hc=(c.cat||[]).includes("camp")&&(c.creado||(c.camp||{}).t)?" · "+lluFH(c.creado||c.camp.t):"";return `<div class="catT">${L.map(x=>`<span class="${x.cl}">${x.ic} ${esc(x.t)}${x.ic==="📣"?esc(hc):""}</span>`).join("")}</div>`}
   return cer?"":`<div class="catT"><button type="button" data-catp="${esc(c.id)}">＋ Categoría</button></div>`}
+/* 20 nov (Edwin): etiqueta de origen a la par del nombre en la lista del CRM */
+const CAT_COR={camp:"Campaña",cal:"Caliente",red:"Redes",fri:"Frío",otro:"Otro"};
+function cgCat(c,cer){const L=(Array.isArray(c.cat)?c.cat:[]).map(catInfo).filter(Boolean);
+  if(!L.length)return cer?"":`<button type="button" class="cgK cgKa" data-catp="${esc(c.id)}" aria-label="Poner categoría">＋</button>`;
+  const x=L[0],t=CAT_COR[x.k]||x.t;return `<span class="cgK ${x.cl}">${x.ic} ${esc(t.length>14?t.slice(0,13)+"…":t)}</span>${L.length>1?`<span class="cgK k4">+${L.length-1}</span>`:""}`}
 function catChips(sel){const S=new Set(sel||[]);return catLista().filter(k=>k!=="camp"||S.has(k)).map(k=>{const x=catInfo(k);return `<button type="button" data-ck="${esc(k)}" aria-pressed="${S.has(k)}">${x.ic} ${esc(x.t)}</button>`}).join("")+`<button type="button" class="add" data-cknew>＋ Crear categoría</button>`}
 function catBind(box,onCh){box.onclick=e=>{const b=e.target.closest("button");if(!b)return;
   if(b.hasAttribute("data-cknew")){const nm=(prompt("Nombre de la categoría (ej.: Iglesia, Trabajo, Gimnasio)")||"").trim().replace(/\s+/g," ").slice(0,24);if(!nm)return;
@@ -9329,7 +9353,7 @@ function lluRepTx(r){if(!r)return "";const nm=String(nv(r.n||"su socio")).split(
 // c.gc = {p: siguiente paso (0..6), t:{k:ms}, d (lo que dijo), w (su trabajo), cu (cuándo verá la presentación)}. Evento = config.anuncio (EVA). 0 lecturas.
 const GC_P=["m1","m2","m3","m4","m5","m6"],GC_N1=["Primer mensaje","Conectar y conocerle","El acceso al evento","Enviar la presentación","¡La terminó! · confirmar asistencia","Enviar el ticket y el lugar"];
 // 18 nov (Edwin «Haz actualización»): GUION VERSIÓN 2 = audio primero, sin preguntas al inicio (claude/campana-prospectos-ilimitados.md). Primero solo admin + cuenta de prueba (campOn); para todos: GC_V2_TODOS=true y publicar.
-const GC_V2_TODOS=false,gcV2=()=>GC_V2_TODOS||campOn();
+const GC_V2_TODOS=true,gcV2=()=>GC_V2_TODOS||campOn();
 const GC_N2=["🎙️ Audio de bienvenida","El acceso al evento","Enviar la presentación","¡La terminó! · confirmar asistencia","Enviar el ticket y el lugar","Conectar · ¿va solo o acompañado?"];
 let GC_N=GC_N1;const gcN=()=>(GC_N=gcV2()?GC_N2:GC_N1);
 // Papel de cada paso (el mismo código m1–m6 cambia de papel en la v2). Contactos que van a medio camino en la v1 (gc sin v) se traducen al paso equivalente.
@@ -11476,7 +11500,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261120150747";var busy=false,pend=null;
+(function(){var V="20261120155750";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

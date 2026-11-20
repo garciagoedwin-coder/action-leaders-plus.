@@ -13,14 +13,14 @@ var HOJA_CALIF = '1-0ct30l0fcn8rtzgfOcrkLTGmgRHOa2xEmm2X0izvG4';  // Agenda Acti
 var HOJA_TESTI = '1nR6KPRZOUab2FSp9WcZ4FTbCgjE7aNmK8ST8UfQ73T4';  // Respuestas de testimonios
 var DIAS = 3;                                                      // revisa correos de los últimos N días
 
-function instalar() {                     // 1 sola vez: crea pestañas y el reloj de cada 10 minutos
+function instalar() {                     // 1 sola vez: crea pestañas y el reloj de cada minuto (20 nov: buzón al instante)
   var ss = SpreadsheetApp.getActive();
   pest_(ss, 'Correos', ['id', 'recibido', 'tipo', 'asunto', 'datos', 'estado', 'nota']);
   pest_(ss, 'Registros', ['sponsor_id', 'sponsor_name', 'account_created']);
   pest_(ss, 'Salida', ['t', 'tipo', 'texto', 'hecho']);
   pest_(ss, 'Estado', ['clave', 'valor']);
   ScriptApp.getProjectTriggers().forEach(function (t) { ScriptApp.deleteTrigger(t); });
-  ScriptApp.newTrigger('revisar').timeBased().everyMinutes(10).create();
+  ScriptApp.newTrigger('revisar').timeBased().everyMinutes(1).create();
   revisar();
   SpreadsheetApp.getUi && Logger.log('Listo: el buzón revisa cada 10 minutos.');
 }

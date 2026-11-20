@@ -1,0 +1,28 @@
+name: Buzón al instante (vigía)
+# 20 nov (Edwin): revisa la hoja del buzón cada minuto y lanza buzon.yml apenas hay un correo nuevo de inCruises.
+# Corre casi una hora y la vuelve a empezar el cron de cada hora. Solo lee la hoja; logs = conteos.
+on:
+  schedule:
+    - cron: "1 * * * *"
+  workflow_dispatch:
+concurrency:
+  group: buzon-vivo
+  cancel-in-progress: true
+permissions:
+  contents: read
+  actions: write
+jobs:
+  vigia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 62
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q -r tools/buzon/requirements.txt
+      - name: Vigilar
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+          BUZON_ID: ${{ secrets.BUZON_ID }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 tools/buzon/vigia.py
