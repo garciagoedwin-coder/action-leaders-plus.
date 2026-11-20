@@ -990,7 +990,8 @@ header.top #hello,header.top .pv{display:none!important}
 .me-btn{width:38px;height:38px;box-shadow:0 0 0 2px var(--bg),0 0 0 4px rgba(42,193,241,.55)}
 .bell-btn{border-color:var(--line);background:var(--surface)}
 .hiBox{display:flex;flex-direction:column;gap:2px}.hiBox .eyebrow{margin:0}
-.hiH{font-family:var(--f-display);font-size:33px;line-height:1.05;letter-spacing:-.8px;margin:2px 0 8px}
+.hiH{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:var(--f-display);font-size:30px;line-height:1.05;letter-spacing:-.8px;margin:2px 0 8px}
+#hiEs img{height:1.2em;width:auto;display:block;cursor:pointer;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
 #hiNm{background:linear-gradient(90deg,var(--brand),#2AC1F1);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hiPills{display:flex;gap:8px;flex-wrap:wrap}
 #pillP .dot,#pillE .dot{box-shadow:none}.hiPills .hiPill{padding:6px 10px;gap:6px;font-size:12.5px}.hiPills{flex-wrap:nowrap!important;gap:6px!important}.hiPills .hiPill{white-space:nowrap}@media (max-width:400px){.hiPills{flex-wrap:wrap!important}}
@@ -2351,7 +2352,7 @@ body.rk6on #snvCard .prem::before{content:"★ Premium";font-size:12px;color:#B7
     <!-- INICIO -->
     <section class="view" id="v-inicio">
       <div class="hiBox">
-        <p class="eyebrow" id="todayLbl">Hoy</p><h1 class="hiH">Hola, <span id="hiNm">líder</span> 👋</h1><p class="hiSpar" hidden>¡Vamos, líder! 🛡️</p><h1 class="motto" hidden><span id="motto">Haz que suceda.</span></h1>
+        <p class="eyebrow" id="todayLbl">Hoy</p><h1 class="hiH">Hola, <span id="hiNm">líder</span> <span id="hiEs">👋</span></h1><p class="hiSpar" hidden>¡Vamos, líder! 🛡️</p><h1 class="motto" hidden><span id="motto">Haz que suceda.</span></h1>
         <div class="hiPills"><span class="hiPill" id="pillAh" hidden><i class="dot"></i>Ahorro al día</span><span class="hiPill" id="streak" hidden>Racha 0 días</span><span class="hiPill" id="pillRg" hidden></span><button type="button" class="hiPill" id="pillP" hidden></button><button type="button" class="hiPill" id="pillE" hidden></button></div>
       </div>
       <div id="trHoy" hidden></div>
@@ -4014,7 +4015,13 @@ function pillIdx(){try{const p=$("#pillP");if(p&&store.uid){const c=constStats()
   let o=store.uid&&LS.get("idxEqM:"+store.uid);try{if(constL&&!isAdmin&&mios&&mios.length){const P=idxPool(),v=idxEqPer(P,"mes");if(v!=null){o={v,n:P.filter(idxCuenta).length,t:Date.now()};LS.set("idxEqM:"+store.uid,o)}}}catch(x){}
   const e=$("#pillE");if(e){e.hidden=!(o&&o.n>0);if(o&&o.n>0){e.innerHTML=`<i class="dot" style="background:${IDX_C(o.v)}"></i>Equipo <b style="color:${IDX_C(o.v)}">${o.v}%</b>`;e.onclick=()=>{eqTab="mios";go("equipo")}}}}catch(x){}}
 function pillsPinta(){try{const pr=$("#pillRg");if(pr)pr.hidden=true}catch(e){}pillIdx();
-  try{const h=$("#hello"),nm=$("#hiNm");if(h&&nm){const t=(h.textContent||"").replace(/^Hola,?\s*/,"").trim();nm.textContent=t||"líder"}}catch(e){}}
+  try{const h=$("#hello"),nm=$("#hiNm");if(h&&nm){const t=(h.textContent||"").replace(/^Hola,?\s*/,"").trim();nm.textContent=t||"líder"}}catch(e){}
+  hiEsPinta()}
+// 20 nov (Edwin): escudo Espartano junto al nombre para quien se graduó de Networker Pro (irEstado().grad)
+function hiEsPinta(){
+  try{const es=$("#hiEs");if(es){let g=false;try{g=!!(irModo()&&irEstado().grad)}catch(x){}const k=g?"g":"h";if(es.dataset.k!==k){es.dataset.k=k;
+    if(g){es.innerHTML='<img src="media/insignias/v3-espartano-e.webp?v=3" alt="Espartano">';es.onclick=()=>avisoTop("🛡️ Espartano · Networker Pro","Se graduó de Networker Pro. ¡Felicidades!",()=>{try{dipDescargar()}catch(x){}})}
+    else{es.textContent="👋";es.onclick=null}}}}catch(e){}}
 (function(){try{const mn=$("#main"),hd=document.querySelector("header.top");if(!mn||!hd)return;let y0=0;
   mn.addEventListener("scroll",()=>{const y=mn.scrollTop;hd.classList.toggle("sc",y>6);if(y>y0+6&&y>90){hd.classList.add("hid");hd.style.marginTop=-hd.offsetHeight+"px"}else if(y<y0-4||y<40){hd.style.marginTop="";hd.classList.remove("hid")}y0=y},{passive:true});
   const tb=$("#tabs");if(tb)tb.addEventListener("click",()=>{hd.style.marginTop="";hd.classList.remove("hid")});
@@ -10835,7 +10842,7 @@ function irPopVer(n){irPopT=0;const K="irPop:"+(store.uid||"");if(LS.get(K)===TO
     ${sinCons?`<div class="irPl"><span>○ 7 días seguidos con la rutina completa</span></div>`:F.length?`<div class="irPl">${F.slice(0,5).map(i=>`<span>○ ${esc(i.t)}</span>`).join("")}${F.length>5?`<span class="muted">y ${F.length-5} más…</span>`:""}</div>`:""}
     <div class="irPins">${[1,2,3,4,"c","g"].map(x=>{const ok=x==="g"?E.grad:x==="c"?E.cons:!!(E.W[x-1]&&E.W[x-1].n2>=E.W[x-1].L.length);return `<img src="${insSrc(x)}" alt="" class="${ok?"":"g"}" decoding="async">`}).join("")}</div>
     <button class="btn irPgo" id="irPg">🚀 Terminar mi plan</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Más tarde</button></div>`,()=>{$("#irPg").onclick=()=>{closeSheet();setTimeout(()=>irLista(),250)}})}
-let irAbierto=false;function irRender(){try{raStrip()}catch(e){}try{ponStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{lluStrip()}catch(e){}try{valStrip()}catch(e){}try{eqzStrip()}catch(e){}try{audStrip()}catch(e){}try{turStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
+let irAbierto=false;function irRender(){try{hiEsPinta()}catch(e){}try{raStrip()}catch(e){}try{ponStrip()}catch(e){}try{solRevisar()}catch(e){}try{incStrip()}catch(e){}try{lzgStrip()}catch(e){}try{olvStrip()}catch(e){}try{lluStrip()}catch(e){}try{valStrip()}catch(e){}try{eqzStrip()}catch(e){}try{audStrip()}catch(e){}try{turStrip()}catch(e){}try{viaStrip()}catch(e){}try{urgStrip()}catch(e){}const el=$("#irCard");if(!el)return;try{
   const m=irModo(),st=irSt();if(!m){el.hidden=true;return}
   if(m==="actual"&&!st.ini){el.hidden=false;el.className="irF am";
     el.innerHTML=`<div class="irF1">${insImg(1,"irFi")}<div class="grow" style="min-width:0"><span class="irFk">PLAN DE ARRANQUE · 4 SEMANAS</span><b class="irFt">Empiece su Plan de Arranque</b><small class="irFs">4 insignias · gradúese como Espartano</small></div><button type="button" class="irFb" id="irEmp">Empezar ›</button></div>`;
@@ -11467,7 +11474,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261120111004";var busy=false,pend=null;
+(function(){var V="20261120113657";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
