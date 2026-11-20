@@ -238,6 +238,19 @@ nav.tabs button[aria-selected="true"] svg{stroke-width:2.3}
 #presOv .pv-gs{width:40px;height:40px;padding:0;border-radius:50%;font-size:18px;align-self:flex-end;display:grid;place-items:center}
 #presOv .pv-note{font-style:italic;font-size:14px;color:#F6DDB3}
 #presOv .pv-qb,#presOv .pv-bn{display:none}
+body.pvOn .avisoTop{display:none!important}
+#presOv .pv-cv{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}#presOv.tool .pv-cv{pointer-events:auto;touch-action:none;cursor:crosshair}#presOv.tool .pv-big{display:none}#presOv.big .pv-cv,#presOv.big .pv-tl{display:none}
+#presOv .pv-tl{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;padding:9px 10px 0;flex:none}
+#presOv .pv-tl button{white-space:nowrap;height:34px;min-width:34px;border-radius:99px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);color:#fff;font:inherit;font-size:12.5px;font-weight:700;padding:0 11px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px}
+#presOv .pv-tl button.on{background:#ECA948;border-color:#ECA948;color:#0B2E57}#presOv .pv-tl button.ok{background:#fff;color:#0B2E57;border-color:#fff}#presOv .pv-tl button.on2{border-color:#ECA948;color:#ECA948}
+#presOv .pv-tl .pc{width:28px;min-width:28px;height:28px;padding:0;border:2px solid rgba(255,255,255,.3)}#presOv .pv-tl .pc.on{border:3px solid #fff;box-shadow:0 0 0 2px rgba(236,169,72,.7)}
+#presOv .pv-tl .pw{display:block;width:16px;background:#fff;border-radius:9px}
+#presOv .pv-th{width:100%;text-align:center;font-size:12px;color:#F6DDB3}#presOv .pv-nb{display:flex;gap:6px;width:100%;justify-content:center}#presOv .pv-nb input{width:150px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.3);color:#fff;font:700 18px "Barlow Condensed",sans-serif;padding:0 10px;text-align:center}#presOv .pv-nb button{background:#ECA948;color:#0B2E57;border-color:#ECA948}
+#presOv.sh{background:#000}#presOv.sh .pv-top .pvNm{visibility:hidden}#presOv.sh .pv-note,#presOv.sh .pv-gs{display:none!important}#presOv.sh .pv-body{display:none}#presOv.sh .pv-sl{margin:auto 0 0;border-radius:0;box-shadow:none}#presOv.sh .pv-prog{background:rgba(255,255,255,.08)}#presOv.sh .pv-big{opacity:.55}
+#presOv.sh.hasq .pv-qb{display:block;align-self:center;margin:12px auto 0;border:0;border-radius:99px;padding:8px 16px;background:rgba(236,169,72,.18);color:#ECA948;font:inherit;font-weight:800;font-size:13px;flex:none}
+#presOv.sh.qOpen .pv-body{display:flex}#presOv.sh .pv-nav{margin-top:auto;background:none}#presOv.sh .pv-nav button{padding:10px;font-size:13px;background:rgba(255,255,255,.08)}#presOv.sh .pv-nav .go{background:rgba(236,169,72,.85)}
+@media (orientation:landscape) and (max-height:560px){#presOv .pv-tl{position:absolute;top:40px;left:50%;transform:translateX(-50%);z-index:4;padding:5px 8px;border-radius:99px;background:rgba(0,0,0,.5);flex-wrap:nowrap;max-width:96vw;overflow-x:auto}#presOv .pv-tl .pv-th,#presOv .pv-tl .pv-nb{width:auto;white-space:nowrap}#presOv.sh.hasq .pv-qb{position:absolute;margin:0;left:12px;bottom:14px;z-index:4}#presOv.sh .pv-sl{margin:0}}
+
 /* B · pantalla completa sin girar el teléfono: la diapositiva se gira 90° */
 #presOv.big .pv-sl{position:fixed;inset:0;margin:0;border-radius:0;z-index:20;background:#000;aspect-ratio:auto}
 #presOv.big .pv-sl img{position:absolute;top:50%;left:50%;width:100vh;width:100dvh;height:100vw;max-width:none;transform:translate(-50%,-50%) rotate(90deg);object-fit:contain}
@@ -9580,15 +9593,15 @@ const PRES={n:21,img:i=>"media/pres/s"+String(i).padStart(2,"0")+".jpg",
 function presOk(){return true}
 let PS=null;
 function presEl(){let o=$("#presOv");if(!o){o=document.createElement("div");o.id="presOv";o.setAttribute("role","dialog");o.setAttribute("aria-label","Presentación");document.body.appendChild(o);
-  o.addEventListener("click",presClick);
+  o.addEventListener("click",ptClick,true);o.addEventListener("click",presClick);
   // 5 nov: el pellizco para hacer zoom (2 dedos) o mover la imagen ampliada ya no cambia de diapositiva; solo un deslizado rápido y horizontal
   let x0=null,y0=null,t0=0,multi=false;const zoomed=()=>{try{return window.visualViewport&&window.visualViewport.scale>1.05}catch(e){return false}};
-  o.addEventListener("touchstart",e=>{if(e.touches.length>1){multi=true;x0=null;return}if(multi)return;if(e.target.closest(".pv-sl")&&!zoomed()&&!o.classList.contains("big")){x0=e.touches[0].clientX;y0=e.touches[0].clientY;t0=Date.now()}else x0=null},{passive:true});
+  o.addEventListener("touchstart",e=>{if(PS&&PS.tool){x0=null;return}if(e.touches.length>1){multi=true;x0=null;return}if(multi)return;if(e.target.closest(".pv-sl")&&!zoomed()&&!o.classList.contains("big")){x0=e.touches[0].clientX;y0=e.touches[0].clientY;t0=Date.now()}else x0=null},{passive:true});
   o.addEventListener("touchmove",e=>{if(e.touches.length>1){multi=true;x0=null}},{passive:true});
   o.addEventListener("touchend",e=>{if(multi){if(!e.touches.length)multi=false;x0=null;return}if(x0==null)return;const d=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0,dt=Date.now()-t0;x0=null;
     if(zoomed()||dt>650)return;if(Math.abs(d)>70&&Math.abs(d)>2*Math.abs(dy))presIr(d<0?1:-1)},{passive:true});
   o.addEventListener("touchcancel",()=>{x0=null;multi=false},{passive:true});
-  document.addEventListener("keydown",e=>{if(!PS||o.hidden)return;if(e.key==="ArrowRight")presIr(1);else if(e.key==="ArrowLeft")presIr(-1)})}
+  document.addEventListener("keydown",e=>{if(!PS||o.hidden||(e.target&&/INPUT|TEXTAREA/.test(e.target.tagName)))return;if(e.key==="ArrowRight")presIr(1);else if(e.key==="ArrowLeft")presIr(-1)})}
   return o}
 function presElegir(){if(!presOk())return;let q="";
   const pinta=()=>{const L=(contacts||[]).filter(c=>c.stage!=="Socio"&&(!q||String(c.name||"").toLowerCase().includes(q))).sort((a,b)=>(b.updated||0)-(a.updated||0)).slice(0,40);
@@ -9601,8 +9614,8 @@ function presElegir(){if(!presOk())return;let q="";
     $("#prOk").onclick=async()=>{const n=$("#prN").value.trim();if(!n){toast("Escriba el nombre");return}const t=$("#prW").value.replace(/[^\d+]/g,"");
       const c={name:n.slice(0,80),cc:"504",phone:t.slice(0,15),stage:"Nuevo",note:"",next:TODAY,updated:Date.now()};const id=await store.saveContact(c);if(!id)return;c.id=id;contacts.push(c);try{renderCRM()}catch(e){}closeSheet();presAbrir(c)}})}
 function presAbrir(c){if(!presOk())return;if(typeof ahGate==="function"&&ahGate())return;if(!c){presElegir();return}
-  PS={c,i:1,a:{},t0:Date.now(),g:LS.get("presG")==="1",ok:false,xArm:0};const o=presEl();o.hidden=false;document.body.style.overflow="hidden";presPinta()}
-function presCerrar(){const o=$("#presOv");if(o){o.hidden=true;o.classList.remove("big","qOpen")}document.body.style.overflow="";PS=null}
+  PS={c,i:1,a:{},t0:Date.now(),g:LS.get("presG")==="1",ok:false,xArm:0};const o=presEl();o.hidden=false;document.body.style.overflow="hidden";document.body.classList.add("pvOn");presPinta()}
+function presCerrar(){const o=$("#presOv");if(PS&&PS.grp)clearTimeout(PS.grp.tm);if(o){o.hidden=true;o.classList.remove("big","qOpen","tool","sh")}document.body.style.overflow="";document.body.classList.remove("pvOn");PS=null}
 function presIr(d){if(!PS)return;const i=Math.min(PRES.n,Math.max(1,PS.i+d));if(i===PS.i)return;PS.i=i;presPinta()}
 function presFirst(){return String((PS&&PS.c.name)||"").trim().split(/\s+/)[0]||""}
 function presPinta(){const o=presEl(),i=PS.i,q=PRES.q[i],A=PS.a;let g=PRES.g[i];if(g&&g.includes("{r1}"))g=A.r1!=null?g.replace("{r1}",PRES.val[A.r1]):"Al principio hablamos de lo que tendría más valor para ti. ¿Sigue siendo así?";
@@ -9610,12 +9623,12 @@ function presPinta(){const o=presEl(),i=PS.i,q=PRES.q[i],A=PS.a;let g=PRES.g[i];
   const opt=(t,j,on)=>`<button type="button" class="pv-o${on?" on":""}" data-pv="o" data-v="${j}">${esc(t)}</button>`;
   let qh="";if(q){if(q.num){qh=`<div class="pv-q">${esc(q.t)}</div><div class="pv-nums">${Array.from({length:10},(_,j)=>{const n=j+1;return `<button type="button" class="${n>=8?"h":n>=6?"m":""}${A.n===n?" sel":""}" data-pv="num" data-v="${n}">${n}</button>`}).join("")}</div>`+(A.n?presCierre():"")}
     else{const v=A[q.k];qh=`<div class="pv-q">${esc(q.t)}</div>${q.h?`<div class="pv-h">${esc(q.h)}</div>`:""}<div class="pv-opts${q.o.length===4?" g2":""}">${q.o.map((t,j)=>opt(t,j,q.multi?(v||[]).includes(j):v===j)).join("")}</div>`}}
-  o.innerHTML=`<div class="pv-top"><button type="button" class="pv-x" data-pv="x" aria-label="Salir">✕</button><span>${PS.c.general?"🎤 <b>Presentación general</b>":`Presentando a <b>${esc(presFirst())}</b>`}</span><span>${i} / ${PRES.n}</span></div>
+  o.innerHTML=`<div class="pv-top"><button type="button" class="pv-x" data-pv="x" aria-label="Salir">✕</button><span class="pvNm">${PS.c.general?"🎤 <b>Presentación general</b>":`Presentando a <b>${esc(presFirst())}</b>`}</span><span>${i} / ${PRES.n}</span></div>
    <div class="pv-prog"><i style="width:${(i/PRES.n*100).toFixed(1)}%"></i></div>
-   <div class="pv-sl"><img src="${PRES.img(i)}" alt="Diapositiva ${i} de ${PRES.n}" decoding="async"><button type="button" class="pv-big" data-pv="big" aria-label="Ampliar">⛶</button></div><div class="pv-bn"><button type="button" data-pv="p" aria-label="Anterior" ${i===1?"disabled":""}>‹</button><button type="button" data-pv="big" aria-label="Salir de pantalla completa">✕</button><button type="button" data-pv="n" aria-label="Siguiente" ${i===PRES.n?"disabled":""}>›</button></div>
+   <div class="pv-sl"><img src="${PRES.img(i)}" alt="Diapositiva ${i} de ${PRES.n}" decoding="async">${ptOn()?`<canvas class="pv-cv"></canvas>`:""}<button type="button" class="pv-big" data-pv="big" aria-label="Ampliar">⛶</button></div><div class="pv-bn"><button type="button" data-pv="p" aria-label="Anterior" ${i===1?"disabled":""}>‹</button><button type="button" data-pv="big" aria-label="Salir de pantalla completa">✕</button><button type="button" data-pv="n" aria-label="Siguiente" ${i===PRES.n?"disabled":""}>›</button></div>${ptOn()?`<div class="pv-tl"></div>`:""}
    <div class="pv-body">${qh}${g?(PS.g?`<button type="button" class="pv-note" data-pv="g">💬 «${esc(g)}»</button>`:`<button type="button" class="pv-gs" data-pv="g" aria-label="Ver frase">💬</button>`):""}</div><button type="button" class="pv-qb" data-pv="qb">❓ Pregunta</button>
    <div class="pv-nav"><button type="button" data-pv="p" ${i===1?"disabled":""}>‹ Anterior</button>${i<PRES.n?`<button type="button" class="go" data-pv="n">Siguiente ›</button>`:`<button type="button" class="go" data-pv="fin">${PS.ok||PS.c.general?"Terminar":"Terminar y guardar"}</button>`}</div>`;
-  if(i<PRES.n){const im=new Image();im.src=PRES.img(i+1)}o.scrollTop=0}
+  if(i<PRES.n){const im=new Image();im.src=PRES.img(i+1)}o.scrollTop=0;if(ptOn())try{ptInit()}catch(e){}}
 function presCierre(){if(PS.c.general)return `<div class="pv-res ok"><b>🎉 ¡Gracias por acompañarnos!</b><p>Pídale a cada invitado su número del 1 al 10 y escríbale por separado. Agregue a cada persona a su CRM para darle seguimiento.</p></div>`;const n=PS.a.n,f=esc(presFirst()),wa=`<button type="button" class="btn pv-wa" data-pv="wa">📲 ${n>=8?"Enviar link + resumen":"Enviar resumen"} por WhatsApp</button>`,l3=`<button type="button" class="btn ghost pv-l3" data-pv="l3">📞 Agendar llamada de 3 con un líder</button>`;
   if(n>=8)return `<div class="pv-res ok"><b>🔥 ¡${f} está listo! (${n}/10)</b><p>Envíele su link ahora y creen la cuenta juntos en este momento.</p>${wa}</div>`;
   if(n>=6)return `<div class="pv-res mid"><b>🤔 ${f} está cerca (${n}/10)</b><p>Pregúntele: <b>"¿Qué te falta para llegar a 10?"</b> Estas son las dudas más comunes:</p>${PRES.dudas.map(([a,b])=>`<details class="pv-d"><summary>${esc(a)}</summary><p>${esc(b)}</p></details>`).join("")}${wa}${l3}</div>`;
@@ -9643,13 +9656,133 @@ async function presClick(e){const b=e.target.closest("[data-pv]");if(!b||!PS)ret
   if(k==="x"){if(PS.ok||PS.i<=2||Date.now()-PS.xArm<4000){presCerrar();return}PS.xArm=Date.now();toast("Toque ✕ otra vez para salir sin guardar");return}
   if(k==="n")return presIr(1);if(k==="p")return presIr(-1);
   if(k==="g"){PS.g=!PS.g;LS.set("presG",PS.g?"1":"0");presPinta();return}
-  if(k==="big"){const o=$("#presOv");o.classList.toggle("big");return}
+  if(k==="big"){const o=$("#presOv");o.classList.toggle("big");if(PS.tool){PS.tool=null;o.classList.remove("tool");try{ptBar()}catch(e){}}return}
   if(k==="qb"){$("#presOv").classList.toggle("qOpen");b.textContent=$("#presOv").classList.contains("qOpen")?"✕ Cerrar":"❓ Pregunta";return}
   if(k==="o"&&q){const v=+b.dataset.v;if(q.multi){const a=PS.a[q.k]||[];PS.a[q.k]=a.includes(v)?a.filter(x=>x!==v):a.concat(v)}else PS.a[q.k]=v;presPinta();return}
   if(k==="num"){PS.a.n=+b.dataset.v;presPinta();const r=$("#presOv .pv-res");if(r)r.scrollIntoView({behavior:"smooth",block:"nearest"});return}
   if(k==="wa"){if(!profile.ref)toast("Tip: agregue su enlace de inCruises en Mi página para que salga en el mensaje");const m=presMsg(),w=waNum(PS.c.phone,PS.c.cc);await presGuardar();waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(m));return}
   if(k==="l3"){await presGuardar();const c=PS.c;presCerrar();pedirL3(c);return}
   if(k==="fin"){if(PS.c.general){toast("🎤 Presentación terminada");presCerrar();return}if(!PS.ok)await presGuardar();toast("✅ Presentación guardada en el CRM");presCerrar()}}
+// ===== 19 nov (Edwin «Hacer 1 2 y 3»): LÁPIZ INTELIGENTE, PUNTERO LÁSER y MODO «ESTOY COMPARTIENDO PANTALLA» en la presentación interactiva.
+// PRIMERO solo admin (PT_TODOS=false). Todo en el teléfono: 0 lecturas, sin reglas. Las anotaciones viven en PS.ink (por diapositiva) y se borran al cerrar.
+// Coordenadas normalizadas al ancho de la diapositiva (x 0..1, y 0..0.5625). El reconocedor ($P, nube de puntos) cambia números escritos a mano por números limpios.
+const PT_TODOS=false;const ptOn=()=>PT_TODOS||!!isAdmin;
+const PEN_C=["#ECA948","#FFFFFF","#EF4444","#2AC1F1"],PEN_W=[.006,.012];
+const INK=(()=>{const PN=32;
+ function res(S,n){let P=[];S.forEach((s,id)=>s.forEach(p=>P.push([p[0],p[1],id])));let L=0;for(let i=1;i<P.length;i++)if(P[i][2]===P[i-1][2])L+=Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]);
+  const I=L/(n-1)||1e-9;let D=0;const R=[P[0].slice()],Q=P.map(p=>p.slice());
+  for(let i=1;i<Q.length;i++){if(Q[i][2]!==Q[i-1][2])continue;const d=Math.hypot(Q[i][0]-Q[i-1][0],Q[i][1]-Q[i-1][1]);if(D+d>=I&&d>0){const t=(I-D)/d,q=[Q[i-1][0]+t*(Q[i][0]-Q[i-1][0]),Q[i-1][1]+t*(Q[i][1]-Q[i-1][1]),Q[i][2]];R.push(q);Q.splice(i,0,q);D=0}else D+=d}
+  while(R.length<n)R.push(Q[Q.length-1].slice());return R.slice(0,n)}
+ function norm(S){if(!S.length||!S[0].length)return null;let R=res(S,PN),x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;R.forEach(p=>{x0=Math.min(x0,p[0]);y0=Math.min(y0,p[1]);x1=Math.max(x1,p[0]);y1=Math.max(y1,p[1])});
+  const s=Math.max(x1-x0,y1-y0)||1;R=R.map(p=>[(p[0]-x0)/s,(p[1]-y0)/s]);let cx=0,cy=0;R.forEach(p=>{cx+=p[0];cy+=p[1]});cx/=R.length;cy/=R.length;return R.map(p=>[p[0]-cx,p[1]-cy])}
+ function cd(a,b,st){const n=a.length,m=new Array(n).fill(0);let s=0;for(let i=0;i<n;i++){let mn=1e9,ix=-1;for(let j=0;j<n;j++)if(!m[j]){const d=Math.hypot(a[i][0]-b[j][0],a[i][1]-b[j][1]);if(d<mn){mn=d;ix=j}}m[ix]=1;s+=(1-((i-st+n)%n)/n)*mn}return s}
+ function gr(a,b){const n=a.length,st=Math.floor(Math.sqrt(n));let mn=1e9;for(let i=0;i<n;i+=st)mn=Math.min(mn,cd(a,b,i),cd(b,a,i));return mn}
+ const PI=Math.PI,arc=(cx,cy,rx,ry,a0,a1,k=14)=>Array.from({length:k+1},(_,i)=>{const a=a0+(a1-a0)*i/k;return[cx+rx*Math.cos(a),cy+ry*Math.sin(a)]});
+ const T=[["0",[arc(.5,.5,.32,.5,-PI/2,PI*1.5,20)]],["0",[arc(.5,.5,.4,.5,-PI/2,PI*1.5,20)]],["1",[[[.5,0],[.5,1]]]],["1",[[[.25,.22],[.55,0],[.55,1]]]],
+  ["2",[[[.12,.25],[.3,.04],[.58,0],[.85,.18],[.8,.45],[.45,.75],[.1,1],[.92,1]]]],["2",[[[.15,.2],[.45,0],[.8,.12],[.8,.4],[.1,1],[.9,.98]]]],
+  ["3",[[[.15,.1],[.5,0],[.85,.15],[.8,.38],[.45,.5],[.85,.62],[.9,.85],[.55,1],[.12,.9]]]],["3",[[[.1,0],[.85,0],[.4,.42],[.8,.55],[.9,.8],[.55,1],[.1,.9]]]],
+  ["4",[[[.62,0],[.05,.68],[.95,.68]],[[.7,.3],[.7,1]]]],["4",[[[.12,0],[.1,.6],[.92,.6]],[[.72,0],[.72,1]]]],["4",[[[.72,1],[.72,0],[.05,.68],[.95,.68]]]],
+  ["5",[[[.85,0],[.2,0],[.15,.45],[.55,.38],[.88,.6],[.82,.88],[.5,1],[.1,.9]]]],["5",[[[.2,0],[.15,.45],[.55,.38],[.88,.6],[.82,.88],[.5,1],[.1,.9]],[[.2,0],[.85,0]]]],
+  ["6",[[[.75,.03],[.38,.18],[.14,.55],[.2,.88],[.5,1],[.8,.88],[.85,.65],[.6,.5],[.3,.53],[.15,.68]]]],
+  ["7",[[[.05,0],[.95,0],[.35,1]]]],["7",[[[.05,0],[.95,0],[.35,1]],[[.3,.52],[.8,.52]]]],["7",[[[.05,.1],[.95,0],[.6,.45],[.4,1]]]],
+  ["8",[[[.78,.12],[.5,0],[.22,.12],[.25,.35],[.75,.62],[.8,.88],[.5,1],[.2,.88],[.25,.62],[.75,.36],[.8,.14]]]],["8",[arc(.5,.25,.27,.25,0,PI*2,14),arc(.5,.73,.33,.27,0,PI*2,14)]],
+  ["9",[[[.85,.28],[.6,.02],[.25,.05],[.13,.3],[.35,.5],[.75,.42],[.85,.2],[.85,.6],[.8,1]]]],["9",[arc(.45,.27,.33,.27,0,PI*2,14),[[.78,.27],[.7,1]]]],
+  ["+",[[[.5,0],[.5,1]],[[0,.5],[1,.5]]]],["×",[[[0,0],[1,1]],[[1,0],[0,1]]]],["=",[[[0,.3],[1,.3]],[[0,.7],[1,.7]]]],
+  ["$",[[[.85,.15],[.5,.02],[.15,.18],[.2,.42],[.8,.58],[.85,.84],[.5,.98],[.12,.85]],[[.5,-.12],[.5,1.12]]]],
+  ["%",[arc(.22,.2,.17,.18,0,PI*2,10),[[.85,0],[.15,1]],arc(.78,.8,.17,.18,0,PI*2,10)]]].map(([c,S])=>({c,P:norm(S)}));
+ function rec(S){const P=norm(S);if(!P)return null;let b=null,b2=null;T.forEach(t=>{const d=gr(P,t.P);if(!b||d<b.d){if(b&&b.c!==t.c)b2=b;b={c:t.c,d}}else if(t.c!==b.c&&(!b2||d<b2.d))b2={c:t.c,d}});return{c:b.c,d:b.d,d2:b2?b2.d:9}}
+ return{rec}})();
+const ptBox=P=>{let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;P.forEach(p=>{x0=Math.min(x0,p[0]);y0=Math.min(y0,p[1]);x1=Math.max(x1,p[0]);y1=Math.max(y1,p[1])});return{x0,y0,x1,y1,w:x1-x0,h:y1-y0}};
+const ptLen=P=>{let L=0;for(let i=1;i<P.length;i++)L+=Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]);return L};
+const ptDev=(P,a,b)=>{const A=P[a],B=P[b],L=Math.hypot(B[0]-A[0],B[1]-A[1])||1e-9;let m=0;for(let i=a;i<=b;i++)m=Math.max(m,Math.abs((B[0]-A[0])*(A[1]-P[i][1])-(A[0]-P[i][0])*(B[1]-A[1]))/L);return m/L};
+const ptRecto=P=>P.length>1&&Math.hypot(P[P.length-1][0]-P[0][0],P[P.length-1][1]-P[0][1])>.012&&ptDev(P,0,P.length-1)<.075;
+function ptSt(){if(!PS)return null;if(!PS.ink){PS.ink={};PS.col=+(LS.get("presCol")||0)||0;PS.pw=+(LS.get("presW")||0)||0;PS.auto=LS.get("presAuto")!=="0";PS.tool=null;PS.grp=null;PS.lz=[]}return PS}
+function ptItems(){const S=ptSt();return S.ink[S.i]||(S.ink[S.i]=[])}
+function ptRect(){const sl=$("#presOv .pv-sl"),im=sl&&sl.querySelector("img");if(!sl)return null;const r=sl.getBoundingClientRect(),q=im&&im.naturalWidth?im.naturalWidth/im.naturalHeight:16/9;
+  let w=r.width,h=w/q,ox=0,oy=(r.height-h)/2;if(h>r.height){h=r.height;w=h*q;ox=(r.width-w)/2;oy=0}return{r,w,h,ox,oy,q}}
+function ptSize(){const cv=$("#presOv .pv-cv"),R=ptRect();if(!cv||!R)return;const d=Math.min(3,window.devicePixelRatio||1);cv.width=Math.round(R.r.width*d);cv.height=Math.round(R.r.height*d);cv._d=d;ptDraw()}
+function ptPos(e){const R=ptRect();return[(e.clientX-R.r.left-R.ox)/R.w,(e.clientY-R.r.top-R.oy)/R.w]}
+function ptPath(g,it){g.strokeStyle=it.c;g.fillStyle=it.c;g.lineWidth=it.w;g.lineCap="round";g.lineJoin="round";g.beginPath();
+  if(it.t==="l"){const P=it.p;if(P.length<3){g.moveTo(P[0][0],P[0][1]);g.lineTo((P[1]||P[0])[0]+1e-4,(P[1]||P[0])[1]);g.stroke();return}g.moveTo(P[0][0],P[0][1]);for(let i=1;i<P.length-1;i++){const m=[(P[i][0]+P[i+1][0])/2,(P[i][1]+P[i+1][1])/2];g.quadraticCurveTo(P[i][0],P[i][1],m[0],m[1])}g.lineTo(P[P.length-1][0],P[P.length-1][1]);g.stroke();return}
+  if(it.t==="s"||it.t==="a"){g.moveTo(it.a[0],it.a[1]);g.lineTo(it.b[0],it.b[1]);if(it.t==="a"){const an=Math.atan2(it.b[1]-it.a[1],it.b[0]-it.a[0]),L=Math.max(.025,Math.min(.06,Math.hypot(it.b[0]-it.a[0],it.b[1]-it.a[1])*.22));[.5,-.5].forEach(k=>{g.moveTo(it.b[0],it.b[1]);g.lineTo(it.b[0]-L*Math.cos(an+k),it.b[1]-L*Math.sin(an+k))})}g.stroke();return}
+  if(it.t==="c"){g.ellipse(it.x,it.y,it.rx,it.ry,0,0,Math.PI*2);g.stroke();return}
+  if(it.t==="txt"){g.font=`700 ${it.fs}px "Barlow Condensed",system-ui,sans-serif`;g.textBaseline="alphabetic";const k=it.pop?Math.min(1,(Date.now()-it.pop)/220):1;
+    if(k<1){g.save();const wd=g.measureText(it.s).width;g.translate(it.x+wd/2,it.y-it.fs*.35);const z=.6+.4*k+.12*Math.sin(k*Math.PI);g.scale(z,z);g.fillText(it.s,-wd/2,it.fs*.35);g.restore();requestAnimationFrame(ptDraw)}else g.fillText(it.s,it.x,it.y)}}
+function ptDraw(){const cv=$("#presOv .pv-cv"),R=ptRect();if(!cv||!R||!PS)return;const g=cv.getContext("2d"),d=cv._d||1;g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,cv.width,cv.height);
+  g.setTransform(d*R.w,0,0,d*R.w,d*R.ox,d*R.oy);g.save();g.beginPath();g.rect(0,0,1,1/R.q);g.clip();g.shadowColor="rgba(0,0,0,.45)";g.shadowBlur=.006*R.w*d;
+  ptItems().forEach(it=>ptPath(g,it));if(PS._cur)ptPath(g,PS._cur);
+  const L=PS.lz||[],now=Date.now();PS.lz=L.filter(p=>now-p.t<900);if(PS.lz.length){g.shadowColor="#FF2D2D";g.shadowBlur=.02*R.w*d;g.lineCap="round";
+    for(let i=1;i<PS.lz.length;i++){const a=PS.lz[i-1],b=PS.lz[i],k=1-(now-b.t)/900;if(b.s!==a.s)continue;g.strokeStyle=`rgba(255,60,60,${(k*.9).toFixed(3)})`;g.lineWidth=.004+.008*k;g.beginPath();g.moveTo(a.x,a.y);g.lineTo(b.x,b.y);g.stroke()}
+    const h=PS.lz[PS.lz.length-1];if(PS._lzOn){g.fillStyle="#FF3B3B";g.beginPath();g.arc(h.x,h.y,.011,0,Math.PI*2);g.fill();g.fillStyle="#fff";g.beginPath();g.arc(h.x,h.y,.004,0,Math.PI*2);g.fill()}
+    if(!PS._lzRaf)PS._lzRaf=requestAnimationFrame(()=>{PS&&(PS._lzRaf=0);ptDraw()})}
+  g.restore()}
+// Agrupa los trazos que se escriben seguidos y, al soltar, intenta cambiarlos por un número limpio o por una forma (línea, círculo, flecha).
+function ptGrupo(it){const S=ptSt();if(!S.auto)return;const b=ptBox(it.p);
+  if(S.grp){const G=S.grp,gb=G.b,gap=Math.max(b.x0-gb.x1,gb.x0-b.x1,b.y0-gb.y1,gb.y0-b.y1),lim=Math.max(.035,Math.max(gb.h,b.h)*1.3);
+    if(G.i!==S.i||(it.t0||Date.now())-G.t>1300||gap>lim){clearTimeout(G.tm);ptProcesar(G)}}
+  if(!S.grp)S.grp={its:[],i:S.i,b:null};const G=S.grp;G.its.push(it);G.t=Date.now();G.b=ptBox(G.its.flatMap(x=>x.p));clearTimeout(G.tm);G.tm=setTimeout(()=>ptProcesar(G),750)}
+function ptProcesar(G){const S=PS;if(!S||S.grp!==G)return;if(S._cur){clearTimeout(G.tm);G.tm=setTimeout(()=>ptProcesar(G),400);return}S.grp=null;const A=S.ink[G.i]||[],its=G.its.filter(x=>A.includes(x));if(!its.length)return;
+  const B=ptBox(its.flatMap(x=>x.p)),cambia=(n)=>{const j=A.indexOf(its[0]);its.forEach(x=>{const k=A.indexOf(x);if(k>=0)A.splice(k,1)});A.splice(Math.max(0,Math.min(j,A.length)),0,n);if(navigator.vibrate)try{navigator.vibrate(8)}catch(e){}ptDraw()};
+  // 1) números y símbolos ($ + = % ×), a tamaño de texto
+  if(B.h>.022&&B.h<.3){const cl=[];its.slice().sort((a,b)=>ptBox(a.p).x0-ptBox(b.p).x0).forEach(x=>{const b=ptBox(x.p),c=cl[cl.length-1];
+      if(c){const ov=Math.min(c.b.x1,b.x1)-Math.max(c.b.x0,b.x0),cx=(b.x0+b.x1)/2,ccx=(c.b.x0+c.b.x1)/2;if(ov>=.3*Math.min(c.b.w,b.w)||(cx>c.b.x0&&cx<c.b.x1)||(ccx>b.x0&&ccx<b.x1)){c.s.push(x);c.b=ptBox(c.s.flatMap(y=>y.p));return}}cl.push({s:[x],b})});
+    let txt="",ok=cl.length<=8;for(const c of cl){if(!ok)break;const one=c.s.length===1?c.s[0].p:null;
+      if(one&&ptRecto(one)){const b=c.b;if(b.h>1.8*b.w&&b.h>.45*B.h){txt+="1";continue}ok=false;break}
+      if(one&&c.s.length===1){const P=one,cerr=Math.hypot(P[P.length-1][0]-P[0][0],P[P.length-1][1]-P[0][1])<.3*Math.max(c.b.w,c.b.h);if(cerr&&c.b.w>.87*c.b.h&&cl.length===1){ok=false;break}}
+      const r=INK.rec(c.s.map(x=>x.p));if(!r||r.d>1.6||r.d2-r.d<.04){ok=false;break}txt+=r.c}
+    if(ok&&txt){const fs=B.h/.7,cv=$("#presOv .pv-cv"),g=cv&&cv.getContext("2d"),wd=t=>{g.font=`700 ${t.fs}px "Barlow Condensed"`;return g.measureText(t.s).width};
+      const pv=g&&A.slice().reverse().find(t=>t.t==="txt"&&t.src&&!its.includes(t)&&Date.now()-(t.pop||0)<6000);
+      if(pv){const gap=B.x0-(pv.x+wd(pv));if(Math.abs(pv.y-B.y1)<.4*Math.max(fs,pv.fs)&&gap>-.25*pv.fs&&gap<.9*pv.fs){its.forEach(x=>{const k=A.indexOf(x);if(k>=0)A.splice(k,1)});pv.s+=txt;pv.fs=(pv.fs*(pv.s.length-txt.length)+fs*txt.length)/pv.s.length;pv.src=pv.src.concat(its);pv.pop=Date.now();if(navigator.vibrate)try{navigator.vibrate(8)}catch(e){}ptDraw();return}}
+      cambia({t:"txt",s:txt,x:B.x0,y:B.y1,fs,c:its[0].c,w:its[0].w,src:its,pop:Date.now()});return}}
+  // 2) formas
+  if(its.length===1){const P=its[0].p,L=ptLen(P),ch=Math.hypot(P[P.length-1][0]-P[0][0],P[P.length-1][1]-P[0][1]),mx=Math.max(B.w,B.h);if(mx<.02)return;
+    if(ch>.03&&ptDev(P,0,P.length-1)<.06){cambia({t:"s",a:P[0],b:P[P.length-1],c:its[0].c,w:its[0].w,src:its});return}
+    if(ch<.3*mx&&L>2.2*mx){const cx=(B.x0+B.x1)/2,cy=(B.y0+B.y1)/2,rx=B.w/2||1e-6,ry=B.h/2||1e-6;let e=0;P.forEach(p=>e+=Math.abs(Math.hypot((p[0]-cx)/rx,(p[1]-cy)/ry)-1));if(e/P.length<.2){cambia({t:"c",x:cx,y:cy,rx:rx*1.02,ry:ry*1.02,c:its[0].c,w:its[0].w,src:its});return}}
+    let k=P.length-1;while(k>3&&ptDev(P,0,k)>.07)k--;const pre=ptLen(P.slice(0,k+1)),c2=Math.hypot(P[k][0]-P[0][0],P[k][1]-P[0][1]);
+    if(k<P.length-2&&pre>.55*L&&c2>.06&&P.slice(k).every(p=>Math.hypot(p[0]-P[k][0],p[1]-P[k][1])<.45*c2)){cambia({t:"a",a:P[0],b:P[k],c:its[0].c,w:its[0].w,src:its});return}}
+  if(its.length===2){let [m,h]=its.slice().sort((a,b)=>ptLen(b.p)-ptLen(a.p));const P=m.p,c2=Math.hypot(P[P.length-1][0]-P[0][0],P[P.length-1][1]-P[0][1]),hb=ptBox(h.p);
+    if(c2>.06&&ptDev(P,0,P.length-1)<.07&&Math.max(hb.w,hb.h)<.5*c2){const hc=[(hb.x0+hb.x1)/2,(hb.y0+hb.y1)/2],d0=Math.hypot(hc[0]-P[0][0],hc[1]-P[0][1]),d1=Math.hypot(hc[0]-P[P.length-1][0],hc[1]-P[P.length-1][1]);
+      if(Math.min(d0,d1)<.35*c2){const a=d1<d0?P[0]:P[P.length-1],b=d1<d0?P[P.length-1]:P[0];cambia({t:"a",a,b,c:m.c,w:m.w,src:its})}}}}
+function ptHit(it,p){const t=.018+(it.w||0);if(it.t==="txt"){const cv=$("#presOv .pv-cv"),g=cv.getContext("2d");g.font=`700 ${it.fs}px "Barlow Condensed"`;const wd=g.measureText(it.s).width;return p[0]>it.x-t&&p[0]<it.x+wd+t&&p[1]>it.y-it.fs*.75-t&&p[1]<it.y+t}
+  if(it.t==="c")return Math.abs(Math.hypot((p[0]-it.x)/it.rx,(p[1]-it.y)/it.ry)-1)*Math.min(it.rx,it.ry)<t;
+  const P=it.t==="l"?it.p:[it.a,it.b];for(let i=0;i<P.length;i++){const a=P[i],b=P[i+1]||a,dx=b[0]-a[0],dy=b[1]-a[1],L=dx*dx+dy*dy,u=L?Math.max(0,Math.min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dy)/L)):0;if(Math.hypot(a[0]+u*dx-p[0],a[1]+u*dy-p[1])<t)return true}return false}
+function ptBorrar(p){const A=ptItems(),n=A.length;for(let i=A.length-1;i>=0;i--)if(ptHit(A[i],p))A.splice(i,1);if(A.length!==n)ptDraw()}
+function ptInit(){const o=$("#presOv"),cv=o&&o.querySelector(".pv-cv");if(!cv)return;ptSt();o.classList.toggle("tool",!!PS.tool);o.classList.toggle("sh",LS.get("presSh")==="1");ptBar();
+  const im=o.querySelector(".pv-sl img");if(im&&!im.complete)im.addEventListener("load",ptSize,{once:true});ptSize();
+  if(!window._ptRz){window._ptRz=1;window.addEventListener("resize",()=>{if(PS&&!$("#presOv").hidden)setTimeout(ptSize,60)})}
+  let act=false;
+  cv.addEventListener("pointerdown",e=>{if(!PS||!PS.tool||!e.isPrimary)return;e.preventDefault();try{cv.setPointerCapture(e.pointerId)}catch(x){}const p=ptPos(e);act=true;
+    if(PS.place){const fs=.07,g=cv.getContext("2d");g.font=`700 ${fs}px "Barlow Condensed"`;const wd=g.measureText(PS.place).width;ptItems().push({t:"txt",s:PS.place,x:p[0]-wd/2,y:p[1]+fs*.35,fs,c:PEN_C[PS.col],w:PEN_W[PS.pw],pop:Date.now()});PS.place=null;act=false;ptBar();ptDraw();return}
+    if(PS.tool==="erase"){ptBorrar(p);return}
+    if(PS.tool==="laser"){PS._lzOn=1;PS._lzS=(PS._lzS||0)+1;PS.lz.push({x:p[0],y:p[1],t:Date.now(),s:PS._lzS});ptDraw();return}
+    PS._cur={t:"l",c:PEN_C[PS.col],w:PEN_W[PS.pw],p:[p],t0:Date.now()};if(PS.grp)clearTimeout(PS.grp.tm);ptDraw()});
+  cv.addEventListener("pointermove",e=>{if(!act||!PS||!e.isPrimary)return;const ev=e.getCoalescedEvents?e.getCoalescedEvents():[e];ev.forEach(x=>{const p=ptPos(x);
+      if(PS.tool==="erase")ptBorrar(p);else if(PS.tool==="laser")PS.lz.push({x:p[0],y:p[1],t:Date.now(),s:PS._lzS});else if(PS._cur){const q=PS._cur.p[PS._cur.p.length-1];if(Math.hypot(p[0]-q[0],p[1]-q[1])>.0015)PS._cur.p.push(p)}});ptDraw()});
+  const fin=()=>{if(!act||!PS)return;act=false;PS._lzOn=0;if(PS._cur){const it=PS._cur;PS._cur=null;const t0=it.t0;delete it.t0;it.t0=t0;ptItems().push(it);ptDraw();ptGrupo(it)}else ptDraw()};
+  cv.addEventListener("pointerup",fin);cv.addEventListener("pointercancel",fin)}
+function ptBar(){const b=$("#presOv .pv-tl");if(!b||!PS)return;const sh=LS.get("presSh")==="1",T=PS.tool;
+  if(!T)b.innerHTML=`<button type="button" data-pt="pen">✏️ Lápiz</button><button type="button" data-pt="laser">🔴 Láser</button><button type="button" data-pt="sh" class="${sh?"on":""}">${sh?"✓ Compartiendo":"🖥️ Estoy compartiendo"}</button>`;
+  else if(T==="laser")b.innerHTML=`<button type="button" data-pt="off" class="ok">✓ Listo</button><span class="pv-th">🔴 Deslice el dedo para señalar</span>`;
+  else b.innerHTML=`<button type="button" data-pt="off" class="ok">✓ Listo</button>${PEN_C.map((c,i)=>`<button type="button" class="pc${i===PS.col&&T==="pen"?" on":""}" data-pc="${i}" style="background:${c}" aria-label="Color"></button>`).join("")}
+   <button type="button" data-pt="w" aria-label="Grosor"><i class="pw" style="height:${PS.pw?5:2}px"></i></button><button type="button" data-pt="auto" class="${PS.auto?"on2":""}" title="Corrige números y formas">✨ ${PS.auto?"Auto":"Libre"}</button>
+   <button type="button" data-pt="num" aria-label="Escribir un número">🔢</button><button type="button" data-pt="erase" class="${T==="erase"?"on":""}" aria-label="Goma">🧽</button><button type="button" data-pt="undo" aria-label="Deshacer">↩</button><button type="button" data-pt="clr" aria-label="Borrar todo">🗑</button>
+   ${PS.place?`<span class="pv-th">👆 Toque la diapositiva donde va «${esc(PS.place)}»</span>`:PS.numA?`<span class="pv-nb"><input id="ptN" inputmode="decimal" maxlength="12" placeholder="Ej. $1,600"><button type="button" data-pt="numok">Poner</button></span>`:""}`;
+  const n=$("#ptN");if(n)setTimeout(()=>n.focus(),30)}
+window.__pt={abrir:()=>presAbrir({general:1,name:""}),ir:d=>presIr(d),items:()=>ptItems(),rec:S=>INK.rec(S),box:ptBox,on:()=>{PS.auto=false}};
+function ptClick(e){const b=e.target.closest("[data-pt],[data-pc]");if(!b||!PS)return;e.stopPropagation();const o=$("#presOv");ptSt();
+  if(b.dataset.pc!=null){PS.col=+b.dataset.pc;LS.set("presCol",String(PS.col));PS.tool="pen";ptBar();return}
+  const k=b.dataset.pt;
+  if(k==="pen"||k==="laser"){PS.tool=k;o.classList.add("tool");o.classList.remove("big");if(k==="pen"&&!LS.get("presPenTip")){LS.set("presPenTip","1");toast("✨ Escriba un número y suelte: la app lo deja bonito. ↩ lo regresa.")}}
+  else if(k==="off"){PS.tool=null;PS.place=null;PS.numA=0;o.classList.remove("tool")}
+  else if(k==="sh"){const v=LS.get("presSh")==="1"?"0":"1";LS.set("presSh",v);o.classList.toggle("sh",v==="1");toast(v==="1"?"🖥️ Modo compartir: el guion y los botones quedan ocultos":"Modo compartir apagado");setTimeout(ptSize,80)}
+  else if(k==="w"){PS.pw=PS.pw?0:1;LS.set("presW",String(PS.pw))}
+  else if(k==="auto"){PS.auto=!PS.auto;LS.set("presAuto",PS.auto?"1":"0");toast(PS.auto?"✨ Auto: corrige números y formas":"Libre: dibuja tal cual")}
+  else if(k==="erase"){PS.tool=PS.tool==="erase"?"pen":"erase"}
+  else if(k==="undo"){const A=ptItems(),it=A.pop();if(it&&it.src){it.src.forEach(x=>A.push(x));toast("↩ Lo dejé como lo escribió")}if(PS.grp){clearTimeout(PS.grp.tm);PS.grp=null}ptDraw()}
+  else if(k==="clr"){const A=ptItems();if(!A.length)return;if(Date.now()-(PS._clrA||0)>3000){PS._clrA=Date.now();toast("Toque 🗑 otra vez para borrar todo en esta diapositiva");return}A.length=0;PS._clrA=0;ptDraw()}
+  else if(k==="num"){PS.numA=!PS.numA;PS.place=null;PS.tool="pen"}
+  else if(k==="numok"){const v=String(($("#ptN")||{}).value||"").trim().slice(0,12);if(!v){toast("Escriba el número");return}PS.numA=0;PS.place=v}
+  ptBar()}
 function acaHero(){const r=$("#acaRing"),t=$("#acaHT"),s=$("#acaHS");if(!r)return;let m=null;try{m=irModo()}catch(e){}
   if(!m){r.style.setProperty("--p",0);r.innerHTML="<b>🚀</b>";t.textContent="30 días · 4 insignias";s.textContent="Aprenda a duplicar paso a paso";return}
   const E=irEstado(),tot=E.W.reduce((a,w)=>a+w.L.length,0),hc=E.W.reduce((a,w)=>a+w.n2,0),p=tot?Math.round(hc*100/tot):0;
@@ -11261,7 +11394,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261119132832";var busy=false,pend=null;
+(function(){var V="20261119181144";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
