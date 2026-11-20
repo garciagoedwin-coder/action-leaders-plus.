@@ -97,6 +97,18 @@
    "actSemana": 0
   },
   {
+   "nombre": "Gabriela Castillo",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "gabriela-castillo",
+   "activaciones": 1,
+   "volumen": 50,
+   "actSemana": 0
+  },
+  {
    "nombre": "Josue antony Navarro rubio",
    "linea": "",
    "presentaciones": 0,
@@ -3367,7 +3379,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-19T22:25:00-06:00",
+  "rankingActualizado": "2026-11-20T16:42:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
