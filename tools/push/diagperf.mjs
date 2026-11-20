@@ -62,6 +62,15 @@ if (process.env.CODE === "camp") { initializeApp({ credential: cert(JSON.parse(p
   const h = t => t ? new Date(t - 6 * 36e5).toISOString().slice(5, 16).replace("T", " ") : "-";
   C.forEach((c, i) => console.log("#" + (i + 1), "etapa:", c.stage, "· gc.p:", (c.gc || {}).p ?? "-", "· gc pasos:", Object.keys((c.gc || {}).t || {}).join(",") || "-", "· fl:", Object.keys((c.fl || {}).h || {}).join(",") || "-", "· seg:", (c.seg || []).length, "· ultSeg:", c.ultSeg || "-", "· rep:", (c.rep || {}).st || "-", "· creado:", h(c.creado), "· upd:", h(c.updated)));
   process.exit(0); }
+if (process.env.CODE === "rep") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore(), now = Date.now();
+  for (const mail of ["edwing.go@gmail.com", "garciagoedwin@gmail.com"]) { const q = await db.collection("users").where("email", "==", mail).limit(1).get(); if (q.empty) { console.log(mail[0], "sin cuenta"); continue; }
+    const uid = q.docs[0].id, C = (await db.collection(`users/${uid}/crm`).where("cat", "array-contains", "camp").get()).docs;
+    const cnt = {}; let rp = 0; for (const d of C) { const r = d.data().rep; cnt[r ? (r.st || "?") : "sin"] = (cnt[r ? (r.st || "?") : "sin"] || 0) + 1; if (d.data().repP === true) rp++; }
+    console.log("cuenta", mail[0], "camp", C.length, "repP", rp, JSON.stringify(cnt));
+    const rec = C.map(d => ({ id: d.id, ...d.data() })).filter(x => x.rep && now - (x.rep.t || 0) < 864e5).sort((a, b) => b.rep.t - a.rep.t);
+    for (const x of rec.slice(0, 15)) { let ex = "-", st = ""; if (x.rep.u) { const t = await db.doc(`users/${x.rep.u}/crm/${x.id}`).get(); ex = t.exists ? "si" : "NO"; st = t.exists ? (t.data().stage || "") : ""; }
+      console.log(" hace", Math.round((now - x.rep.t) / 60000), "min · st", x.rep.st, "· repP", x.repP, "· upd hace", Math.round((now - (x.updated || 0)) / 60000), "min · copia", ex, st); } }
+  process.exit(0); }
 if (process.env.CODE === "lluvia") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const m = (await getFirestore().doc("push_meta/lluvia").get()).data() || {}; console.log("lluvia fx:", JSON.stringify(m.fx || null), "· hace", m.fx ? Math.round((Date.now() - m.fx.t) / 60000) + " min" : "-"); process.exit(0); }
 const sa = JSON.parse(process.env.FIREBASE_SA), tk = (await cert(sa).getAccessToken()).access_token, H = { Authorization: "Bearer " + tk };
 const B = "https://firebaserules.googleapis.com/v1/";
