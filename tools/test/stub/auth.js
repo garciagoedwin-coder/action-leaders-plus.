@@ -1,5 +1,5 @@
 const st={u:JSON.parse(localStorage.getItem('stubUser')||'null'),cbs:[]};
-export const getAuth=()=>({});export class GoogleAuthProvider{setCustomParameters(){}}
+export const getAuth=()=>({get currentUser(){return st.u?Object.assign({getIdToken:async()=>'tk',reload:async()=>{}},st.u):null}});export class GoogleAuthProvider{setCustomParameters(){}}
 export const signInWithPopup=async()=>{localStorage.setItem('stubUser',JSON.stringify({uid:'u1',email:'socio@gmail.com',emailVerified:true,displayName:'Juan Pérez'}));st.u=JSON.parse(localStorage.getItem('stubUser'));st.cbs.forEach(c=>c(st.u))};
 export const signInWithRedirect=signInWithPopup;export const getRedirectResult=async()=>null;
 export const onAuthStateChanged=(a,cb)=>{st.cbs.push(cb);setTimeout(()=>cb(st.u),50)};
