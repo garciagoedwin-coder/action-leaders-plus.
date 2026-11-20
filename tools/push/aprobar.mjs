@@ -71,7 +71,9 @@ async function main() {
     for (const pf of (await db.collection("perfiles").where("uid", "==", id).get()).docs) await pf.ref.delete().catch(() => {}); }
   if (nDel && !DRY) { const del = new Set(DELD.map(d => d.id)); A = A.filter(a => !del.has(a.uid)); }
   // Documentos de users: TODOS solo cuando hace falta (primera vez o cada hora para los miembros); si no, solo los que aún no están aprobados.
-  const _n = new Date(), hora = FULL || (_n.getUTCHours() % 6 === 0 && _n.getUTCMinutes() < 10); // cada 6 h: todas las cuentas
+  // 20 nov: GitHub atrasa el cron (corre cada 6–9 h) y casi nunca caía en la hora exacta → la revisión completa no corría desde el 18 nov.
+  // Ahora: completa si pasaron 6 h desde la última (team/sisU.t), sin depender de la hora.
+  const _sisT = ((await db.doc("team/sisU").get()).data() || {}).t || 0, hora = FULL || (Date.now() - _sisT > 6 * 36e5); // cada 6 h: todas las cuentas
   // Aprobaciones manuales (patrocinador o admin): aprob/{uid} {ok, por, t}
   const M = (await db.collection("aprob").get()).docs;
   // 11 nov: el admin corrigió el correo/WhatsApp de inCruises («Solo guardar») → users.apRe; se revisa en esta corrida.
