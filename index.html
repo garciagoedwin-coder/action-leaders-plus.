@@ -1716,7 +1716,8 @@ body.acc3 #tasks .counter .num{font-family:'Barlow Condensed',sans-serif;font-si
 .ch6R{display:flex;align-items:center;gap:10px;margin-top:9px;padding:9px 10px;border-radius:14px;background:rgba(255,255,255,.07);cursor:pointer}
 .ch6R .tx{flex:1;min-width:0}.ch6R b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ch6R small{display:block;font-size:11.5px;color:#b9c6d6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .av6,.cgAv{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:12.5px;flex:none;background:color-mix(in srgb,var(--c) 30%,#fff);color:#062B3A}
-.ok6{width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(255,255,255,.45);background:transparent;color:#fff;font:800 17px/1 inherit;display:grid;place-items:center;flex:none;cursor:pointer;margin-right:8px}.wa6{width:36px;height:36px;border-radius:50%;background:#25D366;display:grid;place-items:center;flex:none}.wa6 svg{width:19px;fill:#fff}
+.ok6{width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(255,255,255,.45);background:transparent;color:#fff;font:800 17px/1 inherit;display:grid;place-items:center;flex:none;cursor:pointer;margin-right:8px}.bnCk{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,#F59E0B 10%,var(--surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,#F59E0B 35%,transparent);font-size:13.5px;margin:4px 0 8px}.bnCk small{color:var(--muted);font-size:12.5px;line-height:1.4;margin-top:2px}.bnCk label{display:flex;gap:8px;align-items:center;margin-top:6px;font-size:14px}.bnCk input{width:20px;height:20px;flex:none}
+.wa6{width:36px;height:36px;border-radius:50%;background:#25D366;display:grid;place-items:center;flex:none}.wa6 svg{width:19px;fill:#fff}
 .ch6M{display:block;width:100%;margin-top:9px;border:0;background:none;color:#8fd8f2;font:inherit;font-weight:800;font-size:12.5px;cursor:pointer;text-align:left;padding:2px}
 .lb6c{display:flex;justify-content:space-between;font-size:11px;font-weight:800;letter-spacing:1.6px;color:var(--muted);margin:6px 4px -2px}.lb6c em{font-style:normal;letter-spacing:.2px;color:var(--brand)}
 .fn6{background:var(--surface);border-radius:18px;box-shadow:0 0 0 1px var(--line);padding:12px 12px 8px}
@@ -2658,7 +2659,15 @@ let premMemo=null,premT=0;
 // 10 nov: team/prem {n:[nombres Premium del reporte de inCruises]} lo escribe el servidor (tools/push/red.mjs). Caché local 24 h (≈1 lectura al día).
 let PREM=null;
 async function premCargar(force){if(!store.db)return;try{const c=LS.get("premL");if(!force&&c&&c.t&&Date.now()-c.t<864e5){PREM=c.n||[];return}
-  const d=await store.db.doc("team/prem").get();PREM=d.exists?(d.data().n||[]):[];LS.set("premL",{t:Date.now(),n:PREM});premMemo=null}catch(e){}}
+  const d=await store.db.doc("team/prem").get();PREM=d.exists?(d.data().n||[]):[];LS.set("premL",{t:Date.now(),n:PREM,rt:d.exists?(d.data().t||0):0});premMemo=null}catch(e){}}
+/* 21 nov (Edwin): clientes agregados a mano (dtA) se comparan con los reportes de inCruises (red/). Encontrado → dtOk; cada reporte nuevo (team/prem.t) sin encontrarlo → dtNo+1; con 2 sale del Dream Team (se queda en el CRM). */
+function repIncT(){try{return +((LS.get("premL")||{}).rt||0)}catch(e){return 0}}
+let dtVerT=0;function dtCliVerif(){try{if(!Array.isArray(redL)||Date.now()-dtVerT<6e4)return;dtVerT=Date.now();const rt=repIncT();
+  const E=new Map();for(const r of redL)if(r.ek&&r.t!=="x")E.set(r.ek,r);
+  for(const c of (contacts||[])){if(c.stage!=="Cliente"||!c.dtA||c.dtOk||!c.email)continue;const k=ahKe(c.email);let ch=false;
+    if(E.has(k)){c.dtOk=Date.now();delete c.dtNo;ch=true}else if(rt&&rt>c.dtA&&rt!==c.dtVt){c.dtVt=rt;c.dtNo=(c.dtNo||0)+1;ch=true;if(c.dtNo>=2)c.seg=(c.seg||[]).concat([{t:Date.now(),k:"nota",n:"⚠️ No aparece como cliente en 2 reportes de inCruises · salió del Dream Team"}]).slice(-SG_MAX)}
+    if(ch){c.updated=Date.now();try{store.saveContact(Object.assign({},c))}catch(e){}}}}catch(e){}}
+const dtCliEst=c=>!c.dtA?"":c.dtOk?"ok":(c.dtNo||0)>=2?"no":"pv";
 function esPrem(n){if(!n)return false;if(!premMemo||Date.now()-premT>6e4){premMemo=new Map();premT=Date.now()}const k=nrmN(n);if(premMemo.has(k))return premMemo.get(k);let r=null;
   try{const U=((typeof socios!=="undefined"&&socios)||[]).concat((typeof mios!=="undefined"&&mios)||[]);const u=U.find(y=>y&&y.registro&&sameN(y.registro.nombre,n));
     if(u&&u.registro.plan&&u.registro.planPor==="admin")r=/premium/i.test(u.registro.plan);
@@ -4628,7 +4637,7 @@ async function dtCargar(force){if(dtCargando||!store.db||!store.uid)return;if(!f
   try{if(force||mios===null)await loadMios(force);const s=dtArmar();if(s){dtSum=s;LS.set("dtSum:"+store.uid,s);await dtConvertir()}}catch(e){}dtCargando=false;renderDT()}
 // clientes del Dream Team: contactos del CRM en etapa "Cliente" con correo de inCruises (privados del socio)
 function dtEks(){return new Set(((dtSum&&dtSum.d)||[]).map(x=>x.ek).filter(Boolean))}
-function dtClis(){const S=dtEks();return (contacts||[]).filter(c=>c.stage==="Cliente"&&c.email&&!S.has(ahKe(c.email))).map(c=>{const a=ahDe([c.email],[c.phone?waNum(c.phone,c.cc):""]);return{cli:1,id:c.id,n:c.name||"Cliente",ok:!(a&&a.pend),c}})}
+function dtClis(){const S=dtEks();try{dtCliVerif()}catch(e){}return (contacts||[]).filter(c=>c.stage==="Cliente"&&c.email&&!S.has(ahKe(c.email))&&dtCliEst(c)!=="no").map(c=>{const a=ahDe([c.email],[c.phone?waNum(c.phone,c.cc):""]);return{cli:1,id:c.id,n:c.name||"Cliente",ok:!(a&&a.pend),c}})}
 // 10 nov: directos de inCruises que no están en la app (colección red): clientes cuentan para los 30 (si su ahorro está al día); socios sin app salen pero no cuentan.
 // 10 nov (Edwin): Dream Team y Socios nuevos dicen lo mismo. Decisión «🧳 Es cliente / 🚀 Va a trabajar» = snvd/d.c[id]
 // (id de la activación; para directos del reporte sin activación, "r:"+id del doc red). Directos activados después del reporte también salen.
@@ -4658,16 +4667,18 @@ function dtCliForm(){if(ahGate())return;
    <div class="field"><label for="clN">Nombre</label><input class="inp" id="clN" maxlength="80" placeholder="Nombre y apellido"></div>
    <div class="field"><label for="clE">Correo de inCruises</label><input class="inp" id="clE" type="email" inputmode="email" autocapitalize="off" maxlength="120" placeholder="correo@ejemplo.com"></div>
    <div class="field"><label for="clW">WhatsApp <span class="muted">(opcional)</span></label><input class="inp" id="clW" type="tel" inputmode="tel" maxlength="20" placeholder="+504 9999 9999"></div>
+   <div class="bnCk"><b>⚠️ Antes de agregarlo como cliente, confirme:</b><span>✅ Ya tiene su cuenta de inCruises creada.</span><span>✅ Ya pagó su paquete (Classic o Premium).</span><small>Lo vamos a comparar con los reportes de inCruises. Si su correo no aparece como cliente suyo en <b>2 reportes seguidos</b>, se quita de su Dream Team (se queda en su CRM).</small><label><input type="checkbox" id="clCk"> <b>Sí, ya tiene su cuenta y su paquete activo</b></label></div>
    <button class="btn" id="clOk" style="width:100%">Agregar a mi Dream Team</button><button class="btn ghost" id="clBk" style="width:100%">‹ Volver</button>`,()=>{
     $("#clBk").onclick=dtVolver;$("#clOk").onclick=async()=>{const n=$("#clN").value.trim().replace(/\s+/g," "),e=$("#clE").value.trim().toLowerCase(),w=$("#clW").value.trim();
       if(n.length<3){toast("Escriba el nombre");$("#clN").focus();return}if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)){toast("Escriba un correo válido");$("#clE").focus();return}
+      if(!$("#clCk").checked){toast("Confirme que ya tiene su cuenta y su paquete activo");return}
       if(dtEks().has(ahKe(e))){toast("Esa persona ya está en su Dream Team como socio");return}
       const ya=(contacts||[]).find(c=>String(c.email||"").toLowerCase()===e);if(ya&&ya.stage==="Cliente"){toast("Ese cliente ya está en su Dream Team");return}
       const sp=splitPhone(w),cc=sp.cc||LS.get("lastCC")||"504",ph=String(sp.num||"").slice(0,15),bt=$("#clOk");bt.disabled=true;
-      const c=ya||{name:n.slice(0,80),cc,phone:ph,stage:"Cliente",note:"",next:TODAY,updated:Date.now()};Object.assign(c,{name:n.slice(0,80),email:e,stage:"Cliente",dtc:1,updated:Date.now()});if(ph){c.phone=ph;c.cc=cc}c.note=(c.note?c.note+" · ":"")+"🛳️ Cliente de mi Dream Team";
+      const c=ya||{name:n.slice(0,80),cc,phone:ph,stage:"Cliente",note:"",next:TODAY,updated:Date.now()};Object.assign(c,{name:n.slice(0,80),email:e,stage:"Cliente",dtc:1,dtA:c.dtA||Date.now(),updated:Date.now()});if(ph){c.phone=ph;c.cc=cc}c.note=(c.note?c.note+" · ":"")+"🛳️ Cliente de mi Dream Team";
       const id=await store.saveContact(c);if(!id){bt.disabled=false;return}if(!ya){c.id=id;contacts.push(c)}try{const a=dtActDe(ahKe(e),ph?ahKw(waNum(ph,cc)):null);if(a){if(SNVD===null)await snvdCargar();if(!dtDecDe(a,null))await snvdSet(a,"c")}}catch(x){}try{renderCRM()}catch(x){}renderDT();toast("🛳️ "+n.split(" ")[0]+" ya está en su Dream Team");dtTras()}})}
 function dtCliFicha(x){const c=x.c,f=dtFirst(x.n),w=c.phone?waNum(c.phone,c.cc):"",yo=miNombreCorto()||"",fm=t=>t+(yo?"\n\n*"+yo+"*":"");
-  openSheet(`<div style="display:flex;gap:14px;align-items:center"><div class="dt-av" style="width:72px;height:72px;flex:none;margin:0;background:${x.ok?"#F97316":"#E5B35A"}"><s style="font-size:22px">${esc(initials(x.n))}</s><i style="${x.ok?"":"background:#D97706"}">${x.ok?"✓":"!"}</i></div><div style="min-width:0;flex:1"><h2 style="margin:0">${esc(nv(x.n))}</h2><span class="chip">🛳️ Cliente</span> <span class="chip ${x.ok?"c-good":"c-gold"}">${x.ok?"✅ Ahorro al día":"⚠️ Ahorro pendiente"}</span>${recSin(dtRec(x))?` <span class="chip" style="background:#FEF3C7;color:#92400E">🔁 Sin recurrente</span>`:""}</div></div>
+  openSheet(`<div style="display:flex;gap:14px;align-items:center"><div class="dt-av" style="width:72px;height:72px;flex:none;margin:0;background:${x.ok?"#F97316":"#E5B35A"}"><s style="font-size:22px">${esc(initials(x.n))}</s><i style="${x.ok?"":"background:#D97706"}">${x.ok?"✓":"!"}</i></div><div style="min-width:0;flex:1"><h2 style="margin:0">${esc(nv(x.n))}</h2><span class="chip">🛳️ Cliente</span>${dtCliEst(c)==="pv"?` <span class="chip c-gold">⏳ Por verificar${c.dtNo?" · no aparece en 1 reporte":""}</span>`:dtCliEst(c)==="ok"?` <span class="chip c-good">✅ Verificado</span>`:""} <span class="chip ${x.ok?"c-good":"c-gold"}">${x.ok?"✅ Ahorro al día":"⚠️ Ahorro pendiente"}</span>${recSin(dtRec(x))?` <span class="chip" style="background:#FEF3C7;color:#92400E">🔁 Sin recurrente</span>`:""}</div></div>
    ${x.ok&&recSin(dtRec(x))?(window._rcX=x,`<button class="btn ghost" id="dtRecW" style="width:100%;color:#92400E">🔁 Ayudarle a activar su pago recurrente</button>`):""}
    <p class="small muted" style="margin:0">${x.ok?"Suma a su red y cuenta para sus 30.":"Mientras su ahorro esté pendiente, no cuenta para sus 30."}</p>
    <button class="btn" id="clW1" style="width:100%;background:#25D366;color:#fff">${x.ok?"💬 Escribirle":"💰 Recordarle su ahorro"}</button>
@@ -6557,22 +6568,49 @@ async function abrirLanzSocio(){if(!fbUser)return;const r=miRegistro()||{},n=r.n
     const box=$("#lzsImg");if(box){box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im)}}catch(e){const box=$("#lzsImg");if(box)box.innerHTML='<span class="small" style="color:#fff">No se pudo crear el flyer</span>'}}
 
 // ---------- bienvenida a socio nuevo ----------
-const BIEN_MSG=(n,f,pat,lk)=>`🎉 *¡Felicidades, ${n}! ${f?"Bienvenida":"Bienvenido"} a Action Leaders*
+/* 21 nov (Edwin): bienvenida de SOCIO o CLIENTE · comunidad Action Leaders + club de vacaciones inCruises · link del grupo (privAp/grupo) solo en privado */
+const BIEN_B=f=>f?"Bienvenida":"Bienvenido";
+const BIEN_MSG=(n,f,pat,lk,gl)=>`🎉 *¡Felicidades, ${n}!*
 
-Es un gusto tenerle en el equipo. 💪
+${BIEN_B(f)} a nuestra comunidad *Action Leaders* 🛡️ y a nuestro club de vacaciones *inCruises* 🛳️
 
-👉 Su primer paso: entre a nuestra app
-${lk||"https://actionleadersplus.com"}
+${gl?`Sus primeros 2 pasos:
 
-Entre con Google, complete su registro y use el mismo correo y WhatsApp que dio en inCruises y vea su video de bienvenida.
+*1️⃣ Únase al grupo del equipo:*
+${gl}
+
+*2️⃣ Instale nuestra app Action Leaders:*
+${lk||"https://actionleadersplus.com"}`:`Su primer paso:
+
+*👉 Instale nuestra app Action Leaders:*
+${lk||"https://actionleadersplus.com"}`}
+
+📌 Regístrese con el *mismo correo y WhatsApp que usó en inCruises* y vea su video de bienvenida.
 
 ¡Hasta que funcione! 🚀
 ${pat}`;
-const BIEN_GRUPO=(n,f,plan,pais)=>{const bd=bandera(pais||"");return `🎉 *¡Démosle la bienvenida a ${n}!*
+const BIEN_CLI=(n,f,pat,gl)=>`🎉 *¡Felicidades, ${n}!*
 
-Hoy se une a la familia Action Leaders como ${f?"Socia":"Socio"} ${(plan==="premium"?"Premium":plan==="starter"?"Starter":"Classic")}${bd?" "+bd:""}
+${BIEN_B(f)} a nuestra comunidad *Action Leaders* 🛡️ y a nuestro club de vacaciones *inCruises* 🛳️
 
-¡${f?"Bienvenida":"Bienvenido"} al equipo donde los sueños se trabajan juntos! 💪
+${gl?`Sus primeros pasos:
+
+*1️⃣ Únase a nuestro grupo:*
+${gl}
+
+*2️⃣ Active su pago recurrente*`:`Su primer paso:
+
+*👉 Active su pago recurrente*`}, así su ahorro se hace solo cada mes y no pierde sus puntos dobles.
+
+Cuando quiera, le ayudo a buscar su primer crucero 🌴
+${pat}`;
+const BIEN_GRUPO=(n,f,plan,pais,cli)=>{const bd=bandera(pais||"");return cli?`🎉 *¡Démosle la bienvenida a ${n}!*
+
+Hoy se une a nuestra comunidad *Action Leaders* y a nuestro club de vacaciones *inCruises* 🛳️${bd?" "+bd:""}
+
+¡Que vengan muchos viajes! Escríbanle un saludo 👇`:`🎉 *¡Démosle la bienvenida a ${n}!*
+
+Hoy se une a nuestra comunidad *Action Leaders* y a nuestro club de vacaciones *inCruises* como *${f?"Socia":"Socio"} ${(plan==="premium"?"Premium":plan==="starter"?"Starter":"Classic")}*${bd?" "+bd:""} 💪
 
 Escríbanle un saludo 👇
 
@@ -6619,7 +6657,7 @@ async function circFoto(g,src,cx,cy,r,ph,vacio){const im=src?await imgLoad(src,!
   }else g.drawImage(im,dx,dy,iw,ih);
   g.restore()}
 window.__circFoto=circFoto;
-async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo){n=nv(n);pat=nv(pat);const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");const T=BIEN_TH[plan]||BIEN_TH.classic;
+async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo,cli){n=nv(n);pat=nv(pat);const W=1080,H=1920,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");let T=BIEN_TH[plan]||BIEN_TH.classic;if(cli)T=Object.assign({},T,{lab:"CLIENTE "+T.top});
   await bienFonts();try{await Promise.all(["800 30px Figtree","600 30px Figtree","500 30px Figtree","400 60px 'Bebas Neue'"].map(x=>document.fonts.load(x)))}catch(x){}
   const BF="Figtree, Arial, sans-serif",BB="'Bebas Neue', ALP, Arial, sans-serif";
   g.fillStyle="#05070c";g.fillRect(0,0,W,H);const bg=await imgLoad(T.img);if(bg)g.drawImage(bg,0,0,W,H);
@@ -6636,7 +6674,7 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo){n=nv(n);pat=nv(p
     await circFoto(g,src,cx,cy,ri,ph,()=>{g.fillStyle=grad(cx-ri,cx+ri);g.fillRect(cx-ri,cy-ri,2*ri,2*ri);g.fillStyle=T.pill?"#111":"#05253a";g.font="800 "+Math.round(ri*.62)+"px "+BF;g.textAlign="center";g.fillText(initials(ph||"AL"),cx,cy+ri*.22)})};
   if(yo&&window._centrado){ // (descartado 4 nov) versión centrada
     const C=540;g.fillStyle="rgba(0,0,0,.25)";g.fillRect(0,0,W,H);
-    g.font="700 27px "+BF;g.fillStyle=T.a;const kt=(f?"NUEVA SOCIA · ":"NUEVO SOCIO · ")+new Date().getFullYear(),kw=sp(kt,-9999,0,7.6);sp(kt,C,254,7.6,"center");
+    g.font="700 27px "+BF;g.fillStyle=T.a;const kt=(cli?(f?"NUEVA CLIENTA · ":"NUEVO CLIENTE · "):(f?"NUEVA SOCIA · ":"NUEVO SOCIO · "))+new Date().getFullYear(),kw=sp(kt,-9999,0,7.6);sp(kt,C,254,7.6,"center");
     g.fillStyle=grad(C-kw/2-110,C-kw/2-30);g.fillRect(C-kw/2-108,242,78,3);g.fillStyle=grad(C+kw/2+30,C+kw/2+110);g.fillRect(C+kw/2+30,242,78,3);
     await ring(fotoSrc,C,545,225,7,true,n,8);
     const Pn=String(n||"").trim().toUpperCase().split(/\s+/),a1=Pn[0]||"",a2=Pn.slice(1).join(" ");let zz=150;g.font="400 "+zz+"px "+BB;while((g.measureText(a1).width>940||g.measureText(a2).width>940)&&zz>80){zz-=4;g.font="400 "+zz+"px "+BB}
@@ -6680,46 +6718,65 @@ let bienPatP=null;const bienPat=()=>bienPatP||(bienPatP=bienFotoPat());
 // 14 nov: Bienvenido/Bienvenida se adivina por el primer nombre (termina en "a" o está en la lista); el patrocinador lo cambia con el botón y entonces ya no se adivina.
 const GEN_F=new Set("isabel raquel maribel marisol carmen beatriz ines ruth mercedes dolores rocio pilar consuelo lourdes nicole michelle ivonne yaneth janeth lisbeth yamileth elizabeth ingrid astrid esther miriam karen evelyn jennifer dulce flor sol luz noemi abigail belen nohemi yasmin jazmin glenis glendy sharon katherine kathy cindy mary heidy leidy yessenia nancy iris lizeth ivette lilian marlen sonia gisel gissel ruby".split(" ")),GEN_M=new Set("luca joshua josua elia nikita".split(" "));
 function genF(n){const w=String(n||"").trim().split(/\s+/)[0].normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();if(!w)return false;if(GEN_M.has(w))return false;if(GEN_F.has(w))return true;return /a$/.test(w)}
-function abrirBienvenida(c){c=c||{};let n=(c.name||"").trim(),f=genF(c.name),gT=false,file=null,plan="classic",foto="",pais=c.ccN||(c.cc?(PAISES.find(x=>x[1]===c.cc)||[""])[0]:"")||"Honduras";let tel=c.phone?waNum(c.phone,c.cc):"";const pat=miNombreCorto()||"Tu patrocinador",sinTel=!c.phone;const invId=Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4),lk=miEnlace()+"&b="+invId;let invT;
+function abrirBienvenida(c){c=c||{};let tipo=c.stage==="Cliente"?"c":"s",gl="",cliHecho=false,n=(c.name||"").trim(),f=genF(c.name),gT=false,file=null,plan="classic",foto="",pais=c.ccN||(c.cc?(PAISES.find(x=>x[1]===c.cc)||[""])[0]:"")||"Honduras";let tel=c.phone?waNum(c.phone,c.cc):"";const pat=miNombreCorto()||"Tu patrocinador",sinTel=!c.phone;const invId=Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4),lk=miEnlace()+"&b="+invId;let invT;
   const guardarInv=()=>{clearTimeout(invT);invT=setTimeout(()=>{if(!n||!store.db||!store.uid)return;const ccv=$("#bnCC")?$("#bnCC").value:(c.cc||"");store.db.doc("invitaciones/"+invId).set({by:store.uid,byNombre:miRegistro().nombre||pat,nombre:n,plan:(plan==="premium"?"Premium":plan==="starter"?"Starter":"Classic"),pais:pais||"",cc:String(ccv||""),wa:tel||"",f,t:Date.now()}).catch(()=>{})},300)};
-  openSheet(`<h2>🎉 Bienvenida a socio nuevo</h2>
-   <div class="field"><label for="bnN">Nombre del socio nuevo</label><input class="inp" id="bnN" value="${esc(n)}" placeholder="Nombre y apellido"></div>
+  try{grpLink().then(x=>{gl=x||""}).catch(()=>{})}catch(e){}
+  openSheet(`<h2>🎉 Bienvenida</h2>
+   <p class="small muted" style="margin:0 0 4px">¿Cómo entró?</p><div class="seg" id="bnT"><button aria-selected="${tipo==="s"}" data-t="s" type="button">🤝 Socio</button><button aria-selected="${tipo==="c"}" data-t="c" type="button">🛳️ Cliente</button></div>
+   <div class="field"><label for="bnN" id="bnNL">Nombre</label><input class="inp" id="bnN" value="${esc(n)}" placeholder="Nombre y apellido"></div>
    ${sinTel?`<div class="grid2"><div class="field"><label for="bnCC">País</label><select class="inp" id="bnCC">${PAISES.map(([pn,k],i)=>`<option value="${k}" ${k===(LS.get("lastCC")||"504")&&i===PAISES.findIndex(x=>x[1]===(LS.get("lastCC")||"504"))?"selected":""}>${pn} (+${k})</option>`).join("")}</select></div>
    <div class="field"><label for="bnTel">WhatsApp <span class="muted">(opcional)</span></label><input class="inp" id="bnTel" type="tel" autocomplete="tel" placeholder="Solo el número"><p class="small" id="bnTelA" style="color:var(--bad);margin:4px 0 0" hidden></p></div></div>`:""}
-   <div class="field"><label for="bnPais">País del socio</label><select class="inp" id="bnPais">${PAISES.filter((x,i,a)=>a.findIndex(y=>y[0]===x[0])===i).map(([pn])=>`<option ${pn===pais?"selected":""}>${pn}</option>`).join("")}<option value="">No mostrar país</option></select></div>
+   <div class="field"><label for="bnPais">País (para la bandera)</label><select class="inp" id="bnPais">${PAISES.filter((x,i,a)=>a.findIndex(y=>y[0]===x[0])===i).map(([pn])=>`<option ${pn===pais?"selected":""}>${pn}</option>`).join("")}<option value="">No mostrar país</option></select></div>
    <div class="seg" id="bnG"><button aria-selected="${!f}" data-g="m" type="button">♂ Bienvenido</button><button aria-selected="${f}" data-g="f" type="button">♀ Bienvenida</button></div>
-   <div class="seg" id="bnP"><button aria-selected="false" data-p="starter" type="button">Starter</button><button aria-selected="true" data-p="classic" type="button">Classic</button><button aria-selected="false" data-p="premium" type="button">★ Premium</button></div>
-   <label class="btn ghost" style="width:100%;justify-content:center;cursor:pointer">📷 Foto del socio nuevo<input type="file" id="bnFoto" accept="image/*" hidden></label>
+   <div class="seg" id="bnP"><button aria-selected="false" data-p="starter" type="button" id="bnSt">Starter</button><button aria-selected="true" data-p="classic" type="button">Classic</button><button aria-selected="false" data-p="premium" type="button">★ Premium</button></div>
+   <div id="bnCli" hidden><div class="field"><label for="bnE">Correo de inCruises <span class="muted">(obligatorio)</span></label><input class="inp" id="bnE" type="email" inputmode="email" autocapitalize="off" maxlength="120" placeholder="correo@ejemplo.com" value="${esc(c.email||"")}"></div>
+    <div class="bnCk"><b>⚠️ Antes de agregarlo como cliente, confirme:</b><span>✅ Ya tiene su cuenta de inCruises creada.</span><span>✅ Ya pagó su paquete (Classic o Premium).</span><small>Lo vamos a comparar con los reportes de inCruises. Si su correo no aparece como cliente suyo en <b>2 reportes seguidos</b>, se quita de su Dream Team (se queda en su CRM).</small><label><input type="checkbox" id="bnOk"> <b>Sí, ya tiene su cuenta y su paquete activo</b></label></div>
+    <p class="small muted" style="margin:0">Al enviar, se agrega a su CRM y a su Dream Team como cliente.</p></div>
+   <label class="btn ghost" style="width:100%;justify-content:center;cursor:pointer">📷 Foto<input type="file" id="bnFoto" accept="image/*" hidden></label>
    <div id="bnBox" style="aspect-ratio:9/16;width:100%;max-width:300px;margin:0 auto;border-radius:14px;background:#0b0b10;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Escribe el nombre…</span></div>
    <button class="btn" id="bnGo" style="width:100%">🎉 Celebrar en un grupo</button>
    <p class="small muted" style="margin:-4px 0 0;text-align:center">Flyer y mensaje de celebración, <b>sin enlaces</b>.</p>
    <button class="btn ghost" id="bnPriv" style="width:100%">🔒 Enviar en privado al socio nuevo</button>
-   <p class="small muted" id="bnPrivTx" style="margin:-4px 0 0;text-align:center">Lleva su enlace personal para entrar a la app. Solo a esa persona.</p>
+   <p class="small muted" id="bnPrivTx" style="margin:-4px 0 0;text-align:center">Lleva el link del grupo y su enlace personal para entrar a la app. Solo a esa persona.</p>
    <div class="row" style="gap:8px"><button class="btn ghost grow" id="bnCopy">Copiar celebración</button><button class="btn ghost grow" id="bnDl">Descargar flyer</button></div>
    <a id="bnWa" hidden></a>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     let tk=0;const upd=async()=>{n=$("#bnN").value.trim().replace(/\s+/g," ");if(!gT&&n){f=genF(n);$("#bnG").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",(x.dataset.g==="f")===f))}const my=++tk;const box=$("#bnBox");if(!n){box.innerHTML='<span class="small" style="color:#fff">Escribe el nombre…</span>';file=null;return}
-      const cv=await bienCanvas(n,f,pat,plan,foto,pais,await bienPat());if(my!==tk)return;const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.95));file=new File([b],"Bienvenida-"+n.replace(/\s+/g,"-")+".jpg",{type:"image/jpeg"});
+      const cv=await bienCanvas(n,f,pat,plan,foto,pais,await bienPat(),0,tipo==="c");if(my!==tk)return;const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.95));file=new File([b],"Bienvenida-"+n.replace(/\s+/g,"-")+".jpg",{type:"image/jpeg"});
       box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(b);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im);
-      const wa=$("#bnWa");if(wa)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat,lk));guardarInv()};
+      const wa=$("#bnWa");if(wa)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(privMsg());if(tipo==="s")guardarInv()};
+    const privMsg=()=>tipo==="c"?BIEN_CLI(n,f,pat,gl):BIEN_MSG(n,f,pat,lk,gl);
+    const tPinta=()=>{const cl=tipo==="c";$("#bnT").querySelectorAll("[data-t]").forEach(x=>x.setAttribute("aria-selected",x.dataset.t===tipo));$("#bnCli").hidden=!cl;$("#bnSt").hidden=cl;if(cl&&plan==="starter"){plan="classic";$("#bnP").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x.dataset.p==="classic"))}
+      $("#bnNL").textContent=cl?"Nombre del cliente nuevo":"Nombre del socio nuevo";$("#bnPrivTx").textContent=cl?"Lleva el link del grupo y cómo activar su pago recurrente. Solo a esa persona.":"Lleva el link del grupo y su enlace personal para entrar a la app. Solo a esa persona.";try{privTx()}catch(e){}};
+    // valida y guarda el cliente (CRM + Dream Team). Devuelve false si falta algo. Se llama ANTES de abrir WhatsApp (sin await) y guarda en segundo plano.
+    const cliOk=()=>{if(tipo!=="c")return true;const e=$("#bnE").value.trim().toLowerCase();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)){toast("Escriba el correo de inCruises del cliente");$("#bnE").focus();return false}
+      if(!$("#bnOk").checked){toast("Confirme que ya tiene su cuenta y su paquete activo");$("#bnOk").focus();return false}
+      if(dtEks().has(ahKe(e))){toast("Esa persona ya está en su Dream Team como socio");return false}
+      if(!cliHecho){cliHecho=true;const cc=($("#bnCC")&&$("#bnCC").value)||c.cc||LS.get("lastCC")||"504",ph=tel?String(tel).replace(/^\d*?(\d{7,})$/,"$1"):"";
+        const ya=c.id?(contacts||[]).find(x=>x.id===c.id):(contacts||[]).find(x=>String(x.email||"").toLowerCase()===e);const o=ya||{name:n.slice(0,80),cc,phone:"",stage:"Cliente",note:"",next:TODAY,updated:Date.now()};
+        Object.assign(o,{name:n.slice(0,80),email:e,stage:"Cliente",dtc:1,dtA:Date.now(),dtPl:plan==="premium"?"Premium":"Classic",updated:Date.now()});if(!o.phone&&$("#bnTel")&&$("#bnTel").value.trim()){o.phone=$("#bnTel").value.trim().replace(/\D/g,"").slice(0,15);o.cc=cc}
+        if(!(o.seg||[]).some(x=>x.k==="bien"))o.seg=(o.seg||[]).concat([{t:Date.now(),k:"bien",n:"🛳️ Entró como cliente "+o.dtPl+" · por verificar con inCruises"}]).slice(-SG_MAX);if(!/Cliente de mi Dream Team/.test(o.note||""))o.note=(o.note?o.note+" · ":"")+"🛳️ Cliente de mi Dream Team";
+        store.saveContact(Object.assign({},o)).then(id=>{if(!id){cliHecho=false;return}if(!ya){o.id=id;contacts.push(o)}try{renderCRM()}catch(x){}try{renderDT()}catch(x){}toast("🛳️ "+n.split(" ")[0]+" ya está en su Dream Team · ⏳ por verificar")}).catch(()=>{cliHecho=false})}
+      return true};
     let deb;$("#bnN").oninput=()=>{clearTimeout(deb);deb=setTimeout(upd,450)};
-    const tI=$("#bnTel");if(tI){const syncTel=()=>{const v=tI.value;if(/^\s*(\+|00)/.test(v)){const sp=splitPhone(v);if(sp.cc){$("#bnCC").value=sp.cc;tI.value=sp.num}}tel=tI.value.trim()?waNum(tI.value,$("#bnCC").value):"";{const av=$("#bnTelA"),m=tel&&tI.value.replace(/\D/g,"").length>=6?telAviso(tel):"";if(av){av.textContent=m;av.hidden=!m}}const wa=$("#bnWa");wa.style.display=tel?"":"none";if(n)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(BIEN_MSG(n,f,pat,lk));guardarInv()};tI.oninput=syncTel;tI.onchange=syncTel;$("#bnCC").onchange=()=>{LS.set("lastCC",$("#bnCC").value);{const ps=$("#bnPais"),pn=(PAISES.find(x=>x[1]===$("#bnCC").value)||[])[0];if(ps&&pn&&ps.value&&ps.value!==pn){ps.value=pn;pais=pn;upd()}}syncTel()}}
+    $("#bnT").onclick=e=>{const b=e.target.closest("[data-t]");if(!b||b.dataset.t===tipo)return;tipo=b.dataset.t;tPinta();upd()};
+    const tI=$("#bnTel");if(tI){const syncTel=()=>{const v=tI.value;if(/^\s*(\+|00)/.test(v)){const sp=splitPhone(v);if(sp.cc){$("#bnCC").value=sp.cc;tI.value=sp.num}}tel=tI.value.trim()?waNum(tI.value,$("#bnCC").value):"";{const av=$("#bnTelA"),m=tel&&tI.value.replace(/\D/g,"").length>=6?telAviso(tel):"";if(av){av.textContent=m;av.hidden=!m}}const wa=$("#bnWa");wa.style.display=tel?"":"none";if(n)wa.href="https://wa.me/"+tel+"?text="+encodeURIComponent(privMsg());if(tipo==="s")guardarInv()};tI.oninput=syncTel;tI.onchange=syncTel;$("#bnCC").onchange=()=>{LS.set("lastCC",$("#bnCC").value);{const ps=$("#bnPais"),pn=(PAISES.find(x=>x[1]===$("#bnCC").value)||[])[0];if(ps&&pn&&ps.value&&ps.value!==pn){ps.value=pn;pais=pn;upd()}}syncTel()}}
     $("#bnG").onclick=e=>{const b=e.target.closest("[data-g]");if(!b)return;gT=true;f=b.dataset.g==="f";$("#bnG").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));upd()};
     $("#bnPais").onchange=()=>{pais=$("#bnPais").value;{const cs=$("#bnCC"),k=(PAISES.find(x=>x[0]===pais)||[])[1];if(cs&&k&&cs.value!==k){cs.value=k;cs.dispatchEvent(new Event("change"))}}upd()};
     $("#bnP").onclick=e=>{const b=e.target.closest("[data-p]");if(!b)return;plan=b.dataset.p;$("#bnP").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));upd()};
     $("#bnFoto").onchange=async e=>{const fl=e.target.files&&e.target.files[0];if(!fl)return;try{foto=await fotoReduce400(fl);toast("Foto lista")}catch(x){toast("No se pudo usar esa foto")}upd()};
-    $("#bnCopy").onclick=async()=>{if(!n)return toast("Escribe el nombre");try{await navigator.clipboard.writeText(BIEN_GRUPO(n,f,plan,pais));toast("Celebración copiada (sin enlace)")}catch(x){toast("No se pudo copiar")}};
-    const pn=()=>(n.split(" ")[0]||"el socio nuevo");const privTx=()=>{const b=$("#bnPriv");if(b&&n)b.textContent="🔒 Enviar en privado a "+pn()};$("#bnN").addEventListener("input",()=>setTimeout(privTx,500));privTx();
-    let privOk=false;$("#bnPriv").onclick=async()=>{if(!n||!file)return toast("Escribe el nombre del socio");const msg=BIEN_MSG(n,f,pat,lk);
+    $("#bnCopy").onclick=async()=>{if(!n)return toast("Escribe el nombre");try{await navigator.clipboard.writeText(BIEN_GRUPO(n,f,plan,pais,tipo==="c"));toast("Celebración copiada (sin enlace)")}catch(x){toast("No se pudo copiar")}};
+    const pn=()=>(n.split(" ")[0]||(tipo==="c"?"el cliente nuevo":"el socio nuevo"));const privTx=()=>{const b=$("#bnPriv");if(b)b.textContent="🔒 Enviar en privado a "+pn()};$("#bnN").addEventListener("input",()=>setTimeout(privTx,500));privTx();
+    let privOk=false;$("#bnPriv").onclick=async()=>{if(!n||!file)return toast("Escriba el nombre");if(!cliOk())return;const msg=privMsg();
       if(tel){waIr("https://wa.me/"+tel+"?text="+encodeURIComponent(msg));return}
-      if(!privOk){privOk=true;$("#bnPriv").textContent="⚠️ Solo a "+pn()+", no a grupos · toque otra vez";$("#bnPrivTx").innerHTML="Este mensaje lleva <b>el enlace personal de "+esc(pn())+"</b>. Elija <b>su chat</b>, no un grupo.";return}
+      if(!privOk){privOk=true;$("#bnPriv").textContent="⚠️ Solo a "+pn()+", no a grupos · toque otra vez";$("#bnPrivTx").innerHTML="Este mensaje lleva <b>"+(tipo==="c"?"el link del grupo":"el enlace personal de "+esc(pn()))+"</b>. Elija <b>su chat</b>, no un grupo.";return}
       if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text:msg});return}catch(x){if(x&&x.name==="AbortError")return}}
       try{await navigator.clipboard.writeText(msg);toast("Mensaje copiado: péguelo en el chat de "+pn())}catch(x){}};
     $("#bnDl").onclick=()=>{if(!file)return toast("Escribe el nombre");const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000)};
-    $("#bnGo").onclick=async()=>{if(!n||!file)return toast("Escribe el nombre del socio");const msg=BIEN_GRUPO(n,f,plan,pais);
+    $("#bnGo").onclick=async()=>{if(!n||!file)return toast("Escriba el nombre");if(!cliOk())return;const msg=BIEN_GRUPO(n,f,plan,pais,tipo==="c");
       if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text:msg});return}catch(x){if(x&&x.name==="AbortError")return}}
       try{await navigator.clipboard.writeText(msg)}catch(x){}const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000);toast("Flyer descargado y mensaje copiado: péguelo en el grupo")};
-    if(n)upd()})}
+    tPinta();if(n)upd()})}
 
 // ---------- llamada de 3 (socio pide a un líder de su línea; el líder acepta en su app) ----------
 // Firestore llamadas3/{id}: de, deN, para, paraN, pros, cid, fecha, hora, tipo, enlace, nota, estado (pendiente|aceptada|propuesta|rechazada), pFecha, pHora, nP (aviso para el líder), nD (aviso para quien pidió), t
@@ -11723,7 +11780,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261121135305";var busy=false,pend=null;
+(function(){var V="20261121140816";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
