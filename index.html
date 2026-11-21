@@ -1001,7 +1001,11 @@ body.hi7on.vIni #meBtn{display:none!important}
 .hi7T{min-width:0}
 .hi7N{font-family:var(--f-display);font-weight:800;font-size:26px;line-height:1.08;letter-spacing:-.6px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hi7N.lg{font-size:22px}
 .hi7R{display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap}
-.hi7Rg{color:#fff;font-weight:800;font-size:10.5px;letter-spacing:.12em;border-radius:6px;padding:4px 8px;line-height:1.2}
+.hi7Rg{font-weight:700;font-size:12px;border-radius:20px;padding:3px 10px;line-height:1.25;background:color-mix(in srgb,var(--rc) 9%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--rc) 30%,transparent);white-space:nowrap}
+.hi7Pl{font-weight:700;font-size:12px;border-radius:20px;padding:3px 10px;line-height:1.25;white-space:nowrap}
+.hi7Pl.pr{color:#8a6410;background:linear-gradient(90deg,#FFF6DD,#FBE7A9);box-shadow:inset 0 0 0 1px #E2BD5A}
+.hi7Pl.cl{color:var(--brand);background:color-mix(in srgb,var(--brand) 9%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--brand) 30%,transparent)}
+.hi7Pl.st{color:var(--muted);box-shadow:inset 0 0 0 1px var(--line)}
 .hi7Es{display:inline-flex;align-items:center;gap:4px;background:#0b1424;color:#F5C451;font:inherit;font-weight:800;font-size:10.5px;letter-spacing:.12em;border:0;border-radius:6px;padding:3px 8px 3px 4px;box-shadow:inset 0 0 0 1px #b98d2c;cursor:pointer;line-height:1.2}
 .hi7Es img{width:15px}
 .pf7 .pf-head .hi7Av{width:72px;height:72px}.pf7 .pf-head .hi7Av i{width:72px;height:72px}.pf7 .pf-head .hi7N{font-size:22px}
@@ -4134,12 +4138,18 @@ function hi7Pinta(){try{const bx=$("#hi7");if(!bx)return;if(!fbUser){bx.hidden=t
   let idx=-1;try{idx=miRangoIdx()}catch(x){}const R=miRegistro();let rg,c;
   if(esSoloAdminYo()){rg="ADMIN";c="#2B2A2D"}else if(idx>=1&&RANGOS[idx]){rg=RANGOS[idx].n.toUpperCase();c=RANGOS[idx].c}
   else{const pl=String(R.plan||"").trim();rg=pl?"SOCIO "+pl.toUpperCase():"SOCIO";c="var(--brand)"}
-  const nm=hi7Nom(full)||"Líder",k=[nm,f,g,rg,c].join("|");document.body.classList.add("hi7on");try{document.body.classList.toggle("vIni",!$("#v-inicio").hidden)}catch(x){}bx.hidden=false;if(bx.dataset.k===k)return;bx.dataset.k=k;
+  const nm=hi7Nom(full)||"Líder",k=[nm,f,g,hi7Chips(idx,R,full)].join("|");document.body.classList.add("hi7on");try{document.body.classList.toggle("vIni",!$("#v-inicio").hidden)}catch(x){}bx.hidden=false;if(bx.dataset.k===k)return;bx.dataset.k=k;
   const av=$("#hi7Av");av.classList.toggle("es",g);const i=av.querySelector("i");i.style.backgroundImage=f?`url('${f}')`:"";i.textContent=f?"":initials(full||"Yo");
   av.querySelector("img")?.remove();if(g)av.insertAdjacentHTML("beforeend",'<img src="media/insignias/v3-espartano-e.webp?v=3" alt="">');
   const N=$("#hi7N");N.textContent=nm;N.classList.toggle("lg",nm.length>15);
-  $("#hi7R").innerHTML=`<span class="hi7Rg" style="background:${c}">${esc(rg)}</span>${g?`<button type="button" class="hi7Es" id="hi7Es"><img src="media/insignias/v3-espartano-e.webp?v=3" alt="">ESPARTANO</button>`:""}`;
-  av.onclick=()=>{try{abrirPerfil()}catch(x){}};const e=$("#hi7Es");if(e)e.onclick=()=>avisoTop("🛡️ Espartano · Networker Pro","Se graduó de Networker Pro. ¡Felicidades!",()=>{try{dipDescargar()}catch(x){}})}catch(e){}}
+  $("#hi7R").innerHTML=hi7Chips(idx,R,full);
+  av.onclick=()=>{try{abrirPerfil()}catch(x){}}}catch(e){}}
+/* (21 nov, opción C) etiquetas suaves: rango + membresía; el sello Espartano va solo en la foto */
+function hi7Chips(idx,R,full){let rg,c;if(esSoloAdminYo()){rg="Admin";c=""}else if(idx>=1&&RANGOS[idx]){rg=RANGOS[idx].n;c=RANGOS[idx].c}else{rg="Socio";c="var(--brand)"}
+  if(/gradient/.test(c))c="#EA8A00";const tx=(!c||c==="#111111")?"var(--ink)":c,bc=c||"#64748B";
+  let pl="";try{pl=esPrem(full)?"Premium":""}catch(x){}if(!pl)pl=String((R&&R.plan)||"").trim();pl=pl?pl.charAt(0).toUpperCase()+pl.slice(1).toLowerCase():"";
+  const pc=pl==="Premium"?"pr":pl==="Classic"?"cl":"st";
+  return `<span class="hi7Rg" style="--rc:${bc};color:${tx}">${esc(rg)}</span>${pl?`<span class="hi7Pl ${pc}">${pl==="Premium"?"★ ":""}${esc(pl)}</span>`:""}`}
 function pillsPinta(){try{const pr=$("#pillRg");if(pr)pr.hidden=true}catch(e){}pillIdx();try{hi7Pinta()}catch(e){}
   try{const h=$("#hello"),nm=$("#hiNm");if(h&&nm){const t=(h.textContent||"").replace(/^Hola,?\s*/,"").trim();nm.textContent=t||"líder"}}catch(e){}
   hiEsPinta()}
@@ -10715,7 +10725,7 @@ function pf7(){const P=$("#sheetPanel"),L=P&&P.querySelector(".pf-list"),H=P&&P.
   const R=miRegistro(),full=miNombreFull()||"",f=miFotoUrl();let g=false;try{g=!!(irModo()&&irEstado().grad)}catch(x){}let idx=-1;try{idx=miRangoIdx()}catch(x){}let rg,c;
   if(esSoloAdminYo()){rg="ADMIN";c="#2B2A2D"}else if(idx>=1&&RANGOS[idx]){rg=RANGOS[idx].n.toUpperCase();c=RANGOS[idx].c}else{const pl=String(R.plan||"").trim();rg=pl?"SOCIO "+pl.toUpperCase():"SOCIO";c="var(--brand)"}
   const es='<img src="media/insignias/v3-espartano-e.webp?v=3" alt="">';
-  H.innerHTML=`<div class="hi7Av${g?" es":""}" style="cursor:default"><i style="${f?`background-image:url('${f}')`:""}">${f?"":esc(initials(full||"Yo"))}</i>${g?es:""}</div><div style="min-width:0"><div class="hi7N">${esc(hi7Nom(full)||"Mi perfil")}</div><div class="hi7R"><span class="hi7Rg" style="background:${c}">${esc(rg)}</span>${g?`<span class="hi7Es">${es}ESPARTANO</span>`:""}</div><p class="small muted" style="margin:6px 0 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc([R.plan,R.patrocinador?"Patrocinador: "+nv(R.patrocinador):""].filter(Boolean).join(" · "))}</p><p class="small muted" style="margin:1px 0 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc((fbUser&&fbUser.email)||"")}</p></div>`;
+  H.innerHTML=`<div class="hi7Av${g?" es":""}" style="cursor:default"><i style="${f?`background-image:url('${f}')`:""}">${f?"":esc(initials(full||"Yo"))}</i>${g?es:""}</div><div style="min-width:0"><div class="hi7N">${esc(hi7Nom(full)||"Mi perfil")}</div><div class="hi7R">${hi7Chips(idx,R,full)}</div><p class="small muted" style="margin:6px 0 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc([R.plan,R.patrocinador?"Patrocinador: "+nv(R.patrocinador):""].filter(Boolean).join(" · "))}</p><p class="small muted" style="margin:1px 0 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc((fbUser&&fbUser.email)||"")}</p></div>`;
   L.querySelectorAll(".pf-h").forEach(x=>x.remove());
   const Q=document.createElement("div");Q.className="pf7Q";[["pfFoto","📷","Cambiar foto"],["pfPag","🌐","Mi página"],["pfAvisos","🔔","Mis avisos"]].forEach(([id,ic,t])=>{const b=$("#"+id);if(b){b.className="pf7q";b.innerHTML=`<b>${ic}</b>${t}`;Q.append(b)}});L.before(Q);
   const usados=new Set(["pfFoto","pfPag","pfAvisos","pfOut"]);PF7_G.forEach(G=>G[4].forEach(i=>usados.add(i)));
@@ -11705,7 +11715,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261120230045";var busy=false,pend=null;
+(function(){var V="20261121084555";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
