@@ -1576,6 +1576,15 @@ body #v-inicio.simple>#irCard.irF,#v-inicio>#irCard.irF{order:4!important}
 .avHd{font:800 11px Figtree,sans-serif;letter-spacing:1.6px;color:var(--muted)}
 .h6{margin:0!important;font-size:11px!important;font-weight:800!important;letter-spacing:1.6px;color:var(--muted)!important;font-family:Figtree,sans-serif!important}
 /* compromiso delgado */
+.vm6{display:flex;justify-content:center;align-items:center;gap:4px;margin-top:10px;padding-top:9px;border-top:1px dashed var(--line);font:700 12.5px Figtree,system-ui,sans-serif;color:var(--brand);cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent}
+.cp6 .vm6{border-top-color:rgba(255,255,255,.14);color:#8fd8f2;margin-top:9px;padding-top:7px}
+#habCard .vm6{margin:8px 2px 0}
+#rutCard>.vm6{margin:8px 0 -2px}
+.cvTel{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:4px 0 8px;font-size:14px;color:var(--ink)}
+.cvTel b{font-family:'Barlow Condensed',sans-serif;font-size:18px;letter-spacing:.3px;font-weight:700}
+.cvTel button{border:0;background:color-mix(in srgb,var(--brand) 12%,transparent);color:var(--brand);font:700 12px Figtree,system-ui,sans-serif;padding:5px 10px;border-radius:99px}
+.cvTel.mal b{color:#D97706}.cvTel .w{font-size:12px;font-weight:700;color:#D97706}
+.cvTel.na{color:var(--muted);font-size:13px}
 .cp6{background:radial-gradient(120% 140% at 100% 0%,#1a4a70 0,#0b1424 62%)!important;border-radius:18px!important;padding:12px 14px!important;box-shadow:0 12px 24px -16px rgba(10,30,60,.6);position:relative;overflow:hidden}
 .cp6:after{content:"";position:absolute;right:-50px;top:-70px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(42,193,241,.22),transparent 70%);pointer-events:none}
 .cp6T{display:flex;align-items:center;gap:8px;position:relative}
@@ -1824,11 +1833,12 @@ body.acc3 #tasks .counter .num{font-family:'Barlow Condensed',sans-serif;font-si
 body.f20 #v-inicio .f20k{cursor:pointer}
 body.f20 #nextEvents:not(.f20o)>:not(:first-child),
 body.f20 #hoyCitas:not(.f20o)>:not(:first-child),
-body.f20 #rutCard:not(.f20o)>:not(.rh6):not(.rc3B){display:none!important}
+body.f20 #rutCard:not(.f20o)>:not(.rh6):not(.rc3B):not(.vm6){display:none!important}
 body.f20 #nextEvents:not(.f20o)>:first-child,body.f20 #hoyCitas:not(.f20o)>:first-child,body.f20 #rutCard:not(.f20o)>.rh6{margin-bottom:0}
 body.f20 #nextEvents:not(.f20o)>:first-child p{display:none}
 body.f20 #v-inicio #rutCard.mini{padding:16px!important;border:1px solid color-mix(in srgb,var(--line) 70%,transparent)!important}
 body.f20 #v-inicio #rutCard.mini:not(.f20o)>.rh6{display:flex!important}
+body.f20 #v-inicio #rutCard.mini>.vm6{display:flex!important}
 body.f20 #v-inicio #rutCard.done #rutAlert{display:none!important}
 body.f20 #rutCard.done .fl6{background:#16A34A;box-shadow:0 6px 14px -6px #16A34A;font-size:0}
 body.f20 #rutCard.done .fl6::after{content:"✓";font-size:17px;font-weight:800;color:#fff}
@@ -2805,7 +2815,8 @@ const F20_ID=["rutCard","hoyCitas","nextEvents"];
 const F20_HD={acc3:".acc3H",rutCard:".rh6",avBox:".avHd",npBan:".npT"};
 function f20Ab(){try{return JSON.parse(LS.get("f20:"+(store.uid||""))||"{}")}catch(e){return {}}}
 function f20Rut(c){try{const g=c.querySelector(".rh6 .grow");if(!g)return;let el=g.querySelector(".f20p");if(!el){el=document.createElement("span");el.className="f20p";g.appendChild(el)}const L=ROUTINE.filter(r=>!r.desde||TODAY>=r.desde);let tot=L.length,n=L.filter(r=>((day&&day[r.k])||0)>=1).length;try{if(typeof declRutOn==="function"&&declRutOn()){tot++;if(day&&day.decl)n++}}catch(e){}const f=Math.max(0,tot-n),h=`<i>${L.map((r,i)=>`<u class="${i<n?"on":""}"></u>`).join("")}${tot>L.length?`<u class="${n>L.length?"on":""}"></u>`:""}</i><em>${n} de ${tot} · ${f===1?"<b>le falta 1</b>":`<b>le faltan ${f}</b>`}</em>`;if(el._h!==h){el._h=h;el.innerHTML=h}}catch(e){}}
-function f20Pinta(){const on=f20On();document.body.classList.toggle("f20",on);if(!on)return;const A=f20Ab();F20_ID.forEach(id=>{const c=document.getElementById(id);if(!c)return;c.classList.toggle("f20o",!!A[id]);if(id==="rutCard"&&!c.classList.contains("done"))f20Rut(c);if(id==="rutCard"&&c.classList.contains("done")){const w=!!A[id];if(rutOpen!==w){rutOpen=w;try{renderTasks()}catch(e){}}}const h=F20_HD[id]?c.querySelector(":scope>"+F20_HD[id]):c.firstElementChild;if(!h)return;h.classList.add("f20k");if(!h.querySelector(".f20v")){const t=h.querySelector("h3,b,h2,.npT,.lb6")||h;const v=document.createElement("span");v.className="f20v";v.textContent="▾";t.appendChild(v)}})}
+function f20Pinta(){const on=f20On();document.body.classList.toggle("f20",on);if(!on)return;const A=f20Ab();F20_ID.forEach(id=>{const c=document.getElementById(id);if(!c)return;c.classList.toggle("f20o",!!A[id]);if(id==="rutCard"&&!c.classList.contains("done"))f20Rut(c);if(id==="rutCard"&&c.classList.contains("done")){const w=!!A[id];if(rutOpen!==w){rutOpen=w;try{renderTasks()}catch(e){}}}if(id==="rutCard"){let v=c.querySelector(":scope>.vm6");if(!v){v=document.createElement("div");v.className="vm6 f20k";c.appendChild(v)}else if(v!==c.lastElementChild)c.appendChild(v);const tx=A[id]?"Ver menos ⌃":(c.classList.contains("done")?"Ver mi rutina ⌄":"Ver lo que me falta ⌄");if(v.textContent!==tx)v.textContent=tx}
+  const h=F20_HD[id]?c.querySelector(":scope>"+F20_HD[id]):c.firstElementChild;if(!h)return;h.classList.add("f20k");if(!h.querySelector(".f20v")){const t=h.querySelector("h3,b,h2,.npT,.lb6")||h;const v=document.createElement("span");v.className="f20v";v.textContent="▾";t.appendChild(v)}})}
 document.addEventListener("click",e=>{if(!document.body.classList.contains("f20"))return;const c=e.target.closest(F20_ID.map(x=>"#"+x).join(","));if(!c||!c.closest("#v-inicio"))return;const ab=c.classList.contains("f20o"),h=e.target.closest(".f20k");if(ab&&!h)return;if(e.target.closest("a,button,input,select,textarea,[data-k]")&&!e.target.closest(".f20v")&&(ab||h))return;e.preventDefault();e.stopPropagation();const A=f20Ab();if(ab)delete A[c.id];else A[c.id]=1;LS.set("f20:"+(store.uid||""),JSON.stringify(A));f20Pinta()},true);
 setInterval(()=>{try{if(document.visibilityState==="visible")f20Pinta()}catch(e){}},800);
 // 19 nov (Edwin): arreglos de hábitos, Spotify y graduación. PRIMERO solo admin + cuenta de prueba; para todos: FX19_TODOS=true y publicar.
@@ -2821,9 +2832,10 @@ function renderHab(){const el=$("#habCard");if(!el)return;if(!window._habP){el.h
     $("#hbNew").onclick=habEditar;$("#hbNo").onclick=()=>{LS.set("habNo:"+(store.uid||""),Date.now()+14*864e5);el.hidden=true};return}
   const n=h.l.filter(x=>habHecho(x.id,TODAY)).length;el.hidden=false;
   // 19 nov: plegada en una línea (puntitos); al tocar se abre (LS habOpen)
-  const HO="habOpen:"+(store.uid||"");if(LS.get(HO)!=="1"){el.classList.add("hbMini");el.innerHTML=`<div class="hbS6" role="button"><span class="grow" style="min-width:0"><b>✨ Mis hábitos</b><small>${n} de ${h.l.length} hoy${n===h.l.length?" 🎉":""} · solo usted los ve</small></span><span class="hbDt">${h.l.map(x=>`<i class="${habHecho(x.id,TODAY)?"on":""}"></i>`).join("")}</span><span class="hbGo">›</span></div>`;el.querySelector(".hbS6").onclick=()=>{LS.set(HO,"1");renderHab()};return}
+  const HO="habOpen:"+(store.uid||"");if(LS.get(HO)!=="1"){el.classList.add("hbMini");el.innerHTML=`<div class="hbS6" role="button"><span class="grow" style="min-width:0"><b>✨ Mis hábitos</b><small>${n} de ${h.l.length} hoy${n===h.l.length?" 🎉":""} · solo usted los ve</small></span><span class="hbDt">${h.l.map(x=>`<i class="${habHecho(x.id,TODAY)?"on":""}"></i>`).join("")}</span><span class="hbGo">›</span></div><div class="vm6" id="hbVm">Marcar mis hábitos ⌄</div>`;el.querySelector(".hbS6").onclick=el.querySelector("#hbVm").onclick=()=>{LS.set(HO,"1");renderHab()};return}
   el.classList.remove("hbMini");
-  el.innerHTML=`<div class="hbH"><h3>✨ Mis hábitos</h3><span class="hbN">${n} de ${h.l.length}${n===h.l.length?" 🎉":""}</span><button type="button" id="hbMes">Mi mes</button><button type="button" id="hbEd">Editar</button><button type="button" id="hbCl" aria-label="Cerrar">▴</button></div>`+h.l.map(x=>{const ok=habHecho(x.id,TODAY),r=habRacha(x.id);return `<div class="hbR${ok?" ok":""}" data-hb="${esc(x.id)}" role="button" aria-pressed="${ok}"><span class="hbC">${ok?CHECK:""}</span><span class="hbT">${esc(x.t)}</span><span class="hbS${r?" on":""}">${r?"🔥 "+r+(r===1?" día":" días"):"Empiece hoy"}</span></div>`}).join("");
+  el.innerHTML=`<div class="hbH"><h3>✨ Mis hábitos</h3><span class="hbN">${n} de ${h.l.length}${n===h.l.length?" 🎉":""}</span><button type="button" id="hbMes">Mi mes</button><button type="button" id="hbEd">Editar</button><button type="button" id="hbCl" aria-label="Cerrar">▴</button></div>`+h.l.map(x=>{const ok=habHecho(x.id,TODAY),r=habRacha(x.id);return `<div class="hbR${ok?" ok":""}" data-hb="${esc(x.id)}" role="button" aria-pressed="${ok}"><span class="hbC">${ok?CHECK:""}</span><span class="hbT">${esc(x.t)}</span><span class="hbS${r?" on":""}">${r?"🔥 "+r+(r===1?" día":" días"):"Empiece hoy"}</span></div>`}).join("")+`<div class="vm6" id="hbVm2">Ver menos ⌃</div>`;
+  {const v=el.querySelector("#hbVm2");if(v)v.onclick=()=>{LS.set("habOpen:"+(store.uid||""),"");renderHab()}}
   el.querySelectorAll("[data-hb]").forEach(r=>r.onclick=()=>habToggle(r.dataset.hb));$("#hbEd").onclick=habEditar;$("#hbMes").onclick=habMes;$("#hbCl").onclick=()=>{LS.set("habOpen:"+(store.uid||""),"");renderHab()};if(fx19()){const hh=el.querySelector(".hbH");hh.style.cursor="pointer";hh.onclick=e=>{if(e.target.closest("button"))return;LS.set("habOpen:"+(store.uid||""),"");renderHab()}}}
 function habToggle(id){const h=habSt(),a=h.d[TODAY]=Array.isArray(h.d[TODAY])?h.d[TODAY]:[];const i=a.indexOf(id);if(i>=0)a.splice(i,1);else{a.push(id);try{navigator.vibrate&&navigator.vibrate(15)}catch(e){}}
   habGuardar();renderHab();const all=h.l.every(x=>habHecho(x.id,TODAY));if(i<0&&all){const k="habConf:"+(store.uid||"");if(LS.get(k)!==TODAY){LS.set(k,TODAY);try{confeti($("#habCard"),34)}catch(e){}toast("✨ ¡Cumplió todos sus hábitos de hoy!")}}}
@@ -3465,8 +3477,8 @@ function compStripHTML(mini){const C=miComp(),mn=mesNom();
   if(mini&&acc3On()){const vm=+C.vol||0,val=vm?V:A,goal=vm||+C.act||1,pv=Math.min(100,Math.round(val*100/goal)),rgS=String(r.t||"").replace(/^Espartano · /,"").toUpperCase(),falta=vm?Math.max(0,vm-V):Math.max(0,(+C.act||0)-A);
     // 19 nov (Edwin): compromiso delgado con el diseño nuevo; al tocarlo se expande
     const top=`<div class="cp6T"><span class="k">MI COMPROMISO${rgS?" · "+esc(rgS):""}</span><span class="v"><b>${fmt(val)}</b> / ${fmt(goal)} ${vm?"pts":(goal===1?"activación":"act.")}<i>${open?"▴":"▾"}</i></span></div><div class="cp6B"><s style="width:${Math.max(val?3:0,pv)}%"></s></div>`;
-    if(!open)return `<div class="cp3 cp6" data-cpt>${top}</div>`;
-    return `<div class="cp3 cp6 op" data-cpt>${top}<div class="cp6D"><div class="g"><div><small>ACTIVACIONES</small><b>${A}<span> / ${C.act}</span></b></div><div><small>PRESENT. SEMANA</small><b>${p}<span> / ${C.pres}</span></b></div><div><small>${falta?"LE FALTAN":"META"}</small><b>${falta?fmt(falta):"✓"}${falta&&!vm?"<span> act.</span>":""}</b></div></div><div class="ft"><span>⏳ Quedan ${d} ${d===1?"día":"días"}</span><button type="button" data-comp>Editar ›</button></div></div></div>`}
+    if(!open)return `<div class="cp3 cp6" data-cpt>${top}<div class="vm6">Ver más detalles ⌄</div></div>`;
+    return `<div class="cp3 cp6 op" data-cpt>${top}<div class="cp6D"><div class="g"><div><small>ACTIVACIONES</small><b>${A}<span> / ${C.act}</span></b></div><div><small>PRESENT. SEMANA</small><b>${p}<span> / ${C.pres}</span></b></div><div><small>${falta?"LE FALTAN":"META"}</small><b>${falta?fmt(falta):"✓"}${falta&&!vm?"<span> act.</span>":""}</b></div></div><div class="ft"><span>⏳ Quedan ${d} ${d===1?"día":"días"}</span><button type="button" data-comp>Editar ›</button></div></div><div class="vm6">Ver menos ⌃</div></div>`}
 
   if(mini&&!open)return `<div class="compStrip cpMini cpHero cpC" data-cpt><div class="cpRow">${homeRing(tot,"#2AC1F1",tot+"%")}<div class="grow" style="min-width:0"><div class="ht">${r.ic} ${esc(r.t)}</div><div class="hs">Mi compromiso · quedan ${d} ${d===1?"día":"días"}</div>
    <div class="cpP">${C.vol?`<span class="${V>=C.vol?"ok":""}">⚡ ${fmt(V)}/${fmt(C.vol)}</span>`:""}<span class="${A>=C.act&&C.act?"ok":""}">🚀 ${A}/${C.act}</span><span class="${p>=C.pres?"ok":""}">🎤 ${p}/${C.pres}</span></div></div><span class="cp-chev">›</span></div></div>`;
@@ -8395,6 +8407,13 @@ const STAGE_COL={"Nuevo":"#2AC1F1","Contactado":"#2AC1F1","Presentación":"#d4a0
 const PAISES=[["Honduras","504"],["Estados Unidos","1"],["España","34"],["Reino Unido","44"],["Guatemala","502"],["El Salvador","503"],["Nicaragua","505"],["Costa Rica","506"],["Panamá","507"],["México","52"],["Colombia","57"],["Venezuela","58"],["Perú","51"],["Ecuador","593"],["Chile","56"],["Argentina","54"],["República Dominicana","1"],["Canadá","1"],["Italia","39"],["Francia","33"],["Alemania","49"]];
 // 10 nov: antes de abrir WhatsApp se revisa el número: si el largo no corresponde a su país (p. ej. +504 con 9 dígitos), no se abre un chat que no existe.
 const TEL_LEN={"504":[8],"502":[8],"503":[8],"505":[8],"506":[8],"507":[7,8],"34":[9],"1":[10],"52":[10],"57":[10],"58":[10],"51":[9],"593":[9],"56":[9],"54":[10,11],"44":[10],"39":[9,10],"33":[9],"49":[10,11],"55":[10,11],"591":[8],"595":[9],"598":[8],"53":[8],"809":[7]};
+// 20 nov (Edwin): número de WhatsApp visible en la ficha abierta del prospecto, con Copiar
+function telFmt(full){const d=String(full||"").replace(/\D/g,"");if(!d)return"";let k="";for(const [,x] of PAISES)if(d.startsWith(x)&&x.length>k.length)k=x;const r=d.slice(k.length);const f=r.length===8?r.slice(0,4)+"-"+r.slice(4):r.length===10?r.slice(0,3)+" "+r.slice(3,6)+" "+r.slice(6):r.length===9?r.slice(0,3)+" "+r.slice(3,6)+" "+r.slice(6):r;return "+"+(k?k+" ":"")+f}
+function cvTel(c){const f=waNum(c&&c.phone,c&&c.cc);if(!f)return `<div class="cvTel na">📱 Sin número de WhatsApp · <button type="button" data-cved="${esc(c.id)}">Agregar ›</button></div>`;let mal="";try{mal=telAviso(f)}catch(e){}
+  return `<div class="cvTel${mal?" mal":""}">📱 <b>${esc(telFmt(f))}</b><button type="button" data-cph="${esc("+"+f)}">Copiar</button>${mal?`<span class="w">⚠️ Revise el número</span>`:""}</div>`}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-cph]");if(b){e.preventDefault();e.stopPropagation();const t=b.dataset.cph;const ok=()=>{toast("📋 Número copiado: "+t);b.textContent="✓ Copiado";setTimeout(()=>{b.textContent="Copiar"},2000)};try{navigator.clipboard.writeText(t).then(ok,()=>{cpTxt(t);ok()})}catch(x){cpTxt(t);ok()}return}
+  const ed=e.target.closest("[data-cved]");if(ed){e.preventDefault();e.stopPropagation();const c=(contacts||[]).find(x=>x.id===ed.dataset.cved);if(c)try{editContact(c)}catch(x){}}},true);
+function cpTxt(t){try{const a=document.createElement("textarea");a.value=t;a.setAttribute("readonly","");a.style.cssText="position:fixed;top:-99px;opacity:0";document.body.appendChild(a);a.select();document.execCommand("copy");a.remove()}catch(e){}}
 function telInfo(full){const d=String(full||"").replace(/\D/g,"");if(!d)return{ok:true,d};let best=null;for(const [pn,k] of PAISES)if(d.startsWith(k)&&(!best||k.length>best[1].length))best=[pn,k];
   if(!best||!TEL_LEN[best[1]])return{ok:true,d};const nn=d.length-best[1].length;return{ok:TEL_LEN[best[1]].includes(nn),d,cc:best[1],pais:best[0],n:nn,esp:TEL_LEN[best[1]]}}
 function telAviso(full){const t=telInfo(full);if(t.ok)return "";return `Ese número tiene ${t.n} dígitos y los de ${t.pais} tienen ${t.esp.join(" u ")}. ¿Es de otro país? Elija el país correcto.`}
@@ -8821,7 +8840,7 @@ function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fech
   {const v=salaDe(c.id);if(v){const n=+v.pulso||0,fin=(+v.pct||0)>=100||/^\d+$/.test(String(v.pulso||""));A.unshift(["✈️","Presentación virtual · "+(fin?"terminó"+(n?" · "+n+"/10":""):"va en "+Math.min(100,+v.pct||0)+"%"),v.t?fT(v.t):"",c.id])}} // 17 nov (Edwin): sus respuestas, a un toque
   const nS=(c.seg||[]).length,wl=waLink(c);
   return `<div class="cvTop"><div class="grow" style="min-width:0">
-     <button type="button" class="cvSt cvSt3" data-stopen="${esc(c.id)}"><span class="cvPill" style="--pc:${STAGE_COL[c.stage]||"var(--brand)"}">${CV_STI[c.stage]||""}${esc(c.stage||"Nuevo")}</span>${due}<span class="cvCg">Cambiar ›</span></button></div></div>
+     <button type="button" class="cvSt cvSt3" data-stopen="${esc(c.id)}"><span class="cvPill" style="--pc:${STAGE_COL[c.stage]||"var(--brand)"}">${CV_STI[c.stage]||""}${esc(c.stage||"Nuevo")}</span>${due}<span class="cvCg">Cambiar ›</span></button></div></div>${cvTel(c)}
    ${crmSt.has(c.id)?stepsHTML(c):""}${maLinea(c)}${lluHTML(c)}${gcHTML(c)}
    ${lluPas(c)||gcHTML(c)?"":crmV2Sig(c)}
    ${lluPas(c)?"":reuCamino(c)}
@@ -11578,7 +11597,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261120195225";var busy=false,pend=null;
+(function(){var V="20261120214445";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
