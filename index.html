@@ -6166,13 +6166,17 @@ function urgStrip(){const el=$("#urgStrip");if(!el)return;const L=urgLista();if(
     urgMarcar(m);let w=p?waSocio(p):"";if(p&&!w)w=await dtWa(p.uid);waIr("https://wa.me/"+(w&&w.length>=8?w:"")+"?text="+encodeURIComponent(t));setTimeout(urgStrip,800)})}
 
 // ---------- Avisos de hoy (7 nov): urgStrip, lzgStrip y evHoy en una tarjeta deslizable con ✕ (oculta por hoy: LS avX:id = fecha) ----------
+// 20 nov (Edwin): los avisos informativos del carrusel «HOY» salen solo en la 1.ª apertura del día; los de acción se quedan hasta hacerlos y los «en vivo» solo cuando están en vivo (o falta menos de 1 h).
+const AV_ACC=["urgStrip","turStrip","valStrip","lluStrip","ponStrip","declStrip","lzgStrip"],AV_VIVO=["trHoy","lzCallStrip","eqzStrip","evHoy"];
+function av1(){if(window._av1d!==TODAY){window._av1d=TODAY;let d="";try{d=LS.get("av1d")}catch(e){}window._av1=d!==TODAY;try{LS.set("av1d",TODAY)}catch(e){}}return window._av1}
+function avOcultoDia(k,c){if(av1()||AV_ACC.includes(k))return false;if(AV_VIVO.includes(k))return !/en vivo|en curso|⏰ en \d+ min/i.test((c&&c.textContent)||"");return true}
 let avBoxR=0;function avBoxPinta(){const box=$("#avBox"),tr=$("#avTrack");if(!box||!tr)return;const vis=[];
-  box.querySelectorAll(".avSl").forEach(sl=>{const c=document.getElementById(sl.dataset.k),off=LS.get("avX:"+sl.dataset.k)===TODAY||(sl.dataset.k==="declStrip"&&(()=>{try{return declHecha()}catch(e){return false}})()),h=!c||c.hidden||off;if(sl.hidden!==h)sl.hidden=h;if(!h)vis.push(sl)});
+  box.querySelectorAll(".avSl").forEach(sl=>{const c=document.getElementById(sl.dataset.k),off=LS.get("avX:"+sl.dataset.k)===TODAY||avOcultoDia(sl.dataset.k,c)||(sl.dataset.k==="declStrip"&&(()=>{try{return declHecha()}catch(e){return false}})()),h=!c||c.hidden||off;if(sl.hidden!==h)sl.hidden=h;if(!h)vis.push(sl)});
   box.hidden=!vis.length;if(!vis.length)return;const ks=vis.map(x=>x.dataset.k).join();if(ks!==box.dataset.ks){box.dataset.ks=ks;tr.scrollLeft=0}const cur=Math.max(0,Math.min(vis.length-1,Math.round(tr.scrollLeft/Math.max(1,tr.clientWidth+10))));
   if(tr.dataset.m3){const hh=vis[cur].offsetHeight;if(hh)tr.style.height=hh+"px"}
   $("#avBoxN").textContent=(tr.dataset.m3?"① QUÉ TENGO HOY":"AVISOS DE HOY")+(vis.length>1?" · "+(cur+1)+" DE "+vis.length:"");$("#avDots").innerHTML=vis.length>1?vis.map((_,j)=>`<i class="${j===cur?"on":""}"></i>`).join(""):""}
 function avBoxQ(){if(avBoxR)return;avBoxR=requestAnimationFrame(()=>{avBoxR=0;try{avBoxPinta()}catch(e){}})}
-function avBoxMostrar(k){LS.set("avX:"+k,"");avBoxPinta();const sl=document.querySelector('#avBox .avSl[data-k="'+k+'"]'),tr=$("#avTrack");if(sl&&tr&&!sl.hidden)tr.scrollTo({left:sl.offsetLeft-tr.offsetLeft,behavior:"smooth"})}
+function avBoxMostrar(k){LS.set("avX:"+k,"");window._av1=true;avBoxPinta();const sl=document.querySelector('#avBox .avSl[data-k="'+k+'"]'),tr=$("#avTrack");if(sl&&tr&&!sl.hidden)tr.scrollTo({left:sl.offsetLeft-tr.offsetLeft,behavior:"smooth"})}
 (function(){const tr=document.getElementById("avTrack");if(!tr)return;try{new MutationObserver(avBoxQ).observe(tr,{subtree:true,attributes:true,attributeFilter:["hidden"]})}catch(e){}
   tr.addEventListener("scroll",avBoxQ,{passive:true});tr.querySelectorAll(".avX").forEach(b=>b.onclick=ev=>{ev.stopPropagation();LS.set("avX:"+b.parentNode.dataset.k,TODAY);avBoxPinta()});avBoxQ()})();
 
@@ -11599,7 +11603,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261120215303";var busy=false,pend=null;
+(function(){var V="20261120222623";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
