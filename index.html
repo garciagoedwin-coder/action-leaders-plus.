@@ -9400,9 +9400,10 @@ function gcPv(c){const g=c.gc||{},p=+g.p||0;return gcV2()&&!g.v&&p>0?GC_MAP12[Ma
 function gcEv(){try{const c=anuCfg();return c?anuEv(c):null}catch(e){return null}}
 function gcEvNom(){try{const e=gcEv();if(e){const n=evaNom(e);if(n)return String(n).replace(/^[^\p{L}]+/u,"")}}catch(x){}return "Business Experience"}
 /* 19 nov (Edwin): versión ESCRITA de los pasos de audio (mismo proceso, para cuando no se puede grabar) */
-function gcTxt(c,k){const f=String(c.name||"").trim().split(/\s+/)[0]||"",E=gcEvD(),yo=gcYo(),dS=E.dia.replace(/ \d+$/,"").replace(/^el /,"");
-  return k==="m1"?`¡Hola, ${f}! 👋 ¿Cómo está?\n\nLe escribe ${yo}, del equipo de Edwin García.\n\nVi que se registró en el video del evento de este ${dS} aquí en ${E.ciudad}. ¡Qué bueno que le interesó! 🙌\n\nLe escribo para darle su acceso. ¿Está disponible para que le envíe los detalles?`
-   :k==="nc"?`¡Hola, ${f}! 👋\n\nLe escribe ${yo}, del equipo de Edwin García. Le escribo de nuevo porque quiero asegurarme de que reciba su acceso al evento del ${dS} en ${E.ciudad}, el del video donde se registró.\n\n¿Está disponible para que le envíe los detalles?`
+const gcFirma=y=>/edwin\s+garc/i.test(String(y||"").normalize("NFD").replace(/[\u0300-\u036f]/g,""))?"Edwin García, de Action Leaders":y+", del equipo de Edwin García";
+function gcTxt(c,k){const f=String(c.name||"").trim().split(/\s+/)[0]||"",E=gcEvD(),yo0=gcYo(),yo=/edwin\s+garc/i.test(String(yo0).normalize("NFD").replace(/[\u0300-\u036f]/g,""))?"Edwin García, de Action Leaders":yo0+", del equipo de Edwin García",dS=E.dia.replace(/ \d+$/,"").replace(/^el /,"");
+  return k==="m1"?`¡Hola, ${f}! 👋 ¿Cómo está?\n\nLe escribe ${yo}.\n\nVi que se registró en el video del evento de este ${dS} aquí en ${E.ciudad}. ¡Qué bueno que le interesó! 🙌\n\nLe escribo para darle su acceso. ¿Está disponible para que le envíe los detalles?`
+   :k==="nc"?`¡Hola, ${f}! 👋\n\nLe escribe ${yo}. Le escribo de nuevo porque quiero asegurarme de que reciba su acceso al evento del ${dS} en ${E.ciudad}, el del video donde se registró.\n\n¿Está disponible para que le envíe los detalles?`
    :k==="mi"?`${f}, vi que empezó la presentación. ¡Qué bueno! 🙌\n\nLo mejor viene en la parte de cómo empezar, y la retoma donde quedó.\n\n¿La termina hoy?`:gcMsg(c,k,{})}
 function gcEvD(){const e=gcEv(),D=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
   if(!e)return {dia:"el domingo",hora:"",lugar:"[lugar]",ciudad:"San Pedro Sula",tk:0,e:null};
@@ -9415,13 +9416,13 @@ function gcTrab(w){w=String(w||"").trim().replace(/[.!]+$/,"");if(!w)return "";c
   for(const [re,t] of m)if(re.test(w))return t+w.replace(re,"");return w.charAt(0).toLowerCase()+w.slice(1)}
 function gcMsg(c,k,X){const f=String(c.name||"").trim().split(/\s+/)[0]||"",E=gcEvD(),g=c.gc||{},yo=gcYo(),X2=X||{};
   if(gcV2()){const dS=E.dia.replace(/ \d+$/,""),T2={
-   m1:`¡Hola, ${f}! ¿Cómo está? Le habla ${yo}, del equipo de Edwin García. Vi que se registró en el video del evento de este ${dS.replace(/^el /,"")} aquí en ${E.ciudad}. ¡Qué bueno que le interesó! Le escribo para darle su acceso. ¿Está disponible para que le envíe los detalles?`,
+   m1:`¡Hola, ${f}! ¿Cómo está? Le habla ${gcFirma(yo)}. Vi que se registró en el video del evento de este ${dS.replace(/^el /,"")} aquí en ${E.ciudad}. ¡Qué bueno que le interesó! Le escribo para darle su acceso. ¿Está disponible para que le envíe los detalles?`,
    m2:`¡Excelente, ${f}! 🙌\n\nEste ${dS.replace(/^el /,"")} es el *${gcEvNom()}* en ${E.ciudad}: una tarde de negocios, viajes y liderazgo.\n\nAntes le comparto un video de 20 minutos para que vea si esto conecta con usted. En el evento daremos el plan de acción para expandirnos en la ciudad con personas que buscan lo mismo.\n\nSi se lo envío ahorita, ¿cuándo lo vería?`,
    m3:`Perfecto, ${f}. Aquí lo tiene 👉\n${X2.lk||"[enlace]"}\n\nLe comento que los cupos se están terminando, así que le aparto su lugar hasta ${X2.cu||g.cu||"[cuándo lo verá]"}.\n\n¿Me escribe apenas lo termine?`,
    m4:`¡La terminó, ${f}! 🙌 Ya tiene acceso al evento.\n\nConfirme su asistencia aquí 👉\n${X2.lk||"[enlace de confirmación]"}\n\n¿Me avisa cuando lo haga para enviarle su ticket digital?`,
    m5:`¡Listo, ${f}! Aquí está su ticket 🎟️\n\nNos vemos ${E.dia}${E.hora?" a las "+E.hora:""} en ${E.lugar}. Preséntelo en la entrada.\n\n¿Qué fue lo que más le gustó de la presentación?`,
    m6:`¡Qué bueno, ${X2.d||g.d||"[lo que le gustó]"}! Eso lo vamos a ver a fondo ${dS}.\n\n¿Va solo o acompañado?`,
-   nc:`¡Hola, ${f}! Le habla ${yo}, del equipo de Edwin García. Le escribo de nuevo porque quiero asegurarme de que reciba su acceso al evento ${dS} en ${E.ciudad}, el del video donde se registró. Le dejo los detalles por aquí. ¿Me confirma si lo recibió?`,
+   nc:`¡Hola, ${f}! Le habla ${gcFirma(yo)}. Le escribo de nuevo porque quiero asegurarme de que reciba su acceso al evento ${dS} en ${E.ciudad}, el del video donde se registró. Le dejo los detalles por aquí. ¿Me confirma si lo recibió?`,
    mi:`${f}, vi que empezó la presentación. ¡Qué bueno! Lo mejor viene en la parte de cómo empezar, y no tiene que verla desde el principio, la retoma donde quedó. ¿La termina hoy y me cuenta qué le pareció?`};
    if(T2[k])return T2[k]}
   const T={
@@ -9472,9 +9473,9 @@ function gcAudio(c,k,modo){const step=GC_P.indexOf(k),n=waNum(c.phone,c.cc),f=St
    ${k==="nc"?`<a class="btn ghost" href="tel:${esc(n)}" style="display:block;text-align:center;margin-top:12px;text-decoration:none">📞 Primero llámele 1 minuto</a>`:""}
    <div style="display:flex;gap:8px;margin-top:12px"><button type="button" class="btn" id="gaW" style="flex:1;background:#16A34A;color:#fff">💬 Abrir el chat de ${esc(f||"la persona")}</button></div>
    <button type="button" class="btn ghost" id="gaOk" style="width:100%;margin-top:8px">✅ Ya le mandé el audio</button>`}`,()=>{
-   const hecho=async(w)=>{const t=Object.assign({},(c.gc||{}).t||{});t[k]=Date.now();const o={t,v:2};if(step>=0)o.p=Math.max(gcPv(c),step+1);
+   const hecho=async(w)=>{if(w){try{waIr(w)}catch(x){}}const t=Object.assign({},(c.gc||{}).t||{});t[k]=Date.now();const o={t,v:2};if(step>=0)o.p=Math.max(gcPv(c),step+1);
      try{LS.set("llr:"+c.id,TODAY)}catch(x){}closeSheet();await gcGuardar(c,o);if(step>=0)stAvanza(c,"Contactado",txt?"mensaje de bienvenida":"audio de bienvenida");
-     if(w){waIr(w);return}toast("✅ Listo. Cuando le conteste, mándele el paso 2");
+     if(w)return;toast("✅ Listo. Cuando le conteste, mándele el paso 2");
      if(step===0)setTimeout(()=>{try{gcAbrir(c,"m2")}catch(x){}},600)};
    $("#gaM").onclick=e=>{const b=e.target.closest("[data-m]");if(!b||(b.dataset.m==="t")===txt)return;try{LS.set("gaModo",b.dataset.m)}catch(x){}gcAudio(c,k,b.dataset.m)};
    if(txt){const T=$("#gaT");T.value=gcTxt(c,k);
@@ -9506,7 +9507,10 @@ async function gcAbrir(c,k){if(!c)return;gcS();const S=gcSt(c),step=GC_P.indexOf
      if(k==="q4"){c.stage="No interesado";c.stT=Date.now();c.stAuto="";try{await store.saveContact(Object.assign({},c))}catch(x){}try{renderCRM()}catch(x){}setTimeout(()=>{try{notaAbrir(c,"nota")}catch(x){}},700)}};
    const falta=()=>{const m=T.value.match(/\[[^\]]+\]/);if(!m)return false;if(F&&!F.value.trim()){F.style.borderColor="#DC2626";F.focus();toast("✍️ Falta llenar: "+fl[1].split("?")[0].split("(")[0].trim()+(fl[1].includes("?")?"?":""))}else toast("✍️ Falta completar "+m[0]+" en el mensaje");return true};
    if(F)F.addEventListener("input",()=>{F.style.borderColor=""});
-   $("#gcW").onclick=async()=>{if(falta())return;const t=T.value,n=waNum(c.phone,c.cc);gcCopiar(t);await listo();closeSheet();if(n)waIr("https://wa.me/"+n+"?text="+encodeURIComponent(t));else if(navigator.share){try{await navigator.share({text:t})}catch(x){}}else toast("📋 Mensaje copiado")};
+   $("#gcW").onclick=async()=>{if(falta())return;const t=T.value,n=waNum(c.phone,c.cc);gcCopiar(t);
+     // 20 nov: abrir WhatsApp DENTRO del toque (si se espera a guardar, iPhone abre directo WhatsApp normal sin preguntar Business/normal)
+     let sh=null;if(n)waIr("https://wa.me/"+n+"?text="+encodeURIComponent(t));else if(navigator.share){sh=navigator.share({text:t}).catch(()=>{})}else toast("📋 Mensaje copiado");
+     closeSheet();await listo();if(sh)await sh};
    $("#gcC").onclick=async()=>{if(falta())return;gcCopiar(T.value);toast("📋 Mensaje copiado");await listo()}})}
 // 18 nov (Edwin): poder volver a abrir/reenviar cualquier paso ya hecho
 function gcPasos(c){const S=gcSt(c),t=(c.gc||{}).t||{};
@@ -11561,7 +11565,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261120180601";var busy=false,pend=null;
+(function(){var V="20261120194309";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
