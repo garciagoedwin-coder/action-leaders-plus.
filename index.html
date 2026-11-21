@@ -8140,6 +8140,8 @@ let salaAutoB=false;async function salaAuto(){if(!salaOk()||salaAutoB||!Array.is
     if(lv>(h.l||0)){const s=lv===3?"Por cerrar":lv===2?"Seguimiento":"Presentación",por=lv===3?(n>=8?"marcó "+n+"/10 en la presentación virtual":"tocó «Crear mi cuenta» en la presentación virtual"):lv===2?"terminó la presentación virtual"+(n?" ("+n+"/10)":""):"empezó a ver la presentación virtual";
       await stAvanza(c,s,por);h.l=lv;cambio=true}
     if(fin&&!h.p){h.p=1;cambio=true;if(!presSemana().some(x=>x.cid===c.id)){try{await sumarPres(c)}catch(x){}}}
+    // 20 nov (Edwin): prospecto de la campaña que termina la presentación HOY → también suma «Nuevos contactos» (una sola vez por persona: c.conN)
+    if(fin&&c.camp&&!c.conN&&dkey(new Date(+v.t||0))===TODAY&&!(day.conL||[]).some(x=>x.cid===c.id)){c.conN=TODAY;try{conNuevo(c)}catch(x){}try{await store.saveContact(Object.assign({},c))}catch(x){}}
     H[v.id]=h}
   if(cambio)LS.set("salaAuto",H)}finally{salaAutoB=false}}
 function renderSalaCard(){const c=$("#salaCard");if(!c)return;if(!salaOk()){c.hidden=true;return}const seen=+LS.get("salaSeen")||0,V=Object.values(salaCache()).filter(v=>(v.t||0)>seen&&(v.resp||(+v.pct||0)>=50)).sort((a,b)=>(b.t||0)-(a.t||0));
@@ -11597,7 +11599,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261120214445";var busy=false,pend=null;
+(function(){var V="20261120215303";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
