@@ -97,18 +97,6 @@
    "actSemana": 0
   },
   {
-   "nombre": "Gabriela Castillo",
-   "linea": "",
-   "presentaciones": 0,
-   "presSemana": 0,
-   "registros": 0,
-   "regSemana": 0,
-   "id": "gabriela-castillo",
-   "activaciones": 1,
-   "volumen": 50,
-   "actSemana": 0
-  },
-  {
    "nombre": "Josue antony Navarro rubio",
    "linea": "",
    "presentaciones": 0,
@@ -3380,7 +3368,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-20T16:42:00-06:00",
+  "rankingActualizado": "2026-11-20T18:07:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -4261,7 +4249,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-11-20T21:31:26Z",
+   "v": "2026-11-21T00:07:16Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "0225a9": "2026-10-27T10:09:44Z",
@@ -4361,7 +4349,6 @@
     "e31852": "2026-10-28T00:30:12Z",
     "e3513a": "2026-11-01T00:36:17Z",
     "e43486": "2026-10-29T15:20:32Z",
-    "e48a02": "2026-11-24T23:07:58Z",
     "e56a83": "2026-11-01T02:08:16Z",
     "e61623": "2026-11-03T00:09:07Z",
     "e9b41f": "2026-10-18T05:10:30Z",
@@ -5112,6 +5099,11 @@
      "a": 3
     },
     {
+     "n": "Kevin Izaguirre",
+     "p": 600,
+     "a": 6
+    },
+    {
      "n": "Marcia Sauceda",
      "p": 600,
      "a": 2
@@ -5175,11 +5167,6 @@
      "n": "Joel Salgado",
      "p": 500,
      "a": 4
-    },
-    {
-     "n": "Kevin Izaguirre",
-     "p": 500,
-     "a": 5
     },
     {
      "n": "Lizandro Castro",
@@ -5677,7 +5664,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-20T21:31:27Z"
+   "t": "2026-11-21T00:07:16Z"
   },
   "audioEsp": {
    "id": "santiago-1",
