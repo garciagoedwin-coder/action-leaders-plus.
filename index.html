@@ -8136,13 +8136,13 @@ async function enviarMem(c){if(!c)return;if(!(await salaPrep()))return;LS.set("m
 async function memCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su registro primero");return}
   openSheet(`<h2>🛳️ Página de membresía</h2><p class="small muted" style="margin:0 0 10px">Cómo funciona la membresía, con el simulador de cruceros. Los botones le escriben a su WhatsApp.</p>
    <div class="field"><label for="mcN">¿Para quién es? (opcional)</label><input class="inp" id="mcN" placeholder="Nombre de la persona" maxlength="50"></div>
-   <label class="row" style="gap:8px;font-size:14px;font-weight:600;margin:4px 0 12px"><input type="checkbox" id="mcCrm"> ➕ Guardarlo también en mi CRM</label>
+   <label class="row" style="gap:8px;font-size:14px;font-weight:600;margin:4px 0 12px"><input type="checkbox" id="mcCrm"> ➕ Guardarlo también en mi CRM</label><div class="field" id="mcCatF" hidden><label>¿De dónde viene? <span class="muted" style="font-weight:600">(opcional · puede elegir varias)</span></label><div class="catCh" id="mcCat">${catChips([])}</div></div>
    <div class="field" id="mcTelF" hidden><label for="mcTel">WhatsApp (opcional)</label><input class="inp" id="mcTel" type="tel" inputmode="tel" placeholder="Para el CRM"></div>
    <div style="display:grid;gap:8px"><button class="btn" id="mcWa" style="background:#25D366;color:#fff">📲 Enviar por WhatsApp</button><button class="btn ghost" id="mcCp">🔗 Copiar enlace</button><button class="btn ghost" id="mcVer">👀 Ver la página</button></div>
    <button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{
-   $("#mcCrm").onchange=e=>{$("#mcTelF").hidden=!e.target.checked};
+   $("#mcCrm").onchange=e=>{$("#mcTelF").hidden=!e.target.checked;$("#mcCatF").hidden=!e.target.checked};catBind($("#mcCat"));
    const prep=async()=>{if(!(await salaPrep()))return null;LS.set("memOn",1);const n=$("#mcN").value.trim().slice(0,50);let cid="";
-     if(n&&$("#mcCrm").checked){const t=$("#mcTel").value.replace(/[^\d+]/g,"").slice(0,15);const c={name:n,cc:LS.get("lastCC")||"504",phone:t,stage:"Contactado",note:"Le envió la página de la membresía",next:TODAY,updated:Date.now()};
+     if(n&&$("#mcCrm").checked){const t=$("#mcTel").value.replace(/[^\d+]/g,"").slice(0,15);const c={name:n,cc:LS.get("lastCC")||"504",phone:t,stage:"Contactado",note:"Le envió la página de la membresía",next:TODAY,updated:Date.now(),creado:Date.now()};{const ks=catSel($("#mcCat"));if(ks.length)c.cat=ks}
        const id=await store.saveContact(c);if(id){c.id=id;cid=id;contacts.push(c);const E=LS.get("memEnv")||{};E[id]=Date.now();LS.set("memEnv",E);try{renderCRM()}catch(x){}}}
      return {n,u:memUrl(n,cid)}};
    $("#mcWa").onclick=async()=>{const r=await prep();if(!r)return;const t=memMsg(r.n,r.u);closeSheet();location.href="https://wa.me/?text="+encodeURIComponent(t)};
@@ -8225,7 +8225,7 @@ async function salaCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su
    <div id="scP"><div class="field"><label for="scQ">🔎 ¿Ya está en su CRM? Búsquela</label><input class="inp" id="scQ" placeholder="Escriba su nombre" autocomplete="off" maxlength="40"><div id="scQL" style="display:grid;gap:6px;margin-top:6px"></div></div>
     <p class="small muted" style="margin:-4px 0 8px;font-weight:700">o escriba una persona nueva:</p><div class="field"><label for="scN">Nombre de la persona</label><input class="inp" id="scN" placeholder="Nombre y apellido" maxlength="50"></div>
     <div class="field"><label for="scT">WhatsApp <span class="muted">(opcional)</span></label><div class="row" style="gap:6px"><select class="inp" id="scCC" style="max-width:40%">${PAISES.map(([n,c])=>`<option value="${c}" ${c===(LS.get("lastCC")||"504")?"selected":""}>+${c} ${esc(n)}</option>`).join("")}</select><input class="inp grow" id="scT" type="tel" inputmode="tel" placeholder="Número"></div></div>
-    <label class="row" style="gap:8px;font-size:14px;font-weight:600;margin:0 0 12px"><input type="checkbox" id="scCrm" checked> ➕ Guardarla también en mi CRM</label></div>
+    <label class="row" style="gap:8px;font-size:14px;font-weight:600;margin:0 0 12px"><input type="checkbox" id="scCrm" checked> ➕ Guardarla también en mi CRM</label><div class="field" id="scCatF"><label>¿De dónde viene? <span class="muted" style="font-weight:600">(opcional · puede elegir varias)</span></label><div class="catCh" id="scCat">${catChips([])}</div></div></div>
    <div id="scO" hidden><div class="scAv">🔒 <b>Este link se envía en privado, uno por uno.</b> El origen solo sirve para saber de dónde viene cada persona. No lo publique en grupos.</div>
     <label class="small" style="font-weight:800;display:block;margin:10px 0 6px">¿De dónde viene la persona?</label><div class="scCh" id="scOr">${SALA_OR.map(([t,i])=>`<button type="button" data-o="${esc(t)}">${i} ${esc(t)}</button>`).join("")}</div>
     <div class="field" style="margin-top:10px"><label for="scON">Nombre <span class="muted">(opcional, ej. «Facebook noviembre»)</span></label><input class="inp" id="scON" maxlength="40" placeholder="Para distinguir esta campaña"></div>
@@ -8234,7 +8234,7 @@ async function salaCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su
    <button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{
    $("#scTabs").onclick=e=>{const b=e.target.closest("[data-t]");if(!b)return;tab=b.dataset.t;LS.set("scTab",tab);pinta()};
    $("#scOr").onclick=e=>{const b=e.target.closest("[data-o]");if(!b)return;ori=b.dataset.o;$("#scOr").querySelectorAll("[data-o]").forEach(x=>x.classList.toggle("on",x===b));pinta()};
-   $("#scON").oninput=pinta;pinta();
+   $("#scON").oninput=pinta;pinta();catBind($("#scCat"));$("#scCrm").onchange=e=>{$("#scCatF").hidden=!e.target.checked};
    // 15 nov (Edwin): elegir un prospecto que ya está en el CRM → mismo envío que desde su tarjeta (enviarSala)
    const nrm=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
    $("#scQ").oninput=()=>{const q=nrm($("#scQ").value.trim());const L=q.length<2?[]:contacts.filter(c=>c.name&&nrm(c.name).includes(q)).slice(0,5);
@@ -8247,8 +8247,9 @@ async function salaCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su
      const n=$("#scN").value.replace(/[<>]/g,"").trim().slice(0,50);if(n.length<2){toast("Escriba el nombre de la persona");$("#scN").focus();return null}
      let cid="",num="";const cc=$("#scCC").value,t=$("#scT").value.replace(/\D/g,"");if(t)num=waNum(t,cc);
      if($("#scCrm").checked){let c=num?contacts.find(x=>x.phone&&String(waNum(x.phone,x.cc)).slice(-8)===num.slice(-8)):null;
-       if(!c){c={id:"v"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:n,cc,phone:t,stage:"Contactado",note:"Le envió la presentación virtual",next:TODAY,creado:Date.now(),updated:Date.now()};contacts.push(c);
+       const ks=catSel($("#scCat"));if(!c){c={id:"v"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:n,cc,phone:t,stage:"Contactado",note:"Le envió la presentación virtual",next:TODAY,creado:Date.now(),updated:Date.now()};if(ks.length)c.cat=ks;contacts.push(c);
          store.saveContact(Object.assign({},c)).then(id=>{if(id){try{conNuevo(c)}catch(x){}try{renderCRM()}catch(x){}}});}
+       else if(ks.length){const o=Array.isArray(c.cat)?c.cat:[];const m=[...new Set(o.concat(ks))];if(m.length!==o.length){c.cat=m;c.updated=Date.now();store.saveContact(Object.assign({},c)).catch(()=>{})}}
        cid=c.id;try{stAvanza(c,"Contactado","le envió la presentación virtual")}catch(x){}const E=LS.get("salaEnv")||{};E[cid]=Date.now();LS.set("salaEnv",E);setTimeout(()=>{try{renderCRM()}catch(x){}},600)}
      return {n,num,u:salaUrl(n,cid)}};
    const cop=t=>{let ok=false;try{if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).catch(()=>{});ok=true}}catch(x){}
@@ -11780,7 +11781,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261121140816";var busy=false,pend=null;
+(function(){var V="20261121164817";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
