@@ -991,6 +991,19 @@ header.top #hello,header.top .pv{display:none!important}
 .bell-btn{border-color:var(--line);background:var(--surface)}
 .hiBox{display:flex;flex-direction:column;gap:2px}.hiBox .eyebrow{margin:0}
 .hiH{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:var(--f-display);font-size:30px;line-height:1.05;letter-spacing:-.8px;margin:2px 0 8px}
+body.hi7on .hiH{display:none!important}
+body.hi7on.vIni #meBtn{display:none!important}
+.hi7{display:flex;align-items:center;gap:13px;margin:4px 0 10px}
+.hi7Av{position:relative;flex:none;width:64px;height:64px;border:0;padding:0;background:none;border-radius:50%;cursor:pointer}
+.hi7Av i{display:flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:var(--brand) center/cover no-repeat;color:#fff;font-style:normal;font-weight:800;font-size:22px;box-shadow:0 0 0 3px var(--bg),0 0 0 5px #2AC1F1}
+.hi7Av.es i{box-shadow:0 0 0 3px var(--bg),0 0 0 5px #D9A62E}
+.hi7Av img{position:absolute;right:-6px;bottom:-6px;width:26px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+.hi7T{min-width:0}
+.hi7N{font-family:var(--f-display);font-size:26px;line-height:1.08;letter-spacing:-.6px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hi7N.lg{font-size:22px}
+.hi7R{display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap}
+.hi7Rg{color:#fff;font-weight:800;font-size:10.5px;letter-spacing:.12em;border-radius:6px;padding:4px 8px;line-height:1.2}
+.hi7Es{display:inline-flex;align-items:center;gap:4px;background:#0b1424;color:#F5C451;font:inherit;font-weight:800;font-size:10.5px;letter-spacing:.12em;border:0;border-radius:6px;padding:3px 8px 3px 4px;box-shadow:inset 0 0 0 1px #b98d2c;cursor:pointer;line-height:1.2}
+.hi7Es img{width:15px}
 #hiEs img{height:1.2em;width:auto;display:block;cursor:pointer;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
 #hiNm{background:linear-gradient(90deg,var(--brand),#2AC1F1);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hiPills{display:flex;gap:8px;flex-wrap:wrap}
@@ -2382,7 +2395,7 @@ body.rk6on #snvCard .prem::before{content:"★ Premium";font-size:12px;color:#B7
     <!-- INICIO -->
     <section class="view" id="v-inicio">
       <div class="hiBox">
-        <p class="eyebrow" id="todayLbl">Hoy</p><h1 class="hiH">Hola, <span id="hiNm">líder</span> <span id="hiEs">👋</span></h1><p class="hiSpar" hidden>¡Vamos, líder! 🛡️</p><h1 class="motto" hidden><span id="motto">Haz que suceda.</span></h1>
+        <p class="eyebrow" id="todayLbl">Hoy</p><div class="hi7" id="hi7" hidden><button type="button" class="hi7Av" id="hi7Av" aria-label="Mi perfil"><i></i></button><div class="hi7T"><h1 class="hi7N" id="hi7N"></h1><div class="hi7R" id="hi7R"></div></div></div><h1 class="hiH">Hola, <span id="hiNm">líder</span> <span id="hiEs">👋</span></h1><p class="hiSpar" hidden>¡Vamos, líder! 🛡️</p><h1 class="motto" hidden><span id="motto">Haz que suceda.</span></h1>
         <div class="hiPills"><span class="hiPill" id="pillAh" hidden><i class="dot"></i>Ahorro al día</span><span class="hiPill" id="streak" hidden>Racha 0 días</span><span class="hiPill" id="pillRg" hidden></span><button type="button" class="hiPill" id="pillP" hidden></button><button type="button" class="hiPill" id="pillE" hidden></button></div>
       </div>
       <div id="trHoy" hidden></div>
@@ -4094,11 +4107,24 @@ function rkInicio(){const c=$("#rkCard");if(!c)return;try{
 function pillIdx(){try{const p=$("#pillP");if(p&&store.uid){const c=constStats();let d=diasMes(),pts=+c.mesPts||0;if(d>1){d-=1;pts=Math.max(0,pts-ptsDia(day,TODAY))}const pos=ROUTINE.length*d,v=pos>0?Math.min(100,Math.round(pts*100/pos)):0;p.hidden=false;p.innerHTML=`<i class="dot" style="background:${IDX_C(v)}"></i>IC <b style="color:${IDX_C(v)}">${v}%</b>`;p.onclick=()=>avIr("rach")}
   let o=store.uid&&LS.get("idxEqM:"+store.uid);try{if(constL&&!isAdmin&&mios&&mios.length){const P=idxPool(),v=idxEqPer(P,"mes");if(v!=null){o={v,n:P.filter(idxCuenta).length,t:Date.now()};LS.set("idxEqM:"+store.uid,o)}}}catch(x){}
   const e=$("#pillE");if(e){e.hidden=!(o&&o.n>0);if(o&&o.n>0){e.innerHTML=`<i class="dot" style="background:${IDX_C(o.v)}"></i>Equipo <b style="color:${IDX_C(o.v)}">${o.v}%</b>`;e.onclick=()=>{eqTab="mios";go("equipo")}}}}catch(x){}}
-function pillsPinta(){try{const pr=$("#pillRg");if(pr)pr.hidden=true}catch(e){}pillIdx();
+// 20 nov (Edwin, opción D1): encabezado de Inicio = foto (aro dorado + sello si es Espartano) + nombre + placa del rango (o «SOCIO PLAN») + placa ESPARTANO; la foto de arriba a la derecha se oculta en Inicio
+function hi7Nom(n){const w=String(nv(n)||n||"").trim().split(/\s+/).filter(x=>!/^(de|del|la|las|los|y)$/i.test(x));if(w.length<=2)return w.join(" ");return w[0]+" "+(w.length>=4?w[2]:w[1])}
+function hi7Pinta(){try{const bx=$("#hi7");if(!bx)return;if(!fbUser){bx.hidden=true;document.body.classList.remove("hi7on");return}
+  const full=miNombreFull()||"",f=miFotoUrl();let g=false;try{g=!!(irModo()&&irEstado().grad)}catch(x){}
+  let idx=-1;try{idx=miRangoIdx()}catch(x){}const R=miRegistro();let rg,c;
+  if(esSoloAdminYo()){rg="ADMIN";c="#2B2A2D"}else if(idx>=1&&RANGOS[idx]){rg=RANGOS[idx].n.toUpperCase();c=RANGOS[idx].c}
+  else{const pl=String(R.plan||"").trim();rg=pl?"SOCIO "+pl.toUpperCase():"SOCIO";c="var(--brand)"}
+  const nm=hi7Nom(full)||"Líder",k=[nm,f,g,rg,c].join("|");document.body.classList.add("hi7on");try{document.body.classList.toggle("vIni",!$("#v-inicio").hidden)}catch(x){}bx.hidden=false;if(bx.dataset.k===k)return;bx.dataset.k=k;
+  const av=$("#hi7Av");av.classList.toggle("es",g);const i=av.querySelector("i");i.style.backgroundImage=f?`url('${f}')`:"";i.textContent=f?"":initials(full||"Yo");
+  av.querySelector("img")?.remove();if(g)av.insertAdjacentHTML("beforeend",'<img src="media/insignias/v3-espartano-e.webp?v=3" alt="">');
+  const N=$("#hi7N");N.textContent=nm;N.classList.toggle("lg",nm.length>15);
+  $("#hi7R").innerHTML=`<span class="hi7Rg" style="background:${c}">${esc(rg)}</span>${g?`<button type="button" class="hi7Es" id="hi7Es"><img src="media/insignias/v3-espartano-e.webp?v=3" alt="">ESPARTANO</button>`:""}`;
+  av.onclick=()=>{try{abrirPerfil()}catch(x){}};const e=$("#hi7Es");if(e)e.onclick=()=>avisoTop("🛡️ Espartano · Networker Pro","Se graduó de Networker Pro. ¡Felicidades!",()=>{try{dipDescargar()}catch(x){}})}catch(e){}}
+function pillsPinta(){try{const pr=$("#pillRg");if(pr)pr.hidden=true}catch(e){}pillIdx();try{hi7Pinta()}catch(e){}
   try{const h=$("#hello"),nm=$("#hiNm");if(h&&nm){const t=(h.textContent||"").replace(/^Hola,?\s*/,"").trim();nm.textContent=t||"líder"}}catch(e){}
   hiEsPinta()}
 // 20 nov (Edwin): escudo Espartano junto al nombre para quien se graduó de Networker Pro (irEstado().grad)
-function hiEsPinta(){
+function hiEsPinta(){try{hi7Pinta()}catch(e){}
   try{const es=$("#hiEs");if(es){let g=false;try{g=!!(irModo()&&irEstado().grad)}catch(x){}const k=g?"g":"h";if(es.dataset.k!==k){es.dataset.k=k;
     if(g){es.innerHTML='<img src="media/insignias/v3-espartano-e.webp?v=3" alt="Espartano">';es.onclick=()=>avisoTop("🛡️ Espartano · Networker Pro","Se graduó de Networker Pro. ¡Felicidades!",()=>{try{dipDescargar()}catch(x){}})}
     else{es.textContent="👋";es.onclick=null}}}}catch(e){}}
@@ -10443,7 +10469,7 @@ async function sendIA(){const text=$("#iaInput").value.trim();if(!text||busy)ret
 
 // ---------- navegación y hojas ----------
 function setSeg(id,k){document.querySelectorAll("#"+id+" button").forEach(b=>b.setAttribute("aria-selected",b.dataset.k===k))}
-function go(v){document.querySelectorAll("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);
+function go(v){document.querySelectorAll("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);document.body.classList.toggle("vIni",v==="inicio");
   document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v));$("#main").scrollTop=0;
   try{localStorage.setItem("alp:tab",v)}catch(e){}if(v==="inicio")rutShake();if(v==="suenos")renderSuenos()}
 function rutShake(){const a=$("#rutAlert .rut-al");if(a&&!a.classList.contains("ok")){a.classList.remove("shake");void a.offsetWidth;a.classList.add("shake")}}
@@ -10646,7 +10672,7 @@ function nomOk(v,btn){const r=(miRegistro().nombre||"").trim();if(!r||sameN(v,r)
 function miNombreFull(){return profile.miNombre||miRegistro().nombre||(fbUser&&fbUser.displayName)||""}
 function miFotoUrl(){return fotoDe(miNombreFull())||(fbUser&&fbUser.photoURL)||""}
 function renderMeBtn(){const b=$("#meBtn");if(!b)return;b.hidden=!fbUser;if(!fbUser)return;const f=miFotoUrl();
-  b.style.backgroundImage=f?`url('${f}')`:"";b.textContent=f?"":initials(miNombreFull()||"Yo")}
+  b.style.backgroundImage=f?`url('${f}')`:"";b.textContent=f?"":initials(miNombreFull()||"Yo");try{hi7Pinta()}catch(e){}}
 function verBienvenidaOtraVez(){closeSheet();try{localStorage.removeItem("alp:welDone")}catch(e){}welState=Object.assign({},profile.welPasos||{},welState,{video:true});if(regDoc&&regDoc.registro)welState.registro=true;profile.welPasos=Object.assign({},welState);profile.bienvenida=false;welOpenedAt=0;renderWel()}
 function abrirPerfil(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
   openSheet(`<div class="pf-head"><div class="pf-av" style="${f?`background-image:url('${f}')`:""}">${f?"":esc(initials(nm||"Yo"))}</div>
@@ -11628,7 +11654,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261120223431";var busy=false,pend=null;
+(function(){var V="20261120224514";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
