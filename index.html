@@ -8556,7 +8556,20 @@ async function flResp(c,v){c.fl=Object.assign({h:{},r:""},c.fl||{});if(["si","nr
   if(v==="pvl"||v==="pvt"){flEnviar(c,v);return}
   c.fl.r=v;if(v==="nr")c.fl.h=Object.assign({},c.fl.h,{resal:Date.now()});if(v==="pen")c.fl.h=Object.assign({},c.fl.h,{rinv:Date.now()});await flGuardar(c)}
 const CERR=["Socio","Cliente"];let crmV=(()=>{try{return LS.get("crmV")||"proc"}catch(e){return "proc"}})();
-function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e){}pushResumen();try{lluStrip()}catch(e){}try{olvStrip()}catch(e){}const q=$("#crmSearch").value.trim().toLowerCase();
+/* (20 nov) Prospecto de la campaña repetido: si ya estaba en el CRM con el mismo WhatsApp, se une al que el socio creó */
+async function crmUnirCamp(){if(window._ucRun||!contacts||!contacts.length)return;if(Date.now()-(window._ucT||0)<60000)return;window._ucT=Date.now();window._ucRun=1;let n=0;
+  try{const d8=c=>{const v=String(c.phone||"").replace(/\D/g,"");return v.length>=8?v.slice(-8):""};
+    const camps=contacts.filter(x=>x.camp&&(x.cat||[]).includes("camp")&&!(x.rep&&x.rep.u)&&d8(x));
+    for(const X of camps){const k=d8(X),Y=contacts.find(y=>y.id!==X.id&&!y.camp&&d8(y)===k);if(!Y)continue;
+      const M=JSON.parse(JSON.stringify(Y));M.cat=[...new Set([...(M.cat||[]),...(X.cat||[])])];M.camp=X.camp;
+      const xn=String(X.note||"").trim();if(xn&&!String(M.note||"").includes(xn))M.note=(M.note?M.note+"\n\n":"")+xn;
+      if((ST_PCT[X.stage]||0)>(ST_PCT[M.stage]||0)&&!["Socio","Cliente","No interesado","Más adelante"].includes(M.stage))M.stage=X.stage;
+      if(X.gc&&!M.gc)M.gc=X.gc;if(Array.isArray(X.seg)&&X.seg.length)M.seg=[...(M.seg||[]),...X.seg].sort((a,b)=>(a.t||0)-(b.t||0)).slice(-30);
+      if(!M.email&&X.email)M.email=X.email;M.seg=(M.seg||[]);M.seg.push({t:Date.now(),k:"nota",n:"🔗 Llegó también por la campaña ("+lluFH(X.camp.t||X.creado)+"). Se unió con este contacto."});
+      M.updated=Date.now();const id=await store.saveContact(M);if(!id)continue;const i=contacts.findIndex(z=>z.id===Y.id);if(i>=0)contacts[i]=M;
+      await store.delContact(X.id);contacts=contacts.filter(z=>z.id!==X.id);if(openC===X.id)openC=Y.id;n++}
+  }catch(e){}window._ucRun=0;if(n){toast("🔗 Unimos "+n+(n>1?" prospectos repetidos":" prospecto repetido")+" de la campaña con el que usted ya tenía");try{renderCRM()}catch(e){}}}
+function renderCRM(){try{document.body.classList.toggle("cv2",crmV2On())}catch(e){}setTimeout(()=>{try{crmUnirCamp()}catch(e){}},1200);pushResumen();try{lluStrip()}catch(e){}try{olvStrip()}catch(e){}const q=$("#crmSearch").value.trim().toLowerCase();
   if(stageF!=="Todos")crmV=CERR.includes(stageF)?"cer":PAUSA.includes(stageF)?"mas":"proc";
   const vDe=c=>CERR.includes(c.stage)?"cer":PAUSA.includes(c.stage)?"mas":"proc",nCer=contacts.filter(c=>vDe(c)==="cer").length,nMas=contacts.filter(c=>vDe(c)==="mas").length,nMaH=contacts.filter(c=>c.stage===MA&&c.next&&c.next<=TODAY).length,nPro=contacts.length-nCer-nMas,enV=c=>true,VS=STAGES.slice(0); // 16 nov (Edwin): sin pestañas En proceso / Más adelante / Cerrados → todo en una lista agrupada
   {let t=$("#crmVseg");if(!t){t=document.createElement("div");t.id="crmVseg";t.className="seg";t.setAttribute("role","tablist");$("#crmSearch").before(t);t.onclick=e=>{const b=e.target.closest("button");if(!b)return;crmV=b.dataset.k;stageF="Todos";openC=null;try{LS.set("crmV",crmV)}catch(x){}renderCRM()}}
@@ -9615,7 +9628,7 @@ function editContact(c,onNew,opts){opts=opts||{};const esNuevo=!c;if(esNuevo&&ah
   if(!c.id)bindQuickFill();catBind($("#cCat"));
   {const ph=$("#cPhone"),fix=()=>{const v=ph.value;if(/^\s*(\+|00)/.test(v)||/[\s()\-.]/.test(v)){const sp=splitPhone(v);if(sp.cc){const o=[...$("#cCC").options].find(x=>x.value===sp.cc&&x.dataset.n===sp.ccN)||[...$("#cCC").options].find(x=>x.value===sp.cc);if(o)$("#cCC").value=o.value}ph.value=sp.num}};ph.addEventListener("change",fix);ph.addEventListener("blur",fix);setTimeout(()=>ph.addEventListener("input",()=>{if(ph.value.length>9&&/^\s*(\+|00)/.test(ph.value))fix()}),0)}
   $("#cSave").onclick=async()=>{const name=$("#cName").value.trim();if(!name){$("#cErr").textContent="Escriba el nombre del contacto.";$("#cErr").hidden=false;return}
-    if(esNuevo){const dup=yaEnCRM(name,$("#cPhone").value);if(dup){$("#cErr").textContent="Esta persona ya está en su lista (CRM) como "+dup.name+". Solo cuentan personas nuevas.";$("#cErr").hidden=false;return}}
+    if(esNuevo){const dup=yaEnCRM(name,$("#cPhone").value);if(dup){$("#cErr").innerHTML="Esta persona ya está en su CRM como <b>"+esc(dup.name)+"</b>"+(dup.camp?" (llegó por la campaña 📣)":"")+". Solo cuentan personas nuevas. <button class=\"btn sm\" id=\"cDupAb\" style=\"margin-top:6px\">Abrir ese contacto ›</button>";$("#cErr").hidden=false;{const b=$("#cDupAb");if(b)b.onclick=()=>{closeSheet();openC=dup.id;stageF="Todos";go("crm");try{renderCRM()}catch(e){}}}return}}
     {const pv=$("#cPhone").value.trim();if(pv&&pv.replace(/\D/g,"").length>=6){const m=telAviso(waNum(pv,$("#cCC").value));if(m&&!$("#cSave").dataset.tw){$("#cErr").textContent=m+" (Si está seguro, toque Guardar otra vez.)";$("#cErr").hidden=false;$("#cSave").dataset.tw=1;$("#cCC").style.outline="2px solid var(--bad)";return}}}
     const ccE=$("#cCC");LS.set("lastCC",ccE.value);const nc=Object.assign(c.id?JSON.parse(JSON.stringify(c)):{},{id:c.id,cat:catSel($("#cCat")),name,cc:ccE.value,ccN:ccE.selectedOptions[0].dataset.n,phone:$("#cPhone").value.trim(),stage:$("#cStage").value,note:$("#cNote").value.trim(),next:$("#cNext").value,updated:Date.now()});{const tu=$("#cTu");if(tu){if(tu.checked)nc.tu=true;else delete nc.tu}}if(!nc.id)delete nc.id;if(!nc.cat.length)delete nc.cat;
     $("#cSave").disabled=true;const id=await store.saveContact(nc);if(!id){$("#cSave").disabled=false;return}
@@ -11565,7 +11578,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261120194309";var busy=false,pend=null;
+(function(){var V="20261120195225";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
