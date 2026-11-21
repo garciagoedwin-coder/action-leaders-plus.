@@ -5,6 +5,16 @@ import { getFirestore } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
 import crypto from "crypto";
 // Análisis para el Training: todo sale CIFRADO con la llave pública PK (solo quien tiene la privada lo lee). El log público no muestra datos.
+// IC (20 nov): puntos de rutina por día del mes, solo números (personas como A, B…)
+if (process.env.CODE === "ic") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
+  const nz=x=>String(x||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); const Qs=String(process.env.Q||"").split("|").map(nz).filter(Boolean);
+  const K=["historia","audio","contactos","presentaciones","seguimientos"]; const us=await db.collection("users").get(); let L="A";
+  for(const q of Qs){const d=us.docs.find(x=>nz((x.data().registro||{}).nombre).includes(q)); if(!d){console.log(L,"no encontrado");L=String.fromCharCode(L.charCodeAt(0)+1);continue}
+    const c=(await db.collection("constancia").doc(d.id).get()).data()||{}; const ds=await db.collection("users").doc(d.id).collection("datos").where("__name__",">=","rutina-2026-11-01").where("__name__","<=","rutina-2026-11-30").get();
+    const M={}; ds.docs.forEach(x=>{const v=x.data(); M[x.id.slice(-2)]=K.map(k=>Math.min(+v[k]||0,1)).join("")});
+    let tot=0,full=0,line=[]; for(let i=1;i<=20;i++){const k=String(i).padStart(2,"0"),s=M[k]||"00000",n=[...s].reduce((a,b)=>a+ +b,0); if(i<20){tot+=n; if(n===5)full++} line.push(k+":"+s)}
+    console.log(L,"const mesPts",c.mesPts,"mesComp",c.mesComp,"mesDias",c.mesDias,"rv",c.rv,"vr",c.vr,"hoy",c.hoy,"fecha",c.fecha,"| días 1-19: pts",tot,"de 95 =",Math.round(tot*100/95)+"%","completos",full);
+    console.log(L,line.join(" ")); L=String.fromCharCode(L.charCodeAt(0)+1)} process.exit(0) }
 if (process.env.CODE === "persona") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
   const nz=x=>String(x||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); const q=nz(process.env.Q);
   const us=await db.collection("users").get(); let i=0;
