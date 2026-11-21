@@ -5,6 +5,18 @@ import { getFirestore } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
 import crypto from "crypto";
 // Análisis para el Training: todo sale CIFRADO con la llave pública PK (solo quien tiene la privada lo lee). El log público no muestra datos.
+// Hábitos (20 nov): quién usa Mis hábitos. Salida CIFRADA (pk). Textos propios NO salen (privados): solo los sugeridos.
+if (process.env.CODE === "hab") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
+  const SUG=["💧 Tomar 8 vasos de agua","🏃 Hacer ejercicio 30 minutos","🥗 Comer saludable","📖 Leer 10 páginas","🙏 Orar o meditar","😴 Dormir antes de las 11","📵 Sin redes la primera hora","🧘 Estirarme 10 minutos","🚶 Caminar 20 minutos","📝 Escribir 3 cosas por las que agradezco"];
+  const us=(await db.collection("users").get()).docs.filter(d=>(d.data().registro||{}).nombre); const refs=us.map(d=>db.doc("users/"+d.id+"/datos/perfil"));
+  const P=[]; for(let i=0;i<refs.length;i+=100)P.push(...await db.getAll(...refs.slice(i,i+100)));
+  const hoy=new Date(Date.now()-6*36e5).toISOString().slice(0,10), d7=new Date(Date.now()-6*36e5-6*864e5).toISOString().slice(0,10); const R=[];
+  P.forEach((p,i)=>{const h=(p.exists&&p.data().hab)||null; if(!h||!(h.l||[]).length)return; const D=h.d||{}, dias=Object.keys(D).filter(k=>(D[k]||[]).length).sort();
+    R.push({n:us[i].data().registro.nombre,h:h.l.length,sug:h.l.map(x=>x.t).filter(t=>SUG.includes(t)),prop:h.l.filter(x=>!SUG.includes(x.t)).length,dias:dias.length,d7:dias.filter(k=>k>=d7).length,hoy:(D[hoy]||[]).length,ini:dias[0]||"",ult:dias[dias.length-1]||"",marcas:dias.reduce((a,k)=>a+D[k].length,0)})});
+  console.log("socios",us.length,"con hábitos",R.length);
+  const k=crypto.randomBytes(32),iv=crypto.randomBytes(12),cc=crypto.createCipheriv("aes-256-gcm",k,iv),zz=(await import("zlib")).gzipSync(JSON.stringify(R)),enc=Buffer.concat([cc.update(zz),cc.final()]),tag=cc.getAuthTag();
+  const ek=crypto.publicEncrypt({key:"-----BEGIN PUBLIC KEY-----\n"+process.env.PK+"\n-----END PUBLIC KEY-----",oaepHash:"sha256"},k);
+  const all=[ek,iv,tag,enc].map(b=>b.toString("base64")).join("."); for(let i=0;i<all.length;i+=20000)console.log("CIF"+String(i/20000).padStart(3,"0")+":"+all.slice(i,i+20000)); process.exit(0) }
 // IC (20 nov): puntos de rutina por día del mes, solo números (personas como A, B…)
 if (process.env.CODE === "ic") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
   const nz=x=>String(x||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); const Qs=String(process.env.Q||"").split("|").map(nz).filter(Boolean);
