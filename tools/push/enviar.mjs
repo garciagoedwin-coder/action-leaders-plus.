@@ -265,7 +265,7 @@ export function destinosInact(rows, users, team, ms = Date.now(), todos = false)
     if (!r.x && !todos) continue; const t = r.x ? Date.parse(r.x) : Infinity; if (!(t > ms && t <= lim)) continue;
     const spN = alias[r.s] || r.s;
     const sp = users.filter(u => u.registro && (mismoNombre(u.registro.nombre, spN) || (u.registro.nombreRanking && mismoNombre(u.registro.nombreRanking, spN))));
-    const base = { n: corto(r.n), x: r.x, s: corto(r.s), k: (r.k || [])[0] || "", w: (r.k || [])[1] || (r.k || [])[2] || "" };
+    const base = { n: corto(r.n), x: r.x, g: r.g || "", s: corto(r.s), k: (r.k || [])[0] || "", w: (r.k || [])[1] || (r.k || [])[2] || "" };
     let cand = sp.filter(u => String(u.email || "").toLowerCase() !== "garciagoedwin@gmail.com");
     if (cand.length > 1) { const cnt = u => users.filter(v => (v.registro && v.registro.linea || []).includes(u.uid)).length; cand.sort((a, b) => cnt(b) - cnt(a)); cand = [cand[0]]; }
     for (const uid of adm) add(uid, { ...base, d: 0 });
@@ -280,9 +280,10 @@ export function destinosInact(rows, users, team, ms = Date.now(), todos = false)
 // 6 nov: aviso de la mañana con TODOS los ahorros pendientes del equipo (s7 = cuántos se inactivan en 7 días)
 export function msgAh(L, nombre, ms = Date.now()) {
   if (!L || !L.length) return null; const s7 = L.filter(m => m.x && Date.parse(m.x) - ms <= 7 * 864e5).length, f = primer(nombre || "");
-  const urg = L.some(m => m.x && Date.parse(m.x) - ms < 2 * 864e5);
+  const urg = L.some(m => m.x && Date.parse(m.x) - ms < 2 * 864e5), dup = L.filter(m => m.g && Date.parse(m.g) > ms).length;
   return { title: `${urg ? "🚨" : "💰"} ${f ? f + ", t" : "T"}iene ${L.length} ${L.length === 1 ? "ahorro pendiente" : "ahorros pendientes"} en su equipo`,
-    body: (s7 ? `${s7} se inactiva${s7 > 1 ? "n" : ""} esta semana. ` : "") + "Llámelos hoy: cada llamada protege su cuenta y sus puntos dobles 📞" };
+    // 20 nov (Edwin): prioridad = los que todavía duplican (fecha de la factura + 5 días aún no pasa)
+    body: (dup ? `🔥 ${dup} todavía ${dup > 1 ? "duplican" : "duplica"} si ${dup > 1 ? "pagan" : "paga"} a tiempo. ` : "") + (s7 ? `${s7} se inactiva${s7 > 1 ? "n" : ""} esta semana. ` : "") + "Llámelos hoy: cada llamada protege su cuenta y sus puntos dobles 📞" };
 }
 export function msgInact(L, ms = Date.now()) {
   if (!L || !L.length) return null; const urg = L.some(m => Date.parse(m.x) - ms < 2 * 864e5);
@@ -442,7 +443,7 @@ async function main() {
     for (const uid of uids) {
       const p = P[uid] || {}, { l, pagos } = unirUrg((p.urg || {}).l, D[uid], pendKeys, t);
       const w = { urg: { t, l } };
-      if (modo === "inact") { const A = DA[uid] || []; w.ahp = { t, n: A.length, s7: A.filter(m => m.x && Date.parse(m.x) - t <= 7 * 864e5).length, l: A.slice(0, 40) }; }
+      if (modo === "inact") { const A = DA[uid] || []; const Ao = A.slice().sort((a, b) => ((Date.parse(b.g) > t) - (Date.parse(a.g) > t)) || ((Date.parse(a.g) > t && Date.parse(b.g) > t) ? Date.parse(a.g) - Date.parse(b.g) : 0)); w.ahp = { t, n: A.length, s7: A.filter(m => m.x && Date.parse(m.x) - t <= 7 * 864e5).length, dup: A.filter(m => m.g && Date.parse(m.g) > t).length, l: Ao.slice(0, 40) }; }
       W.push([uid, w]); hist[uid] = p.h || [];
       const ok = p.tk && (p.pr || {}).inact !== false;
       if (ok && pagos.length) salida.push([uid, p.tk, msgPago(pagos)]);

@@ -43,6 +43,24 @@ jobs:
             git commit -qm "Red: reportes de inCruises cargados desde la app" || true
             for i in 1 2 3; do git pull -q --rebase && git push -q && break; sleep 5; done
           fi
+      - id: rc
+        if: github.event_name != 'push'
+        run: cd tools/push && node red.mjs rec
+      - if: steps.rc.outputs.rec == '1'
+        run: |
+          set -e
+          pip install -q -r tools/buzon/requirements.txt
+          python3 tools/rec.py ${{ steps.rc.outputs.rargs }}
+          rm -f "$RED_DIR"/r?.csv
+          if [ -z "$DRY" ]; then
+            git config user.name "Action Leaders bot"; git config user.email "bot@actionleadersplus.com"
+            git add data/team.json
+            git commit -qm "Pago recurrente: reportes cargados desde la app" || true
+            for i in 1 2 3; do git pull -q --rebase && git push -q && break; sleep 5; done
+          fi
+          cd tools/push && node red.mjs recok
+      - if: failure() && steps.rc.outputs.rec == '1'
+        run: cd tools/push && node red.mjs recerr
       - if: failure() && steps.b.outputs.rep == '1'
         run: cd tools/push && node red.mjs error
       - if: github.event_name == 'push' || steps.b.outputs.rep == '1' || github.event.inputs.force == '1'

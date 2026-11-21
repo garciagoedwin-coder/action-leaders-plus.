@@ -46,6 +46,23 @@ async function main() {
     return;
   }
 
+  // 20 nov: reportes de pago recurrente (evento/sps26/priv/rec {est:"p", f:{rc,rs,rp}}) → $RED_DIR/{rc,rs,rp}.csv → tools/rec.py
+  if (modo === "rec" || modo === "recok" || modo === "recerr") {
+    const recRef = db.doc("evento/sps26/priv/rec");
+    if (modo === "recok") { if (!DRY) { const tj = JSON.parse(fs.readFileSync("../../data/team.json", "utf8")); const n = ((tj.config || {}).rec || {}).n || {};
+      await recRef.set({ est: "ok", tf: Date.now(), res: n, f: FieldValue.delete() }, { merge: true }); } return; }
+    if (modo === "recerr") { if (!DRY) await recRef.set({ est: "err", msg: "No se pudo procesar. Revise que sean los reportes de inCruises.", tf: Date.now() }, { merge: true }); return; }
+    const r = (await recRef.get()).data() || {};
+    if (r.est !== "p") { console.log("Sin reportes de recurrente."); out("rec", ""); return; }
+    const dir = process.env.RED_DIR; fs.mkdirSync(dir, { recursive: true });
+    const F = r.f || {}, arg = [];
+    for (const t of ["rc", "rs", "rp"]) { if (F[t]) { fs.writeFileSync(`${dir}/${t}.csv`, dec(key, F[t])); arg.push(`${dir}/${t}.csv`); } else arg.push("-"); }
+    console.log("Recurrente recibidos:", ["rc", "rs", "rp"].filter(t => F[t]).join(", ") || "ninguno");
+    if (arg.every(x => x === "-")) { if (!DRY) await recRef.set({ est: "err", msg: "No llegó ningún archivo.", tf: Date.now() }, { merge: true }); out("rec", ""); return; }
+    if (!DRY) await recRef.set({ est: "w", tw: Date.now() }, { merge: true });
+    out("rec", "1"); out("rargs", arg.join(" ")); return;
+  }
+
   if (modo === "error") { if (!DRY) await repRef.set({ est: "err", msg: "No se pudo procesar el reporte. Revise que sean los archivos de inCruises.", tf: Date.now() }, { merge: true }); return; }
 
   // ---------- subir ----------
