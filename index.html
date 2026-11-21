@@ -1594,6 +1594,22 @@ body #v-inicio.simple>#irCard.irF,#v-inicio>#irCard.irF{order:4!important}
 .cp6T .v i{font-style:normal;margin-left:7px;color:#8fd8f2}
 .cp6B{height:5px;border-radius:9px;background:rgba(255,255,255,.14);overflow:hidden;margin-top:8px;position:relative}
 .cp6B s{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#2AC1F1,#7FE0FF)}
+.cp6{--cc:#2AC1F1}.cp6.cg{--cc:#22C55E}.cp6.cy{--cc:#F5B700}.cp6.cr{--cc:#EF4444}
+.cp6:after{background:radial-gradient(circle,color-mix(in srgb,var(--cc) 30%,transparent),transparent 70%)!important}
+.cp6B{overflow:visible!important;height:6px!important}
+.cp6B s{background:linear-gradient(90deg,color-mix(in srgb,var(--cc) 65%,#fff),var(--cc))!important;box-shadow:0 0 10px color-mix(in srgb,var(--cc) 70%,transparent)}
+.cp6.an .cp6B s{animation:cp6F 1.1s cubic-bezier(.2,.8,.2,1) both}@keyframes cp6F{from{width:0}}
+.cp6B u{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;border-radius:2px;background:#fff;opacity:.8}
+.cp6S{position:relative;display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;font-size:12.5px}
+.cp6S span{display:flex;align-items:center;gap:7px;font-weight:800;color:var(--cc);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cp6S span b{flex:none;width:7px;height:7px;border-radius:50%;background:var(--cc);box-shadow:0 0 0 0 color-mix(in srgb,var(--cc) 55%,transparent);animation:cp6P 2.2s ease-out infinite}
+@keyframes cp6P{70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.cp6S em{font-style:normal;color:#b9c6d6;white-space:nowrap;flex:none}
+@media (prefers-reduced-motion:reduce){.cp6.an .cp6B s,.cp6S span b{animation:none}}
+/* 20 nov (Edwin, opción C): accesos directos dentro de una tarjeta blanca, íconos en celeste suave */
+body.acc3 #acc3{background:var(--surface)!important;border-radius:20px!important;padding:14px 10px!important;box-shadow:0 0 0 1px var(--line),0 8px 22px rgba(10,40,70,.07)!important}
+body.acc3 #acc3 .acc3H{padding:0 6px}
+body.acc3 #acc3 .acc3G button>span{background:color-mix(in srgb,var(--brand) 10%,var(--surface))!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--brand) 20%,transparent)!important;border:0!important;color:var(--brand)!important}
 .cp6D{position:relative}
 .cp6D .g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
 .cp6D .g div{background:rgba(255,255,255,.07);border-radius:12px;padding:8px 10px}
@@ -3468,6 +3484,12 @@ async function compFlyer(){try{await flFonts()}catch(e){}const C=miComp();if(!C)
     const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click()}catch(e){toast("No se pudo crear la imagen")}}
 const HOME_WAVE=`<svg class="hwave" viewBox="0 0 400 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C60 10 120 50 200 30 S340 10 400 30 V60 H0Z" fill="#2AC1F1"/><path d="M0 42 C80 25 140 60 220 42 S350 28 400 42 V60 H0Z" fill="#fff" opacity=".5"/></svg>`;
 function homeRing(pc,col,txt){pc=Math.max(0,Math.min(100,+pc||0));return `<div class="hring"><svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="7"/><circle cx="36" cy="36" r="30" fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(188.5*pc/100).toFixed(1)} 188.5" transform="rotate(-90 36 36)"/></svg><b>${esc(txt)}</b></div>`}
+function cp6Est(val,goal,d,vm){const n=new Date(),i=new Date(n.getFullYear(),n.getMonth(),1),f=new Date(n.getFullYear(),n.getMonth()+1,1),r=Math.max(0,Math.min(1,(n-i)/(f-i))),u=vm?"pts":"act.",ex=goal*r,ff=Math.max(0,goal-val);
+  if(val>=goal)return {c:"cg",ok:1,r:100,t:"¡Cumplió su compromiso!"};
+  const q=ex>0?val/ex:1,R=Math.round(r*100);
+  if(q>=1)return {c:"cg",r:R,t:val>ex*1.08?"¡Va adelante!":"Va al día · siga así"};
+  if(q>=.5||n.getDate()<=3)return {c:"cy",r:R,t:"Le faltan "+fmt(Math.max(1,Math.ceil(ex-val)))+" "+u+" para ir al día"};
+  return {c:"cr",r:R,t:"Acelere: "+fmt(ff)+" "+u+" en "+d+" "+(d===1?"día":"días")}}
 function compStripHTML(mini){const C=miComp(),mn=mesNom();
   if(!C||C.no)return `<button type="button" class="compBtn" data-comp>🎯 Hacer mi compromiso de ${esc(mn)} ›</button>`;
   let rk=null;try{rk=rankDe(miNombreFull()||miNombreCorto())}catch(e){}const A=rk?rk.A:0,V=rk?rk.V:0,p=(()=>{let n=presSemana().length;try{n=Math.max(n,+constStats().semPres||0)}catch(e){}return n})(),r=compR(C.rango)||{ic:"🎯",t:C.rango,pts:0},d=compDias();
@@ -3476,9 +3498,12 @@ function compStripHTML(mini){const C=miComp(),mn=mesNom();
   let open=false;try{open=LS.get("cpOpen")==="1"}catch(e){}
   if(mini&&acc3On()){const vm=+C.vol||0,val=vm?V:A,goal=vm||+C.act||1,pv=Math.min(100,Math.round(val*100/goal)),rgS=String(r.t||"").replace(/^Espartano · /,"").toUpperCase(),falta=vm?Math.max(0,vm-V):Math.max(0,(+C.act||0)-A);
     // 19 nov (Edwin): compromiso delgado con el diseño nuevo; al tocarlo se expande
-    const top=`<div class="cp6T"><span class="k">MI COMPROMISO${rgS?" · "+esc(rgS):""}</span><span class="v"><b>${fmt(val)}</b> / ${fmt(goal)} ${vm?"pts":(goal===1?"activación":"act.")}<i>${open?"▴":"▾"}</i></span></div><div class="cp6B"><s style="width:${Math.max(val?3:0,pv)}%"></s></div>`;
-    if(!open)return `<div class="cp3 cp6" data-cpt>${top}<div class="vm6">Ver más detalles ⌄</div></div>`;
-    return `<div class="cp3 cp6 op" data-cpt>${top}<div class="cp6D"><div class="g"><div><small>ACTIVACIONES</small><b>${A}<span> / ${C.act}</span></b></div><div><small>PRESENT. SEMANA</small><b>${p}<span> / ${C.pres}</span></b></div><div><small>${falta?"LE FALTAN":"META"}</small><b>${falta?fmt(falta):"✓"}${falta&&!vm?"<span> act.</span>":""}</b></div></div><div class="ft"><span>⏳ Quedan ${d} ${d===1?"día":"días"}</span><button type="button" data-comp>Editar ›</button></div></div><div class="vm6">Ver menos ⌃</div></div>`}
+    // 20 nov (Edwin, opción 1): color por ritmo del mes (verde al día, amarillo le falta poco, rojo menos de la mitad); rayita «hoy»; barra que se llena al abrir
+    const S=cp6Est(val,goal,d,vm),an=!window._cp6A?" an":"";window._cp6A=1;
+    const top=`<div class="cp6T"><span class="k">MI COMPROMISO${rgS?" · "+esc(rgS):""}</span><span class="v"><b>${fmt(val)}</b> / ${fmt(goal)} ${vm?"pts":(goal===1?"activación":"act.")}<i>${open?"▴":"▾"}</i></span></div><div class="cp6B"><s style="width:${Math.max(val?3:0,pv)}%"></s>${S.ok?"":`<u style="left:${S.r}%"></u>`}</div><div class="cp6S"><span><b></b>${esc(S.t)}</span>${S.ok||!open?`<em>${S.ok?"🏆":"Quedan "+d+" "+(d===1?"día":"días")}</em>`:""}</div>`;
+    if(S.ok)setTimeout(()=>{try{const m=String(new Date().getFullYear())+"-"+new Date().getMonth();if(LS.get("cp6Ok")!==m){LS.set("cp6Ok",m);confeti($("#compStrip"),60)}}catch(e){}},700);
+    if(!open)return `<div class="cp3 cp6 ${S.c}${an}" data-cpt>${top}<div class="vm6">Ver más detalles ⌄</div></div>`;
+    return `<div class="cp3 cp6 op ${S.c}${an}" data-cpt>${top}<div class="cp6D"><div class="g"><div><small>ACTIVACIONES</small><b>${A}<span> / ${C.act}</span></b></div><div><small>PRESENT. SEMANA</small><b>${p}<span> / ${C.pres}</span></b></div><div><small>${falta?"LE FALTAN":"META"}</small><b>${falta?fmt(falta):"✓"}${falta&&!vm?"<span> act.</span>":""}</b></div></div><div class="ft"><span>⏳ Quedan ${d} ${d===1?"día":"días"}</span><button type="button" data-comp>Editar ›</button></div></div><div class="vm6">Ver menos ⌃</div></div>`}
 
   if(mini&&!open)return `<div class="compStrip cpMini cpHero cpC" data-cpt><div class="cpRow">${homeRing(tot,"#2AC1F1",tot+"%")}<div class="grow" style="min-width:0"><div class="ht">${r.ic} ${esc(r.t)}</div><div class="hs">Mi compromiso · quedan ${d} ${d===1?"día":"días"}</div>
    <div class="cpP">${C.vol?`<span class="${V>=C.vol?"ok":""}">⚡ ${fmt(V)}/${fmt(C.vol)}</span>`:""}<span class="${A>=C.act&&C.act?"ok":""}">🚀 ${A}/${C.act}</span><span class="${p>=C.pres?"ok":""}">🎤 ${p}/${C.pres}</span></div></div><span class="cp-chev">›</span></div></div>`;
@@ -11603,7 +11628,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261120222623";var busy=false,pend=null;
+(function(){var V="20261120223431";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
