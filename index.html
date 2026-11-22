@@ -6262,7 +6262,7 @@ function urgStrip(){const el=$("#urgStrip");if(!el)return;const L=urgLista();if(
 
 // ---------- Avisos de hoy (7 nov): urgStrip, lzgStrip y evHoy en una tarjeta deslizable con ✕ (oculta por hoy: LS avX:id = fecha) ----------
 // 20 nov (Edwin): los avisos informativos del carrusel «HOY» salen solo en la 1.ª apertura del día; los de acción se quedan hasta hacerlos y los «en vivo» solo cuando están en vivo (o falta menos de 1 h).
-const AV_ACC=["urgStrip","turStrip","valStrip","lluStrip","ponStrip","declStrip","lzgStrip"],AV_VIVO=["trHoy","lzCallStrip","eqzStrip","evHoy"];
+const AV_ACC=["urgStrip","turStrip","valStrip","lluStrip","ponStrip","declStrip","lzgStrip","lzCallStrip"],AV_VIVO=["trHoy","eqzStrip","evHoy"];
 function av1(){if(window._av1d!==TODAY){window._av1d=TODAY;let d="";try{d=LS.get("av1d")}catch(e){}window._av1=d!==TODAY;try{LS.set("av1d",TODAY)}catch(e){}}return window._av1}
 function avOcultoDia(k,c){if(av1()||AV_ACC.includes(k))return false;if(AV_VIVO.includes(k))return !/en vivo|en curso|⏰ en \d+ min/i.test((c&&c.textContent)||"");return true}
 let avBoxR=0;function avBoxPinta(){const box=$("#avBox"),tr=$("#avTrack");if(!box||!tr)return;const vis=[];
@@ -11344,7 +11344,9 @@ function llamLz(){const L=(T.config||{}).llamadaLz;if(!L||!L.zoom)return null;if
 // 15 nov 22:36: «nuevo» = socio activado en este mes calendario (no «entró al sistema este mes»: Karen Lizeth es socia vieja).
 const lzNvM=l=>{if(!l)return false;try{const m=mesMeta(),ns=lzNs(l);return (T.activaciones||[]).some(a=>{if(a.sc||!a.fecha||dkey(new Date(a.fecha)).slice(0,7)!==m)return false;const n=nrmN(a.socio||"");return ns.includes(n)||ns.some(x=>lzMismo(x,a.socio||""))})}catch(e){return false}};
 const lzICc=(l,px)=>px==null?"var(--muted)":lzNvM(l)?"var(--brand)":IDX_C(px);
-function lzRojo(){try{if(isAdmin)return null;const L=lzMiL();if(!L||lzNvM(L))return null;const p=lzPers(L);return p!=null&&p<40?p:null}catch(e){return null}}
+// 22 nov: el candado usa el IC del mes calculado en el propio teléfono (igual que la pastilla «IC» de Inicio), no el número guardado por el admin (podía estar viejo).
+function icYo(){try{if(!store.uid)return null;const c=constStats();if(!c)return null;let d=diasMes(),pts=+c.mesPts||0;if(d>1){d-=1;pts=Math.max(0,pts-ptsDia(day,TODAY))}const pos=ROUTINE.length*d;return pos>0?Math.min(100,Math.round(pts*100/pos)):0}catch(e){return null}}
+function lzRojo(){try{if(isAdmin)return null;const L=lzMiL();if(!L||lzNvM(L))return null;let p=icYo();if(p==null)p=lzPers(L);else{try{if(ahBloqYo())p=0}catch(e){}}return p!=null&&p<40?p:null}catch(e){return null}}
 const lzRojoTx=p=>`Su índice de constancia está en ${p}%. Llegue a 40% para habilitarlo.`;
 const lzgRojo=()=>{const p=lzRojo();if(p==null)return null;try{if(lzgYa()||LS.get("lzgE:"+store.uid+":"+mesMeta()))return null}catch(e){}return p};
 function lzCandado(t,p){openSheet(`<p class="eyebrow">SISTEMA DE LIDERAZGO</p><h3 style="margin:4px 0 6px">🔒 ${t}</h3><p class="muted" style="margin:0 0 12px">${lzRojoTx(p)} Haga su rutina diaria completa y se habilita en cuanto suba.</p><button class="btn" id="lzCdR" style="width:100%">✅ Ir a mi rutina</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{$("#lzCdR").onclick=()=>{closeSheet();setTimeout(()=>{const b=document.querySelector('[data-v="inicio"]');b&&b.click()},250)}})}
@@ -11781,7 +11783,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261121164817";var busy=false,pend=null;
+(function(){var V="20261122115123";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
