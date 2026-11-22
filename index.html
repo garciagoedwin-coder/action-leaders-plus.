@@ -11346,7 +11346,9 @@ const lzNvM=l=>{if(!l)return false;try{const m=mesMeta(),ns=lzNs(l);return (T.ac
 const lzICc=(l,px)=>px==null?"var(--muted)":lzNvM(l)?"var(--brand)":IDX_C(px);
 // 22 nov: el candado usa el IC del mes calculado en el propio teléfono (igual que la pastilla «IC» de Inicio), no el número guardado por el admin (podía estar viejo).
 function icYo(){try{if(!store.uid)return null;const c=constStats();if(!c)return null;let d=diasMes(),pts=+c.mesPts||0;if(d>1){d-=1;pts=Math.max(0,pts-ptsDia(day,TODAY))}const pos=ROUTINE.length*d;return pos>0?Math.min(100,Math.round(pts*100/pos)):0}catch(e){return null}}
-function lzRojo(){try{if(isAdmin)return null;const L=lzMiL();if(!L||lzNvM(L))return null;let p=icYo();if(p==null)p=lzPers(L);else{try{if(ahBloqYo())p=0}catch(e){}}return p!=null&&p<40?p:null}catch(e){return null}}
+// 22 nov (Edwin): en noviembre el link del Zoom y del grupo queda abierto para todos; el candado del IC vuelve el 1 de diciembre (hora HN).
+const LZ_CAND_DESDE="2026-12-01";
+function lzRojo(){try{if(isAdmin||TODAY<LZ_CAND_DESDE)return null;const L=lzMiL();if(!L||lzNvM(L))return null;let p=icYo();if(p==null)p=lzPers(L);else{try{if(ahBloqYo())p=0}catch(e){}}return p!=null&&p<40?p:null}catch(e){return null}}
 const lzRojoTx=p=>`Su índice de constancia está en ${p}%. Llegue a 40% para habilitarlo.`;
 const lzgRojo=()=>{const p=lzRojo();if(p==null)return null;try{if(lzgYa()||LS.get("lzgE:"+store.uid+":"+mesMeta()))return null}catch(e){}return p};
 function lzCandado(t,p){openSheet(`<p class="eyebrow">SISTEMA DE LIDERAZGO</p><h3 style="margin:4px 0 6px">🔒 ${t}</h3><p class="muted" style="margin:0 0 12px">${lzRojoTx(p)} Haga su rutina diaria completa y se habilita en cuanto suba.</p><button class="btn" id="lzCdR" style="width:100%">✅ Ir a mi rutina</button><button class="btn ghost" data-close style="width:100%;margin-top:8px">Cerrar</button>`,()=>{$("#lzCdR").onclick=()=>{closeSheet();setTimeout(()=>{const b=document.querySelector('[data-v="inicio"]');b&&b.click()},250)}})}
@@ -11418,7 +11420,7 @@ function llamLzCard(){const L=llamLz();if(!L)return"";const hoy=new Date().getDa
 // 15 nov, 17:55 (Edwin): la llamada de liderazgo se anuncia en el carrusel HOY (primer lugar) los domingos para miembros del sistema y admins.
 function renderLzCall(){const el=$("#lzCallStrip");if(!el)return;if(acc3On()){try{const L=llamLz(),d=new Date();if(!L||!(isAdmin||lzSoyMiembro())||d.getDay()!==(L.dia||0)){el.hidden=true;return}if(!isAdmin&&!liderRes&&!window._lzRC){window._lzRC=1;liderResCargar().then(()=>{try{renderLzCall()}catch(e){}})}
     const [hh,mm]=String(L.hora||"21:15").split(":").map(Number),ini=hh*60+mm,ahora=d.getHours()*60+d.getMinutes();if(ahora>ini+75){el.hidden=true;return}const vivo=ahora>=ini-10;
-    el.className="lzHoy";el.innerHTML=`<div class="lzcI">📞</div><div class="lzcT"><small>${vivo?"🔴 EN VIVO AHORA":"HOY · "+esc(h12(L.hora)).toUpperCase()+" HONDURAS"}</small><b>Llamada de liderazgo</b><span>Sistema de liderazgo · por Zoom. ¡Lo esperamos!</span></div>${lzRojo()!=null?`<button type="button" class="lzcB lk" data-lzlk>🔒 Entrar</button>`:`<a class="lzcB" href="${esc(L.zoom)}" target="_blank" rel="noopener">${vivo?"Entrar ahora":"Entrar"}</a>`}`;{const k=el.querySelector("[data-lzlk]");if(k)k.onclick=()=>lzCandado("Zoom de liderazgo",lzRojo())}el.hidden=false}catch(e){el.hidden=true}return}
+    el.className="lzHoy";el.innerHTML=`<div class="lzcI">📞</div><div class="lzcT"><small>${vivo?"🔴 EN VIVO AHORA":"HOY · "+esc(h12(L.hora)).toUpperCase()+" HONDURAS"}</small><b>Llamada de liderazgo</b><span>Sistema de liderazgo · por Zoom. ¡Lo esperamos!${TODAY<LZ_CAND_DESDE?"<br><small style=\"opacity:.75\">Desde diciembre se entra con su Índice de Constancia en 40 % o más.</small>":""}</span></div>${lzRojo()!=null?`<button type="button" class="lzcB lk" data-lzlk>🔒 Entrar</button>`:`<a class="lzcB" href="${esc(L.zoom)}" target="_blank" rel="noopener">${vivo?"Entrar ahora":"Entrar"}</a>`}`;{const k=el.querySelector("[data-lzlk]");if(k)k.onclick=()=>lzCandado("Zoom de liderazgo",lzRojo())}el.hidden=false}catch(e){el.hidden=true}return}
   try{const L=llamLz(),d=new Date();if(!L||!irSimple()||!(isAdmin||lzSoyMiembro())||d.getDay()!==(L.dia||0)){el.hidden=true;return}
   const [hh,mm]=String(L.hora||"21:15").split(":").map(Number),fin=hh*60+mm+75,ahora=d.getHours()*60+d.getMinutes();if(ahora>fin){el.hidden=true;return}
   el.hidden=false;el.innerHTML=`<span>📞 <b>Hoy ${esc(h12(L.hora))}</b> · Reunión del sistema de liderazgo</span><a href="${esc(L.zoom)}" target="_blank" rel="noopener">Entrar</a>`;if(!window._lzAv){window._lzAv=1;setTimeout(()=>{try{avisoTop("📞 Hoy "+h12(L.hora)+" · Reunión de liderazgo","Toque aquí para entrar al Zoom",()=>{window.open(L.zoom,"_blank")})}catch(e){}},2500)}}catch(e){el.hidden=true}}
@@ -11783,7 +11785,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261122115123";var busy=false,pend=null;
+(function(){var V="20261122125811";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
