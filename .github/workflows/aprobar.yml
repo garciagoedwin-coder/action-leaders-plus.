@@ -1,6 +1,7 @@
 name: Aprobación de cuentas
 on:
   schedule: [{ cron: "*/10 * * * *" }]
+  push: { branches: [main], paths: [".github/workflows/aprobar.yml", "tools/push/aprobar.mjs"] } # 22 nov: correr al momento cuando cambia el código (GitHub atrasa el cron horas)
   workflow_dispatch:
     inputs:
       dry: { description: "1 = solo prueba (no escribe)", default: "" }
