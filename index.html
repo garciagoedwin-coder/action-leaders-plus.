@@ -6589,6 +6589,7 @@ ${lk||"https://actionleadersplus.com"}`}
 
 ¡Hasta que funcione! 🚀
 ${pat}`;
+const BN_TODOS=false;const bnNew=()=>{if(BN_TODOS)return true;try{return !!isAdmin||yoPrueba()}catch(e){return !!isAdmin}};
 const BIEN_CLI=(n,f,pat,gl)=>`🎉 *¡Felicidades, ${n}!*
 
 ${BIEN_B(f)} a nuestra comunidad *Action Leaders* 🛡️ y a nuestro club de vacaciones *inCruises* 🛳️
@@ -6729,16 +6730,16 @@ function abrirBienvenida(c){c=c||{};let tipo=c.stage==="Cliente"?"c":"s",gl="",c
    <div class="field"><label for="bnPais">País (para la bandera)</label><select class="inp" id="bnPais">${PAISES.filter((x,i,a)=>a.findIndex(y=>y[0]===x[0])===i).map(([pn])=>`<option ${pn===pais?"selected":""}>${pn}</option>`).join("")}<option value="">No mostrar país</option></select></div>
    <div class="seg" id="bnG"><button aria-selected="${!f}" data-g="m" type="button">♂ Bienvenido</button><button aria-selected="${f}" data-g="f" type="button">♀ Bienvenida</button></div>
    <div class="seg" id="bnP"><button aria-selected="false" data-p="starter" type="button" id="bnSt">Starter</button><button aria-selected="true" data-p="classic" type="button">Classic</button><button aria-selected="false" data-p="premium" type="button">★ Premium</button></div>
-   <div id="bnCli" hidden><div class="field"><label for="bnE">Correo de inCruises <span class="muted">(obligatorio)</span></label><input class="inp" id="bnE" type="email" inputmode="email" autocapitalize="off" maxlength="120" placeholder="correo@ejemplo.com" value="${esc(c.email||"")}"></div>
+   <div id="bnCli" hidden><div class="field"><label for="bnE">Correo de inCruises <span class="muted">${bnNew()?"(para su Dream Team)":"(obligatorio)"}</span></label><input class="inp" id="bnE" type="email" inputmode="email" autocapitalize="off" maxlength="120" placeholder="correo@ejemplo.com" value="${esc(c.email||"")}"></div>
     <div class="bnCk"><b>⚠️ Antes de agregarlo como cliente, confirme:</b><span>✅ Ya tiene su cuenta de inCruises creada.</span><span>✅ Ya pagó su paquete (Classic o Premium).</span><small>Lo vamos a comparar con los reportes de inCruises. Si su correo no aparece como cliente suyo en <b>2 reportes seguidos</b>, se quita de su Dream Team (se queda en su CRM).</small><label><input type="checkbox" id="bnOk"> <b>Sí, ya tiene su cuenta y su paquete activo</b></label></div>
-    <p class="small muted" style="margin:0">Al enviar, se agrega a su CRM y a su Dream Team como cliente.</p></div>
+    <p class="small muted" style="margin:0">${bnNew()?"Con correo y la casilla marcada entra a su CRM y a su Dream Team. <b>Sin correo</b> también puede enviarle la bienvenida: queda en su CRM como Cliente y lo agrega a su Dream Team después.":"Al enviar, se agrega a su CRM y a su Dream Team como cliente."}</p></div>
    <label class="btn ghost" style="width:100%;justify-content:center;cursor:pointer">📷 Foto<input type="file" id="bnFoto" accept="image/*" hidden></label>
    <div id="bnBox" style="aspect-ratio:9/16;width:100%;max-width:300px;margin:0 auto;border-radius:14px;background:#0b0b10;display:flex;align-items:center;justify-content:center;overflow:hidden"><span class="small" style="color:#fff">Escribe el nombre…</span></div>
    <button class="btn" id="bnGo" style="width:100%">🎉 Celebrar en un grupo</button>
    <p class="small muted" style="margin:-4px 0 0;text-align:center">Flyer y mensaje de celebración, <b>sin enlaces</b>.</p>
    <button class="btn ghost" id="bnPriv" style="width:100%">🔒 Enviar en privado al socio nuevo</button>
    <p class="small muted" id="bnPrivTx" style="margin:-4px 0 0;text-align:center">Lleva el link del grupo y su enlace personal para entrar a la app. Solo a esa persona.</p>
-   <div class="row" style="gap:8px"><button class="btn ghost grow" id="bnCopy">Copiar celebración</button><button class="btn ghost grow" id="bnDl">Descargar flyer</button></div>
+   ${bnNew()?'<button class="btn ghost" id="bnCopyP" style="width:100%">📋 Copiar mensaje privado (con link del grupo)</button>':""}<div class="row" style="gap:8px"><button class="btn ghost grow" id="bnCopy">${bnNew()?"Copiar celebración (para el grupo)":"Copiar celebración"}</button><button class="btn ghost grow" id="bnDl">Descargar flyer</button></div>
    <a id="bnWa" hidden></a>
    <button class="btn ghost" data-close style="width:100%">Cerrar</button>`,()=>{
     let tk=0;const upd=async()=>{n=$("#bnN").value.trim().replace(/\s+/g," ");if(!gT&&n){f=genF(n);$("#bnG").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",(x.dataset.g==="f")===f))}const my=++tk;const box=$("#bnBox");if(!n){box.innerHTML='<span class="small" style="color:#fff">Escribe el nombre…</span>';file=null;return}
@@ -6749,7 +6750,7 @@ function abrirBienvenida(c){c=c||{};let tipo=c.stage==="Cliente"?"c":"s",gl="",c
     const tPinta=()=>{const cl=tipo==="c";$("#bnT").querySelectorAll("[data-t]").forEach(x=>x.setAttribute("aria-selected",x.dataset.t===tipo));$("#bnCli").hidden=!cl;$("#bnSt").hidden=cl;if(cl&&plan==="starter"){plan="classic";$("#bnP").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x.dataset.p==="classic"))}
       $("#bnNL").textContent=cl?"Nombre del cliente nuevo":"Nombre del socio nuevo";$("#bnPrivTx").textContent=cl?"Lleva el link del grupo y cómo activar su pago recurrente. Solo a esa persona.":"Lleva el link del grupo y su enlace personal para entrar a la app. Solo a esa persona.";try{privTx()}catch(e){}};
     // valida y guarda el cliente (CRM + Dream Team). Devuelve false si falta algo. Se llama ANTES de abrir WhatsApp (sin await) y guarda en segundo plano.
-    const cliOk=()=>{if(tipo!=="c")return true;const e=$("#bnE").value.trim().toLowerCase();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)){toast("Escriba el correo de inCruises del cliente");$("#bnE").focus();return false}
+    const cliOk=()=>{if(tipo!=="c")return true;if(bnNew())return cliOk2();const e=$("#bnE").value.trim().toLowerCase();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e)){toast("Escriba el correo de inCruises del cliente");$("#bnE").focus();return false}
       if(!$("#bnOk").checked){toast("Confirme que ya tiene su cuenta y su paquete activo");$("#bnOk").focus();return false}
       if(dtEks().has(ahKe(e))){toast("Esa persona ya está en su Dream Team como socio");return false}
       if(!cliHecho){cliHecho=true;const cc=($("#bnCC")&&$("#bnCC").value)||c.cc||LS.get("lastCC")||"504",ph=tel?String(tel).replace(/^\d*?(\d{7,})$/,"$1"):"";
@@ -6757,6 +6758,21 @@ function abrirBienvenida(c){c=c||{};let tipo=c.stage==="Cliente"?"c":"s",gl="",c
         Object.assign(o,{name:n.slice(0,80),email:e,stage:"Cliente",dtc:1,dtA:Date.now(),dtPl:plan==="premium"?"Premium":"Classic",updated:Date.now()});if(!o.phone&&$("#bnTel")&&$("#bnTel").value.trim()){o.phone=$("#bnTel").value.trim().replace(/\D/g,"").slice(0,15);o.cc=cc}
         if(!(o.seg||[]).some(x=>x.k==="bien"))o.seg=(o.seg||[]).concat([{t:Date.now(),k:"bien",n:"🛳️ Entró como cliente "+o.dtPl+" · por verificar con inCruises"}]).slice(-SG_MAX);if(!/Cliente de mi Dream Team/.test(o.note||""))o.note=(o.note?o.note+" · ":"")+"🛳️ Cliente de mi Dream Team";
         store.saveContact(Object.assign({},o)).then(id=>{if(!id){cliHecho=false;return}if(!ya){o.id=id;contacts.push(o)}try{renderCRM()}catch(x){}try{renderDT()}catch(x){}toast("🛳️ "+n.split(" ")[0]+" ya está en su Dream Team · ⏳ por verificar")}).catch(()=>{cliHecho=false})}
+      return true};
+    // versión nueva: el correo es opcional. Con correo válido + casilla → CRM + Dream Team; si no → solo CRM como Cliente.
+    const cliOk2=()=>{const e=$("#bnE").value.trim().toLowerCase();const okE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
+      if(e&&!okE){toast("Revise el correo de inCruises (o déjelo vacío)");$("#bnE").focus();return false}
+      let dt=okE&&$("#bnOk").checked;if(okE&&dtEks().has(ahKe(e))){toast("Esa persona ya está en su Dream Team como socio");return true}
+      if(cliHecho)return true;cliHecho=true;const cc=($("#bnCC")&&$("#bnCC").value)||c.cc||LS.get("lastCC")||"504";
+      const ya=c.id?(contacts||[]).find(x=>x.id===c.id):(okE?(contacts||[]).find(x=>String(x.email||"").toLowerCase()===e):null);const o=ya||{name:n.slice(0,80),cc,phone:"",stage:"Cliente",note:"",next:TODAY,updated:Date.now(),creado:Date.now()};
+      Object.assign(o,{name:n.slice(0,80),stage:"Cliente",updated:Date.now()});if(okE)o.email=e;
+      if(dt)Object.assign(o,{dtc:1,dtA:Date.now(),dtPl:plan==="premium"?"Premium":"Classic"});
+      if(!o.phone&&$("#bnTel")&&$("#bnTel").value.trim()){o.phone=$("#bnTel").value.trim().replace(/\D/g,"").slice(0,15);o.cc=cc}
+      const pl=plan==="premium"?"Premium":"Classic";
+      if(!(o.seg||[]).some(x=>x.k==="bien"))o.seg=(o.seg||[]).concat([{t:Date.now(),k:"bien",n:dt?"🛳️ Entró como cliente "+pl+" · por verificar con inCruises":"🛳️ Entró como cliente "+pl+" · sin correo, aún no está en su Dream Team"}]).slice(-SG_MAX);
+      if(dt&&!/Cliente de mi Dream Team/.test(o.note||""))o.note=(o.note?o.note+" · ":"")+"🛳️ Cliente de mi Dream Team";
+      store.saveContact(Object.assign({},o)).then(id=>{if(!id){cliHecho=false;return}if(!ya){o.id=id;contacts.push(o)}try{renderCRM()}catch(x){}try{renderDT()}catch(x){}
+        toast(dt?"🛳️ "+n.split(" ")[0]+" ya está en su Dream Team · ⏳ por verificar":okE?"🛳️ Guardado en su CRM. Para su Dream Team marque la casilla":"🛳️ Guardado en su CRM. Sin correo no entra a su Dream Team: puede agregarlo después")}).catch(()=>{cliHecho=false});
       return true};
     let deb;$("#bnN").oninput=()=>{clearTimeout(deb);deb=setTimeout(upd,450)};
     $("#bnT").onclick=e=>{const b=e.target.closest("[data-t]");if(!b||b.dataset.t===tipo)return;tipo=b.dataset.t;tPinta();upd()};
@@ -6766,6 +6782,7 @@ function abrirBienvenida(c){c=c||{};let tipo=c.stage==="Cliente"?"c":"s",gl="",c
     $("#bnP").onclick=e=>{const b=e.target.closest("[data-p]");if(!b)return;plan=b.dataset.p;$("#bnP").querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));upd()};
     $("#bnFoto").onchange=async e=>{const fl=e.target.files&&e.target.files[0];if(!fl)return;try{foto=await fotoReduce400(fl);toast("Foto lista")}catch(x){toast("No se pudo usar esa foto")}upd()};
     $("#bnCopy").onclick=async()=>{if(!n)return toast("Escribe el nombre");try{await navigator.clipboard.writeText(BIEN_GRUPO(n,f,plan,pais,tipo==="c"));toast("Celebración copiada (sin enlace)")}catch(x){toast("No se pudo copiar")}};
+    {const cp=$("#bnCopyP");if(cp)cp.onclick=async()=>{if(!n)return toast("Escriba el nombre");if(!cliOk())return;const m=privMsg();try{await navigator.clipboard.writeText(m);toast("Mensaje privado copiado: péguelo en el chat de "+(n.split(" ")[0]))}catch(x){try{cpTxt(m)}catch(y){toast("No se pudo copiar")}}}}
     const pn=()=>(n.split(" ")[0]||(tipo==="c"?"el cliente nuevo":"el socio nuevo"));const privTx=()=>{const b=$("#bnPriv");if(b)b.textContent="🔒 Enviar en privado a "+pn()};$("#bnN").addEventListener("input",()=>setTimeout(privTx,500));privTx();
     let privOk=false;$("#bnPriv").onclick=async()=>{if(!n||!file)return toast("Escriba el nombre");if(!cliOk())return;const msg=privMsg();
       if(tel){waIr("https://wa.me/"+tel+"?text="+encodeURIComponent(msg));return}
@@ -11785,7 +11802,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261122125811";var busy=false,pend=null;
+(function(){var V="20261122170055";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
