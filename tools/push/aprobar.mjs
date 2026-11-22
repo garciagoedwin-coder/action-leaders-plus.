@@ -73,7 +73,7 @@ async function main() {
   // Documentos de users: TODOS solo cuando hace falta (primera vez o cada hora para los miembros); si no, solo los que aún no están aprobados.
   // 20 nov: GitHub atrasa el cron (corre cada 6–9 h) y casi nunca caía en la hora exacta → la revisión completa no corría desde el 18 nov.
   // Ahora: completa si pasaron 6 h desde la última (team/sisU.t), sin depender de la hora.
-  const _sisT = ((await db.doc("team/sisU").get()).data() || {}).t || 0, hora = FULL || (Date.now() - _sisT > 6 * 36e5); // cada 6 h: todas las cuentas
+  const _sisT = ((await db.doc("team/sisU").get()).data() || {}).t || 0, hora = FULL || (Date.now() - _sisT > 6 * 36e5) || (((team.config || {}).sisForzar || 0) > _sisT); // 22 nov: config.sisForzar (ms) = forzar una revisión completa en la próxima corrida (se apaga sola al guardar team/sisU.t) // cada 6 h: todas las cuentas
   // Aprobaciones manuales (patrocinador o admin): aprob/{uid} {ok, por, t}
   const M = (await db.collection("aprob").get()).docs;
   // 11 nov: el admin corrigió el correo/WhatsApp de inCruises («Solo guardar») → users.apRe; se revisa en esta corrida.
