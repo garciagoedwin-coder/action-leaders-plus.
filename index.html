@@ -2951,8 +2951,12 @@ const SEG_AUTO_NO=["Nuevo","Socio","Cliente","No interesado"];
 function segAuto(c){try{if(!c||!c.id||SEG_AUTO_NO.includes(c.stage||"Nuevo"))return false;if((day.segL||[]).some(x=>x.cid===c.id))return false;
   day.segL=(day.segL||[]).concat([{cid:c.id,n:String(c.name||"").slice(0,60)}]);day.seguimientos=Math.max((day.seguimientos||0)+1,day.segL.length);c.ultSeg=TODAY;
   try{renderTasks()}catch(e){}try{saveDay()}catch(e){}try{irBump("seg")}catch(e){}setTimeout(()=>toast("🔁 Cuenta como seguimiento de hoy en su rutina"),900);return true}catch(e){return false}}
-function waTap(c,e){if(e.__wa)return;e.__wa=1;
+function waTap(c,e,dir){if(e.__wa)return;e.__wa=1;
+  // 23 nov (Edwin, opción A): en todo seguimiento, primero el saludo; 12 h después de saludar, el botón manda el mensaje
+  if(!dir&&HOLA_ST.includes(c.stage)&&waNum(c.phone,c.cc)&&!(c.hola&&Date.now()-c.hola<12*36e5)){e.preventDefault();const a=e.target.closest&&e.target.closest("a"),href=a&&a.href||"";
+    holaAbrir(c,()=>waTap(c,{preventDefault(){}},href||1));return}
   if(c.stage==="Por cerrar"&&waNum(c.phone,c.cc)){e.preventDefault();pcMsgs(c);return}
+  if(typeof dir==="string"&&dir)waIr(dir);
   notaPend(c,"wa",1);segAuto(c);c.updated=Date.now();try{store.saveContact(Object.assign({},c))}catch(x){}
   setTimeout(()=>{stAvanza(c,"Contactado","le escribió por WhatsApp");try{renderCRM()}catch(x){}},300)}
 // 19 nov (Edwin): «Por cerrar» ya no dice «crear su cuenta» de entrada: 4 mensajes a elegir
@@ -8976,13 +8980,14 @@ function holaOrden(){const d=new Date(),h=d.getHours(),w=d.getDay(),m=h<12?"m":h
   const pri=x=>x[0]===m?0:(x[0]==="lun"&&w===1)||(x[0]==="fin"&&(w===0||w>=5))?1:x[0]==="*"?2:9;
   return I.filter(i=>pri(HOLA_M[i])<9).sort((a,b)=>pri(HOLA_M[a])-pri(HOLA_M[b])||a-b)}
 function holaTx(c,i){const f=String(c.name||"").trim().split(/\s+/)[0]||"";const x=HOLA_M[i];return (c.tu?x[2]:x[1]).replace(/,? \{f\}/,f?", "+f:"")}
-function holaAbrir(c){if(!c)return;const O=holaOrden();let ult=-1;try{ult=(LS.get("holaU")||{})[c.id];if(ult==null)ult=-1}catch(e){}
+function holaAbrir(c,dir){if(!c)return;const O=holaOrden();let ult=-1;try{ult=(LS.get("holaU")||{})[c.id];if(ult==null)ult=-1}catch(e){}
   let k=0;if(O[k]===ult&&O.length>1)k=1;const f=String(c.name||"").split(" ")[0]||"la persona";
   openSheet(`<h3 style="margin:0 0 6px">👋 Saludar primero</h3>
    <p class="small muted" style="margin:0 0 10px">Un saludo para conectar. Cuando ${esc(f)} le conteste, mándele el mensaje del siguiente paso.</p>
    <textarea id="hoT" rows="3" style="width:100%;font-size:16px"></textarea>
    <div style="display:flex;gap:8px;margin-top:10px"><button type="button" class="btn ghost" id="hoO" style="flex:1">🔄 Otro saludo</button></div>
-   <button type="button" class="btn" id="hoW" style="width:100%;margin-top:8px;background:#16A34A;color:#fff">💬 Enviar por WhatsApp</button>`,()=>{
+   <button type="button" class="btn" id="hoW" style="width:100%;margin-top:8px;background:#16A34A;color:#fff">💬 Enviar por WhatsApp</button>${dir?`<button type="button" id="hoD" style="display:block;margin:12px auto 0;background:none;border:0;color:var(--muted);font-size:14px;text-decoration:underline">o mandar el mensaje directo ›</button>`:""}`,()=>{
+   if(dir)$("#hoD").onclick=()=>{closeSheet();dir()};
    const T=$("#hoT"),pinta=()=>{T.value=holaTx(c,O[k])};pinta();
    $("#hoO").onclick=()=>{k=(k+1)%O.length;if(O[k]===ult&&O.length>1)k=(k+1)%O.length;pinta()};
    $("#hoW").onclick=()=>{const t=T.value.trim();if(!t)return;try{const U=LS.get("holaU")||{};U[c.id]=O[k];LS.set("holaU",U)}catch(e){}
@@ -11803,7 +11808,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261123125458";var busy=false,pend=null;
+(function(){var V="20261123154507";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
