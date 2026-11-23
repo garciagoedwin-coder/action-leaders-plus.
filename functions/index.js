@@ -251,3 +251,10 @@ exports.campSync = functions.runWith({ memory: "256MB", timeoutSeconds: 30 }).fi
   if (r.s === up["rep.s"] && (+r.gp || 0) === up["rep.gp"] && r.lu === up["rep.lu"] && !up["rep.cx"]) return;
   await ref.update(up);
 });
+
+// Reloj de avisos (23 nov): reemplaza los horarios de GitHub Actions (que GitHub frenaba). Ver functions/reloj.js.
+exports.relojCada15 = functions.runWith({ memory: "512MB", timeoutSeconds: 540, serviceAccount: "firebase-adminsdk-fbsvc@action-leaders-plus-8f1b8.iam.gserviceaccount.com" })
+  .pubsub.schedule("every 15 minutes").timeZone("America/Tegucigalpa").onRun(async () => {
+    try { await require("./reloj").ciclo(db); } catch (e) { console.log("reloj error", e.code || e.message); }
+    return null;
+  });

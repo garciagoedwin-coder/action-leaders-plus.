@@ -3,7 +3,7 @@
 // La app lee team/constres + los cambios desde S.u (constFuente en index.html). Nunca guarda correos ni teléfonos.
 const { initializeApp, cert } = await import("firebase-admin/app");
 const { getFirestore } = await import("firebase-admin/firestore");
-initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) });
+initializeApp(process.env.FIREBASE_SA ? { credential: cert(JSON.parse(process.env.FIREBASE_SA)) } : {});
 const db = getFirestore(), ref = db.doc("team/constres");
 const s = await ref.get(), S = s.exists ? s.data() : null;
 const full = process.env.FULL === "1" || !S || !(+S.b > Date.now() - 26 * 36e5);

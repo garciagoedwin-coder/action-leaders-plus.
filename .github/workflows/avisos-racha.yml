@@ -1,9 +1,6 @@
 name: Avisos de racha
 on:
-  schedule:
-    - cron: "0 13 * * *"   # 7:00 a.m. Honduras
-    - cron: "0 1 * * *"    # 7:00 p.m. Honduras
-    - cron: "30 3 * * *"   # 9:30 p.m. Honduras
+  # 23 nov: el horario pasó a Firebase (functions/reloj.js, relojCada15); aquí solo queda para correrlo a mano.
   workflow_dispatch:
     inputs:
       modo:

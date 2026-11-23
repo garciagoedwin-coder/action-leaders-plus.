@@ -1,8 +1,7 @@
 name: Aviso del Día de reconocimientos
 # El 1 de cada mes, 8:30 a.m. HN: celebra a quienes llegaron por primera vez a Team Leader o a un rango el mes pasado (team/reco).
 on:
-  schedule:
-    - cron: "30 14 1 * *"
+  # 23 nov: el horario pasó a Firebase (functions/reloj.js, relojCada15); aquí solo queda para correrlo a mano.
   workflow_dispatch:
     inputs:
       dry:

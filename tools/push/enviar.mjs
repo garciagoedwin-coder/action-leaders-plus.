@@ -1,5 +1,5 @@
 // Avisos (notificaciones push) de Action Leaders.
-// Corre en GitHub Actions con el secreto FIREBASE_SA (clave de la cuenta de servicio; NUNCA en el repo).
+// Corre en Firebase (functions/reloj.js, cada 15 min, 23 nov) o en GitHub Actions a mano con el secreto FIREBASE_SA (NUNCA en el repo).
 //   node enviar.mjs racha            → 7:00 p.m. HN: a quien no ha completado su rutina hoy
 //   node enviar.mjs racha2           → 9:30 p.m. HN: solo racha de 3+ días que está por perderse
 //   node enviar.mjs inact            → 8:30 a.m. HN: miembros con ahorro pendiente que se inactivan en ≤7 días (patrocinador + líderes TL+ arriba)
@@ -369,7 +369,7 @@ async function main() {
   const { initializeApp, cert } = await import("firebase-admin/app");
   const { getFirestore, FieldValue } = await import("firebase-admin/firestore");
   const { getMessaging } = await import("firebase-admin/messaging");
-  initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) });
+  initializeApp(process.env.FIREBASE_SA ? { credential: cert(JSON.parse(process.env.FIREBASE_SA)) } : {}); // sin clave = credenciales de Firebase (reloj en Cloud Functions)
   const db = getFirestore(), fcm = getMessaging();
   const salida = []; // [uid, tk, {title, body}]
   const hist = {}; // uid → historial actual (h) para guardar los últimos 15 avisos

@@ -106,6 +106,7 @@ if (process.env.CODE === "rep") { initializeApp({ credential: cert(JSON.parse(pr
     for (const x of rec.slice(0, 15)) { let ex = "-", st = ""; if (x.rep.u) { const t = await db.doc(`users/${x.rep.u}/crm/${x.id}`).get(); ex = t.exists ? "si" : "NO"; st = t.exists ? (t.data().stage || "") : ""; }
       console.log(" hace", Math.round((now - x.rep.t) / 60000), "min · st", x.rep.st, "· repP", x.repP, "· upd hace", Math.round((now - (x.updated || 0)) / 60000), "min · copia", ex, st); } }
   process.exit(0); }
+if (process.env.CODE === "reloj") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore(); const m = (await db.doc("push_meta/reloj").get()).data() || {}, c = (await db.doc("team/constres").get()).data() || {}; console.log("reloj hace", m.u ? Math.round((Date.now() - m.u) / 60000) + " min" : "-", "· estados", JSON.stringify(m.e || {}), "· diarios", JSON.stringify(m.d || {}), "· constres hace", c.b ? Math.round((Date.now() - c.b) / 60000) + " min" : "-"); process.exit(0); }
 if (process.env.CODE === "lluvia") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const m = (await getFirestore().doc("push_meta/lluvia").get()).data() || {}; console.log("lluvia fx:", JSON.stringify(m.fx || null), "· hace", m.fx ? Math.round((Date.now() - m.fx.t) / 60000) + " min" : "-"); process.exit(0); }
 const sa = JSON.parse(process.env.FIREBASE_SA), tk = (await cert(sa).getAccessToken()).access_token, H = { Authorization: "Bearer " + tk };
 const B = "https://firebaserules.googleapis.com/v1/";

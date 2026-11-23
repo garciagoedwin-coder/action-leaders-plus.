@@ -1,9 +1,6 @@
 name: Grupo del Sistema de liderazgo
 on:
-  schedule:
-    - cron: "0 16 * * *"     # 10:00 a.m. HN: aviso a quien no se ha presentado
-    - cron: "20 19,22 * * *" # 1:20 y 4:20 p.m. HN: solo actualiza quién ya se presentó
-    - cron: "20 1,4 * * *"   # 7:20 y 10:20 p.m. HN
+  # 23 nov: el horario pasó a Firebase (functions/reloj.js, relojCada15); aquí solo queda para correrlo a mano.
   workflow_dispatch:
     inputs:
       modo:

@@ -1,8 +1,6 @@
 name: Resumen de constancia
 on:
-  schedule:
-    - cron: "*/15 * * * *"
-    - cron: "7 8 * * *" # 2:07 a.m. HN: completo (limpia los que ya no existen)
+  # 23 nov: el horario pasó a Firebase (functions/reloj.js, relojCada15); aquí solo queda para correrlo a mano.
   workflow_dispatch:
     inputs:
       full: { description: "Completo (1)", default: "1" }

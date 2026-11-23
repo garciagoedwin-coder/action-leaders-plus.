@@ -1,3 +1,4 @@
 __pycache__/
 node_modules/
 tools/training/**/f-*.jpg
+functions/push/

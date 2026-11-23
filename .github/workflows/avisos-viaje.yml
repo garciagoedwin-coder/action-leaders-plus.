@@ -2,8 +2,7 @@ name: Aviso de testimonios de viaje
 # Cada sábado 11:00 a.m. HN: invita a llenar el formulario de viaje a quien no ha respondido en la app
 # ("Ya lo hice" / "No me interesa") y no tiene testimonio publicado.
 on:
-  schedule:
-    - cron: "0 17 * * 6"
+  # 23 nov: el horario pasó a Firebase (functions/reloj.js, relojCada15); aquí solo queda para correrlo a mano.
   workflow_dispatch:
     inputs:
       dry:

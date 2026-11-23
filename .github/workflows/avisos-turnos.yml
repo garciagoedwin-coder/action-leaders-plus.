@@ -1,7 +1,6 @@
 name: Avisos de turnos asignados
 on:
-  schedule:
-    - cron: "7,22,37,52 * * * *"   # cada 15 min
+  # 23 nov: el horario pasó a Firebase (functions/reloj.js, relojCada15); aquí solo queda para correrlo a mano.
   workflow_dispatch:
     inputs:
       dry:

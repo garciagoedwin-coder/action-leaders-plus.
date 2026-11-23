@@ -1,8 +1,7 @@
 name: Avisos de reuniones de equipo de los líderes
 # Cada 15 min: si un líder tiene reunión de equipo (agendaEv tipo "equipo") en ~30 min, avisa a toda su línea. Logs: solo conteos.
 on:
-  schedule:
-    - cron: "4,19,34,49 * * * *"
+  # 23 nov: el horario pasó a Firebase (functions/reloj.js, relojCada15); aquí solo queda para correrlo a mano.
   workflow_dispatch:
     inputs:
       dry: { description: "1 = prueba", default: "1" }
