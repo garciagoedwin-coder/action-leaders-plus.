@@ -263,6 +263,30 @@
    "activaciones": 1,
    "volumen": 200,
    "actSemana": 1
+  },
+  {
+   "nombre": "Francisco Caballero",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "francisco-caballero",
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
+  },
+  {
+   "nombre": "Henrry antonio Munoz sosa",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "henrry-antonio-munoz-sosa",
+   "activaciones": 1,
+   "volumen": 200,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -885,6 +909,36 @@
    "volumen": 200,
    "volumenDetalle": "",
    "id": "santos-cecilio-garcia-morales",
+   "volumenHoja": 0,
+   "ptsBase": 200,
+   "auto": "2026-11"
+  },
+  {
+   "nombre": "Francisco Caballero",
+   "nombreRanking": "Francisco Caballero",
+   "rango": "",
+   "linea": "",
+   "meta": 500,
+   "nuevos": 0,
+   "presentaciones": 0,
+   "volumen": 500,
+   "volumenDetalle": "",
+   "id": "francisco-caballero",
+   "volumenHoja": 0,
+   "ptsBase": 500,
+   "auto": "2026-11"
+  },
+  {
+   "nombre": "Henrry Antonio Munoz Sosa",
+   "nombreRanking": "Henrry antonio Munoz sosa",
+   "rango": "",
+   "linea": "",
+   "meta": 500,
+   "nuevos": 0,
+   "presentaciones": 0,
+   "volumen": 200,
+   "volumenDetalle": "",
+   "id": "henrry-antonio-munoz-sosa",
    "volumenHoja": 0,
    "ptsBase": 200,
    "auto": "2026-11"
@@ -3448,6 +3502,28 @@
    "fuente": "gmail",
    "id": "german-josue-vides-ortega",
    "rv": 1
+  },
+  {
+   "socio": "Lourdes Argueta",
+   "paquete": "Premium",
+   "patrocinador": "Francisco Caballero",
+   "fecha": "2026-11-23T00:55:02Z",
+   "ek": "60c9d0",
+   "wk": "58f51b",
+   "fuente": "gmail",
+   "id": "lourdes-argueta",
+   "rv": 1
+  },
+  {
+   "socio": "Keydi Velasquez",
+   "paquete": "Classic",
+   "patrocinador": "Henrry antonio Munoz sosa",
+   "fecha": "2026-11-23T02:55:03Z",
+   "ek": "37fbf7",
+   "wk": "d92037",
+   "fuente": "gmail",
+   "id": "keydi-velasquez",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3481,7 +3557,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-21T23:55:04Z",
+  "activacionesCorte": "2026-11-23T02:55:03Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3490,7 +3566,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-21T18:17:00-06:00",
+  "rankingActualizado": "2026-11-22T21:38:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -4374,7 +4450,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-11-22T22:22:54Z",
+   "v": "2026-11-23T03:38:01Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "0225a9": "2026-10-27T10:09:44Z",
@@ -4411,7 +4487,6 @@
     "66814f": "2026-10-31T23:58:44Z",
     "680411": "2026-11-01T02:08:16Z",
     "6900bd": "2026-11-14T21:41:05Z",
-    "6b1ffb": "2026-11-27T03:08:38Z",
     "6dbd3a": "2026-11-02T05:59:47Z",
     "7016ec": "2026-11-12T04:02:47Z",
     "71ee96": "2026-11-22T16:09:42Z",
@@ -4431,6 +4506,7 @@
     "88d120": "2026-11-24T03:09:15Z",
     "8941f8": "2026-11-02T19:45:41Z",
     "8b574c": "2026-10-28T19:40:07Z",
+    "8c968f": "2026-11-28T03:10:33Z",
     "8dae9e": "2026-10-25T06:45:37Z",
     "8ff3c1": "2026-10-31T23:15:42Z",
     "90b4dd": "2026-11-19T14:08:09Z",
@@ -4486,6 +4562,7 @@
    },
    "li": [
     "205855",
+    "587f04",
     "791ad7"
    ]
   },
@@ -5077,14 +5154,14 @@
      "a": 18
     },
     {
-     "n": "Zamir Ely Fuentes Trochez",
-     "p": 1950,
-     "a": 12
-    },
-    {
      "n": "Edwin Garcia Go",
      "p": 1850,
      "a": 14
+    },
+    {
+     "n": "Zamir Ely Fuentes Trochez",
+     "p": 1850,
+     "a": 11
     },
     {
      "n": "Josue Antony Navarro Rubio",
@@ -5102,6 +5179,11 @@
      "a": 9
     },
     {
+     "n": "Juan Carlos Granados Claros",
+     "p": 1450,
+     "a": 8
+    },
+    {
      "n": "Glenda Xiomara Alvarez Ramirez",
      "p": 1400,
      "a": 10
@@ -5110,11 +5192,6 @@
      "n": "Jose Luis Rodriguez",
      "p": 1350,
      "a": 12
-    },
-    {
-     "n": "Juan Carlos Granados Claros",
-     "p": 1350,
-     "a": 7
     },
     {
      "n": "Josué Delgado",
@@ -5147,6 +5224,11 @@
      "a": 7
     },
     {
+     "n": "Henrry Antonio Munoz Sosa",
+     "p": 1050,
+     "a": 5
+    },
+    {
      "n": "Erick Rolando Miranda Dominguez",
      "p": 1000,
      "a": 2
@@ -5162,9 +5244,9 @@
      "a": 9
     },
     {
-     "n": "Henrry Antonio Munoz Sosa",
-     "p": 850,
-     "a": 4
+     "n": "Francisco Caballero",
+     "p": 900,
+     "a": 5
     },
     {
      "n": "Nuvia Martínez Hernández",
@@ -5373,11 +5455,6 @@
     },
     {
      "n": "Carlos Josue Sanchez Linares",
-     "p": 400,
-     "a": 4
-    },
-    {
-     "n": "Francisco Caballero",
      "p": 400,
      "a": 4
     },
@@ -5787,7 +5864,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-22T22:22:54Z"
+   "t": "2026-11-23T03:38:01Z"
   },
   "audioEsp": {
    "id": "santiago-1",
