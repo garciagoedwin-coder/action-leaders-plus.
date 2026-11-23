@@ -1,7 +1,7 @@
 name: Funciones de Firebase (aprobación instantánea)
 # Publica functions/ en Firebase con la cuenta de servicio (secreto FIREBASE_SA). Logs públicos: sin datos de socios.
 on:
-  push: { branches: [main], paths: [functions/**, firebase.json, tools/push/enviar.mjs, tools/push/constres.mjs] }
+  push: { branches: [main], paths: [functions/**, firebase.json, tools/push/enviar.mjs, tools/push/constres.mjs, tools/push/aprobar.mjs] }
   workflow_dispatch:
 concurrency: { group: funciones, cancel-in-progress: false }
 permissions: { contents: write }
@@ -17,7 +17,7 @@ jobs:
           cd functions
           if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
       - name: Copiar los scripts de avisos (reloj)
-        run: mkdir -p functions/push && cp tools/push/enviar.mjs tools/push/constres.mjs functions/push/
+        run: mkdir -p functions/push && cp tools/push/enviar.mjs tools/push/constres.mjs tools/push/aprobar.mjs functions/push/
       - name: Guardar el lock (primera vez)
         run: |
           if [ -n "$(git status --porcelain functions/package-lock.json)" ]; then

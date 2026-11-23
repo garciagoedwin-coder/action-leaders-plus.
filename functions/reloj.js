@@ -10,7 +10,7 @@ const R = "/tmp/alp", PUSH = R + "/tools/push";
 
 async function preparar() {
   fs.mkdirSync(PUSH, { recursive: true }); fs.mkdirSync(R + "/data", { recursive: true });
-  for (const f of ["enviar.mjs", "constres.mjs"]) fs.copyFileSync(path.join(__dirname, "push", f), path.join(PUSH, f));
+  for (const f of ["enviar.mjs", "constres.mjs", "aprobar.mjs"]) fs.copyFileSync(path.join(__dirname, "push", f), path.join(PUSH, f));
   const nm = R + "/node_modules"; if (!fs.existsSync(nm)) fs.symlinkSync(path.join(__dirname, "node_modules"), nm, "dir");
   for (const f of ["team.json", "ahorro.enc", "hist.json"]) {
     try { const r = await fetch(SITE + "data/" + f + "?t=" + Date.now(), { cache: "no-store" }); if (r.ok) fs.writeFileSync(R + "/data/" + f, Buffer.from(await r.arrayBuffer())); else console.log("bajar", f, r.status); }
