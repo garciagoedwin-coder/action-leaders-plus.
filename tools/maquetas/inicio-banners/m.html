@@ -1,0 +1,69 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&family=Barlow+Condensed:wght@700&display=swap');
+@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
+*{box-sizing:border-box;margin:0}
+body{background:#F3F6F9;font-family:Figtree,sans-serif;color:#2B2A2D;padding:22px 18px 40px;width:430px}
+.lb{font-size:12px;letter-spacing:.16em;font-weight:800;color:#6b7280;margin:22px 4px 10px}
+.cap{font-size:12px;color:#0A7DAD;font-weight:700;margin:16px 4px 6px}
+/* --- cumplido, 1 línea --- */
+.ok1{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;background:radial-gradient(120% 140% at 0 0,#14532d 0,#0b1f17 70%);color:#fff;position:relative;overflow:hidden;box-shadow:0 0 0 1px #22c55e55}
+.ok1:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,#ffffff22 50%,transparent 70%);transform:translateX(-100%);animation:sh 3.5s 1s infinite}
+.ok1 .ic{width:34px;height:34px;border-radius:50%;background:#22c55e;display:grid;place-items:center;font-size:17px;flex:none}
+.ok1 b{font-size:16px}
+.ok1 .n{margin-left:auto;font:700 22px 'Barlow Condensed';white-space:nowrap}
+.ok1 .n small{font:600 13px Figtree;color:#86efac}
+.ok1 .v{color:#86efac;font-size:12px}
+@keyframes sh{to{transform:translateX(100%)}}
+/* --- líderes --- */
+.cl{position:relative;border-radius:20px;padding:2px;background:conic-gradient(from var(--a),transparent 0 60%,var(--c) 80%,transparent 100%);animation:rot 3s linear infinite}
+.cl>div{border-radius:18px;background:radial-gradient(130% 120% at 100% 0,color-mix(in srgb,var(--c) 22%,#0f1d33) 0,#0b1424 70%);color:#fff;padding:14px 16px}
+@keyframes rot{to{--a:360deg}}
+.hd{display:flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:.12em;font-weight:800;color:#FCD34D}
+.hd .d{margin-left:auto;color:#cbd5e1;letter-spacing:.04em;font-weight:700}
+.st{display:flex;align-items:center;gap:9px;margin:10px 0 8px}
+.dot{width:11px;height:11px;border-radius:50%;background:var(--c);box-shadow:0 0 0 0 var(--c);animation:pu 1.4s infinite;flex:none}
+@keyframes pu{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 70%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
+.st b{font-size:17px;color:var(--c)}
+.st .pts{margin-left:auto;font:700 26px 'Barlow Condensed'}
+.st .pts small{font:600 13px Figtree;color:#94a3b8}
+.bar{height:10px;border-radius:9px;background:#ffffff18;position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:9px;background:var(--c);background-image:repeating-linear-gradient(45deg,#ffffff33 0 8px,transparent 8px 16px);background-size:23px 23px;animation:mv 1s linear infinite}
+.bar u{position:absolute;top:-3px;bottom:-3px;width:2px;background:#fff;border-radius:2px;box-shadow:0 0 6px #fff}
+@keyframes mv{to{background-position:23px 0}}
+.msg{font-size:13.5px;color:#e2e8f0;margin-top:9px;display:flex;gap:6px;align-items:center}
+.msg em{font-style:normal;margin-left:auto;color:#7dd3fc;font-size:12.5px;white-space:nowrap}
+.r .st b{animation:bl 1s steps(2) infinite}
+@keyframes bl{50%{opacity:.55}}
+.leg{font-size:11.5px;color:#64748b;margin:6px 4px 0}
+</style></head><body>
+<div class="lb">② CÓMO VOY CON MI META</div>
+
+<div class="cap">1 · Mi compromiso ya cumplido: una sola línea (toque = se abre)</div>
+<div class="ok1"><div class="ic">🏆</div><div><b>Compromiso cumplido</b><div class="v">National Director · ¡Cumplió su palabra!</div></div><div class="n">700 <small>/ 400</small></div><span style="color:#86efac">▾</span></div>
+
+<div class="cap">2 · Compromiso de líderes · 🟢 va adelante o al día</div>
+<div class="cl" style="--c:#22c55e"><div>
+<div class="hd">⚔️ COMPROMISO DE LÍDERES <span class="d">Quedan 7 días</span></div>
+<div class="st"><span class="dot"></span><b>¡Va adelante!</b><span class="pts">500 <small>/ 700</small></span></div>
+<div class="bar"><i style="width:71%"></i><u style="left:13%"></u></div>
+<div class="msg">💪 Siga así · ya lleva el 71 % <em>Sistema 500 / 20,000 ›</em></div>
+</div></div>
+
+<div class="cap">3 · 🟡 va un poco atrás</div>
+<div class="cl" style="--c:#FACC15"><div>
+<div class="hd">⚔️ COMPROMISO DE LÍDERES <span class="d">Quedan 4 días</span></div>
+<div class="st"><span class="dot"></span><b>Le faltan 150 pts para ir al día</b><span class="pts">200 <small>/ 700</small></span></div>
+<div class="bar"><i style="width:29%"></i><u style="left:50%"></u></div>
+<div class="msg">🔥 Un Classic esta semana y se pone al día <em>Sistema ›</em></div>
+</div></div>
+
+<div class="cap">4 · 🔴 va atrasado (el texto parpadea)</div>
+<div class="cl r" style="--c:#EF4444"><div>
+<div class="hd">⚔️ COMPROMISO DE LÍDERES <span class="d">Quedan 2 días</span></div>
+<div class="st"><span class="dot"></span><b>¡Acelere!</b><span class="pts">0 <small>/ 700</small></span></div>
+<div class="bar"><i style="width:3%"></i><u style="left:76%"></u></div>
+<div class="msg">⏰ Le faltan 700 pts en 2 días <em>Sistema ›</em></div>
+</div></div>
+<div class="leg">La rayita blanca de la barra = dónde debería ir hoy. El borde de color gira alrededor de la tarjeta, el punto late y la barra avanza con rayas en movimiento. Al tocar, se abre con el detalle de siempre.</div>
+</body></html>

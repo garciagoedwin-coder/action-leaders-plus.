@@ -2094,6 +2094,23 @@ body.rk6on #snvCard .prem::before{content:"★ Premium";font-size:12px;color:#B7
 .hoBt{display:block;width:100%;margin:12px 0 0;padding:11px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:#fff;font:600 15px Figtree,sans-serif;cursor:pointer}.hoYa{margin:12px 0 0;padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.08);color:#cfe3f2;font-size:13px;line-height:1.35}.hoYa button{margin-left:6px;background:none;border:0;color:#7FE0FF;font:600 13px Figtree,sans-serif;text-decoration:underline;cursor:pointer;padding:0}.flBk{display:block;margin:10px auto 0;background:none;border:0;padding:4px 8px;font:600 12.5px Figtree,sans-serif;color:inherit;opacity:.7;text-decoration:underline;text-underline-offset:3px}
 .flTuR{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 8px;font:600 13px Figtree,sans-serif;color:var(--muted)}.flTuS{display:flex;background:var(--surface-2);border-radius:999px;padding:3px;gap:2px}.flTuS button{border:0;background:none;border-radius:999px;padding:6px 14px;font:700 13px Figtree,sans-serif;color:var(--muted)}.flTuS button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .cgM .rpM{font-weight:700;color:var(--muted)}.cgM .rpM.ok{color:#16A34A}.cgM .rpM.bad{color:#DC2626}.cgM b{font-weight:700}
+@property --clA{syntax:'<angle>';inherits:false;initial-value:0deg}
+#clStrip.sem{--c:#22C55E;padding:2px;background:conic-gradient(from var(--clA),transparent 0 60%,var(--c) 80%,transparent 100%);animation:clRot 3s linear infinite;box-shadow:0 6px 18px rgba(11,20,36,.25)}#clStrip.sem.cy{--c:#FACC15}#clStrip.sem.cr{--c:#EF4444}
+@keyframes clRot{to{--clA:360deg}}
+#clStrip.sem .clIn{border-radius:16px;padding:12px 14px;background:radial-gradient(130% 120% at 100% 0,color-mix(in srgb,var(--c) 22%,#0f1d33),#0b1424 70%)}
+#clStrip.sem .clMiK{display:flex;justify-content:space-between;gap:8px;margin-bottom:0}#clStrip.sem .clMiK span{color:#cbd5e1;letter-spacing:.02em;font-weight:700}
+#clStrip .clSt{display:flex;align-items:center;gap:8px;margin:8px 0 7px}#clStrip .clSt .dt{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none;animation:clPu 1.4s infinite}
+@keyframes clPu{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 70%,transparent)}100%{box-shadow:0 0 0 11px transparent}}
+#clStrip .clSt b{font-size:16px;color:var(--c);line-height:1.15}#clStrip.cr .clSt b{animation:clBl 1s steps(2) infinite}@keyframes clBl{50%{opacity:.55}}
+#clStrip .clSt .pt{margin-left:auto;font-family:"Barlow Condensed",sans-serif;font-size:24px;font-weight:700;white-space:nowrap}#clStrip .clSt .pt small{font-family:inherit;font-size:13px;color:#94a3b8}
+#clStrip .clSB{display:block;position:relative;height:9px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden}#clStrip .clSB i{position:absolute;left:0;top:0;bottom:0;border-radius:9px;background-color:var(--c);background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.22) 0 8px,transparent 8px 16px);background-size:23px 23px;animation:clMv 1s linear infinite}
+@keyframes clMv{to{background-position:23px 0}}#clStrip .clSB u{position:absolute;top:0;bottom:0;width:2px;background:#fff;box-shadow:0 0 6px #fff}
+#clStrip .clSm{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-size:12.5px;color:#e2e8f0}#clStrip .clSm em{font-style:normal;color:#7DD3FC;white-space:nowrap}
+.cp6.cp6one{display:flex!important;align-items:center;gap:11px;background:radial-gradient(120% 140% at 0 0,#14532d,#0b1f17 70%)!important;box-shadow:0 0 0 1px rgba(34,197,94,.35)!important}
+.cp6.cp6one:after{display:none}.cp6one .c1s{position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.13) 50%,transparent 70%);transform:translateX(-100%);animation:cpSh 3.5s 1s 3;pointer-events:none}@keyframes cpSh{to{transform:translateX(100%)}}
+.cp6one .c1i{width:32px;height:32px;border-radius:50%;background:#22C55E;display:grid;place-items:center;font-size:16px;flex:none}.cp6one .c1t{flex:1 1 auto;min-width:0;display:block}.cp6one .c1t b{display:block;font-size:15px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cp6one .c1t small{display:block;font-size:12px;color:#86EFAC;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cp6one .c1n{flex:none;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:21px;color:#fff;white-space:nowrap}.cp6one .c1n small{font-family:inherit;font-size:12px;color:#86EFAC}.cp6one .c1c{flex:none;font-style:normal;color:#86EFAC;font-size:12px}
+@media (prefers-reduced-motion:reduce){#clStrip.sem,#clStrip .clSt .dt,#clStrip .clSB i,#clStrip.cr .clSt b,.cp6one .c1s{animation:none}}
 </style>
 
 </head>
@@ -3643,6 +3660,8 @@ function compStripHTML(mini){const C=miComp(),mn=mesNom();
     const S=cp6Est(val,goal,d,vm),an=!window._cp6A?" an":"";window._cp6A=1;
     const top=`<div class="cp6T"><span class="k">MI COMPROMISO${rgS?" · "+esc(rgS):""}</span><span class="v"><b>${fmt(val)}</b> / ${fmt(goal)} ${vm?"pts":(goal===1?"activación":"act.")}<i>${open?"▴":"▾"}</i></span></div><div class="cp6B"><s style="width:${Math.max(val?3:0,pv)}%"></s>${S.ok?"":`<u style="left:${S.r}%"></u>`}</div><div class="cp6S"><span data-cpr="${esc(JSON.stringify(cpFrases(S,val,goal,vm)))}"><b></b><q>${esc(S.t)}</q></span>${S.ok||!open?`<em>${S.ok?"🏆":"Quedan "+d+" "+(d===1?"día":"días")}</em>`:""}</div>`;
     if(S.ok)setTimeout(()=>{try{const m=String(new Date().getFullYear())+"-"+new Date().getMonth();if(LS.get("cp6Ok")!==m){LS.set("cp6Ok",m);confeti($("#compStrip"),60)}}catch(e){}},700);
+    // 24 nov (Edwin): cumplido y cerrado = una sola línea «Compromiso del mes cumplido»
+    if(!open&&S.ok)return `<div class="cp3 cp6 cp6one cg" data-cpt><span class="c1i">🏆</span><span class="c1t"><b>Compromiso del mes cumplido</b><small>${rgS?esc(rgS.charAt(0)+rgS.slice(1).toLowerCase().replace(/\b\w/g,x=>x.toUpperCase()))+" · ":""}¡Cumplió su palabra!</small></span><span class="c1n">${fmt(val)}<small> / ${fmt(goal)}</small></span><i class="c1c">▾</i><span class="c1s"></span></div>`;
     if(!open)return `<div class="cp3 cp6 ${S.c}${an}" data-cpt>${top}<div class="vm6">Ver más detalles ⌄</div></div>`;
     return `<div class="cp3 cp6 op ${S.c}${an}" data-cpt>${top}<div class="cp6D"><div class="g"><div><small>ACTIVACIONES</small><b>${A}<span> / ${C.act}</span></b></div><div><small>PRESENT. SEMANA</small><b>${p}<span> / ${C.pres}</span></b></div><div><small>${falta?"LE FALTAN":"META"}</small><b>${falta?fmt(falta):"✓"}${falta&&!vm?"<span> act.</span>":""}</b></div></div><div class="ft"><span>⏳ Quedan ${d} ${d===1?"día":"días"}</span><button type="button" data-comp>Editar ›</button></div></div><div class="vm6">Ver menos ⌃</div></div>`}
 
@@ -4752,20 +4771,29 @@ async function cl40Ver(id,mas){const D=cl40Dat(id);if(!D)return;openSheet(`<p cl
   const b=$("#c40S");if(!b)return;b.disabled=false;b.onclick=async()=>{const t=cl40Txt(D);if(file&&navigator.canShare&&navigator.canShare({files:[file],text:t})){try{await navigator.share({files:[file],text:t});return}catch(e){if(e&&e.name==="AbortError")return}}
     if(file){const a=document.createElement("a");a.href=URL.createObjectURL(file);a.download=file.name;a.click()}try{copy(t);toast("📋 Texto copiado")}catch(e){}}})}
 
+function clSem(v,t,c,ab){if(!t)return{c:"cg",r:null,t:"Compromiso hecho",m:"💪 Siga sumando"};if(v>=t)return{c:"cg",r:null,t:"¡Cumplió su compromiso! 🏆",m:"🔥 Vaya por más · ayude al sistema"};
+  const d=Date.parse(c.desde),h=Date.parse(c.hasta),r=Math.max(0,Math.min(1,(Date.now()-d)/((h-d)||1))),R=Math.round(r*100),ex=t*r,q=ex>0?v/ex:1,ff=t-v,dd=clDias();
+  if(!ab)return{c:"cr",r:null,t:"Cerró con "+clPct(v,t)+"%",m:"Le faltaron "+fmt(ff)+" pts"};
+  if(q>=1)return{c:"cg",r:R,t:v>ex*1.08?"¡Va adelante!":"Va al día",m:"💪 Siga así · ya lleva el "+clPct(v,t)+" %"};
+  if(q>=.5||r<.15)return{c:"cy",r:R,t:"Le faltan "+fmt(Math.max(1,Math.ceil(ex-v)))+" pts para ir al día",m:"🔥 Un cierre hoy lo pone al día"};
+  return{c:"cr",r:R,t:"¡Acelere!",m:"⏰ Le faltan "+fmt(ff)+" pts en "+dd+" "+(dd===1?"día":"días")}}
 function clStrip(){const el=$("#clStrip");if(!el)return;const c=clCfg();if(!c||!clPuede()){el.hidden=true;return}const yo=clMio(),ab=clAbierto();if(constL){try{clAvisos(clCalc())}catch(x){}}
   if(yo&&yo.no&&ab){el.hidden=true;return}
   if(!yo&&!ab){el.hidden=true;return}
   el.hidden=false;const MT=clMeta();
-  if(!yo){el.innerHTML=`<div class="clI">⚔️</div><div class="clT"><div class="clK">SISTEMA DE LIDERAZGO</div><b>Compromiso de líderes · cierre de ${esc(clMesN())}</b><span>Quedan <b>${clDias()} días</b>. ${clAud()&&!clAudOk()?"Primero escuche el audio y luego haga su compromiso.":"Únase y diga cuánto cierra usted y cuánto gestiona con su equipo."}</span>${MT}<div class="clBs"><button type="button" data-cl="u">${clAud()&&!clAudOk()?"🎧 Escuchar y unirme":"⚔️ Me uno"}</button><button type="button" class="g" data-cl="v">Ver quién se unió</button></div></div>`}
+  if(!yo){el.classList.remove("mini","sem","cg","cy","cr");el.innerHTML=`<div class="clI">⚔️</div><div class="clT"><div class="clK">SISTEMA DE LIDERAZGO</div><b>Compromiso de líderes · cierre de ${esc(clMesN())}</b><span>Quedan <b>${clDias()} días</b>. ${clAud()&&!clAudOk()?"Primero escuche el audio y luego haga su compromiso.":"Únase y diga cuánto cierra usted y cuánto gestiona con su equipo."}</span>${MT}<div class="clBs"><button type="button" data-cl="u">${clAud()&&!clAudOk()?"🎧 Escuchar y unirme":"⚔️ Me uno"}</button><button type="button" class="g" data-cl="v">Ver quién se unió</button></div></div>`}
   else{const R=clCalc(),vp=R.P[store.uid]||0,ve=R.E[store.uid]||0,p=+yo.p||0,e=+yo.e||0;
     // 23 nov (Edwin): cerrada = una franja delgada «Lleva X de Y» + barrita de la meta del sistema; al tocarla se abre el detalle
     if(!LS.get("clOpen")){const L=R.L||[],m=+c.meta||20000,lo=L.reduce((a,x)=>a+(R.P[x.uid]||0)+(R.E[x.uid]||0),0),v=vp+ve,t=p+e;
-      el.classList.add("mini");el.innerHTML=`<button type="button" class="clMi" data-cl="o"><span class="clMiK">⚔️ COMPROMISO DE LÍDERES · ${ab?"QUEDAN "+clDias()+" DÍAS":"CERRADO"}</span>
-       <span class="clMiR"><span>Lleva <b>${fmt(v)}</b> de ${fmt(t)} pts${t&&v>=t?" 🏆":""}</span><em>${clPct(v,t)}%</em></span><span class="clBar"><i style="width:${clPct(v,t)}%"></i></span>
-       <span class="clMiR s"><span>🎯 Sistema: <b>${fmt(lo)}</b> de ${fmt(m)} pts</span><em>${clPct(lo,m)}%</em></span><span class="clBar"><i class="e" style="width:${clPct(lo,m)}%"></i></span>
+      // 24 nov (Edwin, maqueta inicio-banners): semáforo por ritmo de la semana (verde/amarillo/rojo), borde que gira, punto que late, barra con rayas
+      const Z=clSem(v,t,c,ab);el.classList.add("mini","sem");el.classList.remove("cg","cy","cr");el.classList.add(Z.c);
+      el.innerHTML=`<button type="button" class="clMi clIn" data-cl="o"><span class="clMiK">⚔️ COMPROMISO DE LÍDERES<span>${ab?"Quedan "+clDias()+" días":"Cerrado"}</span></span>
+       <span class="clSt"><span class="dt"></span><b>${esc(Z.t)}</b><span class="pt">${fmt(v)}<small> / ${fmt(t)}</small></span></span>
+       <span class="clSB"><i style="width:${Math.max(v?3:0,clPct(v,t))}%"></i>${Z.r!=null?`<u style="left:${Z.r}%"></u>`:""}</span>
+       <span class="clSm"><span>${esc(Z.m)}</span><em>🎯 Sistema ${fmt(lo)} / ${fmt(m)} ›</em></span>
        <span class="vm6">Ver más detalles ⌄</span></button>`;
       el.querySelector("[data-cl]").onclick=()=>{LS.set("clOpen",1);clStrip()};return}
-    el.classList.remove("mini");
+    el.classList.remove("mini","sem","cg","cy","cr");
     el.innerHTML=`<div class="clI">⚔️</div><div class="clT"><div class="clK">COMPROMISO DE LÍDERES · ${ab?"QUEDAN "+clDias()+" DÍAS":"CERRADO"}</div><b>${ab?(vp>=p&&ve>=e?"🏆 ¡Va cumpliendo su compromiso!":"Su compromiso de cierre"):"Así cerró su compromiso"}</b>
     <div class="clPr">${p?`<div>👤 Personal: <b>${fmt(vp)}</b> de ${fmt(p)} pts${vp<p?` · faltan ${fmt(p-vp)}`:" ✓"}<div class="clBar"><i style="width:${clPct(vp,p)}%"></i></div></div>`:""}${e?`<div>👥 Equipo: <b>${fmt(ve)}</b> de ${fmt(e)} pts${ve<e?` · faltan ${fmt(e-ve)}`:" ✓"}<div class="clBar"><i class="e" style="width:${clPct(ve,e)}%"></i></div></div>`:""}</div>
     ${MT}<div class="clBs">${clAud()&&!clAudOk()?`<button type="button" data-cl="a">🎧 Escuchar el audio</button>`:""}<button type="button" class="g" data-cl="v">Ver el balance ›</button>${ab?`<button type="button" class="g" data-cl="e">✏️ Cambiar</button>`:""}</div><button type="button" class="vm6 clMn" data-cl="c">Ver menos ⌃</button></div>`}
@@ -12181,7 +12209,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261124101522";var busy=false,pend=null;
+(function(){var V="20261124142930";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
