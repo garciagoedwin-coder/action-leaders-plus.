@@ -4643,9 +4643,13 @@ function clLista(){const c=clCfg();if(!c)return[];const m=new Map();(constL||[])
 function clCalc(){const c=clCfg();if(!c)return{P:{},E:{},L:[]};const L=clLista().filter(x=>!x.no),S=new Set(L.map(x=>x.uid)),d=Date.parse(c.desde),h=Date.parse(c.hasta),PKV={Starter:50,Classic:200,Premium:500},P={},E={},F=(typeof fotosFs!=="undefined"&&fotosFs)||[];
   const ig=(a,b)=>!!(a&&b)&&(sameN(a,b)||sameN(aliasRank(a),b)||sameN(a,aliasRank(b)));
   const N=L.map(x=>{const f=F.find(z=>z.id===x.uid)||{};return{u:x.uid,ns:[x.n,f.invNombre,f.nombre,f.rk].filter(Boolean)}});
+  const LN=(T.lideres||[]).flatMap(l=>[l.nombre,l.nombreRanking]).filter(Boolean),esMiem=n=>!!n&&LN.some(x=>ig(x,n)||lzMismo(x,n));
+  const MU=new Set(F.filter(z=>[z.invNombre,z.nombre,z.rk].some(esMiem)).map(z=>z.id));S.forEach(u=>MU.add(u));
   (T.activaciones||[]).forEach(a=>{const t=Date.parse(a.fecha);if(!(t>=d&&t<h)||actSinVol(a))return;const v=PKV[a.paquete]||0,s=a.patrocinador||"";if(!v||!s)return;
     let ld=N.find(z=>z.ns.some(n=>ig(n,s)));if(!ld)ld=N.find(z=>z.ns.some(n=>lzMismo(n,s)));if(ld){P[ld.u]=(P[ld.u]||0)+v;return}
-    const f=F.find(z=>[z.invNombre,z.nombre,z.rk].some(n=>ig(n,s)));if(!f||!Array.isArray(f.linea))return;const up=f.linea.find(u=>S.has(u));if(up)E[up]=(E[up]||0)+v});
+    if(esMiem(s))return; // 23 nov (Edwin): lo de otro líder del sistema no cuenta como equipo de nadie
+    const f=F.find(z=>[z.invNombre,z.nombre,z.rk].some(n=>ig(n,s)));if(!f||MU.has(f.id)||!Array.isArray(f.linea))return;
+    for(const u of f.linea){if(S.has(u)){E[u]=(E[u]||0)+v;break}if(MU.has(u))break}});
   return{P,E,L}}
 function clDias(){const c=clCfg();return c?Math.max(0,Math.ceil((Date.parse(c.hasta)-Date.now())/864e5)):0}
 function clMesN(){const c=clCfg();return (c&&c.mes)||mesNom()}
@@ -4664,13 +4668,14 @@ function clAbrir(ed){const c=clCfg();if(!c){toast("El compromiso de líderes ya 
   const ch=(k,vs)=>vs.map(v=>`<button type="button" class="clC" data-${k}="${v}" aria-pressed="false">${fmt(v)}</button>`).join("")+`<button type="button" class="clC" data-${k}="o" aria-pressed="false">Otro</button>`;
   openSheet(`<div class="clHd"><span>⚔️</span><p class="eyebrow">SISTEMA DE LIDERAZGO · CIERRE DE ${esc(clMesN().toUpperCase())}</p><h2>Compromiso de líderes</h2><p>Quedan <b>${clDias()} días</b> para cerrar ${esc(clMesN())}${c.fin?` (${esc(c.fin)})`:""}. Los líderes del sistema nos unimos para cerrar el mes con éxito.</p></div>
   <div class="clQ"><b>1. 👤 Mi compromiso personal</b><small>¿Cuánto volumen de activaciones cierro yo, de hoy al cierre del mes?</small><div class="clCs">${ch("p",[200,500,1000,1500])}</div><input id="clPi" type="text" inputmode="numeric" placeholder="Escriba los puntos (ej. 700)" hidden></div>
-  <div class="clQ"><b>2. 👥 Mi compromiso con mi equipo</b><small>¿Cuánto volumen me comprometo a gestionar con mi equipo?</small><div class="clCs">${ch("e",[500,1000,2000,3000])}</div><input id="clEi" type="text" inputmode="numeric" placeholder="Escriba los puntos (ej. 2500)" hidden><p class="clNt">Cuenta lo que cierren los socios de su línea hacia abajo. Si un líder de su equipo también hace su compromiso, lo de su línea cuenta para él.</p></div>
+  <div class="clQ"><b>2. 👥 Mi compromiso con mi equipo</b><small>¿Cuánto volumen me comprometo a gestionar con mi equipo?</small><div class="clCs">${ch("e",[0,500,1000,2000,3000])}</div><input id="clEi" type="text" inputmode="numeric" placeholder="Escriba los puntos (ej. 2500)" hidden><p class="clNt">Si aún no tiene equipo, elija 0. Cuenta lo que cierren los socios de su línea hacia abajo que no son del Sistema de liderazgo. Lo de la línea de otro líder del sistema cuenta para ese líder, no para usted.</p></div>
   <label class="clCk"><input type="checkbox" id="clOk"><span>Me comprometo a cumplirlo de forma infalible, sin excusas, hasta el cierre del mes.</span></label>
   <p class="muted small" id="clFal" style="margin:0 0 8px;text-align:center"></p><button class="btn" id="clSi" style="width:100%;background:linear-gradient(135deg,#B07D00,#F5B700);color:#2a1c00" disabled>${P0.p?"✅ Guardar mi compromiso":"⚔️ Me uno al compromiso"}</button>${P0.p?`<button class="btn ghost" data-close style="width:100%;margin-top:8px">Cancelar</button>`:`<button class="btn ghost" id="clNo" style="width:100%;margin-top:8px">No me uno por ahora</button>`}`,()=>{
-    const num=v=>Math.round(+String(v||"").replace(/[^\d]/g,"")||0),V={p:0,e:0},sel=(k,b)=>{document.querySelectorAll(`[data-${k}]`).forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));const i=$(k==="p"?"#clPi":"#clEi");if(b.dataset[k]==="o"){i.hidden=false;i.focus();V[k]=num(i.value)}else{i.hidden=true;V[k]=+b.dataset[k]}chk()},
-      chk=()=>{const ok=$("#clOk").checked&&V.p>0&&V.e>0;$("#clSi").disabled=!ok;const h=$("#clFal");if(h)h.textContent=V.p>0&&V.e>0?"":"Elija su compromiso personal y el de su equipo"+(!$("#clOk").checked?" y marque la casilla":"")+"."};
+    const num=v=>Math.round(+String(v||"").replace(/[^\d]/g,"")||0),V={p:0,e:0},Q={p:0,e:0},sel=(k,b)=>{Q[k]=1;document.querySelectorAll(`[data-${k}]`).forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));const i=$(k==="p"?"#clPi":"#clEi");if(b.dataset[k]==="o"){i.hidden=false;i.focus();V[k]=num(i.value)}else{i.hidden=true;V[k]=+b.dataset[k]}chk()},
+      eOk=()=>{const o=document.querySelector('[data-e="o"]');return Q.e&&!(o&&o.getAttribute("aria-pressed")==="true"&&!String($("#clEi").value||"").trim())},
+      chk=()=>{const ok=$("#clOk").checked&&V.p>0&&eOk();$("#clSi").disabled=!ok;const h=$("#clFal");if(h)h.textContent=V.p>0&&eOk()?(!$("#clOk").checked?"Marque la casilla para unirse.":""):"Elija su compromiso personal y el de su equipo (0 si no tiene equipo)"+(!$("#clOk").checked?" y marque la casilla":"")+"."};
     ["p","e"].forEach(k=>{document.querySelectorAll(`[data-${k}]`).forEach(b=>b.onclick=()=>sel(k,b));$(k==="p"?"#clPi":"#clEi").oninput=ev=>{V[k]=num(ev.target.value);chk()};
-      if(P0[k]){const b=document.querySelector(`[data-${k}="${P0[k]}"]`)||document.querySelector(`[data-${k}="o"]`);if(b.dataset[k]==="o")$(k==="p"?"#clPi":"#clEi").value=P0[k];sel(k,b)}});
+      if(P0[k]||(k==="e"&&P0.p)){const b=document.querySelector(`[data-${k}="${P0[k]}"]`)||document.querySelector(`[data-${k}="o"]`);if(b.dataset[k]==="o")$(k==="p"?"#clPi":"#clEi").value=P0[k];sel(k,b)}});
     $("#clOk").onchange=chk;
     $("#clSi").onclick=async()=>{const b=$("#clSi");b.disabled=true;b.textContent="Guardando…";await clGuardar({p:V.p,e:V.e});clFirmado()};
     if($("#clNo"))$("#clNo").onclick=async()=>{await clGuardar({no:true});closeSheet();toast("Entendido. Si cambia de opinión, está en el Sistema de liderazgo.")}})}
@@ -4681,7 +4686,7 @@ function clFirmado(){const yo=clMio()||{};openSheet(`<div class="clHd" id="clFz"
 async function clVer(){openSheet(`<p class="muted small">Cargando…</p>`);try{await loadConst(!constT||Date.now()-constT>60000)}catch(e){}const c=clCfg();if(!c){closeSheet();return}const R=clCalc(),yo=clMio(),ab=clAbierto();
   const L=R.L.map(x=>({...x,vp:R.P[x.uid]||0,ve:R.E[x.uid]||0})).sort((a,b)=>(b.vp+b.ve)-(a.vp+a.ve)||((+b.p||0)+(+b.e||0))-((+a.p||0)+(+a.e||0)));
   const tc=L.reduce((a,x)=>a+(+x.p||0)+(+x.e||0),0),tl=L.reduce((a,x)=>a+x.vp+x.ve,0),M=(T.lideres||[]).length,nos=clLista().filter(x=>x.no).length;
-  const fila=x=>`<div class="clRw${x.uid===store.uid?" yo":""}"><div class="clN">${(()=>{try{return avV(x.n,x.uid)}catch(e){return""}})()}<span>${esc(typeof nv==="function"?nv(x.n):x.n)}${x.uid===store.uid?" · USTED":""}</span><em>${fmt(x.vp+x.ve)} / ${fmt((+x.p||0)+(+x.e||0))}</em></div><div class="clL"><div>👤 Personal<br><b>${fmt(x.vp)}</b> / ${fmt(+x.p||0)}<div class="clBar"><i style="width:${clPct(x.vp,+x.p||0)}%"></i></div></div><div>👥 Equipo<br><b>${fmt(x.ve)}</b> / ${fmt(+x.e||0)}<div class="clBar"><i class="e" style="width:${clPct(x.ve,+x.e||0)}%"></i></div></div></div></div>`;
+  const fila=x=>`<div class="clRw${x.uid===store.uid?" yo":""}"><div class="clN">${(()=>{try{return avV(x.n,x.uid)}catch(e){return""}})()}<span>${esc(typeof nv==="function"?nv(x.n):x.n)}${x.uid===store.uid?" · USTED":""}</span><em>${fmt(x.vp+x.ve)} / ${fmt((+x.p||0)+(+x.e||0))}</em></div><div class="clL"><div>👤 Personal<br><b>${fmt(x.vp)}</b> / ${fmt(+x.p||0)}<div class="clBar"><i style="width:${clPct(x.vp,+x.p||0)}%"></i></div></div><div>👥 Equipo<br>${+x.e?`<b>${fmt(x.ve)}</b> / ${fmt(+x.e)}<div class="clBar"><i class="e" style="width:${clPct(x.ve,+x.e)}%"></i></div>`:`<b>—</b> sin equipo`}</div></div></div>`;
   openSheet(`<p class="eyebrow">⚔️ COMPROMISO DE LÍDERES · CIERRE DE ${esc(clMesN().toUpperCase())}</p><h3 style="margin:4px 0 2px">🤝 ${L.length} de ${M} líderes se unieron</h3><p class="muted small" style="margin:0">${ab?`Quedan ${clDias()} días · cuenta desde el ${esc(niceDate(new Date(Date.parse(c.desde)-6*36e5).toISOString().slice(0,10)))}, ${esc(new Date(c.desde).toLocaleTimeString("es-HN",{timeZone:"America/Tegucigalpa",hour:"numeric",minute:"2-digit"}))}`:"Compromiso cerrado"}${nos?` · ${nos} no se unieron`:""}</p>
   <div class="clTot"><div><b>${fmt(tc)}</b><span>pts comprometidos</span></div><div><b>${fmt(tl)}</b><span>pts logrados · ${clPct(tl,tc)}%</span></div></div>
   ${L.length?L.map(fila).join(""):`<p class="muted">Todavía nadie se ha unido. ¡Sea el primero!</p>`}${(()=>{const tod=clLista(),ig=(a,b)=>!!(a&&b)&&(sameN(a,b)||lzMismo(a,b)),F=(typeof fotosFs!=="undefined"&&fotosFs)||[],nmsU=u=>{const f=F.find(z=>z.id===u)||{};return[f.invNombre,f.nombre,f.rk].filter(Boolean)};
@@ -12035,7 +12040,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261123212821";var busy=false,pend=null;
+(function(){var V="20261123213753";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
