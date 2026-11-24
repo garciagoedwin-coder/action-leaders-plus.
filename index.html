@@ -4642,7 +4642,7 @@ function clMio(){const c=clCfg();if(!c)return null;const l=LS.get("cl:"+store.ui
 function clLista(){const c=clCfg();if(!c)return[];const m=new Map();(constL||[]).forEach(x=>{if(x.cl&&x.cl.id===c.id)m.set(x.uid,Object.assign({},x.cl,{uid:x.uid,n:x.nombre}))});const yo=LS.get("cl:"+store.uid+":"+c.id);if(yo&&clGuarda())m.set(store.uid,Object.assign({},yo,{uid:store.uid,n:miNombreFull()||miNombreCorto()}));return[...m.values()]}
 function clCalc(){const c=clCfg();if(!c)return{P:{},E:{},L:[]};const L=clLista().filter(x=>!x.no),S=new Set(L.map(x=>x.uid)),d=Date.parse(c.desde),h=Date.parse(c.hasta),PKV={Starter:50,Classic:200,Premium:500},P={},E={},F=(typeof fotosFs!=="undefined"&&fotosFs)||[];
   const ig=(a,b)=>!!(a&&b)&&(sameN(a,b)||sameN(aliasRank(a),b)||sameN(a,aliasRank(b)));
-  const N=L.map(x=>{const f=F.find(z=>z.id===x.uid)||{};return{u:x.uid,ns:[x.n,f.invNombre,f.nombre,f.rk].filter(Boolean)}});
+  const N=L.map(x=>{const f=F.find(z=>z.id===x.uid)||{};return{u:x.uid,ns:[x.n,f.invNombre,f.nombre,f.rk].filter(Boolean).flatMap(n=>[n,aliasRank(n)])}});
   const LN=(T.lideres||[]).flatMap(l=>[l.nombre,l.nombreRanking]).filter(Boolean),esMiem=n=>!!n&&LN.some(x=>ig(x,n)||lzMismo(x,n));
   const MU=new Set(F.filter(z=>[z.invNombre,z.nombre,z.rk].some(esMiem)).map(z=>z.id));S.forEach(u=>MU.add(u));
   (T.activaciones||[]).forEach(a=>{const t=Date.parse(a.fecha);if(!(t>=d&&t<h)||actSinVol(a))return;const v=PKV[a.paquete]||0,s=a.patrocinador||"";if(!v||!s)return;
@@ -4690,7 +4690,7 @@ async function clVer(){openSheet(`<p class="muted small">Cargando…</p>`);try{a
   openSheet(`<p class="eyebrow">⚔️ COMPROMISO DE LÍDERES · CIERRE DE ${esc(clMesN().toUpperCase())}</p><h3 style="margin:4px 0 2px">🤝 ${L.length} de ${M} líderes se unieron</h3><p class="muted small" style="margin:0">${ab?`Quedan ${clDias()} días · cuenta desde el ${esc(niceDate(new Date(Date.parse(c.desde)-6*36e5).toISOString().slice(0,10)))}, ${esc(new Date(c.desde).toLocaleTimeString("es-HN",{timeZone:"America/Tegucigalpa",hour:"numeric",minute:"2-digit"}))}`:"Compromiso cerrado"}${nos?` · ${nos} no se unieron`:""}</p>
   <div class="clTot"><div><b>${fmt(tc)}</b><span>pts comprometidos</span></div><div><b>${fmt(tl)}</b><span>pts logrados · ${clPct(tl,tc)}%</span></div></div>
   ${L.length?L.map(fila).join(""):`<p class="muted">Todavía nadie se ha unido. ¡Sea el primero!</p>`}${(()=>{const tod=clLista(),ig=(a,b)=>!!(a&&b)&&(sameN(a,b)||lzMismo(a,b)),F=(typeof fotosFs!=="undefined"&&fotosFs)||[],nmsU=u=>{const f=F.find(z=>z.id===u)||{};return[f.invNombre,f.nombre,f.rk].filter(Boolean)};
-    const dij=l=>tod.find(x=>[x.n,...nmsU(x.uid)].some(n=>ig(n,l.nombre)||ig(n,l.nombreRanking)));
+    const dij=l=>tod.find(x=>[x.n,...nmsU(x.uid)].flatMap(n=>[n,aliasRank(n)]).some(n=>ig(n,l.nombre)||ig(n,l.nombreRanking)));
     const pend=[],no=[];(T.lideres||[]).forEach(l=>{const x=dij(l);if(!x)pend.push(l.nombre);else if(x.no)no.push(l.nombre)});
     const ch=(arr,t,op)=>arr.length?`<details class="clPd"${op?" open":""}><summary>${t} · ${arr.length}</summary><div class="clPl">${arr.map(n=>`<span>${(()=>{try{return avV(n)}catch(e){return""}})()}${esc(typeof nv==="function"?nv(n):n)}</span>`).join("")}</div></details>`:"";
     return ch(pend,"⏳ Aún no responden",1)+ch(no,"No se unieron por ahora",0)})()}
@@ -12040,7 +12040,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261123213753";var busy=false,pend=null;
+(function(){var V="20261123214733";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
