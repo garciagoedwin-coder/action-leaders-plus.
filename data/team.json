@@ -3546,6 +3546,17 @@
    "fuente": "gmail",
    "id": "yinier-cristobal-herrera-munguia",
    "rv": 1
+  },
+  {
+   "socio": "Milton Antonio Santos Romero",
+   "paquete": "Premium",
+   "patrocinador": "Edwin García Go",
+   "fecha": "2026-11-24T15:00:00Z",
+   "ek": "cb309b",
+   "wk": "00b033",
+   "fuente": "gmail",
+   "id": "milton-antonio-santos-romero",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3579,7 +3590,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-24T01:55:03Z",
+  "activacionesCorte": "2026-11-24T15:00:00Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
