@@ -61,6 +61,14 @@ if (process.env.CODE === "fotos") { initializeApp({ credential: cert(JSON.parse(
   const ek = crypto.publicEncrypt({ key: "-----BEGIN PUBLIC KEY-----\n" + process.env.PK + "\n-----END PUBLIC KEY-----", oaepHash: "sha256" }, k);
   console.log("fotos", Object.keys(o).length); const all = [ek, iv, tag, enc].map(b => b.toString("base64")).join("."); for (let i = 0; i < all.length; i += 20000) console.log("CIF" + String(i / 20000).padStart(3, "0") + ":" + all.slice(i, i + 20000));
   await new Promise(r => process.stdout.write("", r)); process.exit(0) }
+// 24 nov: TEMA DEL LÍDER. Solo fechas (nada personal): por Training próximo, la hora más reciente en que algún ponente mandó o cambió su tema.
+if (process.env.CODE === "tema") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
+  const mA = new Date(Date.now() - 6 * 36e5).toISOString().slice(0, 7), mB = new Date(Date.now() + 4 * 864e5 - 6 * 36e5).toISOString().slice(0, 7), hoy = new Date(Date.now() - 6 * 36e5).toISOString().slice(0, 10);
+  for (const m of [...new Set([mA, mB])]) { const S = ((await db.doc("turnos/" + m).get()).data() || {}).s || {};
+    for (const id in S) { if (id.slice(0, 10) < hoy || !/action-leaders-training/.test(id)) continue; const T = S[id].tm || {}; let mx = 0, n = 0;
+      for (const u in T) { const x = T[u] || {}; if (x.ts) n++; mx = Math.max(mx, +x.ts || 0, +x.camT || 0); }
+      console.log("TEMA", id, "ponentes_con_tema", n, "ultimo", mx); } }
+  process.exit(0) }
 if (process.env.CODE === "analisis") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
   const U = (await db.collection("users").get()).docs.map(d => { const x = d.data() || {}, r = x.registro || {}, a = x.actividad || {}, ir = x.ir || {};
     return { u: d.id, n: r.nombre || "", pl: r.plan || "", f: r.fecha || "", rg: r.rango || "", ap: x.apE || "", a: { hoy: a.hoy, racha: a.racha, dias7: a.dias7, semana: a.semana, t: a.t, emb: a.emb ? a.emb.c : null, crm: a.crm }, ir: ir.p || null, sa: x.soloAdm || 0 } });

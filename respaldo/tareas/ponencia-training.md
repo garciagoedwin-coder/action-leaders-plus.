@@ -45,3 +45,19 @@ Al ponente le llega solo el aviso «Su ponencia de mañana está lista» (servid
 - Nunca correos, teléfonos ni uids en el repo, ni en el log de GitHub (solo conteos).
 - Logs de diagnóstico: bórralos al terminar.
 - Respeta la marca: fondo #0B1220, celeste #2AC1F1, marca #0A7DAD; Poppins títulos, Figtree texto, Barlow Condensed números; «ACTION LEADERS Training!» con Bebas + Kaushan (excepción aprobada). En maquetas no usar el nombre «Karen Lizeth Paz».
+
+## 4. TEMA DEL LÍDER (desde el 24 nov · Edwin)
+El ponente aceptado en Turnos puede mandar SU tema desde la app («✍️ Mi tema») hasta las 6:00 p.m. del día del Training. Llega en `tu.s[idEvento].tm[uid]` = {t título, i ideas (una por renglón), h historia, ta tarea, no notas, sg índice de sugerencia elegida, n nombre, ts hora, cam cambios pedidos, camT hora de los cambios}.
+- **Si hay tm de un ponente, SU parte se arma con SU tema**: título = t; contenido = sus ideas (i) en el orden que las dio; su historia (h) en el guion y en una diapositiva; tarea de 48 horas = ta (si no hay, propón una medible en la app). Mantén el modelo fijo (anuncios, «Lo que dice nuestra app» con datos reales conectados a SU tema, acción con la app con botones exactos, cierre #HASTAQUEFUNCIONE). Corrige ortografía y tono (de usted, sin prometer ingresos), pero respeta sus ideas.
+- Varios ponentes: cada uno su parte con su tm; el que no mandó, con el tema sugerido. Orden: rango más bajo abre, el más alto cierra.
+- `cam` = cambios que pidió sobre la versión ya generada: aplícalos.
+- Guarda en `config.ponencias[idEvento].tmV = {uid: ts o camT procesado}` para saber qué ya se usó.
+
+### SUGERENCIAS (en el MODO PREPARAR)
+Escribe `config.ponencias[idEvento].sug` = 3 sugerencias [{a área, t título, d dato real del análisis en una línea, i ["idea 1","idea 2","idea 3"]}] — una de Mentalidad o Creencias, una de Liderazgo y una de la Habilidad más débil según los datos (martes) / Redes y marca personal (jueves). La app las muestra en «✍️ Mi tema». Aunque nadie mande tema, la ponencia de respaldo usa la sugerencia 1.
+El MODO PREPARAR corre DOS días antes (domingo → martes, martes → jueves, viernes → domingo), así las sugerencias están cuando llega el aviso «¿Qué tema va a dar?» (lo manda el servidor 2 días antes y el mismo día a las 9 a.m. a quien no ha mandado tema).
+
+### MODO TEMA (tarea cada hora de 9 a.m. a 6 p.m. los martes, jueves y domingos, y la víspera)
+1. Clona el repo (§0). Dispara diagperf con `inputs[code]=tema` (no necesita pk; el log solo trae fechas): líneas `TEMA idEvento ponentes_con_tema N ultimo MS`.
+2. Para cada Training de HOY o MAÑANA: si `ultimo` > máximo de `config.ponencias[idEvento].tmV` (o no hay tmV y ultimo > 0) → hay tema nuevo o cambios: haz §1 completo (análisis cifrado) y rehaz la ponencia (§2 pasos 1–5) con el tema del líder (§4). `act` = ahora. Si no hay nada nuevo: termina en silencio (sin mensaje a Edwin, borra el run).
+3. Aviso a Edwin en una línea: «Ponencia del {día} rehecha con el tema de {Nombre}: «{título}»» + adjunta los PDF.

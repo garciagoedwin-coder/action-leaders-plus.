@@ -748,6 +748,24 @@ async function main() {
         }
       }
     }
+    // 24 nov (Edwin): TEMA DEL LÍDER. 2 días antes (9 a.m.–6 p.m. HN) «¿Qué tema va a dar?» y el mismo día a partir de las 9 a.m. recordatorio,
+    // solo a los ponentes aceptados que aún NO mandaron tema (turnos.s[id].tm[uid].ts). Plazo: 6:00 p.m. del día. Dedupe: id:uid:t2 / id:uid:t0.
+    { const hHN = new Date(ahora - 6 * 36e5), hoyK = hHN.toISOString().slice(0, 10), hr = hHN.getUTCHours();
+      const masD = (f, n) => new Date(Date.parse(f + "T12:00:00Z") + n * 864e5).toISOString().slice(0, 10);
+      if (hr >= 9 && hr < 18) for (const e of (J.calendario || [])) {
+        if (!e || !e.id || e.cancel || !/action leaders training/i.test(e.titulo || "")) continue;
+        const kk = masD(e.fecha, -2) === hoyK ? "t2" : e.fecha === hoyK ? "t0" : null; if (!kk) continue;
+        const mes = e.fecha.slice(0, 7); if (!(mes in TD)) TD[mes] = ((await db.doc("turnos/" + mes).get()).data() || {}).s || {};
+        const S = TD[mes][e.id] || {}, TM = S.tm || {}, dw = DIAS[new Date(e.fecha + "T12:00:00Z").getUTCDay()];
+        for (const k of ["p", "e", "p3", "p4"]) { const v = S[k]; if (!v || typeof v !== "object" || !v.u || v.st === "p" || v.st === "no") continue;
+          if (TM[v.u] && TM[v.u].ts) continue; const key = e.id + ":" + v.u + ":" + kk; if (sent.has(key) || add.includes(key)) continue;
+          const tk = await pushDe(v.u); add.push(key); if (!tk) continue;
+          salida.push([v.u, tk, kk === "t2"
+            ? { title: "🎓 " + primer(v.n) + ", ¿qué tema va a dar el " + dw + "?", body: "Le toca su Action Leaders Training del " + dw + ". Tiene hasta el " + dw + " a las 6:00 p.m. para mandar su tema. Elija uno sugerido o escriba el suyo: su presentación y su guion se arman solos.", v: "tema" }
+            : { title: "⏰ " + primer(v.n) + ", ¿qué tema va a dar hoy?", body: "Su Action Leaders Training es hoy a las " + h12(e.hora || "20:00") + ". Tiene hasta las 6:00 p.m. para mandar su tema. Si no lo manda, usamos el tema sugerido.", v: "tema" }]);
+        }
+      }
+    }
     console.log("Ponencias con aviso:", add.length);
     if (!DRY && add.length) await mref.set({ s: [...sent, ...add].slice(-300), t: ahora }, { merge: true });
   } else if (modo === "salapend") {
