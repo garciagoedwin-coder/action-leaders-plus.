@@ -11204,8 +11204,8 @@ function abrirPerfil0(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
   })}
 $("#meBtn").onclick=abrirPerfil;
 setInterval(renderMeBtn,3000);
-function openSheet(html,bind){$("#sheetPanel").innerHTML=html;$("#sheetPanel").classList.remove("ev6","cv6","pf7");$("#sheet").hidden=false;bind&&bind();if($("#sheetPanel [data-nofocus]"))return;const f=$("#sheetPanel input");f&&f.focus()}
-function closeSheet(){$("#sheet").hidden=true}
+function openSheet(html,bind){$("#sheetPanel").innerHTML=html;$("#sheetPanel").classList.remove("ev6","cv6","pf7","cpPopP");$("#sheet").hidden=false;bind&&bind();if($("#sheetPanel [data-nofocus]"))return;const f=$("#sheetPanel input");f&&f.focus()}
+function closeSheet(){$("#sheet").hidden=true;$("#sheetPanel").classList.remove("cpPopP")}
 $("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet"||e.target.closest("[data-close]"))closeSheet()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#sheet").hidden)closeSheet()});
 
@@ -12152,7 +12152,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261124084004";var busy=false,pend=null;
+(function(){var V="20261124091122";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
