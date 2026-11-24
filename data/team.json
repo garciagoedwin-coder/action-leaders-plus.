@@ -56,9 +56,9 @@
    "registros": 0,
    "regSemana": 0,
    "id": "edwin-garcia-go",
-   "activaciones": 1,
-   "volumen": 200,
-   "actSemana": 0
+   "activaciones": 2,
+   "volumen": 700,
+   "actSemana": 1
   },
   {
    "nombre": "Joel enrrique Salgado moradel",
@@ -817,7 +817,7 @@
    "meta": 500,
    "nuevos": 0,
    "presentaciones": 0,
-   "volumen": 200,
+   "volumen": 700,
    "volumenDetalle": "",
    "id": "edwin-garcia-go",
    "volumenHoja": 0,
@@ -3599,7 +3599,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-23T19:56:00-06:00",
+  "rankingActualizado": "2026-11-24T09:09:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -5310,6 +5310,11 @@
      "a": 6
     },
     {
+     "n": "Edwin García Go",
+     "p": 700,
+     "a": 2
+    },
+    {
      "n": "Josue Gerardo Delgado Moran",
      "p": 700,
      "a": 2
@@ -5640,11 +5645,6 @@
      "a": 2
     },
     {
-     "n": "Edwin García Go",
-     "p": 200,
-     "a": 1
-    },
-    {
      "n": "Gricelda Solorzano",
      "p": 200,
      "a": 2
@@ -5890,7 +5890,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-24T04:46:50Z"
+   "t": "2026-11-24T15:09:10Z"
   },
   "audioEsp": {
    "id": "santiago-1",
