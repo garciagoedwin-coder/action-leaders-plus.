@@ -71,6 +71,33 @@ export function compCumplidos(viejo, nuevo, C, users, ms = Date.now()) {
   }
   return out;
 }
+// 23 nov (Edwin): Compromiso de líderes (config.cierreLz). Misma cuenta que clCalc de la app: activación cuyo patrocinador es un líder
+// comprometido → personal; si no, sube por registro.linea hasta el primer comprometido (se corta en otro miembro del sistema) → equipo.
+export function clSrv(team, C, users, ms = Date.now()) {
+  const c = (team.config || {}).cierreLz; if (!c || !c.id) return null;
+  const d = Date.parse(c.desde), h = Date.parse(c.hasta); if (!(ms >= d && ms <= h + 18 * 36e5)) return null;
+  const al = (team.config || {}).alias || {}, ig = (a, b) => !!(a && b) && (mismoNombre(a, b) || mismoNombre(al[a] || a, b) || mismoNombre(a, al[b] || b) || nrm(a) === nrm(b));
+  const PKV = { Starter: 50, Classic: 200, Premium: 500 }, P = {}, E = {}, act = {};
+  const L = Object.entries(C || {}).filter(([, x]) => x.cl && x.cl.id === c.id && !x.cl.no).map(([uid, x]) => { const u = (users || []).find(v => v.uid === uid) || {}, r = u.registro || {};
+    return { uid, n: r.nombre || x.nombre || "", p: +x.cl.p || 0, e: +x.cl.e || 0, ns: [r.nombre, r.nombreRanking, x.nombre].filter(Boolean) }; });
+  const S = new Set(L.map(x => x.uid)), LN = (team.liderazgo || []).flatMap(l => [l.nombre, l.nombreRanking]).filter(Boolean), esMiem = n => !!n && LN.some(x => ig(x, n));
+  const MU = new Set((users || []).filter(u => u.registro && [u.registro.nombre, u.registro.nombreRanking].some(esMiem)).map(u => u.uid)); S.forEach(u => MU.add(u));
+  for (const a of team.activaciones || []) {
+    const t = Date.parse(a.fecha); if (!(t >= d && t < h) || a.ps || a.sc) continue; const v = PKV[a.paquete] || 0, s = a.patrocinador || ""; if (!v || !s) continue;
+    const id = a.id || nrm(a.socio), ld = L.find(z => z.ns.some(n => ig(n, s)));
+    if (ld) { P[ld.uid] = (P[ld.uid] || 0) + v; act[id] = { u: ld.uid, k: "p", v }; continue; }
+    if (esMiem(s)) continue;
+    const f = (users || []).filter(u => u.registro && ig(u.registro.nombre, s)); if (f.length !== 1 || MU.has(f[0].uid)) continue;
+    for (const u of f[0].registro.linea || []) { if (S.has(u)) { E[u] = (E[u] || 0) + v; act[id] = { u, k: "e", v, sp: s }; break; } if (MU.has(u)) break; }
+  }
+  const meta = +c.meta || 20000, lo = L.reduce((a, x) => a + (P[x.uid] || 0) + (E[x.uid] || 0), 0);
+  return { c, L, P, E, act, meta, lo };
+}
+export function msgCl(R, a, x) {
+  const ld = R.L.find(z => z.uid === x.u), w0 = String((ld && ld.n) || "").trim().split(/\s+/).filter(Boolean), n = (w0.length >= 4 ? [w0[0], w0[w0.length - 2]] : w0).join(" ") || "Un líder", lleva = (R.P[x.u] || 0) + (R.E[x.u] || 0), comp = ld ? ld.p + ld.e : 0;
+  const quien = x.k === "p" ? `cerró ${fmtN(x.v)} pts personales` : `sumó ${fmtN(x.v)} pts con su equipo`;
+  return { title: `⚔️ ${n} ${quien}`, body: `Ya lleva ${fmtN(lleva)} de ${fmtN(comp)} de su compromiso${lleva >= comp && comp ? " 🏆" : ""}. El sistema va ${fmtN(R.lo)} de ${fmtN(R.meta)} pts 🔥` };
+}
 export function msgCompOk(c, propio) {
   const n = primer(c.nombre);
   return propio ? { title: `🏆 ¡Cumplió su compromiso, ${n}!`, body: `Llegó a ${fmtN(c.v)} de ${fmtN(c.meta)} pts este mes. ¡Vaya por más! 🔥` }
@@ -488,6 +515,12 @@ async function main() {
     const tlCambio = JSON.stringify(((VJ.config || {}).tl || {}).l || []) !== JSON.stringify(((NJ.config || {}).tl || {}).l || []), rgCambio = JSON.stringify([VJ.liderazgo, (VJ.config || {}).rangos]) !== JSON.stringify([NJ.liderazgo, (NJ.config || {}).rangos]);
     if (!N.length && !LZ.length && !subio && !tlCambio && !rgCambio) { console.log("Sin activaciones nuevas ni calificados nuevos."); return; }
     const users = (await db.collection("users").get()).docs.map(d => ({ uid: d.id, ...d.data() }));
+    let CL = null, CLN = [];
+    if (N.length && (NJ.config || {}).cierreLz) { // 23 nov (Edwin): aviso a los líderes comprometidos cada vez que un comprometido suma volumen
+      const C = {}; (await db.collection("constancia").where("cl.id", "==", NJ.config.cierreLz.id).get()).docs.forEach(d => C[d.id] = d.data());
+      CL = clSrv(NJ, C, users); if (CL) { const ids = new Set(N.map(a => a.id || nrm(a.socio))); CLN = Object.entries(CL.act).filter(([id]) => ids.has(id)).map(([, x]) => x); }
+      console.log("Compromiso de líderes:", CL ? CL.L.length + " comprometidos · " + CLN.length + " activaciones para avisar" : "fuera de plazo");
+    }
     let RC = [];
     if (tlCambio || rgCambio) { // 13 nov: llegó a Team Leader o a un rango POR PRIMERA VEZ → se guarda el mes en team/reco.h[uid][rk] (una sola vez)
       const ref = db.doc("team/reco"), H = ((await ref.get()).data() || {}).h || {}, mes = mesUTC();
@@ -523,6 +556,10 @@ async function main() {
       const d = await db.doc("push/" + c.uid).get(); const x = d.exists ? d.data() : {}; hist[c.uid] = hist[c.uid] || x.h || [];
       if (x.tk) salida.push([c.uid, x.tk, msgCompOk(c, true)]);
       for (const u of c.linea) { if (u === c.uid) continue; const t = await pushDe(u); if (t) salida.push([u, t, msgCompOk(c, false)]); }
+    }
+    if (CL && CLN.length) {
+      const adm = users.filter(u => ADMINS.includes(String(u.email || "").toLowerCase())).map(u => u.uid), dest = [...new Set([...CL.L.map(x => x.uid), ...adm])];
+      for (const x of CLN) { const m = msgCl(CL, null, x); m.v = "cl"; for (const u of dest) { const t = await pushDe(u); if (t) salida.push([u, t, m]); } }
     }
     for (const c of LZ) {
       const U = users.filter(u => u.registro && mismoNombre(u.registro.nombre, c.nombre));
