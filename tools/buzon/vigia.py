@@ -19,6 +19,17 @@ def disparar():
     urllib.request.urlopen(req).read()
 
 
+def seguir():
+    # 23 nov: GitHub se salta el cron de cada hora → al terminar, el vigía se vuelve a lanzar solo (cadena continua; el cron queda de respaldo)
+    try:
+        req = urllib.request.Request('https://api.github.com/repos/%s/actions/workflows/buzon-vivo.yml/dispatches' % REPO,
+                                     data=json.dumps({'ref': 'main'}).encode(), method='POST',
+                                     headers={'Authorization': 'Bearer ' + GTK, 'Accept': 'application/vnd.github+json'})
+        urllib.request.urlopen(req).read(); B.log('Vigía relanzado')
+    except Exception as e:
+        B.log('No se pudo relanzar', type(e).__name__)
+
+
 def main():
     if not B.HOJA:
         B.log('Sin hoja'); return
@@ -40,6 +51,8 @@ def main():
             B.log('error', type(e).__name__)
         time.sleep(PASO)
     B.log('Vigía terminado')
+    if os.environ.get('VIGIA_SEG') is None:
+        seguir()
 
 
 if __name__ == '__main__':

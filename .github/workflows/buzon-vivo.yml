@@ -1,9 +1,10 @@
 name: Buzón al instante (vigía)
 # 20 nov (Edwin): revisa la hoja del buzón cada minuto y lanza buzon.yml apenas hay un correo nuevo de inCruises.
-# Corre casi una hora y la vuelve a empezar el cron de cada hora. Solo lee la hoja; logs = conteos.
+# Corre casi una hora y al terminar se vuelve a lanzar sola (23 nov: GitHub se saltaba el cron); el cron queda de respaldo. Solo lee la hoja; logs = conteos.
 on:
   schedule:
     - cron: "1 * * * *"
+    - cron: "31 * * * *"
   workflow_dispatch:
 concurrency:
   group: buzon-vivo
