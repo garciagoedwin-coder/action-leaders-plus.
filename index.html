@@ -1567,6 +1567,8 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .c7I{display:flex;gap:4px;flex:none}.c7I button{width:30px;height:30px;border-radius:50%;border:0;background:var(--surface);box-shadow:0 0 0 1px var(--line);display:grid;place-items:center;font-size:14px;color:var(--muted);cursor:pointer;padding:0}
 .cgR.op .cgP,.cgR.op .cgCat,.cgR.op .cgTL>*:not(.cgT){display:none}.cgR.op .cgN{display:none}.cgR.op .cgAv{width:42px;height:42px;font-size:14px}.cgR.op{gap:10px!important}.cgR.op .cgT{font-size:17.5px}
 .c7W{width:64px;height:64px;border-radius:50%;background:color-mix(in srgb,#DC2626 10%,var(--surface));display:grid;place-items:center;font-size:30px;margin:4px auto 10px}
+.c7H{display:flex;gap:8px;margin-top:6px}.c7H button{border:0;border-radius:14px;padding:13px 8px;font:800 15px Figtree,sans-serif;cursor:pointer}.c7H .w{flex:1.3;background:#25D366;color:#fff}.c7H .a{flex:1;background:var(--surface);box-shadow:0 0 0 1.5px var(--brand);color:var(--brand)}
+.c7Ok{display:flex;align-items:center;gap:8px;margin-top:6px;background:color-mix(in srgb,#16A34A 10%,var(--surface));box-shadow:0 0 0 1px color-mix(in srgb,#16A34A 30%,transparent);border-radius:14px;padding:11px 12px;font:700 14px Figtree,sans-serif;color:#15803d}.c7Ok button{margin-left:auto;border:0;background:none;color:var(--brand);font:700 14px Figtree,sans-serif;cursor:pointer;padding:0}
 .c7A{width:100%;margin-top:6px;border:0;background:var(--surface);box-shadow:0 0 0 1.5px var(--brand);color:var(--brand);font:800 15px Figtree,sans-serif;border-radius:14px;padding:12px;cursor:pointer}
 .c7Pv{width:100%;display:flex;align-items:center;gap:10px;margin-top:8px;border:0;background:var(--surface);box-shadow:0 0 0 1.5px #16A34A;border-radius:14px;padding:11px 12px;text-align:left;cursor:pointer;color:var(--ink);font:inherit}
 .c7Pv .i{width:36px;height:36px;border-radius:11px;background:color-mix(in srgb,#16A34A 12%,var(--surface));display:grid;place-items:center;font-size:18px;flex:none}.c7Pv .tx{flex:1;min-width:0}.c7Pv b{display:block;font-size:14px}.c7Pv small{color:var(--muted);font-size:12px}
@@ -1577,7 +1579,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .cvEt .stp{margin:0}.cvEtD{margin:-2px 0 8px}.cvDel{border:0;background:color-mix(in srgb,#DC2626 10%,var(--surface));color:#DC2626;font:800 12.5px Figtree,sans-serif;border-radius:10px;padding:5px 10px;cursor:pointer;letter-spacing:0;white-space:nowrap}.cvDel.sure{background:#DC2626;color:#fff}
 .cvQk{margin:14px 2px 0;font:800 11px Figtree,sans-serif;letter-spacing:.14em;color:var(--brand)}
 .hoK{display:block;font:800 11px Figtree,sans-serif;letter-spacing:.1em;color:#8fd8f2;margin-top:12px}.cvN.q .hoK{color:var(--brand)}
-.flPs,.cvEt,.cvQk,.c7A{width:100%;box-sizing:border-box}.flPs{margin-top:10px;background:var(--surface);border-radius:14px;box-shadow:0 0 0 1px var(--line);padding:10px 10px 8px}.flPs .t{display:flex;justify-content:space-between;align-items:center;font:800 11px Figtree,sans-serif;letter-spacing:.1em;color:var(--muted)}.flPs .t small{letter-spacing:0;color:var(--brand);font-size:12px}
+.flPs,.cvEt,.cvQk,.c7A,.c7H,.c7Ok{width:100%;box-sizing:border-box}.flPs{margin-top:10px;background:var(--surface);border-radius:14px;box-shadow:0 0 0 1px var(--line);padding:10px 10px 8px}.flPs .t{display:flex;justify-content:space-between;align-items:center;font:800 11px Figtree,sans-serif;letter-spacing:.1em;color:var(--muted)}.flPs .t small{letter-spacing:0;color:var(--brand);font-size:12px}
 .flPsR{display:flex;gap:2px;margin-top:8px}.flPsR button{flex:1;min-width:0;border:0;background:none;padding:2px 0;cursor:pointer;color:var(--muted);font:700 10.5px Figtree,sans-serif}.flPsR button b{display:grid;place-items:center;margin:0 auto 4px;width:26px;height:26px;border-radius:50%;background:var(--surface-2);font-size:12px}
 .flPsR .ok{color:#16A34A}.flPsR .ok b{background:#16A34A;color:#fff}.flPsR .on{color:var(--brand)}.flPsR .on b{background:var(--brand);color:#fff;box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 25%,transparent)}.flPsR button:disabled{cursor:default}.flPsR span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .flPsB{display:flex;justify-content:space-between;margin-top:8px}.flPsB button{border:0;background:none;color:var(--brand);font:700 13px Figtree,sans-serif;cursor:pointer;padding:4px 2px}
@@ -9035,7 +9037,7 @@ function holaAbrir(c,dir){if(!c)return;const O=holaOrden();let ult=-1;try{ult=(L
 function holaHTML(c){if(!c||!HOLA_ST.includes(c.stage||"Nuevo"))return "";const id=esc(c.id);
   if(c.hola&&Date.now()-c.hola<12*36e5)return `<div class="hoYa">👋 Saludó ${esc(memHace(c.hola))} · cuando le conteste, mándele el mensaje de abajo <button type="button" data-hola="${id}">Otro saludo</button></div>`;
   return `<button type="button" class="hoBt" data-hola="${id}">👋 Saludar primero · saludo listo</button>`}
-function crmV2Sig1(c){const H=crmV2Sig0(c),h=holaHTML(c);if(!h)return H;let i=H.indexOf("<em ");if(i<0)i=H.indexOf("<button");
+function crmV2Sig1(c){const H=crmV2Sig0(c);if(c7On(c))return H; /* 23 nov (Edwin, A1): el saludo vive arriba, en «Saludar en WhatsApp» */const h=holaHTML(c);if(!h)return H;let i=H.indexOf("<em ");if(i<0)i=H.indexOf("<button");
   // 23 nov (Edwin): el saludo SIEMPRE está, en dos tiempos: 1.º salude · 2.º cuando le conteste
   if(i<0){i=H.lastIndexOf("</div>");return i<0?H+h:H.slice(0,i)+`<span class="hoK">👋 SALÚDELO PRIMERO</span>`+h+H.slice(i)}
   return H.slice(0,i)+`<span class="hoK">1.º SALUDE</span>`+h+`<span class="hoK">2.º CUANDO LE CONTESTE</span>`+H.slice(i)}
@@ -9092,7 +9094,7 @@ function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fech
   const S=(c.seg||[]).filter(x=>x&&x.n).slice(-3).reverse();S.forEach(x=>A.push(["📝",x.n,x.t?fT(x.t):""]));if(c.note)A.unshift(["🗒️",c.note,""]);
   {const v=salaDe(c.id);if(v){const n=+v.pulso||0,fin=(+v.pct||0)>=100||/^\d+$/.test(String(v.pulso||""));A.unshift(["✈️","Presentación virtual · "+(fin?"terminó"+(n?" · "+n+"/10":""):"va en "+Math.min(100,+v.pct||0)+"%"),v.t?fT(v.t):"",c.id])}} // 17 nov (Edwin): sus respuestas, a un toque
   const nS=(c.seg||[]).length,wl=waLink(c);
-  if(!lluPas(c))return `<button type="button" class="c7A" data-c7a="${esc(c.id)}">✍️ Anotar seguimiento</button><div class="cvEt"><div class="t"><span>ETAPA · TOQUE PARA CAMBIAR</span></div>${due?`<div class="cvEtD">${due}</div>`:""}${stepsHTML(c)}</div>
+  if(!lluPas(c))return `${c7Hola(c)}<div class="cvEt"><div class="t"><span>ETAPA · TOQUE PARA CAMBIAR</span></div>${due?`<div class="cvEtD">${due}</div>`:""}${stepsHTML(c)}</div>
    ${maLinea(c)}${lluHTML(c)}${gcHTML(c)}
    ${gcHTML(c)?"":`<div class="cvQk">QUÉ HACER AHORA</div>`+crmV2Sig(c)+flPasosHTML(c)}${c7Act(c)}`;
   return `${cvTel(c)}<div class="cvEt"><div class="t"><span>ETAPA · TOQUE PARA CAMBIAR</span><button type="button" class="cvDel" data-cvdel="${esc(c.id)}">🗑️ Eliminar</button></div>${due?`<div class="cvEtD">${due}</div>`:""}${stepsHTML(c)}</div>
@@ -9102,6 +9104,33 @@ function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fech
    ${A.length?`<div class="cvActv"><div class="k">ACTIVIDAD${nS?`<button type="button" data-sgt="${esc(c.id)}">Ver todo ›</button>`:""}</div>${A.slice(0,3).map(([i,t,f,k])=>k?`<div data-cvtk="${esc(k)}" style="cursor:pointer"><span>${i}</span><span class="grow">${esc(t)} <b style="color:var(--brand);font-weight:700;white-space:nowrap">Ver respuestas ›</b></span>${f?`<small>${esc(f)}</small>`:""}</div>`:`<div><span>${i}</span><span class="grow">${esc(t)}</span>${f?`<small>${esc(f)}</small>`:""}</div>`).join("")}</div>`:""}
    <div class="cvFt">${wl?`<a href="${esc(wl)}" data-wac="${esc(c.id)}" target="_blank" rel="noopener" class="w">💬 WhatsApp</a>`:`<button type="button" data-edit="${esc(c.id)}">➕ WhatsApp</button>`}<button type="button" data-cvs="${esc(c.id)}">✅ Seguimiento</button><button type="button" class="x" data-cvmas="${esc(c.id)}" aria-label="Más opciones">⋯</button></div>`}
 // 23 nov (Edwin): Actividad = respuestas de la presentación virtual (si hay) + «Ver toda la actividad» + Su camino plegado
+// 23 nov (Edwin «Hazlo»): «💬 Saludar en WhatsApp» arriba de la ficha (saludo listo, otro o el suyo). Con solo enviarlo cuenta como seguimiento de hoy.
+function c7HolaHoy(c){return !!(c.hola&&new Date(c.hola).toDateString()===new Date().toDateString())}
+function c7Hola(c){const id=esc(c.id);if(CERR.includes(c.stage)||c.stage==="No interesado")return `<button type="button" class="c7A" data-c7a="${id}">✍️ Anotar seguimiento</button>`;
+  if(c7HolaHoy(c)){const h=new Date(c.hola).toLocaleTimeString("es-HN",{hour:"numeric",minute:"2-digit"});
+    return `<div class="c7Ok">✅ Saludó hoy · ${esc(h)}<button type="button" data-c7o="${id}">Volver a abrir ›</button></div><button type="button" class="c7A" data-c7a="${id}">✍️ Anotar lo que le dijo</button>`}
+  return `<div class="c7H"><button type="button" class="w" data-c7h="${id}">💬 Saludar en WhatsApp</button><button type="button" class="a" data-c7a="${id}">✍️ Anotar</button></div>`}
+function c7HolaHecho(c,txt){const n=waNum(c.phone,c.cc)||"";
+  waIr("https://wa.me/"+n+(txt?"?text="+encodeURIComponent(txt):"")); // abrir WhatsApp antes de cualquier espera (iPhone)
+  c.hola=Date.now();c.seg=(c.seg||[]).concat([{t:c.hola,k:"sal"}]).slice(-SG_MAX);nextBump(c);
+  if((c.stage||"Nuevo")==="Nuevo"){try{stAvanza(c,"Contactado","lo saludó por WhatsApp")}catch(e){}}
+  segAuto(c);try{LS.set("notaPend",{id:c.id,k:"wa",t:Date.now(),log:0})}catch(e){}
+  c.updated=Date.now();try{store.saveContact(Object.assign({},c))}catch(e){}setTimeout(()=>{try{renderCRM()}catch(e){}try{crmTopPinta()}catch(e){}},300)}
+function c7HolaAbrir(c){if(!c)return;if(!waNum(c.phone,c.cc)){toast("📱 Primero agregue su número");try{editContact(c)}catch(e){}return}
+  const O=holaOrden();let ult=-1;try{ult=(LS.get("holaU")||{})[c.id];if(ult==null)ult=-1}catch(e){}let k=0;if(O[k]===ult&&O.length>1)k=1;const f=String(c.name||"").split(" ")[0]||"la persona";
+  openSheet(`<h3 style="margin:0 0 6px">💬 Saludar a ${esc(f)}</h3>
+   <p class="small muted" style="margin:0 0 10px">Con solo enviarlo ya cuenta como seguimiento de hoy ✅</p>
+   <textarea id="c7T" rows="3" style="width:100%;font-size:16px"></textarea>
+   <button type="button" class="btn ghost" id="c7O" style="width:100%;margin-top:10px">🔄 Otro saludo</button>
+   <button type="button" class="btn" id="c7W" style="width:100%;margin-top:8px;background:#16A34A;color:#fff">💬 Enviar por WhatsApp</button>
+   <button type="button" id="c7P" style="display:block;margin:12px auto 0;background:none;border:0;color:var(--brand);font-size:15px;font-weight:700">✏️ Escribir mi propio saludo ›</button>`,()=>{
+   const T=$("#c7T"),pinta=()=>{T.value=holaTx(c,O[k])};pinta();
+   $("#c7O").onclick=()=>{k=(k+1)%O.length;if(O[k]===ult&&O.length>1)k=(k+1)%O.length;pinta()};
+   $("#c7W").onclick=()=>{const t=T.value.trim();if(!t)return;try{const U=LS.get("holaU")||{};U[c.id]=O[k];LS.set("holaU",U)}catch(e){}closeSheet();c7HolaHecho(c,t)};
+   $("#c7P").onclick=()=>{closeSheet();c7HolaHecho(c,"")}})}
+document.addEventListener("click",e=>{const t=e.target.closest&&e.target.closest("[data-c7h],[data-c7o]");if(!t)return;e.preventDefault();e.stopPropagation();
+  const c=(contacts||[]).find(x=>x.id===(t.dataset.c7h||t.dataset.c7o));if(!c)return;
+  if(t.dataset.c7h)c7HolaAbrir(c);else{const n=waNum(c.phone,c.cc);if(n)waIr("https://wa.me/"+n)}},true);
 function c7Act(c){const v=salaDe(c.id),id=esc(c.id),nS=(c.seg||[]).length,r=reuDe(c),nR=REU.filter(([k])=>(r[k]||[]).length).length;let h=`<div class="cvQk">ACTIVIDAD</div>`;
   if(v){const fin=(+v.pct||0)>=100||/^\d+$/.test(String(v.pulso||""))||v.fin,n=+v.pulso||0;h+=`<button type="button" class="c7Pv" data-cvtk="${id}"><span class="i">✈️</span><span class="tx"><b>Respuestas de la presentación virtual</b><small>${fin?"Terminó":"Va en "+Math.min(100,+v.pct||0)+"%"} · ${esc(memHace(v.t||Date.now()))}</small></span><em class="${n>=8?"f":""}">${n?(n>=8?"🔥 ":"")+n+"/10":"Ver"} ›</em></button>`}
   h+=`<button type="button" class="c7R" data-sgt="${id}">🕘 Ver toda la actividad <small>· ${nS}</small><i>›</i></button>`;
@@ -9755,7 +9784,7 @@ function gcHTML(c){if(!lluEsCamp(c)||["Socio","Cliente","No interesado"].include
   return `<div class="gcBox"><div class="gcHd"><b>📋 Guion de la campaña</b><span class="gcD">${dots}</span></div>
    ${S.p===PI+1&&S.fin?`<div class="gcAv">🎉 Terminó la presentación: ya puede darle acceso</div>`:""}
    ${sg?`<button type="button" class="gcSg" data-gcm="${id}|${sg}">${esc(GC_S[sg])} › mensaje listo</button>`:""}
-   ${S.p>=1&&S.p<6?holaHTML(c):""}${nx}${S.p>=1?`<button type="button" class="gcBk" data-gcb="${id}">↩ Volver al paso anterior</button>`:""}<div class="gcMs"><button type="button" data-gcl="${id}">📋 Pasos</button><button type="button" data-gcx="${id}">🔁 Seguimiento</button><button type="button" data-gcq="${id}">❓ Me preguntó…</button></div></div>`}
+   ${S.p>=1&&S.p<6&&!c7On(c)?holaHTML(c):""}${nx}${S.p>=1?`<button type="button" class="gcBk" data-gcb="${id}">↩ Volver al paso anterior</button>`:""}<div class="gcMs"><button type="button" data-gcl="${id}">📋 Pasos</button><button type="button" data-gcx="${id}">🔁 Seguimiento</button><button type="button" data-gcq="${id}">❓ Me preguntó…</button></div></div>`}
 // v2: pasos de AUDIO (m1 bienvenida, nc reactivación, mi a la mitad): guion para leer en voz alta + abrir el chat sin texto + «Ya le mandé el audio».
 function gcAudio(c,k,modo){const step=GC_P.indexOf(k),n=waNum(c.phone,c.cc),f=String(c.name||"").split(" ")[0],tx=gcMsg(c,k,{}),txt=modo==="t",
   tit=step>=0?(txt?"💬":"🎙️")+" Paso "+(step+1)+" · "+(txt?"Mensaje de bienvenida":"Audio de bienvenida"):(GC_S[k]||"🎙️ Audio");
@@ -11884,7 +11913,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261123182037";var busy=false,pend=null;
+(function(){var V="20261123190842";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
