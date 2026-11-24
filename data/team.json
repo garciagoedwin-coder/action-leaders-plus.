@@ -6930,6 +6930,13 @@
     "s": 76,
     "p": 35
    }
+  },
+  "cierreLz": {
+   "id": "cl-2026-11",
+   "mes": "noviembre",
+   "desde": "2026-11-23T06:00:00Z",
+   "hasta": "2026-12-01T00:00:00Z",
+   "fin": "lunes 30, 6:00 p.m. hora de Honduras"
   }
  },
  "fotos": [
