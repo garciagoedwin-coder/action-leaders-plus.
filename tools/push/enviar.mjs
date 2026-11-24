@@ -84,7 +84,7 @@ export function clSrv(team, C, users, ms = Date.now()) {
   const MU = new Set((users || []).filter(u => u.registro && [u.registro.nombre, u.registro.nombreRanking].some(esMiem)).map(u => u.uid)); S.forEach(u => MU.add(u));
   for (const a of team.activaciones || []) {
     const t = Date.parse(a.fecha); if (!(t >= d && t < h) || a.ps || a.sc) continue; const v = PKV[a.paquete] || 0, s = a.patrocinador || ""; if (!v || !s) continue;
-    const id = a.id || nrm(a.socio), ld = L.find(z => z.ns.some(n => ig(n, s)));
+    const id = String(a.id || a.socio || t), ld = L.find(z => z.ns.some(n => ig(n, s)));
     if (ld) { P[ld.uid] = (P[ld.uid] || 0) + v; act[id] = { u: ld.uid, k: "p", v }; continue; }
     if (esMiem(s)) continue;
     const f = (users || []).filter(u => u.registro && ig(u.registro.nombre, s)); if (f.length !== 1 || MU.has(f[0].uid)) continue;
@@ -518,7 +518,7 @@ async function main() {
     let CL = null, CLN = [];
     if (N.length && (NJ.config || {}).cierreLz) { // 23 nov (Edwin): aviso a los líderes comprometidos cada vez que un comprometido suma volumen
       const C = {}; (await db.collection("constancia").where("cl.id", "==", NJ.config.cierreLz.id).get()).docs.forEach(d => C[d.id] = d.data());
-      CL = clSrv(NJ, C, users); if (CL) { const ids = new Set(N.map(a => a.id || nrm(a.socio))); CLN = Object.entries(CL.act).filter(([id]) => ids.has(id)).map(([, x]) => x); }
+      CL = clSrv(NJ, C, users); if (CL) { const ids = new Set(N.map(a => String(a.id || a.socio))); CLN = Object.entries(CL.act).filter(([id]) => ids.has(id)).map(([id, x]) => ({ ...x, id })); }
       console.log("Compromiso de líderes:", CL ? CL.L.length + " comprometidos · " + CLN.length + " activaciones para avisar" : "fuera de plazo");
     }
     let RC = [];
@@ -558,8 +558,8 @@ async function main() {
       for (const u of c.linea) { if (u === c.uid) continue; const t = await pushDe(u); if (t) salida.push([u, t, msgCompOk(c, false)]); }
     }
     if (CL && CLN.length) {
-      const adm = users.filter(u => ADMINS.includes(String(u.email || "").toLowerCase())).map(u => u.uid), dest = [...new Set([...CL.L.map(x => x.uid), ...adm])];
-      for (const x of CLN) { const m = msgCl(CL, null, x); m.v = "cl"; for (const u of dest) { const t = await pushDe(u); if (t) salida.push([u, t, m]); } }
+      const adm = users.filter(u => ADMINS.includes(String(u.email || "").toLowerCase())).map(u => u.uid), sisU = (await db.collection("push").where("sis", "==", 1).get()).docs.map(d => d.id), dest = [...new Set([...CL.L.map(x => x.uid), ...adm, ...sisU])];
+      for (const x of CLN) { const m = msgCl(CL, null, x); m.v = "clf_" + x.id; for (const u of dest) { const t = await pushDe(u); if (t) salida.push([u, t, m]); } }
     }
     for (const c of LZ) {
       const U = users.filter(u => u.registro && mismoNombre(u.registro.nombre, c.nombre));
