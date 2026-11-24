@@ -188,9 +188,9 @@
    "registros": 0,
    "regSemana": 0,
    "id": "maynor-larios",
-   "activaciones": 1,
-   "volumen": 500,
-   "actSemana": 0
+   "activaciones": 2,
+   "volumen": 1000,
+   "actSemana": 1
   },
   {
    "nombre": "Joany isabel Perla gamez",
@@ -548,7 +548,7 @@
    "nuevos": 0,
    "presentaciones": 0,
    "rango": "Team Leader",
-   "volumen": 500,
+   "volumen": 1000,
    "volumenDetalle": "",
    "id": "maynor-agustin-larios-lobo",
    "volumenHoja": 0,
@@ -3535,6 +3535,17 @@
    "fuente": "gmail",
    "id": "yeili-michell-escoto-rios",
    "rv": 1
+  },
+  {
+   "socio": "Yinier cristobal Herrera munguia",
+   "paquete": "Premium",
+   "patrocinador": "Maynor Larios",
+   "fecha": "2026-11-24T01:55:03Z",
+   "ek": "238227",
+   "wk": "f38ddb",
+   "fuente": "gmail",
+   "id": "yinier-cristobal-herrera-munguia",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3568,7 +3579,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-23T22:55:05Z",
+  "activacionesCorte": "2026-11-24T01:55:03Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3577,7 +3588,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-23T18:44:00-06:00",
+  "rankingActualizado": "2026-11-23T19:56:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -5242,6 +5253,11 @@
      "a": 10
     },
     {
+     "n": "Maynor Larios",
+     "p": 1000,
+     "a": 2
+    },
+    {
      "n": "Nancy Diaz",
      "p": 1000,
      "a": 9
@@ -5385,11 +5401,6 @@
      "n": "Mario Rene Paguaga Mejia",
      "p": 500,
      "a": 2
-    },
-    {
-     "n": "Maynor Larios",
-     "p": 500,
-     "a": 1
     },
     {
      "n": "Nancy Patricia Diaz Ruiz",
@@ -5872,7 +5883,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-24T00:44:23Z"
+   "t": "2026-11-24T01:56:15Z"
   },
   "audioEsp": {
    "id": "santiago-1",
