@@ -1558,7 +1558,7 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .cgP{font-size:12.5px;font-weight:800;flex:none}.cgP i{font-style:normal;margin-left:3px;color:#D97706}
 .cgF{border-top:1px solid var(--line)}
 /* 23 nov (Edwin): la ficha abierta se ve como tarjeta aparte y los demás se atenúan */
-#contactList:has(.cgR.op) .cgR:not(.op){opacity:.45}
+#contactList.c7v:has(.cgR.op) .cgR:not(.op){opacity:.45}
 .cgR.op{margin:8px 6px 0;border:2px solid var(--brand)!important;border-bottom:0!important;border-radius:20px 20px 0 0;background:color-mix(in srgb,var(--brand) 12%,var(--surface))!important}
 .cgR.op .cgT{font-weight:800}.cgR.op::after{content:"✕";flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--surface);color:var(--muted);font-size:13px;box-shadow:0 0 0 1px var(--line)}
 .cgR.op+.cgF .cbody{padding:2px 12px 14px!important}.cgR.op+.cgF .contact{padding:0!important}
@@ -9131,6 +9131,13 @@ function c7HolaAbrir(c){if(!c)return;if(!waNum(c.phone,c.cc)){toast("📱 Primer
 document.addEventListener("click",e=>{const t=e.target.closest&&e.target.closest("[data-c7h],[data-c7o]");if(!t)return;e.preventDefault();e.stopPropagation();
   const c=(contacts||[]).find(x=>x.id===(t.dataset.c7h||t.dataset.c7o));if(!c)return;
   if(t.dataset.c7h)c7HolaAbrir(c);else{const n=waNum(c.phone,c.cc);if(n)waIr("https://wa.me/"+n)}},true);
+// 23 nov (Edwin, opción 1): las demás filas se ponen grises SOLO mientras la ficha abierta se ve en pantalla
+(function(){let io=null,obs=null;const L=()=>document.getElementById("contactList");
+  const ver=()=>{const l=L();if(!l)return;if(io){io.disconnect();io=null}const a=l.querySelector(".cgR.op");if(!a){l.classList.remove("c7v");return}
+    const f=a.nextElementSibling&&a.nextElementSibling.classList.contains("cgF")?a.nextElementSibling:null,vis=new Map();
+    io=new IntersectionObserver(es=>{es.forEach(x=>vis.set(x.target,x.isIntersecting));l.classList.toggle("c7v",[...vis.values()].some(Boolean))});io.observe(a);if(f)io.observe(f)};
+  const arr=()=>{const l=L();if(!l){setTimeout(arr,800);return}obs=new MutationObserver(()=>{clearTimeout(arr._t);arr._t=setTimeout(ver,60)});obs.observe(l,{childList:true,subtree:true});ver()};
+  if(typeof IntersectionObserver!=="undefined")arr();})();
 function c7Act(c){const v=salaDe(c.id),id=esc(c.id),nS=(c.seg||[]).length,r=reuDe(c),nR=REU.filter(([k])=>(r[k]||[]).length).length;let h=`<div class="cvQk">ACTIVIDAD</div>`;
   if(v){const fin=(+v.pct||0)>=100||/^\d+$/.test(String(v.pulso||""))||v.fin,n=+v.pulso||0;h+=`<button type="button" class="c7Pv" data-cvtk="${id}"><span class="i">✈️</span><span class="tx"><b>Respuestas de la presentación virtual</b><small>${fin?"Terminó":"Va en "+Math.min(100,+v.pct||0)+"%"} · ${esc(memHace(v.t||Date.now()))}</small></span><em class="${n>=8?"f":""}">${n?(n>=8?"🔥 ":"")+n+"/10":"Ver"} ›</em></button>`}
   h+=`<button type="button" class="c7R" data-sgt="${id}">🕘 Ver toda la actividad <small>· ${nS}</small><i>›</i></button>`;
@@ -11913,7 +11920,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261123190842";var busy=false,pend=null;
+(function(){var V="20261123192031";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
