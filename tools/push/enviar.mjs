@@ -776,8 +776,11 @@ async function main() {
     // rc3top (9:30 p.m.): «Así quedó el top 3 de hoy». Mientras RC3_TODOS sea false, SOLO a los admins (la pantalla nueva es solo admin).
     const RC3_TODOS = true, hoy = hoyHN(), mes = hoy.slice(0, 7);
     const S = ((await db.doc("team/constres").get()).data() || {}).m || {};
+    let TJ3 = {}; try { TJ3 = JSON.parse(fs.readFileSync("../../data/team.json", "utf8")); } catch (e) {}
     const L = Object.entries(S).map(([uid, x]) => ({ uid, ...x })).filter(x => x.nombre && x.mes === mes && +x.mesComp > 0)
-      .sort((a, b) => ((+b.vr || 0) - (+a.vr || 0)) || ((+b.rv || 0) - (+a.rv || 0)) || ((+b.mesPres || 0) - (+a.mesPres || 0)) || ((+b.mesPts || 0) - (+a.mesPts || 0)) || String(a.nombre).localeCompare(String(b.nombre), "es"));
+      .map(x => { let v = 0; try { v = compVol(TJ3, x.nombre); } catch (e) {} return Object.assign(x, { _vol: v }); })
+      // 23 nov (Edwin): racha del mes → volumen del mes → personas distintas presentadas (mesPres) → puntos del mes → nombre
+      .sort((a, b) => ((+b.vr || 0) - (+a.vr || 0)) || (b._vol - a._vol) || ((+b.mesPres || 0) - (+a.mesPres || 0)) || ((+b.mesPts || 0) - (+a.mesPts || 0)) || String(a.nombre).localeCompare(String(b.nombre), "es"));
     L.forEach((x, i) => x.rk = i + 1);
     let aud = null; if (!RC3_TODOS) aud = new Set((await db.collection("users").where("email", "in", ADMINS).get()).docs.map(d => d.id));
     const ok = uid => !aud || aud.has(uid), pushDe = async uid => { const p = await db.doc("push/" + uid).get(), x = p.exists ? p.data() : {}; if (x.tk) hist[uid] = x.h || []; return x.tk && (x.pr || {}).racha !== false ? x.tk : null; };
