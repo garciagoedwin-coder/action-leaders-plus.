@@ -1,0 +1,80 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box}body{margin:0;background:#E9EEF3;font-family:Figtree,system-ui,sans-serif;color:#2B2A2D;display:flex;gap:28px;padding:28px;align-items:flex-start}
+.ph{width:430px;background:#F3F6F9;border-radius:34px;padding:18px 14px 24px;box-shadow:0 10px 30px #0002}
+.tt{font:800 15px system-ui;color:#0A7DAD;letter-spacing:.06em;margin:0 6px 10px;text-transform:uppercase}
+.card{border:2px solid #0A7DAD;border-radius:22px;background:#EAF3F9;overflow:hidden}
+.hd{display:flex;align-items:center;gap:12px;padding:14px;background:#F3F7FA}
+.av{width:52px;height:52px;border-radius:50%;background:#CDEBF7;display:grid;place-items:center;font-weight:800;color:#0b3b57}
+.nm{font-weight:800;font-size:20px}.tel{color:#55606b;font-size:14px}.tel b{color:#0A7DAD}
+.rb{margin-left:auto;display:flex;gap:6px}.rb span{width:34px;height:34px;border-radius:50%;border:1px solid #d7dee5;background:#fff;display:grid;place-items:center;font-size:14px}
+.bd{padding:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}.chips span{border:1px solid #d7dee5;background:#fff;border-radius:99px;padding:6px 11px;font-size:14px;font-weight:600}
+.chips span.ok{background:#DCFCE7;border-color:#86EFAC;color:#166534}
+.row{display:flex;gap:8px}.g{flex:1.4;background:#25D366;color:#fff;border-radius:14px;padding:13px;font-weight:800;text-align:center}
+.o{flex:1;border:2px solid #0A7DAD;color:#0A7DAD;border-radius:14px;padding:11px;font-weight:800;text-align:center;background:#fff}
+.gh{flex:1.4;background:#fff;border:1px solid #86EFAC;color:#166534;border-radius:14px;padding:10px;font-weight:700;font-size:14px;text-align:center}
+.pv{margin-top:8px;border-radius:14px;padding:12px;font-weight:800;text-align:center;font-size:15px}
+.pv.s{background:#fff;border:2px dashed #0A7DAD;color:#0A7DAD}
+.pv.e{background:#fff;border:1px solid #d7dee5;text-align:left;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.pv.e b{color:#0A7DAD}
+.new{position:relative;outline:3px solid #F97316;outline-offset:3px;border-radius:14px}
+.tag{position:absolute;top:-12px;right:8px;background:#F97316;color:#fff;font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px}
+.et{margin-top:12px;background:#fff;border:1px solid #dfe6ec;border-radius:16px;padding:10px 12px;font-size:12px;color:#55606b;font-weight:800;letter-spacing:.08em}
+.et .s{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;letter-spacing:0;font-weight:600;font-size:13px}.et .s span{border:1px solid #d7dee5;border-radius:99px;padding:5px 9px;color:#2B2A2D}.et .s .a{background:#0A7DAD;color:#fff;border-color:#0A7DAD}
+.qh{font:800 13px system-ui;letter-spacing:.12em;color:#0A7DAD;margin:14px 2px 8px}
+.dk{background:radial-gradient(circle at 80% 0,#143b5c,#0b1424);color:#fff;border-radius:18px;padding:16px}
+.dk .k{color:#7FD8F5;font-size:12px;font-weight:800;letter-spacing:.14em}.dk h3{margin:6px 0 4px;font-size:20px}.dk p{margin:0;color:#c9d6e2;font-size:14px;line-height:1.4}
+.dk .b2{display:flex;gap:6px;margin-top:12px}.dk .b2 span{flex:1;background:#25D366;border-radius:12px;padding:10px 4px;text-align:center;font-weight:800;font-size:13px}.dk .b2 span.n{background:#ffffff1a}
+.ps{margin-top:12px;background:#fff;border:1px solid #dfe6ec;border-radius:16px;padding:10px 12px}
+.ps .k{font-size:12px;font-weight:800;letter-spacing:.1em;color:#55606b}.dots{display:flex;justify-content:space-between;margin-top:8px}
+.dots span{width:34px;height:34px;border-radius:50%;background:#E6ECF1;display:grid;place-items:center;font-weight:800;color:#55606b;font-size:14px}
+.dots .d{background:#16A34A;color:#fff}.dots .c{background:#0A7DAD;color:#fff;box-shadow:0 0 0 4px #0A7DAD33}
+.lbl{font-size:11px;color:#55606b;display:flex;justify-content:space-between;margin-top:4px}
+/* lista */
+.top{display:flex;gap:6px;overflow:hidden;margin-bottom:8px}.top span{border:1px solid #d7dee5;background:#fff;border-radius:99px;padding:7px 11px;font-size:14px;font-weight:700;white-space:nowrap}.top .a{border:2px solid #0A7DAD;color:#0A7DAD;background:#E6F4FA}
+.ord{display:flex;gap:6px;margin:6px 0 10px}.ord span{flex:1;text-align:center;border:1px solid #d7dee5;border-radius:10px;padding:7px 2px;font-size:13px;font-weight:700;background:#fff}.ord .a{background:#2B2A2D;color:#fff;border-color:#2B2A2D}
+.li{background:#fff;border:1px solid #dfe6ec;border-radius:18px;overflow:hidden}
+.it{display:flex;align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid #eef2f5}.it:last-child{border:0}
+.it .n{width:16px;color:#55606b;font-weight:800}.it .a2{width:40px;height:40px;border-radius:50%;background:#F8D3BE;display:grid;place-items:center;font-weight:800;font-size:14px}
+.it .t b{display:block;font-size:16px}.it .t small{font-size:13px;color:#55606b}.it .t small i{font-style:normal;font-weight:700}
+.it .r{margin-left:auto;text-align:right;font-size:12px;color:#55606b}.it .r b{display:block;font-size:13px;color:#0A7DAD}
+.live{color:#DC2626!important}
+</style></head><body>
+
+<div class="ph"><div class="tt">1 · Prospecto nuevo (sin saludar)</div>
+<div class="card"><div class="hd"><div class="av">FR</div><div><div class="nm">Fany Ruiz</div><div class="tel">+504 3172-1696 · <b>Copiar</b></div></div><div class="rb"><span>⋯</span><span>🗑️</span><span>✕</span></div></div>
+<div class="bd">
+<div class="chips"><span>✈️ Virtual</span><span>🤝 1 a 1</span><span>🌎 Zoom global</span><span>🎤 Junta o evento</span></div>
+<div class="row"><div class="g">💬 Saludar en WhatsApp</div><div class="o">✍️ Anotar</div></div>
+<div class="new"><span class="tag">NUEVO</span><div class="pv s">✈️ Enviarle mi presentación virtual</div></div>
+<div class="et">ETAPA · TOQUE PARA CAMBIAR<div class="s"><span class="a">Nuevo 10%</span><span>Contactado 25%</span><span>Presentación 50%</span><span>Seguimiento 70%</span><span>Por cerrar 90%</span><span>…</span></div></div>
+<div class="qh">QUÉ HACER AHORA</div>
+<div class="new"><span class="tag">CAMBIA</span><div class="dk"><div class="k">👉 SIGUIENTE PASO</div><h3>👋 Salúdelo primero</h3><p>Use el botón verde <b>«Saludar en WhatsApp»</b> de arriba. Cuando le conteste, aquí le aparece el siguiente paso: <b>invitarlo</b>.</p></div></div>
+<div class="ps"><div class="k">PASOS</div><div class="dots"><span class="c">1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div><div class="lbl"><span>Saludo</span><span>Invitar</span><span>Cita</span><span>Present.</span><span>Seguim.</span><span>Socio</span></div></div>
+</div></div></div>
+
+<div class="ph"><div class="tt">2 · Ya la saludó (botón de arriba)</div>
+<div class="card"><div class="hd"><div class="av">FR</div><div><div class="nm">Fany Ruiz</div><div class="tel">+504 3172-1696 · <b>Copiar</b></div></div><div class="rb"><span>⋯</span><span>🗑️</span><span>✕</span></div></div>
+<div class="bd">
+<div class="chips"><span>✈️ Virtual</span><span>🤝 1 a 1</span><span>🌎 Zoom global</span><span>🎤 Junta o evento</span></div>
+<div class="row"><div class="gh">✅ Saludó hoy · 3:14 p. m.<br><small>Volver a abrir ›</small></div><div class="o">✍️ Anotar</div></div>
+<div class="new"><span class="tag">NUEVO</span><div class="pv e"><span>✈️ Presentación virtual · <b>Va en 60 %</b> 🔴</span><b>Ver ›</b></div></div>
+<div class="et">ETAPA · TOQUE PARA CAMBIAR<div class="s"><span>Nuevo 10%</span><span class="a">Contactado 25%</span><span>Presentación 50%</span><span>…</span></div></div>
+<div class="qh">QUÉ HACER AHORA</div>
+<div class="new"><span class="tag">CAMBIA</span><div class="dk"><div class="k">👉 SIGUIENTE PASO</div><h3>💬 ¿Le contestó?</h3><p>Ya lo saludó hace un momento.</p><div class="b2"><span>✅ Sí, ya</span><span class="n">⏳ Todavía no</span><span class="n">✖ No</span></div></div></div>
+<div class="ps"><div class="k">PASOS</div><div class="dots"><span class="d">✓</span><span class="c">2</span><span>3</span><span>4</span><span>5</span><span>6</span></div><div class="lbl"><span>Saludo</span><span>Invitar</span><span>Cita</span><span>Present.</span><span>Seguim.</span><span>Socio</span></div></div>
+</div></div></div>
+
+<div class="ph"><div class="tt">3 · Filtro Presentación virtual</div>
+<div class="top"><span>☰ Lista 54</span><span>Todas 54</span><span class="a">🎬 Presentación virtual 23</span></div>
+<div class="new"><span class="tag">NUEVO</span><div class="ord"><span class="a">🕐 Recientes</span><span>Mayor %</span><span>Seguimiento</span><span>A–Z</span></div></div>
+<div class="li">
+<div class="it"><span class="n">1</span><div class="a2">MR</div><div class="t"><b>María Reyes</b><small><i style="color:#7C3AED">Presentación</i> · 🎬 viéndola · 60 %</small></div><div class="r"><b class="live">● Ahora</b>hace 2 min</div></div>
+<div class="it"><span class="n">2</span><div class="a2">EA</div><div class="t"><b>Elizabeth Argentina</b><small><i style="color:#EA580C">Por cerrar</i> · 🎬 10/10</small></div><div class="r"><b>Terminó</b>hace 1 h</div></div>
+<div class="it"><span class="n">3</span><div class="a2">JL</div><div class="t"><b>José López</b><small><i style="color:#0A7DAD">Contactado</i> · 🎬 enviada</small></div><div class="r"><b>Enviada</b>hace 3 h</div></div>
+<div class="it"><span class="n">4</span><div class="a2">NH</div><div class="t"><b>Nivia Hernandez</b><small><i style="color:#EA580C">Por cerrar</i> · 🎬 8/10</small></div><div class="r"><b>Terminó</b>ayer</div></div>
+<div class="it"><span class="n">5</span><div class="a2">ER</div><div class="t"><b>Esdras Reyes</b><small><i style="color:#EA580C">Por cerrar</i> · 🎬 7/10</small></div><div class="r"><b>Terminó</b>hace 2 días</div></div>
+</div>
+<p style="font-size:13px;color:#55606b;margin:10px 6px">Recientes = el último movimiento con la presentación (la abrió, avanzó, la terminó o se la acaba de enviar).</p>
+</div>
+</body></html>

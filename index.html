@@ -1578,7 +1578,18 @@ body.acc3 #tasks .counter{background:var(--surface-2);border-radius:12px;gap:2px
 .pcN{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}.pcN button{border:0;border-radius:9px;padding:10px 0;font:800 15px Figtree,sans-serif;background:var(--surface-2);color:var(--ink);cursor:pointer}.pcN button[aria-pressed=true]{background:#F97316;color:#fff}
 .pcH{font-size:12.5px;margin:8px 0 0;color:#15803d;background:color-mix(in srgb,#16A34A 9%,var(--surface));border-radius:10px;padding:8px 10px}.pcH:empty{display:none}.pcH.rep{color:#b45309;background:color-mix(in srgb,#F59E0B 12%,var(--surface))}
 .rc3Bal{font-size:13px;margin:0 0 8px}
-.c7Cm{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px}.c7Cm button{border:0;font:700 12px Figtree,sans-serif;border-radius:20px;padding:5px 9px;background:var(--surface);box-shadow:0 0 0 1px var(--line);color:var(--muted);cursor:pointer}.c7Cm button.ok{background:#16A34A;color:#fff;box-shadow:none}.c7Cm button.sure{background:#DC2626;color:#fff;box-shadow:none}
+.c7Cm{width:100%;flex:1 1 100%;background:var(--surface);border-radius:14px;box-shadow:0 0 0 1px var(--line);padding:9px 8px 8px;margin:2px 0 10px}
+.c7Ck{display:flex;justify-content:space-between;align-items:baseline;font-size:10.5px;font-weight:800;letter-spacing:.14em;color:var(--muted);margin:0 4px 8px}.c7Ck b{letter-spacing:0;font:700 14px 'Barlow Condensed',sans-serif;color:var(--ink)}
+.c7Cs{display:flex}.c7Cs button{flex:1;min-width:0;border:0;background:none;padding:0;position:relative;cursor:pointer;color:var(--muted);font-family:Figtree,sans-serif}
+.c7Cs i{display:grid;place-items:center;width:30px;height:30px;margin:0 auto;border-radius:50%;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);position:relative;z-index:1}
+.c7Cs svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.c7Cs small{display:block;font-size:11px;font-weight:600;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c7Cs button+button::before{content:"";position:absolute;top:14px;right:50%;width:100%;height:1.5px;background:var(--line)}
+.c7Cs button.ok i{background:#16A34A;box-shadow:none;color:#fff}.c7Cs button.ok small{color:var(--ink);font-weight:700}.c7Cs button.ok+button.ok::before{background:#16A34A}
+.c7Cs button.sure i{background:#DC2626;box-shadow:none;color:#fff}.c7Cs button.sure small{color:#DC2626;white-space:normal;font-size:10px}
+.c8Pv{display:flex;align-items:center;gap:10px;width:100%;margin:8px 0 0;border:0;background:var(--surface);box-shadow:0 0 0 1px var(--line);border-radius:14px;padding:12px 14px;font:700 15px Figtree,sans-serif;color:var(--ink);text-align:left;cursor:pointer}
+.c8Pv svg{width:18px;height:18px;flex:none;fill:none;stroke:var(--brand);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.c8Pv span{flex:1;min-width:0}.c8Pv em{font-style:normal;color:var(--brand)}.c8Pv em.ok{color:#16A34A}.c8Pv b{color:var(--brand);white-space:nowrap}.c8Pv.s{color:var(--brand)}
+.pvOrd{display:flex;gap:6px;margin:0 0 10px}.pvOrd button{flex:1;border:0;background:var(--surface);box-shadow:0 0 0 1px var(--line);border-radius:10px;padding:8px 2px;font:700 13px Figtree,sans-serif;color:var(--ink);cursor:pointer}.pvOrd button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .c7AL{background:var(--surface);border-radius:14px;box-shadow:0 0 0 1px var(--line);padding:4px 12px;margin-top:8px}.c7AL .ai{display:flex;gap:9px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px;align-items:flex-start}.c7AL .ai:first-child{border-top:0}.c7AL .e{width:22px;text-align:center;flex:none}.c7AL .t{flex:1;min-width:0;color:var(--ink)}.c7AL small{display:block;color:var(--muted);font-size:11.5px;margin-top:1px}
 .c7H{display:flex;gap:8px;margin-top:6px}.c7H button{border:0;border-radius:14px;padding:13px 8px;font:800 15px Figtree,sans-serif;cursor:pointer}.c7H .w{flex:1.3;background:#25D366;color:#fff}.c7H .a{flex:1;background:var(--surface);box-shadow:0 0 0 1.5px var(--brand);color:var(--brand)}
 .c7Ok{display:flex;align-items:center;gap:8px;margin-top:6px;background:color-mix(in srgb,#16A34A 10%,var(--surface));box-shadow:0 0 0 1px color-mix(in srgb,#16A34A 30%,transparent);border-radius:14px;padding:11px 12px;font:700 14px Figtree,sans-serif;color:#15803d}.c7Ok button{margin-left:auto;border:0;background:none;color:var(--brand);font:700 14px Figtree,sans-serif;cursor:pointer;padding:0}
@@ -9256,14 +9267,16 @@ function c7Borrar(c){const n=esc(c.name||"este contacto");
 document.addEventListener("click",e=>{const t=e.target.closest&&e.target.closest("[data-c7m],[data-c7d],[data-c7a]");if(!t)return;e.preventDefault();e.stopPropagation();
   const c=(contacts||[]).find(x=>x.id===(t.dataset.c7m||t.dataset.c7d||t.dataset.c7a));if(!c)return;
   if(t.dataset.c7m)cvMasSheet(c);else if(t.dataset.c7d)c7Borrar(c);else segReg(c)},true);
-function crmCuerpo(list,card,q){let n=0;const pvF=catF==="pv";if(pvF)list=list.slice().sort((a,b)=>(stPct(b)||0)-(stPct(a)||0)); /* 19 nov (Edwin): filtro Presentación virtual = lista plana con su etapa y % */const pk=pipeOk(),act=c=>!CERR.includes(c.stage)&&!PAUSA.includes(c.stage)&&!lluPas(c);
+function pvRec(c){let t=0;try{const v=salaDe(c.id);if(v)t=Math.max(+v.t||0,+v.t0||0);const e=(LS.get("salaEnv")||{})[c.id];if(e)t=Math.max(t,+e||0)}catch(x){}return t}
+function pvOrdHTML(){const o=crmOrd||"pct";return `<div class="pvOrd">${[["rec","🕐 Recientes"],["pct","Mayor %"],["seg","Seguimiento"],["az","A–Z"]].map(([k,t])=>`<button type="button" data-ord="${k}" aria-pressed="${o===k}">${t}</button>`).join("")}</div>`}
+function crmCuerpo(list,card,q){let n=0;const pvF=catF==="pv";if(pvF){const o=crmOrd||"pct";list=list.slice().sort(o==="rec"?(a,b)=>pvRec(b)-pvRec(a):o==="pct"?(a,b)=>(stPct(b)||0)-(stPct(a)||0)||(pvRec(b)-pvRec(a)):crmCmp())} /* 25 nov (Edwin): el filtro respeta el orden; Recientes = último movimiento con la presentación */ /* 19 nov (Edwin): filtro Presentación virtual = lista plana con su etapa y % */const pk=pipeOk(),act=c=>!CERR.includes(c.stage)&&!PAUSA.includes(c.stage)&&!lluPas(c);
   const lsF=crmLista&&!q;const row=c=>{const nn=lsF||act(c)?++n:"";const op=openC===c.id,col=STAGE_COL[c.stage]||"var(--brand)",ps=lluPas(c),cer=CERR.includes(c.stage)||ps,pv=crmPv(c),fr=!cer&&pk&&stFrio(c),tq=crmToca(c)&&!crmAtHoy(c),late=tq,rx=ps?lluRepTx(c.rep):null,sel=crmSel&&crmSel.k===gkG(c),sOn=sel&&crmSel.s.has(c.id);
     if(sel)return `<div class="cgR cgSelR${sOn?" on":""}" role="button" tabindex="0" data-csel="${esc(c.id)}"><span class="cgCk">${sOn?"✓":""}</span><span class="cgAv" style="--c:${col}">${esc(crmIni(c.name))}</span><span class="cgNm"><span class="cgTL"><span class="cgT">${esc(c.name)}</span></span><small class="cgM">${esc(c.stage||"Nuevo")}</small></span></div>`;
     return `<div class="cgR${op?" op":""}${tq?" tq":""}" role="button" tabindex="0" aria-expanded="${op}" data-tog="${esc(c.id)}"><span class="cgN">${nn}</span><span class="cgAv" style="--c:${col}">${esc(crmIni(c.name))}</span><span class="cgNm"><span class="cgTL"><span class="cgT">${esc(c.name)}</span>${cgCat(c,cer)}</span><small class="cgM">${tq&&!op&&!sel?`<button type="button" class="cgYa" data-yle="${esc(c.id)}" aria-label="Ya le escribí a ${esc(c.name)}">✓ Ya le escribí</button>`:""}${op&&c7On(c)?c7Tel(c):rx?`<span class="rpM ${rx.c}">${esc(rx.t)}</span>`:pvF?`<b style="color:${col}">${esc(ps?"Pasado a su equipo":c.stage||"Nuevo")}</b> · 🎬 ${esc(pv||"Enviada")}`:lsF?`<b style="color:${col}">${esc(ps?"Pasado a su equipo":c.stage||"Nuevo")}</b>${(()=>{let m=crmMeta(c);const st=String(c.stage||"");if(st&&m.replace(/<[^>]+>/g,"").startsWith(st))m=m.replace(st,"").replace(/^\s*·\s*/,"");return m?" · "+m:""})()}`:crmMeta(c)}</small></span>${op&&c7On(c)?c7Ic(c):""}<span class="cgP" style="color:${col}">${rx?"":cer?esc(c.stage):pk?stPct(c)+"%":esc(c.stage||"Nuevo")}${fr||late?`<i title="Sin seguimiento">⚠</i>`:""}</span></div>${op?`<div class="cgF">${card(c)}</div>`:""}`};
   const cerL=list.filter(c=>CERR.includes(c.stage)&&!lluPas(c));if(!q&&!crmCerV&&cerL.length)list=list.filter(c=>!(CERR.includes(c.stage)&&!lluPas(c)));
   const cerLn=!q&&cerL.length?`<button type="button" class="cgCer" data-cgcer="1">✅ ${cerL.length} ${cerL.length===1?"cerrado":"cerrados"} · ya están en su Dream Team · ${crmCerV?"Ocultar ▴":"Ver ›"}</button>`:"";
   const nA=list.filter(act).length,nC=cerL.length,cnt=`<p class="cgCnt">${lsF?list.length+" contactos · ":""}${nA} en proceso${nC?` · ${nC} ${nC===1?"cerrado":"cerrados"}`:""}</p>`;
-  if(!crmGrp(q))return cnt+`<div class="cgG">${list.map(row).join("")}</div>`+cerLn;
+  if(!crmGrp(q))return (pvF?pvOrdHTML():"")+cnt+`<div class="cgG">${list.map(row).join("")}</div>`+cerLn;
   const gk=gkG;
   const G={};list.forEach(c=>{const k=gk(c);(G[k]=G[k]||[]).push(c)});const ORD2=CG_ORD.concat(["Pasados",MA,"Cerrados","Descartados"]);const ks=Object.keys(G).sort((a,b)=>((ORD2.indexOf(a)+1)||99)-((ORD2.indexOf(b)+1)||99));
   const A=crmGAb();if(openC){const oc=list.find(c=>c.id===openC);if(oc)A.add(gk(oc))}let ga0=null;try{ga0=LS.get("crmGA")}catch(e){}if(!Array.isArray(ga0)&&!ks.some(k=>A.has(k))&&ks[0])A.add(ks[0]); // 16 nov (Edwin): un grupo se puede cerrar aunque queden todos cerrados; solo la 1.ª vez se abre el primero
@@ -9387,7 +9400,7 @@ function holaAbrir(c,dir){if(!c)return;const O=holaOrden();let ult=-1;try{ult=(L
 function holaHTML(c){if(!c||!HOLA_ST.includes(c.stage||"Nuevo"))return "";const id=esc(c.id);
   if(c.hola&&Date.now()-c.hola<12*36e5)return `<div class="hoYa">👋 Saludó ${esc(memHace(c.hola))} · cuando le conteste, mándele el mensaje de abajo <button type="button" data-hola="${id}">Otro saludo</button></div>`;
   return `<button type="button" class="hoBt" data-hola="${id}">👋 Saludar primero · saludo listo</button>`}
-function crmV2Sig1(c){const H=crmV2Sig0(c);if(c7On(c))return H; /* 23 nov (Edwin, A1): el saludo vive arriba, en «Saludar en WhatsApp» */const h=holaHTML(c);if(!h)return H;let i=H.indexOf("<em ");if(i<0)i=H.indexOf("<button");
+function crmV2Sig1(c){if(c7On(c)){const P=crmV2P(c);if(P&&["sal","resal"].includes(P.k)&&!c7HolaHoy(c))return `<div class="cvN cvNx"><span class="kx">👉 SIGUIENTE PASO</span><b>👋 Salúdelo primero</b><small>Use el botón verde «Saludar en WhatsApp» de arriba. Cuando le conteste, aquí le aparece el siguiente paso: invitarlo.</small></div>`}const H=crmV2Sig0(c);if(c7On(c))return H; /* 23 nov (Edwin, A1): el saludo vive arriba, en «Saludar en WhatsApp» */const h=holaHTML(c);if(!h)return H;let i=H.indexOf("<em ");if(i<0)i=H.indexOf("<button");
   // 23 nov (Edwin): el saludo SIEMPRE está, en dos tiempos: 1.º salude · 2.º cuando le conteste
   if(i<0){i=H.lastIndexOf("</div>");return i<0?H+h:H.slice(0,i)+`<span class="hoK">👋 SALÚDELO PRIMERO</span>`+h+H.slice(i)}
   return H.slice(0,i)+`<span class="hoK">1.º SALUDE</span>`+h+`<span class="hoK">2.º CUANDO LE CONTESTE</span>`+H.slice(i)}
@@ -9400,7 +9413,7 @@ function crmV2P(c){let P=flPaso(c);const st=c.stage||"Nuevo",tarde=["Presentaci�
 function flCurI(c){if(PAUSA.includes(c.stage)||CERR.includes(c.stage))return -1;const P=crmV2P(c);if(!P)return 5;const k=P.k,q=P.q;
   if(k==="bien")return 5;if(k==="seg"||(k==="preg"&&q==="seg"))return 4;if(k==="pres"||(k==="nada"&&flH(c).pvs))return 3;
   if(["agd","pva","pvl","pvt"].includes(k)||(k==="preg"&&q==="pva"))return 2;if(["inv","rinv"].includes(k)||(k==="preg"&&q==="inv")||(k==="espera"&&flH(c).inv))return 1;
-  if(["sal","resal"].includes(k)||(k==="preg"&&q==="sal")||k==="espera")return 0;return -1}
+  if(k==="preg"&&q==="sal"&&c7On(c))return 1;if(["sal","resal"].includes(k)||(k==="preg"&&q==="sal")||k==="espera")return 0;return -1}
 function flBloq(c){return !!((c.pres&&c.pres.t)||yaPresentado(c))}
 function flPasosHTML(c){const cur=flCurI(c);if(cur<0||cur>=5)return "";const id=esc(c.id),bl=flBloq(c);
   return `<div class="flPs"><div class="t"><span>PASOS</span><small>Toque uno para ir ahí</small></div><div class="flPsR">${FL_PASOS.map(([k,t],i)=>{const ok=i<cur||(bl&&i<4),on=i===cur;return `<button type="button" class="${ok?"ok":""}${on?" on":""}" data-flir="${id}|${i}"${bl&&i<4&&!on?" disabled":""}><b>${ok?"✓":i+1}</b><span>${t==="Presentación"?"Present.":t==="Seguimiento"?"Seguim.":t==="Invitación"?"Invitar":t}</span></button>`}).join("")}</div>
@@ -9444,7 +9457,7 @@ function crmV2(c,late,today){const ci=(citas||[]).filter(x=>x.cid===c.id&&x.fech
   const S=(c.seg||[]).filter(x=>x&&x.n).slice(-3).reverse();S.forEach(x=>A.push(["📝",x.n,x.t?fT(x.t):""]));if(c.note)A.unshift(["🗒️",c.note,""]);
   {const v=salaDe(c.id);if(v){const n=+v.pulso||0,fin=(+v.pct||0)>=100||/^\d+$/.test(String(v.pulso||""));A.unshift(["✈️","Presentación virtual · "+(fin?"terminó"+(n?" · "+n+"/10":""):"va en "+Math.min(100,+v.pct||0)+"%"),v.t?fT(v.t):"",c.id])}} // 17 nov (Edwin): sus respuestas, a un toque
   const nS=(c.seg||[]).length,wl=waLink(c);
-  if(!lluPas(c))return `${c7Cam(c)}${c7Hola(c)}<div class="cvEt"><div class="t"><span>ETAPA · TOQUE PARA CAMBIAR</span></div>${due?`<div class="cvEtD">${due}</div>`:""}${stepsHTML(c)}</div>
+  if(!lluPas(c))return `${c7Cam(c)}${c7Hola(c)}${c7Pv(c)}<div class="cvEt"><div class="t"><span>ETAPA · TOQUE PARA CAMBIAR</span></div>${due?`<div class="cvEtD">${due}</div>`:""}${stepsHTML(c)}</div>
    ${maLinea(c)}${lluHTML(c)}${gcHTML(c)}
    ${gcHTML(c)?"":`<div class="cvQk">QUÉ HACER AHORA</div>`+crmV2Sig(c)+flPasosHTML(c)}${c7Act(c)}`;
   return `${cvTel(c)}<div class="cvEt"><div class="t"><span>ETAPA · TOQUE PARA CAMBIAR</span><button type="button" class="cvDel" data-cvdel="${esc(c.id)}">🗑️ Eliminar</button></div>${due?`<div class="cvEtD">${due}</div>`:""}${stepsHTML(c)}</div>
@@ -9463,6 +9476,7 @@ function c7Hola(c){const id=esc(c.id);if(CERR.includes(c.stage)||c.stage==="No i
 function c7HolaHecho(c,txt){const n=waNum(c.phone,c.cc)||"";
   waIr("https://wa.me/"+n+(txt?"?text="+encodeURIComponent(txt):"")); // abrir WhatsApp antes de cualquier espera (iPhone)
   c.hola=Date.now();c.seg=(c.seg||[]).concat([{t:c.hola,k:"sal"}]).slice(-SG_MAX);nextBump(c);
+  try{const H=flH(c);if(!H.inv&&!H.agd&&!H.pva&&!H.pvs&&!(c.pres&&c.pres.t))flMarca(c,"sal","")}catch(e){} /* 25 nov: el saludo de arriba marca el paso 1 */
   if((c.stage||"Nuevo")==="Nuevo"){try{stAvanza(c,"Contactado","lo saludó por WhatsApp")}catch(e){}}
   segAuto(c);try{LS.set("notaPend",{id:c.id,k:"wa",t:Date.now(),log:0})}catch(e){}
   c.updated=Date.now();try{store.saveContact(Object.assign({},c))}catch(e){}setTimeout(()=>{try{renderCRM()}catch(e){}try{crmTopPinta()}catch(e){}},300)}
@@ -9502,11 +9516,18 @@ function zgInvitar(c){if(!c)return;const n=waNum(c.phone,c.cc);const e=(T.evento
   waIr("https://wa.me/"+(n||"")+"?text="+encodeURIComponent(t));
   c.seg=(c.seg||[]).concat([{t:Date.now(),k:"ivz",n:"Lo invité al Zoom global del "+niceDate(e.fecha)+(e.hora?" · "+h12(e.hora):"")}]).slice(-SG_MAX);nextBump(c);if(!c.next||c.next<e.fecha)c.next=e.fecha;
   c.updated=Date.now();try{store.saveContact(Object.assign({},c))}catch(x){}setTimeout(()=>{try{renderCRM()}catch(x){}},300)}
-function c7Cam(c){const T=pfTiene(c),id=esc(c.id);return `<div class="c7Cm">${PFORMAS.map(([k,ic,t])=>`<button type="button" class="${T[k]?"ok":""}" data-c7k="${id}|${k}">${ic} ${t}</button>`).join("")}</div>`}
+const C7_SV={v:"v",u:"u",z:"z",je:"e"},C7_TX={v:"Virtual",u:"1 a 1",z:"Zoom",je:"Junta/Evento"};
+function c7Cam(c){const T=pfTiene(c),id=esc(c.id),n=PFORMAS.filter(([k])=>T[k]).length; /* 25 nov (Edwin): las 4 formas como etapas, en una sola línea, minimalista */
+  return `<div class="c7Cm"><div class="c7Ck"><span>CÓMO SE LE HA PRESENTADO</span><b>${n} de 4</b></div><div class="c7Cs">${PFORMAS.map(([k])=>`<button type="button" class="${T[k]?"ok":""}" data-c7k="${id}|${k}"><i><svg viewBox="0 0 24 24">${REU_SVG[C7_SV[k]]||""}</svg></i><small>${C7_TX[k]}</small></button>`).join("")}</div></div>`}
+function c7Pv(c){if(!salaOk()||CERR.includes(c.stage)||c.stage==="No interesado")return "";const id=esc(c.id),v=salaDe(c.id),e=(LS.get("salaEnv")||{})[c.id],ic=`<svg viewBox="0 0 24 24">${REU_SVG.v}</svg>`;
+  if(!v&&!e)return `<button type="button" class="c8Pv s" data-sala="${id}">${ic}<span>Enviarle mi presentación virtual</span><b>›</b></button>`;
+  if(!v)return `<button type="button" class="c8Pv" data-sala="${id}">${ic}<span>Presentación virtual · <em>Enviada · aún no la abre</em></span><b>Reenviar ›</b></button>`;
+  const n=+v.pulso||0,fin=(+v.pct||0)>=100||/^\d+$/.test(String(v.pulso||"")),vivo=!fin&&Date.now()-(+v.t||0)<10*60e3;
+  return `<button type="button" class="c8Pv" data-cvtk="${id}">${ic}<span>Presentación virtual · <em class="${fin?"ok":""}">${fin?"Terminó"+(n?" · "+n+"/10":""):"Va en "+Math.min(100,+v.pct||0)+" %"+(vivo?" 🔴":"")}</em></span><b>Ver ›</b></button>`}
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-c7k]");if(!b)return;e.preventDefault();e.stopPropagation();const[id,k]=b.dataset.c7k.split("|"),c=(contacts||[]).find(x=>x.id===id);if(!c)return;
   const T=pfTiene(c),P=pfDe(c);if(k==="v"&&salaDe(c.id)){cvViaje(c);return}
   if(T[k]){ // 23 nov (Edwin): tocar una forma en verde la quita (doble toque), para corregir marcas que no son reales
-    if(!b.dataset.ok||Date.now()-b.dataset.ok>3000){b.dataset.ok=Date.now();b.dataset.tx=b.textContent;b.textContent="¿Quitar "+pfN(k)+"? Toque otra vez";b.classList.add("sure");setTimeout(()=>{if(b.isConnected&&b.dataset.ok&&Date.now()-b.dataset.ok>=2900){b.textContent=b.dataset.tx;b.classList.remove("sure");b.dataset.ok=""}},3000);return}
+    if(!b.dataset.ok||Date.now()-b.dataset.ok>3000){b.dataset.ok=Date.now();const L=b.querySelector("small")||b;b.dataset.tx=L.textContent;L.textContent="¿Quitar? Toque otra vez";b.classList.add("sure");setTimeout(()=>{if(b.isConnected&&b.dataset.ok&&Date.now()-b.dataset.ok>=2900){L.textContent=b.dataset.tx;b.classList.remove("sure");b.dataset.ok=""}},3000);return}
     pfQuitar(c,k);return}
   if(k==="v"){enviarSala(c);return}presComo(c,{como:k})},true);
 async function pfQuitar(c,k){c.pf=pfDe(c);delete c.pf[k];c.reu=Object.assign({},c.reu||{});c.reuA=Object.assign({},c.reuA||{});
@@ -12299,7 +12320,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261125134353";var busy=false,pend=null;
+(function(){var V="20261125152105";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

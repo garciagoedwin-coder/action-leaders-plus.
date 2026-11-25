@@ -1,0 +1,47 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box}body{margin:0;background:#E9EEF3;font-family:Figtree,system-ui,sans-serif;color:#2B2A2D;display:flex;gap:28px;padding:28px;align-items:flex-start}
+.ph{width:430px;background:#F3F6F9;border-radius:34px;padding:18px 14px 20px;box-shadow:0 10px 30px #0002}
+.tt{font:800 15px system-ui;color:#0A7DAD;letter-spacing:.06em;margin:0 6px 10px;text-transform:uppercase}
+.card{border:2px solid #0A7DAD;border-radius:22px;background:#EAF3F9;overflow:hidden}
+.hd{display:flex;align-items:center;gap:12px;padding:14px;background:#F3F7FA}
+.av{width:52px;height:52px;border-radius:50%;background:#CDEBF7;display:grid;place-items:center;font-weight:800;color:#0b3b57}
+.nm{font-weight:800;font-size:20px}.tel{color:#55606b;font-size:14px}.tel b{color:#0A7DAD}
+.rb{margin-left:auto;display:flex;gap:6px}.rb span{width:34px;height:34px;border-radius:50%;border:1px solid #d7dee5;background:#fff;display:grid;place-items:center;font-size:14px}
+.bd{padding:12px}
+.fm{background:#fff;border-radius:14px;box-shadow:0 0 0 1px #E3E9EE;padding:10px 10px 9px}
+.fk{display:flex;justify-content:space-between;font-size:10.5px;font-weight:800;letter-spacing:.14em;color:#8A949D;margin:0 2px 9px}.fk b{letter-spacing:0;font-size:12px;color:#2B2A2D;font-family:'Barlow Condensed',system-ui}
+.sw{display:flex}
+.st{flex:1;text-align:center;position:relative}
+.st i{display:grid;place-items:center;width:30px;height:30px;margin:0 auto;border-radius:50%;background:#fff;border:1.5px solid #CBD5DD;position:relative;z-index:1;color:#8A949D}
+.st svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.st.ok i{background:#16A34A;border-color:#16A34A;color:#fff}
+.st small{display:block;font-size:11px;font-weight:600;color:#8A949D;margin-top:5px;white-space:nowrap}.st.ok small{color:#2B2A2D;font-weight:700}
+.st+.st::before{content:"";position:absolute;top:15px;right:50%;width:100%;height:1.5px;background:#E3E9EE}
+.st.ok+.st.ok::before{background:#16A34A}
+.row{display:flex;gap:8px;margin-top:12px}.g{flex:1.4;background:#25D366;color:#fff;border-radius:14px;padding:13px;font-weight:800;text-align:center}
+.o{flex:1;border:1.5px solid #0A7DAD;color:#0A7DAD;border-radius:14px;padding:11px;font-weight:800;text-align:center;background:#fff}
+.gh{flex:1.4;background:#fff;box-shadow:0 0 0 1px #BBF7D0;color:#166534;border-radius:14px;padding:10px;font-weight:700;font-size:14px;text-align:center}
+.pv{margin-top:8px;border-radius:14px;padding:12px 14px;font-weight:700;font-size:15px;background:#fff;box-shadow:0 0 0 1px #E3E9EE;display:flex;align-items:center;gap:10px}
+.pv svg{width:18px;height:18px;fill:none;stroke:#0A7DAD;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pv .r{margin-left:auto;color:#0A7DAD;font-weight:800}
+.pv.s{color:#0A7DAD}
+.qh{font:800 12px system-ui;letter-spacing:.14em;color:#0A7DAD;margin:14px 2px 8px}
+.dk{background:radial-gradient(circle at 80% 0,#143b5c,#0b1424);color:#fff;border-radius:18px;padding:16px}
+.dk .k{color:#7FD8F5;font-size:11px;font-weight:800;letter-spacing:.14em}.dk h3{margin:6px 0 4px;font-size:19px}.dk p{margin:0;color:#c9d6e2;font-size:14px;line-height:1.4}
+.dk .b2{display:flex;gap:6px;margin-top:12px}.dk .b2 span{flex:1;background:#25D366;border-radius:12px;padding:10px 4px;text-align:center;font-weight:800;font-size:13px}.dk .b2 span.n{background:#ffffff1a}
+</style></head><body>
+<script>
+const S={v:'<path d="M21 3 10 14M21 3l-6.5 18-3.5-7-7-3.5L21 3z"/>',u:'<path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 20a6 6 0 0 1 12 0M17 11a2.5 2.5 0 1 0 0-5M21 19a5 5 0 0 0-4-4.9"/>',z:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',e:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/>'};
+const sv=k=>`<svg viewBox="0 0 24 24">${S[k]}</svg>`;
+const hd=`<div class="hd"><div class="av">FR</div><div><div class="nm">Fany Ruiz</div><div class="tel">+504 3172-1696 · <b>Copiar</b></div></div><div class="rb"><span>⋯</span><span>🗑️</span><span>✕</span></div></div>`;
+const fm=ok=>`<div class="fm"><div class="fk"><span>CÓMO SE LE HA PRESENTADO</span><b>${ok.length} de 4</b></div><div class="sw">${[["v","Virtual"],["u","1 a 1"],["z","Zoom"],["e","Junta/Evento"]].map(([k,t])=>`<div class="st ${ok.includes(k)?"ok":""}"><i>${sv(k)}</i><small>${t}</small></div>`).join("")}</div></div>`;
+const A=`<div class="ph"><div class="tt">Sin saludar · sin presentar</div><div class="card">${hd}<div class="bd">${fm([])}
+<div class="row"><div class="g">💬 Saludar en WhatsApp</div><div class="o">✍️ Anotar</div></div>
+<div class="pv s">${sv("v")}Enviarle mi presentación virtual<span class="r">›</span></div>
+<div class="qh">QUÉ HACER AHORA</div><div class="dk"><div class="k">👉 SIGUIENTE PASO</div><h3>👋 Salúdelo primero</h3><p>Use el botón verde <b>«Saludar en WhatsApp»</b> de arriba. Cuando le conteste, aquí le aparece el siguiente paso: <b>invitarlo</b>.</p></div></div></div></div>`;
+const B=`<div class="ph"><div class="tt">Ya lo saludó · vio la virtual y 1 a 1</div><div class="card">${hd}<div class="bd">${fm(["v","u"])}
+<div class="row"><div class="gh">✅ Saludó hoy · 3:14 p. m.<br><small>Volver a abrir ›</small></div><div class="o">✍️ Anotar</div></div>
+<div class="pv">${sv("v")}<span>Presentación virtual · <b style="color:#16A34A">Terminó · 8/10</b></span><span class="r">Ver ›</span></div>
+<div class="qh">QUÉ HACER AHORA</div><div class="dk"><div class="k">👉 SIGUIENTE PASO</div><h3>💬 ¿Le contestó?</h3><p>Ya lo saludó hace un momento.</p><div class="b2"><span>✅ Sí, ya</span><span class="n">⏳ Todavía no</span><span class="n">✖ No</span></div></div></div></div></div>`;
+document.write(A+B);
+</script></body></html>
