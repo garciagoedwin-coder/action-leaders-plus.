@@ -5359,8 +5359,13 @@ function svDatos(){try{const ok=salaYoOk();let y=LS.get("svYd")||"";if(ok&&!y){c
   const C=Object.values(salaCache()),E=LS.get("salaEnv")||{},env=Math.max(Object.keys(E).length,C.length),ter=C.filter(v=>(+v.pct||0)>=100||/^\d+$/.test(String(v.pulso||""))).length;
   return{svY:ok?y:"",svE:env,svT:ter}}catch(e){return{}}}
 // 15 nov (Edwin): la landing (destino.html) solo muestra la presentación si el socio ya la vio completa → perfiles/{code}.pv (una escritura por socio).
-function pvPub(){try{if(!store.db||!store.uid||!(regDoc&&regDoc.registro))return;const ok=!!salaYoOk(),k="pvPub:"+store.uid;if(LS.get(k)===(ok?1:0))return;
-  store.db.doc("perfiles/"+miPCode()).set({uid:store.uid,pv:ok},{merge:true}).then(()=>LS.set(k,ok?1:0)).catch(()=>{})}catch(e){}}
+/* 24 nov (Edwin): el enlace de prospectos salía sin la presentación aunque el socio ya la había visto (en otro teléfono, o el admin que solo usa la vista previa).
+   Ahora: las cuentas admin siempre la muestran, y si este teléfono no tiene la vista guardada se busca en el servidor (salaYoServ, máx. 1 vez al día). */
+function pvPub(){try{if(!store.db||!store.uid||!(regDoc&&regDoc.registro))return;const k="pvPub:"+store.uid;
+  const put=ok=>{if(LS.get(k)===(ok?1:0))return;store.db.doc("perfiles/"+miPCode()).set({uid:store.uid,pv:ok},{merge:true}).then(()=>LS.set(k,ok?1:0)).catch(()=>{})};
+  if(isAdmin||salaYoOk()){put(true);return}
+  const kd="pvSrv:"+store.uid;if(LS.get(kd)===TODAY){put(false);return}LS.set(kd,TODAY);
+  salaYoServ().then(ok=>put(!!ok||!!salaYoOk()),()=>put(false))}catch(e){}}
 let svUlt="";function svRevisar(){try{pvPub();const d=svDatos(),k=JSON.stringify(d);if(k===svUlt)return;const prev=LS.get("svUlt");svUlt=k;if(prev!==k){LS.set("svUlt",k);if(prev!=null||d.svY)pushResumen()}}catch(e){}}
 function svDe(uid){const x=(constL||[]).find(y=>y.uid===uid);return x?{y:x.svY||"",e:+x.svE||0,t:+x.svT||0,ok:!!x.svY}:null}
 function svChip(x){const v=svDe(x.uid||x.id);if(!v)return"";return v.ok?`✈️ Habilitado${v.e?" · "+v.e+" enviadas":""}${v.t?" · "+v.t+" ✓":""}`:"⏳ Aún no ve su presentación"}
@@ -12259,7 +12264,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261124145635";var busy=false,pend=null;
+(function(){var V="20261124180850";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
