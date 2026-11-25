@@ -8619,9 +8619,7 @@ async function salaCompartir(){if(!(regDoc&&regDoc.registro)){toast("Complete su
        else if(ks.length){const o=Array.isArray(c.cat)?c.cat:[];const m=[...new Set(o.concat(ks))];if(m.length!==o.length){c.cat=m;c.updated=Date.now();store.saveContact(Object.assign({},c)).catch(()=>{})}}
        cid=c.id;try{stAvanza(c,"Contactado","le envió la presentación virtual")}catch(x){}const E=LS.get("salaEnv")||{};E[cid]=Date.now();LS.set("salaEnv",E);setTimeout(()=>{try{renderCRM()}catch(x){}},600)}
      return {n,num,u:salaUrl(n,cid)}};
-   const cop=t=>{let ok=false;try{if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).catch(()=>{});ok=true}}catch(x){}
-     try{const ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.cssText="position:fixed;top:0;left:0;opacity:0;font-size:16px";document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,t.length);ok=document.execCommand("copy")||ok;ta.remove()}catch(x){}
-     toast(ok?"Copiado ✅ · péguelo en el chat de la persona":"No se pudo copiar: mantenga presionado para copiar")};
+   const cop=t=>copiarTx(t,"Copiado ✅ · péguelo en el chat de la persona");
    $("#scWa").onclick=()=>{const r=prep();if(!r)return;const t=salaMsgInv(r.n,r.u);
      if(!r.num&&navigator.share){navigator.share({text:t}).catch(()=>{});return}
      closeSheet();location.href=r.num?"https://api.whatsapp.com/send?phone="+r.num+"&text="+encodeURIComponent(t):"https://api.whatsapp.com/send?text="+encodeURIComponent(t)};
@@ -8928,6 +8926,15 @@ function cvTel(c){const f=waNum(c&&c.phone,c&&c.cc);if(!f)return `<div class="cv
   return `<div class="cvTel${mal?" mal":""}">📱 <b>${esc(telFmt(f))}</b><button type="button" data-cph="${esc("+"+f)}">Copiar</button>${mal?`<span class="w">⚠️ Revise el número</span>`:""}</div>`}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-cph]");if(b){e.preventDefault();e.stopPropagation();const t=b.dataset.cph;const ok=()=>{toast("📋 Número copiado: "+t);b.textContent="✓ Copiado";setTimeout(()=>{b.textContent="Copiar"},2000)};try{navigator.clipboard.writeText(t).then(ok,()=>{cpTxt(t);ok()})}catch(x){cpTxt(t);ok()}return}
   const ed=e.target.closest("[data-cved]");if(ed){e.preventDefault();e.stopPropagation();const c=(contacts||[]).find(x=>x.id===ed.dataset.cved);if(c)try{editContact(c)}catch(x){}}},true);
+// 25 nov (Edwin, iPhone): «Copiar script / Copiar solo el link» no copiaba (se pegaba lo que había antes en el portapapeles). Antes se llamaba al mismo tiempo
+// navigator.clipboard.writeText y un textarea readonly + execCommand: en iPhone el textarea readonly no se puede seleccionar y el cambio de foco cancelaba el otro.
+// Ahora UNA sola vía: clipboard.writeText (y avisa solo cuando de verdad copió); sin API, textarea editable con rango (sirve en iOS viejo); si todo falla, hoja con el texto para copiar a mano.
+function copiarTx(t,okMsg){const ok=()=>toast(okMsg||"Copiado ✅");
+  const viejo=()=>{let r=false;try{const a=document.createElement("textarea");a.value=t;a.contentEditable="true";a.style.cssText="position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px";document.body.appendChild(a);
+    const rg=document.createRange();rg.selectNodeContents(a);const sel=getSelection();sel.removeAllRanges();sel.addRange(rg);a.setSelectionRange(0,t.length);r=document.execCommand("copy");a.remove()}catch(x){}return r};
+  try{if(navigator.clipboard&&navigator.clipboard.writeText&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,()=>{viejo()?ok():copiaManual(t)});return}}catch(x){}
+  viejo()?ok():copiaManual(t)}
+function copiaManual(t){openSheet(`<h2>📋 Copie el texto</h2><p class="small muted" style="margin:0 0 8px">Su teléfono no dejó copiarlo solo. Mantenga presionado el texto, toque «Seleccionar todo» y luego «Copiar».</p><textarea id="cmT" rows="9" style="width:100%;font-size:16px">${esc(t)}</textarea><button class="btn ghost" data-close style="width:100%;margin-top:8px">Listo</button>`,()=>{const a=$("#cmT");if(a){a.focus();a.select()}})}
 function cpTxt(t){try{const a=document.createElement("textarea");a.value=t;a.setAttribute("readonly","");a.style.cssText="position:fixed;top:-99px;opacity:0";document.body.appendChild(a);a.select();document.execCommand("copy");a.remove()}catch(e){}}
 function telInfo(full){const d=String(full||"").replace(/\D/g,"");if(!d)return{ok:true,d};let best=null;for(const [pn,k] of PAISES)if(d.startsWith(k)&&(!best||k.length>best[1].length))best=[pn,k];
   if(!best||!TEL_LEN[best[1]])return{ok:true,d};const nn=d.length-best[1].length;return{ok:TEL_LEN[best[1]].includes(nn),d,cc:best[1],pais:best[0],n:nn,esp:TEL_LEN[best[1]]}}
@@ -12290,7 +12297,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261124184422";var busy=false,pend=null;
+(function(){var V="20261125122315";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
