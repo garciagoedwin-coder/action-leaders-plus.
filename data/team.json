@@ -287,6 +287,18 @@
    "activaciones": 1,
    "volumen": 200,
    "actSemana": 0
+  },
+  {
+   "nombre": "Rosa edith Calderon fajardo",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "rosa-edith-calderon-fajardo",
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -941,6 +953,21 @@
    "id": "henrry-antonio-munoz-sosa",
    "volumenHoja": 0,
    "ptsBase": 200,
+   "auto": "2026-11"
+  },
+  {
+   "nombre": "Rosa Edith Calderon Fajardo",
+   "nombreRanking": "Rosa edith Calderon fajardo",
+   "rango": "",
+   "linea": "",
+   "meta": 500,
+   "nuevos": 0,
+   "presentaciones": 0,
+   "volumen": 500,
+   "volumenDetalle": "",
+   "id": "rosa-edith-calderon-fajardo",
+   "volumenHoja": 0,
+   "ptsBase": 500,
    "auto": "2026-11"
   }
  ],
@@ -3557,6 +3584,17 @@
    "fuente": "gmail",
    "id": "milton-antonio-santos-romero",
    "rv": 1
+  },
+  {
+   "socio": "Mauricio ernesto Diaz del valle torres",
+   "paquete": "Premium",
+   "patrocinador": "Rosa edith Calderon fajardo",
+   "fecha": "2026-11-25T21:55:06Z",
+   "ek": "386d0b",
+   "wk": "ce55fd",
+   "fuente": "gmail",
+   "id": "mauricio-ernesto-diaz-del-valle-torres",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3590,7 +3628,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-24T15:00:00Z",
+  "activacionesCorte": "2026-11-25T21:55:06Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3599,7 +3637,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-24T09:09:00-06:00",
+  "rankingActualizado": "2026-11-25T15:56:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -5428,6 +5466,11 @@
      "a": 5
     },
     {
+     "n": "Rosa Edith Calderon Fajardo",
+     "p": 500,
+     "a": 1
+    },
+    {
      "n": "Saby Odett Isaguirre Aguilar",
      "p": 500,
      "a": 1
@@ -5903,7 +5946,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-25T20:36:30Z"
+   "t": "2026-11-25T21:56:11Z"
   },
   "audioEsp": {
    "id": "santiago-1",
