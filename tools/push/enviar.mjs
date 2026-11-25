@@ -757,7 +757,10 @@ async function main() {
         const kk = masD(e.fecha, -2) === hoyK ? "t2" : e.fecha === hoyK ? "t0" : null; if (!kk) continue;
         const mes = e.fecha.slice(0, 7); if (!(mes in TD)) TD[mes] = ((await db.doc("turnos/" + mes).get()).data() || {}).s || {};
         const S = TD[mes][e.id] || {}, TM = S.tm || {}, dw = DIAS[new Date(e.fecha + "T12:00:00Z").getUTCDay()];
+        // 24 nov (Edwin): el Ponente 1 (primer lugar aceptado) es el ANFITRIÓN: abre con bienvenida, anuncios y lo que viene. Si hay más ponentes, no se le pide tema.
+        const acc = ["p", "e", "p3", "p4"].map(k => S[k]).filter(v => v && typeof v === "object" && v.u && v.st !== "p" && v.st !== "no");
         for (const k of ["p", "e", "p3", "p4"]) { const v = S[k]; if (!v || typeof v !== "object" || !v.u || v.st === "p" || v.st === "no") continue;
+          if (acc.length > 1 && acc[0] === v) continue;
           if (TM[v.u] && TM[v.u].ts) continue; const key = e.id + ":" + v.u + ":" + kk; if (sent.has(key) || add.includes(key)) continue;
           const tk = await pushDe(v.u); add.push(key); if (!tk) continue;
           salida.push([v.u, tk, kk === "t2"
