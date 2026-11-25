@@ -9374,11 +9374,11 @@ function holaAbrir(c,dir){if(!c)return;const O=holaOrden();let ult=-1;try{ult=(L
   let k=0;if(O[k]===ult&&O.length>1)k=1;const f=String(c.name||"").split(" ")[0]||"la persona";
   openSheet(`<h3 style="margin:0 0 6px">👋 Saludar primero</h3>
    <p class="small muted" style="margin:0 0 10px">Un saludo para conectar. Cuando ${esc(f)} le conteste, mándele el mensaje del siguiente paso.</p>
-   <textarea id="hoT" rows="3" style="width:100%;font-size:16px"></textarea>
+   ${tuSel(c,"hoTu")}<textarea id="hoT" rows="3" style="width:100%;font-size:16px"></textarea>
    <div style="display:flex;gap:8px;margin-top:10px"><button type="button" class="btn ghost" id="hoO" style="flex:1">🔄 Otro saludo</button></div>
    <button type="button" class="btn" id="hoW" style="width:100%;margin-top:8px;background:#16A34A;color:#fff">💬 Enviar por WhatsApp</button>${dir?`<button type="button" id="hoD" style="display:block;margin:12px auto 0;background:none;border:0;color:var(--muted);font-size:14px;text-decoration:underline">o mandar el mensaje directo ›</button>`:""}`,()=>{
    if(dir)$("#hoD").onclick=()=>{closeSheet();dir()};
-   const T=$("#hoT"),pinta=()=>{T.value=holaTx(c,O[k])};pinta();
+   const T=$("#hoT"),pinta=()=>{T.value=holaTx(c,O[k])};pinta();tuBind(c,"hoTu",pinta);
    $("#hoO").onclick=()=>{k=(k+1)%O.length;if(O[k]===ult&&O.length>1)k=(k+1)%O.length;pinta()};
    $("#hoW").onclick=()=>{const t=T.value.trim();if(!t)return;try{const U=LS.get("holaU")||{};U[c.id]=O[k];LS.set("holaU",U)}catch(e){}
      c.hola=Date.now();c.seg=(c.seg||[]).concat([{t:c.hola,k:"sal"}]).slice(-SG_MAX);nextBump(c);segAuto(c);c.updated=Date.now();
@@ -9466,15 +9466,17 @@ function c7HolaHecho(c,txt){const n=waNum(c.phone,c.cc)||"";
   if((c.stage||"Nuevo")==="Nuevo"){try{stAvanza(c,"Contactado","lo saludó por WhatsApp")}catch(e){}}
   segAuto(c);try{LS.set("notaPend",{id:c.id,k:"wa",t:Date.now(),log:0})}catch(e){}
   c.updated=Date.now();try{store.saveContact(Object.assign({},c))}catch(e){}setTimeout(()=>{try{renderCRM()}catch(e){}try{crmTopPinta()}catch(e){}},300)}
+function tuSel(c,id){return `<div class="flTuR"><span>Le hablo de:</span><div class="flTuS" id="${id}"><button type="button" data-tu="0" aria-pressed="${!c.tu}">Usted</button><button type="button" data-tu="1" aria-pressed="${!!c.tu}">Tú</button></div></div>`}
+function tuBind(c,id,pinta){const W=document.getElementById(id);if(!W)return;W.querySelectorAll("[data-tu]").forEach(b=>b.onclick=()=>{const v=b.dataset.tu==="1";if(!!c.tu===v)return;if(v)c.tu=1;else delete c.tu;W.querySelectorAll("[data-tu]").forEach(x=>x.setAttribute("aria-pressed",String((x.dataset.tu==="1")===v)));pinta();c.updated=Date.now();try{const o=(contacts||[]).find(x=>x.id===c.id);if(o&&o!==c){if(v)o.tu=1;else delete o.tu}store.saveContact(Object.assign({},c))}catch(e){}})}
 function c7HolaAbrir(c){if(!c)return;if(!waNum(c.phone,c.cc)){toast("📱 Primero agregue su número");try{editContact(c)}catch(e){}return}
   const O=holaOrden();let ult=-1;try{ult=(LS.get("holaU")||{})[c.id];if(ult==null)ult=-1}catch(e){}let k=0;if(O[k]===ult&&O.length>1)k=1;const f=String(c.name||"").split(" ")[0]||"la persona";
   openSheet(`<h3 style="margin:0 0 6px">💬 Saludar a ${esc(f)}</h3>
    <p class="small muted" style="margin:0 0 10px">Con solo enviarlo ya cuenta como seguimiento de hoy ✅</p>
-   <textarea id="c7T" rows="3" style="width:100%;font-size:16px"></textarea>
+   ${tuSel(c,"c7Tu")}<textarea id="c7T" rows="3" style="width:100%;font-size:16px"></textarea>
    <button type="button" class="btn ghost" id="c7O" style="width:100%;margin-top:10px">🔄 Otro saludo</button>
    <button type="button" class="btn" id="c7W" style="width:100%;margin-top:8px;background:#16A34A;color:#fff">💬 Enviar por WhatsApp</button>
    <button type="button" id="c7P" style="display:block;margin:12px auto 0;background:none;border:0;color:var(--brand);font-size:15px;font-weight:700">✏️ Escribir mi propio saludo ›</button>`,()=>{
-   const T=$("#c7T"),pinta=()=>{T.value=holaTx(c,O[k])};pinta();
+   const T=$("#c7T"),pinta=()=>{T.value=holaTx(c,O[k])};pinta();tuBind(c,"c7Tu",pinta);
    $("#c7O").onclick=()=>{k=(k+1)%O.length;if(O[k]===ult&&O.length>1)k=(k+1)%O.length;pinta()};
    $("#c7W").onclick=()=>{const t=T.value.trim();if(!t)return;try{const U=LS.get("holaU")||{};U[c.id]=O[k];LS.set("holaU",U)}catch(e){}closeSheet();c7HolaHecho(c,t)};
    $("#c7P").onclick=()=>{closeSheet();c7HolaHecho(c,"")}})}
@@ -12297,7 +12299,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261125122315";var busy=false,pend=null;
+(function(){var V="20261125134353";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
