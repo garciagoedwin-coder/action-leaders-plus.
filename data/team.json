@@ -5355,6 +5355,11 @@
      "a": 2
     },
     {
+     "n": "Saby Isaguirre",
+     "p": 600,
+     "a": 5
+    },
+    {
      "n": "Carlos Alberto Rubio Valladares",
      "p": 550,
      "a": 4
@@ -5368,16 +5373,6 @@
      "n": "Guillermo Fuentes",
      "p": 550,
      "a": 4
-    },
-    {
-     "n": "Saby Isaguirre",
-     "p": 550,
-     "a": 4
-    },
-    {
-     "n": "Saby Odett Isaguirre Aguilar",
-     "p": 550,
-     "a": 2
     },
     {
      "n": "Adela Izamara Zelaya",
@@ -5428,6 +5423,11 @@
      "n": "Oscar Amador",
      "p": 500,
      "a": 5
+    },
+    {
+     "n": "Saby Odett Isaguirre Aguilar",
+     "p": 500,
+     "a": 1
     },
     {
      "n": "Sergio Mauricio Garcia Lopez",
@@ -5905,7 +5905,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-25T01:16:38Z"
+   "t": "2026-11-25T02:16:31Z"
   },
   "audioEsp": {
    "id": "santiago-1",
