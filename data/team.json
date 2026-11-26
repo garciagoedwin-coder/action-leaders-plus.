@@ -299,6 +299,18 @@
    "activaciones": 1,
    "volumen": 500,
    "actSemana": 1
+  },
+  {
+   "nombre": "Jessica yonari Cardona rauda",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "jessica-yonari-cardona-rauda",
+   "activaciones": 1,
+   "volumen": 500,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -966,6 +978,21 @@
    "volumen": 500,
    "volumenDetalle": "",
    "id": "rosa-edith-calderon-fajardo",
+   "volumenHoja": 0,
+   "ptsBase": 500,
+   "auto": "2026-11"
+  },
+  {
+   "nombre": "Jessica Yonari Cardona Rauda",
+   "nombreRanking": "Jessica yonari Cardona rauda",
+   "rango": "",
+   "linea": "",
+   "meta": 500,
+   "nuevos": 0,
+   "presentaciones": 0,
+   "volumen": 500,
+   "volumenDetalle": "",
+   "id": "jessica-yonari-cardona-rauda",
    "volumenHoja": 0,
    "ptsBase": 500,
    "auto": "2026-11"
@@ -3595,6 +3622,17 @@
    "fuente": "gmail",
    "id": "mauricio-ernesto-diaz-del-valle-torres",
    "rv": 1
+  },
+  {
+   "socio": "Vilma Rauda lopez",
+   "paquete": "Premium",
+   "patrocinador": "Jessica yonari Cardona rauda",
+   "fecha": "2026-11-26T01:55:04Z",
+   "ek": "6f5c96",
+   "wk": "45a6be",
+   "fuente": "gmail",
+   "id": "vilma-rauda-lopez",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3628,7 +3666,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-25T21:55:06Z",
+  "activacionesCorte": "2026-11-26T01:55:04Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3637,7 +3675,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-25T15:56:00-06:00",
+  "rankingActualizado": "2026-11-25T19:56:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -5432,6 +5470,11 @@
      "a": 1
     },
     {
+     "n": "Jessica Yonari Cardona Rauda",
+     "p": 500,
+     "a": 1
+    },
+    {
      "n": "Joel Salgado",
      "p": 500,
      "a": 4
@@ -5947,7 +5990,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-26T01:16:09Z"
+   "t": "2026-11-26T01:56:48Z"
   },
   "audioEsp": {
    "id": "santiago-1",
