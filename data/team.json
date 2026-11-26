@@ -284,9 +284,9 @@
    "registros": 0,
    "regSemana": 0,
    "id": "henrry-antonio-munoz-sosa",
-   "activaciones": 1,
-   "volumen": 200,
-   "actSemana": 0
+   "activaciones": 2,
+   "volumen": 700,
+   "actSemana": 1
   },
   {
    "nombre": "Rosa edith Calderon fajardo",
@@ -972,11 +972,11 @@
    "meta": 500,
    "nuevos": 0,
    "presentaciones": 0,
-   "volumen": 200,
+   "volumen": 700,
    "volumenDetalle": "",
    "id": "henrry-antonio-munoz-sosa",
    "volumenHoja": 0,
-   "ptsBase": 200,
+   "ptsBase": 700,
    "auto": "2026-11"
   },
   {
@@ -3660,6 +3660,19 @@
    "fuente": "gmail",
    "id": "pedro-escalante-escalante-godoy",
    "rv": 1
+  },
+  {
+   "socio": "Rosa P",
+   "paquete": "Premium",
+   "patrocinador": "Henrry antonio Munoz sosa",
+   "fecha": "2026-11-26T22:55:03Z",
+   "ek": "7d69c1",
+   "wk": "f090ef",
+   "pek": "edb4e7",
+   "pwk": "b796eb",
+   "fuente": "gmail",
+   "id": "rosa-p",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3693,7 +3706,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-26T21:55:03Z",
+  "activacionesCorte": "2026-11-26T22:55:03Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3702,7 +3715,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-26T15:56:00-06:00",
+  "rankingActualizado": "2026-11-26T16:56:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -4586,7 +4599,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-11-26T21:16:57Z",
+   "v": "2026-11-26T22:56:26Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "0225a9": "2026-10-27T10:09:44Z",
@@ -4632,7 +4645,6 @@
     "785d16": "2026-11-10T20:26:29Z",
     "7a8d68": "2026-11-10T20:30:44Z",
     "7e760f": "2026-10-24T23:08:55Z",
-    "8037b7": "2026-11-23T21:08:32Z",
     "831079": "2026-11-30T01:09:54Z",
     "866efb": "2026-10-26T21:08:59Z",
     "87c762": "2026-11-02T05:59:47Z",
@@ -5293,6 +5305,11 @@
      "a": 11
     },
     {
+     "n": "Henrry Antonio Munoz Sosa",
+     "p": 1800,
+     "a": 7
+    },
+    {
      "n": "Mayckol Turcios",
      "p": 1800,
      "a": 15
@@ -5326,11 +5343,6 @@
      "n": "Jose Luis Rodriguez",
      "p": 1350,
      "a": 12
-    },
-    {
-     "n": "Henrry Antonio Munoz Sosa",
-     "p": 1300,
-     "a": 6
     },
     {
      "n": "Gabriela Castillo",
@@ -5703,6 +5715,11 @@
      "a": 1
     },
     {
+     "n": "Glenda Elizabeth Lopez Flores",
+     "p": 250,
+     "a": 1
+    },
+    {
      "n": "Heidy Yonari Molina Amador",
      "p": 250,
      "a": 1
@@ -6013,7 +6030,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-26T21:56:37Z"
+   "t": "2026-11-26T22:56:26Z"
   },
   "audioEsp": {
    "id": "santiago-1",
