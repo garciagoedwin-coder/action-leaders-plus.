@@ -71,32 +71,43 @@ export function compCumplidos(viejo, nuevo, C, users, ms = Date.now()) {
   }
   return out;
 }
-// 23 nov (Edwin): Compromiso de líderes (config.cierreLz). Misma cuenta que clCalc de la app: activación cuyo patrocinador es un líder
-// comprometido → personal; si no, sube por registro.linea hasta el primer comprometido (se corta en otro miembro del sistema) → equipo.
+// 23 nov (Edwin): Compromiso de líderes (config.cierreLz). Misma cuenta que clCalc de la app.
+// 25 nov (Edwin): TODO cuenta para la meta. Comprometido → personal; miembro del Sistema que YA estaba (con o sin compromiso) → personal suyo;
+// quien no estaba (o entró con esa activación) → equipo del primer miembro del Sistema de su línea de arriba; nadie arriba → solo meta (k "g").
 export function clSrv(team, C, users, ms = Date.now()) {
   const c = (team.config || {}).cierreLz; if (!c || !c.id) return null;
   const d = Date.parse(c.desde), h = Date.parse(c.hasta); if (!(ms >= d && ms <= h + 18 * 36e5)) return null;
   const al = (team.config || {}).alias || {}, ig = (a, b) => !!(a && b) && (mismoNombre(a, b) || mismoNombre(al[a] || a, b) || mismoNombre(a, al[b] || b) || nrm(a) === nrm(b));
-  const PKV = { Starter: 50, Classic: 200, Premium: 500 }, P = {}, E = {}, act = {};
+  const PKV = { Starter: 50, Classic: 200, Premium: 500 }, P = {}, E = {}, act = {}, lim = +(((team.config || {}).calificacion || {}).lider) || 200;
   const L = Object.entries(C || {}).filter(([, x]) => x.cl && x.cl.id === c.id && !x.cl.no).map(([uid, x]) => { const u = (users || []).find(v => v.uid === uid) || {}, r = u.registro || {};
     return { uid, n: r.nombre || x.nombre || "", p: +x.cl.p || 0, e: +x.cl.e || 0, ns: [r.nombre, r.nombreRanking, x.nombre].filter(Boolean) }; });
-  const S = new Set(L.map(x => x.uid)), LN = (team.liderazgo || []).flatMap(l => [l.nombre, l.nombreRanking]).filter(Boolean), esMiem = n => !!n && LN.some(x => ig(x, n));
-  const MU = new Set((users || []).filter(u => u.registro && [u.registro.nombre, u.registro.nombreRanking].some(esMiem)).map(u => u.uid)); S.forEach(u => MU.add(u));
-  for (const a of team.activaciones || []) {
-    const t = Date.parse(a.fecha); if (!(t >= d && t < h) || a.ps || a.sc) continue; const v = PKV[a.paquete] || 0, s = a.patrocinador || ""; if (!v || !s) continue;
-    const id = String(a.id || a.socio || t), ld = L.find(z => z.ns.some(n => ig(n, s)));
-    if (ld) { P[ld.uid] = (P[ld.uid] || 0) + v; act[id] = { u: ld.uid, k: "p", v }; continue; }
-    if (esMiem(s)) continue;
-    const f = (users || []).filter(u => u.registro && ig(u.registro.nombre, s)); if (f.length !== 1 || MU.has(f[0].uid)) continue;
-    for (const u of f[0].registro.linea || []) { if (S.has(u)) { E[u] = (E[u] || 0) + v; act[id] = { u, k: "e", v, sp: s }; break; } if (MU.has(u)) break; }
+  const S = new Set(L.map(x => x.uid)), ACT = (team.activaciones || []).filter(a => !a.ps && !a.sc && PKV[a.paquete] && a.patrocinador);
+  const M = (team.liderazgo || []).map(l => { const ns = [l.nombre, l.nombreRanking].filter(Boolean), cm = L.find(z => z.ns.some(n => ns.some(m => ig(n, m))));
+    let u = cm ? cm.uid : null; if (!u) { const f = (users || []).filter(v => v.registro && ns.some(m => ig(v.registro.nombre, m))); if (f.length === 1) u = f[0].uid; }
+    return { l, ns, u, k: u || ("n:" + (l.id || l.nombre)) }; });
+  const esDe = (m, s) => m.ns.some(n => ig(n, s)), MUid = new Map(M.filter(m => m.u).map(m => [m.u, m]));
+  const memAt = (m, t) => { const ym = new Date(t).toISOString().slice(0, 7); if (m.l.auto !== ym) return true; const ini = Date.parse(ym + "-01T00:00:00Z");
+    return ACT.reduce((a, x) => { const tx = Date.parse(x.fecha); return tx >= ini && tx < t && esDe(m, x.patrocinador) ? a + PKV[x.paquete] : a; }, 0) >= lim; };
+  for (const a of ACT) {
+    const t = Date.parse(a.fecha); if (!(t >= d && t < h)) continue; const v = PKV[a.paquete], s = a.patrocinador, id = String(a.id || a.socio || t);
+    const ld = L.find(z => z.ns.some(n => ig(n, s)));
+    if (ld) { P[ld.uid] = (P[ld.uid] || 0) + v; act[id] = { u: ld.uid, un: ld.n, k: "p", v }; continue; }
+    const m = M.find(z => esDe(z, s)); if (m && memAt(m, t)) { P[m.k] = (P[m.k] || 0) + v; act[id] = { u: m.k, un: m.l.nombre, k: "p", v, sc: 1 }; continue; }
+    const f = (users || []).filter(u => u.registro && ig(u.registro.nombre, s)); let ok = false;
+    if (f.length === 1) for (const u of f[0].registro.linea || []) {
+      if (S.has(u)) { const z = L.find(y => y.uid === u); E[u] = (E[u] || 0) + v; act[id] = { u, un: z ? z.n : "", k: "e", v, sp: s }; ok = true; break; }
+      const mm = MUid.get(u); if (mm && memAt(mm, t)) { E[u] = (E[u] || 0) + v; act[id] = { u, un: mm.l.nombre, k: "e", v, sp: s, sc: 1 }; ok = true; break; }
+    }
+    if (!ok) act[id] = { u: null, un: "", k: "g", v, sp: s };
   }
-  const meta = +c.meta || 20000, lo = L.reduce((a, x) => a + (P[x.uid] || 0) + (E[x.uid] || 0), 0);
+  const meta = +c.meta || 20000, lo = Object.values(act).reduce((a, x) => a + x.v, 0);
   return { c, L, P, E, act, meta, lo };
 }
 export function msgCl(R, a, x) {
-  const ld = R.L.find(z => z.uid === x.u), w0 = String((ld && ld.n) || "").trim().split(/\s+/).filter(Boolean), n = (w0.length >= 4 ? [w0[0], w0[w0.length - 2]] : w0).join(" ") || "Un líder", lleva = (R.P[x.u] || 0) + (R.E[x.u] || 0), comp = ld ? ld.p + ld.e : 0;
-  const quien = x.k === "p" ? `cerró ${fmtN(x.v)} pts personales` : `sumó ${fmtN(x.v)} pts con su equipo`;
-  return { title: `⚔️ ${n} ${quien}`, body: `Ya lleva ${fmtN(lleva)} de ${fmtN(comp)} de su compromiso${lleva >= comp && comp ? " 🏆" : ""}. El sistema va ${fmtN(R.lo)} de ${fmtN(R.meta)} pts 🔥` };
+  const ld = R.L.find(z => z.uid === x.u), nm = (ld && ld.n) || x.un || (x.k === "g" ? x.sp : ""), w0 = String(nm || "").trim().split(/\s+/).filter(Boolean), n = (w0.length >= 4 ? [w0[0], w0[w0.length - 2]] : w0).join(" ") || "Un líder", lleva = x.u ? (R.P[x.u] || 0) + (R.E[x.u] || 0) : 0, comp = ld ? ld.p + ld.e : 0;
+  const quien = x.k === "e" ? `sumó ${fmtN(x.v)} pts con su equipo` : `cerró ${fmtN(x.v)} pts`;
+  const pre = comp ? `Ya lleva ${fmtN(lleva)} de ${fmtN(comp)} de su compromiso${lleva >= comp ? " 🏆" : ""}. ` : "";
+  return { title: `⚔️ ${n} ${quien}`, body: `${pre}El sistema va ${fmtN(R.lo)} de ${fmtN(R.meta)} pts 🔥` };
 }
 export function msgCompOk(c, propio) {
   const n = primer(c.nombre);
