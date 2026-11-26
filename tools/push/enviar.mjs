@@ -397,6 +397,7 @@ export function avDestino(modo, m) {
   if (/^inact/.test(modo)) return /ahorros? pendientes?/i.test(t) ? "ahp" : "urg";
   if (/^lzg/.test(modo)) return /compromiso/i.test(t) ? "comp" : "lzg";
   if (modo === "viaje") return "via";
+  if (modo === "crec") return "crec";
   if (modo === "lluvia") return "camp";
   if (modo === "sinapp") return "snv";
   if (modo === "rhito" || /^rc3/.test(modo)) return "rach";
@@ -961,6 +962,21 @@ async function main() {
       if (P.tk && !ex.exists) { hist[r.u] = P.h || []; salida.push([r.u, P.tk, { title: "📣 " + primer(de) + " le pasó un prospecto", body: primer(x.name) + (cp.int ? " · le interesa: " + cp.int : "") + ". Ya está en su CRM con la etiqueta 📣 Campaña. ¡Escríbale hoy!", v: "camp" }]); }
     }
     if (nR) console.log("Pasados a Action Leaders:", nR);
+  } else if (modo === "crec") {
+    // 26 nov (Edwin): resumen PRIVADO de la semana de «Mi crecimiento» (1 % diario). users/{uid}/datos/crec.p = un carácter 0–5 por día.
+    const fC = ch => (+ch > 0 ? 1 + 0.01 * (+ch) / 5 : 0.99);
+    const P = (await db.collection("push").get()).docs.filter(d => d.data().tk);
+    for (const d of P) {
+      const c = (await db.doc("users/" + d.id + "/datos/crec").get()).data();
+      if (!c || !c.ini || !c.p || String(c.p).length < 3) continue;
+      const p = String(c.p); let f = 1; for (const ch of p) f *= fC(ch);
+      let g = 1; for (const ch of p.slice(-7)) g *= fC(ch);
+      const pc = (g - 1) * 100, x = "×" + (f >= 10 ? f.toFixed(1) : f.toFixed(2)), ps = Math.abs(pc).toFixed(1).replace(".0", "") + " %";
+      const x2 = d.data(); hist[d.id] = x2.h || [];
+      salida.push([d.id, x2.tk, pc >= 0
+        ? { title: "📈 Esta semana creció +" + ps, body: "Ya va en " + x + " desde que empezó. Mañana empieza otra semana: ¡un 1 % más cada día!" }
+        : { title: "📉 Esta semana bajó " + ps, body: "Va en " + x + ". Lo importante es levantarse: mañana complete su rutina y vuelva a crecer." }]);
+    }
   } else if (modo === "viaje") {
     // 8 nov (Edwin): invitar a llenar el formulario de testimonios de viaje (cada semana) a quien NO ha respondido
     // (users.viaj = "Ya lo hice"/"No me interesa") y NO tiene testimonio publicado (data/hist.json tx[].n).

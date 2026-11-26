@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+@font-face{font-family:Fig;src:url(../../../media/fonts/Figtree-VF.ttf)}
+@font-face{font-family:Bar;src:url(../../../media/fonts/BarlowCondensed-Bold.ttf)}
+@font-face{font-family:Bri;src:url(../../../media/fonts/BricolageGrotesque-Bold.ttf)}
+:root{--bg:#F3F6F9;--s:#fff;--ink:#2B2A2D;--mu:#6b7480;--ln:#e3e8ee;--br:#0A7DAD;--ce:#2AC1F1;--ok:#16A34A;--fu:#F97316}
+*{box-sizing:border-box;margin:0}body{background:var(--bg);font-family:Fig,sans-serif;color:var(--ink);width:430px;padding:14px 14px 40px}
+.top{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 12px}.top h1{font:700 24px Bri}.top small{color:var(--mu);font-size:12px}
+.tabs{display:flex;gap:18px;border-bottom:1px solid var(--ln);margin-bottom:14px;padding:0 2px}.tabs b{font-size:14px;font-weight:600;color:var(--mu);padding:8px 0}.tabs b.on{color:var(--ink);border-bottom:2.5px solid var(--br)}
+.hero{border-radius:22px;padding:18px 18px 14px;color:#fff;background:radial-gradient(120% 90% at 85% 0%,#1d5a85 0,#143b5c 40%,#0b1424 100%);position:relative;overflow:hidden}
+.k{font-size:10.5px;letter-spacing:.16em;font-weight:700;color:#8fd8f5}
+.big{display:flex;align-items:flex-end;gap:10px;margin:6px 0 2px}.big .n{font:700 64px/0.9 Bar;background:linear-gradient(180deg,#fff,#9be3ff);-webkit-background-clip:text;color:transparent}
+.big .t{font-size:13px;line-height:1.3;color:#cfe3ee;padding-bottom:6px}
+.hoy{display:inline-flex;align-items:center;gap:6px;background:rgba(42,193,241,.16);border:1px solid rgba(42,193,241,.35);border-radius:99px;padding:5px 11px;font-size:12.5px;font-weight:600;margin-top:8px}
+.hoy i{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 4px rgba(74,222,128,.2)}
+svg.cv{width:100%;height:130px;margin-top:10px;display:block}
+.leg{display:flex;gap:14px;font-size:11px;color:#a9c3d3;margin-top:2px}.leg span:before{content:"";display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:5px;vertical-align:middle;background:var(--ce)}.leg span.p:before{background:none;border-top:2px dashed #5d7d92;height:0}
+.st3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.st3 div{background:rgba(255,255,255,.06);border-radius:12px;padding:8px 10px}.st3 b{font:700 22px Bar;display:block}.st3 small{font-size:10.5px;color:#a9c3d3}
+.fr{margin:12px 2px;font-size:13.5px;color:var(--mu);text-align:center;font-style:italic}.fr b{color:var(--ink);font-style:normal}
+.card{background:var(--s);border-radius:18px;box-shadow:0 0 0 1px var(--ln);padding:15px;margin-top:12px}
+.h6{font-size:10.5px;letter-spacing:.15em;font-weight:700;color:var(--mu);margin-bottom:10px;display:flex;justify-content:space-between}.h6 a{color:var(--br);letter-spacing:0;font-size:12px;text-transform:none}
+.pil{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center}
+.pr{margin:7px 0}.pr .l{display:flex;justify-content:space-between;font-size:13px;font-weight:600}.pr .l em{font:700 16px Bar;font-style:normal}
+.bar{height:7px;border-radius:9px;background:#edf1f5;margin-top:4px;overflow:hidden}.bar i{display:block;height:100%;border-radius:9px}
+.pr small{font-size:11px;color:var(--mu)}
+.cmp div{display:grid;grid-template-columns:1fr 52px 52px 50px;align-items:center;padding:8px 0;border-top:1px solid var(--ln);font-size:13px}.cmp div:first-child{border:0;font-size:10.5px;color:var(--mu);font-weight:700;letter-spacing:.08em;padding-top:0}
+.cmp b{font:700 18px Bar;text-align:right}.cmp s{text-decoration:none;color:var(--mu);text-align:right;font:700 15px Bar}.cmp u{text-decoration:none;text-align:right;font-size:12px;font-weight:700;color:var(--ok)}.cmp u.dn{color:#DC2626}
+.cal{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}.cal i{aspect-ratio:1;border-radius:6px;background:#edf1f5;position:relative}.cal i.h{outline:2px solid var(--br);outline-offset:1px}
+.calL{display:flex;justify-content:space-between;font-size:11px;color:var(--mu);margin-top:8px;align-items:center}.calL span i{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 1px;vertical-align:middle}
+.tl{position:relative;padding-left:22px}.tl:before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--ln)}
+.tl p{position:relative;margin:0 0 12px;font-size:13.5px;font-weight:600}.tl p:last-child{margin:0}.tl p:before{content:attr(data-i);position:absolute;left:-26px;top:-2px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px var(--ln);font-size:12px;display:grid;place-items:center}
+.tl p small{display:block;font-weight:400;color:var(--mu);font-size:11.5px}
+.tl p.nx{color:var(--mu)}.tl p.nx:before{opacity:.5}
+.btn{display:block;text-align:center;background:var(--br);color:#fff;border-radius:14px;padding:13px;font-weight:700;font-size:14.5px;margin-top:14px}
+.btn2{display:block;text-align:center;color:var(--br);font-weight:600;font-size:13px;margin-top:10px}
+.lock{font-size:11.5px;color:var(--mu);text-align:center;margin-top:14px}
+.rg{display:flex;gap:6px;margin-top:12px}.rg b{font-size:11.5px;font-weight:600;color:#a9c3d3;padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.06)}.rg b.on{background:#fff;color:#0b1424}
+.cw{position:relative}#pins span{position:absolute;transform:translate(-50%,-100%);font-size:13px;width:24px;height:24px;border-radius:50%;background:#0b1424;border:2px solid #f5c451;display:grid;place-items:center;margin-top:-6px}
+.leg span.r:before{background:#f87171}.leg span.p:before{border-top-color:#f5c451}
+.hit{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--ln)}.hit:first-of-type{border:0}
+.hit i{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-style:normal;background:#fff7e0;box-shadow:0 0 0 1px #f2dfa6}
+.hit b{font-size:13.5px}.hit small{display:block;color:var(--mu);font-size:11.5px}.hit em{font:700 19px Bar;font-style:normal;color:var(--br);text-align:right}.hit em small{font:600 10px Fig;color:var(--mu)}
+.ins{background:#f2f9fd;border-radius:12px;padding:10px 12px;font-size:12.5px;margin-top:10px;line-height:1.4}
+.cr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cr div{border-radius:12px;padding:10px;background:#f7f9fb}.cr b{font:700 22px Bar;display:block}.cr small{font-size:11px;color:var(--mu)}
+.ev{font-size:13px;padding:9px 0;border-top:1px solid var(--ln);display:flex;gap:8px}.ev:first-of-type{border:0}.ev small{color:var(--mu)}
+</style></head><body>
+<div class="top"><h1>Mi crecimiento</h1><small>🔒 Solo lo ve usted</small></div>
+<div class="tabs"><b class="on">📈 Crecimiento</b><b>🗺️ Mapa de sueños</b><b>🎯 Metas</b></div>
+
+<div class="hero">
+ <div class="k">MI 1 % DIARIO · DESDE QUE EMPEZÓ</div>
+ <div class="big"><span class="n" id="mult">×1.41</span><span class="t">Usted ya es <b id="mult2">1.41</b> veces<br>la persona que empezó el <b>20 de octubre</b>.</span></div>
+ <div class="hoy"><i></i>Hoy creció +0.8 % · 4 de 5 puntos</div>
+ <div class="rg"><b>1 mes</b><b>3 meses</b><b class="on">Todo</b></div>
+ <div class="cw"><svg class="cv" id="cv" viewBox="0 0 400 170" preserveAspectRatio="none"></svg><div id="pins"></div></div>
+ <div class="leg"><span>Creciendo</span><span class="r">Retrocediendo</span><span class="p">Su mejor marca</span></div>
+ <div class="st3"><div><b id="dc">31</b><small>días creciendo</small></div><div><b id="mx">×1.41</b><small>su mejor marca</small></div><div><b id="pj">×2.0</b><small>en 90 días si sigue así</small></div></div>
+</div>
+<div class="fr">“Su negocio va a crecer según lo que <b>crezca usted</b>.<br>Todos los días, <b>un 1 % más</b>.”</div>
+
+<div class="card">
+ <div class="h6">MIS 4 PILARES · ESTE MES</div>
+ <div class="pil"><svg viewBox="0 0 150 150" id="rad" width="150" height="150"></svg>
+ <div>
+  <div class="pr"><div class="l">🧠 Mente<em style="color:#7C3AED">88</em></div><div class="bar"><i style="width:88%;background:#7C3AED"></i></div><small>Declaración · auto desarrollo · Networker Pro</small></div>
+  <div class="pr"><div class="l">⚡ Acción<em style="color:var(--br)">71</em></div><div class="bar"><i style="width:71%;background:var(--br)"></i></div><small>Present. · seguimientos · contactos</small></div>
+  <div class="pr"><div class="l">🔥 Constancia<em style="color:var(--fu)">79</em></div><div class="bar"><i style="width:79%;background:var(--fu)"></i></div><small>Racha · IC · días completos</small></div>
+  <div class="pr"><div class="l">🌱 Hábitos<em style="color:var(--ok)">64</em></div><div class="bar"><i style="width:64%;background:var(--ok)"></i></div><small>Sus hábitos personales</small></div>
+ </div></div>
+</div>
+
+<div class="card">
+ <div class="h6">CADA DÍA DEL MES <a>Ver meses anteriores ›</a></div>
+ <div class="cal" id="cal"></div>
+ <div class="calL"><span>Menos <i style="background:#edf1f5"></i><i style="background:#cdeefb"></i><i style="background:#7fd6f5"></i><i style="background:#2AC1F1"></i><i style="background:#0A7DAD"></i> Más</span><span>Toque un día para ver qué hizo</span></div>
+</div>
+
+<div class="card cmp">
+ <div><span>ESTE MES VS. EL PASADO</span><span style="text-align:right">OCT</span><span style="text-align:right">NOV</span><span></span></div>
+ <div><span>🎤 Personas presentadas</span><s>8</s><b>12</b><u>▲ 4</u></div>
+ <div><span>🔁 Seguimientos</span><s>31</s><b>46</b><u>▲ 15</u></div>
+ <div><span>🔥 Mejor racha</span><s>9</s><b>16</b><u>▲ 7</u></div>
+ <div><span>🧠 Videos y lecturas</span><s>11</s><b>19</b><u>▲ 8</u></div>
+ <div><span>🌱 Hábitos cumplidos</span><s>42</s><b>38</b><u class="dn">▼ 4</u></div>
+</div>
+
+<div class="card">
+ <div class="h6">MIS HITOS · EN QUÉ PUNTO ESTABA</div>
+ <div class="hit"><i>🤝</i><div><b>Su primer socio</b><small>24 oct · Classic</small></div><em>×1.04<small><br>de crecimiento</small></em></div>
+ <div class="hit"><i>⚔️</i><div><b>Líder Espartano</b><small>2 nov · 500 pts del mes</small></div><em>×1.12</em></div>
+ <div class="hit"><i>⚡</i><div><b>Team Leader</b><small>9 nov · nivel en inCruises</small></div><em>×1.17</em></div>
+ <div class="hit"><i>🛡️</i><div><b>Graduado Espartano</b><small>18 nov · Networker Pro</small></div><em>×1.18</em></div>
+ <div class="hit"><i>🤝</i><div><b>Su 5.º socio</b><small>24 nov · Premium</small></div><em>×1.25</em></div>
+ <div class="ins">💡 Su 1.er socio llegó en ×1.04 y el 5.º en ×1.25. <b>Mientras más crece usted, más rápido llegan los resultados.</b></div>
+</div>
+
+<div class="card">
+ <div class="h6">CAÍDAS Y REGRESOS</div>
+ <div class="cr"><div><b style="color:#DC2626">−4.9 %</b><small>su caída más grande</small></div><div><b style="color:var(--ok)">3</b><small>veces que se levantó</small></div><div><b>6 días</b><small>en volver a su marca</small></div></div>
+ <div class="ev">📉<span><b>8–12 nov · 5 días sin rutina</b><br><small>Bajó de ×1.19 a ×1.13</small></span></div>
+ <div class="ev">💪<span><b>13 nov · Se levantó</b><br><small>Volvió a su rutina completa</small></span></div>
+ <div class="ev">🏆<span><b>19 nov · Superó su mejor marca</b><br><small>Llegó a ×1.20 y siguió subiendo</small></span></div>
+</div>
+
+<a class="btn">📣 Compartir mi crecimiento</a>
+<a class="btn2">Así se calcula su 1 % ›</a>
+<div class="lock">🔒 Su crecimiento es privado. Su patrocinador no lo ve.</div>
+
+<script>
+// 38 días desde el 20 oct; 0 = retrocede 1 %
+const H=[5,5,4,5,3,5,5,4,2,5,5,5,4,5,5,4,5,5,5,0,0,0,0,0,5,5,4,5,5,5,5,3,4,5,5,5,5,4];
+const P=H.slice(-26);
+let f=1;const A=[1];H.forEach(p=>{f*=p?1+0.01*p/5:0.99;A.push(f)});
+const best=Math.max(...A);
+document.getElementById("mult").textContent="×"+f.toFixed(2);document.getElementById("mult2").textContent=f.toFixed(2);
+document.getElementById("mx").textContent="×"+best.toFixed(2);
+document.getElementById("dc").textContent=H.filter(p=>p>0).length;
+document.getElementById("pj").textContent="×"+(f*Math.pow(1.009,90-H.length)).toFixed(1);
+const N=H.length,lo=Math.min(...A)-.02,hi=best+.04,x=i=>i/N*400,y=v=>160-(v-lo)/(hi-lo)*140;
+let seg="";for(let i=1;i<=N;i++){seg+=`<line x1="${x(i-1)}" y1="${y(A[i-1])}" x2="${x(i)}" y2="${y(A[i])}" stroke="${A[i]<A[i-1]?"#f87171":"#2AC1F1"}" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`}
+const area=A.map((v,i)=>(i?"L":"M")+x(i)+" "+y(v)).join(" ");
+document.getElementById("cv").innerHTML=`<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2AC1F1" stop-opacity=".4"/><stop offset="1" stop-color="#2AC1F1" stop-opacity="0"/></linearGradient></defs>
+<path d="${area} L400 170 L0 170Z" fill="url(#g)"/>
+<line x1="0" x2="400" y1="${y(best)}" y2="${y(best)}" stroke="#f5c451" stroke-dasharray="4 5" stroke-width="1.5" vector-effect="non-scaling-stroke" opacity=".8"/>
+<rect x="${x(19)}" y="0" width="${x(24)-x(19)}" height="170" fill="#f87171" opacity=".08"/>${seg}
+<circle cx="${x(N)}" cy="${y(A[N])}" r="5" fill="#fff" stroke="#2AC1F1" stroke-width="3"/>`;
+const W=document.getElementById("cv").getBoundingClientRect().width;
+document.getElementById("pins").innerHTML=[[4,"🤝"],[13,"⚔️"],[20,"⚡"],[29,"🛡️"],[35,"🤝"],[24,"💪"]].map(([i,e])=>`<span style="left:${x(i)/400*W}px;top:${y(A[i])/170*130}px;${e=="💪"?"border-color:#4ade80":""}">${e}</span>`).join("");
+// calendario
+const C=["#edf1f5","#cdeefb","#7fd6f5","#7fd6f5","#2AC1F1","#0A7DAD"];
+document.getElementById("cal").innerHTML=Array.from({length:30},(_,i)=>`<i style="background:${i<P.length?C[P[i]]:"#f6f8fa"}" class="${i==P.length-1?"h":""}"></i>`).join("");
+// radar
+const v=[88,71,79,64],cx=75,cy=75,R=58,ang=i=>-Math.PI/2+i*Math.PI/2,pt=(i,r)=>[cx+Math.cos(ang(i))*r,cy+Math.sin(ang(i))*r];
+let s="";[.25,.5,.75,1].forEach(k=>{s+=`<polygon points="${[0,1,2,3].map(i=>pt(i,R*k).join(",")).join(" ")}" fill="none" stroke="#e3e8ee"/>`});
+s+=`<polygon points="${v.map((n,i)=>pt(i,R*n/100).join(",")).join(" ")}" fill="rgba(10,125,173,.18)" stroke="#0A7DAD" stroke-width="2"/>`;
+["🧠","⚡","🔥","🌱"].forEach((e,i)=>{const[a,b]=pt(i,R+11);s+=`<text x="${a}" y="${b+5}" text-anchor="middle" font-size="14">${e}</text>`});
+document.getElementById("rad").innerHTML=s;
+</script></body></html>

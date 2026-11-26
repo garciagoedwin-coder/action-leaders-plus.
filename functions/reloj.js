@@ -41,6 +41,7 @@ const DIARIOS = [
   ["sinapp", "9:47", async () => en("sinapp")],
   ["lzg", "10:00", async () => en("lzg")],
   ["viaje", "11:00", async () => en("viaje"), h => h.dia === 6],
+  ["crec", "20:00", async () => en("crec"), h => h.dia === 0],
   ["lzs1", "13:20", async () => en("lzg-sync")],
   ["lzs2", "16:20", async () => en("lzg-sync")],
   ["racha", "19:00", async () => { await en("racha"); await en("rhito"); }],
