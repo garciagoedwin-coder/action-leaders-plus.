@@ -90,10 +90,10 @@ export function clSrv(team, C, users, ms = Date.now()) {
     return ACT.reduce((a, x) => { const tx = Date.parse(x.fecha); return tx >= ini && tx < t && esDe(m, x.patrocinador) ? a + PKV[x.paquete] : a; }, 0) >= lim; };
   for (const a of ACT) {
     const t = Date.parse(a.fecha); if (!(t >= d && t < h)) continue; const v = PKV[a.paquete], s = a.patrocinador, id = String(a.id || a.socio || t);
-    const ld = L.find(z => z.ns.some(n => ig(n, s)));
+    const pu = usrPat(a, users), pU = pu.length === 1 ? pu[0] : null, ld = (pU && L.find(z => z.uid === pU.uid)) || L.find(z => z.ns.some(n => ig(n, s)));
     if (ld) { P[ld.uid] = (P[ld.uid] || 0) + v; act[id] = { u: ld.uid, un: ld.n, k: "p", v }; continue; }
-    const m = M.find(z => esDe(z, s)); if (m && memAt(m, t)) { P[m.k] = (P[m.k] || 0) + v; act[id] = { u: m.k, un: m.l.nombre, k: "p", v, sc: 1 }; continue; }
-    const f = (users || []).filter(u => u.registro && ig(u.registro.nombre, s)); let ok = false;
+    const m = (pU && M.find(z => z.u === pU.uid)) || M.find(z => esDe(z, s)); if (m && memAt(m, t)) { P[m.k] = (P[m.k] || 0) + v; act[id] = { u: m.k, un: m.l.nombre, k: "p", v, sc: 1 }; continue; }
+    const f = pU ? [pU] : (users || []).filter(u => u.registro && ig(u.registro.nombre, s)); let ok = false;
     if (f.length === 1) for (const u of f[0].registro.linea || []) {
       if (S.has(u)) { const z = L.find(y => y.uid === u); E[u] = (E[u] || 0) + v; act[id] = { u, un: z ? z.n : "", k: "e", v, sp: s }; ok = true; break; }
       const mm = MUid.get(u); if (mm && memAt(mm, t)) { E[u] = (E[u] || 0) + v; act[id] = { u, un: mm.l.nombre, k: "e", v, sp: s, sc: 1 }; ok = true; break; }
@@ -165,8 +165,18 @@ export function actNuevas(viejo, nuevo, ahora = Date.now()) {
   const ya = new Set((viejo.activaciones || []).map(a => a.id || nrm(a.socio)));
   return (nuevo.activaciones || []).filter(a => !ya.has(a.id || nrm(a.socio)) && ahora - Date.parse(a.fecha || 0) < 48 * 3600e3);
 }
+// 25 nov (Edwin): el patrocinador se une con su cuenta por la huella de su correo/WhatsApp (a.pek/a.pwk, las pone el buzón);
+// el nombre de inCruises («Jessica yonari Cardona rauda») puede no coincidir con el de la app («Jessica Cardona»).
+const hF = x => { let h = 0x811c9dc5; for (const b of Buffer.from("alp|" + x, "utf8")) { h = (h ^ b) >>> 0; h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, "0").slice(0, 6); };
+const hE = e => { e = String(e || "").trim().toLowerCase(); return e.includes("@") ? hF("e:" + e) : null; };
+const hW = w => { const d = String(w || "").replace(/\D/g, ""); return d.length >= 8 ? hF("w:" + d.slice(-8)) : null; };
+export function usrPat(a, users) {
+  if (!a || (!a.pek && !a.pwk)) return [];
+  return (users || []).filter(u => { const r = u.registro || {}; if (!r.nombre) return false;
+    return (a.pek && [r.correo, u.email].some(e => hE(e) === a.pek)) || (a.pwk && hW(r.whatsapp) === a.pwk); });
+}
 export function destinosAct(a, users) {
-  const sp = users.filter(u => u.registro && mismoNombre(u.registro.nombre, a.patrocinador));
+  let sp = usrPat(a, users); if (sp.length !== 1) sp = users.filter(u => u.registro && mismoNombre(u.registro.nombre, a.patrocinador));
   if (sp.length !== 1) return { sp: null, arriba: [] };
   const s = sp[0], linea = Array.isArray(s.registro.linea) ? s.registro.linea : [];
   return { sp: s.uid, arriba: linea.filter(u => u && u !== s.uid) };

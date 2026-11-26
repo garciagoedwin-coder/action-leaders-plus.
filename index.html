@@ -4807,9 +4807,9 @@ function clCalc(){const c=clCfg();if(!c)return{P:{},E:{},L:[],A:[],SC:[]};const 
     return ACT.reduce((a,x)=>{const tx=Date.parse(x.fecha);return tx>=ini&&tx<t&&esDe(m,x.patrocinador)?a+PKV[x.paquete]:a},0)>=lim};
   const MUid=new Map(M.filter(m=>m.u).map(m=>[m.u,m]));
   ACT.forEach(a=>{const t=Date.parse(a.fecha);if(!(t>=d&&t<h))return;const v=PKV[a.paquete],s=a.patrocinador,aid=String(a.id||a.socio||t),base={id:aid,v,sp:s,so:a.socio||"",pq:a.paquete||"",t};
-    let ld=N.find(z=>z.ns.some(n=>ig(n,s)));if(!ld)ld=N.find(z=>z.ns.some(n=>lzMismo(n,s)));if(ld){P[ld.u]=(P[ld.u]||0)+v;A.push({...base,u:ld.u,un:ld.n,k:"p"});return}
-    const m=miemDe(s);if(m&&memAt(m,t)){P[m.k]=(P[m.k]||0)+v;A.push({...base,u:m.k,un:m.l.nombre,k:"p",sc:1});return}
-    const f=F.find(z=>[z.invNombre,z.nombre,z.rk].some(n=>ig(n,s)));
+    const pU=patU(a);let ld=(pU&&N.find(z=>z.u===pU))||N.find(z=>z.ns.some(n=>ig(n,s)));if(!ld)ld=N.find(z=>z.ns.some(n=>lzMismo(n,s)));if(ld){P[ld.u]=(P[ld.u]||0)+v;A.push({...base,u:ld.u,un:ld.n,k:"p"});return}
+    const m=(pU&&M.find(z=>z.u===pU))||miemDe(s);if(m&&memAt(m,t)){P[m.k]=(P[m.k]||0)+v;A.push({...base,u:m.k,un:m.l.nombre,k:"p",sc:1});return}
+    const f=(pU&&F.find(z=>z.id===pU))||F.find(z=>[z.invNombre,z.nombre,z.rk].some(n=>ig(n,s)));
     if(f&&Array.isArray(f.linea))for(const u of f.linea){if(S.has(u)){const z=N.find(y=>y.u===u);E[u]=(E[u]||0)+v;A.push({...base,u,un:z?z.n:"",k:"e",spU:f.id});return}const mm=MUid.get(u);if(mm&&memAt(mm,t)){E[u]=(E[u]||0)+v;A.push({...base,u,un:mm.l.nombre,k:"e",spU:f.id,sc:1});return}}
     A.push({...base,u:null,un:"",k:"g",spU:f?f.id:""})});
   A.sort((x,y)=>x.t-y.t);const SC=M.filter(m=>!S.has(m.k)&&((P[m.k]||0)+(E[m.k]||0))>0).map(m=>({uid:m.k,n:m.l.nombre,p:0,e:0,sc:1}));
@@ -5029,7 +5029,7 @@ function dtRed(){if(!Array.isArray(redL)){redPre();return {c:[],s:[]}}if(SNVD===
   // activados después del reporte: patrocinador = yo, últimos 60 días, sin cuenta en la app
   const lim=Date.now()-60*864e5;
   for(const a of (T.activaciones||[])){if(!a||Date.parse(a.fecha||0)<lim||a.sc)continue;if(!(a.ek||a.wk))continue;if(vis.has(a.ek||a.wk)||fuera(a.ek,a.wk))continue;
-    if(!snvSoyYo(a.patrocinador||""))continue;vis.add(a.ek||a.wk);const dec=dtDecDe(a,null),r={id:"a:"+(a.id||a.socio),n:a.socio,t:"s",pl:a.paquete||"",w:"",ek:a.ek||"",wk:a.wk||""};
+    if(!snvSoyYoA(a))continue;vis.add(a.ek||a.wk);const dec=dtDecDe(a,null),r={id:"a:"+(a.id||a.socio),n:a.socio,t:"s",pl:a.paquete||"",w:"",ek:a.ek||"",wk:a.wk||""};
     if(dec&&dec.s==="c")C.push({cli:1,red:1,id:r.id,n:a.socio,ok:!dtAhPend(a.ek,a.wk),r,act:a,dec});else Sa.push({red:1,sa:1,id:r.id,n:a.socio,ok:false,r,act:a,dec})}
   return {c:C,s:Sa}}
 function dtTodos(){const D=(dtSum&&dtSum.d)||[],C=dtClis(),R=dtRed();return D.filter(x=>x.ok).concat(C.filter(x=>x.ok),R.c.filter(x=>x.ok),D.filter(x=>!x.ok),C.filter(x=>!x.ok),R.c.filter(x=>!x.ok),R.s)}
@@ -6825,10 +6825,19 @@ function snvIgual(a,b){if(!a||!b)return false;if(sameN(a,b)||parecidoN(a,b))retu
   return S.length>=2&&S[0]===L[0]&&S.every(w=>L.some(v=>v===w||(w.length===1&&v[0]===w)||(v.length===1&&w[0]===v)))}
 function snvNom(x){const r=x.registro||{};return [r.nombre,r.nombreRanking].filter(Boolean)}
 function snvUsr(a,U){const ke=a.ek,kw=a.wk;if(!ke&&!kw)return null;return (U||[]).find(x=>{const r=x.registro||{};return (ke&&[ahKe(x.email),ahKe(r.correo)].includes(ke))||(kw&&ahKw(r.whatsapp)===kw)})||null}
+// 25 nov (Edwin, caso Jessica Cardona): el patrocinador de una activación se une con su cuenta por la huella de su correo/WhatsApp
+// (a.pek/a.pwk que pone el buzón), aunque el nombre de inCruises no coincida con el de la app. fotos/{uid}.pk = huellas propias.
+function usrKs(x){try{const r=(x&&x.registro)||{};return [ahKe(r.correo),ahKe(x&&x.email),ahKw(r.whatsapp)].filter(Boolean)}catch(e){return[]}}
+function patEsU(a,x){if(!a||!(a.pek||a.pwk)||!x)return false;const k=usrKs(x);return (a.pek&&k.includes(a.pek))||(a.pwk&&k.includes(a.pwk))}
+function misKs(){try{return [...new Set([ahKe((miRegistro()||{}).correo),ahKe(fbUser&&fbUser.email),ahKw((miRegistro()||{}).whatsapp)].filter(Boolean))]}catch(e){return[]}}
+function patU(a){try{if(!a||!(a.pek||a.pwk))return null;const ks=[a.pek,a.pwk].filter(Boolean);if(store.uid&&misKs().some(k=>ks.includes(k)))return store.uid;
+  const L=[].concat(mios||[],(typeof socios!=="undefined"&&Array.isArray(socios))?socios:[]);const u=L.filter(x=>patEsU(a,x));if(u.length)return u[0].uid||u[0].id;
+  const F=((typeof fotosFs!=="undefined"&&fotosFs)||[]).filter(z=>Array.isArray(z.pk)&&z.pk.some(k=>ks.includes(k)));return F.length===1?F[0].id:null}catch(e){return null}}
+function snvSoyYoA(a){return (!!store.uid&&patU(a)===store.uid)||snvSoyYo((a&&a.patrocinador)||"")}
 function snvSoyYo(n){const r=miRegistro()||{};return [r.nombre,r.nombreRanking,miNombreFull()].filter(Boolean).some(m=>snvIgual(m,n))}
 function snvDatos(o){if(o===undefined)o=snvM;const ini=snvIni(o),fin=snvIni(o-1),U=isAdmin&&socios?socios:(mios||[]);
   const A=(T.activaciones||[]).filter(a=>{const t=Date.parse(a.fecha||"");return t>=ini&&t<fin}).sort((p,q)=>Date.parse(q.fecha)-Date.parse(p.fecha));
-  return A.map(a=>{const x=snvUsr(a,U),pu=(mios||[]).find(y=>snvNom(y).some(n=>snvIgual(n,a.patrocinador))),yo=snvSoyYo(a.patrocinador);
+  return A.map(a=>{const x=snvUsr(a,U),pu=(mios||[]).find(y=>patEsU(a,y))||(mios||[]).find(y=>snvNom(y).some(n=>snvIgual(n,a.patrocinador))),yo=snvSoyYoA(a);
     if(!isAdmin&&!yo&&!pu&&!x)return null;
     const ir=x?(x.ir||{}):{},p=ir.p||{},m1=!!(ir.med&&ir.med[1])||(p.w||1)>1||!!p.g,E=raActs().includes(a)?raEstado(a,ir):null;
     const inc=!!x&&!((x.registro||{}).nombre),app=!!x&&!inc,dec=app?null:snvDec(a);return{a,x,pu,yo,app,inc,ver:!!(a.ek||a.wk),m1,ir:p,E,dec,cli:!!(dec&&dec.s==="c")}}).filter(Boolean)}
@@ -9268,7 +9277,7 @@ function crmHoyAbrir(){openSheet(`<div id="ct7S">${crmHoyHTML()}</div><button cl
 // 25 nov (Edwin «Hazlo»): Mis estadísticas con indicadores que hacen actuar (0 lecturas nuevas; 1 escritura a constancia.est si cambia)
 const EST_SEGK=["segy","wa","seg","re2","rinv","resal"],EST_PTS=p=>/premium/i.test(p||"")?500:/starter/i.test(p||"")?50:200;
 function estIni(p){const n=new Date();if(p==="s"){const d=new Date(n.getFullYear(),n.getMonth(),n.getDate());d.setDate(d.getDate()-((d.getDay()+6)%7));return dkey(d)}if(p==="m")return dkey(new Date(n.getFullYear(),n.getMonth(),1));return "0000"}
-function estMisAct(){try{return (T.activaciones||[]).filter(a=>a&&!actSinVol(a)&&snvSoyYo(a.patrocinador))}catch(e){return []}}
+function estMisAct(){try{return (T.activaciones||[]).filter(a=>a&&!actSinVol(a)&&snvSoyYoA(a))}catch(e){return []}}
 function estCalc(p){const S=estIni(p),C=(contacts||[]).filter(c=>!lluPas(c)),dk=t=>{try{return t?dkey(new Date(t)):""}catch(e){return ""}};
   const ag=C.filter(c=>p==="t"||dk(c.creado)>=S),F={v:0,u:0,z:0,je:0};let pres=0,presT=0,seg=0;
   C.forEach(c=>{const P=pfDe(c);let hit=0;for(const k in F){if(P[k]&&String(P[k])>=S){F[k]++;presT++;hit=1}}if(hit)pres++;
@@ -12250,7 +12259,7 @@ async function invOK(){try{const c=(localStorage.getItem("alp:inv")||"").trim().
   const q=await window.FB.db.collection("fotos").get();const m=q.docs.map(d=>Object.assign({id:d.id},d.data())).find(x=>(x.inv||"")===c);if(m){invSponsor={uid:m.id,nombre:m.invNombre||m.nombre||""};return true}return false}catch(e){return false}}
 const miInv=()=>{const n=(miRegistro().nombre||miNombreCorto()||"socio").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").split("-").slice(0,2).join("-");return (n||"socio")+"-"+String(store.uid||"").slice(0,4).toLowerCase()};
 const miEnlace=()=>"https://actionleadersplus.com/?unirme="+miInv();
-async function publicarInv(){try{if(esSoloAdminYo())return;if(!store.db||!store.uid||!(regDoc&&regDoc.registro))return;await store.db.doc("fotos/"+store.uid).set({inv:miInv(),invNombre:regDoc.registro.nombre,linea:Array.isArray(regDoc.registro.linea)?regDoc.registro.linea:[],...(yoPrueba()?{oculto:true}:{})},{merge:true})}catch(e){}}
+async function publicarInv(){try{if(esSoloAdminYo())return;if(!store.db||!store.uid||!(regDoc&&regDoc.registro))return;await store.db.doc("fotos/"+store.uid).set({inv:miInv(),invNombre:regDoc.registro.nombre,linea:Array.isArray(regDoc.registro.linea)?regDoc.registro.linea:[],...(misKs().length?{pk:misKs()}:{}),...(yoPrueba()?{oculto:true}:{})},{merge:true})}catch(e){}}
 // ---------- Entrar con correo y contraseña (10 nov 2026) ----------
 const mailErr=e=>{const c=(e&&e.code)||"";return /email-already-in-use/.test(c)?"Este correo ya tiene cuenta. Toque «Entrar». Si antes entraba con Google, use el botón de Google."
   :/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c)?"Correo o contraseña incorrectos. Si antes entraba con Google, use el botón de Google."
@@ -12404,7 +12413,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261125181510";var busy=false,pend=null;
+(function(){var V="20261125215656";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}

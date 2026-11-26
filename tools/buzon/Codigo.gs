@@ -87,7 +87,7 @@ function leer_(m) {
     var c1 = cajas[0] || [], c2 = cajas[1] || [], como = (t.match(/se acaba de inscribir como (\w+)/) || [])[1] || '';
     var tl = c1[2] || '', pk = tl.match(/(?:Partner\/)?(\w+)\s+Member/i);
     return { tipo: 'act', d: { socio: c1[0] || '', pais: c1[1] || '', linea: tl, paquete: pk ? cap_(pk[1]) : '', soloPartner: !pk && /partner/i.test(tl),
-      email: (c1[3] || '').toLowerCase(), tel: c1[4] || '', patrocinador: c2[0] || '', como: como, cajas: cajas.length } };
+      email: (c1[3] || '').toLowerCase(), tel: c1[4] || '', patrocinador: c2[0] || '', pEmail: (c2[3] || '').toLowerCase(), pTel: c2[4] || '', como: como, cajas: cajas.length } };
   }
   if (/Equipo Pagado/i.test(s)) {                                 // ---- pago (solo nombre)
     return { tipo: 'pago', d: { nombre: ((t.match(/miembro de tu equipo, (.+?), acaba de pagar/i) || [])[1] || '').trim() } };

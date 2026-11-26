@@ -159,6 +159,18 @@ def main():
                 elif not a['paquete']:
                     estados[fila] = 'revisar: sin paquete'; cuenta['err'] += 1
                     salida.append(['aviso', 'No se pudo leer el paquete de %s (fila %d de Correos).' % (socio, fila)]); continue
+                # 25 nov (Edwin): huella del PATROCINADOR (correo/WhatsApp del 2.º recuadro, o su fila en la red de inCruises,
+                # o su propia activación) para unirlo con su cuenta de la app aunque el nombre no coincida.
+                pek, pwk = A.ke((d.get('pEmail') or '').strip().lower()), A.kw(d.get('pTel') or '')
+                if not pek and not pwk:
+                    if RED is None: RED = red_rows()
+                    M = [x for x in RED if nrm(x.get('n')) == nrm(a['patrocinador'])]
+                    if len(M) == 1: pek, pwk = M[0].get('ek'), M[0].get('wk')
+                if not pek and not pwk:
+                    M = [x for x in t0.get('activaciones', []) + nuevas if nrm(x.get('socio')) == nrm(a['patrocinador'])]
+                    if len(M) == 1: pek, pwk = M[0].get('ek'), M[0].get('wk')
+                if pek: a['pek'] = pek
+                if pwk: a['pwk'] = pwk
                 nuevas.append(a); contactos[ek or socio] = (email, re.sub(r'\D', '', tel))
                 estados[fila] = 'ok'; cuenta['act'] += 1
             elif tipo == 'pago':
