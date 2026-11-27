@@ -6,6 +6,14 @@ import { getAuth } from "firebase-admin/auth";
 import crypto from "crypto";
 // Análisis para el Training: todo sale CIFRADO con la llave pública PK (solo quien tiene la privada lo lee). El log público no muestra datos.
 // Hábitos (20 nov): quién usa Mis hábitos. Salida CIFRADA (pk). Textos propios NO salen (privados): solo los sugeridos.
+if (process.env.CODE === "clh") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
+  const U = (await db.collection("users").get()).docs.map(d => ({ uid: d.id, ...d.data() })), n = x => String(x || "").toLowerCase();
+  const h = U.filter(u => u.registro && /henr/.test(n(u.registro.nombre)) && /mu[nñ]oz/.test(n(u.registro.nombre))), j = U.filter(u => u.registro && /granados/.test(n(u.registro.nombre)));
+  const ju = j.map(x => x.uid); console.log("henrry cuentas", h.length, "· juan carlos cuentas", j.length);
+  for (const x of h) { const L = x.registro.linea || [], c = (await db.doc("constancia/" + x.uid).get()).data() || {}, f = (await db.doc("fotos/" + x.uid).get()).data() || {};
+    console.log("linea", L.length, "· JC en linea pos", L.findIndex(u => ju.includes(u)), "· fotos.linea JC", (f.linea || []).findIndex(u => ju.includes(u)), "· cl", c.cl ? (c.cl.no ? "no" : "si") : "-"); }
+  for (const x of j) { const c = (await db.doc("constancia/" + x.uid).get()).data() || {}; console.log("JC cl", c.cl ? (c.cl.no ? "no" : "si " + c.cl.e) : "-"); }
+  process.exit(0); }
 if (process.env.CODE === "hab") { initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SA)) }); const db = getFirestore();
   const SUG=["💧 Tomar 8 vasos de agua","🏃 Hacer ejercicio 30 minutos","🥗 Comer saludable","📖 Leer 10 páginas","🙏 Orar o meditar","😴 Dormir antes de las 11","📵 Sin redes la primera hora","🧘 Estirarme 10 minutos","🚶 Caminar 20 minutos","📝 Escribir 3 cosas por las que agradezco"];
   const us=(await db.collection("users").get()).docs.filter(d=>(d.data().registro||{}).nombre); const refs=us.map(d=>db.doc("users/"+d.id+"/datos/perfil"));
