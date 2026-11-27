@@ -2491,9 +2491,9 @@ body.rk6on #snvCard .prem::before{content:"★ Premium";font-size:12px;color:#B7
  var L=document.getElementById("land"),W=document.getElementById("lWall");
  var cols=[[0,5,9,13,17,2],[4,1,8,12,16,19,10],[6,3,11,15,18,7,14]],wide={1:1,2:1,3:1};
  var sp=[70,85,62];
- cols.forEach(function(c,k){var d=document.createElement("div");d.className="l-col"+(k===1?" rev":"");d.style.setProperty("--d",sp[k]+"s");
+ var wallOk=false;function mkWall(){if(wallOk)return;wallOk=true;cols.forEach(function(c,k){var d=document.createElement("div");d.className="l-col"+(k===1?" rev":"");d.style.setProperty("--d",sp[k]+"s");
   var h="";c.concat(c).forEach(function(n,j){var f=("0"+n).slice(-2);h+='<img '+(wide[n]?'class="w" ':'')+'src="media/comunidad/c'+f+'.webp" alt="" '+'decoding="async">'});
-  d.innerHTML=h;W.appendChild(d)});
+  d.innerHTML=h;W.appendChild(d)})}
  var M=L.querySelector(".l-main"),K=L.querySelector(".l-kick");
  function fit(){M.style.setProperty("--sh",(M.clientHeight-K.offsetTop+150)+"px")}
  fit();addEventListener("resize",fit);addEventListener("load",fit);try{document.fonts&&document.fonts.ready.then(fit)}catch(e){}
@@ -2501,9 +2501,9 @@ body.rk6on #snvCard .prem::before{content:"★ Premium";font-size:12px;color:#B7
   function f(t){if(!t0)t0=t;var p=Math.min(1,(t-t0)/1600),e=1-Math.pow(1-p,3);b.textContent=Math.round(n*e).toLocaleString("es")+(p===1?s:"");if(p<1)requestAnimationFrame(f)}
   setTimeout(function(){requestAnimationFrame(f)},900)})}
  var done=false;
- function show(){if(done)return;done=true;L.classList.remove("boot");L.classList.add("show");count()}
+ function show(){if(done)return;done=true;mkWall();L.classList.remove("boot");L.classList.add("show");count()}
  function bye(){done=true;L.classList.add("bye");setTimeout(function(){L.style.display="none";L.classList.remove("bye")},550)}
- window.verPortada=function(){L.style.display="";L.classList.remove("boot","bye");L.classList.add("show","prev");if(!done){done=true}count();L.scrollTop=0;
+ window.verPortada=function(){mkWall();L.style.display="";L.classList.remove("boot","bye");L.classList.add("show","prev");if(!done){done=true}count();L.scrollTop=0;
   if(!document.getElementById("lBack")){var x=document.createElement("button");x.id="lBack";x.className="l-back";x.type="button";x.textContent="← Volver a la app";x.onclick=function(){L.style.display="none";L.classList.remove("prev")};L.appendChild(x)}}
  window.addEventListener("fb-ready",function(e){e.detail?bye():show()});
  setTimeout(function(){if(!done)bye()},14000);
@@ -2974,7 +2974,7 @@ async function abrirFlyHoy(){const e=presHoyPend()||presHoyL()[0];if(!e){toast("
   if(key!==flyHoyK||!flyHoyF){flyHoyF=null;try{const cv=await presCanvas(e,"h");const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.9));flyHoyF=new File([b],"Presentacion-"+e.fecha+"-historia.jpg",{type:"image/jpeg"});flyHoyK=key}catch(x){}}
   const box=$("#fhImg");if(box){if(flyHoyF){box.innerHTML="";const im=new Image();im.src=URL.createObjectURL(flyHoyF);im.style.cssText="width:100%;height:100%;object-fit:cover";box.appendChild(im)}else box.innerHTML='<span class="small" style="color:#fff">No se pudo crear el flyer</span>'}}
 setInterval(()=>{try{if(!fbUser||TODAY<HFLY_DESDE)return;const k=!!presHoyPend();if(k!==window._phk){window._phk=k;renderTasks()}}catch(e){}},120000);
-function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);try{crHoy()}catch(e){}if(histSync())saveDay();try{if(declRutOn()&&!day.decl&&declHecha()){day.decl=1;saveDay()}}catch(e){}
+function renderTasks(){setTimeout(()=>{try{bellPinta()}catch(e){}},600);setTimeout(()=>{try{f20Pinta()}catch(e){}},60);try{crHoy()}catch(e){}if(histSync())saveDay();try{if(declRutOn()&&!day.decl&&declHecha()){day.decl=1;saveDay()}}catch(e){}
   const declRow=declRutOn()?(()=>{const dn=!!day.decl;let rc=0;try{rc=declRacha()}catch(e){}
     return `<div class="task" data-drow="1"><button class="check" aria-pressed="${dn}" data-decl="1" aria-label="Declaración de éxito">${dn?CHECK:""}</button><span class="grow"><span class="${dn?"done-t":""}">🗣️ Haga su declaración de éxito</span><br><span class="small muted">${dn?"Hecha hoy"+(rc>1?" · 🔥 "+rc+" días declarando":""):"Programe su mente para ganar · 2 minutos"}</span>${dn?"":`<br><button type="button" class="chip c-good" data-decl="1" style="border:0;font:inherit;font-weight:700;margin-top:6px;cursor:pointer">🗣️ Declarar</button>`}</span></div>`})():""; // 23 nov (Edwin): la declaración va PRIMERO
   $("#tasks").innerHTML=declRow+ROUTINE.map(r=>{const v=day[r.k]||0,done=v>=1;
@@ -3004,7 +3004,7 @@ function f20Rut(c){try{const g=c.querySelector(".rh6 .grow");if(!g)return;let el
 function f20Pinta(){const on=f20On();document.body.classList.toggle("f20",on);if(!on)return;const A=f20Ab();F20_ID.forEach(id=>{const c=document.getElementById(id);if(!c)return;c.classList.toggle("f20o",!!A[id]);if(id==="rutCard"&&!c.classList.contains("done"))f20Rut(c);if(id==="rutCard"&&c.classList.contains("done")){const w=!!A[id];if(rutOpen!==w){rutOpen=w;try{renderTasks()}catch(e){}}}if(id==="rutCard"){let v=c.querySelector(":scope>.vm6");if(!v){v=document.createElement("div");v.className="vm6 f20k";c.appendChild(v)}else if(v!==c.lastElementChild)c.appendChild(v);const tx=A[id]?"Ver menos ⌃":(c.classList.contains("done")?"Ver mi rutina ⌄":"Ver lo que me falta ⌄");if(v.textContent!==tx)v.textContent=tx}
   const h=F20_HD[id]?c.querySelector(":scope>"+F20_HD[id]):c.firstElementChild;if(!h)return;h.classList.add("f20k");if(!h.querySelector(".f20v")){const t=h.querySelector("h3,b,h2,.npT,.lb6")||h;const v=document.createElement("span");v.className="f20v";v.textContent="▾";t.appendChild(v)}})}
 document.addEventListener("click",e=>{if(!document.body.classList.contains("f20"))return;const c=e.target.closest(F20_ID.map(x=>"#"+x).join(","));if(!c||!c.closest("#v-inicio"))return;const ab=c.classList.contains("f20o"),h=e.target.closest(".f20k");if(ab&&!h)return;if(e.target.closest("a,button,input,select,textarea,[data-k]")&&!e.target.closest(".f20v")&&(ab||h))return;e.preventDefault();e.stopPropagation();const A=f20Ab();if(ab)delete A[c.id];else A[c.id]=1;LS.set("f20:"+(store.uid||""),JSON.stringify(A));f20Pinta()},true);
-setInterval(()=>{try{if(document.visibilityState==="visible")f20Pinta()}catch(e){}},800);
+setInterval(()=>{try{if(document.visibilityState==="visible")f20Pinta()}catch(e){}},2500);
 // 19 nov (Edwin): arreglos de hábitos, Spotify y graduación. PRIMERO solo admin + cuenta de prueba; para todos: FX19_TODOS=true y publicar.
 const FX19_TODOS=true,fx19=()=>{try{return FX19_TODOS||isAdmin||yoPrueba()}catch(e){return false}};
 const HAB_MAX=5,HAB_SUG=["💧 Tomar 8 vasos de agua","🏃 Hacer ejercicio 30 minutos","🥗 Comer saludable","📖 Leer 10 páginas","🙏 Orar o meditar","😴 Dormir antes de las 11","📵 Sin redes la primera hora","🧘 Estirarme 10 minutos","🚶 Caminar 20 minutos","📝 Escribir 3 cosas por las que agradezco"];
@@ -8937,7 +8937,7 @@ async function trHoy(){const el=$("#trHoy");if(!el)return;try{
     el.classList.toggle("vivo",vivo);
     el.innerHTML=`<div class="trMi"><span class="trTh">${trHoyF&&trHoyK===k?`<img src="${trHoyF}" alt="">`:"🎓"}</span><div class="trMt" id="trHoyO"><b>${cuando}</b><span>${esc(e.titulo)}${esc(con)}</span></div>${vivo?`<button type="button" class="trMz" id="trHoyZ">Entrar</button>`:""}<button type="button" class="trMb" id="trHoyD" aria-label="Ver en grande">▾</button><button type="button" class="trMb" id="trHoyX" aria-label="Quitar">✕</button></div>`;el.hidden=false;
     const ab=()=>{trHoyOpen=e.id;trHoy()};$("#trHoyD").onclick=ab;$("#trHoyO").onclick=ab;$("#trHoyX").onclick=()=>{trHoyX=e.id;el.hidden=true};const z=$("#trHoyZ");if(z)z.onclick=()=>trZoomIr(vivo);
-    if(!(trHoyF&&trHoyK===k)){try{const cv=await trCanvas(e,"p");const b=await new Promise(ok=>cv.toBlob(ok,"image/jpeg",.85));if(trHoyF)URL.revokeObjectURL(trHoyF);trHoyF=URL.createObjectURL(b);trHoyK=k;const t=el.querySelector(".trTh");if(t)t.innerHTML=`<img src="${trHoyF}" alt="">`}catch(x){}}
+    // 26 nov (rendimiento): la miniatura ya no dibuja el flyer al abrir la app (bajaba ~600 KB de letras); se dibuja al tocar ▾
     return}
   el.classList.remove("vivo");
   el.innerHTML=`<button type="button" class="trX" id="trHoyX" aria-label="Quitar">✕</button><div class="evH"><span class="evK">${cuando}</span><b>${esc(e.titulo)}</b>${trTema(e)?`<span class="evT">📚 ${esc(trTema(e))}</span>`:""}</div>
@@ -9296,7 +9296,7 @@ function crmHoyL(){const A=contacts.filter(c=>crmToca(c)&&!crmAtHoy(c));
 // 24 nov (Edwin): número rojo en el botón «CRM» de abajo = mismos de «Hoy le toca» (0 lecturas)
 function crmNavPinta(){try{const b=document.querySelector('nav.tabs [data-v="crm"]');if(!b||!window._ctOk)return;const N=crmHoyL().length;let e=b.querySelector(".navN");
   if(!N){if(e)e.remove();return}if(!e){e=document.createElement("span");e.className="navN";b.appendChild(e);if(!window._navLat){window._navLat=1;e.classList.add("lat")}}e.textContent=N>99?"99+":String(N);b.setAttribute("aria-label","CRM, "+N+" le tocan hoy")}catch(x){}}
-setInterval(crmNavPinta,3000);
+setInterval(()=>{if(!document.hidden)crmNavPinta()},10000);
 function crmTopPinta(q){try{crmNavPinta()}catch(x){}const el=$("#crmTop");if(!el)return;if(q||!contacts.length){el.hidden=true;el.innerHTML="";return}el.hidden=false;
   const N=crmHoyL().length;el.innerHTML=`<div class="ct7"><button type="button" data-ct7="hoy" class="${N?"on":""}"><span>⏰</span><b>Hoy le toca</b>${N?`<em>${N}</em>`:`<small>✅ al día</small>`}<i>›</i></button><button type="button" data-ct7="est"><span>📊</span><b>Mis estadísticas</b><i>›</i></button></div>`}
 function crmHoyHTML(){
@@ -11243,7 +11243,7 @@ async function sendIA(){const text=$("#iaInput").value.trim();if(!text||busy)ret
 
 // ---------- navegación y hojas ----------
 function setSeg(id,k){document.querySelectorAll("#"+id+" button").forEach(b=>b.setAttribute("aria-selected",b.dataset.k===k))}
-function go(v){document.querySelectorAll("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);document.body.classList.toggle("vIni",v==="inicio");
+function go(v){document.querySelectorAll("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);setTimeout(()=>{try{f20Pinta()}catch(e){}try{crmNavPinta()}catch(e){}try{renderMeBtn()}catch(e){}},60);document.body.classList.toggle("vIni",v==="inicio");
   document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v));$("#main").scrollTop=0;
   try{localStorage.setItem("alp:tab",v)}catch(e){}if(v==="inicio")rutShake();if(v==="suenos"){crPinta()}}
 function rutShake(){const a=$("#rutAlert .rut-al");if(a&&!a.classList.contains("ok")){a.classList.remove("shake");void a.offsetWidth;a.classList.add("shake")}}
@@ -11500,7 +11500,7 @@ function abrirPerfil0(){const R=miRegistro(),nm=miNombreFull(),f=miFotoUrl();
     $("#pfOut").onclick=async()=>{const b=$("#pfOut");if(b.dataset.ok!=="1"){b.dataset.ok="1";b.innerHTML='<span class="ic">🚪</span>Toca otra vez para confirmar';return}closeSheet();try{await window.FB.logout()}catch(e){}setTimeout(()=>location.reload(),300)};
   })}
 $("#meBtn").onclick=abrirPerfil;
-setInterval(renderMeBtn,3000);
+setInterval(()=>{if(!document.hidden)renderMeBtn()},15000);
 function openSheet(html,bind){$("#sheetPanel").innerHTML=html;$("#sheetPanel").classList.remove("ev6","cv6","pf7","cpPopP");$("#sheet").hidden=false;bind&&bind();if($("#sheetPanel [data-nofocus]"))return;const f=$("#sheetPanel input");f&&f.focus()}
 function closeSheet(){$("#sheet").hidden=true;$("#sheetPanel").classList.remove("cpPopP")}
 $("#sheet").addEventListener("click",e=>{if(e.target.id==="sheet"||e.target.closest("[data-close]"))closeSheet()});
@@ -12640,7 +12640,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261126143535";var busy=false,pend=null;
+(function(){var V="20261126210614";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
