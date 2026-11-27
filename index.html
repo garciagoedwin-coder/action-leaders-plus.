@@ -4839,19 +4839,17 @@ function clCalc(){const c=clCfg();if(!c)return{P:{},E:{},L:[],A:[],SC:[]};const 
   const M=(T.lideres||[]).map(l=>{const ns=[l.nombre,l.nombreRanking].filter(Boolean).flatMap(n=>[n,aliasRank(n)]);const cm=N.find(z=>z.ns.some(n=>ns.some(m=>ig(n,m))));
     let u=cm?cm.u:null;if(!u){const fs=F.filter(z=>[z.invNombre,z.nombre,z.rk].some(n=>ns.some(m=>ig(n,m))));if(fs.length===1)u=fs[0].id}return{l,ns,u,k:u||("n:"+(l.id||l.nombre))}});
   const esDe=(m,s)=>m.ns.some(n=>ig(n,s)),miemDe=s=>M.find(m=>esDe(m,s))||M.find(m=>m.ns.some(n=>lzMismo(n,s)));
-  // 27 nov (Edwin, caso Henrry → Juan Carlos): quien entró al Sistema ESTE mes (auto) y no se comprometió no se queda con el volumen: va al equipo del miembro de arriba.
-  const memAt=(m,t)=>m.l.auto!==new Date(t).toISOString().slice(0,7);
-  const MUid=new Map(M.filter(m=>m.u).map(m=>[m.u,m]));const EX=[];
+  const memAt=(m,t)=>{const ym=new Date(t).toISOString().slice(0,7);if(m.l.auto!==ym)return true;const ini=Date.parse(ym+"-01T00:00:00Z");
+    return ACT.reduce((a,x)=>{const tx=Date.parse(x.fecha);return tx>=ini&&tx<t&&esDe(m,x.patrocinador)?a+PKV[x.paquete]:a},0)>=lim};
+  const MUid=new Map(M.filter(m=>m.u).map(m=>[m.u,m]));
   ACT.forEach(a=>{const t=Date.parse(a.fecha);if(!(t>=d&&t<h))return;const v=PKV[a.paquete],s=a.patrocinador,aid=String(a.id||a.socio||t),base={id:aid,v,sp:s,so:a.socio||"",pq:a.paquete||"",t};
-    const pU=patU(a);let ld=(pU&&N.find(z=>z.u===pU))||N.find(z=>z.ns.some(n=>ig(n,s)));if(!ld)ld=N.find(z=>z.ns.some(n=>lzMismo(n,s)));if(ld){P[ld.u]=(P[ld.u]||0)+v;A.push({...base,u:ld.u,un:ld.n,k:"p"});
-      // 27 nov (Edwin, caso Henrry → Juan Carlos): si el que cerró entró al Sistema ESTE mes, también le suma al equipo del primer miembro de arriba (la meta lo cuenta una sola vez).
-      const ym=new Date(t).toISOString().slice(0,7),mL=M.find(z=>z.u===ld.u);if(mL&&mL.l.auto===ym){const fl=F.find(z=>z.id===ld.u);if(fl&&Array.isArray(fl.linea))for(const u of fl.linea){if(S.has(u)||MUid.has(u)){E[u]=(E[u]||0)+v;EX.push({...base,u,k:"e2",de:ld.n});break}}}return}
+    const pU=patU(a);let ld=(pU&&N.find(z=>z.u===pU))||N.find(z=>z.ns.some(n=>ig(n,s)));if(!ld)ld=N.find(z=>z.ns.some(n=>lzMismo(n,s)));if(ld){P[ld.u]=(P[ld.u]||0)+v;A.push({...base,u:ld.u,un:ld.n,k:"p"});return}
     const m=(pU&&M.find(z=>z.u===pU))||miemDe(s);if(m&&memAt(m,t)){P[m.k]=(P[m.k]||0)+v;A.push({...base,u:m.k,un:m.l.nombre,k:"p",sc:1});return}
     const f=(pU&&F.find(z=>z.id===pU))||F.find(z=>[z.invNombre,z.nombre,z.rk].some(n=>ig(n,s)));
     if(f&&Array.isArray(f.linea))for(const u of f.linea){if(S.has(u)){const z=N.find(y=>y.u===u);E[u]=(E[u]||0)+v;A.push({...base,u,un:z?z.n:"",k:"e",spU:f.id});return}const mm=MUid.get(u);if(mm&&memAt(mm,t)){E[u]=(E[u]||0)+v;A.push({...base,u,un:mm.l.nombre,k:"e",spU:f.id,sc:1});return}}
     A.push({...base,u:null,un:"",k:"g",spU:f?f.id:""})});
   A.sort((x,y)=>x.t-y.t);const SC=M.filter(m=>!S.has(m.k)&&((P[m.k]||0)+(E[m.k]||0))>0).map(m=>({uid:m.k,n:m.l.nombre,p:0,e:0,sc:1}));
-  return{P,E,L,A,SC,EX,lo:A.reduce((x,y)=>x+y.v,0)}}
+  return{P,E,L,A,SC,lo:A.reduce((x,y)=>x+y.v,0)}}
 function clDias(){const c=clCfg();return c?Math.max(0,Math.ceil((Date.parse(c.hasta)-Date.now())/864e5)):0}
 function clMesN(){const c=clCfg();return (c&&c.mes)||mesNom()}
 function clPct(v,m){return m>0?Math.min(100,Math.round(v*100/m)):0}
@@ -12642,7 +12640,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261127142133";var busy=false,pend=null;
+(function(){var V="20261127170334";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
