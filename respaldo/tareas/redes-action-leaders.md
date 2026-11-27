@@ -9,6 +9,8 @@ un flyer de llamado a la acción al día; socios nuevos, Team Leaders y rangos *
 Action Leaders del mes en **un solo flyer** con todos; fotos sacadas de la app.
 **Socios nuevos, Team Leaders y rangos usan EXACTAMENTE los artes que ya genera la app** (bienCanvas y rgCanvas de index.html): el script hace una copia temporal `_redes_app.html` con Firebase simulado (tools/test/stub), dibuja con esas funciones y la borra. NUNCA subir `_redes_app.html`. Si la app cambia esos artes, redes cambia sola. Nunca prometer ingresos (nada de «gana dinero»).
 
+> **(27 nov) GitHub desde la sesión:** `gh` FALLA (el GH_TOKEN de la sesión no sirve). Usar `curl` SIN encabezado de autorización (el proxy pone la credencial): disparar `curl -X POST -H 'Content-Type: application/json' https://api.github.com/repos/garciagoedwin-coder/action-leaders-plus./actions/workflows/diagperf.yml/dispatches --data-binary @body.json` (body = {"ref":"main","inputs":{…}}), listar `…/actions/workflows/diagperf.yml/runs`, log `curl -sL …/actions/runs/ID/logs`, borrar `curl -X DELETE …/actions/runs/ID`. El shell NO llega a actionleadersplus.com: para saber si Pages ya publicó, ver el run «pages build and deployment» del commit en `…/actions/runs`.
+
 ## Qué se publica
 
 | Tarea | Pieza | Formato | Hora (HN) |
