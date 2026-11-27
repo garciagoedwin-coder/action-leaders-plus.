@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<!-- Plantilla de flyers para la página de Action Leaders (Facebook + Instagram vía Metricool).
+     La usa tools/redes/redes.py: abre esta página, llama render(D) y toma la captura.
+     Manual de marca: Poppins 600 títulos en MAYÚSCULAS con una palabra en celeste, Figtree texto,
+     Barlow Condensed números, fondo #0B1220, logo blanco sin "+", dorado solo en reconocimientos. -->
+<style>
+@font-face{font-family:P;src:url(../../media/fonts/Poppins-SemiBold.ttf);font-weight:600}
+@font-face{font-family:F;src:url(../../media/fonts/Figtree-VF.ttf);font-weight:300 900}
+@font-face{font-family:B;src:url(../../media/fonts/BarlowCondensed-Bold.ttf);font-weight:700}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0B1220}
+#f{position:relative;width:1080px;height:1350px;overflow:hidden;background:#0B1220;color:#fff;font-family:F,sans-serif}
+#f.h{height:1920px}
+.glow{position:absolute;right:-260px;top:-300px;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(42,193,241,.30),rgba(42,193,241,0) 65%)}
+.glow.oro{background:radial-gradient(circle,rgba(245,183,0,.26),rgba(245,183,0,0) 65%)}
+.casco{position:absolute;right:-120px;bottom:-80px;width:760px;opacity:.05}
+.foto{position:absolute;inset:0;background-size:cover;background-position:center}
+.velo{position:absolute;inset:0}
+.logo{position:absolute;left:72px;top:68px;height:44px;opacity:.92}
+.logo.top{left:50%;transform:translateX(-50%);top:84px;height:40px}
+.logo.c{left:50%;transform:translateX(-50%);top:auto;bottom:110px;height:84px}
+.cont{position:absolute;left:72px;right:72px}
+.tag{font-family:F;font-weight:800;font-size:28px;letter-spacing:6px;text-transform:uppercase;color:#2AC1F1}
+.oro .tag,.tag.oro{color:#F5B700}
+h1{font-family:P;font-weight:600;text-transform:uppercase;line-height:.98;letter-spacing:-1px;margin-top:22px}
+h1 b{font-weight:600;color:#2AC1F1}
+.oro h1 b{background:linear-gradient(180deg,#FFE08A,#F5B700 55%,#D98E04);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:36px;line-height:1.32;color:rgba(255,255,255,.78);margin-top:26px;font-weight:500}
+.card{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:28px}
+.num{font-family:B;font-weight:700;line-height:1}
+.pill{display:inline-flex;align-items:center;gap:14px;background:#2AC1F1;color:#062B3A;font-family:F;font-weight:800;font-size:32px;border-radius:999px;padding:22px 40px}
+.oro .pill{background:linear-gradient(90deg,#F5B700,#F97316);color:#2B1700}
+.hash{font-family:P;font-weight:600;font-size:30px;letter-spacing:1px;color:rgba(255,255,255,.9)}
+.pie{position:absolute;left:72px;right:72px;bottom:72px;display:flex;align-items:center;justify-content:space-between}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 22px}
+.per{display:flex;align-items:center;gap:20px;padding:18px 22px}
+.av{flex:none;width:76px;height:76px;border-radius:50%;background:#123049 center/cover;display:flex;align-items:center;justify-content:center;font-family:P;font-size:28px;color:#2AC1F1;border:3px solid #2AC1F1}
+.oro .av{border-color:#F5B700;color:#F5B700;background-color:#2a2310}
+.nm{font-family:F;font-weight:700;font-size:31px;line-height:1.15}
+.nm small{display:block;font-weight:600;font-size:22px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-top:4px}
+.mas{font-size:30px;color:rgba(255,255,255,.7);margin-top:20px;font-weight:600}
+#f:not(.h) .grid{gap:14px 20px}#f:not(.h) .per{padding:13px 18px}#f:not(.h) .av{width:64px;height:64px;font-size:24px}#f:not(.h) .nm{font-size:29px}
+.brush{font-family:'Kaushan',cursive;color:#2AC1F1}
+@font-face{font-family:Kaushan;src:url(../../media/fonts/KaushanScript-Regular.ttf)}
+</style></head><body><div id="f"></div>
+<script>
+const $=s=>document.querySelector(s),E=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ini=n=>String(n||"").split(" ").filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+// título: "**palabra**" va en celeste (o dorado en reconocimientos)
+const T=t=>E(t).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");
+function base(D,oro){const f=$("#f");f.className=(D.fmt==="h"?"h ":"")+(oro?"oro":"");
+  return `<div class="glow ${oro?"oro":""}"></div><img class="casco" src="../../media/logos/casco-azul.png">`}
+function personas(L,max,mini){const v=L.slice(0,max);return `<div class="grid">${v.map(p=>`<div class="card per"><div class="av" ${p.foto?`style="background-image:url('../../${E(p.foto)}')"`:""}>${p.foto?"":E(ini(p.n))}</div><div class="nm">${E(p.n)}${p.s?`<small>${E(p.s)}</small>`:""}</div></div>`).join("")}</div>${L.length>max?`<div class="mas">…y ${L.length-max} más. ¡Felicidades a todos!</div>`:""}`}
+const R={
+ // Lista de personas: socios nuevos, Team Leaders, Action Leaders del mes, ganadores
+ lista(D){const oro=!!D.oro,h=D.fmt==="h",max=D.max||(h?14:10);
+  return base(D,oro)+`<img class="logo" src="../../media/logos/action-leaders-blanco.png">
+  <div class="cont" style="top:${h?250:185}px"><div class="tag">${E(D.tag)}</div><h1 style="font-size:${D.tz||(h?110:92)}px">${T(D.tit)}</h1>${D.sub?`<div class="sub">${E(D.sub)}</div>`:""}
+  <div style="margin-top:${h?54:30}px">${personas(D.L,max)}</div></div>
+  <div class="pie"><div class="hash">#HASTAQUEFUNCIONE</div>${D.cta?`<div class="pill">${E(D.cta)}</div>`:""}</div>`},
+ // Una sola persona (1 socio nuevo o 1 reconocimiento): foto grande
+ uno(D){const oro=!!D.oro,h=D.fmt==="h",p=D.L[0];
+  return base(D,oro)+`<img class="logo" src="../../media/logos/action-leaders-blanco.png">
+  <div class="cont" style="top:${h?300:220}px;text-align:center"><div class="tag">${E(D.tag)}</div>
+   <div class="av" style="width:${h?400:330}px;height:${h?400:330}px;margin:${h?70:40}px auto 0;font-size:120px;border-width:8px;${p.foto?`background-image:url('../../${E(p.foto)}')`:p.ins?`background:#0F1B2E url('../../${E(p.ins)}') center/62% no-repeat`:""}">${p.foto||p.ins?"":E(ini(p.n))}</div>
+   <h1 style="font-size:${D.tz||(h?96:80)}px;margin-top:${h?56:34}px">${T(D.tit)}</h1>
+   <div class="num" style="font-size:${h?92:78}px;margin-top:22px">${E(p.n)}</div>${p.s?`<div class="tag" style="margin-top:14px">${E(p.s)}</div>`:""}${D.sub?`<div class="sub">${E(D.sub)}</div>`:""}</div>
+  <div class="pie"><div class="hash">#HASTAQUEFUNCIONE</div>${D.cta?`<div class="pill">${E(D.cta)}</div>`:""}</div>`},
+ // Action Leaders Training de hoy
+ training(D){const h=D.fmt==="h";
+  return base(D)+`<img class="logo" src="../../media/logos/action-leaders-blanco.png">
+  <div class="cont" style="top:${h?250:200}px"><div class="tag">Action Leaders <span class="brush" style="font-size:46px;letter-spacing:0;text-transform:none;margin-left:6px">Training!</span></div>
+  <h1 style="font-size:${D.tz||(h?104:92)}px">${T(D.tit)}</h1>${D.sub?`<div class="sub">${E(D.sub)}</div>`:""}
+  <div class="card" style="margin-top:${h?60:44}px;padding:30px 40px;display:flex;align-items:center;gap:34px"><div class="num" style="font-size:${h?120:104}px;color:#2AC1F1">${E(D.hora)}</div><div style="font-size:32px;line-height:1.3;font-weight:700">${E(D.dia)}<br><span style="font-weight:500;color:rgba(255,255,255,.7)">Hora de Honduras · Zoom</span></div></div>
+  ${D.L&&D.L.length?`<div style="margin-top:34px">${personas(D.L,4)}</div>`:""}</div>
+  <div class="pie"><div class="hash">#HASTAQUEFUNCIONE</div><div class="pill">${E(D.cta||"Le esperamos 🔥")}</div></div>`},
+ // Presentación de negocio del día (historia con foto de viaje)
+ pres(D){const h=D.fmt==="h";
+  return `<div class="foto" style="background-image:url('../../${E(D.foto)}');filter:blur(5px) brightness(.85);transform:scale(1.06)"></div><div class="velo" style="background:linear-gradient(180deg,rgba(11,18,32,.55),rgba(11,18,32,.82) 45%,rgba(11,18,32,.96))"></div>
+  <img class="logo" src="../../media/logos/action-leaders-blanco.png">
+  <div class="cont" style="top:${h?380:260}px"><div class="tag">Presentación de negocio · ${E(D.dia)}</div>
+  <h1 style="font-size:${h?112:96}px">${T(D.tit)}</h1><div class="sub">${E(D.sub)}</div>
+  <div style="display:flex;flex-direction:column;gap:22px;margin-top:${h?64:44}px">${D.horas.map(x=>`<div class="card" style="padding:26px 36px;display:flex;align-items:center;gap:32px;background:rgba(11,18,32,.6)"><div class="num" style="font-size:${h?104:90}px;color:#2AC1F1;min-width:300px">${E(x.h)}</div><div style="font-size:31px;line-height:1.3;font-weight:700">${E(x.t)}<br><span style="font-weight:500;color:rgba(255,255,255,.72)">${E(x.z)}</span></div></div>`).join("")}</div></div>
+  <div class="pie" style="${h?"bottom:120px":""}"><div class="hash">#HASTAQUEFUNCIONE</div><div class="pill">${E(D.cta)}</div></div>`},
+ // Llamado a la acción del día (foto del equipo de fondo)
+ cta(D){const h=D.fmt==="h";
+  return `${D.foto?`<div class="foto" style="background-image:url('../../${E(D.foto)}');background-position:${D.px||"50% 30%"}"></div><div class="velo" style="background:linear-gradient(180deg,rgba(11,18,32,.55),rgba(11,18,32,.78) 40%,rgba(11,18,32,.97) 75%)"></div>`:base(D)}
+  <img class="logo" src="../../media/logos/action-leaders-blanco.png">
+  <div class="cont" style="bottom:${h?330:200}px"><div class="tag">${E(D.tag)}</div><h1 style="font-size:${h?118:100}px">${T(D.tit)}</h1><div class="sub" style="color:rgba(255,255,255,.88)">${E(D.sub)}</div>
+   <div style="display:flex;gap:16px;margin-top:${h?44:30}px;flex-wrap:wrap">${["✈️ Viaja más","💳 Gasta menos","📱 Emprende desde tu celular"].map(x=>`<span class="card" style="padding:16px 24px;font-size:28px;font-weight:700;background:rgba(11,18,32,.55)">${x}</span>`).join("")}</div>
+   <div style="margin-top:${h?54:36}px;display:flex;align-items:center;gap:26px;flex-wrap:wrap"><span class="pill" style="font-size:36px;padding:24px 44px">${E(D.pill)}</span><span style="font-size:26px;color:rgba(255,255,255,.75);font-weight:600">${E(D.nota)}</span></div></div>
+  <div class="pie" style="${h?"bottom:120px;":""}justify-content:center"><div class="hash">#HASTAQUEFUNCIONE</div></div>`},
+ // Muchos nombres en un solo flyer (Action Leaders del mes)
+ mosaico(D){const h=D.fmt==="h",N=D.N||[],cols=3,z=N.length>48?21:N.length>36?23:26;
+  return base(D,true)+`<img class="logo" src="../../media/logos/action-leaders-blanco.png">
+  <div class="cont" style="top:${h?230:170}px"><div class="tag">${E(D.tag)}</div><h1 style="font-size:${h?100:84}px">${T(D.tit)}</h1><div class="sub" style="font-size:30px;margin-top:16px">${E(D.sub)}</div>
+  <div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:${h?14:8}px 12px;margin-top:${h?50:24}px">${N.map(n=>`<div class="card" style="border-radius:999px;padding:${h?14:7}px ${h?18:14}px;font-size:${h?z+3:z-3}px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-color:rgba(245,183,0,.28)">⭐ ${E(n)}</div>`).join("")}</div></div>
+  <div class="pie"><div class="hash">#HASTAQUEFUNCIONE</div><div class="pill">${E(D.cta)}</div></div>`},
+ // Historia de atracción: foto real del equipo + frase (igual que la historia del día de la app)
+ atr(D){
+  return `<div class="foto" style="background-image:url('../../${E(D.foto)}');background-position:${D.px||"50% 30%"}"></div><div class="velo" style="background:linear-gradient(180deg,rgba(11,18,32,.6),rgba(11,18,32,0) 14%,rgba(11,18,32,0) 42%,rgba(11,18,32,.88) 70%,rgba(11,18,32,.97))"></div>
+  <img class="logo top" src="../../media/logos/action-leaders-blanco.png" style="filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))">
+  <div class="cont" style="bottom:${D.fmt==="h"?360:250}px">${D.tag?`<div class="tag">${E(D.tag)}</div>`:""}
+   <h1 style="font-size:${D.tz||92}px;text-transform:none;letter-spacing:-.5px;line-height:1.04">${E(D.a)} <b>${E(D.b)}</b></h1>
+   ${D.c?`<div class="sub" style="color:#fff">${E(D.c)}</div>`:""}
+   ${D.quien?`<div style="display:flex;align-items:center;gap:18px;margin-top:30px"><span style="width:34px;height:3px;background:#2AC1F1"></span><span style="font-size:32px;font-weight:600">${E(D.quien)}</span>${D.lugar?`<span style="font-size:22px;letter-spacing:4px;color:rgba(255,255,255,.62);text-transform:uppercase;font-weight:600">${E(D.lugar)}</span>`:""}</div>`:""}
+   <div style="display:flex;align-items:center;gap:22px;margin-top:44px;flex-wrap:wrap"><span style="font-size:32px;font-weight:700">${E(D.p)}</span><span class="pill" style="font-size:28px;padding:18px 32px">${E(D.pill)}</span></div></div>
+  <div class="pie" style="justify-content:center;bottom:120px"><div class="hash">#HASTAQUEFUNCIONE</div></div>`}
+};
+async function render(D){const f=$("#f");f.innerHTML=R[D.tipo](D);f.className=(D.fmt==="h"?"h ":"")+(D.oro?"oro":"");
+  await document.fonts.ready;await Promise.all([...document.images].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r})));
+  const bg=[...f.querySelectorAll("[style*='background-image']")].map(e=>e.style.backgroundImage.match(/url\(["']?(.+?)["']?\)/)).filter(Boolean).map(m=>new Promise(r=>{const i=new Image();i.onload=i.onerror=r;i.src=m[1]}));
+  await Promise.all(bg);
+  // achica el título si se desborda
+  const h1=f.querySelector("h1");if(h1){let z=parseFloat(getComputedStyle(h1).fontSize);const maxH=D.fmt==="h"?420:330;while(h1.offsetHeight>maxH&&z>56){z-=4;h1.style.fontSize=z+"px"}}
+  return true}
+</script></body></html>
