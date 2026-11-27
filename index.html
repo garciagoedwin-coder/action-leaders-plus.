@@ -2162,6 +2162,9 @@ body.rk6on #snvCard .prem::before{content:"★ Premium";font-size:12px;color:#B7
 .crMini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.crMini div{border-radius:12px;padding:10px;background:var(--surface-2)}.crMini b{font:700 21px "Barlow Condensed",sans-serif;display:block}.crMini small{font-size:11px;color:var(--muted)}
 .crEv{font-size:13px;padding:9px 0;border-top:1px solid var(--line);display:flex;gap:8px;margin-top:6px}.crEv small{display:block;color:var(--muted)}
 .crCm{display:flex;flex-direction:column;gap:6px;margin:8px 0}.crCm div{display:flex;gap:10px;align-items:center;background:var(--surface-2);border-radius:12px;padding:8px 10px;font-size:13px}.crCm b{font:700 20px "Barlow Condensed",sans-serif;color:#16A34A;min-width:52px}.crCm .r b{color:#DC2626}
+/* 26 nov: mientras llegan los datos reales, sin números falsos */
+body.tjWait #compStrip:not([hidden]),body.tjWait #clStrip:not([hidden]),body.mWait #irCard:not([hidden]){position:relative;pointer-events:none}
+body.tjWait #compStrip::before,body.tjWait #clStrip::before,body.mWait #irCard::before{content:"Actualizando…";position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;border-radius:16px;background:color-mix(in srgb,var(--surface) 86%,transparent);color:var(--muted);font:600 13px Figtree,system-ui,sans-serif;letter-spacing:.02em}
 </style>
 
 </head>
@@ -2719,7 +2722,7 @@ body.rk6on #snvCard .prem::before{content:"★ Premium";font-size:12px;color:#B7
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,onAuthStateChanged,signOut,setPersistence,browserLocalPersistence,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendEmailVerification,sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,collection,getDoc,getDocFromServer,setDoc,getDocs,getDocsFromCache,addDoc,deleteDoc,onSnapshot,serverTimestamp,query,where,limit,writeBatch,updateDoc,terminate} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,collection,getDoc,getDocFromServer,getDocFromCache,setDoc,getDocs,getDocsFromCache,addDoc,deleteDoc,onSnapshot,serverTimestamp,query,where,limit,writeBatch,updateDoc,terminate} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const app=initializeApp({apiKey:"AIzaSyA0ehZ7NNzLE46Ifs-kvWXVVYfsohpdPXM",authDomain:"action-leaders-plus-8f1b8.firebaseapp.com",projectId:"action-leaders-plus-8f1b8",storageBucket:"action-leaders-plus-8f1b8.firebasestorage.app",messagingSenderId:"782054956613",appId:"1:782054956613:web:a34f683a893d00b9980d2c"});let acI=null,acTok=null;try{const _ac=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js");acTok=_ac.getToken;acI=_ac.initializeAppCheck(app,{provider:new _ac.ReCaptchaEnterpriseProvider("6LfesRkuAAAAAJQPpPOr5UFCDPoy2WuclKV0hgdg"),isTokenAutoRefreshEnabled:true})}catch(e){} /* App Check (10 nov 2026): solo la app oficial habla con Firebase */
 const auth=getAuth(app);
 let fdb;try{fdb=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()}),ignoreUndefinedProperties:true})}catch(e){try{fdb=initializeFirestore(app,{localCache:persistentLocalCache(),ignoreUndefinedProperties:true})}catch(e2){fdb=initializeFirestore(app,{ignoreUndefinedProperties:true})}}
@@ -2741,7 +2744,7 @@ const fsMarca=e=>{try{window._fsE={c:String(e&&e.code||e&&e.message||e).slice(0,
 async function fsW(fn,rest){try{return await fn()}catch(e){fsMarca(e);if(!fsTrabaM(e))throw e;
   if(await fsReset()){try{const r=await Promise.race([fn().then(v=>({v})),new Promise(rs=>setTimeout(()=>rs({v:undefined}),6000))]);return r.v}catch(x){fsMarca(x)}}
   if(rest){try{await rest();return}catch(x){fsMarca(x)}}throw e}}
-const D=p=>({_p:p,update:b=>fsW(()=>updateDoc(doc(fdb,p),b)),srv:async()=>{const x=await getDocFromServer(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>fsW(()=>setDoc(doc(fdb,p),b,o||{}),()=>restSet(p,b,o&&o.merge?"deep":false)),delete:()=>deleteDoc(doc(fdb,p)),
+const D=p=>({_p:p,update:b=>fsW(()=>updateDoc(doc(fdb,p),b)),cache:async()=>{const x=await getDocFromCache(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},srv:async()=>{const x=await getDocFromServer(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},get:async()=>{const x=await getDoc(doc(fdb,p));return{exists:x.exists(),data:()=>x.data()}},set:(b,o)=>fsW(()=>setDoc(doc(fdb,p),b,o||{}),()=>restSet(p,b,o&&o.merge?"deep":false)),delete:()=>deleteDoc(doc(fdb,p)),
   onSnapshot:(cb,er)=>onSnapshot(doc(fdb,p),x=>cb({exists:x.exists(),data:()=>x.data()}),er||(()=>{}))});
 const C=p=>({doc:id=>D(p+"/"+id),get:async()=>wrapS(await getDocs(collection(fdb,p))),getCache:async()=>wrapS(await getDocsFromCache(collection(fdb,p))),where:(f,v,op)=>({limit:n=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v),limit(n))))}),get:async()=>wrapS(await getDocs(query(collection(fdb,p),where(f,op||"==",v)))),getCache:async()=>wrapS(await getDocsFromCache(query(collection(fdb,p),where(f,op||"==",v)))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),where(f,op||"==",v)),q=>cb(wrapS(q)),er||(()=>{}))}),whereAll:L=>({get:async()=>wrapS(await getDocs(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))))),onSnapshot:(cb,er)=>onSnapshot(query(collection(fdb,p),...L.map(x=>where(x[0],x[2]||"==",x[1]))),q=>cb(wrapS(q)),er||(()=>{}))}),add:async b=>({id:(await addDoc(collection(fdb,p),b)).id}),
   onSnapshot:(cb,er)=>onSnapshot(collection(fdb,p),q=>cb(wrapS(q)),er||(()=>{}))});
@@ -2896,6 +2899,9 @@ window.__saveC=c=>store.saveContact(c);
 const store={db:null,uid:null,
   mine(){return this.db.collection("users/"+this.uid+"/datos")},
   async get(k){if(this.db){try{const s=await this.mine().doc(k).get();return s.exists?s.data():null}catch(e){}}return LS.get(k)},
+  /* 26 nov: copia del teléfono (sin esperar al servidor). undefined = no hay copia. */
+  async getC(k){if(!this.db)return undefined;try{const d=this.mine().doc(k);if(!d.cache)return undefined;const s=await d.cache();return s.exists?s.data():null}catch(e){return undefined}},
+  async contactsC(){if(!this.db)return null;try{const q=await this.crm().getCache();return q.docs.map(d=>Object.assign({id:d.id},d.data()))}catch(e){return null}},
   async set(k,v){if(k==="perfil"&&this.db&&!mineReady)return;if(this.db){try{await this.mine().doc(k).set(v);return}catch(e){toast("No se pudo guardar. Revisa tu conexión.")}}LS.set(k,v)},
   crm(){return this.db.collection("users/"+this.uid+"/crm")},
   async contacts(){if(this.db){for(let i=0;i<3;i++){try{const q=await this.crm().get();return q.docs.map(d=>Object.assign({id:d.id},d.data()))}catch(e){await new Promise(r=>setTimeout(r,1500))}}toast("No se pudieron cargar tus contactos. Revisa tu conexión y vuelve a abrir la app.");return []}return LS.get("crm")||[]},
@@ -12430,11 +12436,17 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-refr
   if(!rec){ult=Date.now();try{await loadTeamJSON()}catch(e){}try{mqCargar(true)}catch(e){}try{if(constL)await loadConst(true)}catch(e){}try{if(mios!==null&&store.uid)await loadMios(true)}catch(e){}try{if(isAdmin&&socios!==null)await loadSocios(true)}catch(e){}}
   setTimeout(()=>{ind.classList.remove("gira");fin();busy=false;try{toast(rec?"✅ Ya está al día":"✅ Datos al día")}catch(e){}},rec?350:600)});
 })();
-let tjSello=null;async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const d=await r.json();
-  {const se=((d.config||{}).rankingActualizado||"")+"|"+((d.config||{}).activacionesCorte||"")+"|"+(d.ranking||[]).length;if(tjSello&&se!==tjSello)setTimeout(()=>{try{toast("📊 Ranking actualizado")}catch(e){}},600);tjSello=se}
+let tjSello=null,tjTxt=null,tjNet=false;
+/* 26 nov (rendimiento): el archivo del equipo se guarda en el teléfono y se muestra al instante; el nuevo se baja por detrás. */
+function tjCopia(){try{const t=localStorage.getItem("alp:tj");if(!t)return false;tjAplicar(JSON.parse(t),true);tjTxt=t;return true}catch(e){return false}}
+async function loadTeamJSON(){try{const r=await fetch("data/team.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;const t=await r.text();const pri=!tjNet;tjNet=true;
+  if(t===tjTxt){document.body.classList.remove("tjWait");return}tjTxt=t;try{localStorage.setItem("alp:tj",t)}catch(e){try{localStorage.removeItem("alp:tj")}catch(x){}}
+  tjAplicar(JSON.parse(t),pri)}catch(e){}}
+function tjAplicar(d,quieto){try{document.body.classList.remove("tjWait");
+  {const se=((d.config||{}).rankingActualizado||"")+"|"+((d.config||{}).activacionesCorte||"")+"|"+(d.ranking||[]).length;if(tjSello&&se!==tjSello&&!quieto)setTimeout(()=>{try{toast("📊 Ranking actualizado")}catch(e){}},600);tjSello=se}
   T.ranking=d.ranking||[];T.lideres=d.liderazgo||[];T.eventos=d.calendario||[];T.activaciones=d.activaciones||[];T.videos=d.academia||[];T.red=d.red||null;T.config=d.config||null;
   fotosRepo=d.fotos||[];T.fotos=fotosRepo.concat(fotosFs);
-  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();try{novedadAviso()}catch(e){}try{rkInicio();pillsPinta()}catch(e){}renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderGan()}catch(e){}try{renderComp()}catch(e){}try{renderMetaEq()}catch(e){}try{renderPremios()}catch(e){}renderTopAct();try{npBan()}catch(e){}renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist();try{if(fbUser&&TODAY>=HFLY_DESDE)renderTasks()}catch(e){}try{irInicio();irRevisar()}catch(e){}}catch(e){}}
+  renderMe();renderEquipo();renderCal();renderNext();renderAccesos();try{novedadAviso()}catch(e){}try{rkInicio();pillsPinta()}catch(e){}renderActBan();try{renderAhorro()}catch(e){}renderMetas();try{renderGan()}catch(e){}try{renderComp()}catch(e){}try{renderMetaEq()}catch(e){}try{renderPremios()}catch(e){}renderTopAct();try{npBan()}catch(e){}renderRetoMini();renderAca();if(!$("#wel").hidden)renderWel();autoFoto();renderHist();try{if(fbUser&&TODAY>=HFLY_DESDE)renderTasks()}catch(e){}try{irInicio();irRevisar()}catch(e){}}catch(e){console.error("tjAplicar",e)}}
 let autoFotoHecho=false;
 function urlADataUrl(u,S){return new Promise(ok=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{S=S||240;const c=document.createElement("canvas");c.width=c.height=S;const m=Math.min(im.width,im.height);
   c.getContext("2d").drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);ok(c.toDataURL("image/jpeg",.85))}catch(e){ok(null)}};im.onerror=()=>ok(null);im.src=u})}
@@ -12448,6 +12460,7 @@ async function autoFoto(){try{if(autoFotoHecho||!fbUser||!store.db||!mineReady)r
 function subscribeTeam(db){
   const docs=s=>s.docs.map(d=>Object.assign({id:d.id},d.data()));
   if(!store.db)return;
+  if(!(T.ranking&&T.ranking.length)&&!tjCopia())document.body.classList.add("tjWait");
   loadTeamJSON();setInterval(loadTeamJSON,10*60*1000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)loadTeamJSON()});
   cargarFotos(false);
 }
@@ -12466,16 +12479,34 @@ async function loadMine(){
   const lun0=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7)),m0=new Date(now.getFullYear(),now.getMonth(),1),st0=lun0<m0?lun0:m0;
   const nk=Math.max(7,Math.round((new Date(now.getFullYear(),now.getMonth(),now.getDate())-st0)/864e5)+1);
   const ks=Array.from({length:nk},(_,i)=>{const d=new Date(now);d.setDate(d.getDate()-i);return dkey(d)});
+  let dayC=null;
+  const aplicar=(p,r,bw,vals,srv)=>{
+    if(srv&&!p&&mineReady){/* el servidor no respondió: se queda la copia del teléfono */}
+    else profile=Object.assign({ref:"",training:{},arranque:{},miNombre:""},p||{});
+    window._habP=1;try{if(store.uid&&localStorage.getItem("alp:welok")===store.uid)profile.bienvenida=true}catch(x){}
+    if(r)reto=r;ks.forEach((k,i)=>{if(vals[i])weekCache[k]=vals[i]});window._wkFrom=ks[ks.length-1];
+    /* si la persona ya tocó su rutina mientras llegaba el servidor, se respeta lo suyo */
+    if(!(srv&&dayC!==null&&JSON.stringify(day)!==dayC))day=Object.assign({},weekCache[TODAY]||{});
+    if((profile.historias||{})[TODAY]&&!day.hAtr){day.hAtr=1;if(!presHoyL().length)day.historia=1}
+    if(profile.nombrePila)$("#hello").textContent="Hola, "+profile.nombrePila.split(" ")[0];
+    try{const b=bw;if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}catch(e){}
+    if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
+    welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel()};
+  const arrancar=()=>{if(window._mineArr)return;window._mineArr=1;
+    setTimeout(()=>{pushRefrescar();pushPinta();badgePinta();pushCargarDoc().then(()=>{try{bellPinta()}catch(e){}try{urgStrip()}catch(e){}try{avParam()}catch(e){}}).catch(()=>{})},6000);
+    setTimeout(importarProspectos,1500);setTimeout(()=>loadSala(),2500);setTimeout(()=>loadL3(),1800);setTimeout(()=>{try{renderDT();dtCargar(false)}catch(e){}},2600);setTimeout(lcRevisar,6000);setTimeout(crSync,9000);setTimeout(()=>loadEvA(),2200);loadCitas();setTimeout(irRevisar,1500)};
+  /* 26 nov (rendimiento): FASE 1 = copia del teléfono, al instante. FASE 2 = servidor, y se repinta. */
+  let fase1=false;
+  if(store.db){try{const C=await Promise.race([Promise.all([store.getC("perfil"),store.getC("reto-"+MONTH),store.getC("bienvenida")].concat(ks.map(k=>store.getC("rutina-"+k)))),new Promise(r=>setTimeout(()=>r(null),1500))]);
+    if(C&&C[0]){const [p,r,bw,...vals]=C;aplicar(p,r,bw,vals.map(v=>v||null),false);dayC=JSON.stringify(day);fase1=true;
+      const cc=await Promise.race([store.contactsC(),new Promise(r=>setTimeout(()=>r(null),1500))]);
+      if(cc&&cc.length){contacts=cc;window._ctC=1;mWaitFin()}
+      renderAll();try{irRender()}catch(e){}try{renderComp(true)}catch(e){}if(window._ctC)arrancar()}}catch(e){console.error("loadMine copia",e)}}
   const [p,r,bw,...vals]=await Promise.all([store.get("perfil"),store.get("reto-"+MONTH),store.db?store.get("bienvenida").catch(()=>null):null].concat(ks.map(k=>store.get("rutina-"+k))));
-  profile=Object.assign({ref:"",training:{},arranque:{},miNombre:""},p||{});window._habP=1;try{if(store.uid&&localStorage.getItem("alp:welok")===store.uid)profile.bienvenida=true}catch(x){}
-  if(r)reto=r;ks.forEach((k,i)=>{if(vals[i])weekCache[k]=vals[i]});window._wkFrom=ks[ks.length-1];
-  day=Object.assign({},weekCache[TODAY]||{});if((profile.historias||{})[TODAY]&&!day.hAtr){day.hAtr=1;if(!presHoyL().length)day.historia=1}
-  if(profile.nombrePila)$("#hello").textContent="Hola, "+profile.nombrePila.split(" ")[0];
-  try{const b=bw;if(b){if(b.done)profile.bienvenida=true;if(b.pasos)profile.welPasos=Object.assign({},profile.welPasos||{},b.pasos)}}catch(e){}
-  if(regDoc&&regDoc.bienvenida)profile.bienvenida=true;
-  welState=Object.assign({},profile.welPasos||{});mineReady=true;renderWel();setTimeout(()=>{pushRefrescar();pushPinta();badgePinta();pushCargarDoc().then(()=>{try{bellPinta()}catch(e){}try{urgStrip()}catch(e){}try{avParam()}catch(e){}}).catch(()=>{})},6000);
-  contacts=await store.contacts();window._ctOk=1;setTimeout(importarProspectos,1500);setTimeout(()=>loadSala(),2500);setTimeout(()=>loadL3(),1800);setTimeout(()=>{try{renderDT();dtCargar(false)}catch(e){}},2600);setTimeout(lcRevisar,6000);setTimeout(crSync,9000);setTimeout(()=>loadEvA(),2200);loadCitas();setTimeout(irRevisar,1500);
-  renderAll()}
+  aplicar(p,r,bw,vals,fase1);
+  const cs=await store.contacts();if(!(fase1&&window._ctC&&!cs.length))contacts=cs;window._ctOk=1;mWaitFin();
+  arrancar();renderAll();if(fase1){try{irRender()}catch(e){}try{renderComp(true)}catch(e){}}}
+function mWaitFin(){document.body.classList.remove("mWait")}
 
 let invSponsor=null,invData=null;
 document.addEventListener("click",e=>{if(e.target&&e.target.id==="rgNoSoy"){invData=null;try{localStorage.removeItem("alp:invb")}catch(x){}try{renderWel()}catch(x){}toast("Listo: escriba sus propios datos")}});
@@ -12606,6 +12637,7 @@ const cortoN=n=>{const w=String(n||"").trim().split(/\s+/).filter(Boolean);if(!w
 
 const ADMINS=["garciagoedwin@gmail.com","actionleadersoficial@gmail.com","edwing.go@gmail.com"];
 let fbUser=null,regDoc=null;
+function regRepinta(){[()=>renderMetas(),()=>renderMiWa(),()=>renderAhorro(),()=>icStrip(),()=>npBan(),()=>renderActBan(),()=>irRender(),()=>renderComp(true),()=>pillsPinta(),()=>clStrip(),()=>lzgStrip()].forEach(f=>{try{f()}catch(e){}})}
 async function startApp(u){
   if(store.uid&&(!u||u.uid!==store.uid)){location.reload();return}
   fbUser=u||null;const db=window.FB.db;
@@ -12613,7 +12645,12 @@ async function startApp(u){
   try{if(u&&localStorage.getItem("alp:welok")===u.uid){profile.bienvenida=true;const w=$("#wel");w.hidden=true;document.body.style.overflow=""}}catch(x){}
   welSigned=!!u;isAdmin=!!(u&&u.emailVerified&&ADMINS.includes((u.email||"").toLowerCase()));
   if(u){store.db=db;store.uid=u.uid;const nm=u.displayName||"";if(nm){welName=nm.split(" ")[0];if(!profile.nombrePila)$("#hello").textContent="Hola, "+welName}
-    try{const r=await db.doc("users/"+u.uid).get();regDoc=r.exists?r.data():null}catch(e){regDoc=null}try{renderMetas()}catch(e){}try{renderMiWa()}catch(e){}try{renderAhorro()}catch(e){}try{icStrip()}catch(e){}try{npBan()}catch(e){}try{renderActBan()}catch(e){}
+    document.body.classList.add("mWait");
+    /* 26 nov (rendimiento): primero la copia del teléfono; el servidor llega por detrás y solo cambia lo que la persona no tocó mientras tanto. */
+    let rc=null;try{const d=db.doc("users/"+u.uid);if(d.cache)rc=await Promise.race([d.cache(),new Promise(r=>setTimeout(()=>r(null),1200))])}catch(e){rc=null}
+    if(rc&&rc.exists&&rc.data()&&rc.data().registro){regDoc=rc.data();const base={};Object.keys(regDoc).forEach(k=>base[k]=JSON.stringify(regDoc[k]));
+      db.doc("users/"+u.uid).get().then(r=>{if(!r.exists)return;const S=r.data(),N=Object.assign({},regDoc||{});new Set(Object.keys(S).concat(Object.keys(base))).forEach(k=>{if(JSON.stringify(N[k])!==base[k])return;if(k in S)N[k]=S[k];else delete N[k]});regDoc=N;regRepinta()}).catch(()=>{})}
+    else{try{const r=await db.doc("users/"+u.uid).get();regDoc=r.exists?r.data():null}catch(e){regDoc=null}}try{renderMetas()}catch(e){}try{renderMiWa()}catch(e){}try{renderAhorro()}catch(e){}try{icStrip()}catch(e){}try{npBan()}catch(e){}try{renderActBan()}catch(e){}
     if(regDoc&&regDoc.bienvenida){profile.bienvenida=true;try{localStorage.setItem("alp:welok",u.uid)}catch(x){}const w=$("#wel");if(w){w.hidden=true;document.body.style.overflow=""}}
     db.doc("users/"+u.uid).set({email:u.email||"",ultimoAcceso:window.FB.serverTimestamp()},{merge:true}).catch(()=>{})}
   else{store.db=null;store.uid=null}
