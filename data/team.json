@@ -236,9 +236,9 @@
    "registros": 0,
    "regSemana": 0,
    "id": "ana-ruth-rivera-villatoro",
-   "activaciones": 1,
-   "volumen": 200,
-   "actSemana": 0
+   "activaciones": 2,
+   "volumen": 400,
+   "actSemana": 1
   },
   {
    "nombre": "Rosa Cantillano",
@@ -308,9 +308,9 @@
    "registros": 0,
    "regSemana": 0,
    "id": "jessica-yonari-cardona-rauda",
-   "activaciones": 1,
-   "volumen": 500,
-   "actSemana": 1
+   "activaciones": 2,
+   "volumen": 1000,
+   "actSemana": 2
   },
   {
    "nombre": "Carlos alberto Rubio valladares",
@@ -927,11 +927,11 @@
    "meta": 500,
    "nuevos": 0,
    "presentaciones": 0,
-   "volumen": 200,
+   "volumen": 400,
    "volumenDetalle": "",
    "id": "ana-ruth-rivera-villatoro",
    "volumenHoja": 0,
-   "ptsBase": 200,
+   "ptsBase": 400,
    "auto": "2026-11"
   },
   {
@@ -1002,11 +1002,11 @@
    "meta": 500,
    "nuevos": 0,
    "presentaciones": 0,
-   "volumen": 500,
+   "volumen": 1000,
    "volumenDetalle": "",
    "id": "jessica-yonari-cardona-rauda",
    "volumenHoja": 0,
-   "ptsBase": 500,
+   "ptsBase": 1000,
    "auto": "2026-11"
   }
  ],
@@ -3673,6 +3673,32 @@
    "fuente": "gmail",
    "id": "rosa-p",
    "rv": 1
+  },
+  {
+   "socio": "Suendy oribeth Maradiaga huete",
+   "paquete": "Premium",
+   "patrocinador": "Jessica yonari Cardona rauda",
+   "fecha": "2026-11-27T22:55:03Z",
+   "ek": "48af8c",
+   "wk": "7b518d",
+   "pek": "42818c",
+   "pwk": "e3fe13",
+   "fuente": "gmail",
+   "id": "suendy-oribeth-maradiaga-huete",
+   "rv": 1
+  },
+  {
+   "socio": "Xiomara Canales",
+   "paquete": "Classic",
+   "patrocinador": "Ana ruth Rivera villatoro",
+   "fecha": "2026-11-27T22:55:05Z",
+   "ek": "0ebcde",
+   "wk": "b9b824",
+   "pek": "f939e3",
+   "pwk": "aebb13",
+   "fuente": "gmail",
+   "id": "xiomara-canales",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3706,7 +3732,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-26T22:55:03Z",
+  "activacionesCorte": "2026-11-27T22:55:05Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3715,7 +3741,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-26T16:56:00-06:00",
+  "rankingActualizado": "2026-11-27T16:56:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -5376,6 +5402,11 @@
      "a": 2
     },
     {
+     "n": "Jessica Yonari Cardona Rauda",
+     "p": 1000,
+     "a": 2
+    },
+    {
      "n": "Mariela Castro",
      "p": 1000,
      "a": 10
@@ -5506,11 +5537,6 @@
      "a": 1
     },
     {
-     "n": "Jessica Yonari Cardona Rauda",
-     "p": 500,
-     "a": 1
-    },
-    {
      "n": "Kevin Izaguirre",
      "p": 500,
      "a": 5
@@ -5594,6 +5620,11 @@
      "n": "Telva Lacayo",
      "p": 450,
      "a": 3
+    },
+    {
+     "n": "Ana Ruth Rivera Villatoro",
+     "p": 400,
+     "a": 2
     },
     {
      "n": "Andrea Jackeline Padilla Cuellar",
@@ -5749,11 +5780,6 @@
      "n": "Pamela Rivas",
      "p": 250,
      "a": 3
-    },
-    {
-     "n": "Ana Ruth Rivera Villatoro",
-     "p": 200,
-     "a": 1
     },
     {
      "n": "Angela Suyapa Oyuela Montoya",
@@ -6031,7 +6057,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-27T22:36:44Z"
+   "t": "2026-11-27T22:56:53Z"
   },
   "audioEsp": {
    "id": "santiago-1",
