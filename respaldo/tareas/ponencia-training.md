@@ -2,6 +2,8 @@
 
 Instrucciones para las tareas programadas «Ponencia del Training». Todo en español; textos para el equipo SIEMPRE de «usted», nunca prometer ingresos ni hablar de dinero/ganancias. No pidas confirmación (es automática).
 
+> **(27 nov) GitHub desde la sesión:** `gh` FALLA (el GH_TOKEN de la sesión no sirve). Usar `curl` SIN encabezado de autorización (el proxy pone la credencial): disparar `curl -X POST -H 'Content-Type: application/json' https://api.github.com/repos/garciagoedwin-coder/action-leaders-plus./actions/workflows/diagperf.yml/dispatches --data-binary @body.json` (body = {"ref":"main","inputs":{…}}), listar `…/actions/workflows/diagperf.yml/runs`, log `curl -sL …/actions/runs/ID/logs`, borrar `curl -X DELETE …/actions/runs/ID`. El shell NO llega a actionleadersplus.com: para saber si Pages ya publicó, ver el run «pages build and deployment» del commit en `…/actions/runs`.
+
 ## 0. Preparar el entorno
 1. Clona con permiso de escritura: herramienta add_repo (owner `garciagoedwin-coder`, repo `action-leaders-plus.`, access `push`) y el comando que indique. Entra a la carpeta.
 2. Lee `CLAUDE.md` completo (sobre todo «Ponencias del Action Leaders Training» y «Action Leaders Training con ponentes y tema»). Si la sesión tiene el Proyecto «App Movil», lee también `claude/guia-app-para-entrenamientos.md` y `claude/manual-de-marca-action-leaders.md` (nombres EXACTOS de botones).
