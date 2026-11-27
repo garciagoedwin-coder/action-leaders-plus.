@@ -92,10 +92,10 @@ const R={
    <div style="margin-top:${h?54:36}px;display:flex;align-items:center;gap:26px;flex-wrap:wrap"><span class="pill" style="font-size:36px;padding:24px 44px">${E(D.pill)}</span><span style="font-size:26px;color:rgba(255,255,255,.75);font-weight:600">${E(D.nota)}</span></div></div>
   <div class="pie" style="${h?"bottom:120px;":""}justify-content:center"><div class="hash">#HASTAQUEFUNCIONE</div></div>`},
  // Muchos nombres en un solo flyer (Action Leaders del mes)
- mosaico(D){const h=D.fmt==="h",N=D.N||[],cols=3,z=N.length>48?21:N.length>36?23:26;
+ mosaico(D){const h=D.fmt==="h",N=D.N||[],cols=3,z=N.length>44?19:N.length>36?22:26,g=N.length>44;
   return base(D,true)+`<img class="logo" src="../../media/logos/action-leaders-blanco.png">
   <div class="cont" style="top:${h?230:170}px"><div class="tag">${E(D.tag)}</div><h1 style="font-size:${h?100:84}px">${T(D.tit)}</h1><div class="sub" style="font-size:30px;margin-top:16px">${E(D.sub)}</div>
-  <div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:${h?14:8}px 12px;margin-top:${h?50:24}px">${N.map(n=>`<div class="card" style="border-radius:999px;padding:${h?14:7}px ${h?18:14}px;font-size:${h?z+3:z-3}px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-color:rgba(245,183,0,.28)">⭐ ${E(n)}</div>`).join("")}</div></div>
+  <div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:${h?(g?8:14):(g?5:8)}px ${g?8:12}px;margin-top:${h?(g?34:50):(g?14:24)}px">${N.map(n=>`<div class="card" style="border-radius:999px;padding:${h?(g?9:14):(g?5:7)}px ${h?(g?12:18):(g?10:14)}px;font-size:${h?z+3:z-3}px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-color:rgba(245,183,0,.28)">⭐ ${E(n)}</div>`).join("")}</div></div>
   <div class="pie"><div class="hash">#HASTAQUEFUNCIONE</div><div class="pill">${E(D.cta)}</div></div>`},
  // Historia de atracción: foto real del equipo + frase (igual que la historia del día de la app)
  atr(D){
