@@ -7141,7 +7141,12 @@ async function bienCanvas(n,f,pat,plan,fotoSrc,pais,patFoto,yo,cli){n=nv(n);pat=
   const card=(x,w,b,s)=>{g.beginPath();g.roundRect(x,1530,w,104,20);g.fillStyle="rgba(255,255,255,.07)";g.fill();g.lineWidth=1.5;g.strokeStyle="rgba(255,255,255,.15)";g.stroke();g.textAlign="left";g.fillStyle="#fff";g.font="700 30px "+BF;g.fillText(b,x+20,1576);g.fillStyle=T.a;g.font="700 14px "+BF;sp(s,x+20,1608,2.8)};
   // (4 nov) sin tarjetas: todo termina antes de la zona que tapan WhatsApp e Instagram (últimos ~330 px)
   // patrocinador y cierre
-  let ps=30;g.font="700 "+ps+"px "+BF;while(g.measureText(pat).width>360&&ps>18){ps--;g.font="700 "+ps+"px "+BF}const pw=Math.max(g.measureText(pat).width,210)+138;
+  /* 27 nov: el nombre del patrocinador nunca se monta sobre «HASTA QUE FUNCIONE» (caso Jessica Yonari Cardona) */
+  g.font="400 56px "+BB;const hqL=1000-(g.measureText("HASTA QUE FUNCIONE").width+3*17)-28,maxT=Math.min(360,hqL-80-138);
+  let ps=30;const fit=()=>{ps=30;g.font="700 "+ps+"px "+BF;while(g.measureText(pat).width>maxT&&ps>18){ps--;g.font="700 "+ps+"px "+BF}};fit();
+  if(g.measureText(pat).width>maxT){const w=String(pat).trim().split(/\s+/);if(w.length>2){pat=w.length>=4?w[0]+" "+w[2]:w[0]+" "+w[1];fit()}}
+  if(g.measureText(pat).width>maxT){while(pat.length>3&&g.measureText(pat+"…").width>maxT)pat=pat.slice(0,-1);pat=pat.trim()+"…"}
+  const pw=Math.max(g.measureText(pat).width,210)+138;
   const PY=1452;if(yo){const ct="✈️ ¿Le cuento cómo?";g.font="800 36px "+BF;const cw=g.measureText(ct).width+90,ch=100,cy=PY-6;g.save();g.shadowColor=T.glow;g.shadowBlur=50;g.beginPath();g.roundRect(80,cy,cw,ch,50);g.fillStyle=grad(80,80+cw);g.fill();g.restore();g.fillStyle=T.pill?"#111":"#062B3A";g.textAlign="left";g.textBaseline="middle";g.fillText(ct,125,cy+ch/2+2);g.textBaseline="alphabetic";g.fillStyle=T.a;g.font="700 19px "+BF;sp("👇 RESPONDA A ESTA HISTORIA",86,cy+ch+44,3.6);return cv}g.beginPath();g.roundRect(80,PY,pw,100,50);g.fillStyle="rgba(255,255,255,.07)";g.fill();g.lineWidth=1.5;g.strokeStyle=T.a;g.stroke();
   await ring(patFoto,130,PY+50,36,0,false,pat,3);
   g.textAlign="left";g.fillStyle=T.a;g.font="700 15px "+BF;sp("SU PATROCINADOR",184,PY+38,3.3);g.fillStyle="#fff";g.font="700 "+ps+"px "+BF;g.fillText(pat,184,PY+74);
