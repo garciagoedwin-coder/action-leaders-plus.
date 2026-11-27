@@ -6133,6 +6133,51 @@
     "tmV": {
      "e": 1795613544786
     }
+   },
+   "2026-11-29-2000-action-leaders-training": {
+    "t": "Mi palabra vale",
+    "s": "Mentalidad y liderazgo: cierre el mes cumpliendo lo que prometió",
+    "pdf": "media/training/2026-11-29-palabra.pdf",
+    "g": "media/training/2026-11-29-guion.pdf",
+    "img": "media/training/2026-11-29-portada.jpg",
+    "roles": {
+     "Nancy Díaz": "Anfitriona",
+     "Olga Meléndez": "Ponente",
+     "Nuvia Martínez": "Ponente"
+    },
+    "act": "2026-11-27T15:50:14Z",
+    "sug": [
+     {
+      "a": "Mentalidad",
+      "t": "Mi palabra vale",
+      "d": "130 socios hicieron su compromiso de noviembre: 79,500 pts comprometidos y como equipo llevamos 13,850.",
+      "i": [
+       "La primera promesa que su equipo le ve cumplir es la suya",
+       "Dé todo hasta el último minuto: el mes cierra el lunes 6:00 p.m.",
+       "Si no llega, dé la cara y aprenda; nunca desaparezca"
+      ]
+     },
+     {
+      "a": "Liderazgo",
+      "t": "Diciembre se planea hoy",
+      "d": "Desde el 1 de diciembre la Llamada de liderazgo pide Índice de Constancia de 40 % o más; hoy 101 de 156 socios activos van por debajo.",
+      "i": [
+       "Cumpla usted primero: su equipo copia lo que ve",
+       "Acompañe a cada socio a hacer su compromiso del mes el día 1",
+       "Use «📞 Hoy llame a estos» para no dejar a nadie atrás"
+      ]
+     },
+     {
+      "a": "Habilidad",
+      "t": "3 conversaciones antes del cierre",
+      "d": "216 prospectos están en «Por cerrar» y 1,346 en Seguimiento en los CRM del equipo.",
+      "i": [
+       "Por cerrar: pregunte «¿Qué le falta para empezar?»",
+       "Seguimiento: salude primero y retome cuando le conteste",
+       "Con la app: «⏰ Hoy le toca» y «💬 Saludar en WhatsApp»"
+      ]
+     }
+    ]
    }
   },
   "rec": {
