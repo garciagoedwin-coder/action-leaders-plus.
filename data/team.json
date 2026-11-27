@@ -4599,7 +4599,7 @@
    "mapa": "https://maps.app.goo.gl/pXVtgukoWBXuT23y8"
   },
   "ahorro": {
-   "v": "2026-11-27T00:16:31Z",
+   "v": "2026-11-27T01:17:03Z",
    "ini": "2026-11-01T06:00:00Z",
    "k": {
     "0225a9": "2026-10-27T10:09:44Z",
@@ -4650,6 +4650,7 @@
     "866efb": "2026-10-26T21:08:59Z",
     "87c762": "2026-11-02T05:59:47Z",
     "8941f8": "2026-11-02T19:45:41Z",
+    "8a0a91": "2026-12-02T01:10:07Z",
     "8b574c": "2026-10-28T19:40:07Z",
     "8dae9e": "2026-10-25T06:45:37Z",
     "8ff3c1": "2026-10-31T23:15:42Z",
@@ -4692,7 +4693,8 @@
     "f6df46": "2026-11-01T17:34:35Z",
     "fae12c": "2026-11-01T18:39:50Z",
     "fb988a": "2026-11-02T04:36:16Z",
-    "fd41f3": "2026-10-31T06:10:02Z"
+    "fd41f3": "2026-10-31T06:10:02Z",
+    "fd6890": "2026-12-02T01:08:45Z"
    },
    "li": [
     "205855",
@@ -5410,11 +5412,6 @@
      "a": 4
     },
     {
-     "n": "Alba Luz Martinez Hernandez",
-     "p": 750,
-     "a": 6
-    },
-    {
      "n": "Elmerjoel Almendares",
      "p": 750,
      "a": 6
@@ -5445,6 +5442,11 @@
      "a": 3
     },
     {
+     "n": "Alba Luz Martinez Hernandez",
+     "p": 650,
+     "a": 5
+    },
+    {
      "n": "Dahiana Peña",
      "p": 650,
      "a": 4
@@ -5460,9 +5462,9 @@
      "a": 6
     },
     {
-     "n": "Joel Enrrique Salgado Moradel",
+     "n": "Joel Salgado",
      "p": 600,
-     "a": 3
+     "a": 5
     },
     {
      "n": "Kevin Izaguirre",
@@ -5513,11 +5515,6 @@
      "n": "Jessica Yonari Cardona Rauda",
      "p": 500,
      "a": 1
-    },
-    {
-     "n": "Joel Salgado",
-     "p": 500,
-     "a": 4
     },
     {
      "n": "Lohani Membreño",
@@ -5630,6 +5627,11 @@
      "a": 4
     },
     {
+     "n": "Joel Enrrique Salgado Moradel",
+     "p": 400,
+     "a": 2
+    },
+    {
      "n": "Ramona Esperanza Galo Pineda",
      "p": 400,
      "a": 4
@@ -5701,11 +5703,6 @@
     },
     {
      "n": "Betty Carolina Amador Perez",
-     "p": 250,
-     "a": 1
-    },
-    {
-     "n": "Blanca Dina Ramirez Melendez",
      "p": 250,
      "a": 1
     },
@@ -6030,7 +6027,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-27T00:16:31Z"
+   "t": "2026-11-27T01:17:03Z"
   },
   "audioEsp": {
    "id": "santiago-1",
