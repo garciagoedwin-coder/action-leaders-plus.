@@ -86,12 +86,16 @@ export function clSrv(team, C, users, ms = Date.now()) {
     let u = cm ? cm.uid : null; if (!u) { const f = (users || []).filter(v => v.registro && ns.some(m => ig(v.registro.nombre, m))); if (f.length === 1) u = f[0].uid; }
     return { l, ns, u, k: u || ("n:" + (l.id || l.nombre)) }; });
   const esDe = (m, s) => m.ns.some(n => ig(n, s)), MUid = new Map(M.filter(m => m.u).map(m => [m.u, m]));
-  const memAt = (m, t) => { const ym = new Date(t).toISOString().slice(0, 7); if (m.l.auto !== ym) return true; const ini = Date.parse(ym + "-01T00:00:00Z");
-    return ACT.reduce((a, x) => { const tx = Date.parse(x.fecha); return tx >= ini && tx < t && esDe(m, x.patrocinador) ? a + PKV[x.paquete] : a; }, 0) >= lim; };
+  // 27 nov: quien entró al Sistema este mes (auto) y no se comprometió → su volumen va al equipo del miembro de arriba.
+  const memAt = (m, t) => m.l.auto !== new Date(t).toISOString().slice(0, 7);
   for (const a of ACT) {
     const t = Date.parse(a.fecha); if (!(t >= d && t < h)) continue; const v = PKV[a.paquete], s = a.patrocinador, id = String(a.id || a.socio || t);
     const pu = usrPat(a, users), pU = pu.length === 1 ? pu[0] : null, ld = (pU && L.find(z => z.uid === pU.uid)) || L.find(z => z.ns.some(n => ig(n, s)));
-    if (ld) { P[ld.uid] = (P[ld.uid] || 0) + v; act[id] = { u: ld.uid, un: ld.n, k: "p", v }; continue; }
+    if (ld) { P[ld.uid] = (P[ld.uid] || 0) + v; act[id] = { u: ld.uid, un: ld.n, k: "p", v };
+      // 27 nov: si entró al Sistema este mes, también suma al equipo del primer miembro de arriba (la meta lo cuenta una vez).
+      const mL = M.find(z => z.u === ld.uid), uu = (users || []).find(z => z.uid === ld.uid);
+      if (mL && mL.l.auto === new Date(t).toISOString().slice(0, 7) && uu && uu.registro) for (const u of uu.registro.linea || []) { if (S.has(u) || MUid.has(u)) { E[u] = (E[u] || 0) + v; act[id].e2 = u; break; } }
+      continue; }
     const m = (pU && M.find(z => z.u === pU.uid)) || M.find(z => esDe(z, s)); if (m && memAt(m, t)) { P[m.k] = (P[m.k] || 0) + v; act[id] = { u: m.k, un: m.l.nombre, k: "p", v, sc: 1 }; continue; }
     const f = pU ? [pU] : (users || []).filter(u => u.registro && ig(u.registro.nombre, s)); let ok = false;
     if (f.length === 1) for (const u of f[0].registro.linea || []) {
