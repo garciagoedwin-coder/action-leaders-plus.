@@ -323,6 +323,18 @@
    "activaciones": 1,
    "volumen": 50,
    "actSemana": 1
+  },
+  {
+   "nombre": "Yeny mildred Castellanos castellanos",
+   "linea": "",
+   "presentaciones": 0,
+   "presSemana": 0,
+   "registros": 0,
+   "regSemana": 0,
+   "id": "yeny-mildred-castellanos-castellanos",
+   "activaciones": 1,
+   "volumen": 200,
+   "actSemana": 1
   }
  ],
  "liderazgo": [
@@ -556,7 +568,7 @@
    "nuevos": 0,
    "presentaciones": 0,
    "rango": "Team Leader",
-   "volumen": 0,
+   "volumen": 200,
    "volumenDetalle": "",
    "id": "yeni-castellanos",
    "volumenHoja": 0,
@@ -3699,6 +3711,19 @@
    "fuente": "gmail",
    "id": "xiomara-canales",
    "rv": 1
+  },
+  {
+   "socio": "Mayra lizeth Herrera cruz",
+   "paquete": "Classic",
+   "patrocinador": "Yeny mildred Castellanos castellanos",
+   "fecha": "2026-11-28T00:55:06Z",
+   "ek": "6df4db",
+   "wk": "c74393",
+   "pek": "4a5cbe",
+   "pwk": "74453f",
+   "fuente": "gmail",
+   "id": "mayra-lizeth-herrera-cruz",
+   "rv": 1
   }
  ],
  "academia": [],
@@ -3732,7 +3757,7 @@
     "u": "https://drive.google.com/drive/folders/1bNthTuFqJbi-9KaUUFSgBG2hd2sMAjgp?usp=drive_link"
    }
   ],
-  "activacionesCorte": "2026-11-27T22:55:05Z",
+  "activacionesCorte": "2026-11-28T00:55:06Z",
   "activacionesMes": "2026-10",
   "bienvenida": {
    "caja": "",
@@ -3741,7 +3766,7 @@
   "calendarioActualizado": "2026-11-01T23:12:00-06:00",
   "liderazgoActualizado": "2026-11-01T15:37:00-06:00",
   "liderazgoPeriodo": "Noviembre 2026",
-  "rankingActualizado": "2026-11-27T16:56:00-06:00",
+  "rankingActualizado": "2026-11-27T18:56:00-06:00",
   "rankingMes": "Noviembre 2026",
   "rankingSemanaLabel": "19–25 oct",
   "reto": {
@@ -5371,6 +5396,11 @@
      "a": 9
     },
     {
+     "n": "Yeny Mildred Castellanos Castellanos",
+     "p": 1400,
+     "a": 9
+    },
+    {
      "n": "Jose Luis Rodriguez",
      "p": 1350,
      "a": 12
@@ -5389,11 +5419,6 @@
      "n": "Denia V Rivas Rocha",
      "p": 1200,
      "a": 3
-    },
-    {
-     "n": "Yeny Mildred Castellanos Castellanos",
-     "p": 1200,
-     "a": 8
     },
     {
      "n": "Karen Lizeth Paz Escober",
@@ -5504,11 +5529,6 @@
      "n": "Maynor Agustín Larios Lobo",
      "p": 600,
      "a": 6
-    },
-    {
-     "n": "Milton Nunez",
-     "p": 600,
-     "a": 2
     },
     {
      "n": "Saby Isaguirre",
@@ -5672,6 +5692,11 @@
     },
     {
      "n": "Dago Padilla",
+     "p": 350,
+     "a": 2
+    },
+    {
+     "n": "Milton Nunez",
      "p": 350,
      "a": 2
     },
@@ -6056,7 +6081,7 @@
      "a": 1
     }
    ],
-   "t": "2026-11-28T00:16:19Z"
+   "t": "2026-11-28T00:56:50Z"
   },
   "audioEsp": {
    "id": "santiago-1",
