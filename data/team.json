@@ -7227,7 +7227,10 @@
    "desde": "2026-11-24T03:10:00Z",
    "hasta": "2026-12-01T00:00:00Z",
    "fin": "lunes 30, 6:00 p.m. hora de Honduras",
-   "meta": 18200
+   "meta": 18200,
+   "eq": {
+    "mayra-lizeth-herrera-cruz": "Edwin García Go"
+   }
   }
  },
  "fotos": [

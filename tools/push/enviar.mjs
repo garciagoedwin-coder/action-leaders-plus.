@@ -90,6 +90,8 @@ export function clSrv(team, C, users, ms = Date.now()) {
     return ACT.reduce((a, x) => { const tx = Date.parse(x.fecha); return tx >= ini && tx < t && esDe(m, x.patrocinador) ? a + PKV[x.paquete] : a; }, 0) >= lim; };
   for (const a of ACT) {
     const t = Date.parse(a.fecha); if (!(t >= d && t < h)) continue; const v = PKV[a.paquete], s = a.patrocinador, id = String(a.id || a.socio || t);
+    // 27 nov (Edwin): excepción config.cierreLz.eq {idActivación: "Nombre del líder"} → cuenta al equipo de ese líder.
+    const ex = (c.eq || {})[id]; if (ex) { const mE = M.find(z => esDe(z, ex)); if (mE) { const z = L.find(y => y.uid === mE.k); E[mE.k] = (E[mE.k] || 0) + v; act[id] = { u: mE.k, un: z ? z.n : mE.l.nombre, k: "e", v, sp: s }; continue; } }
     const pu = usrPat(a, users), pU = pu.length === 1 ? pu[0] : null, ld = (pU && L.find(z => z.uid === pU.uid)) || L.find(z => z.ns.some(n => ig(n, s)));
     if (ld) { P[ld.uid] = (P[ld.uid] || 0) + v; act[id] = { u: ld.uid, un: ld.n, k: "p", v }; continue; }
     const m = (pU && M.find(z => z.u === pU.uid)) || M.find(z => esDe(z, s)); if (m && memAt(m, t)) { P[m.k] = (P[m.k] || 0) + v; act[id] = { u: m.k, un: m.l.nombre, k: "p", v, sc: 1 }; continue; }

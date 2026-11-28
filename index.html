@@ -4843,6 +4843,7 @@ function clCalc(){const c=clCfg();if(!c)return{P:{},E:{},L:[],A:[],SC:[]};const 
     return ACT.reduce((a,x)=>{const tx=Date.parse(x.fecha);return tx>=ini&&tx<t&&esDe(m,x.patrocinador)?a+PKV[x.paquete]:a},0)>=lim};
   const MUid=new Map(M.filter(m=>m.u).map(m=>[m.u,m]));
   ACT.forEach(a=>{const t=Date.parse(a.fecha);if(!(t>=d&&t<h))return;const v=PKV[a.paquete],s=a.patrocinador,aid=String(a.id||a.socio||t),base={id:aid,v,sp:s,so:a.socio||"",pq:a.paquete||"",t};
+    const ex=(c.eq||{})[aid];if(ex){const mE=M.find(z=>esDe(z,ex));if(mE){const z=N.find(y=>y.u===mE.k);E[mE.k]=(E[mE.k]||0)+v;A.push({...base,u:mE.k,un:z?z.n:mE.l.nombre,k:"e",x:1});return}}
     const pU=patU(a);let ld=(pU&&N.find(z=>z.u===pU))||N.find(z=>z.ns.some(n=>ig(n,s)));if(!ld)ld=N.find(z=>z.ns.some(n=>lzMismo(n,s)));if(ld){P[ld.u]=(P[ld.u]||0)+v;A.push({...base,u:ld.u,un:ld.n,k:"p"});return}
     const m=(pU&&M.find(z=>z.u===pU))||miemDe(s);if(m&&memAt(m,t)){P[m.k]=(P[m.k]||0)+v;A.push({...base,u:m.k,un:m.l.nombre,k:"p",sc:1});return}
     const f=(pU&&F.find(z=>z.id===pU))||F.find(z=>[z.invNombre,z.nombre,z.rk].some(n=>ig(n,s)));
@@ -12640,7 +12641,7 @@ window.addEventListener("fb-auth",e=>{location.reload()});
 })();
 </script>
 <script>
-(function(){var V="20261127170334";var busy=false,pend=null;
+(function(){var V="20261127194920";var busy=false,pend=null;
  function go(t){var u=location.pathname+"?v="+t+location.hash;try{location.replace(u)}catch(e){location.reload()}}
  function idle(){var sh=document.getElementById("sheet"),w=document.getElementById("wel");var a=document.activeElement;
   return (!sh||sh.hidden)&&(!w||w.hidden)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))}
